@@ -64,24 +64,19 @@ public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO>
 		sessionStudyID = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyID != null) {
 			study = iArkCommonService.getStudy(sessionStudyID);
-//			cpModel.getObject().getAffection().getDisease().setStudy(study);
 		}
 		
 		Long subjectSessionID = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.PERSON_CONTEXT_ID);
 		try {
 			linkSubjectStudy = iArkCommonService.getSubject(subjectSessionID, study);
-//			cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 		}
 		catch (EntityNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-//		boolean contextLoaded = prerenderContextCheck();
-		
+				
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
-		log.info("created detail panel");
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		
@@ -102,7 +97,6 @@ public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO>
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 					lss = iArkCommonService.getSubject(sessionPersonId, study);
 					contextLoaded = true;
-					log.info("context loaded");
 				}
 				catch (EntityNotFoundException e) {
 					log.error(e.getMessage());
@@ -133,24 +127,12 @@ public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO>
 			private static final long serialVersionUID = 1L;
 			
 			public int size() {
-				log.info("getting size via getAffectionCount");
 				int count = service.getAffectionCount(containerForm.getModelObject());
-				log.info("got size : " + count);
 				return count;
 			}
 
 			public Iterator<? extends AffectionVO> iterator(int first, int count) {
-				log.info("GET ITERATOR");
-				log.info("" + containerForm.getModelObject().getAffection());
-				log.info("" + containerForm.getModelObject().getAffection().getLinkSubjectStudy());
 				List<AffectionVO> affectionVOs = service.searchPageableAffections(containerForm.getModelObject(), first, count);
-				log.info("=============");
-				for(AffectionVO alvo : affectionVOs) {
-					log.info("Disease: " + alvo.getAffection().getDisease());
-					log.info("CustomFields: " + alvo.getAffection().getDisease().getCustomFields());
-				}
-				log.info("=============");
-				log.info("affection iterator finished");
 				return affectionVOs.iterator();
 			}
 		};
@@ -172,13 +154,11 @@ public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO>
 		resultsWmc.add(dataView);
 		searchResultsPanel.add(resultsWmc);		
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
-		log.info("finished initSearchResults");
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-//		log.info("initDetailPanel = " + containerForm.getModelObject().getAffection().getDisease().getCustomFields());
 		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkContextMarkup, containerForm, arkCrudContainerVO);
 		
 		detailPanel.initialisePanel();

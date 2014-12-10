@@ -87,10 +87,8 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void populateItem(final Item<DiseaseVO> item) {
 				Disease disease = item.getModelObject().getDisease();
-				log.info("custom fields: " + disease.getCustomFields());
+				item.add(new Label("disease.id", disease.getId().toString()));
 				item.add(buildLink(item.getModelObject()));
-				
-//				item.add(new Label("nameLabel", item.getModel()));
 				
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
@@ -110,13 +108,11 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void populateItem(final ListItem<DiseaseVO> item) {
-				
 				Disease disease = item.getModelObject().getDisease();
 				
+				item.add(new Label("disease.id", disease.getId().toString()));
 				item.add(buildLink(item.getModelObject()));
-				
-//				item.add(new Label("nameLabel", item.getModel()));
-				
+
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -129,31 +125,15 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxLink buildLink(final DiseaseVO disease) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("disease.name") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("disease.name.link") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				// subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-
-				// We specify the type of person here as Subject
 				
-				log.info(disease.toString());
-				
-//				DiseaseVO diseaseFromBackend = new DiseaseVO();
-//				
 				Study study = iArkCommonService.getStudy(sessionStudyId);
 				List<Gene> availableGenes = iArkDiseaseService.getAvailableGenesForStudy(study);
 				List<Gene> selectedGenes = new ArrayList<Gene>(disease.getDisease().getGenes());		
-				
-				log.info("Selected Genes: ");
-				for(Gene g : selectedGenes) {
-					log.info(g.toString());
-				}
-				
-				log.info("Available Genes: ");
-				for(Gene g : availableGenes) {
-					log.info(g.toString());
-				}
+			
 				CustomField criteria = new CustomField();
 				criteria.setStudy(study);
 				criteria.setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS));
@@ -166,12 +146,9 @@ public class SearchResultListPanel extends Panel {
 				containerForm.getModelObject().setSelectedGenes(selectedGenes);
 				containerForm.getModelObject().setAvailableCustomFields(availableCustomFields);
 				containerForm.getModelObject().setSelectedCustomFields(selectedCustomFields);
-				
-				// Set SubjectUID into context
-				// Set Study Logo
 			}
 		};
-		Label nameLinkLabel = new Label("nameLabel", disease.getDisease().getName());
+		Label nameLinkLabel = new Label("disease.name", disease.getDisease().getName());
 		link.add(nameLinkLabel);
 		return link;
 	}

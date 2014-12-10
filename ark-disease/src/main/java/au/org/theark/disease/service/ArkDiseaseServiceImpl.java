@@ -1,6 +1,7 @@
 package au.org.theark.disease.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -108,4 +109,7 @@ public class ArkDiseaseServiceImpl implements IArkDiseaseService {
 		return diseaseDao.getGeneById(id);
 	}
 
+	public Affection getAffectionByID(Long id) {
+		return diseaseDao.getAffectionByID(id);
+	}
 }

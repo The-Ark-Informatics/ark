@@ -6,8 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import mx4j.tools.config.DefaultConfigurationBuilder.Create;
-
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.NonUniqueObjectException;
@@ -15,8 +13,6 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -39,8 +35,6 @@ import au.org.theark.disease.vo.GeneVO;
 @Repository("diseaseDao")
 public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 
-	private static final Logger	log	= LoggerFactory.getLogger(DiseaseDao.class);
-
 	private ICustomFieldDao			customFieldDao;
 
 	public ICustomFieldDao getCustomFieldDao() {
@@ -55,7 +49,6 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 	public int getDiseaseCount(DiseaseVO diseaseVO) {
 		Criteria criteria = buildSearchDiseaseSearchCriteria(diseaseVO);
 		int result = getDistinctDiseases(criteria).size();
-		log.info("result of disease count: " + result);
 		return result;
 	}
 
@@ -74,10 +67,6 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 
 		for (Long l : diseaseIDs) {
 			Disease disease = getDiseaseById(l);
-			for (CustomField cf : disease.getCustomFields()) {
-				log.info(cf.toString() + " " + cf.getFieldType().toString());
-			}
-			log.info("disease: " + disease.toString());
 			diseaseVOs.add(new DiseaseVO(disease));
 		}
 		return diseaseVOs;
@@ -109,7 +98,6 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 	public int getGeneCount(GeneVO geneVO) {
 		Criteria criteria = buildSearchGeneSearchCriteria(geneVO);
 		int result = getDistinctGenes(criteria).size();
-		log.info("Gene count: " + result);
 		return result;
 	}
 
@@ -143,7 +131,6 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 
 		for (Long l : geneIDs) {
 			Gene gene = getGeneById(l);
-			log.info("gene: " + gene.toString());
 			geneVOs.add(new GeneVO(gene));
 		}
 		return geneVOs;
@@ -153,7 +140,6 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 		Criteria criteria = getSession().createCriteria(Gene.class);
 		criteria.add(Restrictions.idEq(id));
 		Gene gene = (Gene) criteria.uniqueResult();
-		log.info("Gene.positions: " + gene.getPositions());
 		return gene;
 	}
 
@@ -164,7 +150,6 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 		catch (NonUniqueObjectException nuoe) {
 			nuoe.printStackTrace();
 			getSession().merge(object);
-
 		}
 	}
 
@@ -183,7 +168,12 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 	}
 
 	public List<Gene> getAvailableGenesForStudy(Study study) {
-		return getSession().createCriteria(Gene.class).add(Restrictions.eq("study", study)).list();
+		List<Long> ids = getSession().createCriteria(Gene.class).add(Restrictions.eq("study", study)).setProjection(Projections.distinct(Projections.id())).list();
+		List<Gene> genes = new ArrayList<Gene>();
+		for(Long id : ids) {
+			genes.add(getGeneById(id));
+		}
+		return genes;
 	}
 
 	public List<Disease> getAvailableDiseasesForStudy(Study study) {
@@ -201,23 +191,19 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 	}
 
 	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, int first, int count) {
-		log.info("Affection first, count: " + first + ", " + count);
 		Criteria criteria = buildSearchAffectionCriteria(affectionVO);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
 
 		List<AffectionVO> affectionVOs = new ArrayList<AffectionVO>();
 		for (Affection affection : (List<Affection>) criteria.list()) {
-			// for(Long l : (List<Long>)criteria.list()) {
-			// Affection affection = getAffectionByID(l);
-			log.info("affection found: " + affection.toString());
 			Hibernate.initialize(affection.getDisease());
 			affectionVOs.add(new AffectionVO(affection));
 		}
 		return affectionVOs;
 	}
 
-	private Affection getAffectionByID(Long id) {
+	public Affection getAffectionByID(Long id) {
 		Criteria criteria = getSession().createCriteria(Affection.class).add(Restrictions.idEq(id));
 		return (Affection) criteria.uniqueResult();
 	}
@@ -228,19 +214,14 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 		Affection affection = affectionVO.getAffection();
 
 		if (affection != null) {
-			// log.info("build affection criteria: " + affection + " " + affection.getLinkSubjectStudy().getSubjectUID() + " " +
-			// affection.getStudy().getName());
 			if (affection.getStudy() != null) {
-				log.info("Study: " + affection.getStudy().getName());
 				criteria.add(Restrictions.eq("study", affection.getStudy()));
 			}
 			if (affection.getDisease() != null && affection.getDisease().getName() != null && !affection.getDisease().getName().isEmpty()) {
-				log.info("Disease: " + affection.getDisease().getName());
 				criteria.createAlias("disease", "d");
 				criteria.add(Restrictions.eq("d.name", affection.getDisease().getName()));
 			}
 			if (affection.getLinkSubjectStudy() != null && affection.getLinkSubjectStudy().getSubjectUID() != null && !affection.getLinkSubjectStudy().getSubjectUID().isEmpty()) {
-				log.info("LSS: " + affection.getLinkSubjectStudy().getSubjectUID());
 				criteria.createAlias("linkSubjectStudy", "lss");
 				criteria.add(Restrictions.eq("lss.subjectUID", affection.getLinkSubjectStudy().getSubjectUID()));
 			}
@@ -249,15 +230,12 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 				criteria.add(Restrictions.isNull("lss.subjectUID"));
 			}
 			if (affection.getRecordDate() != null) {
-				log.info("RecordDate: " + affection.getRecordDate());
 				criteria.add(Restrictions.eq("recordDate", affection.getRecordDate()));
 			}
 			if (affection.getAffectionStatus() != null) {
-				log.info("AffectionStatus: " + affection.getAffectionStatus().getName());
 				criteria.add(Restrictions.eq("affectionStatus", affection.getAffectionStatus()));
 			}
 		}
-		// criteria.setResultTransformer(criteria.DISTINCT_ROOT_ENTITY);
 		return criteria;
 	}
 
@@ -276,12 +254,10 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 		Criteria criteria = getSession().createCriteria(Affection.class);
 
 		if (affectionListVO.getDisease() != null && affectionListVO.getDisease().getName() != null && !affectionListVO.getDisease().getName().isEmpty()) {
-			log.info("Disease: " + affectionListVO.getDisease());
 			criteria.createAlias("disease", "d");
 			criteria.add(Restrictions.like("d.name", affectionListVO.getDisease().getName(), MatchMode.ANYWHERE));
 		}
 		if (affectionListVO.getLinkSubjectStudy() != null) {
-			log.info("LSS: " + affectionListVO.getLinkSubjectStudy());
 			criteria.createAlias("linkSubjectStudy", "lss");
 			criteria.add(Restrictions.eq("lss.id", affectionListVO.getLinkSubjectStudy().getId()));
 		}
@@ -291,21 +267,17 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 
 	public List<AffectionCustomFieldData> getAffectionCustomFieldData(Affection affection) {
 		List<AffectionCustomFieldData> data = new ArrayList<AffectionCustomFieldData>(); // default action if is new affection
-		log.info("affection: " + affection);
-		log.info("affection.disease: " + affection.getDisease());
 		if (affection.getId() != null) { // i.e is not new affection
 			Criteria criteria = getSession().createCriteria(AffectionCustomFieldData.class);
 			criteria.add(Restrictions.eq("affection", affection));
 			data = criteria.list();
 		}
-		log.info("data: " + data);
 		if (affection != null && affection.getDisease() != null) {
 			Set<CustomField> customFields = affection.getDisease().getCustomFields();
 			for (AffectionCustomFieldData afcd : data) {
 				if (customFields.contains(afcd.getCustomFieldDisplay().getCustomField())) {
 					customFields.remove(afcd.getCustomFieldDisplay().getCustomField());
 				}
-				log.info(afcd.getId() + " " + afcd.getTextDataValue());
 			}
 			for (CustomField cf : customFields) {
 				AffectionCustomFieldData acfd = new AffectionCustomFieldData();

@@ -41,12 +41,57 @@
 			 		<input wicket:id="recordDate" />
 			 	</div>
 
+				<div class="panelMargin">&nbsp;</div>
+
 				<div class="detailPanelBreaker">&nbsp;</div>
+				<div class="panelContentLeft">&nbsp;</div>
+
+				<div class="fldLabel">
+					<h4>
+						<wicket:message key="mutations">
+							Mutations:
+						</wicket:message>
+					</h4>
+				</div>
+
+				<table width="100%" cellspacing="0" class="dataview" border="0">
+					<tr>
+						<th width="2%"></th>
+						<th width="47%">Gene:</th>
+						<th width="47%">Position:</th>
+						<th width="2%">&nbsp;</th>
+						<th width="2%">&nbsp;</th>
+					</tr>
+					<tr wicket:id="positionListEditor">
+						<td width="2%"></td>
+						<td width="47&"><select wicket:id="affection.disease.genes"></select></td>
+						<td width="47%"><select wicket:id="affection.positions"></select></td>
+						<td width="2%"><input wicket:id="delete" type="button" wicket:message="value:button.delete"/></td>
+						<td width="2%"></td>
+					</tr>
+					<tfoot>
+					<tr>
+						<td width="2%">&nbsp;</td>
+						<td width="96%" colspan="4"><input wicket:id="new"
+							type="submit" wicket:message="value:button.new" /></td>
+						<td width="2%">&nbsp;</td>
+					</tr>
+				</tfoot>
+				</table>
+				
 				<div class="detailPanelBreaker">&nbsp;</div>
-				<div class="detailPanelBreaker" style="border-top:1px solid black;">&nbsp;</div>
+				
+				<div class="panelContentLeft">&nbsp;</div>
 				
 				<!-- Row 3 -->
 				<form wicket:id="customFieldForm">
+					<div class="fldLabel">
+						<h4>
+							<wicket:message key="customFields">
+								Custom Fields:
+							</wicket:message>
+						</h4>
+					</div>
 					<div wicket:id="dataViewWMC">
 						<div wicket:id="dataViewPanel"></div>
 					</div>
@@ -55,6 +100,9 @@
 						<div wicket:id="buttonsPanel"></div>
 					</div>
 				</form>
+				
+				<div class="panelContentLeft">&nbsp;</div>
+				
 				<div>
 					<span wicket:id="navigator" class="a"> </span>
 					<div class="detailPanelBreaker"></div>
@@ -66,31 +114,6 @@
 						</label>
 					</div>
 				</div>
-
-			<table width="100%" cellspacing="0" class="dataview" border="0">
-				<tr>
-					<th width="2%"></th>
-					<th width="48%">Gene:</th>
-					<th width="48%">Position:</th>
-					<th width="2%">&nbsp;</th>
-					<th width="2%">&nbsp;</th>
-				</tr>
-				<tr wicket:id="positionListEditor">
-					<td width="2%"></td>
-					<td width="48%"><select wicket:id="affection.disease.genes"></select></td>
-					<td width="48%"><select wicket:id="affection.positions"></select></td>
-					<td width="2%"><input wicket:id="delete" type="button" wicket:message="value:button.delete"/></td>
-					<td width="2%"></td>
-				</tr>
-				<tfoot>
-				<tr>
-					<td width="2%">&nbsp;</td>
-					<td width="96%" colspan="3"><input wicket:id="new"
-						type="submit" wicket:message="value:button.new" /></td>
-					<td width="2%">&nbsp;</td>
-				</tr>
-			</tfoot>
-			</table>
 
 			</div>
 

@@ -32,7 +32,6 @@ private static Logger log = LoggerFactory.getLogger(DiseaseCustomFieldsPalettePa
 	}
 	
 	private void initAssociatedGenePalette() {
-		log.info("" + getDefaultModelObject());
 		diseaseCustomFieldLabel = new Label("diseaseCustomFieldLabel", "Associated Custom Fields:");
 		PropertyModel<List<CustomField>> availableGenesPm = new PropertyModel<List<CustomField>>(getDefaultModelObject(), "availableCustomFields");
 		PropertyModel<List<CustomField>> selectedGenesPm = new PropertyModel<List<CustomField>>(getDefaultModelObject(), "selectedCustomFields");
@@ -40,8 +39,6 @@ private static Logger log = LoggerFactory.getLogger(DiseaseCustomFieldsPalettePa
 		
 		diseaseCustomFieldsPalette = new ArkPalette("diseaseCustomFieldsPalette", selectedGenesPm, availableGenesPm, renderer, Constants.PALETTE_ROWS, false);
 		diseaseCustomFieldNote = new Label("diseaseCustomFieldNote", "");
-
-		setVisible(!availableGenesPm.getObject().isEmpty());
 	}
 	
 	private void addComponents() {

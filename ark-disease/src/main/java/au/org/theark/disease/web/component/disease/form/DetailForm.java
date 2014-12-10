@@ -18,8 +18,9 @@
  ******************************************************************************/
 package au.org.theark.disease.web.component.disease.form;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -29,15 +30,12 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.disease.service.IArkDiseaseService;
@@ -46,7 +44,6 @@ import au.org.theark.disease.web.component.disease.AssociatedGenePalettePanel;
 import au.org.theark.disease.web.component.disease.DiseaseCustomFieldsPalettePanel;
 
 public class DetailForm extends AbstractDetailForm<DiseaseVO> {
-	static Logger log = LoggerFactory.getLogger(DetailForm.class);
 
 	private static final long								serialVersionUID	= -9196914684971413116L;
 
@@ -65,14 +62,23 @@ public class DetailForm extends AbstractDetailForm<DiseaseVO> {
 	}
 
 	@Override
-	public void onBeforeRender() {
+	public void onBeforeRender() {		
 		associatedGenesPalettePanel = new AssociatedGenePalettePanel<DiseaseVO>("associatedGenePalette", containerForm.getModel());
+		associatedGenesPalettePanel.setOutputMarkupId(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(associatedGenesPalettePanel);
 		
 		diseaseCustomFieldPalettePanel = new DiseaseCustomFieldsPalettePanel<DiseaseVO>("diseaseCustomFieldsPalette", containerForm.getModel());
+		diseaseCustomFieldPalettePanel.setOutputMarkupId(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(diseaseCustomFieldPalettePanel);
 		
-		if(!isNew()) deleteButton.setVisible(true);
+		if(!isNew()) {
+			deleteButton.setVisible(true);
+			associatedGenesPalettePanel.setVisible(true);
+			diseaseCustomFieldPalettePanel.setVisible(true);
+		} else {
+			associatedGenesPalettePanel.setVisible(false);
+			diseaseCustomFieldPalettePanel.setVisible(false);
+		}
 		super.onBeforeRender();
 	}
 
@@ -126,46 +132,42 @@ public class DetailForm extends AbstractDetailForm<DiseaseVO> {
 	 */
 	@Override
 	protected void onSave(Form<DiseaseVO> containerForm, AjaxRequestTarget target) {
-
-		target.add(arkCrudContainerVO.getDetailPanelContainer());
-
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
 			// No study in context
 			this.error("There is no study in Context. Please select a study to manage diseases.");
 			processErrors(target);
 		}
-		else {
-			// String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
-			// containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);
-			ContextHelper contextHelper = new ContextHelper();
-			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
-	
-//			arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-			
+		else {			
 			Disease disease = containerForm.getModelObject().getDisease();
 			disease.setStudy(iArkCommonService.getStudy(studyId));
 			
-			log.info("name: " + disease.getName());
-			
-			log.info("Selected Genes: ");
-			for(Gene g : containerForm.getModelObject().getSelectedGenes()) {
-				log.info(g.toString());
-			}			
 			disease.setGenes(new HashSet<Gene>(containerForm.getModelObject().getSelectedGenes()));
-			
-			log.info("Selected Custom Fields: ");
-			for(CustomField cf : containerForm.getModelObject().getSelectedCustomFields()) {
-				log.info(cf.getName());
-			}
-			
-			disease.setCustomFields(new TreeSet<CustomField>(containerForm.getModelObject().getSelectedCustomFields()));
+			disease.setCustomFields(new HashSet<CustomField>(containerForm.getModelObject().getSelectedCustomFields()));
 			
 			if(isNew()) {
 				iArkDiseaseService.save(disease);
 			} else {
 				iArkDiseaseService.update(disease);
 			}
+			
+			//Populating containerForm's Model Object for next render.
+			List<Gene> availableGenes = iArkDiseaseService.getAvailableGenesForStudy(disease.getStudy());
+			List<Gene> selectedGenes = new ArrayList<Gene>(disease.getGenes());		
+
+			CustomField criteria = new CustomField();
+			criteria.setStudy(disease.getStudy());
+			criteria.setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS));
+			List<CustomField> selectedCustomFields = new ArrayList<CustomField>(disease.getCustomFields());
+			List<CustomField> availableCustomFields = iArkCommonService.getCustomFieldList(criteria);
+							
+			containerForm.getModelObject().setAvailableGenes(availableGenes);
+			containerForm.getModelObject().setSelectedGenes(selectedGenes);
+			containerForm.getModelObject().setAvailableCustomFields(availableCustomFields);
+			containerForm.getModelObject().setSelectedCustomFields(selectedCustomFields);
+			
+			
+			target.add(arkCrudContainerVO.getDetailPanelContainer());
 		}
 	}
 
@@ -177,10 +179,8 @@ public class DetailForm extends AbstractDetailForm<DiseaseVO> {
 	 */
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		log.info("DELETE HIT ");
 		Disease disease = containerForm.getModelObject().getDisease();
 		if(disease != null) {
-			log.info(disease.getGenes() + "");
 			iArkDiseaseService.delete(disease);			
 		}
 		editCancelProcess(target);

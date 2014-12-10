@@ -32,8 +32,6 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.disease.entity.Affection;
@@ -43,7 +41,6 @@ import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.disease.service.IArkDiseaseService;
-import au.org.theark.disease.vo.AffectionListVO;
 import au.org.theark.disease.vo.AffectionVO;
 import au.org.theark.disease.web.component.affection.form.ContainerForm;
 
@@ -55,8 +52,6 @@ import au.org.theark.disease.web.component.affection.form.ContainerForm;
 public class SearchResultListPanel extends Panel {
 
 	private static final long	serialVersionUID	= -8517602411833622907L;
-
-	private static final Logger log = LoggerFactory.getLogger(SearchResultListPanel.class);
 	
 	private WebMarkupContainer	arkContextMarkup;
 	private ContainerForm		containerForm;
@@ -82,9 +77,7 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void populateItem(final Item<AffectionVO> item) {
 				Affection affection = item.getModelObject().getAffection();
-				log.info("test: " + diseaseProvider.getModel().getObject().toString());
 
-				log.info("populate item buildDataView");
 				item.add(new Label("affection.id", affection.getId().toString()));
 				item.add(buildLink(item.getModelObject()));
 				item.add(new Label("affection.recordDate",affection.getRecordDate().toString()));
@@ -97,7 +90,6 @@ public class SearchResultListPanel extends Panel {
 				}));
 			}
 		};
-		log.info("returning dataview<AffectionListVO>");
 		return studyCompDataView;
 	}
 
@@ -131,17 +123,12 @@ public class SearchResultListPanel extends Panel {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				log.info("BUILDLINK");
-				log.info(affectionVO.getAffection().toString());				
 				
-				log.info("=========");
 				containerForm.setModelObject(affectionVO);
 			}
 		};
-		log.info("building label");
-		Label nameLinkLabel = new Label("nameLabel", affectionVO.getAffection().getDisease().getName());
+		Label nameLinkLabel = new Label("affection.name", affectionVO.getAffection().getDisease().getName());
 		link.add(nameLinkLabel);
-		log.info("built link");
 		return link;
 	}
 }

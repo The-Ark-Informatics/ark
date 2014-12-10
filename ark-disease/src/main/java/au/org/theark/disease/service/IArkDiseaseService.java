@@ -1,7 +1,7 @@
 package au.org.theark.disease.service;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import au.org.theark.core.model.disease.entity.Affection;
 import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
@@ -11,7 +11,6 @@ import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.disease.entity.Position;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.disease.vo.AffectionListVO;
 import au.org.theark.disease.vo.AffectionVO;
 import au.org.theark.disease.vo.DiseaseVO;
@@ -55,5 +54,7 @@ public interface IArkDiseaseService {
 
 	public Gene getGeneByID(Long id);
 
+	public Affection getAffectionByID(Long id);
+	
 //	public Collection<AffectionCustomFieldData> getAffectionCustomData(LinkSubjectStudy lss);	
 }

@@ -73,7 +73,7 @@ public class Disease implements Serializable {
 		this.study = study;
 	}
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "disease_custom_fields", schema=Constants.DISEASE_SCHEMA,
 		joinColumns = {@JoinColumn(name="DISEASE_ID", nullable = false, updatable = false) },
 		inverseJoinColumns = {@JoinColumn(name="CUSTOM_FIELD_ID", nullable = false, updatable = false) })
@@ -85,7 +85,7 @@ public class Disease implements Serializable {
 		this.customFields = customFields;
 	}
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "gene_disease", schema=Constants.DISEASE_SCHEMA, 
 		joinColumns = {@JoinColumn(name = "DISEASE_ID", nullable = false, updatable = false) }, 
 		inverseJoinColumns = { @JoinColumn(name = "GENE_ID", nullable = false, updatable = false)}) 
@@ -100,7 +100,7 @@ public class Disease implements Serializable {
 	@Override
 	public String toString() {
 		return "Disease [id=" + id + ", name=" + name + ", study=" + study
-				+ ", genes=" + genes 
+				+ ", genes="  
 				+ "]";
 	}
 
@@ -108,9 +108,8 @@ public class Disease implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((customFields == null) ? 0 : customFields.hashCode());
-		result = prime * result + ((genes == null) ? 0 : genes.hashCode());
+
+//		result = prime * result + ((genes == null) ? 0 : genes.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((study == null) ? 0 : study.hashCode());
@@ -131,11 +130,11 @@ public class Disease implements Serializable {
 				return false;
 		} else if (!customFields.equals(other.customFields))
 			return false;
-		if (genes == null) {
-			if (other.genes != null)
-				return false;
-		} else if (!genes.equals(other.genes))
-			return false;
+//		if (genes == null) {
+//			if (other.genes != null)
+//				return false;
+//		} else if (!genes.equals(other.genes))
+//			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;

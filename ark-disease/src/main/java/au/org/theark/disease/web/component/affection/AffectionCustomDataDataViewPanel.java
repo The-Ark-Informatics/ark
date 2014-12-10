@@ -57,86 +57,48 @@ public class AffectionCustomDataDataViewPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_DISEASE_SERVICE)
 	protected IArkDiseaseService iArkDiseaseService;
-	
+
 	protected ArkDataProvider2<AffectionCustomDataVO, AffectionCustomFieldData> scdDataProvider;
 	protected DataView<AffectionCustomFieldData> dataView;
 
 	public AffectionCustomDataDataViewPanel(String id, CompoundPropertyModel<AffectionCustomDataVO> cpModel) {
 		super(id);
 		this.cpModel = cpModel;
-		
+
 		this.setOutputMarkupPlaceholderTag(true);
 	}
-	
+
 	public AffectionCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage) {	
 		initialiseDataView();
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getRowsPerPage());
+			dataView.setItemsPerPage(numRowsPerPage);	
 		}
-		log.info("initPanel: " + cpModel.getObject().getCustomFieldDataList());
 		this.add(dataView);
 		return this;
 	}
 
 	private void initialiseDataView() {
-		// TODO fix for READ permission check
-//		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-			// Data provider to get pageable results from backend
-			scdDataProvider = new ArkDataProvider2<AffectionCustomDataVO, AffectionCustomFieldData>() {
-				
-				public int size() {
-//					BioCollection bc = criteriaModel.getObject().getBioCollection();
-//					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-	
-//					return (int)iLimsService.getBioCollectionCustomFieldDataCount(bc, arkFunction);
-//					log.info("size);
-					log.info("size: " + cpModel.getObject().getCustomFieldDataList().size());
-					return cpModel.getObject().getCustomFieldDataList().size();
-				}
-	
-				public Iterator<AffectionCustomFieldData> iterator(int first, int count) {
-//					BioCollection bc = criteriaModel.getObject().getBioCollection();
-//					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-//	
-//					List<BioCollectionCustomFieldData> bioCollectionCustomDataList = iLimsService.getBioCollectionCustomFieldDataList(bc, arkFunction, first, count);
-//					cpModel.getObject().setCustomFieldDataList(bioCollectionCustomDataList);
-//					return cpModel.getObject().getCustomFieldDataList().iterator();
-					log.info("AffectionCustomFields (iterator): " + cpModel.getObject().getCustomFieldDataList());
-					return cpModel.getObject().getCustomFieldDataList().iterator();
-				}
-			};
-			// Set the criteria for the data provider
-			scdDataProvider.setCriteriaModel(cpModel);
-//		}
-//		else {
-//			// Since module is not accessible, create a dummy dataProvider that returns nothing
-//			scdDataProvider = new ArkDataProvider2<AffectionCustomDataVO, AffectionCustomFieldData>() {
-//				
-//				public Iterator<? extends AffectionCustomFieldData> iterator(int first, int count) {
-//					return null;
-//				}
-//
-//				public int size() {
-//					return 0;
-//				}
-//			};
-//		}
-//		
+		scdDataProvider = new ArkDataProvider2<AffectionCustomDataVO, AffectionCustomFieldData>() {
+
+			public int size() {
+				return cpModel.getObject().getCustomFieldDataList().size();
+			}
+
+			public Iterator<AffectionCustomFieldData> iterator(int first, int count) {
+				return cpModel.getObject().getCustomFieldDataList().iterator();
+			}
+		};
+		// Set the criteria for the data provider
+		scdDataProvider.setCriteriaModel(cpModel);
 		dataView = this.buildDataView(scdDataProvider);
 	}
-	
+
 	public DataView<AffectionCustomFieldData> buildDataView(ArkDataProvider2<AffectionCustomDataVO, AffectionCustomFieldData> scdDataProvider2) {
 
 		DataView<AffectionCustomFieldData> bioCollectionCFDataDataView = new CustomDataEditorDataView<AffectionCustomFieldData>("customDataList", scdDataProvider2) {
 
 			@Override
 			protected void populateItem(final Item<AffectionCustomFieldData> item) {
-//				BioCollectionCustomFieldData bioCollectionCustomData = item.getModelObject();
-//				// Ensure we tie Subject in context to the item if that link isn't there already
-//				if (bioCollectionCustomData.getBioCollection() == null) {
-//					bioCollectionCustomData.setBioCollection(cpModel.getObject().getBioCollection());
-//				}
-				log.info("acddvp pop item: " + item.getModelObject().getTextDataValue() + " " + item.getModelObject().getId());
 				super.populateItem(item);
 			}
 
@@ -152,26 +114,8 @@ public class AffectionCustomDataDataViewPanel extends Panel {
 		};
 		return bioCollectionCFDataDataView;
 	}
-	
+
 	public DataView<AffectionCustomFieldData> getDataView() {
 		return dataView;
-	}
-	
-	public void saveCustomData() {
-		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SAVE)) {
-//			List<BioCollectionCustomFieldData> errorList = iLimsService.createOrUpdateBioCollectionCustomFieldData(cpModel.getObject().getCustomFieldDataList());
-//			if (errorList.size() > 0) {
-//				for (BioCollectionCustomFieldData bioCollectionCustomFieldData : errorList) {
-//					CustomField cf = bioCollectionCustomFieldData.getCustomFieldDisplay().getCustomField();
-//					String fieldType = cf.getFieldType().getName();
-//					if (fieldType.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
-//						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + bioCollectionCustomFieldData.getDateDataValue());
-//					}
-//					else {
-//						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + bioCollectionCustomFieldData.getTextDataValue());					
-//					}
-//				}
-//			}
-		}
 	}
 }

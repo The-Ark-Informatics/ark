@@ -49,10 +49,13 @@ public class SearchForm extends AbstractSearchForm<AffectionVO> {
 	private DropDownChoice<AffectionStatus> affectionStatusDDC;
 	private DateTextField recordDateTxtFld;
 	
-	public SearchForm(String id, CompoundPropertyModel<AffectionVO> cpModel, PageableListView<AffectionVO> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer arkContextMarkup) {
+	private ContainerForm containerForm;
+	
+	
+	public SearchForm(String id, CompoundPropertyModel<AffectionVO> cpModel, PageableListView<AffectionVO> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, cpModel, feedBackPanel, arkCrudContainerVO);
 		this.cpModel = cpModel;
-		this.arkContextMarkup = arkContextMarkup;
+		this.containerForm = containerForm;
 		
 		sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		initialiseSearchForm();
@@ -93,9 +96,7 @@ public class SearchForm extends AbstractSearchForm<AffectionVO> {
 		CompoundPropertyModel<AffectionVO> affectionCpm = cpModel;
 		PropertyModel<Affection> affectionPm = new PropertyModel<Affection>(affectionCpm, "affection");
 		PropertyModel<Disease> diseasePm = new PropertyModel<Disease>(affectionPm, "disease");
-		log.info("getAvailableDiseasesForStudy before");
 		Collection<Disease> diseases = iArkDiseaseService.getAvailableDiseasesForStudy(iArkCommonService.getStudy(sessionStudyId)); 
-		log.info("getAvailableDiseasesForStudy after");
 		ChoiceRenderer diseaseRenderer = new ChoiceRenderer("name", "id");
 		diseaseDdc = new DropDownChoice<Disease>("disease.name", diseasePm, (List) diseases, diseaseRenderer);
 	}

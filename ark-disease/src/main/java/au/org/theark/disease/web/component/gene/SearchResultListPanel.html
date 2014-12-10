@@ -11,9 +11,14 @@
 			<th width="2%">
 				&nbsp;
 			</th>
-			<th width="96%">
+			<th width="2%">
+				<wicket:message key="gene.id">
+					ID
+				</wicket:message>
+			</th>
+			<th width="94%">
 				<label for="disease.name">
-					<wicket:message	key="nameHeader">
+					<wicket:message	key="gene.name">
 						Name:
 					</wicket:message>
 				</label>
@@ -27,9 +32,12 @@
 			<td width="2%">
 				&nbsp;
 			</td>
-			<td width="96%">
+			<td width="2%">
+				<label wicket:id="gene.id"></label>
+			</td>
+			<td width="94%">
 				<a href="#" wicket:id="disease.name">
-					<span wicket:id="nameLabel">
+					<span wicket:id="gene.name">
 						Disease
 					</span>
 				</a>
@@ -44,7 +52,7 @@
 				<td width="2%">
 					&nbsp;
 				</td>
-				<td width="96%" colspan="9">
+				<td width="96%" colspan="2">
 					<span wicket:id="navigator" class="a">
 					</span>			
 				</td>

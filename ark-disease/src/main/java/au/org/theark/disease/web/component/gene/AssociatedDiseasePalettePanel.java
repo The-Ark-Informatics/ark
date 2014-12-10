@@ -33,7 +33,6 @@ public class AssociatedDiseasePalettePanel<GeneVO> extends Panel {
 	}
 	
 	private void initAssociatedDiseasePalette() {
-		log.info("" + getDefaultModelObject());
 		associatedDiseaseLabel = new Label("associatedDiseaseLabel", "Associated Disease:");
 		PropertyModel<List<Disease>> availableDiseasePm = new PropertyModel<List<Disease>>(getDefaultModelObject(), "availableDiseases");
 		PropertyModel<List<Disease>> selectedDiseasePm = new PropertyModel<List<Disease>>(getDefaultModelObject(), "selectedDiseases");

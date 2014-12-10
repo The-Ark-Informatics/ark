@@ -10,6 +10,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.disease.vo.AffectionListVO;
 import au.org.theark.disease.vo.AffectionVO;
+import au.org.theark.disease.web.component.affection.form.ContainerForm;
 import au.org.theark.disease.web.component.affection.form.SearchForm;
 
 public class SearchPanel extends Panel {
@@ -19,18 +20,18 @@ public class SearchPanel extends Panel {
 	private FeedbackPanel feedBackPanel;
 	private PageableListView<AffectionVO> listView;
 	private ArkCrudContainerVO arkCrudContainerVO;
-	protected WebMarkupContainer arkContextMarkup;
+	private ContainerForm containerForm;
 	
-	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<AffectionVO> listView, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer arkContextMarkup) {
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<AffectionVO> listView, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
-		this.arkContextMarkup = arkContextMarkup;
+		this.containerForm = containerForm;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 	
 	public void initialisePanel(CompoundPropertyModel<AffectionVO> affectionVOCPM) {
-		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, affectionVOCPM, listView, feedBackPanel, arkCrudContainerVO, arkContextMarkup);
+		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, affectionVOCPM, listView, feedBackPanel, arkCrudContainerVO, containerForm);
 		add(searchForm);
 	}
 	

@@ -88,10 +88,10 @@ public class SearchResultListPanel extends Panel {
 			protected void populateItem(final Item<GeneVO> item) {
 				Gene gene = item.getModelObject().getGene();
 				
+				item.add(new Label("gene.id", gene.getId().toString()));
+				
 				item.add(buildLink(item.getModelObject()));
-				
-//				item.add(new Label("nameLabel", item.getModel()));
-				
+								
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -113,9 +113,9 @@ public class SearchResultListPanel extends Panel {
 				
 				Gene gene = item.getModelObject().getGene();
 				
-				item.add(buildLink(item.getModelObject()));
+				item.add(new Label("gene.id", gene.getId().toString()));
 				
-//				item.add(new Label("nameLabel", item.getModel()));
+				item.add(buildLink(item.getModelObject()));
 				
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
@@ -133,25 +133,10 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				// subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-
-				// We specify the type of person here as Subject
-				
-				log.info(geneVO.toString());
-				
+	
 				List<Disease> availableDiseases = iArkDiseaseService.getAvailableDiseasesForStudy(iArkCommonService.getStudy(sessionStudyId));
 				List<Disease> selectedDiseases = new ArrayList<Disease>(geneVO.getGene().getDiseases());
 
-				log.info("Selected Diseases:");
-				for(Disease d : selectedDiseases) {
-					log.info(d.toString());
-				}
-				
-				log.info("Available Diseases:");
-				for(Disease d : availableDiseases) {
-					log.info(d.toString());
-				}
-				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				containerForm.setModelObject(geneVO);
 				containerForm.getModelObject().setAvailableDiseases(availableDiseases);
@@ -159,7 +144,7 @@ public class SearchResultListPanel extends Panel {
 				
 			}
 		};
-		Label nameLinkLabel = new Label("nameLabel", geneVO.getGene().getName());
+		Label nameLinkLabel = new Label("gene.name", geneVO.getGene().getName());
 		link.add(nameLinkLabel);
 		return link;
 	}

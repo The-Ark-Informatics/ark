@@ -1,6 +1,7 @@
 package au.org.theark.disease.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import au.org.theark.core.model.disease.entity.Affection;
 import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
@@ -53,5 +54,6 @@ public interface IDiseaseDao {
 	public List<Position> getPositions(Affection affection);
 
 	public Gene getGeneById(Long id);
-	
+
+	public Affection getAffectionByID(Long id);	
 }

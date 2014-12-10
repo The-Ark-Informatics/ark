@@ -62,7 +62,7 @@ public class Affection implements Serializable {
 		this.study = study;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "affection")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "affection")
 	public Set<AffectionCustomFieldData> getAffectionCustomFieldDataSets() {
 		return this.affectionCustomFieldDataSet;
 	}
@@ -71,7 +71,7 @@ public class Affection implements Serializable {
 		this.affectionCustomFieldDataSet = affectionCustomFieldDataSet;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "DISEASE_ID")
 	public Disease getDisease() {
 		return disease;
@@ -97,7 +97,7 @@ public class Affection implements Serializable {
 		return recordDate;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "AFFECTION_STATUS_ID")
 	public AffectionStatus getAffectionStatus() {
 		return affectionStatus;
@@ -126,7 +126,7 @@ public class Affection implements Serializable {
 	@Override
 	public String toString() {
 		return "Affection [id=" + id + ", study=" + study + ", recordDate=" + recordDate
-				+ ", disease=" + disease + ", positions=" + positions +"]";
+				+ ", disease=" + disease +"]";
 	}
 
 	@Override

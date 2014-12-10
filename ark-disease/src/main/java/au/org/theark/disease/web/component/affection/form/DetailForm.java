@@ -22,8 +22,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -32,9 +35,12 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -42,8 +48,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -55,14 +60,11 @@ import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.disease.entity.Position;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.component.listeditor.AjaxEditorButton;
-import au.org.theark.core.web.component.listeditor.AjaxListDeleteButton;
-import au.org.theark.core.web.component.listeditor.ListItem;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.disease.service.IArkDiseaseService;
 import au.org.theark.disease.vo.AffectionCustomDataVO;
@@ -70,7 +72,6 @@ import au.org.theark.disease.vo.AffectionVO;
 import au.org.theark.disease.web.component.affection.AffectionCustomDataDataViewPanel;
 
 public class DetailForm extends AbstractDetailForm<AffectionVO> {
-	static Logger log = LoggerFactory.getLogger(DetailForm.class);
 
 	private static final long								serialVersionUID	= -9196914684971413116L;
 
@@ -78,23 +79,28 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 
 	@SpringBean(name = Constants.ARK_DISEASE_SERVICE)
 	private IArkDiseaseService iArkDiseaseService;
-	
+
 	private Long sessionStudyId;
-	
+
 	private HashMap<Integer, Position> position_storage = new HashMap<Integer, Position>(); //temporary storage for positions
-	
+
 	private DropDownChoice<Disease> diseaseDDC;
 	private DropDownChoice<AffectionStatus> affectionStatusDDC;
 	private DateTextField recordDateTxtFld;
+
 	private AbstractCustomDataEditorForm<AffectionCustomDataVO> customFieldForm;
 	private AffectionCustomDataDataViewPanel dataViewPanel;
-	private AbstractListEditor<Position> positionListEditor;
-	
-	DropDownChoice<Position> positionDDC;
-	
+	private AjaxPagingNavigator pageNavigator;
+
+	private ListView<Position> positionListEditor;
+	private LoadableDetachableModel<List<Position>> detachableModel;
+
+	private DropDownChoice<Position> positionDDC;
+	private Button newPositionBtn;
+
 	private Study study;
 	private LinkSubjectStudy lss;
-	
+
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.arkContextMarkupContainer = arkContextContainer;
@@ -114,39 +120,50 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 
 	@Override
 	public void onBeforeRender() {
+		position_storage.clear();
 		List<AffectionCustomFieldData> acfdset = iArkDiseaseService.getAffectionCustomFieldData(containerForm.getModelObject().getAffection());
 		AffectionCustomDataVO acdvo = new AffectionCustomDataVO(acfdset);
 		customFieldForm.setModelObject(acdvo);
-//		positionListEditor.render();
+
+		newPositionBtn.setEnabled(!isNew());
+
+		customFieldForm.setVisible(!acfdset.isEmpty());
+		dataViewPanel.setVisible(!acfdset.isEmpty());
+		pageNavigator.setVisible(!acfdset.isEmpty());
+
 		super.onBeforeRender();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
-		
+
 		initDiseaseDDC();
-		initAffectionStatusDDC();
-		
-		LoadableDetachableModel<List<Position>> detachableModel = new LoadableDetachableModel<List<Position>>() {
-			
+		initAffectionStatusDDC();		
+
+		detachableModel = new LoadableDetachableModel<List<Position>>() {
+
 			@Override
 			protected List<Position> load() {
-				log.info("Loading detachableModel");
-				return iArkDiseaseService.getPositions(containerForm.getModelObject().getAffection());
+				List<Position> positions = iArkDiseaseService.getPositions(containerForm.getModelObject().getAffection());
+				return positions;
 			}
 		};
-		
-		positionListEditor = new AbstractListEditor<Position>("positionListEditor", detachableModel) {
-			
+
+		positionListEditor = new ListView<Position>("positionListEditor", detachableModel) {
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void onPopulateItem(final ListItem<Position> item) {
+			protected void populateItem(final ListItem<Position> item) {
 				final Position position = item.getModelObject();
 				if(position != null) {
 					position_storage.put(item.getIndex(), position);
 				}
-				List<Gene> availableGenes = new ArrayList<Gene>(containerForm.getModelObject().getAffection().getDisease().getGenes());
+
+				List<Gene> availableGenes = new ArrayList<Gene>();
+				if(containerForm.getModelObject().getAffection().getDisease() != null && containerForm.getModelObject().getAffection().getDisease().getGenes() != null) {
+					availableGenes = new ArrayList<Gene>(containerForm.getModelObject().getAffection().getDisease().getGenes());					
+				}
 				final DropDownChoice<Gene> geneDDC = new DropDownChoice<Gene>("affection.disease.genes", new Model<Gene>(position.getGene()), availableGenes, new ChoiceRenderer<Gene>("name", "id"));
 				geneDDC.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 					private static final long	serialVersionUID	= 1L;
@@ -154,20 +171,19 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 					protected void onUpdate(AjaxRequestTarget target) {
 						Gene selectedGene = iArkDiseaseService.getGeneByID(Long.parseLong(geneDDC.getValue()));
 						positionDDC.setChoices(new ArrayList<Position>(selectedGene.getPositions()));
-						containerForm.getModelObject().getAffection().getPositions().add(positionDDC.getModelObject());
 						target.add(positionDDC);
-			      }
-			    });
+					}
+				});
 
 				geneDDC.setOutputMarkupId(true);
 				item.add(geneDDC);
-				
+
 				List<Position> availablePositions = new ArrayList<Position>();
 				if(geneDDC.getModelObject() != null) {
 					availablePositions = new ArrayList<Position>(geneDDC.getModelObject().getPositions());
 				}
 				LoadableDetachableModel<Position> positionModel = new LoadableDetachableModel<Position>(position) {
-					
+
 					@Override
 					protected Position load() {
 						return position;
@@ -191,7 +207,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 				positionDDC.setOutputMarkupId(true);
 				positionDDC.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 					private static final long serialVersionUID = 1L;
-					
+
 					protected void onUpdate(AjaxRequestTarget target) {
 						Position selectedPosition = positionDDC.getModelObject();
 						if(selectedPosition.getName() != null) {
@@ -200,27 +216,23 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 					}
 				});
 				item.add(positionDDC);
-				
-				item.add(new AjaxListDeleteButton(Constants.DELETE, new Model<String>("Are you sure?"), new Model<String>("Delete")) {
+
+				item.add(new AjaxDeleteButton(Constants.DELETE, new Model<String>("Are you sure?"), new Model<String>("Delete")) {
 
 					private static final long serialVersionUID = 1L;
 
-					@Override
 					protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
-						int idx = getItem().getIndex();
-						for (int i = idx + 1; i < getItem().getParent().size(); i++) {
-							ListItem<?> item = (ListItem<?>) getItem().getParent().get(i);
-							item.setIndex(item.getIndex() - 1);
-						}
 						try {
 							//need to remove save containerform post position removal
-							containerForm.getModelObject().getAffection().getPositions().remove(position);
-							getList().remove(idx);
-							position_storage.remove(idx);
-							getEditor().remove(getItem());
-							target.add(form);
+							position_storage.remove(item.getIndex());
+							positionListEditor.getModelObject().remove(position);
+							containerForm.getModelObject().setAffection(iArkDiseaseService.getAffectionByID(containerForm.getModelObject().getAffection().getId()));
+							
+							save(containerForm, target);
+							target.add(dataViewPanel);
 							deleteCompleted("Row '" + position.getName() + "' deleted successfully.", true);
 						} catch (Exception e) {
+							e.printStackTrace();
 							target.add(form);
 							deleteCompleted("Error deleting row '" + position.getName() + "'. Row has data associated with it.", false);
 						}
@@ -233,6 +245,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 						target.add(feedBackPanel);
 					}
 				});
+
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -241,8 +254,10 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 				}));
 			}
 		};
-		
-		arkCrudContainerVO.getDetailPanelFormContainer().add(new AjaxEditorButton(Constants.NEW) {
+
+		positionListEditor.setOutputMarkupId(true);
+
+		newPositionBtn = new AjaxEditorButton(Constants.NEW) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -253,11 +268,13 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				positionListEditor.addItem(new Position());
+				positionListEditor.getModelObject().add(new Position());
 				target.add(form);
 			}
-		}.setDefaultFormProcessing(false));
-		
+		}.setDefaultFormProcessing(false);
+
+		arkCrudContainerVO.getDetailPanelFormContainer().add(newPositionBtn);
+
 		PropertyModel<Date> recordDateModel = new PropertyModel<Date>(containerForm.getModel(), "affection.recordDate");
 		recordDateTxtFld = new DateTextField("recordDate", recordDateModel){
 			@Override
@@ -269,12 +286,11 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 		ArkDatePicker recordDatePicker = new ArkDatePicker();
 		recordDatePicker.bind(recordDateTxtFld);
 		recordDateTxtFld.add(recordDatePicker);
-		
-		AffectionCustomDataVO vo = new AffectionCustomDataVO();
-		List<AffectionCustomFieldData> l = new ArrayList<AffectionCustomFieldData>(cpModel.getObject().getAffection().getAffectionCustomFieldDataSets());
-		vo.setCustomFieldDataList(l);
-		
-		final CompoundPropertyModel<AffectionCustomDataVO> affectionCustomDataModel = new CompoundPropertyModel<AffectionCustomDataVO>(vo);
+
+		AffectionCustomDataVO affectionCustomDataVO = new AffectionCustomDataVO();
+		affectionCustomDataVO.setCustomFieldDataList(new ArrayList<AffectionCustomFieldData>(cpModel.getObject().getAffection().getAffectionCustomFieldDataSets()));
+
+		final CompoundPropertyModel<AffectionCustomDataVO> affectionCustomDataModel = new CompoundPropertyModel<AffectionCustomDataVO>(affectionCustomDataVO);
 		dataViewPanel = new AffectionCustomDataDataViewPanel("dataViewPanel", affectionCustomDataModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage());
 		customFieldForm = new AbstractCustomDataEditorForm<AffectionCustomDataVO>("customFieldForm", affectionCustomDataModel, feedBackPanel) {
 
@@ -286,7 +302,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 					iArkDiseaseService.save(acfd);
 				}
 			}
-			
+
 			@Override
 			public void onBeforeRender() {
 				if(!isNew()) {
@@ -296,8 +312,8 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 				super.onBeforeRender();
 			}
 		}.initialiseForm();
-		
-		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
+
+		pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
 				target.add(customFieldForm.getDataViewWMC());
@@ -332,7 +348,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 			}
 		};
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void initDiseaseDDC() {
 		CompoundPropertyModel<AffectionVO> affectionCpm = (CompoundPropertyModel<AffectionVO>) containerForm.getModel();
@@ -391,7 +407,41 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 		diseaseDDC.setRequired(true);
 		affectionStatusDDC.setRequired(true);
 	}
-	
+
+	private void save(Form<AffectionVO> containerForm, AjaxRequestTarget target) {
+		//Not sure why needed. Have to reload affection from database to resolve LazyInitializationExceptions.
+		if(!isNew()) {
+			containerForm.getModelObject().setAffection(iArkDiseaseService.getAffectionByID(containerForm.getModelObject().getAffection().getId()));
+		}
+
+		for(Entry<Integer, Position> entry : position_storage.entrySet()) {
+			if(entry.getValue() != null && entry.getValue().getName() != null) {
+				Position toInsert = entry.getValue();
+				if(!containerForm.getModelObject().getAffection().getPositions().contains(toInsert)) {
+					containerForm.getModelObject().getAffection().getPositions().add(toInsert);
+				}
+			}
+		}
+			
+		for(Iterator<Position> iterator = containerForm.getModelObject().getAffection().getPositions().iterator(); iterator.hasNext();) {
+			Position position = iterator.next();
+			if(!position_storage.containsValue(position)) {
+				iterator.remove();
+			}
+		}
+
+		if(isNew()) {
+			iArkDiseaseService.save(containerForm.getModelObject().getAffection());
+		} else {
+			iArkDiseaseService.update(containerForm.getModelObject().getAffection());
+		}
+
+		for(AffectionCustomFieldData acfd : customFieldForm.getModelObject().getCustomFieldDataList()) {
+			acfd.setAffection(containerForm.getModelObject().getAffection());
+		}
+//		customFieldForm.onEditSave(target, containerForm);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -399,9 +449,6 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 	 */
 	@Override
 	protected void onSave(Form<AffectionVO> containerForm, AjaxRequestTarget target) {
-
-//		target.add(arkCrudContainerVO.getDetailPanelContainer());
-
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
 			// No study in context
@@ -409,27 +456,14 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 			processErrors(target);
 		}
 		else {
-			ContextHelper contextHelper = new ContextHelper();
-			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
-			log.info("Positions to save");
-			containerForm.getModelObject().getAffection().getPositions().clear();
-			for(Entry<Integer, Position> entry : position_storage.entrySet()) {
-				if(entry.getValue() != null && entry.getValue().getName() != null) { 
-					log.info(entry.getValue().toString());
-					containerForm.getModelObject().getAffection().getPositions().add(entry.getValue());
-				}
+			try {
+				save(containerForm, target);
+				customFieldForm.onEditSave(target, containerForm);
+				target.add(this);
+			} catch (DataIntegrityViolationException e) {
+				this.error(getString("duplicate.keys.error"));
+				processErrors(target);
 			}
-			if(isNew()) {
-				iArkDiseaseService.save(containerForm.getModelObject().getAffection());
-			} else {
-				iArkDiseaseService.update(containerForm.getModelObject().getAffection());
-			}
-			for(AffectionCustomFieldData acfd : customFieldForm.getModelObject().getCustomFieldDataList()) {
-				acfd.setAffection(containerForm.getModelObject().getAffection());
-			}
-			customFieldForm.onEditSave(target, containerForm);
-			log.info("post save: " + containerForm.getModelObject().getAffection());
-			target.add(this);
 		}
 	}
 
@@ -454,7 +488,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 	protected boolean isNew() {
 		return containerForm.getModelObject().getAffection() == null || containerForm.getModelObject().getAffection().getId() == null;
 	}
-	
+
 	protected void deleteCompleted(String feedback, boolean successful) {
 		if(successful) { 
 			this.info(feedback);

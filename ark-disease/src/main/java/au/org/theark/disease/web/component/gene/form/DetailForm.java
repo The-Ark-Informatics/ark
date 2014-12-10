@@ -1,6 +1,8 @@
 package au.org.theark.disease.web.component.gene.form;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -19,8 +21,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.disease.entity.Disease;
@@ -41,8 +41,6 @@ import au.org.theark.disease.web.component.gene.AssociatedDiseasePalettePanel;
 public class DetailForm extends AbstractDetailForm<GeneVO> {
 
 	private static final long serialVersionUID = 1L;
-
-	private static Logger log = LoggerFactory.getLogger(DetailForm.class);
 
 	private WebMarkupContainer arkContextMarkupContainer;
 
@@ -79,7 +77,13 @@ public class DetailForm extends AbstractDetailForm<GeneVO> {
 
 			@Override 
 			protected List<Position> load() {
-				return new ArrayList<Position>(containerForm.getModelObject().getGene().getPositions());
+				ArrayList<Position> positions = new ArrayList<Position>(containerForm.getModelObject().getGene().getPositions());
+				Collections.sort(positions, new Comparator<Position>() {
+					public int compare(Position o1, Position o2) {
+						return o1.getId().compareTo(o2.getId());
+					}
+				});
+				return positions;
 			}
 		};
 
@@ -199,20 +203,9 @@ public class DetailForm extends AbstractDetailForm<GeneVO> {
 			this.error("There is no study in Context. Please select a study to manage genes.");
 			processErrors(target);
 		} else {
-			ContextHelper contextHelper = new ContextHelper();
-			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
-
-			//			arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-
 			Gene gene = containerForm.getModelObject().getGene();
 			gene.setStudy(iArkCommonService.getStudy(sessionStudyId));
-
-			log.info("le.gmo: " + listEditor.getModelObject()); 
-
 			gene.setPositions(new HashSet<Position>(listEditor.getModelObject()));
-
-			log.info("name: " + gene.getName());
-
 			gene.setDiseases(new HashSet<Disease>(containerForm.getModelObject().getSelectedDiseases()));
 
 			if(isNew()) {
