@@ -14,17 +14,27 @@
 #include "DrawingMetrics.h"
 #include "utility.h"
 
-using namespace std;
+//
+// Test JNI connection to the Madeline:
+//
+void connect () {
+    std::cout << "Madeline JNI Connected!" << std::endl;
+    return;
+}
 
-void generatePedigree (const std::string &filename, const std::string &outputFilename, const std::string &columnList){
-	cout << "Start Generating pedigree!" << endl;
+//
+// Generate and return the pedigree SVG message
+//
+std::string generatePedigree (const std::string &pedString, const std::string &columnList){
+	std::cout << "Start Generating pedigree!" << std::endl;
+
+	std::string outputSvg;
 
 	try {
 		std::vector<std::string> showColumns; // vector containing field labels that need to be displayed on the pedigree
 		CLP clp;
 		Parser dataTableParser;
-		dataTableParser.readFile(filename);
-		DrawingMetrics::setDrawingFileNamePrefix(outputFilename);
+		dataTableParser.readMessageString(pedString);
 		DataTable *dataTable;
 		for( int j=0 ; j < dataTableParser.getNumberOfTables() ; j++ ){
 
@@ -58,13 +68,15 @@ void generatePedigree (const std::string &filename, const std::string &outputFil
 				}
 
 				pedigreeSet.addPedigreesFromDataTable(dataTable,j,sortField);
-				pedigreeSet.draw(dataTable);
+				//Return pedigree SVG message
+				outputSvg = pedigreeSet.drawPedigreeImg(dataTable);
+				std::cout << " Pedigree image is " << outputSvg << std::endl;
 			}
 		}
 	}catch(...){
-		cout << "Pedigree Generation Error" << endl;
+		std::cout << "Pedigree Generation Error" << std::endl;
 	}
 
-	return;
+	return outputSvg;
 }
 

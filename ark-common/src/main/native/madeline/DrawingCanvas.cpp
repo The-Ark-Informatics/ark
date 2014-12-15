@@ -1169,6 +1169,48 @@ void DrawingCanvas::show(const char* filename){
 	}
 }
 
+std::string DrawingCanvas::showPedigree(){
+	std::string pedigreeSvg;
+
+	if(_labelSet->getNumberOfLabels() != 0 || _iconLegendFlag){
+		_xMinimum -= _labelLegend.getWidth();
+		double height = _labelLegend.getHeight();
+		if(_iconLegendFlag) height += _iconLegend.getHeight();
+		if(height > getYRange()) {
+			_yMaximum += (height - getYRange());
+		}
+	}
+	//
+	// Only set the header now because at this point the
+	// true x and y extents (width and height) are known:
+	_setHeader();
+
+	//
+	// Add the legends:
+	//
+	_drawLegends();
+
+	pedigreeSvg=_header.str();
+	pedigreeSvg+="\n";
+
+	pedigreeSvg += " <g id=\"bottomLayer";
+	pedigreeSvg += "\" class=\"layer\" >\n";
+	pedigreeSvg += _bottomLayer.str();
+	pedigreeSvg += "\n";
+	pedigreeSvg += " </g>\n";
+
+	for(unsigned i=0;i<_layers.size();i++){
+		pedigreeSvg += _layers[i];
+		pedigreeSvg +="\n";
+	}
+	pedigreeSvg +=_body.str();
+	pedigreeSvg +="\n";
+	pedigreeSvg +=_footer.str();
+	pedigreeSvg +="\n";
+
+	return pedigreeSvg;
+}
+
 //
 // getXMinimum
 //

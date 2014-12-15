@@ -265,6 +265,42 @@ void PedigreeSet::draw(const DataTable *const pedigreeTable){
 }
 
 //
+// draw():
+//
+std::string PedigreeSet::drawPedigreeImg(const DataTable *const pedigreeTable){
+
+	std::string pedigreeSvg;
+
+	std::cout << "Start of draw output" << std::endl;
+	//
+	// Make a note if there is only one pedigree to be drawn:
+	//
+	if( _pedigrees.size()==1 ) DrawingMetrics::setHasOnlyOnePedigreeState(true);
+
+	//
+	// Instantiate a LabelSet object for a pedigree set:
+	//
+	LabelSet labelSet(pedigreeTable);
+	std::cout << "No of labels: " << labelSet.getNumberOfLabels() << std::endl;
+
+	//
+	// Iterate over the pedigrees and draw them:
+	//
+	std::set<Pedigree*,comparePedigrees>::const_iterator it = _pedigrees.begin();
+	while(it != _pedigrees.end()){
+		//(*it)->draw(&labelSet);
+		pedigreeSvg += (*it)->drawPedigreeImg(&labelSet);
+
+		++it;
+	}
+
+	std::cout << "End of draw" << std::endl;
+
+	return pedigreeSvg;
+
+}
+
+//
 // display():
 //
 void PedigreeSet::display(){

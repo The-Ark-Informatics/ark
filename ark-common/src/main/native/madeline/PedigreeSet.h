@@ -4,6 +4,8 @@
 #include "Pedigree.h"
 #include "LabelSet.h"
 
+#include <string>
+
 /*!
  * The PedigreeSet class 
  */
@@ -37,6 +39,7 @@ public:
 	~PedigreeSet();
 	void addPedigreesFromDataTable(const DataTable * p_pedigreeTable,unsigned tableIndex,const std::string& sortField);
 	void draw(const DataTable *const pedigreeTable);
+	std::string drawPedigreeImg(const DataTable *const pedigreeTable); // return pedigree svg output
 	// Debug:
 	void display();                          // Prints out all pedigrees that have been read in
 

@@ -5,7 +5,9 @@
         extern "C" {
 #endif
 
-        void generatePedigree (const std::string &filename, const std::string &outputFilename, const std::string &columnList); //data file name
+        std::string generatePedigree (const std::string &pedString, const std::string &columnList); //data file name
+
+        void connect ();
 
 #ifdef __cplusplus
         }

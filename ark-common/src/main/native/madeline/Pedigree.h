@@ -56,6 +56,7 @@ public:
 	void checkParentChildDOB();
 	void computePedigreeWidth(const std::string& sortField,bool dobSortOrder);
 	void draw(const LabelSet* labelSet);
+	std::string drawPedigreeImg(const LabelSet* labelSet);
 	// Debug:
 	void display() const;                          // Prints out all pedigrees that have been read in
 	static void setDrawingFileExtension(const std::string& ext);

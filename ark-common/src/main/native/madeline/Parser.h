@@ -85,6 +85,7 @@ public:
 	
 	void readFile(const std::string &filename);        /// Read in a file, unzip it, parse it, and put the contents into a datatable
 	void readNetworkFile(const std::string &url);      /// Read in a file over the internet, unzip it, parse it, and put the contents into a datatable
+	void readMessageString(const std::string &pedString); /// Read Madeline pedigree String
 	
 	#ifdef MYSQLPP
 	void readMysql(std::string tableName);                  /// Read in a Mysql table, and put the contents into a datatable

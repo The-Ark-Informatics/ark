@@ -150,6 +150,7 @@ public:
 	void drawSuperscriptData(Individual *pIndividual,double x, double y);
 	void drawEncircledText(std::string text,double x,double y,double xradius, double yradius,const std::string& myclass=std::string(""));
 	void show(const char* filename);
+	std::string showPedigree();
 	
 	// Getters:
 	double getXMinimum();

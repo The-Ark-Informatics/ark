@@ -63,6 +63,17 @@ Parser::~Parser()
 	
 }
 
+///
+/// readFile: Reads a message string
+///
+void Parser::readMessageString(const std::string &pedString){
+
+	std::cout << "" << pedString << "\n";
+
+	_readMadeline(pedString);
+
+}
+
 
 ///
 /// readFile: Reads a local file on disk

@@ -2198,6 +2198,118 @@ void Pedigree::draw(const LabelSet* labelSet){
 	
 }
 
+std::string Pedigree::drawPedigreeImg(const LabelSet* labelSet){
+	std::string pedigreeSvg="";
+	// Instantiate a drawing canvas:
+	DrawingCanvas dc(labelSet,"XGA");
+
+	double horizontalInterval = DrawingMetrics::getHorizontalInterval();
+	bool classicalOrdering = false;
+	double startX,startY=50.0;
+
+
+	// If there is only one individual in a Pedigree and is UNCONNECTED return:
+	if(_descentTrees.size() == 0){ return pedigreeSvg; }
+
+
+	// Start the drawing with the group tag
+	dc.startGroup("drawing");
+	if(_descentTrees.size() == 1){
+		startX = _descentTrees[0]->getLeftWidth()*horizontalInterval;
+		if(startX < dc.getWidth()) startX = dc.getWidth()/2;
+		else startX -= dc.getWidth()/2;
+		if(_descentTrees[0]->hasConsanguinity()) classicalOrdering = true;
+		dc.drawText(startX+horizontalInterval,startY-20,_id,"header");
+	}else{
+		// get the LW of the first ordered descent tree
+		startX = _descentTrees[0]->getLeftWidth()* horizontalInterval;
+		classicalOrdering = true;
+		dc.drawText(dc.getWidth()/2,startY-20,_id,"header");
+	}
+
+
+	for(unsigned cnt=0;cnt < _descentTrees.size();cnt++){
+
+		Individual* startIndividual = _descentTrees[cnt]->getStartIndividual();
+
+		if(startIndividual->getNumberOfNuclearFamilies() > 1){
+			double xl = startX - (startIndividual->getNuclearFamily((unsigned)0)->getLeftWidth()) * horizontalInterval;
+			double xr = startX;
+			Individual* spouse;
+			for(unsigned j=0;j<startIndividual->getNumberOfNuclearFamilies();j++){
+				if(j % 2 == 0){
+					if(j != 0) xr += startIndividual->getNuclearFamily(j)->getLeftWidth() * horizontalInterval;
+					startIndividual->getNuclearFamily(j)->draw(startIndividual,dc,xr,startY,classicalOrdering);
+					xr += startIndividual->getNuclearFamily(j)->getRightWidth() * horizontalInterval;
+				}else{
+					xl -= (startIndividual->getNuclearFamily(j)->getRightWidth()) * horizontalInterval;
+
+					if(startIndividual->getId() != startIndividual->getNuclearFamily(j)->getMother()->getId())
+						spouse = startIndividual->getNuclearFamily(j)->getMother();
+					else
+						spouse = startIndividual->getNuclearFamily(j)->getFather();
+					startIndividual->getNuclearFamily(j)->draw(spouse,dc,xl,startY,classicalOrdering);
+					xl -= (startIndividual->getNuclearFamily(j)->getLeftWidth()) * horizontalInterval;
+				}
+			}
+			if(startIndividual->getNumberOfNuclearFamilies() >= 2){
+				double iconDiameter = DrawingMetrics::getIconDiameter();
+				double iconInterval = DrawingMetrics::getIconInterval();
+				startIndividual->getNuclearFamily((unsigned)0)->drawSpouseConnectors(startIndividual,horizontalInterval,iconInterval,iconDiameter,dc);
+			}
+			if(cnt+1 < _descentTrees.size()){
+				startX += (_descentTrees[cnt]->getRightWidth() + _descentTrees[cnt+1]->getLeftWidth()) * horizontalInterval;
+			}
+		}else{
+			startIndividual->getNuclearFamily((unsigned)0)->draw(startIndividual,dc,startX,startY,classicalOrdering);
+			if(cnt+1 < _descentTrees.size()){
+				startX += (_descentTrees[cnt]->getRightWidth() + _descentTrees[cnt+1]->getLeftWidth()) * horizontalInterval;
+			}
+		}
+	}
+
+	_populateIndividualGrid();
+
+	// NOTE: It is possible for original/ordinary founders to have multiple spouse who themselves are ordinary founders.
+	// Such cases are currently handled only for original founders wherein the nuclear families formed by these additional ordinary founders
+	// are displayed adjacent to the main founding group pedigree
+	// INCOMPLETE: Ordinary founders having multiple ordinary founder spouses is currently not handled
+	// Such nuclear families are not displayed on the pedigree.
+	if(_nfOfOrdinaryFounders.size() != 0){
+		if(_descentTrees.size() == 1){
+			unsigned cnt=0;
+			startX += (_descentTrees[0]->getRightWidth()+_nfOfOrdinaryFounders[cnt]->getLeftWidth())*horizontalInterval;
+			while(cnt < _nfOfOrdinaryFounders.size()){
+				Individual* tempOrgIndividual;
+				tempOrgIndividual = _nfOfOrdinaryFounders[cnt]->getFather();
+				_nfOfOrdinaryFounders[cnt]->draw(tempOrgIndividual,dc,startX,startY,classicalOrdering,true);
+				if(cnt+1 < _nfOfOrdinaryFounders.size()){
+					startX += (_nfOfOrdinaryFounders[cnt+1]->getLeftWidth() + _nfOfOrdinaryFounders[cnt]->getRightWidth())*horizontalInterval;
+				}
+				cnt++;
+			}
+		}
+	}
+	// End the drawing with the group tag
+	dc.endGroup();
+
+	// Start the connectors on a new layer
+	dc.startLayer();
+	_drawConsanguinousConnectors(dc);
+	// End the connectors layer
+	dc.endLayer();
+
+
+	/////////////////////////////////
+	//
+	// Set up file name for drawing:
+	//
+	/////////////////////////////////
+
+	pedigreeSvg = dc.showPedigree();
+	return pedigreeSvg;
+}
+
 ///
 /// establishIndividualConnections: Establish parent/child and spouse connections:
 ///
