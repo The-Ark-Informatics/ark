@@ -44,8 +44,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-import au.org.theark.core.jni.MadelineArkProxy;
+import au.org.theark.core.jni.ArkMadelineProxy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.service.IArkCommonService;
@@ -69,16 +70,16 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 	static Logger					log					= LoggerFactory.getLogger(PedigreeDisplayPanel.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService		iArkCommonService;
-	
+	private IArkCommonService	iArkCommonService;
+
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	IStudyService					studyService;
 
-	private byte[]				pngOutPutArray;
+	private byte[]					pngOutPutArray;
 
 	private DownloadLink			downloadLink;
-	
-	private DownloadLink 		pdfLink;
+
+	private DownloadLink			pdfLink;
 
 	public PedigreeDisplayPanel(String id) {
 		super(id);
@@ -107,43 +108,34 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		String sessionId = getSession().getId();
-		// log.info(subjectUID!=null ? "Subject UID -------- "+subjectUID.toString() +
-		// "-----------Session Id is -----"+sessionId:"---------------  Subject UID is null ----------------------");
-		String filePath = System.getProperty("java.io.tmpdir") + File.separator; 
-		String filePrefix = subjectUID.toString() + "_" + sessionId;
 		final StringBuffer sb = new StringBuffer();
 		sb.setLength(0);
 
 		String familyId = null;
 		StringBuffer columnList = new StringBuffer("IndividualId");
-		Study study= iArkCommonService.getStudy(studyId);
-		StudyPedigreeConfiguration config=study.getPedigreeConfiguration();
-		
-		if(config!=null && config.isDobAllowed()){
+		Study study = iArkCommonService.getStudy(studyId);
+		StudyPedigreeConfiguration config = study.getPedigreeConfiguration();
+
+		if (config != null && config.isDobAllowed()) {
 			columnList.append(" DOB");
 		}
-		
-		if(config!=null && config.isAgeAllowed()){
+
+		if (config != null && config.isAgeAllowed()) {
 			columnList.append(" Age");
 		}
-		
-		
+
 		RelativeCapsule[] relatives = studyService.generateSubjectPedigreeImageList(subjectUID, studyId);
 
 		if (relatives.length > 2) {
-			File dataFile = null;
+			StringWriter out = null;
 			familyId = relatives[0].getFamilyId();
 
 			try {
 				Theme theme = new Theme();
 				Chunk chunk = theme.makeChunk(MADELINE_PEDIGREE_TEMPLATE, PEDIGREE_TEMPLATE_EXT);
 				chunk.set("relatives", relatives);
-
-				dataFile = new File(filePath + filePrefix + ".data");
-				FileWriter out = new FileWriter(dataFile);
+				out = new StringWriter();
 				chunk.render(out);
-				out.flush();
-				out.close();
 			}
 			catch (IOException io) {
 				io.printStackTrace();
@@ -152,25 +144,27 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				e.printStackTrace();
 			}
 
-			MadelineArkProxy madeline = new MadelineArkProxy();
-			try {
-				madeline.sayHello();
-			}
-			catch (Error e) {
-				e.printStackTrace();
-			}
-			catch (Throwable e) {
-				e.printStackTrace();
-			}
+			ArkMadelineProxy madeline = new ArkMadelineProxy();
+			String madelineOutput = null;
 
 			try {
-				madeline.generatePedigree(filePath + filePrefix + ".data", filePath + familyId + "ped",columnList.toString());
+				madelineOutput = madeline.generatePedigree(out.toString(), columnList.toString());
+				log.info(" ----------------- Pedigree generated successfully -------------------------");
 			}
 			catch (Error e) {
 				e.printStackTrace();
 			}
 			catch (Throwable e) {
 				e.printStackTrace();
+			}
+			finally {
+				try {
+					out.flush();
+					out.close();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 
 			// Execute madeline by runtime
@@ -185,34 +179,30 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 			// ioe.printStackTrace();
 			// }
 
-			File pedFile = new File(filePath + familyId + "ped.xml");
-
 			try {
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-				Document doc = docBuilder.parse(pedFile);
+				Document doc = docBuilder.parse(new InputSource(new StringReader(madelineOutput)));
 
 				XPath xpath = XPathFactory.newInstance().newXPath();
 
 				String xPathExpression = "//text";
-				
+
 				NodeList nodes = (NodeList) xpath.evaluate(xPathExpression, doc, XPathConstants.NODESET);
 
-				
 				for (int idx = 0; idx < nodes.getLength(); idx++) {
-					String nodeText=nodes.item(idx).getTextContent();
-					if(nodeText !=null){
-						//Replace family id and dummy subject uids by blank text
-						if(nodeText.startsWith("_F") 
-								|| nodeText.startsWith("!")){
+					String nodeText = nodes.item(idx).getTextContent();
+					if (nodeText != null) {
+						// Replace family id and dummy subject uids by blank text
+						if (nodeText.startsWith("_F") || nodeText.startsWith("!")) {
 							nodes.item(idx).setTextContent("");
 						}
-						
-						//Replace half generated Indiv.. by UID
-						if(nodeText.startsWith("Indiv")){
+
+						// Replace half generated Indiv.. by UID
+						if (nodeText.startsWith("Indiv")) {
 							nodes.item(idx).setTextContent("UID");
 						}
-						
+
 					}
 				}
 
@@ -226,20 +216,6 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 			catch (Exception e) {
 				sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<svg width=\"640\" height=\"480\" xmlns=\"http://www.w3.org/2000/svg\">\r\n <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->\r\n <g>\r\n  <title>Layer 1</title>\r\n  <text transform=\"rotate(-0.0100589, 317.008, 97.5)\" xml:space=\"preserve\" text-anchor=\"middle\" font-family=\"serif\" font-size=\"24\" id=\"svg_3\" y=\"106\" x=\"317\" stroke-width=\"0\" stroke=\"#000000\" fill=\"#000000\">Pedigree Error</text>\r\n </g>\r\n</svg>");
 				e.printStackTrace();
-			}
-
-			if (dataFile.delete()) {
-				log.info(dataFile.getName() + " is deleted!");
-			}
-			else {
-				log.error(dataFile.getName() + " delete operation is failed.");
-			}
-
-			if (pedFile.delete()) {
-				log.info(pedFile.getName() + " is deleted!");
-			}
-			else {
-				log.error(pedFile.getName() + " delete operation is failed.");
 			}
 
 		}
@@ -272,8 +248,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 			}
 
 		};
-		
-		
+
 		addOrReplace(new Image("pedigreeImg", svgImageRes));
 
 		downloadLink = new DownloadLink("imgLink", new AbstractReadOnlyModel<File>() {
@@ -284,8 +259,8 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				try {
 					String tmpDir = System.getProperty("java.io.tmpdir");
-					String pedFileName="Ark_"+subjectUID+".png";
-					tempFile = new File(tmpDir,pedFileName);
+					String pedFileName = "Ark_" + subjectUID + ".png";
+					tempFile = new File(tmpDir, pedFileName);
 					InputStream data = new ByteArrayInputStream(pngOutPutArray);
 					Files.writeTo(tempFile, data);
 				}
@@ -299,7 +274,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 			}
 		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
 		downloadLink.setOutputMarkupId(true);
-		
+
 		downloadLink.add(new Behavior() {
 			private static final long	serialVersionUID	= 1L;
 
@@ -310,7 +285,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 		});
 
 		addOrReplace(downloadLink);
-		
+
 		pdfLink = new DownloadLink("pdfLink", new AbstractReadOnlyModel<File>() {
 
 			@Override
@@ -321,16 +296,16 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 					String tmpDir = System.getProperty("java.io.tmpdir");
 					String pedFileName = "Ark_" + subjectUID + ".pdf";
 					f = new File(tmpDir, pedFileName);
-					
+
 					com.itextpdf.text.Image pedigreeImg = PngImage.getImage(pngOutPutArray);
-					
-					Rectangle pageSize = new Rectangle(pedigreeImg.getWidth(),pedigreeImg.getHeight());
-					
-					com.itextpdf.text.Document document = new com.itextpdf.text.Document(pageSize,0f,0f,0f,0f);
+
+					Rectangle pageSize = new Rectangle(pedigreeImg.getWidth(), pedigreeImg.getHeight());
+
+					com.itextpdf.text.Document document = new com.itextpdf.text.Document(pageSize, 0f, 0f, 0f, 0f);
 					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(f));
 					writer.setStrictImageSequence(true);
 					document.open();
-		         document.add(pedigreeImg);
+					document.add(pedigreeImg);
 					document.close();
 				}
 				catch (Exception e) {
@@ -339,9 +314,9 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				return f;
 			}
 		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
-		
+
 		pdfLink.setOutputMarkupId(true);
-		
+
 		pdfLink.add(new Behavior() {
 			private static final long	serialVersionUID	= 1L;
 
@@ -350,7 +325,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				tag.put("title", "Export to PDF");
 			}
 		});
-		
+
 		addOrReplace(pdfLink);
 
 	}
