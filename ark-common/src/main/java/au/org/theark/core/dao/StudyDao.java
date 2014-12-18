@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -2044,35 +2045,49 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			//DEMOGRAPHIC FILTERING - but not data
 			List<Long> idsAfterFiltering = applyDemographicFilters(search);  //from here we need to add 
-			log.info("uidsafterFilteringdemo=" + idsAfterFiltering.size());
+			log.info("uids afterFilteringdemo=" + idsAfterFiltering.size());
 			
 			//CONSENT STATUS FILTERING - still being worked on not complete...but doesn't break anything
 //			List<Long> consentAfterFiltering = 
-			idsAfterFiltering = applyConsentStatusFilters(allTheData, search, idsAfterFiltering);
-			log.info("consentAfterFiltering=" + idsAfterFiltering.size());
+			if(!idsAfterFiltering.isEmpty()){
+				idsAfterFiltering = applyConsentStatusFilters(allTheData, search, idsAfterFiltering);
+			}
+			log.info("consent idsAfterFiltering=" + idsAfterFiltering.size());
 
 			//BIOCOLLECTION
 			List<Long> bioCollectionIdsAfterFiltering = new ArrayList<Long>();
-			bioCollectionIdsAfterFiltering = addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);
+			if(!idsAfterFiltering.isEmpty()){
+				bioCollectionIdsAfterFiltering = addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);
+			}
 			log.info("uidsafterFiltering doing the construction of megaobject=" + idsAfterFiltering.size());
 			log.info("uidsafterFiltering biocol=" + idsAfterFiltering.size());
 
 			//BIOCOL CUSTOM
-			idsAfterFiltering = applyBioCollectionCustomFilters(allTheData, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
+			if(!idsAfterFiltering.isEmpty()){
+				idsAfterFiltering = applyBioCollectionCustomFilters(allTheData, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
+			}
 			log.info("uidsafterFiltering biocol cust=" + idsAfterFiltering.size());
 
 			//BIOSPECIMEN
 			List<Long> biospecimenIdsAfterFiltering = new ArrayList<Long>();
-			biospecimenIdsAfterFiltering = addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, idsAfterFiltering, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering);
+
+			if(!idsAfterFiltering.isEmpty()){
+				biospecimenIdsAfterFiltering = addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, idsAfterFiltering, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering);
+			}
 			log.info("biospecimenIdsAfterFiltering size: " + biospecimenIdsAfterFiltering.size());
 			log.info("uidsafterFilteringbiospec=" + idsAfterFiltering.size());
 
 			//BIOSPEC CUSTOM
-			idsAfterFiltering = applyBiospecimenCustomFilters(allTheData, search, idsAfterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
+			if(!idsAfterFiltering.isEmpty()){
+				idsAfterFiltering = applyBiospecimenCustomFilters(allTheData, search, idsAfterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
+			}
 			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size() + "biospecimenIdsAfterFiltering custom size: " + biospecimenIdsAfterFiltering.size());
 
 			//PHENO CUSTOM
-			idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
+
+			if(!idsAfterFiltering.isEmpty()){
+				idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
+			}
 			log.info("uidsafterFiltering pheno cust=" + idsAfterFiltering.size());
 
 			//DEMOGRAPHIC DATA
@@ -2341,14 +2356,19 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	private List<Long> applyConsentStatusFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude) {
 		
-		for(Long l : idsToInclude) {
-			log.info("including: " + l);
-		}
-		
+		//for(Long l : idsToInclude) {
+		//	log.info("including: " + l);
+		//}
+		boolean hasConsentFilters = false;
 		if(search.getQueryFilters().isEmpty()) {
 			return idsToInclude;
+		}else{
+			for(QueryFilter filter : search.getQueryFilters()){
+				if(filter.getConsentStatusField() != null){
+					hasConsentFilters = true;
+				}
+			}
 		}
-		
 		Criteria filter = getSession().createCriteria(Consent.class, "c");
 		filter.add(Restrictions.eq("c.study.id", search.getStudy().getId()));
 		filter.createAlias("c.linkSubjectStudy", "lss");
@@ -2358,41 +2378,44 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		filter.createAlias("c.studyComponentStatus", "cscs");
 		filter.createAlias("c.studyComp", "csc");
 		
-		for(QueryFilter qf : search.getQueryFilters()) {
-			if(qf.getConsentStatusField() != null) {
-				switch(qf.getOperator()) {
-					case EQUAL:
-						filter.add(Restrictions.eq(getConsentFilterFieldName(qf), qf.getValue()));
-						break;
-					case BETWEEN:
-						filter.add(Restrictions.between(getConsentFilterFieldName(qf), qf.getValue(), qf.getSecondValue()));
-						break;
-					case GREATER_THAN:
-						filter.add(Restrictions.gt(getConsentFilterFieldName(qf), qf.getValue()));
-						break;
-					case GREATER_THAN_OR_EQUAL:
-						filter.add(Restrictions.ge(getConsentFilterFieldName(qf), qf.getValue()));
-						break;
-					case IS_EMPTY:
-						filter.add(Restrictions.isEmpty(getConsentFilterFieldName(qf)));
-						break;
-					case IS_NOT_EMPTY:
-						filter.add(Restrictions.isNotEmpty(getConsentFilterFieldName(qf)));
-						break;
-					case LESS_THAN:
-						filter.add(Restrictions.lt(getConsentFilterFieldName(qf), qf.getValue()));
-						break;
-					case LESS_THAN_OR_EQUAL:
-						filter.add(Restrictions.le(getConsentFilterFieldName(qf), qf.getValue()));
-						break;
-					case LIKE:
-						filter.add(Restrictions.like(getConsentFilterFieldName(qf), qf.getValue(), MatchMode.ANYWHERE));
-						break;
-					case NOT_EQUAL:
-						filter.add(Restrictions.ne(getConsentFilterFieldName(qf), qf.getValue()));
-						break;
-					default:
-						break;
+		if(!hasConsentFilters){
+		
+			for(QueryFilter qf : search.getQueryFilters()) {
+				if(qf.getConsentStatusField() != null) {
+					switch(qf.getOperator()) {
+						case EQUAL:
+							filter.add(Restrictions.eq(getConsentFilterFieldName(qf), qf.getValue()));
+							break;
+						case BETWEEN:
+							filter.add(Restrictions.between(getConsentFilterFieldName(qf), qf.getValue(), qf.getSecondValue()));
+							break;
+						case GREATER_THAN:
+							filter.add(Restrictions.gt(getConsentFilterFieldName(qf), qf.getValue()));
+							break;
+						case GREATER_THAN_OR_EQUAL:
+							filter.add(Restrictions.ge(getConsentFilterFieldName(qf), qf.getValue()));
+							break;
+						case IS_EMPTY:
+							filter.add(Restrictions.isEmpty(getConsentFilterFieldName(qf)));
+							break;
+						case IS_NOT_EMPTY:
+							filter.add(Restrictions.isNotEmpty(getConsentFilterFieldName(qf)));
+							break;
+						case LESS_THAN:
+							filter.add(Restrictions.lt(getConsentFilterFieldName(qf), qf.getValue()));
+							break;
+						case LESS_THAN_OR_EQUAL:
+							filter.add(Restrictions.le(getConsentFilterFieldName(qf), qf.getValue()));
+							break;
+						case LIKE:
+							filter.add(Restrictions.like(getConsentFilterFieldName(qf), qf.getValue(), MatchMode.ANYWHERE));
+							break;
+						case NOT_EQUAL:
+							filter.add(Restrictions.ne(getConsentFilterFieldName(qf), qf.getValue()));
+							break;
+						default:
+							break;
+					}
 				}
 			}
 		}
@@ -2456,7 +2479,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
 		allTheData.setConsentStatusData(hashOfConsentStatusData);
-		return consentStatusIDs;
+		if(hasConsentFilters){
+			return consentStatusIDs;
+		}
+		else{
+			return idsToInclude;
+		}
 	}
 
 	/**
@@ -4616,19 +4644,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Search search, List<Long> idsToInclude, List<Long> biocollectionIdsAfterFiltering ){
 		String bioCollectionFilters = getBiocollectionFilters(search);
 		
-		Collection<BioCollection> bioCollectionList = null;
+		Collection<BioCollection> bioCollectionList = Collections.EMPTY_LIST;
 		
 		if(biocollectionFields.isEmpty() && bioCollectionFilters.isEmpty() ) {
 			if(idsToInclude.isEmpty()) {
-				// no need
+				// no need - skip querying
 			}
 			else {
 				biocollectionIdsAfterFiltering = getBioCollectionIdForSubjectIds(idsToInclude);
-				bioCollectionList = getSession().createCriteria(BioCollection.class).add(Restrictions.in("id", biocollectionIdsAfterFiltering)).list();
+				if(! biocollectionIdsAfterFiltering.isEmpty()){
+					bioCollectionList = getSession().createCriteria(BioCollection.class).add(Restrictions.in("id", biocollectionIdsAfterFiltering)).list();
+				}
 			}
 		}
 		
-		if(!idsToInclude.isEmpty() && (!bioCollectionFilters.isEmpty() || !biocollectionFields.isEmpty())){
+		if(!idsToInclude.isEmpty() &&  biocollectionIdsAfterFiltering.isEmpty() && 
+				(!bioCollectionFilters.isEmpty() || !biocollectionFields.isEmpty())){
 			
 			StringBuffer queryBuffer =new StringBuffer("select distinct biocollection ");
 			queryBuffer.append("from BioCollection biocollection " );	//	TODO:  improve preformance by prefetch
@@ -4748,7 +4779,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		log.info(" we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'");
 		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
 			HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
-			log.info(subjectUID + " has " + keyValues.size() + " " + fieldCategory + " fields"); 
+			// log.info(subjectUID + " has " + keyValues.size() + " " + fieldCategory + " fields"); 
 			// remove(subjectUID).getKeyValues().size() + "demo fields");
 			//for (String key : keyValues.keySet()) {
 				//log.info("     key=" + key + "\t   value=" + keyValues.get(key));
