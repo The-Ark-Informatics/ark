@@ -2422,14 +2422,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		filter.setProjection(Projections.distinct(Projections.projectionList().add(Projections.property("lss.id"))));
 		
 		List<Long> consentStatusIDs = filter.list();
+
+		Collection<Consent> csData = Collections.EMPTY_LIST;
 		
+		if(!consentStatusIDs.isEmpty()){
+			Criteria consentData = getSession().createCriteria(Consent.class, "c");
+			consentData.add(Restrictions.eq("c.study.id", search.getStudy().getId()));
+			consentData.createAlias("c.linkSubjectStudy", "lss");
+			consentData.add(Restrictions.in("lss.id", consentStatusIDs));
+			csData = consentData.list();
+		}
 		
-		Criteria consentData = getSession().createCriteria(Consent.class, "c");
-		consentData.add(Restrictions.eq("c.study.id", search.getStudy().getId()));
-		consentData.createAlias("c.linkSubjectStudy", "lss");
-		consentData.add(Restrictions.in("lss.id", consentStatusIDs));
-		
-		Collection<Consent> csData = consentData.list();
 		HashMap<String, ExtractionVO> hashOfConsentStatusData = allTheData.getConsentStatusData();
 
 		ExtractionVO valuesForThisLss = new ExtractionVO();
