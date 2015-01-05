@@ -1,0 +1,3 @@
+au/org/spark/web/view/JavaBean.class
+au/org/spark/web/controller/SparkRestController.class
+au/org/spark/web/controller/SparkWebController.class
