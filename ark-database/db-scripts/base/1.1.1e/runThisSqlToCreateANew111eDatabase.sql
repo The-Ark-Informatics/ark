@@ -5802,3 +5802,10 @@ UNLOCK TABLES;
 USE study;
 
 ALTER TABLE  `custom_field` ADD  `DEFAULT_VALUE` TEXT NULL DEFAULT NULL;
+
+
+-- Remove unique key constraint from the LIMS.INV_SITE
+
+USE lims;
+
+ALTER TABLE `inv_site` DROP INDEX NAME_UNIQUE;
