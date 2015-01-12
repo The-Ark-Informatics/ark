@@ -676,6 +676,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		getSession().delete(studyInvSite);
 	}
 
+/**
 	public void updateInvSite(LimsVO modelObject) {
 		Session session = getSession();
 		session.update(modelObject.getInvSite());
@@ -691,6 +692,116 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 			studyInvSite.setInvSite(modelObject.getInvSite());
 			session.save(studyInvSite);
 		}
+	}
+*/
+
+	public void updateInvSite(LimsVO modelObject) {
+		
+        InvSite invSite = modelObject.getInvSite();
+        Session session = getSession();
+        session.update(invSite);
+        session.flush();
+        session.refresh(invSite);
+        List<StudyInvSite> existingInvSites = invSite.getStudyInvSites();
+
+        //for (StudyInvSite sis : modelObject.getInvSite().getStudyInvSites()) {
+        //      session.delete(sis);
+        //      session.flush();
+        //}
+
+
+
+        List<Long> selectedAndExistingStudies = new ArrayList<Long>();
+        List<Study> selectedStudies = modelObject.getSelectedStudies();
+
+        for (Study selectedStudy : selectedStudies) {
+                boolean studyAlreadyLinked = false;
+                log.info("selected =" + selectedStudy.getId());
+
+                for(StudyInvSite sis: existingInvSites){
+                        Study existingStudy = sis.getStudy();
+                        log.info("  existing=" + selectedStudy.getId());
+                        if(existingStudy.getId().equals(selectedStudy.getId())){
+                        		log.info("found a match for " + selectedStudy.getId());
+                                studyAlreadyLinked = true;
+                                selectedAndExistingStudies.add(selectedStudy.getId());
+                                break; // leave it along
+                        }
+                }
+
+                if(!studyAlreadyLinked){
+                        log.info("about to create" + selectedStudy.getId());
+                        StudyInvSite studyInvSite = new StudyInvSite();
+                        studyInvSite.setStudy(selectedStudy);
+                        studyInvSite.setInvSite(invSite);
+                        session.save(studyInvSite);
+                }
+
+        }
+
+        for(StudyInvSite sis: existingInvSites){
+        		log.info("about to investigate for deletion existing study " + sis.getStudy().getId());
+                boolean deletePreviouslyExistingSiteAsItWasNotSelected = true;
+                for(Long selectedId : selectedAndExistingStudies){
+                		log.info("compare it to selected " + selectedId);
+                        if(selectedId.equals(sis.getStudy().getId())){
+                        		log.info("recommending you don't delete");
+                                deletePreviouslyExistingSiteAsItWasNotSelected = false;
+                        }
+                        else{
+                        	log.info("match not found.");
+                        }
+                }
+                if(deletePreviouslyExistingSiteAsItWasNotSelected){
+                	log.info("deleting " + sis.getStudy().getId());
+                	session.delete(sis);
+                }
+        }
+        session.flush();
+        session.refresh(invSite);
+
+		
+		
+		
+		
+		//List<StudyInvSite> existingInvSites = invSite.getStudyInvSites();
+		
+		//for (StudyInvSite sis : modelObject.getInvSite().getStudyInvSites()) {
+		//	session.delete(sis);
+		//	session.flush();
+		//}
+		
+		/*
+		
+		List<Study> selectedAndExistingStudies = new ArrayList<Study>();
+		List<Study> selectedStudies = modelObject.getSelectedStudies();
+		
+		for (Study selectedStudy : selectedStudies) {
+			boolean studyAlreadyLinked = false;
+			for(StudyInvSite sis: existingInvSites){
+				Study existingStudy = sis.getStudy();
+				if(existingStudy.equals(selectedStudy)){
+					studyAlreadyLinked = true;
+					selectedAndExistingStudies.add(selectedStudy);
+					break; // leave it along
+				}
+			}
+			
+			if(!studyAlreadyLinked){
+				StudyInvSite studyInvSite = new StudyInvSite();
+				studyInvSite.setStudy(selectedStudy);
+				studyInvSite.setInvSite(modelObject.getInvSite());
+				session.save(studyInvSite);
+			}
+			
+		}
+		
+		for(StudyInvSite sis: existingInvSites){
+			if(!selectedAndExistingStudies.contains(sis.getStudy())){
+				session.delete(sis);
+			}
+		}
+		*/
 	}
 
 	public void unallocateBox(InvBox invBox) {
