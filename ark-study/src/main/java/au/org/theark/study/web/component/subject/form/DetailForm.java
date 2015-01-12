@@ -175,7 +175,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		consentHistoryPanel.setVisible(!isNew());
 		
 		if(isNew()){
-			consentStatusChoice.setModel(new Model<ConsentStatus>(iArkCommonService.getConsentStatusByName("Pending")));
+			containerForm.getModelObject().getLinkSubjectStudy().setConsentStatus(iArkCommonService.getConsentStatusByName("Pending"));
+			//consentStatusChoice.setModel(new Model<ConsentStatus>(iArkCommonService.getConsentStatusByName("Pending")));
 		}
 		super.onBeforeRender();
 	}
