@@ -2293,7 +2293,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					"  and biospecimen.study =:study  ";
 			query2 = getSession().createQuery(queryString2);
 			query2.setParameterList("biospecimenIds", biospecimenIds);
-			query2.setParameter("study", study);
+			query2.setParameter("study", study); 
 
 			return query2.list();
 		}
