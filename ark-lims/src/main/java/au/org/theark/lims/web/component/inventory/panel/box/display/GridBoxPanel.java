@@ -196,7 +196,7 @@ public class GridBoxPanel extends Panel {
 			addOrReplace(createHeadings(new InvBox()));
 			//This is pretty much 100% guaranteed to cause an NPE in the createMainGrid method...as it tried to do "stuff" with the new invbox and its 'null things'
 			addOrReplace(createMainGrid(new InvBox(), invCellList));
-		}
+		} 
 		else {
 			addOrReplace(createHeadings(limsVo.getInvBox()));
 			addOrReplace(createMainGrid(limsVo.getInvBox(), invCellList));
