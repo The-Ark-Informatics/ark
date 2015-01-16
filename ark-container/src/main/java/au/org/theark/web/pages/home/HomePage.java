@@ -172,7 +172,7 @@ public class HomePage extends BasePage {
 			arkModuleList = iArkCommonService.getArkModuleListByArkUser(arkUser);
 			
 			for (ArkModule arkModule: arkModuleList) {
-				log.info("arkModule: " + arkModule.getName());
+				//log.info("arkModule: " + arkModule.getName());
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY)) {
 					// Study
 					studyMainTabProvider = new MainTabProviderImpl(arkModule.getName());
