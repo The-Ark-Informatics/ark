@@ -4,7 +4,7 @@
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
-  
+    
     <servlet>
         <servlet-name>spark</servlet-name>
         <servlet-class>
@@ -14,17 +14,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>spark</servlet-name>
-        <!--  <url-pattern>*.html</url-pattern>-->
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    
-    <context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/spark-servlet.xml</param-value>
-	</context-param>
-    
-    <listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-  
 </web-app>

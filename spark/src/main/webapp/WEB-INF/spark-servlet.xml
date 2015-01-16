@@ -12,11 +12,12 @@ http://www.springframework.org/schema/mvc
 http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
 	<context:component-scan base-package="au.org.spark.web.controller" />
+	<context:component-scan base-package="au.org.spark.service" />
 
 	<mvc:annotation-driven />
 
 	<mvc:resources mapping="/images/**" location="/WEB-INF/images/" />
-	  
+
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 		<property name="viewClass"
@@ -24,16 +25,19 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-	
-	<!--
-	<bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix">
-			<value>/WEB-INF/jsp/</value>
-		</property>
-		<property name="suffix">
-			<value>.jsp</value>
-		</property>
+
+	<bean id="cloudConfig" class="org.javaswift.joss.client.factory.AccountConfig">
+		<property name="tenantName" value="XXX" />
+		<property name="username" value="XXX" />
+		<property name="password" value="XXX" />
+		<property name="authUrl" value="XXX" />
 	</bean>
-	-->
+
+	<bean id="cloudFactory" class="org.javaswift.joss.client.factory.AccountFactory">
+		<constructor-arg ref="cloudConfig" />
+	</bean>
+
+	<bean id="cloudAccount" factory-bean="cloudFactory"
+		factory-method="createAccount" />
+
 </beans>

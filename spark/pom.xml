@@ -17,7 +17,7 @@
 		<jsp.version>2.0</jsp.version>
 		<jstl.version>1.2</jstl.version>
 		<servlet.version>2.5</servlet.version>
-		
+
 		<!-- Jackson -->
 		<jackson.version>1.9.13</jackson.version>
 
@@ -33,6 +33,11 @@
 
 		<!-- Test -->
 		<junit.version>4.11</junit.version>
+
+		<commons.lang.version>2.6</commons.lang.version>
+		<commons.io.version>2.3</commons.io.version>
+		<httpcomponents.version>4.2.1</httpcomponents.version>
+		<jackson.version>1.9.7</jackson.version>
 
 	</properties>
 
@@ -104,32 +109,53 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-		
-		<!-- Jackson JSON Mapper -->
-		<!--  
-		<dependency>
-            		<groupId>org.codehaus.jackson</groupId>
-            		<artifactId>jackson-jaxrs</artifactId>
-            		<version>${jackson.version}</version>
-        	</dependency>
 
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.4.1</version>
+		</dependency>
+
+		<!-- JOSS open-stack cloud connector -->
+		<dependency>
+			<groupId>org.javaswift</groupId>
+			<artifactId>joss</artifactId>
+			<version>0.9.8</version>
+		</dependency>
+
+		<!-- Jackson JSON Mapper -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
 		
+		<!-- HttpComponents is used to contact the OpenStack server and interact 
+			with it through its REST interface -->
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>${jackson.version}</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpcomponents.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		-->
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.4.1</version>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons.lang.version}</version>
 		</dependency>
+		<!-- Used for loading test resources and converting a DirectoryOrObject 
+			to byte[] -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons.io.version}</version>
+		</dependency>
+
 
 		<!-- Test Artifacts -->
 		<dependency>
