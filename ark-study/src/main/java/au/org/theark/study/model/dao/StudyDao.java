@@ -976,10 +976,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<Phone> personPhoneList = phoneCriteria.list();
 		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 
-		if (personPhoneList.isEmpty()) {
+		//if (personPhoneList.isEmpty()) {
 			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
-			log.info(" personId " + personId + " had no phones.  No drama");
-		}
+		//	log.info(" personId " + personId + " had no phones.  No drama");
+	//	}
 		return personPhoneList;
 	}
 
