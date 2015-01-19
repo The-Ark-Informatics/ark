@@ -182,7 +182,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			this.error("The record you tried to update is no longer available in the system");
 		}
 		catch (ArkSystemException e) {
-			this.error("Could not access the attachment directory");
+			this.error("Saving the file attachment failed. Please contact The Ark administrator.");
 		}
 		processErrors(target);
 	}
