@@ -147,7 +147,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				// Save
 				iStudyService.create(containerForm.getModelObject().getSubjectFile());
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
-				processErrors(target);
+//				processErrors(target);
 			}
 			else {
 				FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
@@ -170,9 +170,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				// Update
 				iStudyService.update(containerForm.getModelObject().getSubjectFile(),checksum);
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
-				processErrors(target);
 			}
 
+			processErrors(target);
 			onSavePostProcess(target);
 			AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
 			deleteButton.setEnabled(false);
@@ -180,12 +180,11 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		}
 		catch (EntityNotFoundException e) {
 			this.error("The record you tried to update is no longer available in the system");
-			processErrors(target);
 		}
 		catch (ArkSystemException e) {
-			this.error(e.getMessage());
-			processErrors(target);
+			this.error("Could not access the attachment directory");
 		}
+		processErrors(target);
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
