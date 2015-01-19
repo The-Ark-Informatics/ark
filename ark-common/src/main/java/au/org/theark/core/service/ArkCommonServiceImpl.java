@@ -172,7 +172,7 @@ import au.org.theark.core.vo.UserConfigVO;
 @Service(Constants.ARK_COMMON_SERVICE)
 public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private static Logger log = LoggerFactory.getLogger(ArkCommonServiceImpl.class);
-	
+
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 8;
 
 	private IArkAuthorisation arkAuthorisationDao;
@@ -1578,26 +1578,25 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) {
+	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) throws ArkSystemException {
 
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
 		createArkFileAttachmentDirectoy(directoryName);
 		createFile(directoryName, fileId, payload);
 	}
-	
-	public void createArkFileAttachmentDirectoy(String directoryName){
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void createArkFileAttachmentDirectoy(String directoryName) throws ArkSystemException {
 		File fileDir = new File(directoryName);
 
 		if (!fileDir.exists()) {
-			boolean result = false;
 			try {
 				fileDir.mkdirs();
-				result = true;
 			} catch (SecurityException se) {
-				log.error("Do not have the sufficient permission to access the file directory");
-			}
-			if (result) {
-				log.info("DIR created successfully " + directoryName);
+				log.error("Do not have the sufficient permission to access the file directory " + directoryName, se);
+				throw new ArkSystemException(se.getMessage());
 			}
 		}
 	}
@@ -1620,7 +1619,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	/**
 	 * {@inheritDoc}
 	 */
-	private void createFile(final String directory, final String fileId, final byte[] payload) {
+	private void createFile(final String directory, final String fileId, final byte[] payload) throws ArkSystemException {
 		try {
 			File file = new File(directory + File.separator + fileId);
 			// if file doesnt exists, then create it
@@ -1633,7 +1632,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			fos.close();
 
 		} catch (IOException e) {
-			log.error(e.toString());
+			log.error("Cannot create the file in " + directory, e);
+			throw new ArkSystemException(e.getMessage());
 		}
 	}
 
@@ -1650,7 +1650,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		boolean fileInputIsNull = true;
 		try {
 			md5input = new FileInputStream(new File(fileName));
-			if ( DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
+			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
 				fileInput = new FileInputStream(new File(fileName));
 				// Convert file to byte array
 				data = IOUtils.toByteArray(fileInput);
@@ -1660,17 +1660,17 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				throw new ArkSystemException("MD5 Hashes are not matching");
 			}
 		} catch (Exception e) {
-			log.error(e.toString());
+			log.error("Error", e);
 			throw new ArkSystemException("exception while getting data" + e.getMessage());
 		} finally {
 			try {
 				md5input.close();
-				if(!fileInputIsNull){
+				if (!fileInputIsNull) {
 					fileInput.close();
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				log.error(e.toString());
+				log.error("Error", e);
 				throw new ArkSystemException("exception while closing stream" + e.getMessage());
 			}
 		}
@@ -1699,23 +1699,26 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 					throw new ArkSystemException("Could not find the attachment");
 				}
 			} else {
-				log.error("Checksum -- "+checksum);
+				log.error("Checksum -- " + checksum);
 				throw new ArkSystemException("Attachment hash value mismatch");
 			}
 		} catch (Exception e) {
-			log.error(e.toString());
+			log.error("Error", e);
 			throw new ArkSystemException(e.getMessage());
 		} finally {
 			try {
 				md5input.close();
 			} catch (Exception e) {
-				log.error(e.toString());
+				log.error("Error", e);
 				throw new ArkSystemException(e.getMessage());
 			}
 		}
 		return delete;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void copyArkLargeFileAttachments(String sourceFilePath, String destinationFilePath) throws IOException {
 		FileChannel source = null;
 		FileChannel destination = null;
@@ -1742,33 +1745,36 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			}
 		}
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public String generateArkFileChecksum(File file, String algorithm) throws ArkSystemException {
-	    try (FileInputStream inputStream = new FileInputStream(file)) {
-	        MessageDigest digest = MessageDigest.getInstance(algorithm);
-	 
-	        byte[] bytesBuffer = new byte[1024];
-	        int bytesRead = -1;
-	 
-	        while ((bytesRead = inputStream.read(bytesBuffer)) != -1) {
-	            digest.update(bytesBuffer, 0, bytesRead);
-	        }
-	 
-	        byte[] hashedBytes = digest.digest();
-	 
-	        return convertByteArrayToHexString(hashedBytes);
-	    } catch (NoSuchAlgorithmException | IOException ex) {
-	        throw new ArkSystemException("Could not generate hash from file");
-	    }
+		try (FileInputStream inputStream = new FileInputStream(file)) {
+			MessageDigest digest = MessageDigest.getInstance(algorithm);
+
+			byte[] bytesBuffer = new byte[1024];
+			int bytesRead = -1;
+
+			while ((bytesRead = inputStream.read(bytesBuffer)) != -1) {
+				digest.update(bytesBuffer, 0, bytesRead);
+			}
+
+			byte[] hashedBytes = digest.digest();
+
+			return convertByteArrayToHexString(hashedBytes);
+		} catch (NoSuchAlgorithmException | IOException ex) {
+			log.error("Error", ex);
+			throw new ArkSystemException("Could not generate hash from file");
+		}
 	}
-	
+
 	private String convertByteArrayToHexString(byte[] arrayBytes) {
-	      StringBuffer stringBuffer = new StringBuffer();
-	      for (int i = 0; i < arrayBytes.length; i++) {
-	          stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16)
-	                  .substring(1));
-	      }
-	      return stringBuffer.toString().toUpperCase();
+		StringBuffer stringBuffer = new StringBuffer();
+		for (int i = 0; i < arrayBytes.length; i++) {
+			stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16).substring(1));
+		}
+		return stringBuffer.toString().toUpperCase();
 	}
 
 }

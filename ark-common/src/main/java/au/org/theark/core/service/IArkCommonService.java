@@ -944,13 +944,13 @@ public interface IArkCommonService<T> {
 	 * @param checksum
 	 * @param fileId
 	 */
-	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId);
+	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) throws ArkSystemException;
 
 	/**
 	 * Create a new directory
 	 * @param directoryName Directory Name
 	 */
-	public void createArkFileAttachmentDirectoy(String directoryName);
+	public void createArkFileAttachmentDirectoy(String directoryName) throws ArkSystemException;
 	
 	/**
 	 * Generate directory name according to attachment type
