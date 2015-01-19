@@ -73,7 +73,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 	@Override
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
-		log.info("barcodeLabel=" + barcodeLabel==null?"barcodelabelnull":("barcodeLabel.getBarcodePrinterName() =" + barcodeLabel.getBarcodePrinterName()));
+		log.info("barcodeLabel=" + ((barcodeLabel==null)?"barcodelabelnull":("barcodeLabel.getBarcodePrinterName() =" + barcodeLabel.getBarcodePrinterName())));
 		if (barcodeLabel == null || barcodeLabel.getBarcodePrinterName() == null || barcodeLabel.getBarcodePrinterName().isEmpty()) {
 			log.debug("A Zebra barcode label is currently not available. Please define the label and try again");
 			barcodePrinterAvailable = false;
