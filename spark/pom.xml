@@ -41,6 +41,14 @@
 
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>spring-milestone</id>
+			<name>Spring Maven MILESTONE Repository</name>
+			<url>http://repo.spring.io/libs-milestone</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -68,6 +76,13 @@
 			<artifactId>spring-integration-sftp</artifactId>
 			<version>4.1.2.RELEASE</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-cassandra</artifactId>
+			<version>1.0.0.RELEASE</version>
+		</dependency>
+
 		<!-- Other Web dependencies -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -148,6 +163,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -155,16 +171,25 @@
 		</dependency>
 		<!-- Used for loading test resources and converting a DirectoryOrObject 
 			to byte[] -->
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${commons.io.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
 			<version>0.1.51</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.datastax.cassandra</groupId>
+			<artifactId>cassandra-driver-core</artifactId>
+			<version>2.1.4</version>
+		</dependency>
+
 		<!-- Test Artifacts -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -178,8 +203,10 @@
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
+
+
+
 	<build>
 		<finalName>spark</finalName>
 		<sourceDirectory>src/main/java</sourceDirectory>

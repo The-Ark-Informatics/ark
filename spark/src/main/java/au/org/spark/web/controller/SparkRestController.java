@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import au.org.spark.service.CassandraService;
 import au.org.spark.service.OpenStackService;
 import au.org.spark.service.SshService;
 import au.org.spark.web.view.JavaBean;
@@ -24,6 +25,9 @@ public class SparkRestController {
 	
 	@Autowired
 	SshService sshService;
+	
+	@Autowired
+	CassandraService CassandraService;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public @ResponseBody JavaBean getJSONJavaBean() {
@@ -46,6 +50,17 @@ public class SparkRestController {
     		list.add("No dir found");
     	}
     	return list;
+    }
+    
+    @RequestMapping(value = "/listCassandra", method = RequestMethod.GET)
+    public @ResponseBody String listCassandra() {
+    	return CassandraService.getRingMembers();
+    }
+    
+    @RequestMapping(value = "/insertCassandra", method = RequestMethod.GET)
+    public @ResponseBody String insertCassandra() {
+    	CassandraService.insert();
+    	return "SUCCESS";
     }
     
     @RequestMapping(value="/mapping/producesjson", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
