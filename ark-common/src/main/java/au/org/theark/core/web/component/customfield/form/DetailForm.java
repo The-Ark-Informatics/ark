@@ -46,6 +46,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.model.study.entity.Category;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
@@ -86,6 +87,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 	private TextArea<String>						fieldDescriptionTxtAreaFld;
 	private DropDownChoice<UnitType>				fieldUnitTypeDdc;
+	private DropDownChoice<Category>				fieldCategoryDdc;
+	
 	//Add unit type as text
 	private TextField<String>						fieldUnitTypeTxtFld;
 	//****************//
@@ -169,6 +172,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				target.add(minMaxValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
 				target.add(fieldUnitTypeDdc);
+				target.add(fieldCategoryDdc);
 				//Add field unite type as text
 				target.add(fieldUnitTypeTxtFld);
 				target.add(fieldAllowMultiselectChkBox);
@@ -208,6 +212,22 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			fieldUnitTypeDdc.setEnabled(false);
 			fieldUnitTypeTxtFld.setEnabled(false);
 		}
+	}
+
+
+	private void updateCategoryDdc() {
+		Category category = getModelObject().getCustomField().getCategory();
+		/*if (category != null && !category.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
+			// Only allowed to use unitType when fieldType != DATE
+			fieldUnitTypeDdc.setEnabled(true);
+			fieldUnitTypeTxtFld.setEnabled(true);
+		}
+		else {
+			fieldUnitTypeDdc.setEnabled(false);
+			fieldUnitTypeTxtFld.setEnabled(false);
+		}*/
+		//TODO dependencies?
+		//have to figure out what dependencies exist
 	}
 
 	private void initMinMaxValuePnls() {
