@@ -1,0 +1,6 @@
+ALTER TABLE `study`.`custom_field` 
+ADD COLUMN `CATEGORY_ID` INT(11) NULL DEFAULT NULL AFTER `UNIT_TYPE_IN_TEXT`;
+
+ALTER TABLE `study`.`custom_field_display` 
+DROP COLUMN `CATEGORY_ID`;
+
