@@ -52,8 +52,8 @@ public class CustomFieldDisplay implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private Category category;
 	private CustomField customField;
+	//private Category category;
 	private CustomFieldGroup customFieldGroup;
 	private Boolean required;
 	private String requiredMessage;
@@ -91,7 +91,7 @@ public class CustomFieldDisplay implements Serializable {
 		this.customField = customField;
 	}
 
-
+/*
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CATEGORY_ID", nullable = false)
 	public Category getCategory() {
@@ -101,7 +101,7 @@ public class CustomFieldDisplay implements Serializable {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-
+*/
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOM_FIELD_GROUP_ID")
 	public CustomFieldGroup getCustomFieldGroup() {

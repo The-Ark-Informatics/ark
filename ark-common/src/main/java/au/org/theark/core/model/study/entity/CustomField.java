@@ -49,6 +49,7 @@ public class CustomField implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
+	private Category category;
 	private String description;
 	private FieldType fieldType;
 	private Study study;
@@ -92,6 +93,17 @@ public class CustomField implements Serializable {
 		this.study = study;
 	}
 
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CATEGORY_ID", nullable = false)
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_TYPE_ID", nullable = false)
 	public FieldType getFieldType() {
