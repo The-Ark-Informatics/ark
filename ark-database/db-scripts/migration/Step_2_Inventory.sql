@@ -1,4 +1,28 @@
--- WASHS PARAMETERS
+-- latest
+SET @STUDY_GROUP_NAME = 'GUARD';
+SET @STUDYKEY = 29;
+SET @STUDYNAME= 'GUARD';
+SET @AUTOGEN_SUBJECT = 0;
+SET @AUTOGEN_BIOSPECIMEN = 1;
+SET @AUTOGEN_BIOCOLLECTION = 1;
+-- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
+
+-- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
+-- apparently subject prefix comes from wager
+-- SET @SUBJECT_PREFIX = 'RAV';
+
+SET @BIOCOLLECTIONUID_PREFIX = 'ARD';
+-- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
+SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
+SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
+	
+SET @BIOSPECIMENUID_PREFIX = 'ARD';
+SET @BIOSPECIMENUID_TOKEN_ID = 1;
+SET @BIOSPECIMENUID_PADCHAR_ID = 5;
+
+
+
+/*-- WASHS PARAMETERS
 -- latest
 SET @STUDY_GROUP_NAME = 'ParkC';
 SET @STUDYKEY = 457;
@@ -205,7 +229,9 @@ ON DUPLICATE KEY update DELETED = s.deleted, TIMESTAMP = s.TIMESTAMP, CONTACT = 
 ****/
 
 
-SELECT * FROM lims.inv_site;
+SELECT * FROM wagerlab.ix_inv_site b
+where b.name not in (select distinct name from lims.inv_site); 
+
 
 SELECT * FROM lims.study_inv_site;
 SELECT @STUDYKEY;
@@ -272,7 +298,7 @@ WHERE t.SITEKEY = s.SITEKEY
 AND s.NAME = lims_site.NAME
 -- and lims_site.ID<>16 -- fore wasos got rid of already existing freezer/site
 -- the below line eliminates already present freezers from  entry
--- AND t.name not in (select name from lims.inv_freezer)  -- if running only the select part feel free to comment this line temporarily to make it include those already existing
+AND t.name not in (select name from lims.inv_freezer)  -- if running only the select part feel free to comment this line temporarily to make it include those already existing
 AND t.TANKKEY IN 
 (
 select distinct tankkey from wagerlab.ix_inv_box b
@@ -309,6 +335,7 @@ SELECT f.ID, b.DELETED, b.TIMESTAMP, b.NAME, b.AVAILABLE, b.DESCRIPTION, b.CAPAC
 FROM wagerlab.IX_INV_BOX b, wagerlab.IX_INV_TANK t, lims.inv_freezer f
 WHERE t.TANKKEY = b.TANKKEY
 AND t.NAME = f.NAME
+and b.name <> 'GUARD RNA Rack 1'
 AND b.boxkey IN
 (
 select distinct boxkey from wagerlab.ix_inv_tray where traykey in -- (3230, 3231)
@@ -322,6 +349,8 @@ select distinct boxkey from wagerlab.ix_inv_tray where traykey in -- (3230, 3231
 		and b.studykey=@STUDYKEY
 )
 ); -- note that shared tray/racks(ark) will cause mysql errs, in qhich case generate the inserts and run individually
+
+select * from lims.inv_rack where name like '%GUARD%'
 
 select * from wagerlab.ix_inv_box;
 
@@ -392,6 +421,8 @@ INSERT INTO `lims`.`inv_box`
 	WHERE `t`.`BOXKEY` = `b`.`BOXKEY`
 	-- AND tank.TANKKEY = b.TANKKEY
 	-- AND tank.NAME = f.NAME
+    and b.name <> 'ARD RNA Box 04'
+    and t.name <> 'ARD RNA Box 04'
 	AND t.traykey in
 	(
 		select traykey boxkey from wagerlab.ix_inv_tray where traykey in
@@ -404,6 +435,8 @@ INSERT INTO `lims`.`inv_box`
 			where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
 			and b.studykey=@STUDYKEY)
 	);
+
+select * from lims.inv_box where name like 'ARD%';
 
 -- Insert a fake biospecimen for cell merging
 INSERT INTO `lims`.`biospecimen`
@@ -420,12 +453,14 @@ SELECT '-1' AS ID,
 'FAKE_BIOSPECIMEN' AS BIOSPECIMEN_UID,
 (SELECT id FROM study.study WHERE name = @STUDYNAME) AS STUDY_ID, 
 (SELECT min(id) FROM study.link_subject_study WHERE study_id =(SELECT id FROM study.study WHERE name = @STUDYNAME)) AS LINK_SUBJECT_STUDY, 
-'0' AS SAMPLETYPE_ID, 
+'1' AS SAMPLETYPE_ID, 
 (SELECT min(id) FROM lims.biocollection WHERE study_id IN (SELECT id FROM study.study WHERE parent_id =@STUDYKEY)) AS BIOCOLLECTION_ID, 
 '-1' AS OLD_ID, 
 '1' AS TREATMENT_TYPE_ID, 
 '-1' AS DELETED
 FROM dual;
+
+select * from lims.biospecimen where biospecimen_uid = 'FAKE_BIOSPECIMEN';
 
 select * from study.study;
 
@@ -471,6 +506,16 @@ where box_id in
 	(select id from lims.inv_box where rack_id in
 		(select id from lims.inv_rack where study_id = @STUDYKEY));
 
+
+select * from lims.inv_cell c, lims.biospecimen b where box_id = 4497
+and b.id = c.biospecimen_id
+
+select * from lims.inv_box where id = 4497
+
+select * from lims.inv_cell where box_id = 4497
+
+
+select count(*) from lims.inv_cell where biospecimen_id in (select id from lims.biospecimen where study_id = @STUDYKEY);
 
 /* 
 

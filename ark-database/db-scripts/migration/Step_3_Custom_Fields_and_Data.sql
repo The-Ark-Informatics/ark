@@ -1,7 +1,9 @@
-SET @STUDY_GROUP_NAME = 'WAFSS BioData Details';  -- however there could be more than one of these perhaps?
-SET @STUDYKEY = 17;
-SET @STUDYNAME= 'WAFSS';
+SET @STUDY_GROUP_NAME = 'Vitamin A Collection Details'; -- 'WAFSS BioData Details';  -- however there could be more than one of these perhaps?
+SET @STUDYKEY = 22;
+SET @STUDYNAME= 'Vitamin A';
 
+
+select * from study.study;
 
 /* still need to test this
 
@@ -177,6 +179,26 @@ WHERE study_id = @STUDYKEY
 AND ark_function_id = (SELECT ID FROM study.ark_function WHERE name = 'LIMS_COLLECTION');
 
 
+select * from lims.biocollection_custom_field_data
+where custom_Field_display_id in(
+
+select id from study.custom_field_display where custom_field_id in 
+(
+select id from study.custom_field where study_id = 22
+)
+);
+
+
+
+select * from study.custom_field_display where custom_field_id in 
+(
+select id from study.custom_field where study_id = 22
+);
+
+
+select * from study.custom_field where study_id = 22
+
+
 -- inset actual biocollection custopm field data itself now
 -- Normal text/character data
 INSERT INTO `lims`.`biocollection_custom_field_data`
@@ -194,7 +216,7 @@ AND bfg.FIELDKEY = bf.FIELDKEY
 AND bf.DOMAIN = bg.DOMAIN
 AND bf.TYPEKEY = bft.TYPEKEY
 AND bg.GROUP_NAME = @STUDY_GROUP_NAME -- like 'WARTN%'
-AND bg.DOMAIN = 'ADMISSIONS'
+-- AND bg.DOMAIN = 'ADMISSIONS'
 AND bd.FIELDKEY = bf.FIELDKEY
 AND bd.DOMAINKEY = adm.ADMISSIONKEY
 AND adm.DELETED = 0
@@ -202,10 +224,14 @@ AND cf.study_id = @STUDYKEY
 AND ark_function_id = (SELECT ID FROM study.ark_function WHERE name = 'LIMS_COLLECTION')
 AND cf.id = cfd.custom_field_id
 AND cf.NAME = bf.COLUMNNAME
-AND bc.NAME = adm.ADMISSIONID
+AND bc.BIOCOLLECTION_UID = adm.ADMISSIONID
 AND bc.STUDY_ID = adm.COLLECTIONGROUPKEY
 AND bf.LOVTYPE IS NULL
 AND STRING_VALUE IS NOT NULL;
+
+select * from study.study where id = @STUDYKEY
+
+select * from  wagerlab.IX_BIODATA bd, wagerlab.ix_biodata_group bg where group_name = @STUDY_GROUP_NAME
 
 -- Drop-down data as migrated into encoded values
 INSERT INTO `lims`.`biocollection_custom_field_data`
@@ -303,6 +329,17 @@ AND bf.TYPEKEY = bft.TYPEKEY
 AND bg.GROUP_NAME = @STUDY_GROUP_NAME -- like (@STUDYNAME || '%')
 AND bg.DOMAIN = 'BIOSPECIMEN'
 ORDER BY bfg.POSITION;
+
+-- 
+
+select * from lims.biospecimen_custom_field_data
+where custom_Field_display_id in(
+
+select id from study.custom_field_display where custom_field_id in 
+(
+select id from study.custom_field where study_id = 17
+)
+);
 
 -- Insert Custom field display (Biospecimen)
 INSERT INTO `study`.`custom_field_display`
