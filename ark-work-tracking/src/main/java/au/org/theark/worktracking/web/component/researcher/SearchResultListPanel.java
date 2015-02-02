@@ -80,7 +80,12 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.RESEARCHER_ROLE, ""));
 				}
-
+				if (researcher.getResearcherStatus() != null) {
+					item.add(new Label(Constants.RESEARCHER_STATUS, researcher.getResearcherStatus().getName()));
+				}
+				else {
+					item.add(new Label(Constants.RESEARCHER_STATUS, ""));
+				}
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= 1L;
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -51,6 +52,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		Example researcherRole = Example.create(new ResearcherRole());
 		Criteria criteria = getSession().createCriteria(ResearcherRole.class)
 				.add(researcherRole);
+		criteria.addOrder(Order.asc("orderId"));
 		return criteria.list();
 	}
 

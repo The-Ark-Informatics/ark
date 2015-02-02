@@ -29,6 +29,11 @@
 					<wicket:message	key="work.researcher.role">Role:</wicket:message>
 				</label>
 			</th>
+			<th width="20%">
+				<label for="status">
+					<wicket:message	key="work.researcher.status">Status:</wicket:message>
+				</label>
+			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -51,12 +56,15 @@
 			<td width="20%">
 				<span wicket:id="researcher.researcherRole">Role name</span>
 			</td>
+			<td width="20%">
+				<span wicket:id="researcher.researcherStatus">Status</span>
+			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="5"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="6"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>
