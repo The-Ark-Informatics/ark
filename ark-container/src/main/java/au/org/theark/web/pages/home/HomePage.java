@@ -234,7 +234,9 @@ public class HomePage extends BasePage {
 				}
 			}
 			
-			
+			//Only add the global search tab once, at the end of the tabs
+			ITab globalSearchTab = studyMainTabProvider.createTab(au.org.theark.core.Constants.ARK_MODULE_GLOBAL_SEARCH);
+			moduleTabsList.add(globalSearchTab);
 			
 			// Only display admin tab for the super user
 			ArkModule arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_ADMIN);

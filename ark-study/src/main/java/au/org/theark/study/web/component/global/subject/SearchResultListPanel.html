@@ -1,0 +1,167 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">
+		&nbsp;
+	</div>
+<!-- TODO ASAP  do we need this div??? -->
+	<div wicket:id="resultsWmc">
+	<table width="0%" cellspacing="0">
+	</table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="10%">
+				<label for="Id">
+					<wicket:message	key="subjectUID">
+						Subject ID:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="study">
+					<wicket:message	key="study">
+						Study:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="fullName">
+					<wicket:message	key="fullName">
+						Full Name:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="preferredName">
+					<wicket:message	key="previousLastName">
+						was Preferred Name now previouslastname:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="dob">
+					<wicket:message	key="dateOfBirth">
+						Date Of Birth:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="vitalStatus">
+					<wicket:message	key="vitalStatus">
+						Vital Status:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="gender">
+					<wicket:message	key="gender">
+						Gender:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="subjectStatus">
+					<wicket:message	key="subjectStatus">
+						Subject Status:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<wicket:message	key="consentStatus">
+						Consent Status:
+				</wicket:message>
+			</th>
+			<th width="10%">
+				<label for="otherID">
+					<wicket:message key="linkSubjectStudy.person.otherIDs.otherID">
+						Other IDs:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<!--	The Data Result Set -->
+		<tr wicket:id="subjectList">
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="10%">
+				<a href="#"wicket:id="linkSubjectStudy.subjectUID">
+					<span wicket:id="subjectKeyLbl">
+						UID500
+					</span>
+				</a>
+			</td>
+			<td width="10%">
+				<span wicket:id="study">
+					Study
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="subjectFullName">
+					Full Name
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="linkSubjectStudy.person.previouslastnamehistory.lastname">
+					was Preferred Name now previous last name
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="linkSubjectStudy.person.dateOfBirth">
+					Date Of Birth:
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="linkSubjectStudy.person.vitalStatus.name">
+					Vital Status
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="linkSubjectStudy.person.genderType.name">
+					Gender
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="linkSubjectStudy.subjectStatus.name">
+					Subject Status
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="linkSubjectStudy.consentStatus.name">
+					Consent Status
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="linkSubjectStudy.person.otherIDs.otherID">
+					Other IDs
+				</span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+	
+		<tfoot>
+			<tr>
+				<td width="2%">
+					&nbsp;
+				</td>
+				<td width="96%" colspan="9">
+					<span wicket:id="navigator" class="a">
+					</span>			
+				</td>
+				<td width="2%">
+					&nbsp;
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+	<table width="0%" cellspacing="0">
+		<wicket:container wicket:id="toolbars"></wicket:container>
+	</table>
+	</div>
+</wicket:panel>

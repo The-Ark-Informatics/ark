@@ -845,9 +845,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	public long getStudySubjectCount(SubjectVO subjectVO) {
 		// Handle for study not in context
-		if (subjectVO.getLinkSubjectStudy().getStudy() == null) {
-			return 0;
-		}
+		// GEORGE - 30/1/15 Removed handle to allow for global search. Need to test to see if this fails anywhere.
+//		if (subjectVO.getLinkSubjectStudy().getStudy() == null) {
+//			return 0;
+//		}
 
 		Criteria criteria = buildGeneralSubjectCriteria(subjectVO);
 		criteria.setProjection(Projections.rowCount());
@@ -858,8 +859,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	private Criteria buildGeneralSubjectCriteria(SubjectVO subjectVO) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.createAlias("person", "p");
-		criteria.add(Restrictions.eq("study.id", subjectVO.getLinkSubjectStudy().getStudy().getId()));
-
+		if(subjectVO.getLinkSubjectStudy().getStudy() != null) {
+			criteria.add(Restrictions.eq("study.id", subjectVO.getLinkSubjectStudy().getStudy().getId()));
+		} else {
+			criteria.add(Restrictions.in("study", subjectVO.getStudyList()));
+		}
 		if (subjectVO.getLinkSubjectStudy().getPerson() != null) {
 
 			if (subjectVO.getLinkSubjectStudy().getPerson().getId() != null) {
