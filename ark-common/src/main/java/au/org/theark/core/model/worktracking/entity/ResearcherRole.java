@@ -21,6 +21,7 @@ public class ResearcherRole implements Serializable {
 	private Long			id;
 	private String			name;
 	private String			description;
+	private Integer			orderId;
 	private Set<Researcher>	researchers	= new HashSet<Researcher>(0);
 
 
@@ -79,6 +80,14 @@ public class ResearcherRole implements Serializable {
 	public void setResearchers(Set<Researcher> researchers) {
 		this.researchers = researchers;
 	}
-	
+
+	@Column(name = "ORDER_ID")
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
 
 }
