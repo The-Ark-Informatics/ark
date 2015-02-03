@@ -300,6 +300,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 //		cpmModel.getObject().getLinkSubjectStudy().setStudy(study);
 //		boolean parentStudy = (study.getParentStudy() == null || (study.getParentStudy() == study)) && cpmModel.getObject().isEnableNewButton();
 //		newButton.setEnabled(parentStudy);
+		newButton.setEnabled(false);
 		super.onBeforeRender();
 	}
 }
