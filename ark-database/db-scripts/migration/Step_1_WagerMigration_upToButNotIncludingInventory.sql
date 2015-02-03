@@ -784,7 +784,8 @@ UPDATE lims.biospecimen b
     ORDER BY oldparent_id) p ON b.id = p.id 
 SET 
     b.parent_id = p.parent_id,
-    b.parentid = p.parentid;
+    b.parentid = p.parentid
+WHERE b.study_id = @studykey;
 
 -- Insert bio_transactions
 -- Trav : these may now need units themselves (just take from biospecimen) - we will just run a fix up script after to make sure the units are the correct references.
