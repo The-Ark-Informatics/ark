@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
@@ -53,7 +54,8 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	private IWorkTrackingService iWorkTrackingService;
 	
 	private TextField<String>								billableItemIdTxtField;
-	private TextField<String>								billableItemDescriptionTxtField;
+//	private TextField<String>								billableItemDescriptionTxtField;
+	private TextArea<String>								billableItemDescriptionTxtField;
 	private TextField<String>								billableItemQuantityTxtField;
 	private TextField<String>								billableItemItemCostTxtField;
 	private DateTextField									billableItemCommenceDateDp;
@@ -96,7 +98,8 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	public void initialiseDetailForm() {
 		billableItemIdTxtField=new TextField<String>(Constants.BILLABLE_ITEM_ID);
 		billableItemIdTxtField.setEnabled(false);
-		billableItemDescriptionTxtField=new TextField<String>(Constants.BILLABLE_ITEM_DESCRIPTION);
+//		billableItemDescriptionTxtField=new TextField<String>(Constants.BILLABLE_ITEM_DESCRIPTION);
+		billableItemDescriptionTxtField=new TextArea<String>(Constants.BILLABLE_ITEM_DESCRIPTION);
 		billableItemQuantityTxtField=new TextField<String>(Constants.BILLABLE_ITEM_QUANTITY){
 			private static final long serialVersionUID = 1L;
 

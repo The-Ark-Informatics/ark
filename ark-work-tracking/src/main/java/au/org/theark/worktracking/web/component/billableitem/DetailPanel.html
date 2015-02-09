@@ -116,7 +116,7 @@
 			</div>
 			<div class="fldControl">
 				<div class="label">
-					<span wicket:id="workRequestDescription">request description </span>
+					<span wicket:id="workRequestDescription" maxlength="255">request description </span>
 				</div>
 			</div>
 			
@@ -136,7 +136,7 @@
 			</div>
 			<div class="fldControl">
 				<div class="label">
-					<input wicket:id="billableItem.description"	type="text" />
+					<textarea wicket:id="billableItem.description"	type="text" maxlength="255" />
 					
 				</div>
 			</div>
@@ -235,6 +235,11 @@
 								GST%:
 							</wicket:message>	
 						</label>	
+				</div>
+				<div class="note">
+						<wicket:message	key="work.billableitem.gst.note">
+							[Note replaced from properties]
+						</wicket:message>
 				</div>
 			</div>
 			

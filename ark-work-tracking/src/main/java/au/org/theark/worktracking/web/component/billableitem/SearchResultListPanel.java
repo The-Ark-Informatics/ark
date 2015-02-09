@@ -53,12 +53,16 @@ public class SearchResultListPanel extends Panel {
 
 				BillableItem billableItem = item.getModelObject();
 
-				if (billableItem.getId() != null) {
-					item.add(new Label(Constants.BILLABLE_ITEM_ID, billableItem.getId().toString()));
-				}
-				else {
-					item.add(new Label(Constants.BILLABLE_ITEM_ID, ""));
-				}
+				//ARK-1392
+//				if (billableItem.getId() != null) {
+//					item.add(new Label(Constants.BILLABLE_ITEM_ID, billableItem.getId().toString()));
+//				}
+//				else {
+//					item.add(new Label(Constants.BILLABLE_ITEM_ID, ""));
+//				}
+				
+				item.add(buildLink(billableItem));
+				
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);	
 				String commenceDate = "";
 				if (billableItem.getCommenceDate() != null) {
@@ -84,7 +88,8 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST, ""));
 				}
 				
-				item.add(buildLink(billableItem));
+				//ARK-1392
+				//item.add(buildLink(billableItem));
 				
 				if (billableItem.getQuantity() != null) {
 					DecimalFormat qunatityFormat = new DecimalFormat("#0.##");
@@ -101,13 +106,14 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_COST, ""));
 				}
-				if (billableItem.getWorkRequest()!=null && billableItem.getWorkRequest().getGstAllow() != null) {
-					
-					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST_GST_ALLOW, billableItem.getWorkRequest().getGstAllow()?"Yes":"No"));
-				}
-				else {
-					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST_GST_ALLOW, "No"));
-				}
+				//ARK-1392
+//				if (billableItem.getWorkRequest()!=null && billableItem.getWorkRequest().getGstAllow() != null) {
+//					
+//					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST_GST_ALLOW, billableItem.getWorkRequest().getGstAllow()?"Yes":"No"));
+//				}
+//				else {
+//					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST_GST_ALLOW, "No"));
+//				}
 				if (billableItem.getWorkRequest()!=null && billableItem.getWorkRequest().getGst() != null) {
 					
 					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST_GST, df.format(billableItem.getWorkRequest().getGst())));
@@ -163,7 +169,10 @@ public class SearchResultListPanel extends Panel {
 
 	@SuppressWarnings( { "serial" })
 	private AjaxLink buildLink(final BillableItem billableItem) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.BILLABLE_ITEM_DESCRIPTION) {
+		
+		//ARK-1392
+//		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.BILLABLE_ITEM_DESCRIPTION) {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.BILLABLE_ITEM_ID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 
@@ -195,7 +204,9 @@ public class SearchResultListPanel extends Panel {
 				}
 			}
 		};
-		Label nameLinkLabel = new Label("nameLbl", billableItem.getDescription());
+		//ARK-1392
+//		Label nameLinkLabel = new Label("nameLbl", billableItem.getDescription());
+		Label nameLinkLabel = new Label("nameLbl", billableItem.getId().toString());
 		link.add(nameLinkLabel);
 		return link;
 	}
