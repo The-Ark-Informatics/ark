@@ -161,7 +161,7 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 		getModelObject().getWorkRequest().setRequestedDate(new Date());
 		preProcessDetailPanel(target);
 		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST_ALLOW).setEnabled(true);
-		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST).setEnabled(true);
+		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST).setEnabled(false);
 	}
 
 	/*

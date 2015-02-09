@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -39,31 +40,31 @@ import au.org.theark.worktracking.util.NumberValidatable;
 import au.org.theark.worktracking.util.ValidatableItemType;
 
 public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
-	
-	public static final long	serialVersionUID	= -8267651986631341353L;
+
+	public static final long serialVersionUID = -8267651986631341353L;
 
 	@SpringBean(name = Constants.WORK_TRACKING_SERVICE)
 	private IWorkTrackingService iWorkTrackingService;
-	
-	private TextField<String>				workRequestIdTxtField;
-	private TextField<String>				workRequestItemNameTxtField;
-	
-	private TextArea<String>				workRequestDescriptionTxtArea;
-	
-	private DateTextField					workRequestRequestedDateDp;
-	private DateTextField					workRequestCommencedDateDp;
-	private DateTextField					workRequestCompletedDateDp;
-	
-	private DropDownChoice<WorkRequestStatus>		 workRequestStatuses;
-	private DropDownChoice<Researcher>		 workRequestResearchers;
-	
+
+	private TextField<String> workRequestIdTxtField;
+	private TextField<String> workRequestItemNameTxtField;
+
+	private TextArea<String> workRequestDescriptionTxtArea;
+
+	private DateTextField workRequestRequestedDateDp;
+	private DateTextField workRequestCommencedDateDp;
+	private DateTextField workRequestCompletedDateDp;
+
+	private DropDownChoice<WorkRequestStatus> workRequestStatuses;
+	private DropDownChoice<Researcher> workRequestResearchers;
+
 	private List<WorkRequestStatus> workRequestStatusList;
 	private List<Researcher> researcherList;
-	
-	private TextField<String>				billableItemGstTxtField;
-	private CheckBox						billableItemGstAllowCheckBox;
-	
-	private FeedbackPanel		feedBackPanel;
+
+	private TextField<String> billableItemGstTxtField;
+	private CheckBox billableItemGstAllowCheckBox;
+
+	private FeedbackPanel feedBackPanel;
 
 	/**
 	 * 
@@ -83,68 +84,79 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	}
 
 	public void initialiseDetailForm() {
-		workRequestIdTxtField=new TextField<String>(Constants.WORK_REQUEST_ID);   
+		workRequestIdTxtField = new TextField<String>(Constants.WORK_REQUEST_ID);
 		workRequestIdTxtField.setEnabled(false);
-		workRequestItemNameTxtField=new TextField<String>(Constants.WORK_REQUEST_ITEM_NAME);       
-		workRequestRequestedDateDp=new DateTextField(Constants.WORK_REQUEST_REQUESTED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
+		workRequestItemNameTxtField = new TextField<String>(Constants.WORK_REQUEST_ITEM_NAME);
+		workRequestRequestedDateDp = new DateTextField(Constants.WORK_REQUEST_REQUESTED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		initDateTextField(workRequestRequestedDateDp);
-		workRequestCommencedDateDp=new DateTextField(Constants.WORK_REQUEST_COMMENCED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);      
+		workRequestCommencedDateDp = new DateTextField(Constants.WORK_REQUEST_COMMENCED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		initDateTextField(workRequestCommencedDateDp);
-		workRequestCompletedDateDp=new DateTextField(Constants.WORK_REQUEST_COMPLETED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
+		workRequestCompletedDateDp = new DateTextField(Constants.WORK_REQUEST_COMPLETED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		initDateTextField(workRequestCompletedDateDp);
 		initWorkRequestStatusDropDown();
 		initResearcherDropDown();
-		
-		workRequestDescriptionTxtArea=new TextArea<String>(Constants.WORK_REQUEST_DESCRIPTION); 
-		
+
+		workRequestDescriptionTxtArea = new TextArea<String>(Constants.WORK_REQUEST_DESCRIPTION);
+
 		billableItemGstAllowCheckBox = new CheckBox(Constants.WORK_REQUEST_GST_ALLOW);
-		billableItemGstTxtField = new TextField<String>(Constants.WORK_REQUEST_GST){
+
+		billableItemGstAllowCheckBox.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				if (billableItemGstAllowCheckBox.getModelObject()) {
+					billableItemGstTxtField.setEnabled(true);
+				} else {
+					billableItemGstTxtField.setEnabled(false);
+					containerForm.getModelObject().getWorkRequest().setGst(null);
+				}
+				target.add(billableItemGstTxtField);
+			}
+		});
+
+		billableItemGstTxtField = new TextField<String>(Constants.WORK_REQUEST_GST) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public <C> IConverter<C> getConverter(Class<C> type) {
-				  	DoubleConverter converter = (DoubleConverter)DoubleConverter.INSTANCE;
-					NumberFormat format = converter.getNumberFormat(getLocale());
-					format.setMinimumFractionDigits(2);
-					converter.setNumberFormat(getLocale(), format);
-					return (IConverter<C>) converter; 
+				DoubleConverter converter = (DoubleConverter) DoubleConverter.INSTANCE;
+				NumberFormat format = converter.getNumberFormat(getLocale());
+				format.setMinimumFractionDigits(2);
+				converter.setNumberFormat(getLocale(), format);
+				return (IConverter<C>) converter;
 			}
 		};
-		
+
 		addDetailFormComponents();
 		attachValidators();
 	}
-	
+
 	private void initResearcherDropDown() {
-		Researcher researcher=new Researcher();
+		Researcher researcher = new Researcher();
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		researcher.setStudyId(studyId);
-		this.researcherList=iWorkTrackingService.searchResearcher(researcher);
+		this.researcherList = iWorkTrackingService.searchResearcher(researcher);
 		IChoiceRenderer customChoiceRenderer = new IChoiceRenderer<Researcher>() {
 			private static final long serialVersionUID = 1L;
 
 			public Object getDisplayValue(Researcher researcher) {
-				return researcher.getFirstName()+" "+researcher.getLastName();
+				return researcher.getFirstName() + " " + researcher.getLastName();
 			}
 
 			public String getIdValue(Researcher researcher, int index) {
 				return researcher.getId().toString();
 			}
-			
+
 		};
-		workRequestResearchers = new DropDownChoice(Constants.WORK_REQUEST_RESEARCHER,  this.researcherList, customChoiceRenderer);
+		workRequestResearchers = new DropDownChoice(Constants.WORK_REQUEST_RESEARCHER, this.researcherList, customChoiceRenderer);
 	}
-
-		
-
 
 	private void initWorkRequestStatusDropDown() {
-		this.workRequestStatusList=iWorkTrackingService.getWorkRequestStatuses();
+		this.workRequestStatusList = iWorkTrackingService.getWorkRequestStatuses();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		workRequestStatuses = new DropDownChoice(Constants.WORK_REQUEST_REQUEST_STATUS,  this.workRequestStatusList, defaultChoiceRenderer);
+		workRequestStatuses = new DropDownChoice(Constants.WORK_REQUEST_REQUEST_STATUS, this.workRequestStatusList, defaultChoiceRenderer);
 	}
-	
-	public void addDetailFormComponents() {	
+
+	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(workRequestIdTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(workRequestItemNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(workRequestRequestedDateDp);
@@ -153,17 +165,17 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(workRequestStatuses);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(workRequestDescriptionTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(workRequestResearchers);
-		
+
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemGstAllowCheckBox);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemGstTxtField);
 	}
-	
-	private void initDateTextField(DateTextField dateTextField){
+
+	private void initDateTextField(DateTextField dateTextField) {
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateTextField);
 		dateTextField.add(datePicker);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -172,14 +184,12 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	@Override
 	protected void attachValidators() {
 		workRequestItemNameTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_REQUEST_ITEM_NAME_REQUIRED, workRequestItemNameTxtField, new Model<String>(Constants.WORK_REQUEST_ITEM_NAME_TAG)));
-		workRequestItemNameTxtField.add(StringValidator.lengthBetween(1, 50)).setLabel(
-				new StringResourceModel(Constants.ERROR_WORK_REQUEST_ITEM_NAME_LENGTH, workRequestItemNameTxtField, new Model<String>(Constants.WORK_REQUEST_ITEM_NAME_TAG)));
-		workRequestDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(
-				new StringResourceModel(Constants.ERROR_WORK_REQUEST_DESCRIPTION_LENGTH, workRequestDescriptionTxtArea, new Model<String>(Constants.WORK_REQUEST_DESCRIPTION_TAG)));
+		workRequestItemNameTxtField.add(StringValidator.lengthBetween(1, 50)).setLabel(new StringResourceModel(Constants.ERROR_WORK_REQUEST_ITEM_NAME_LENGTH, workRequestItemNameTxtField, new Model<String>(Constants.WORK_REQUEST_ITEM_NAME_TAG)));
+		workRequestDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel(Constants.ERROR_WORK_REQUEST_DESCRIPTION_LENGTH, workRequestDescriptionTxtArea, new Model<String>(Constants.WORK_REQUEST_DESCRIPTION_TAG)));
 		workRequestRequestedDateDp.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_REQUEST_REQUESTED_DATE_REQUIRED, workRequestRequestedDateDp, new Model<String>(Constants.WORK_REQUEST_REQUESTED_DATE_TAG)));
 		workRequestStatuses.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_REQUEST_STATUS_REQUIRED, workRequestStatuses, new Model<String>(Constants.WORK_REQUEST_STATUS_TAG)));
 		workRequestResearchers.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_REQUEST_RESEARCHER_REQUIRED, workRequestResearchers, new Model<String>(Constants.WORK_REQUEST_RESEARCHER_TAG)));
-		billableItemGstTxtField.add(new PatternValidator(Constants.TWO_DECIMAL_PATTERN){
+		billableItemGstTxtField.add(new PatternValidator(Constants.TWO_DECIMAL_PATTERN) {
 			/**
 			 * 
 			 */
@@ -187,15 +197,17 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 
 			@Override
 			protected void onValidate(IValidatable<String> validatable) {
-				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.GST));
+				super.onValidate(new NumberValidatable(validatable, ValidatableItemType.GST));
 			}
-			});	
+		});
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see au.org.theark.core.web.form.AbstractDetailForm#onCancel(org.apache.wicket.ajax.AjaxRequestTarget)
+	 * @see
+	 * au.org.theark.core.web.form.AbstractDetailForm#onCancel(org.apache.wicket
+	 * .ajax.AjaxRequestTarget)
 	 */
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
@@ -206,52 +218,48 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see au.org.theark.core.web.form.AbstractDetailForm#onSave(org.apache.wicket.markup.html.form.Form, org.apache.wicket.ajax.AjaxRequestTarget)
+	 * @see
+	 * au.org.theark.core.web.form.AbstractDetailForm#onSave(org.apache.wicket
+	 * .markup.html.form.Form, org.apache.wicket.ajax.AjaxRequestTarget)
 	 */
 	@Override
 	protected void onSave(Form<WorkRequestVo> containerForm, AjaxRequestTarget target) {
 
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
 
-		if(isWorkRequestHasvalidDateValues(target)){
-		
-		WorkRequest workRequest = containerForm.getModelObject().getWorkRequest();
-			
-		try {
-			
-			if (workRequest.getId() == null) {
-				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				workRequest.setStudyId(studyId);
-				
-				
-				iWorkTrackingService.createWorkRequest(workRequest);
-				this.info("Work Request " + workRequest.getName()  + " was created successfully");
-				processErrors(target);
-			}
-			else {
-				WorkRequestBillableItemVo workBillableItemVo = iWorkTrackingService.getWorkRequestBillableItem(workRequest);
-				if(workBillableItemVo !=null 
-						&& workBillableItemVo.getBillableItemCount() > 0
-						&& (!ObjectUtils.equals(workBillableItemVo.getGstAllow(), workRequest.getGstAllow())
-						|| !ObjectUtils.equals(workBillableItemVo.getGst(), workRequest.getGst()))){
-					this.error("Cannot change GST value since a billable item has been recorded for this work request.");
+		if (isWorkRequestHasvalidDateValues(target)) {
+
+			WorkRequest workRequest = containerForm.getModelObject().getWorkRequest();
+
+			try {
+
+				if (workRequest.getId() == null) {
+					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					workRequest.setStudyId(studyId);
+
+					iWorkTrackingService.createWorkRequest(workRequest);
+					this.info("Work Request " + workRequest.getName() + " was created successfully");
 					processErrors(target);
-					return ;	
+				} else {
+					WorkRequestBillableItemVo workBillableItemVo = iWorkTrackingService.getWorkRequestBillableItem(workRequest);
+					if (workBillableItemVo != null && workBillableItemVo.getBillableItemCount() > 0 && (!ObjectUtils.equals(workBillableItemVo.getGstAllow(), workRequest.getGstAllow()) || !ObjectUtils.equals(workBillableItemVo.getGst(), workRequest.getGst()))) {
+						this.error("Cannot change GST value since a billable item has been recorded for this work request.");
+						processErrors(target);
+						return;
+					}
+
+					iWorkTrackingService.updateWorkRequest(containerForm.getModelObject().getWorkRequest());
+					this.info("Work Request " + containerForm.getModelObject().getWorkRequest().getName() + " was updated successfully");
+					processErrors(target);
 				}
-				
-				iWorkTrackingService.updateWorkRequest(containerForm.getModelObject().getWorkRequest());
-				this.info("Work Request " +  containerForm.getModelObject().getWorkRequest().getName() + " was updated successfully");
+
+				onSavePostProcess(target);
+
+			} catch (Exception e) {
+				this.error("A System error occured, we will have someone contact you.");
 				processErrors(target);
 			}
 
-			onSavePostProcess(target);
-
-		}
-		catch (Exception e) {
-			this.error("A System error occured, we will have someone contact you.");
-			processErrors(target);
-		}
-		
 		}
 
 	}
@@ -259,62 +267,54 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see au.org.theark.core.web.form.AbstractDetailForm#processErrors(org.apache.wicket.ajax.AjaxRequestTarget)
+	 * @see
+	 * au.org.theark.core.web.form.AbstractDetailForm#processErrors(org.apache
+	 * .wicket.ajax.AjaxRequestTarget)
 	 */
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
 		target.add(feedBackPanel);
 	}
-	
-	private boolean isWorkRequestHasvalidDateValues(final AjaxRequestTarget target){
-		boolean result=true;
-		WorkRequest workRequest= containerForm.getModelObject().getWorkRequest();
-		
-		Date requestedDate 	= workRequest.getRequestedDate();
-		Date commenceDate 	= workRequest.getCommencedDate();
-		Date completedDate	= workRequest.getCompletedDate();
-		
-		WorkRequestStatus status= workRequest.getRequestStatus();
 
-		if("Not Commenced".equalsIgnoreCase(status.getName())
-				&& requestedDate==null){
+	private boolean isWorkRequestHasvalidDateValues(final AjaxRequestTarget target) {
+		boolean result = true;
+		WorkRequest workRequest = containerForm.getModelObject().getWorkRequest();
+
+		Date requestedDate = workRequest.getRequestedDate();
+		Date commenceDate = workRequest.getCommencedDate();
+		Date completedDate = workRequest.getCompletedDate();
+
+		WorkRequestStatus status = workRequest.getRequestStatus();
+
+		if ("Not Commenced".equalsIgnoreCase(status.getName()) && requestedDate == null) {
 			this.error("Request date is mandatory when status is not commenced");
 			processErrors(target);
 			return false;
-		}
-		else if("Commenced".equalsIgnoreCase(status.getName())
-				&& (requestedDate==null || commenceDate ==null)){
+		} else if ("Commenced".equalsIgnoreCase(status.getName()) && (requestedDate == null || commenceDate == null)) {
 			this.error("Request date and commence date are mandatory when status is commenced");
 			processErrors(target);
 			return false;
-		}else if("Completed".equalsIgnoreCase(status.getName())
-				&& (requestedDate==null || commenceDate ==null || completedDate==null)){
+		} else if ("Completed".equalsIgnoreCase(status.getName()) && (requestedDate == null || commenceDate == null || completedDate == null)) {
 			this.error("Request date, commence date and completed date are mandatory when status is completed");
 			processErrors(target);
 			return false;
 		}
-				
-		if(commenceDate !=null 
-				|| completedDate != null) {
-			if(commenceDate ==null 
-					&& completedDate !=null){
+
+		if (commenceDate != null || completedDate != null) {
+			if (commenceDate == null && completedDate != null) {
 				this.error("Update the commence date before update the complete date");
 				processErrors(target);
 				return false;
+			} else if (commenceDate != null && commenceDate.compareTo(requestedDate) < 0) {
+				this.error("Commence date should be same or later than the request date");
+				processErrors(target);
+				return false;
+			} else if (completedDate != null && completedDate.compareTo(commenceDate) < 0) {
+				this.error("Complete date should be same or later than the commence date");
+				processErrors(target);
+				return false;
 			}
-			else if(commenceDate != null  
-					&& commenceDate.compareTo(requestedDate)<0){
-					this.error("Commence date should be same or later than the request date");
-					processErrors(target);
-					return false;	
-			}
-			else if(completedDate != null 
-					&& completedDate.compareTo(commenceDate)<0){
-					this.error("Complete date should be same or later than the commence date");
-					processErrors(target);
-					return false;
-			}
-			
+
 		}
 		return true;
 	}
@@ -322,16 +322,15 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			Long count = iWorkTrackingService.getBillableItemCount(containerForm.getModelObject().getWorkRequest());
-			if(count == 0){
+			if (count == 0) {
 				iWorkTrackingService.deleteWorkRequest(containerForm.getModelObject().getWorkRequest());
 				containerForm.info("The Work Request was deleted successfully.");
 				editCancelProcess(target);
-			}else{
+			} else {
 				containerForm.error("Cannot Delete this Work Request Component. This Work Request is associated with existing Billable Items ");
 				processErrors(target);
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			containerForm.error("A System Error has occured please contact support.");
 			processErrors(target);
 		}
@@ -346,8 +345,7 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	protected boolean isNew() {
 		if (containerForm.getModelObject().getWorkRequest().getId() == null) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 

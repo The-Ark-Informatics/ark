@@ -135,14 +135,19 @@
 							<wicket:message	key="work.workrequest.gst">
 								GST%:
 							</wicket:message>	
-					</label>	
+					</label>
 				</div>
 			</div>
 			
 			<div class="fldControl">
 				<div class="label" >
 					<input type="checkbox" wicket:id="workRequest.gstAllow" />
-					<input type="text" wicket:id="workRequest.gst" />
+					<label for="gstAmt">
+							<wicket:message	key="work.workrequest.gstAmt">
+								GST%:
+							</wicket:message>	
+					</label>	
+					<input type="text" wicket:id="workRequest.gst" size=2 maxlength="4" />
 				</div>
 			</div>
 			

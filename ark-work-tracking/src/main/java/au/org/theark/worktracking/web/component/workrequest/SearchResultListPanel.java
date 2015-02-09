@@ -135,7 +135,11 @@ public class SearchResultListPanel extends Panel {
 					arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST).setEnabled(false);
 				}else{
 					arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST_ALLOW).setEnabled(true);
-					arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST).setEnabled(true);
+					if(workRequest.getGstAllow() != null && workRequest.getGstAllow()){
+						arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST).setEnabled(true);
+					}else{
+						arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST).setEnabled(false);
+					}
 				}
 			}
 		};
