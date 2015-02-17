@@ -664,3 +664,6 @@ input, button, textarea, select { font-size: 8pt; }
 .customFieldDataView > tbody > tr > td >.label {
 	text-align: right;
 }
+nobreakws{
+	    white-space: nowrap;
+}
