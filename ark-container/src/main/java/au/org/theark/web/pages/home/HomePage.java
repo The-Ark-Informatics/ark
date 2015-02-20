@@ -49,6 +49,7 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.web.menu.AdminTabProviderImpl;
 import au.org.theark.web.menu.DiseaseTabProviderImpl;
+import au.org.theark.web.menu.GenomicsTabProviderImpl;
 import au.org.theark.web.menu.LimsTabProviderImpl;
 import au.org.theark.web.menu.MainTabProviderImpl;
 import au.org.theark.web.menu.PhenotypicTabProviderImpl;
@@ -229,6 +230,15 @@ public class HomePage extends BasePage {
 					ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl((au.org.theark.core.Constants.ARK_MODULE_REPORTING));
 					List<ITab> reportTabList = reportTabProvider.buildTabs();
 					for (ITab tab : reportTabList) {
+						moduleTabsList.add(tab);
+					}
+				}
+				
+				if(arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_GENOMICS)){
+					// Reporting always displayed, but data extraction function requires role/permisssion 
+					GenomicsTabProviderImpl genomicsTabProvider = new GenomicsTabProviderImpl((au.org.theark.core.Constants.ARK_MODULE_GENOMICS));
+					List<ITab> genomicsTabList = genomicsTabProvider.buildTabs();
+					for (ITab tab : genomicsTabList) {
 						moduleTabsList.add(tab);
 					}
 				}
