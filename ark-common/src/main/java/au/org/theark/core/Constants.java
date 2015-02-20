@@ -176,6 +176,7 @@ public class Constants {
 	public static final String GENO_SCHEMA = "geno";
 	public static final String CONFIG_SCHEMA = "config";
 	public static final String DISEASE_SCHEMA = "disease";
+	public static final String SPARK_SCHEMA = "spark";
 
 	/* Geno fields for output in dataextraction - will later allow choice
 	 * - these are used in a linked hash map often, so please 
@@ -336,6 +337,7 @@ public class Constants {
 	public static final String ARK_MODULE_WORKTRACKING = "Work Tracking";
 	public static final String ARK_MODULE_DISEASE = "Disease";
 	public static final String ARK_MODULE_GLOBAL_SEARCH = "Global Search";
+	public static final String ARK_MODULE_GENOMICS = "Genomics";
 
 	public static final char DEFAULT_DELIMITER_CHARACTER = ',';
 	public static final String DEFAULT_FILE_FORMAT = "CSV";
