@@ -1,0 +1,7 @@
+INSERT INTO `study`.`ark_function` (`NAME`, `DESCRIPTION`, `ARK_FUNCTION_TYPE_ID`, `RESOURCE_KEY`) 
+VALUES ('MICRO_SERVICE', 'Define service access points', (SELECT `ID` FROM `STUDY`.`ARK_FUNCTION_TYPE` WHERE  `NAME` = 'NON-REPORT'), 'tab.module.genomics.microservice');
+
+INSERT INTO `study`.`ark_module_function` (`ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `FUNCTION_SEQUENCE`) 
+VALUES ((SELECT `ID` FROM `STUDY`.`ARK_MODULE` WHERE `NAME` ='GENOMICS'), (SELECT `ID` FROM `STUDY`.`ARK_FUNCTION` WHERE `NAME` ='MICRO_SERVICE'), '1');
+
+
