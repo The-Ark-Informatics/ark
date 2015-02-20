@@ -1,0 +1,66 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			  
+			<th width="5%">
+				<label for="id">
+					<wicket:message	key="genomics.microservice.id">ID:</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="name">
+					<wicket:message	key="genomics.microservice.name">Organization:</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="description">
+					<wicket:message	key="genomics.microservice.description">Full Name:</wicket:message>
+				</label>
+			</th>
+			<th width="40%">
+				<label for="url">
+					<wicket:message	key="genomics.microservice.url">Last Active Date:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="status">
+					<wicket:message	key="genomics.microservice.status">Role:</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="microServiceList">
+			<td width="2%">&nbsp;</td>
+			<td width="5%">
+				<span wicket:id="microService.id">id</span>
+			</td>
+			<td width="15%">
+			  <a href="#"wicket:id="microService.name">
+			  	<span wicket:id="nameLbl">Name</span>
+			  </a>
+			</td>
+			<td width="25%">
+				<span wicket:id="microService.description">Description</span>
+			</td>
+			<td width="40%">
+				<span wicket:id="microService.serviceUrl">url</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="microService.status">Status</span>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td colspan="5"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
