@@ -94,6 +94,14 @@
 			<artifactId>ark-work-tracking</artifactId>
 			<version>${ark-work-tracking.version}</version>
 		</dependency>
+		
+		<!-- Ark Work Tracking Module -->
+		<dependency>
+			<groupId>au.org.theark.genomics</groupId>
+			<artifactId>ark-genomics</artifactId>
+			<version>${ark-genomics.version}</version>
+		</dependency>
+		
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -239,5 +247,6 @@
 		<ark-admin.version>1.0.0</ark-admin.version>
 		<ark-work-tracking.version>1.0.0</ark-work-tracking.version>
 		<ark-disease.version>1.0.0</ark-disease.version>
+		<ark-genomics.version>1.0.0</ark-genomics.version>
 	</properties>
 </project>
