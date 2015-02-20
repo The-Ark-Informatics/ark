@@ -161,6 +161,7 @@
 				<value>au.org.theark.core.model.worktracking.entity</value>
 				<value>au.org.theark.core.model.disease.entity</value>
 				<value>au.org.theark.core.model.config.entity</value>
+				<value>au.org.theark.core.model.spark.entity</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
