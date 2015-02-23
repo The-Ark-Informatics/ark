@@ -4716,7 +4716,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else {
 				biospecimenIdsAfterFiltering = getBiospecimenIdForSubjectIds(idsToInclude);
-				biospecimenList = getSession().createCriteria(Biospecimen.class).add(Restrictions.in("id", biospecimenIdsAfterFiltering)).list();
+				if(biospecimenIdsAfterFiltering.isEmpty()){
+					return Collections.EMPTY_LIST;
+				}
+				else{
+					biospecimenList = getSession().createCriteria(Biospecimen.class).add(Restrictions.in("id", biospecimenIdsAfterFiltering)).list();
+				}
 			}
 		}
 		else if((!biospecimenFields.isEmpty() || !biospecimenFilters.isEmpty()) && !idsToInclude.isEmpty()){
