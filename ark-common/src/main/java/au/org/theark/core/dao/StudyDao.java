@@ -2839,6 +2839,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 
 	private List<Long> getSubjectIdsForBiospecimenIds(List<Long> biospecimenIdsToInclude) {
+		if(biospecimenIdsToInclude == null || biospecimenIdsToInclude.isEmpty()){
+			return new ArrayList<Long>();
+		}
 		String queryString = "select bio.linkSubjectStudy.id from Biospecimen bio " 
 				+ " where bio.id in (:biospecimenIdsToInclude) ";
 		Query query = getSession().createQuery(queryString);
@@ -2848,6 +2851,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 
 	private List<Long> getSubjectIdsForPhenoDataIds(List<Long> phenoDataIdsToInclude) {
+		if(phenoDataIdsToInclude == null || phenoDataIdsToInclude.isEmpty()){
+			return new ArrayList<Long>();
+		}
 		String queryString = "select pheno.phenoCollection.linkSubjectStudy.id from PhenoData pheno " 
 							+ " where pheno.id in (:phenoDataIdsToInclude) ";
 		Query query = getSession().createQuery(queryString);
@@ -2856,6 +2862,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private List<Long> getBiospecimenIdForSubjectIds(List<Long> subjectIds) {
+		if(subjectIds == null || subjectIds.isEmpty()){
+			return new ArrayList<Long>();
+		}
 		String queryString = "select bio.id from Biospecimen bio " 
 							+ " where bio.linkSubjectStudy.id in (:subjectIds) ";
 		Query query = getSession().createQuery(queryString);
@@ -2864,6 +2873,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private List<Long> getSubjectIdsForBioCollectionIds(List<Long> bioCollectionIdsToInclude) {
+		if(bioCollectionIdsToInclude == null || bioCollectionIdsToInclude.isEmpty()){
+			return new ArrayList<Long>();
+		}
 		String queryString = "select bio.linkSubjectStudy.id from BioCollection bio " 
 							+ " where bio.id in (:bioCollectionIdsToInclude) ";
 		Query query = getSession().createQuery(queryString);
@@ -2872,6 +2884,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private List<Long> getBioCollectionIdForSubjectIds(List<Long> subjectIds) {
+		if(subjectIds == null || subjectIds.isEmpty()){
+			return new ArrayList<Long>();
+		}
 		String queryString = "select bc.id from BioCollection bc " 
 							+ " where bc.linkSubjectStudy.id in (:subjectIds) ";
 		Query query = getSession().createQuery(queryString);
