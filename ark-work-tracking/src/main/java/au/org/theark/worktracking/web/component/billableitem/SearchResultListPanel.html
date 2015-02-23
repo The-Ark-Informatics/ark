@@ -70,11 +70,13 @@
 						GST:
 					</wicket:message>
 				</label>
+				<!--  
 				<div class="note">
 						<wicket:message	key="work.billableitem.gst.note">
 							[Note replaced from properties]
 						</wicket:message>
 				</div>
+				-->
 			</th>
 			<th width="15%">
 				<label for="totalCost">
@@ -164,8 +166,9 @@
 			<td width="20%">
 				<span wicket:id="billableItem.attachmentFileName">sample file</span>
 			</td>
+			<!--  <td width="10%" valign="middle">-->
 			<td width="10%" valign="middle">
-			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />&nbsp;
+			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
