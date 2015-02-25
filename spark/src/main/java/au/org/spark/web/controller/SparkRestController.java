@@ -16,61 +16,65 @@ import au.org.spark.service.OpenStackService;
 import au.org.spark.service.SshService;
 import au.org.spark.web.view.JavaBean;
 
-
 @RestController
 public class SparkRestController {
-	
+
 	@Autowired
 	OpenStackService openStackService;
-	
+
 	@Autowired
 	SshService sshService;
-	
+
 	@Autowired
 	CassandraService CassandraService;
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public @ResponseBody JavaBean getJSONJavaBean() {
-    	openStackService.listContainers();
-        return new JavaBean();
-    }
-    
-    @RequestMapping(value = "/listContainers", method = RequestMethod.GET)
-    public @ResponseBody List<String> listContainers() {
-    	return openStackService.listContainers();
-    }
-    
-    @RequestMapping(value = "/listFiles", method = RequestMethod.GET)
-    public @ResponseBody List<String> listFiles(@RequestParam("dirName") String dirName) {
-    	List<String> list=null;
-    	try{
-    		list = sshService.listFiles(dirName);
-    	}catch(Exception e){
-    		list = new ArrayList<String>();
-    		list.add("No dir found");
-    	}
-    	return list;
-    }
-    
-    @RequestMapping(value = "/listCassandra", method = RequestMethod.GET)
-    public @ResponseBody String listCassandra() {
-    	return CassandraService.getRingMembers();
-    }
-    
-    @RequestMapping(value = "/insertCassandra", method = RequestMethod.GET)
-    public @ResponseBody String insertCassandra() {
-    	CassandraService.insert();
-    	return "SUCCESS";
-    }
-    
-    @RequestMapping(value="/mapping/producesjson", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/status", method = RequestMethod.GET)
+	public @ResponseBody String getStatus() {
+		return "Available";
+	}
+
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	public @ResponseBody JavaBean getJSONJavaBean() {
+		openStackService.listContainers();
+		return new JavaBean();
+	}
+
+	@RequestMapping(value = "/listContainers", method = RequestMethod.GET)
+	public @ResponseBody List<String> listContainers() {
+		return openStackService.listContainers();
+	}
+
+	@RequestMapping(value = "/listFiles", method = RequestMethod.GET)
+	public @ResponseBody List<String> listFiles(@RequestParam("dirName") String dirName) {
+		List<String> list = null;
+		try {
+			list = sshService.listFiles(dirName);
+		} catch (Exception e) {
+			list = new ArrayList<String>();
+			list.add("No dir found");
+		}
+		return list;
+	}
+
+	@RequestMapping(value = "/listCassandra", method = RequestMethod.GET)
+	public @ResponseBody String listCassandra() {
+		return CassandraService.getRingMembers();
+	}
+
+	@RequestMapping(value = "/insertCassandra", method = RequestMethod.GET)
+	public @ResponseBody String insertCassandra() {
+		CassandraService.insert();
+		return "SUCCESS";
+	}
+
+	@RequestMapping(value = "/mapping/producesjson", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody JavaBean byProducesJson() {
 		return new JavaBean();
 	}
-    
-    @RequestMapping(value="/mapping/producesxml", method=RequestMethod.GET, produces=MediaType.APPLICATION_XML_VALUE)
+
+	@RequestMapping(value = "/mapping/producesxml", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
 	public @ResponseBody JavaBean byProducesXml() {
 		return new JavaBean();
-	}   
+	}
 
 }
