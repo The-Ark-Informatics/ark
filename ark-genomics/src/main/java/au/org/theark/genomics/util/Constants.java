@@ -17,7 +17,7 @@ public final class Constants {
 	public static final String MICRO_SERVICE_DESCRIPTION = "microService.description";
 	public static final String MICRO_SERVICE_URL = "microService.serviceUrl";
 	public static final String MICRO_SERVICE_STATUS = "microService.status";
-	
+
 	public static final int MODE_NEW = 1;
 	public static final int MODE_EDIT = 2;
 	public static final int MODE_READ = 3;
@@ -28,7 +28,11 @@ public final class Constants {
 
 	public static final String ERROR_MICRO_SERVICE_NAME_TAG = "Micro Service Name";
 	public static final String ERROR_MICRO_SERVICE_NAME_REQUIRED = "error.microservice.name.required";
-	
+
 	public static final String ERROR_MICRO_SERVICE_URL_TAG = "Micro Service URL";
 	public static final String ERROR_MICRO_SERVICE_URL_REQUIRED = "error.microservice.url.required";
+
+	public static final String STATUS_AVAILABLE = "Available";
+
+	public static final String STATUS_NOT_AVAILABLE = "Not Available";
 }

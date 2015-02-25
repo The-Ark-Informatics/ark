@@ -1,6 +1,5 @@
 package au.org.theark.genomics.web.component.microservice.form;
 
-import org.apache.log4j.spi.LoggerFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
@@ -58,6 +57,7 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 	@Override
 	protected void attachValidators() {
 		microServiceNameTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_MICRO_SERVICE_NAME_REQUIRED, microServiceNameTxtFld, new Model<String>(Constants.ERROR_MICRO_SERVICE_NAME_TAG)));
+		microServiceTxtArea.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_MICRO_SERVICE_URL_REQUIRED, microServiceNameTxtFld, new Model<String>(Constants.ERROR_MICRO_SERVICE_URL_TAG)));
 	}
 
 	@Override
@@ -76,12 +76,11 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 				containerForm.getModelObject().getMicroService().setStudyId(studyId);
 				iGenomicService.saveOrUpdate(containerForm.getModelObject().getMicroService());
 				this.info("Micro Service " + containerForm.getModelObject().getMicroService().getName() + " was created successfully");
-				processErrors(target);
 			} else {
 				iGenomicService.saveOrUpdate(containerForm.getModelObject().getMicroService());
 				this.info("Micro Service " + containerForm.getModelObject().getMicroService().getName() + " was updated successfully");
-				processErrors(target);
 			}
+			processErrors(target);
 			onSavePostProcess(target);
 		} catch (Exception e) {
 			log.error("Error in saving micro service entity ",e);
