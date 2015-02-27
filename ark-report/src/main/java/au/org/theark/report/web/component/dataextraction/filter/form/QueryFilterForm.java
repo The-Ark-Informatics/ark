@@ -188,6 +188,9 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				if(onSave(target)) {
 					modalWindow.close(target);
 				}
+				else{
+					log.info("failed validation so don't permit save and close");
+				}
 				target.add(feedbackPanel);
 			}
 
@@ -782,12 +785,9 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				queryFilterVO.setLinkSubjectStudy(getModelObject().getParentBiospecimen().getLinkSubjectStudy());
 				
 				filterList.add(queryFilterVO);
-		
 				
 				DO I NEED ANY OF THIS< OR DO I JUST TAKE  IT DIRECTLY...THE ONLY CRAP THING IS CHOSING WHICH FIELD TO FILL OUT
 						(given it is a choice of one out of 4)
-				
-				
 				*/
 			}
 		
