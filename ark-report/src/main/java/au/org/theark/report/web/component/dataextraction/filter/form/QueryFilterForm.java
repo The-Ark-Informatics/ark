@@ -803,8 +803,9 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					log.info("Attempting to create " + getModelObject().getQueryFilterVOs().size() + " filters");
 				//TODO ASAP	iArkCommonService.createFilters(filterList);
 				} catch (ArkSystemException e) {
-					log.error("creation / object save failed " + e.getMessage());
+					log.error("creation / object save failed: " + e.getMessage());
 					error(e.getMessage());
+					return false;
 				}
 			}
 			
