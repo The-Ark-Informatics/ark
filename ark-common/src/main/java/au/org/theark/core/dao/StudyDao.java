@@ -4236,6 +4236,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public void createQueryFilters(List filterList) throws ArkSystemException {
 		List<QueryFilter> queryFilterList = (List<QueryFilter>) filterList;
 
+		log.info("query filter list = " + queryFilterList==null?"0":(""+queryFilterList.size()));
 		if (validateQueryFilters(queryFilterList)) {
 
 			for (QueryFilter filter : queryFilterList) {
@@ -4252,7 +4253,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// if(filter.getValue()==null) i guess null or empty is valid for
 			// string
 	 * 
-	 * @param queryFilterList - list of all fiolters we wish to apply
+	 * @param queryFilterList - list of all filters we wish to apply
 	 * @return
 	 * @throws ArkSystemException 
 	 */
@@ -4268,7 +4269,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				if (queryfilter.getValue() != null) {
 					if (!validDateFormat(queryfilter.getValue()))
 					{
-						throw new ArkSystemException("Value is not a valid date");
+						throw new ArkSystemException("Value is not a valid date.  Date must be in dd/mm/yyyy format eg; 01/22/2012");
 					}
 				}
 			}
