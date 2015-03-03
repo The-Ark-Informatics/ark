@@ -858,3 +858,6 @@ div.ex {
 	border: 1px solid #FFBD5C;
 	margin: 0px;
 }
+nobreakws{
+	    white-space: nowrap;
+}

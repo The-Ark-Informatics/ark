@@ -60,6 +60,10 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 	height: 5%;
 	padding-bottom:10px;
 }
+nobreakws{
+	    white-space: nowrap;
+}
+
 
 #labelBold {
 	font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
