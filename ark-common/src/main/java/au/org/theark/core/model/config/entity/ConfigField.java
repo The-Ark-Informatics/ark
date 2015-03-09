@@ -1,16 +1,20 @@
 package au.org.theark.core.model.config.entity;
 
 import java.io.Serializable;
+import java.text.DateFormat.Field;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
+import au.org.theark.core.model.study.entity.FieldType;
 
 @Entity
 @Table(name = "CONFIG_FIELDS", schema = Constants.CONFIG_SCHEMA)
@@ -20,6 +24,7 @@ public class ConfigField implements Serializable {
 	private Long id;
 	private String name;
 	private String description;
+	private FieldType type;
 	
 	public ConfigField() {
 	}
@@ -61,6 +66,16 @@ public class ConfigField implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "TYPE", nullable = false)
+	public FieldType getType() {
+		return type;
+	}
+
+	public void setType(FieldType type) {
+		this.type = type;
 	}
 	
 	@Override

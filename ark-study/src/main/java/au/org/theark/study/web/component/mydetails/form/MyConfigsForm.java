@@ -1,5 +1,7 @@
 package au.org.theark.study.web.component.mydetails.form;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -10,7 +12,6 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -22,7 +23,6 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.RangeValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,20 +161,65 @@ public class MyConfigsForm extends Form<UserConfigListVO>{
 		}
 	}
 
+	private boolean isNumeric(String str) {  
+	  try {  
+	    double d = Double.parseDouble(str);  
+	  } catch(NumberFormatException nfe) {  
+	    return false;  
+	  }  
+	  return true;  
+	}
+	
+	private boolean isDate(String str) {
+		SimpleDateFormat df = new SimpleDateFormat(Constants.DD_MM_YYYY);
+		try {
+			return df.parse(str) != null;
+		}
+		catch (ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	protected void onSave(AjaxRequestTarget target) {
 		List<UserConfig> userConfigList = new ArrayList<UserConfig>();
+		
+		boolean invalid = false;
 		for(UserConfigVO ucvo : getModelObject().getUserConfigVOs()) {
 			ucvo.getUserConfig().setArkUser(currentUser);
+			//check valid type
+			String value = ucvo.getUserConfig().getValue();
+			switch(ucvo.getUserConfig().getConfigField().getType().getName()) {
+				case "NUMBER":
+					if(!isNumeric(value)) {
+						this.error("Field '" + ucvo.getUserConfig().getConfigField().getDescription() + "' should be a number");
+						invalid = true;
+					}
+					break;
+				case "CHARACTER":
+					break;
+				case "DATE":
+					if(!isDate(value)) {
+						this.error("Field '" + ucvo.getUserConfig().getConfigField().getDescription() + "' should be a date (DD/MM/YYYY)");
+						invalid = true;
+					}
+					break;
+				default:
+					break;
+			}
 			userConfigList.add(ucvo.getUserConfig());
 		}
 
 		try {
-			iArkCommonService.createUserConfigs(userConfigList);
+			if(invalid == false) {
+				iArkCommonService.createUserConfigs(userConfigList);
+			}
 		}
 		catch (ArkSystemException e) {
 			e.printStackTrace();
 		}
 		refreshNewButton();
+		target.add(container);
 		processFeedback(target, feedbackPanel);
 	}
 
@@ -195,6 +240,7 @@ public class MyConfigsForm extends Form<UserConfigListVO>{
 				PropertyModel pm = new PropertyModel(item.getModelObject(), "userConfig.value");
 				valueTxtFld = new TextField<String>("value", new PropertyModel<String>(item.getModelObject(), "userConfig.value"));
 				valueTxtFld.setRequired(true);
+				
 				item.add(valueTxtFld);
 				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
@@ -206,7 +252,6 @@ public class MyConfigsForm extends Form<UserConfigListVO>{
 					}
 				}));
 			}
-
 		};
 		return listEditor;
 	}
@@ -220,7 +265,13 @@ public class MyConfigsForm extends Form<UserConfigListVO>{
 	}
 
 	protected boolean contains(ConfigField cf, Collection<ConfigField> fields) {
+		if(fields == null || fields.isEmpty() || cf == null || cf.getName() == null) {
+			return false;
+		}
 		for(ConfigField c : fields) {
+			if(c == null || c.getName() == null) {
+				continue;
+			}
 			if(c.getName().equalsIgnoreCase(cf.getName())) {
 				return true;
 			}
