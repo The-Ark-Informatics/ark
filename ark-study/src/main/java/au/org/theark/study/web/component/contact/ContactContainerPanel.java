@@ -129,10 +129,10 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	protected WebMarkupContainer initialiseSearchResults() {
 		initialiseNewPhoneButton();
 		initialiseNewAddressButton();
-		if(isActionPermitted()){
+//		if(isActionPermitted()){
 			initialiseSearchPhoneResults();
 			initialiseSearchAddressResults();
-		}
+//		}
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 	
