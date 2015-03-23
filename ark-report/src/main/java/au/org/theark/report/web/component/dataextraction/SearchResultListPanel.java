@@ -45,6 +45,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ArkString;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
@@ -138,7 +139,7 @@ public class SearchResultListPanel extends Panel {
 				
 				if (search.getStatus() != null) {
 					// Add the study Component Key here
-					item.add(new Label("search.status", search.getStatus()));
+					item.add(new Label("search.status", ArkString.sentenceCase(search.getStatus())));
 				}
 				else {
 					item.add(new Label("search.status", ""));
