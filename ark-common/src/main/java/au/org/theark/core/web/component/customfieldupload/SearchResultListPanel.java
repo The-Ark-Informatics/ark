@@ -52,9 +52,9 @@ public class SearchResultListPanel extends Panel {
 	 * 
 	 * @param id
 	 */
-	public SearchResultListPanel(String id) {
+	public SearchResultListPanel(String id, String templateName) {
 		super(id);
-		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "CustomFieldUpload", au.org.theark.core.Constants.CUSTOM_FIELD_UPLOAD_HEADER) {
+		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", templateName, au.org.theark.core.Constants.CUSTOM_FIELD_UPLOAD_HEADER) {
 
 
 			private static final long	serialVersionUID	= 1L;
