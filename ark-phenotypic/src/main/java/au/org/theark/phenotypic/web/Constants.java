@@ -272,9 +272,9 @@ public class Constants {
 
 //	public static final String[]	PHENO_TEMPLATE_CELLS	= {"SUBJECT_UID","REQUIRED_FIELD_1","ETC"};
 	public static final String[][]	PHENO_TEMPLATE_CELLS = {
-			{ "", "SUBJECTUID", "RECORD_DATE_TIME", "YOUR_FIRST_CUSTOM_FIELD_NAME_HERE", "YOUR_SECOND_CUSTOM_FIELD_NAME_HERE", "AND SO ON"},
-			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "The date this record was taken DD/MM/YYYY format", "Value for first custom field","Value for second field", "AND SO ON" },
-			{ "NOTE: Removed this first column, and replace row 1, (after SUBJECTUID field) with your actual custom field names (the headers only appear once, row 2 will have your first subject and his/her values, row 2 your second subject, etc.", "", "" , "", "" , "" } 
+			{ "", "SUBJECTUID", "RECORD_DATE_TIME", "YOUR_FIRST_DATASET_FIELD_NAME_HERE", "YOUR_SECOND_DATASET_FIELD_NAME_HERE", "AND SO ON"},
+			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "The date this record was taken DD/MM/YYYY format", "Value for first dataset field","Value for second field", "AND SO ON" },
+			{ "NOTE: Removed this first column, and replace row 1, (after SUBJECTUID field) with your actual dataset field names (the headers only appear once, row 2 will have your first subject and his/her values, row 2 your second subject, etc.", "", "" , "", "" , "" } 
 			};
 
 	public static final String		PHENOCOLLECTION_STATUS_IN_PROGRESS						= "In Progress";//TODO check
