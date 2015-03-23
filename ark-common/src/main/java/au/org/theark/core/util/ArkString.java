@@ -12,7 +12,7 @@ public final class ArkString {
 	 * @param inputVal Input String value. 
 	 * @return Sentence case String value.
 	 */
-	public static final String sentenceCase(final String inputVal) {
+	public static final String toSentenceCase(final String inputVal) {
 		// Empty strings should be returned as-is.
 
 		if (inputVal == null || inputVal.length() == 0)
