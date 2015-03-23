@@ -60,7 +60,7 @@ public class SearchResultListPanel extends Panel {
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "SubjectUpload", au.org.theark.phenotypic.web.Constants.PHENO_TEMPLATE_CELLS) {
+		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "DatasetDataUpload", au.org.theark.phenotypic.web.Constants.PHENO_TEMPLATE_CELLS) {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
