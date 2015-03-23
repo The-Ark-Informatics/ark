@@ -139,7 +139,7 @@ public class SearchResultListPanel extends Panel {
 				
 				if (search.getStatus() != null) {
 					// Add the study Component Key here
-					item.add(new Label("search.status", ArkString.sentenceCase(search.getStatus())));
+					item.add(new Label("search.status", ArkString.toSentenceCase(search.getStatus())));
 				}
 				else {
 					item.add(new Label("search.status", ""));
