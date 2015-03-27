@@ -36,6 +36,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
@@ -47,6 +51,7 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 
 @Entity
 @Table(name = "CUSTOM_FIELD_DISPLAY", schema = Constants.STUDY_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class CustomFieldDisplay implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -149,6 +154,8 @@ public class CustomFieldDisplay implements Serializable {
 		this.subjectCustomFieldData = subjectCustomFieldData;
 	}
 
+	//TODO: Remove NotAudited when lims auditing is done
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
 	public Set<BioCollectionCustomFieldData> getBioCollectionCustomFieldData() {
 		return bioCollectionCustomFieldData;
@@ -159,6 +166,8 @@ public class CustomFieldDisplay implements Serializable {
 		this.bioCollectionCustomFieldData = bioCollectionCustomFieldData;
 	}
 
+	//TODO: Remove NotAudited when lims auditing is done
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
 	public Set<BiospecimenCustomFieldData> getBiospecimenCustomFieldData() {
 		return biospecimenCustomFieldData;
@@ -169,6 +178,8 @@ public class CustomFieldDisplay implements Serializable {
 		this.biospecimenCustomFieldData = biospecimenCustomFieldData;
 	}
 
+	//TODO: Remove NotAudited when pheno auditing is done
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
 	public Set<PhenoData> getPhenoData() {
 		return phenoData;

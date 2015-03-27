@@ -48,6 +48,7 @@ import au.org.theark.core.Constants;
  */
 @Entity
 @Table(name = "LINK_SUBJECT_STUDY", schema = Constants.STUDY_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class LinkSubjectStudy implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -98,7 +99,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.subjectCustomFieldDataSet = subjectCustomFieldDataSet;
 	}
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_PASSIVE_DATA_GATHERING_ID")
 	public ConsentOption getConsentToPassiveDataGathering() {
@@ -110,7 +110,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.consentToPassiveDataGathering = consentToPassiveDataGathering;
 	}
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_USE_DATA_ID")
 	public ConsentOption getConsentToUseData() {
@@ -121,7 +120,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.consentToUseData = consentToUseData;
 	}
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_ACTIVE_CONTACT_ID")
 	public ConsentOption getConsentToActiveContact() {
@@ -174,7 +172,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.person = person;
 	}
 
-	@Audited
 	@Column(name = "SUBJECT_UID", length = 50)
 	public String getSubjectUID() {
 		return subjectUID;
@@ -184,7 +181,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.subjectUID = subjectUID;
 	}
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_STATUS_ID")
 	public ConsentStatus getConsentStatus() {
@@ -195,7 +191,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.consentStatus = consentStatus;
 	}
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TYPE_ID")
 	public ConsentType getConsentType() {
@@ -206,7 +201,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.consentType = consentType;
 	}
 
-	@Audited
 	@Temporal(TemporalType.DATE)
 	@Column(name = "CONSENT_DATE", length = 7)
 	public Date getConsentDate() {
@@ -226,7 +220,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.consents = consents;
 	}
 
-	@Audited
 	@Column(name = "HEARD_ABOUT_STUDY", length = 1000)
 	public String getHeardAboutStudy() {
 		return heardAboutStudy;
@@ -236,7 +229,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.heardAboutStudy = heardAboutStudy;
 	}
 
-	@Audited
 	@Column(name = "COMMENTS", length = 1000)
 	public String getComment() {
 		return comment;

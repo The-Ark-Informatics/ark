@@ -35,6 +35,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 
@@ -45,6 +49,7 @@ import au.org.theark.core.model.pheno.entity.PhenoCollection;
 
 @Entity
 @Table(name = "CUSTOM_FIELD_GROUP", schema = Constants.STUDY_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class CustomFieldGroup implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -109,6 +114,8 @@ public class CustomFieldGroup implements Serializable {
 		this.published = published;
 	}
 
+	//TODO: Remove NotAudited when I do pheno auditing
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "questionnaire")
 	public Set<PhenoCollection> getPhenoCollection() {
 		return phenoCollection;

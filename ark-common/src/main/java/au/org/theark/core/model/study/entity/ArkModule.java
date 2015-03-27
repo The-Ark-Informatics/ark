@@ -29,6 +29,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.velocity.app.event.ReferenceInsertionEventHandler.referenceInsertExecutor;
+import org.hibernate.envers.Audited;
 
 import au.org.theark.core.Constants;
 

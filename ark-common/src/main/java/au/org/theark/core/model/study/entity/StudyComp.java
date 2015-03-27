@@ -35,6 +35,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.Constants;
 
 /**
@@ -42,6 +46,7 @@ import au.org.theark.core.Constants;
  */
 @Entity
 @Table(name = "STUDY_COMP", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Audited
 public class StudyComp implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
