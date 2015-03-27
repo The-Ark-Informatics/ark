@@ -47,6 +47,7 @@ import au.org.theark.core.Constants;
  */
 @Entity
 @Table(name = "PERSON", schema = Constants.STUDY_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class Person implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -98,7 +99,6 @@ public class Person implements java.io.Serializable {
 		this.id = id;
 	}
 	
-	@Audited
 	@Column(name = "FIRST_NAME", length = 50)
 	public String getFirstName() {
 		return this.firstName;
@@ -108,7 +108,6 @@ public class Person implements java.io.Serializable {
 		this.firstName = firstName;
 	}
 
-	@Audited
 	@Column(name = "MIDDLE_NAME", length = 50)
 	public String getMiddleName() {
 		return this.middleName;
@@ -118,7 +117,6 @@ public class Person implements java.io.Serializable {
 		this.middleName = middleName;
 	}
 
-	@Audited
 	@Column(name = "LAST_NAME", length = 50)
 	public String getLastName() {
 		return this.lastName;
@@ -128,7 +126,6 @@ public class Person implements java.io.Serializable {
 		this.lastName = lastName;
 	}
 
-	@Audited
 	@Column(name = "PREFERRED_NAME", length = 150)
 	public String getPreferredName() {
 		return this.preferredName;
@@ -138,7 +135,6 @@ public class Person implements java.io.Serializable {
 		this.preferredName = preferredName;
 	}
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "GENDER_TYPE_ID")
 	public GenderType getGenderType() {
@@ -149,7 +145,6 @@ public class Person implements java.io.Serializable {
 		this.genderType = genderType;
 	}
 
-	@Audited
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DATE_OF_BIRTH", length = 10)
 	public Date getDateOfBirth() {
@@ -160,7 +155,6 @@ public class Person implements java.io.Serializable {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VITAL_STATUS_ID")
 	public VitalStatus getVitalStatus() {
@@ -171,7 +165,6 @@ public class Person implements java.io.Serializable {
 		this.vitalStatus = vitalStatus;
 	}
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TITLE_TYPE_ID")
 	public TitleType getTitleType() {
@@ -182,7 +175,6 @@ public class Person implements java.io.Serializable {
 		this.titleType = titleType;
 	}
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MARITAL_STATUS_ID")
 	public MaritalStatus getMaritalStatus() {
@@ -261,7 +253,6 @@ public class Person implements java.io.Serializable {
 	/**
 	 * @return the personContactMethod
 	 */
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PERSON_CONTACT_METHOD_ID")
 	public PersonContactMethod getPersonContactMethod() {
@@ -279,7 +270,6 @@ public class Person implements java.io.Serializable {
 	/**
 	 * @return the preferredEmail
 	 */
-	@Audited
 	@Column(name = "PREFERRED_EMAIL", length = 150)
 	public String getPreferredEmail() {
 		return preferredEmail;
@@ -296,7 +286,6 @@ public class Person implements java.io.Serializable {
 	/**
 	 * @return the otherEmail
 	 */
-	@Audited
 	@Column(name = "OTHER_EMAIL", length = 150)
 	public String getOtherEmail() {
 		return otherEmail;
@@ -339,7 +328,6 @@ public class Person implements java.io.Serializable {
 	/**
 	 * @return the causeOfDeath
 	 */
-	@Audited
 	@Column(name = "CAUSE_OF_DEATH", length = 255)
 	public String getCauseOfDeath() {
 		return causeOfDeath;
@@ -356,14 +344,12 @@ public class Person implements java.io.Serializable {
 	/**
 	 * @return the dateOfDeath
 	 */
-	@Audited
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DATE_OF_DEATH", length = 10)
 	public Date getDateOfDeath() {
 		return dateOfDeath;
 	}
 
-	@Audited
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DATE_LAST_KNOWN_ALIVE", length = 7)
 	public Date getDateLastKnownAlive() {
@@ -375,7 +361,6 @@ public class Person implements java.io.Serializable {
 	}
 
 
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OTHER_EMAIL_STATUS")
 	public EmailStatus getOtherEmailStatus() {
@@ -386,8 +371,6 @@ public class Person implements java.io.Serializable {
 		this.otherEmailStatus = otherEmailStatus;
 	}
 
-
-	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PREFERRED_EMAIL_STATUS")
 	public EmailStatus getPreferredEmailStatus() {

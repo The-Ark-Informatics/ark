@@ -31,6 +31,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
 
@@ -41,6 +43,7 @@ import au.org.theark.core.Constants;
  */
 @Entity
 @Table(name = "PERSON_LASTNAME_HISTORY", schema = Constants.STUDY_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class PersonLastnameHistory implements java.io.Serializable {
 
 	private static final long serialVersionUID = -568162910323332654L;
