@@ -233,6 +233,27 @@
 					<downloadSources>true</downloadSources>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>de.juplo</groupId>
+                <artifactId>hibernate4-maven-plugin</artifactId>
+                <version>1.0.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>export</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <envers>true</envers>
+                    <format>true</format>
+                    <delimiter>;</delimiter>
+                    <force>true</force>
+                    <type>CREATE</type>
+                    <target>SCRIPT</target>
+                    <hibernateDialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernateDialect>
+                </configuration>
+        	</plugin>
 		</plugins>
 	</build>
 	<properties>

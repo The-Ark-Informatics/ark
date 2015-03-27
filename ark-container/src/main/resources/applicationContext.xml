@@ -162,6 +162,7 @@
 				<value>au.org.theark.core.model.disease.entity</value>
 				<value>au.org.theark.core.model.config.entity</value>
 				<value>au.org.theark.core.model.spark.entity</value>
+				<value>au.org.theark.core.audit</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -179,6 +180,11 @@
 				<prop key="hibernate.order_updates">true</prop>
 				<prop key="hibernate.order_inserts">true</prop>
 				<prop key="hibernate.jdbc.batch_size">50</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+            	<prop key="org.hibernate.envers.auditTablePrefix">AUD_</prop>
+            	<prop key="org.hibernate.envers.auditTableSuffix"></prop>
+            	<prop key="org.hibernate.envers.storeDataAtDelete">true</prop>
+            	<prop key="org.hibernate.envers.default_schema">audit</prop>
 				<!-- prop key="hibernate.jdbc.batch_versioned_data">true</prop -->
 			</props>
 		</property>

@@ -34,11 +34,16 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.Constants;
 
 /**
  * Phone entity. @author MyEclipse Persistence Tools
  */
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "PHONE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"AREA_CODE", "PHONE_NUMBER", "PERSON_ID" }) })
@@ -124,6 +129,7 @@ public class Phone implements java.io.Serializable {
 		this.areaCode = areaCode;
 	}
 
+	@NotAudited
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PHONE_STATUS_ID")
 	public PhoneStatus getPhoneStatus() {
@@ -157,6 +163,7 @@ public class Phone implements java.io.Serializable {
 	 * TODO : Java does already have a concept like this ... boolean ... does
 	 * this code have a legacy reason?
 	 */
+	@NotAudited
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SILENT")
 	public YesNo getSilentMode() {

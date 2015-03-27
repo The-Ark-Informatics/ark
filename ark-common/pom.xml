@@ -119,8 +119,20 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.1.2.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId> 
+  			<artifactId>hibernate-envers</artifactId> 
+  			<version>${hibernate.version}</version> 
+		</dependency>
+		
+		<dependency>
+	        <groupId>org.hibernate</groupId>
+	        <artifactId>hibernate-tools</artifactId>
+	        <version>4.0.0-CR1</version>
+	    </dependency>
 		
 		<!-- JFreeChart -->
 		<dependency>
@@ -343,12 +355,14 @@
 					<downloadSources>true</downloadSources>
 				</configuration>
 			</plugin>
+			
 		</plugins>
 	</build>
 	<properties>
 		<wicket.version>1.5.11</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
 		<shiro.version>1.2.0</shiro.version>
+		<hibernate.version>4.1.2.Final</hibernate.version>
 	</properties>
 	<repositories>
 		<!--
