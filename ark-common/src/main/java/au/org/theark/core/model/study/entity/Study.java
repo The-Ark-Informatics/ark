@@ -86,6 +86,9 @@ public class Study implements java.io.Serializable {
 
 	// Parent study link
 	private Study parentStudy;
+	
+	private Boolean saveToParent = false;
+	private Boolean saveToParentLocked = false;
 
 	private Set<LinkStudySubstudy> linkStudySubstudiesForid = new HashSet<LinkStudySubstudy>(
 			0);
@@ -475,6 +478,24 @@ public class Study implements java.io.Serializable {
 	@JoinColumn(name = "PARENT_ID")
 	public Study getParentStudy() {
 		return parentStudy;
+	}
+	
+	@Column(name = "SAVE_TO_PARENT")
+	public Boolean getSaveToParent() {
+		return saveToParent;
+	}
+	
+	public void setSaveToParent(Boolean saveToParent) {
+		this.saveToParent = saveToParent;
+	}
+	
+	@Column(name = "SAVE_TO_PARENT_LOCKED")
+	public Boolean getSaveToParentLocked() {
+		return saveToParentLocked;
+	}
+	
+	public void setSaveToParentLocked(Boolean saveToParentLocked) {
+		this.saveToParentLocked = saveToParentLocked;
 	}
 	
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")

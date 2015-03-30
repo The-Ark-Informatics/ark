@@ -35,6 +35,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.model.Constants;
 
 /**
@@ -42,6 +45,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "bio_transaction", schema = Constants.LIMS_TABLE_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class BioTransaction implements java.io.Serializable {
 
 

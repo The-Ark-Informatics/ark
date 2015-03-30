@@ -154,8 +154,6 @@ public class CustomFieldDisplay implements Serializable {
 		this.subjectCustomFieldData = subjectCustomFieldData;
 	}
 
-	//TODO: Remove NotAudited when lims auditing is done
-	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
 	public Set<BioCollectionCustomFieldData> getBioCollectionCustomFieldData() {
 		return bioCollectionCustomFieldData;
@@ -166,8 +164,6 @@ public class CustomFieldDisplay implements Serializable {
 		this.bioCollectionCustomFieldData = bioCollectionCustomFieldData;
 	}
 
-	//TODO: Remove NotAudited when lims auditing is done
-	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
 	public Set<BiospecimenCustomFieldData> getBiospecimenCustomFieldData() {
 		return biospecimenCustomFieldData;

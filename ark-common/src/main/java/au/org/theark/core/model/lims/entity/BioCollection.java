@@ -39,6 +39,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -48,6 +52,7 @@ import au.org.theark.core.model.study.entity.Study;
  */
 @Entity
 @Table(name = "biocollection", schema = Constants.LIMS_TABLE_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class BioCollection implements java.io.Serializable {
 	private static final long	serialVersionUID	= -7384213608019152409L;
 	private Long					id;
@@ -306,6 +311,7 @@ public class BioCollection implements java.io.Serializable {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bioCollection")
 	@OrderBy("id")
+	@NotAudited
 	public Set<Biospecimen> getBiospecimens() {
 		return this.biospecimens;
 	}

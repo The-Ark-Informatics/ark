@@ -36,6 +36,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.model.Constants;
 
 /**
@@ -46,6 +49,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "inv_box", schema = Constants.LIMS_TABLE_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class InvBox implements java.io.Serializable {
 
 

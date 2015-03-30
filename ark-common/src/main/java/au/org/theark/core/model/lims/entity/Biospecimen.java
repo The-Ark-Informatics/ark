@@ -42,6 +42,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -51,6 +55,7 @@ import au.org.theark.core.model.study.entity.Study;
  */
 @Entity
 @Table(name = "biospecimen", schema = Constants.LIMS_TABLE_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class Biospecimen implements java.io.Serializable {
 
 
@@ -146,6 +151,7 @@ public class Biospecimen implements java.io.Serializable {
 	//TODO:  evaluate EAGER vs LAZY
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "BIOCOLLECTION_ID")
+	@NotAudited
 	public BioCollection getBioCollection() {
 		return this.bioCollection;
 	}
