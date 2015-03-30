@@ -16,6 +16,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.ICustomFieldData;
@@ -25,6 +29,7 @@ import au.org.theark.core.model.study.entity.ICustomFieldData;
  *
  */
 
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "PHENO_DATA", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenoData implements Serializable, ICustomFieldData {
@@ -95,6 +100,7 @@ public class PhenoData implements Serializable, ICustomFieldData {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PHENO_COLLECTION_ID")
+	@NotAudited
 	public PhenoCollection getPhenoCollection() {
 		return phenoCollection;
 	}

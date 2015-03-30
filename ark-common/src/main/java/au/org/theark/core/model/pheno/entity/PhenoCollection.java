@@ -20,6 +20,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
@@ -29,6 +33,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
  * @author nivedann
  *
  */
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "PHENO_COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenoCollection implements Serializable{
@@ -142,6 +147,7 @@ public class PhenoCollection implements Serializable{
 		this.status = status;
 	}
 
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoCollection")
 	public Set<PhenoData> getPhenoData() {
 		return phenoData;
