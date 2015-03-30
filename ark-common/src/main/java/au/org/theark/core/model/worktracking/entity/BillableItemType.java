@@ -13,8 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.envers.RelationTargetAuditMode;
+
+import org.hibernate.envers.Audited;
+
 import au.org.theark.core.Constants;
 
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "BILLABLE_ITEM_TYPE", schema = Constants.ADMIN_SCHEMA)
 public class BillableItemType implements Serializable {
