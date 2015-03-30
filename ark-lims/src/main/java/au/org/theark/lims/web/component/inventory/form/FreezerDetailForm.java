@@ -36,6 +36,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -77,6 +78,8 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private IInventoryService			iInventoryService;
 
 	private ContainerForm				fieldContainerForm;
+	
+	private Panel containerPanel;
 
 	private int								mode;
 
@@ -100,9 +103,9 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param tree
 	 * @param node 
 	 */
-	public FreezerDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, InventoryLinkTree tree, DefaultMutableTreeNode node) {
+	public FreezerDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, InventoryLinkTree tree, DefaultMutableTreeNode node, Panel containerPanel) {
 
-		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
+		super(id, feedBackPanel, detailContainer, containerForm, tree, node, containerPanel);
 	}
 
 	public void initialiseDetailForm() {

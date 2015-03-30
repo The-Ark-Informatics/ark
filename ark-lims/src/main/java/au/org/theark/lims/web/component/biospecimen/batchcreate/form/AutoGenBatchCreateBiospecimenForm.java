@@ -217,6 +217,8 @@ public class AutoGenBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> 
 
 		super.onBeforeRender();
 		visitChildren(formVisitor);
+		
+		feedbackPanel.clearOriginalDestination();
 	}
 
 	/**

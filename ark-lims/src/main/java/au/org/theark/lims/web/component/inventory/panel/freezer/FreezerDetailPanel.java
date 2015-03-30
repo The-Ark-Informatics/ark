@@ -57,7 +57,7 @@ public class FreezerDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new FreezerDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
+		detailForm = new FreezerDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node, this);
 		detailForm.initialiseDetailForm();
 		
 		addRack = new ArkBusyAjaxButton("addRack") {

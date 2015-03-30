@@ -58,7 +58,7 @@ public class BoxDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
+		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node, this);
 		detailForm.initialiseDetailForm();
 
 		// no need to show grid on New Box
