@@ -12,9 +12,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.ArkUser;
 
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "USER_CONFIG", schema = Constants.CONFIG_SCHEMA)
 public class UserConfig implements Serializable{
