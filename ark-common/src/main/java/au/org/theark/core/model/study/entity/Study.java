@@ -40,12 +40,17 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.geno.entity.Pipeline;
 
 /**
  * Study entity. @author MyEclipse Persistence Tools
  */
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "STUDY", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class Study implements java.io.Serializable {
@@ -315,6 +320,7 @@ public class Study implements java.io.Serializable {
 		this.subStudyBiospecimenPrefix = subStudyBiospecimenPrefix;
 	}
 
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "subStudy")
 	public Set<LinkStudySubstudy> getLinkStudySubstudiesForid() {
 		return this.linkStudySubstudiesForid;
@@ -325,6 +331,7 @@ public class Study implements java.io.Serializable {
 		this.linkStudySubstudiesForid = linkStudySubstudiesForid;
 	}
 
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkStudyStudysite> getLinkStudyStudysites() {
 		return this.linkStudyStudysites;
@@ -334,7 +341,8 @@ public class Study implements java.io.Serializable {
 			Set<LinkStudyStudysite> linkStudyStudysites) {
 		this.linkStudyStudysites = linkStudyStudysites;
 	}
-
+	
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<StudyComp> getStudyComps() {
 		return this.studyComps;
@@ -344,6 +352,7 @@ public class Study implements java.io.Serializable {
 		this.studyComps = studyComps;
 	}
 
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkSubjectStudycomp> getLinkSubjectStudycomps() {
 		return this.linkSubjectStudycomps;
@@ -354,6 +363,7 @@ public class Study implements java.io.Serializable {
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 	}
 
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkSubjectStudy> getLinkSubjectStudies() {
 		return this.linkSubjectStudies;
@@ -363,6 +373,7 @@ public class Study implements java.io.Serializable {
 		this.linkSubjectStudies = linkSubjectStudies;
 	}
 
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkSubjectContact> getLinkSubjectContacts() {
 		return this.linkSubjectContacts;
@@ -373,6 +384,7 @@ public class Study implements java.io.Serializable {
 		this.linkSubjectContacts = linkSubjectContacts;
 	}
 
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkStudyStudycomp> getLinkStudyStudycomps() {
 		return this.linkStudyStudycomps;
@@ -383,6 +395,7 @@ public class Study implements java.io.Serializable {
 		this.linkStudyStudycomps = linkStudyStudycomps;
 	}
 
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "mainStudy")
 	public Set<LinkStudySubstudy> getLinkStudySubstudiesForSubid() {
 		return this.linkStudySubstudiesForSubid;
@@ -393,6 +406,7 @@ public class Study implements java.io.Serializable {
 		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
 	}
 
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<Pipeline> getPipelines() {
 		return this.pipelines;
@@ -453,7 +467,7 @@ public class Study implements java.io.Serializable {
 	public void setParentStudy(Study parentStudy) {
 		this.parentStudy = parentStudy;
 	}
-
+	
 	/**
 	 * @return the parentStudy
 	 */
