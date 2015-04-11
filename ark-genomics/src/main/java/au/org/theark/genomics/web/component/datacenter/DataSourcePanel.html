@@ -1,0 +1,166 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="dataSourceForm">
+		<div class="detailsPanelBorder">
+		  <div wicket:id="detailFormContainer">
+			<div class="detailPanelBreaker">&nbsp;</div>
+			<div class="panelContentLeft">&nbsp;</div>
+			<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="genomics.datasource.id">
+								Id:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="dataSource.id"	type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="organization">
+							<wicket:message key="genomics.datasource.microservice">
+								name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="dataSource.microService.name"	type="text" />
+					</div>
+				</div>
+				<div class="detailPanelBreaker">&nbsp;</div>
+				<div class="panelContentLeft">&nbsp;</div>
+				<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="genomics.datasource.name">
+								Description:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="dataSource.name" type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="organization">
+							<wicket:message key="genomics.datasource.description">
+								name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<textarea wicket:id="dataSource.description" cols="25"></textarea>
+					</div>
+				</div>
+				<div class="detailPanelBreaker">&nbsp;</div>	
+			
+				<div class="panelContentLeft">&nbsp;</div>
+				<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="genomics.datasource.path">
+								Path:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="dataSource.path" type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="organization">
+							<wicket:message key="genomics.datasource.datacenter">
+								name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="dataSource.dataCenter" type="text" />
+					</div>
+				</div>
+				<div class="detailPanelBreaker">&nbsp;</div>	
+				
+				<div class="panelContentLeft">&nbsp;</div>
+				<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="genomics.datasource.type">
+								Path:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="dataSource.type">
+							<option>PLINK</option>
+							<option>Unknown</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="organization">
+							<wicket:message key="genomics.datasource.status">
+								name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="dataSource.status" type="text" />
+					</div>
+				</div>
+				<div class="detailPanelBreaker">&nbsp;</div>	
+					
+			</div>
+			
+			<!--  Row 2 Action Buttons -->
+			
+			<div wicket:id="editButtonContainer">
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />  	
+				</div>
+			</div>
+		</div>
+	</form>
+</wicket:panel>

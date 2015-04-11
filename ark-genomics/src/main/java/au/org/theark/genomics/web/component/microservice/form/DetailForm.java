@@ -47,7 +47,7 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 	public void initialiseDetailForm() {
 		microServiceIdTxtFld = new TextField<String>(Constants.MICRO_SERVICE_ID);
 		microServiceIdTxtFld.setEnabled(false);
-		microServiceNameTxtFld = new TextField<String>(Constants.MICRO_SERVICE_NAME);
+		microServiceNameTxtFld = new TextField<String>(Constants.MICROSERVICE);
 		microServiceDescription = new TextArea<String>(Constants.MICRO_SERVICE_DESCRIPTION);
 		microServiceTxtArea = new TextArea<String>(Constants.MICRO_SERVICE_URL);
 		addDetailFormComponents();
@@ -71,7 +71,6 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 		try {
 
 			if (containerForm.getModelObject().getMicroService().getId() == null) {
-
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				containerForm.getModelObject().getMicroService().setStudyId(studyId);
 				iGenomicService.saveOrUpdate(containerForm.getModelObject().getMicroService());
