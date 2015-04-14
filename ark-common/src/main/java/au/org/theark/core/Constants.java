@@ -30,6 +30,7 @@ public class Constants {
 	// public static final String ARK_STUDY_SERVICE = "StudyService";
 	public static final String ARK_CSV_LOADER_SERVICE = "arkCsvLoaderService";
 	public static final String ARK_DISEASE_SERVICE = "arkDiseaseService";
+	public static final String ARK_AUDIT_SERVICE = "arkAuditService";
 	
 	/* Global constants */
 	public static final String STUDY_CONTEXT_ID = "studyId";
@@ -314,6 +315,7 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_DATA_EXTRACTION	= "DATA_EXTRACTION";
 	public static final String FUNCTION_KEY_VALUE_PEDIGREE = "PEDIGREE";
 	public static final String FUNCTION_KEY_VALUE_GENO_TABLE = "GENO_TABLE";
+	public static final String FUNCTION_KEY_VALUE_AUDIT = "Audit";
 	
 	public static final String FUNCTION_KEY_VALUE_GENE = "GENE";
 	public static final String FUNCTION_KEY_VALUE_DISEASE = "DISEASE";

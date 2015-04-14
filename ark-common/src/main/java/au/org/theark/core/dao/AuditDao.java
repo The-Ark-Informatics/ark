@@ -23,8 +23,13 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
 import org.springframework.stereotype.Repository;
 
+import au.org.theark.core.model.audit.entity.AuditEntity;
+import au.org.theark.core.model.audit.entity.AuditField;
+import au.org.theark.core.model.audit.entity.AuditPackage;
 import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.Consent;
@@ -68,5 +73,29 @@ public class AuditDao extends HibernateSessionDao implements IAuditDao {
 	public void createLssConsentHistory(LssConsentHistory lssConsentHistory) {
 		getSession().save(lssConsentHistory);
 		getSession().refresh(lssConsentHistory);
+	}
+	
+	public AuditReader getAuditReader() {
+		return AuditReaderFactory.get(getSession());
+	}
+
+	@Override
+	public List<AuditEntity> getAuditEntityList() {
+		Criteria criteria = getSession().createCriteria(AuditEntity.class);
+		return criteria.list();
+	}
+
+	@Override
+	public List<AuditPackage> getAuditPackageList() { 
+		Criteria criteria = getSession().createCriteria(AuditPackage.class);
+//		criteria.setProjection(Projections.distinct(Projections.id()));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return criteria.list();
+	}
+
+	@Override
+	public List<AuditField> getAuditFieldList() {
+		Criteria criteria = getSession().createCriteria(AuditField.class);
+		return criteria.list();
 	}
 }
