@@ -172,12 +172,7 @@ public class HomePage extends BasePage {
 			ArkUser arkUser = iArkCommonService.getArkUser(ldapUserName);
 			arkModuleList = iArkCommonService.getArkModuleListByArkUser(arkUser);
 			
-			for (ArkModule arkModule: arkModuleList) {
-				
-				if(!arkModule.isEnabled()) {
-					continue;
-				}
-				
+			for (ArkModule arkModule: arkModuleList) {				
 				//log.info("arkModule: " + arkModule.getName());
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY)) {
 					// Study
