@@ -1,0 +1,60 @@
+<wicket:panel>&nbsp;
+     	<div class="searchPanelContainer">
+			<form wicket:id="searchForm">
+		  		<div class="searchPanelContent">
+					<div class="searchPanelBreaker">&nbsp;</div>				
+					<div class="panelContentLeft">&nbsp;</div>
+					<div class="fldLabel">
+		 				Module
+		 			</div>
+						
+					<div class="fldControl">
+						<select wicket:id="modules">
+						</select>
+					</div>
+						
+		       		<div  id="panelMargin">&nbsp;</div>
+		       		
+		       		<div class="fldLabel">
+		 				Entities
+		 			</div>
+						
+					<div class="fldControl">
+						<select wicket:id="entities">
+						</select>
+					</div>
+					
+					<div class="searchPanelBreaker">&nbsp;</div>				
+					<div class="panelContentLeft">&nbsp;</div>
+					<div class="fldLabel">
+		 				Fields
+		 			</div>
+						
+					<div class="fldControl">
+						<select wicket:id="fields">
+						</select>
+					</div>
+						
+		       		<div  id="panelMargin">&nbsp;</div>
+		       		
+		       		<div class="fldLabel">
+		 				
+		 			</div>
+						
+					<div class="fldControl">
+						
+					</div>
+					
+					<div class="searchPanelBreaker">&nbsp;</div>			
+					<!--  Defines the location for buttons -->
+					<div class="actionButtons">
+						<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+						<input wicket:id="reset" type="submit" wicket:message="value:page.reset" />
+						<input wicket:id="new" type="submit" wicket:message="value:page.new" />
+					</div>
+					
+					<div class="searchPanelBreaker">&nbsp;</div>
+				</div>
+			</form>
+       </div><!-- Container-->
+</wicket:panel>

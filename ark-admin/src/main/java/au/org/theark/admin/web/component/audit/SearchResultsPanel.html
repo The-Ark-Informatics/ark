@@ -1,0 +1,67 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+	<div wicket:id="resultsWMC">
+		<table width="0%" cellspacing="0"></table>
+		<table width="100%" cellspacing="0" class="dataview" border="0">
+			<tr>
+				<th width="2%">
+				</th>
+				<th>
+					Revision Number:
+				</th>
+				<th>
+					Revision Date/Time:
+				</th>
+				<th>
+					Revised By:
+				</th>
+				<th>
+					Entity Type:
+				</th>
+				<th>
+					Primary Key:
+				</th>
+				<th>
+					Revision Type:
+				</th>
+				<th width="2%">
+				</th>
+			</tr>
+			<tr wicket:id="auditList">
+				<td width="2%">
+				</td>
+				<td>
+					<span wicket:id="revNumber"></span>
+				</td>
+				<td>
+					<span wicket:id="revDate"></span>
+				</td>
+				<td>
+					<span wicket:id="revBy"></span>
+				</td>
+				<td>
+					<span wicket:id="enType"></span>
+				</td>
+				<td>
+					<span wicket:id="priKey"></span>
+				</td>
+				<td>
+					<span wicket:id="revType"></span>
+				</td>
+				<td width="2%">
+				</td>
+			</tr>
+			<tfoot>
+				<tr>
+					<td width="2%">
+					</td>
+					<td colspan="100%">
+						<span wicket:id="navigator" class="a">
+						</span>			
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+		<table width="0%" cellspacing="0"></table>
+	</div>
+</wicket:panel>

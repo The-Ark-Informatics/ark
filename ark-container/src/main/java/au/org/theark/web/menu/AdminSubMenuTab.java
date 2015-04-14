@@ -29,6 +29,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.admin.web.component.activitymonitor.ActivityMonitorContainerPanel;
+import au.org.theark.admin.web.component.audit.AuditContainerPanel;
 import au.org.theark.admin.web.component.function.FunctionContainerPanel;
 import au.org.theark.admin.web.component.module.ModuleContainerPanel;
 import au.org.theark.admin.web.component.modulefunction.ModuleFunctionContainerPanel;
@@ -119,6 +120,9 @@ public class AdminSubMenuTab extends AbstractArkTabPanel {
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE)) {
 			RolePolicyContainerPanel containerPanel = new RolePolicyContainerPanel(panelId);
+			panelToReturn = containerPanel;
+		} else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_AUDIT)) {
+			AuditContainerPanel containerPanel = new AuditContainerPanel(panelId);
 			panelToReturn = containerPanel;
 		}
 
