@@ -19,9 +19,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.Constants;
 
 
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "PROCESS", schema = Constants.GENO_SCHEMA)
 public class Process implements java.io.Serializable {

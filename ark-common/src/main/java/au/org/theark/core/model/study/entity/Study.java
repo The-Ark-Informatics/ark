@@ -86,6 +86,9 @@ public class Study implements java.io.Serializable {
 
 	// Parent study link
 	private Study parentStudy;
+	
+	private Boolean saveToParent = false;
+	private Boolean saveToParentLocked = false;
 
 	private Set<LinkStudySubstudy> linkStudySubstudiesForid = new HashSet<LinkStudySubstudy>(
 			0);
@@ -320,7 +323,7 @@ public class Study implements java.io.Serializable {
 		this.subStudyBiospecimenPrefix = subStudyBiospecimenPrefix;
 	}
 
-	@NotAudited
+//	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "subStudy")
 	public Set<LinkStudySubstudy> getLinkStudySubstudiesForid() {
 		return this.linkStudySubstudiesForid;
@@ -331,7 +334,7 @@ public class Study implements java.io.Serializable {
 		this.linkStudySubstudiesForid = linkStudySubstudiesForid;
 	}
 
-	@NotAudited
+//	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkStudyStudysite> getLinkStudyStudysites() {
 		return this.linkStudyStudysites;
@@ -342,7 +345,7 @@ public class Study implements java.io.Serializable {
 		this.linkStudyStudysites = linkStudyStudysites;
 	}
 	
-	@NotAudited
+//	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<StudyComp> getStudyComps() {
 		return this.studyComps;
@@ -352,7 +355,7 @@ public class Study implements java.io.Serializable {
 		this.studyComps = studyComps;
 	}
 
-	@NotAudited
+//	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkSubjectStudycomp> getLinkSubjectStudycomps() {
 		return this.linkSubjectStudycomps;
@@ -363,7 +366,7 @@ public class Study implements java.io.Serializable {
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 	}
 
-	@NotAudited
+//	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkSubjectStudy> getLinkSubjectStudies() {
 		return this.linkSubjectStudies;
@@ -373,7 +376,7 @@ public class Study implements java.io.Serializable {
 		this.linkSubjectStudies = linkSubjectStudies;
 	}
 
-	@NotAudited
+//	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkSubjectContact> getLinkSubjectContacts() {
 		return this.linkSubjectContacts;
@@ -384,7 +387,7 @@ public class Study implements java.io.Serializable {
 		this.linkSubjectContacts = linkSubjectContacts;
 	}
 
-	@NotAudited
+//	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<LinkStudyStudycomp> getLinkStudyStudycomps() {
 		return this.linkStudyStudycomps;
@@ -395,7 +398,7 @@ public class Study implements java.io.Serializable {
 		this.linkStudyStudycomps = linkStudyStudycomps;
 	}
 
-	@NotAudited
+//	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "mainStudy")
 	public Set<LinkStudySubstudy> getLinkStudySubstudiesForSubid() {
 		return this.linkStudySubstudiesForSubid;
@@ -406,7 +409,7 @@ public class Study implements java.io.Serializable {
 		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
 	}
 
-	@NotAudited
+//	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
 	public Set<Pipeline> getPipelines() {
 		return this.pipelines;
@@ -475,6 +478,24 @@ public class Study implements java.io.Serializable {
 	@JoinColumn(name = "PARENT_ID")
 	public Study getParentStudy() {
 		return parentStudy;
+	}
+	
+	@Column(name = "SAVE_TO_PARENT")
+	public Boolean getSaveToParent() {
+		return saveToParent;
+	}
+	
+	public void setSaveToParent(Boolean saveToParent) {
+		this.saveToParent = saveToParent;
+	}
+	
+	@Column(name = "SAVE_TO_PARENT_LOCKED")
+	public Boolean getSaveToParentLocked() {
+		return saveToParentLocked;
+	}
+	
+	public void setSaveToParentLocked(Boolean saveToParentLocked) {
+		this.saveToParentLocked = saveToParentLocked;
 	}
 	
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")

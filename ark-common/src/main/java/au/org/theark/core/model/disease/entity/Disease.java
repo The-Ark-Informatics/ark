@@ -19,6 +19,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
@@ -67,6 +68,7 @@ public class Disease implements Serializable {
 		this.name = name;
 	}
 	
+	@NotAudited
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {

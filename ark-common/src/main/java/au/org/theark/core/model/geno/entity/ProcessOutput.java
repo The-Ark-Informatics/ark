@@ -11,9 +11,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.Constants;
 
 
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "PROCESS_OUTPUT", schema = Constants.GENO_SCHEMA)
 public class ProcessOutput implements java.io.Serializable {

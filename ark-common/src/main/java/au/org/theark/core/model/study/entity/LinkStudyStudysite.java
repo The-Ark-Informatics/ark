@@ -26,11 +26,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.Constants;
 
 /**
  * LinkStudyStudysite entity. @author MyEclipse Persistence Tools
  */
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "LINK_STUDY_STUDYSITE", schema = Constants.STUDY_SCHEMA)
 public class LinkStudyStudysite implements java.io.Serializable {

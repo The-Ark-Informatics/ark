@@ -22,6 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
@@ -66,7 +67,7 @@ public class Affection implements Serializable {
 		this.study = study;
 	}
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "affection")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "affection")
 	public Set<AffectionCustomFieldData> getAffectionCustomFieldDataSets() {
 		return this.affectionCustomFieldDataSet;
 	}
@@ -75,7 +76,7 @@ public class Affection implements Serializable {
 		this.affectionCustomFieldDataSet = affectionCustomFieldDataSet;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DISEASE_ID")
 	public Disease getDisease() {
 		return disease;

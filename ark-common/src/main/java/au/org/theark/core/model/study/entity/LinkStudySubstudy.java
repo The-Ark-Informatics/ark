@@ -29,11 +29,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.Constants;
 
 /**
  * LinkStudySubstudy entity. @author MyEclipse Persistence Tools
  */
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "LINK_STUDY_SUBSTUDY", schema = Constants.STUDY_SCHEMA)
 public class LinkStudySubstudy implements java.io.Serializable {
