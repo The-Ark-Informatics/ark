@@ -1,0 +1,118 @@
+use `audit`;
+
+CREATE TABLE `revchanges` (
+  `REV` int(11) NOT NULL,
+  `ENTITYNAME` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Create syntax for TABLE 'aud_link_study_studysite'
+CREATE TABLE `aud_link_study_studysite` (
+  `ID` bigint(20) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `STUDY_ID` bigint(20) DEFAULT NULL,
+  `STUDY_SITE_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`,`REV`),
+  KEY `FKC4186164F03BED18` (`REV`),
+  CONSTRAINT `FKC4186164F03BED18` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Create syntax for TABLE 'aud_link_study_substudy'
+CREATE TABLE `aud_link_study_substudy` (
+  `ID` bigint(20) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `STUDY_ID` bigint(20) DEFAULT NULL,
+  `SUB_STUDY_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`,`REV`),
+  KEY `FK2C22C815F03BED18` (`REV`),
+  CONSTRAINT `FK2C22C815F03BED18` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Create syntax for TABLE 'aud_lss_pipeline'
+CREATE TABLE `aud_lss_pipeline` (
+  `ID` bigint(20) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `LSS_ID` bigint(20) DEFAULT NULL,
+  `PIPELINE_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`,`REV`),
+  KEY `FK7DFD1B24F03BED18` (`REV`),
+  CONSTRAINT `FK7DFD1B24F03BED18` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Create syntax for TABLE 'aud_pipeline'
+CREATE TABLE `aud_pipeline` (
+  `ID` bigint(20) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `DESCRIPTION` varchar(100) DEFAULT NULL,
+  `NAME` varchar(100) DEFAULT NULL,
+  `STUDY_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`,`REV`),
+  KEY `FK656A2F71F03BED18` (`REV`),
+  CONSTRAINT `FK656A2F71F03BED18` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Create syntax for TABLE 'aud_process'
+CREATE TABLE `aud_process` (
+  `ID` bigint(20) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `DESCRIPTION` varchar(100) DEFAULT NULL,
+  `END_TIME` datetime DEFAULT NULL,
+  `NAME` varchar(100) DEFAULT NULL,
+  `START_TIME` datetime DEFAULT NULL,
+  `COMMAND_ID` bigint(20) DEFAULT NULL,
+  `PIPELINE_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`,`REV`),
+  KEY `FKF189BFA0F03BED18` (`REV`),
+  CONSTRAINT `FKF189BFA0F03BED18` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Create syntax for TABLE 'aud_process_input'
+CREATE TABLE `aud_process_input` (
+  `ID` bigint(20) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `INPUT_FILE_HASH` varchar(255) DEFAULT NULL,
+  `INPUT_FILE_LOCATION` varchar(255) DEFAULT NULL,
+  `INPUT_FILE_TYPE` varchar(255) DEFAULT NULL,
+  `INPUT_KEPT` int(11) DEFAULT NULL,
+  `INPUT_SERVER` varchar(255) DEFAULT NULL,
+  `PROCESS_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`,`REV`),
+  KEY `FK63294A4BF03BED18` (`REV`),
+  CONSTRAINT `FK63294A4BF03BED18` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Create syntax for TABLE 'aud_process_output'
+CREATE TABLE `aud_process_output` (
+  `ID` bigint(20) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `OUTPUT_FILE_HASH` varchar(255) DEFAULT NULL,
+  `OUTPUT_FILE_LOCATION` varchar(255) DEFAULT NULL,
+  `OUTPUT_FILE_TYPE` varchar(255) DEFAULT NULL,
+  `OUTPUT_KEPT` int(11) DEFAULT NULL,
+  `OUTPUT_SERVER` varchar(255) DEFAULT NULL,
+  `PROCESS_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`,`REV`),
+  KEY `FKCA17680F03BED18` (`REV`),
+  CONSTRAINT `FKCA17680F03BED18` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Create syntax for TABLE 'aud_study_pedigree_config'
+CREATE TABLE `aud_study_pedigree_config` (
+  `ID` bigint(20) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `AGE_ALLOWED` tinyint(1) DEFAULT NULL,
+  `DOB_ALLOWED` tinyint(1) DEFAULT NULL,
+  `STATUS_ALLOWED` tinyint(1) DEFAULT NULL,
+  `CUSTOM_FIELD_ID` bigint(20) DEFAULT NULL,
+  `STUDY_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`,`REV`),
+  KEY `FK4FF0A2B7F03BED18` (`REV`),
+  CONSTRAINT `FK4FF0A2B7F03BED18` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
