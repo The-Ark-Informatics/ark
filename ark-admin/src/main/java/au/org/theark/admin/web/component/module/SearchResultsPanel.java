@@ -86,6 +86,8 @@ public class SearchResultsPanel extends Panel {
 					item.add(new Label("arkModule.description", ""));
 				}
 
+				item.add(new Label("arkModule.enabled", arkModule.getEnabled() ? "Enabled" : "Disabled"));
+				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= 5761909841047153853L;
 

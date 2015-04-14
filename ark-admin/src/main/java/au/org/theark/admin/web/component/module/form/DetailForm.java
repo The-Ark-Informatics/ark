@@ -19,6 +19,7 @@
 package au.org.theark.admin.web.component.module.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -46,6 +47,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	private TextField<String>		idTxtFld;
 	private TextField<String>		nameTxtFld;
 	private TextArea<String>		descriptionTxtAreaFld;
+	private CheckBox 				enabledChkBx;
 
 	/**
 	 * Constructor
@@ -78,6 +80,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		
 		descriptionTxtAreaFld = new TextArea<String>("arkModule.description");
 
+		enabledChkBx = new CheckBox("arkModule.enabled");
+		
 		attachValidators();
 		addDetailFormComponents();
 	}
@@ -96,6 +100,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtAreaFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(enabledChkBx);
 
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
