@@ -172,7 +172,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				target.add(minMaxValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
 				target.add(fieldUnitTypeDdc);
-				target.add(fieldCategoryDdc);
+				if(fieldCategoryDdc != null) {
+					target.add(fieldCategoryDdc);
+				}
 				//Add field unite type as text
 				target.add(fieldUnitTypeTxtFld);
 				target.add(fieldAllowMultiselectChkBox);
