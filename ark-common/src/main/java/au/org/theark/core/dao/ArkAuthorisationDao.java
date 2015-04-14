@@ -1067,13 +1067,16 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		catch (NullPointerException e) {
 			log.error(e.getMessage(), e);
 		}
-
+		
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.groupProperty("arkModule"), "arkModule");
 
 		criteria.setProjection(projectionList);
 		criteria.addOrder(Order.asc("arkModule.id"));
-
+		
+		criteria.createAlias("arkModule", "am");
+		criteria.add(Restrictions.eq("am.enabled", true));
+		
 		return criteria.list();
 	}
 
