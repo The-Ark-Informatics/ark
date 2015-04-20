@@ -342,7 +342,7 @@
 	<properties>
 		<wicket.version>1.5.11</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
-		<shiro.version>1.2.0</shiro.version>
+		<shiro.version>1.2.3</shiro.version>
 	</properties>
 	<repositories>
 		<!--
