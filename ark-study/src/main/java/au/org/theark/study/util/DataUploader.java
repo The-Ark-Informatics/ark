@@ -1140,6 +1140,24 @@ public class DataUploader {
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		//Thilina edit to solve SNU custom data XLS upload issue
+		if (fileFormat.equalsIgnoreCase("XLS")) {
+			Workbook w;
+			try {
+				w = Workbook.getWorkbook(inputStream);
+				delimiterCharacter = ',';
+				XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+				inputStream = xlsToCsv.convertXlsToCsv(w);
+				inputStream.reset();
+			}
+			catch (BiffException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
+		
 
 		int subjectCount = 0;
 		long updateFieldsCount = 0L;
@@ -1358,6 +1376,24 @@ public class DataUploader {
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		
+		// Thilina add to fix consent upload issue
+		if (fileFormat.equalsIgnoreCase("XLS")) {
+			Workbook w;
+			try {
+				w = Workbook.getWorkbook(inputStream);
+				delimiterCharacter = ',';
+				XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+				inputStream = xlsToCsv.convertXlsToCsv(w);
+				inputStream.reset();
+			}
+			catch (BiffException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
 
 		try {
 			inputStreamReader = new InputStreamReader(inputStream);
