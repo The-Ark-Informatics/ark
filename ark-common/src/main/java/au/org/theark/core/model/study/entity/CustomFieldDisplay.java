@@ -40,6 +40,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
@@ -194,6 +195,7 @@ public class CustomFieldDisplay implements Serializable {
 		this.allowMultiselect = allowMultiselect;
 	}
 
+	@ArkAuditDisplay
 	@Transient
 	public String getDescriptiveNameIncludingCFGName() {
 		//descriptiveNameIncludingCFGName.charAt(1);

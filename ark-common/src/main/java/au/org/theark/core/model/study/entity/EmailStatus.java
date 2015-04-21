@@ -26,6 +26,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 
 /**
  * @author travis
@@ -59,7 +60,6 @@ public class EmailStatus implements Serializable {
 		this.name = name;
 	}
 
-	
 	@Column(name = "DESCRIPTION", nullable = false, length = 50)
 	public String getDescription() {
 		return description;

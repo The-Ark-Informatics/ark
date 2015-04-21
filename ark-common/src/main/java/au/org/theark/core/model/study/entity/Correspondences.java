@@ -63,8 +63,8 @@ public class Correspondences implements Serializable {
 	private String attachmentFilename;
 	private byte[] attachmentPayload;
 	
-	private String attachementChecksum;
-	private String attachementFileId;
+	private String attachmentChecksum;
+	private String attachmentFileId;
 	
 	private BillableItem billableItem; 
 
@@ -209,20 +209,20 @@ public class Correspondences implements Serializable {
 	}
 
 	@Column(name = "ATTACHMENT_CHECKSUM")
-	public String getAttachementChecksum() {
-		return attachementChecksum;
+	public String getAttachmentChecksum() {
+		return attachmentChecksum;
 	}
 
-	public void setAttachementChecksum(String attachementChecksum) {
-		this.attachementChecksum = attachementChecksum;
+	public void setAttachmentChecksum(String attachmentChecksum) {
+		this.attachmentChecksum = attachmentChecksum;
 	}
 
 	@Column(name = "ATTACHMENT_FILE_ID")
-	public String getAttachementFileId() {
-		return attachementFileId;
+	public String getAttachmentFileId() {
+		return attachmentFileId;
 	}
 
-	public void setAttachementFileId(String attachementFileId) {
-		this.attachementFileId = attachementFileId;
+	public void setAttachmentFileId(String attachmentFileId) {
+		this.attachmentFileId = attachmentFileId;
 	}
 }

@@ -46,6 +46,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -160,6 +161,7 @@ public class Biospecimen implements java.io.Serializable {
 		this.bioCollection = bioCollection;
 	}
 
+	@ArkAuditDisplay
 	@Column(name = "BIOSPECIMEN_UID", nullable = false)
 	public String getBiospecimenUid() {
 		return this.biospecimenUid;

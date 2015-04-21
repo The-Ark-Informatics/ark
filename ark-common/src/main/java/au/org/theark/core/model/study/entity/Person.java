@@ -42,6 +42,7 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 
 /**
  * Person entity. @author MyEclipse Persistence Tools
@@ -92,6 +93,7 @@ public class Person implements java.io.Serializable {
 	@SequenceGenerator(name = "person_generator", sequenceName = "PERSON_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "person_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	@ArkAuditDisplay
 	public Long getId() {
 		return this.id;
 	}

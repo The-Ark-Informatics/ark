@@ -360,7 +360,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 					
 					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(fileUpload.getBytes());
 					containerForm.getModelObject().getCorrespondence().setAttachmentFilename(fileUpload.getClientFileName());
-					containerForm.getModelObject().getCorrespondence().setAttachementChecksum(checksum);
+					containerForm.getModelObject().getCorrespondence().setAttachmentChecksum(checksum);
 				}
 
 				// save

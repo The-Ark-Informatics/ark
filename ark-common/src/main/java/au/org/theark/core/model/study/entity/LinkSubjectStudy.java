@@ -42,6 +42,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 
 /**
  * LinkSubjectStudy entity. @author MyEclipse Persistence Tools
@@ -172,6 +173,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.person = person;
 	}
 
+	@ArkAuditDisplay
 	@Column(name = "SUBJECT_UID", length = 50)
 	public String getSubjectUID() {
 		return subjectUID;

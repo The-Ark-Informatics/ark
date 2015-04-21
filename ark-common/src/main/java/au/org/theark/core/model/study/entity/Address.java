@@ -200,6 +200,7 @@ public class Address implements java.io.Serializable {
 		this.otherState = otherState;
 	}
 	
+	@Audited
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PERSON_ID")
 	public Person getPerson() {

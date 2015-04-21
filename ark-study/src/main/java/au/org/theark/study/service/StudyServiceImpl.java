@@ -721,7 +721,7 @@ public class StudyServiceImpl implements IStudyService {
 			String fileId = iArkCommonService.generateArkFileId(fileName);
 
 			// Set unique subject file id
-			correspondence.setAttachementFileId(fileId);
+			correspondence.setAttachmentFileId(fileId);
 
 			// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
 			iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR, fileName, payload, fileId);
@@ -741,15 +741,15 @@ public class StudyServiceImpl implements IStudyService {
 		String subjectUID = correspondence.getLss().getSubjectUID();
 		String fileName = correspondence.getAttachmentFilename();
 		byte[] payload = correspondence.getAttachmentPayload();
-		String prevChecksum = correspondence.getAttachementChecksum();
+		String prevChecksum = correspondence.getAttachmentChecksum();
 
 		String fileId = null;
 		if (correspondence.getAttachmentPayload() != null) {
 
-			if (correspondence.getAttachementFileId() != null) {
+			if (correspondence.getAttachmentFileId() != null) {
 
 				// Get existing file Id
-				fileId = correspondence.getAttachementFileId();
+				fileId = correspondence.getAttachmentFileId();
 
 				// Delete existing attachment
 				iArkCommonService.deleteArkFileAttachment(studyId, subjectUID, fileId, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR,prevChecksum);
@@ -758,7 +758,7 @@ public class StudyServiceImpl implements IStudyService {
 				fileId = iArkCommonService.generateArkFileId(fileName);
 
 				// Set unique subject file id
-				correspondence.setAttachementFileId(fileId);
+				correspondence.setAttachmentFileId(fileId);
 
 				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
 				iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR, fileName, payload, fileId);
@@ -768,25 +768,25 @@ public class StudyServiceImpl implements IStudyService {
 				fileId = iArkCommonService.generateArkFileId(fileName);
 
 				// Set unique subject file id
-				correspondence.setAttachementFileId(fileId);
+				correspondence.setAttachmentFileId(fileId);
 
 				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
 				iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR, fileName, payload, fileId);
 			}
 			//Set new file checksum
-			correspondence.setAttachementChecksum(checksum);
+			correspondence.setAttachmentChecksum(checksum);
 		}
 		else {
-			if (correspondence.getAttachementFileId() != null) {
+			if (correspondence.getAttachmentFileId() != null) {
 				// Get existing file Id
-				fileId = correspondence.getAttachementFileId();
+				fileId = correspondence.getAttachmentFileId();
 
 				// Delete existing attachment
 				iArkCommonService.deleteArkFileAttachment(studyId, subjectUID, fileId, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR,prevChecksum);
 				
 				//remove existing attachment file id and checksum
-				correspondence.setAttachementFileId(null);
-				correspondence.setAttachementChecksum(null);
+				correspondence.setAttachmentFileId(null);
+				correspondence.setAttachmentChecksum(null);
 			}
 		}
 		// Remove the attachment
@@ -796,11 +796,11 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException {
 
-		if (correspondence.getAttachementFileId() != null) {
+		if (correspondence.getAttachmentFileId() != null) {
 			Long studyId = correspondence.getLss().getStudy().getId();
 			String subjectUID = correspondence.getLss().getSubjectUID();
-			String fileId =correspondence.getAttachementFileId();
-			String checksum = correspondence.getAttachementChecksum();
+			String fileId =correspondence.getAttachmentFileId();
+			String checksum = correspondence.getAttachmentChecksum();
 			try {
 					if (iArkCommonService.deleteArkFileAttachment(studyId, subjectUID, fileId, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR, checksum)) {
 						log.info("File deleted successfully - " + fileId);

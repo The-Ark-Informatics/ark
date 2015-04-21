@@ -191,8 +191,8 @@ public class SearchResultListPanel extends Panel {
 //				byte[] data = correspondences.getAttachmentPayload();
 				Long studyId =correspondences.getLss().getStudy().getId();
 				String subjectUID = correspondences.getLss().getSubjectUID();
-				String fileId = correspondences.getAttachementFileId();
-				String checksum = correspondences.getAttachementChecksum();
+				String fileId = correspondences.getAttachmentFileId();
+				String checksum = correspondences.getAttachmentChecksum();
 				
 				byte[] data = null;
 				

@@ -9,7 +9,7 @@
 		 			</div>
 						
 					<div class="fldControl">
-						<select wicket:id="modules">
+						<select wicket:id="auditPackage">
 						</select>
 					</div>
 						
@@ -20,7 +20,7 @@
 		 			</div>
 						
 					<div class="fldControl">
-						<select wicket:id="entities">
+						<select wicket:id="auditEntity">
 						</select>
 					</div>
 					
@@ -31,21 +31,62 @@
 		 			</div>
 						
 					<div class="fldControl">
-						<select wicket:id="fields">
+						<select wicket:id="auditField">
 						</select>
 					</div>
 						
 		       		<div  id="panelMargin">&nbsp;</div>
 		       		
 		       		<div class="fldLabel">
-		 				
+		 				Revision Number
 		 			</div>
 						
 					<div class="fldControl">
-						
+						<input wicket:id="revisionNumber"/>
 					</div>
 					
-					<div class="searchPanelBreaker">&nbsp;</div>			
+					<div class="searchPanelBreaker">&nbsp;</div>				
+					<div class="panelContentLeft">&nbsp;</div>
+					<div class="fldLabel">
+		 				Revision Type
+		 			</div>
+						
+					<div class="fldControl">
+						<select wicket:id="revisionType">
+						</select>
+					</div>
+						
+		       		<div  id="panelMargin">&nbsp;</div>
+		       		
+		       		<div class="fldLabel">
+		       			Revised By
+		 			</div>
+						
+					<div class="fldControl">
+						<input wicket:id="revisedBy"/>
+					</div>
+					
+					<div class="searchPanelBreaker">&nbsp;</div>
+					<div class="panelContentLeft">&nbsp;</div>
+					<div class="fldLabel">
+		 				Revision Date
+		 			</div>
+						
+					<div class="fldControl">
+						<input wicket:id="revisedDate"/>
+					</div>
+						
+		       		<div  id="panelMargin">&nbsp;</div>
+		       		
+		       		<div class="fldLabel">
+		       			Entity ID
+		 			</div>
+						
+					<div class="fldControl">
+						<input wicket:id="entityID"/>
+					</div>
+					
+					<div class="searchPanelBreaker">&nbsp;</div>				
 					<!--  Defines the location for buttons -->
 					<div class="actionButtons">
 						<input wicket:id="search" type="submit" wicket:message="value:page.search" />

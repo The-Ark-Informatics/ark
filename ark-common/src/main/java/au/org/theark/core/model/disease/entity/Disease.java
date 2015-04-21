@@ -68,7 +68,6 @@ public class Disease implements Serializable {
 		this.name = name;
 	}
 	
-	@NotAudited
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {

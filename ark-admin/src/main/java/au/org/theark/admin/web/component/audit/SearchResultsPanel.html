@@ -1,6 +1,9 @@
 <wicket:panel>
 	<div class="searchPanelBreaker">&nbsp;</div>
 	<div wicket:id="resultsWMC">
+	
+		<!-- AUDIT ENTITY TABLE -->	
+	
 		<table width="0%" cellspacing="0"></table>
 		<table width="100%" cellspacing="0" class="dataview" border="0">
 			<tr>
@@ -16,7 +19,7 @@
 					Revised By:
 				</th>
 				<th>
-					Entity Type:
+					Entity:
 				</th>
 				<th>
 					Primary Key:
@@ -63,5 +66,90 @@
 			</tfoot>
 		</table>
 		<table width="0%" cellspacing="0"></table>
+	</div>
+			
+	<div wicket:id="fldResultsWMC">
+	
+		<!-- AUDIT FIELD TABLE -->
+		
+		<table width="0%" cellspacing="0"></table>
+		<table width="100%" cellspacing="0" class="dataview" border="0">
+			<tr>
+				<th width="2%">
+				</th>
+				<th>
+					Revision:
+				</th>
+				<th>
+					Revision Date/Time:
+				</th>
+				<th>
+					User:
+				</th>
+				<th>
+					Entity:
+				</th>
+				<th>
+					ID:
+				</th>
+				<th>
+					Field:
+				</th>
+				<th>
+					Value:
+				</th>
+				<th>
+					Previous Value:
+				</th>
+				<th>
+					Revision Type:
+				</th>
+				<th width="2%">
+				</th>
+			</tr>
+			<tr wicket:id="fldAuditList">
+				<td width="2%">
+				</td>
+				<td>
+					<span wicket:id="fldRevNumber"></span>
+				</td>
+				<td>
+					<span wicket:id="fldRevDate"></span>
+				</td>
+				<td>
+					<span wicket:id="fldRevBy"></span>
+				</td>
+				<td>
+					<span wicket:id="fldEnType"></span>
+				</td>
+				<td>
+					<span wicket:id="fldPrimaryKey"></span>
+				</td>
+				<td>
+					<span wicket:id="fldType"></span>
+				</td>
+				<td>
+					<span wicket:id="fldPriKey"></span>
+				</td>
+				<td>
+					<span wicket:id="prevPriKey"></span>
+				</td>
+				<td>
+					<span wicket:id="fldRevType"></span>
+				</td>
+				<td width="2%">
+				</td>
+			</tr>
+			<tfoot>
+				<tr>
+					<td width="2%">
+					</td>
+					<td colspan="100%">
+						<span wicket:id="fldNavigator" class="a">
+						</span>			
+					</td>
+				</tr>
+			</tfoot>
+		</table>
 	</div>
 </wicket:panel>

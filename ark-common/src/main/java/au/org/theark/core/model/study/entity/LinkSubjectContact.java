@@ -96,7 +96,7 @@ public class LinkSubjectContact implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PERSON_SUBJECT_ID")
-	public Person getpersonBySubjectId() {
+	public Person getPersonBySubjectId() {
 		return this.personBySubjectId;
 	}
 

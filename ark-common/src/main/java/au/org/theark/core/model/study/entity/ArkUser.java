@@ -29,6 +29,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 
 /**
  * @author nivedann
@@ -57,6 +58,7 @@ public class ArkUser implements Serializable {
 		this.id = id;
 	}
 
+	@ArkAuditDisplay
 	@Column(name = "LDAP_USER_NAME")
 	public String getLdapUserName() {
 		return ldapUserName;
