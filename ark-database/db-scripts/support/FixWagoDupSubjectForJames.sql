@@ -1,6 +1,3 @@
-select * from zeus.subject where OTHER_ID is not null;
-
-
 
 
 select * from study.link_subject_Study
