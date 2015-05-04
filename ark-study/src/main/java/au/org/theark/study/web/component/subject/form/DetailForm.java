@@ -28,6 +28,8 @@ import java.util.Set;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
@@ -72,6 +74,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.audit.modal.AuditModalPanel;
 import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.lims.service.ILimsService;
@@ -155,6 +158,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private MultiLineLabel	otherIDLabel;
 	private TextField<String> otherIDTxtFld;
 	private TextField<String> otherIDSourceTxtFld;
+	
+	private ModalWindow historyModal;
+	private AjaxButton historyButton;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
@@ -381,6 +387,28 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		addDetailFormComponents();
 
 		deleteButton.setVisible(false);
+		
+		historyModal = new ModalWindow("historyModalWindow") {
+			
+		};
+		
+		historyButton = new AjaxButton("history") {
+
+			private static final long	serialVersionUID	= 1L;
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				AuditModalPanel historyPanel = new AuditModalPanel("content", containerForm.getModelObject(), arkCrudContainerVO);
+				historyModal.setContent(historyPanel);
+				historyModal.setTitle("Entity History");
+				historyModal.show(target);
+				target.add(historyModal);
+				super.onSubmit(target, form);
+			}
+		};
+		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyButton);
+		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyModal);
+		
 	}
 
 	/**
