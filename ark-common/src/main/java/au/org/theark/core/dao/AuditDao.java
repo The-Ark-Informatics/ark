@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -97,5 +99,14 @@ public class AuditDao extends HibernateSessionDao implements IAuditDao {
 	public List<AuditField> getAuditFieldList() {
 		Criteria criteria = getSession().createCriteria(AuditField.class);
 		return criteria.list();
+	}
+
+	@Override
+	public boolean isAudited(Class<?> type) {
+		Criteria criteria = getSession().createCriteria(AuditEntity.class);
+		criteria.add(Restrictions.eq("classIdentifier", type.getName()));
+		criteria.setProjection(Projections.rowCount());
+		Long rowCount = (Long) criteria.uniqueResult();
+		return rowCount != 0;
 	}
 }

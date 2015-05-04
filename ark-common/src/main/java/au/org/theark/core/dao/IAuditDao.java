@@ -69,4 +69,6 @@ public interface IAuditDao {
 	public List<AuditPackage> getAuditPackageList();
 
 	public List<AuditField> getAuditFieldList();
+
+	public boolean isAudited(Class<?> type);
 }

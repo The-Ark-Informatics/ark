@@ -32,7 +32,11 @@ public interface IAuditService {
 	
 	public String getEntityValue(Object entity, Method fieldDisplayMethod, Method fieldReadMethod);
 
+	public String getEntityValue(Object entity);
+	
 	public Long getEntityPrimaryKey(Object entity);
 
 	public Object getPreviousEntity(Long id, Object entity, Number currentRevision);
+
+	public boolean isAudited(Class<?> type);
 }

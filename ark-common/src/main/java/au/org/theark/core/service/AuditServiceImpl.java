@@ -190,6 +190,27 @@ public class AuditServiceImpl implements IAuditService {
 
 		return sb.toString();
 	}
+	
+	/**
+	 * Gets the value of the provided entity.
+	 * @param entity The entity to get the value of.
+	 * @return The string representation of the provided entity. If no representation could be achieved, an empty string is returned.
+	 */
+	public String getEntityValue(Object entity) {
+		Method displayMethod = getEntityDisplayMethod(entity.getClass());
+		StringBuilder sb = new StringBuilder();
+		try {
+			if(entity instanceof Date) {
+				sb.append(new DateFormat(Constants.DD_MM_YYYY).getDateFormat().format(entity));
+			} else {
+				sb.append(displayMethod.invoke(entity, (Object[])null));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return sb.toString();
+	}
 
 	/**
 	 * Checks to see if the provided annotation class appears on any method in the search class.
@@ -277,4 +298,10 @@ public class AuditServiceImpl implements IAuditService {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean isAudited(Class<?> type) {
+		return iAuditDao.isAudited(type);
+	}
+
 }
