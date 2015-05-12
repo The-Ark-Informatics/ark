@@ -3,4 +3,5 @@
 **/.settings/
 **/target/
 **/.metadata
-
+**/logs/
+**/velocity.log
