@@ -1,6 +1,0 @@
-use lims;
-ALTER TABLE `lims`.`bio_sampletype` ADD COLUMN `NAME` VARCHAR(50) NOT NULL DEFAULT '0'  AFTER `ID` , CHANGE COLUMN `SAMPLETYPE` `SAMPLETYPE` VARCHAR(50) NULL DEFAULT NULL  , CHANGE COLUMN `SAMPLESUBTYPE` `SAMPLESUBTYPE` VARCHAR(50) NULL DEFAULT NULL;
-UPDATE `lims`.`bio_sampletype` SET NAME = CONCAT(SAMPLETYPE,' / ',SAMPLESUBTYPE) where id > 0;
-UPDATE `lims`.`bio_sampletype` SET `NAME`='Protein from TL' WHERE `ID`='31';
-UPDATE `lims`.`bio_sampletype` SET `NAME`='Saliva' WHERE `ID`='36';
-UPDATE `lims`.`bio_sampletype` SET `NAME`='Urine' WHERE `ID`='82';

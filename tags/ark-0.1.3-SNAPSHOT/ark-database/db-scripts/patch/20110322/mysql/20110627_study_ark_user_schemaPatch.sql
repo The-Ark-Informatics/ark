@@ -1,5 +1,0 @@
-USE study;
-
-ALTER TABLE `study`.`ark_user` DROP FOREIGN KEY `FK_STUDY_ID` ;
-ALTER TABLE `study`.`ark_user` DROP COLUMN `STUDY_ID` 
-, DROP INDEX `FK_STUDY_ID` ;

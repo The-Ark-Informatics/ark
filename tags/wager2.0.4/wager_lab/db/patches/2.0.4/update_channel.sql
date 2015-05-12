@@ -1,1 +1,0 @@
-update ix_biospecimen set sampletype = 'Frozen Lymphocytes (F)' where sampletype = 'Frozen lymphocytes (F)';

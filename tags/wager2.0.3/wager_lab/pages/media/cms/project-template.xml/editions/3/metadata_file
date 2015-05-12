@@ -1,5 +1,0 @@
-</project-template.xml> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.ais.columbia.edu/sws/xmlns/cufs#File> .
-</project-template.xml> <http://purl.org/dc/elements/1.0/description> "project description\n" .
-</project-template.xml> <http://www.ais.columbia.edu/sws/xmlns/cucms#editor> "Neuragenix Demo" .
-</project-template.xml> <http://www.ais.columbia.edu/sws/xmlns/cucms#comment> " removed index" .
-</project-template.xml> <http://purl.org/dc/elements/1.0/title> "CuCMS Project Template" .

@@ -1,5 +1,0 @@
-# putting all the properties here, with the values as the suggested value
-# For ex: neuragenix.genix.StorageFile=/home/ltran/some/folder
-neuragenix.system.DateFormat=DD/mm/YYYY
-neuragenix.notexisted=Don't know
-

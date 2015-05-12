@@ -1,7 +1,0 @@
-Vector v = new Vector();
-v.add(new Integer("1"));
-v.add(new Integer("34"));
-v.add(new Integer("56"));
-v.add(new String("128gg"));
-System.out.println(StudyUtilities.getStudyIDSQLString(v));An exception occurred during evaluation:  java.lang.NumberFormatExceptionAn exception occurred during evaluation:  java.lang.NumberFormatExceptionAn exception occurred during evaluation:  java.lang.NumberFormatException
-

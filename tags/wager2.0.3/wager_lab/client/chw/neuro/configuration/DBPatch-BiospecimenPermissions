@@ -1,5 +1,0 @@
---
---Rights to be change the study a biospecimen is consented to
---
-
-INSERT INTO ix_activity ("NAME", "DESCRIPTION") VALUES ( 'biospecimen_change_study', 'Biospecimen Change Study');
