@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
@@ -72,6 +73,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	
 	private BiospecimenUidGenerator		biospecimenUidGenerator;
 	private IBioTransactionDao	iBioTransactionDao;
+	private IStudyDao iStudyDao;
 	/**
 	 * @param iBioTransactionDao
 	 *           the iBioTransactionDao to set
@@ -79,6 +81,11 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	@Autowired
 	public void setiBioTransactionDao(IBioTransactionDao iBioTransactionDao) {
 		this.iBioTransactionDao = iBioTransactionDao;
+	}
+	
+	@Autowired
+	public void setiStudyDao(IStudyDao iStudyDao) {
+		this.iStudyDao = iStudyDao;
 	}
 
 	/**
@@ -255,7 +262,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 					limsVo.getStudy().getParentStudy().getId().equals(limsVo.getStudy().getId())
 					) {
 				// If parent study, show all children as well
-				criteria.add(Restrictions.in("study", limsVo.getStudyList()));	
+				criteria.add(Restrictions.in("study", iStudyDao.getChildStudiesForStudy(limsVo.getStudy())));
 			}
 			else {
 				criteria.add(Restrictions.eq("study", limsVo.getStudy()));
