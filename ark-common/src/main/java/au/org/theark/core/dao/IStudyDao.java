@@ -748,5 +748,6 @@ public interface IStudyDao {
 	public int getCustomFieldsPerPage();
 	
 	public void deleteUserConfig(UserConfig uc);
-
+	
+	public List<Study> getChildStudiesForStudy(Study study);
 }

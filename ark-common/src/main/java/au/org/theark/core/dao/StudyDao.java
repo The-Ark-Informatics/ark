@@ -5045,4 +5045,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			getSession().delete(uc);
 		}
 	}
+
+	@Override
+	public List<Study> getChildStudiesForStudy(Study parentStudy) {
+		Criteria criteria = getSession().createCriteria(Study.class);
+		criteria.add(Restrictions.eq("parentStudy", parentStudy));
+		List<Study> childStudies = criteria.list();
+		return childStudies;
+	}
 }
