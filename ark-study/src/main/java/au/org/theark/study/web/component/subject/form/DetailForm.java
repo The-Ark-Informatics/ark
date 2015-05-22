@@ -157,6 +157,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private TextField<String> otherIDTxtFld;
 	private TextField<String> otherIDSourceTxtFld;
 		
+	private HistoryButtonPanel historyButtonPanel;
+	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -177,6 +179,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			containerForm.getModelObject().getLinkSubjectStudy().setConsentStatus(iArkCommonService.getConsentStatusByName("Pending"));
 			//consentStatusChoice.setModel(new Model<ConsentStatus>(iArkCommonService.getConsentStatusByName("Pending")));
 		}
+		
+		historyButtonPanel.setVisible(!isNew());
+		
 		super.onBeforeRender();
 	}
 
@@ -383,7 +388,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 		deleteButton.setVisible(false);
 		
-		HistoryButtonPanel historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO);
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO);
 	}
 
 	/**
