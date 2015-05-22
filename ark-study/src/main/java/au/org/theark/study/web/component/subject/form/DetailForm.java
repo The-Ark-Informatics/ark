@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -399,10 +400,11 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				AuditModalPanel historyPanel = new AuditModalPanel("content", containerForm.getModelObject(), arkCrudContainerVO);
-				historyModal.setContent(historyPanel);
 				historyModal.setTitle("Entity History");
-				historyModal.show(target);
+				historyModal.setAutoSize(true);
+				historyModal.setContent(historyPanel);
 				target.add(historyModal);
+				historyModal.show(target);
 				super.onSubmit(target, form);
 			}
 		};
