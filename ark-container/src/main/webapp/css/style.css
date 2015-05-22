@@ -667,3 +667,7 @@ input, button, textarea, select { font-size: 8pt; }
 nobreakws{
 	    white-space: nowrap;
 }
+
+.historyPanel {
+	display:inline;
+}

@@ -26,11 +26,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
@@ -75,7 +72,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.component.audit.modal.AuditModalPanel;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.lims.service.ILimsService;
@@ -159,10 +156,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private MultiLineLabel	otherIDLabel;
 	private TextField<String> otherIDTxtFld;
 	private TextField<String> otherIDSourceTxtFld;
-	
-	private ModalWindow historyModal;
-	private AjaxButton historyButton;
-
+		
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -178,7 +172,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(childStudySubjectPanel);
 		
 		consentHistoryPanel.setVisible(!isNew());
-		
+				
 		if(isNew()){
 			containerForm.getModelObject().getLinkSubjectStudy().setConsentStatus(iArkCommonService.getConsentStatusByName("Pending"));
 			//consentStatusChoice.setModel(new Model<ConsentStatus>(iArkCommonService.getConsentStatusByName("Pending")));
@@ -389,28 +383,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 		deleteButton.setVisible(false);
 		
-		historyModal = new ModalWindow("historyModalWindow") {
-			
-		};
-		
-		historyButton = new AjaxButton("history") {
-
-			private static final long	serialVersionUID	= 1L;
-			
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				AuditModalPanel historyPanel = new AuditModalPanel("content", containerForm.getModelObject(), arkCrudContainerVO);
-				historyModal.setTitle("Entity History");
-				historyModal.setAutoSize(true);
-				historyModal.setContent(historyPanel);
-				target.add(historyModal);
-				historyModal.show(target);
-				super.onSubmit(target, form);
-			}
-		};
-		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyButton);
-		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyModal);
-		
+		HistoryButtonPanel historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO);
 	}
 
 	/**

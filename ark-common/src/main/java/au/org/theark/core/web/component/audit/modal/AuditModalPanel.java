@@ -37,7 +37,7 @@ import au.org.theark.core.web.component.ArkDataProvider;
 
 public class AuditModalPanel extends Panel {
 
-	private class AuditRow implements Serializable {
+	class AuditRow implements Serializable {
 		
 		private UsernameRevisionEntity usernameRevisionEntity;
 		private Object revisionProperty;
@@ -89,6 +89,7 @@ public class AuditModalPanel extends Panel {
 	public AuditModalPanel(String id, Object entity, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		this.entity = entity;
+		log.info("entity: " + entity);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		initialisePanel();
 	}
@@ -101,6 +102,7 @@ public class AuditModalPanel extends Panel {
 			Component component = arkCrudContainerVO.getDetailPanelFormContainer().get(i);
 			Object current = entity;
 			for(String s : component.getId().split(Pattern.quote("."))) {
+				log.info("s: " + s);
 				try { 
 					PropertyUtilsBean propertyBean = new PropertyUtilsBean();
 					Object property = propertyBean.getNestedProperty(current, s);
