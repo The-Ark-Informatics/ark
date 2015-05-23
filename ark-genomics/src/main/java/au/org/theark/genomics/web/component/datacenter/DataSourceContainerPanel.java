@@ -4,7 +4,6 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.genomics.model.vo.DataSourceVo;

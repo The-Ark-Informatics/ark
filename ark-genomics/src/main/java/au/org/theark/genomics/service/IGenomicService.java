@@ -28,4 +28,12 @@ public interface IGenomicService {
 	
 	public DataSource getDataSource(DataSourceVo dataSourceVo);
 	
+	public String executeDataSourceUpload(DataSourceVo dataSource);
+	
+	public String executeDataSourceUpload(DataCenterVo dataCenter);
+	
+	public void updateDataSourceStatus(final String processUID, DataSource dataSource);
+	
+	
+	
 }

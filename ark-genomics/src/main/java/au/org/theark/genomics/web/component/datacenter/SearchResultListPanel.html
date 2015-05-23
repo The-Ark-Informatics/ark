@@ -24,12 +24,19 @@
 			<th width="20%">
 				<label for="status">
 					<wicket:message	key="genomics.datacenter.status">Status:</wicket:message>
+					<span wicket:id="status">Status</span>
 				</label>
 			</th>
 			<th width="10%">
 				<label for="status">
 					<wicket:message	key="genomics.datacenter.source">Status:</wicket:message>
 				</label>
+			</th>
+			<th width="5%">
+				<input wicket:id="plinkUpload" type="submit" wicket:message="value:button.plinkupload" />
+			</th>
+			<th width="5%">
+				<input wicket:id="plinkDelete" type="submit" wicket:message="value:button.plinkdelete" />
 			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
@@ -50,16 +57,29 @@
 				<span wicket:id="dataSourceVo.status">status</span>
 			</td>
 			<td width="10%">
+				<input wicket:id="source" type="submit" wicket:message="value:button.source" />
+				<!--  
 				<a href="#"wicket:id="dataSourceVo.source">
 			  		<span wicket:id="nameLbl">Name</span>
-			  	</a>								
+			  	</a>
+			  	-->								
+			</td>
+			<td width="5%">
+			<!--  
+				<input wicket:id="upload" type="submit" wicket:message="value:button.upload" />
+			-->
+			</td>
+			<td width="5%">
+			<!--
+				<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+			-->
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="5"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="7"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>

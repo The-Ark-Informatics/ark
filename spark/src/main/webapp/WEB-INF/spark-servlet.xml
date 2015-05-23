@@ -4,6 +4,7 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:int-sftp="http://www.springframework.org/schema/integration/sftp"
 	xmlns:cassandra="http://www.springframework.org/schema/data/cassandra"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 http://www.springframework.org/schema/context
@@ -13,14 +14,18 @@ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
 http://www.springframework.org/schema/integration/sftp
 http://www.springframework.org/schema/integration/sftp/spring-integration-sftp-4.1.xsd
 http://www.springframework.org/schema/data/cassandra
-http://www.springframework.org/schema/data/cassandra/spring-cassandra-1.0.xsd">
+http://www.springframework.org/schema/data/cassandra/spring-cassandra-1.0.xsd
+http://www.springframework.org/schema/task
+http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 
 	<context:property-placeholder location="classpath:spark.properties" />
 
 	<context:component-scan base-package="au.org.spark.web.controller" />
 	<context:component-scan base-package="au.org.spark.service" />
+	<context:component-scan base-package="au.org.spark.jobs" />
 
 	<mvc:annotation-driven />
+	<task:annotation-driven />
 
 	<mvc:resources mapping="/images/**" location="/WEB-INF/images/" />
 
@@ -32,6 +37,7 @@ http://www.springframework.org/schema/data/cassandra/spring-cassandra-1.0.xsd">
 		<property name="suffix" value=".jsp" />
 	</bean>
 
+	<!-- 
 	<bean id="cloudConfig" class="org.javaswift.joss.client.factory.AccountConfig">
 		<property name="tenantName" value="${cloud.tenant.name}" />
 		<property name="username" value="${cloud.username}" />
@@ -45,6 +51,7 @@ http://www.springframework.org/schema/data/cassandra/spring-cassandra-1.0.xsd">
 
 	<bean id="cloudAccount" factory-bean="cloudFactory"
 		factory-method="createAccount" />
+ -->
 
 	<bean id="sftpSessionFactory"
 		class="org.springframework.integration.sftp.session.DefaultSftpSessionFactory">

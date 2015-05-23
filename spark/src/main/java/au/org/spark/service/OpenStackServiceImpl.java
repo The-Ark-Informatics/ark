@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class OpenStackServiceImpl implements OpenStackService {
 	
-	@Autowired
+//	@Autowired
 	private Account account;
 	
 	public List<String> listContainers(){

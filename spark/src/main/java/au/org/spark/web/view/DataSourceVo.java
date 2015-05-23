@@ -16,6 +16,10 @@ public class DataSourceVo implements Serializable {
 
 	private String status;
 	
+	private String dataCenterName;
+	
+	private String directoryName;
+	
 	public DataSourceVo(){
 		
 	}
@@ -58,4 +62,22 @@ public class DataSourceVo implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public String getDataCenterName() {
+		return dataCenterName;
+	}
+
+	public void setDataCenterName(String dataCenterName) {
+		this.dataCenterName = dataCenterName;
+	}
+
+	public String getDirectoryName() {
+		return directoryName;
+	}
+
+	public void setDirectoryName(String directoryName) {
+		this.directoryName = directoryName;
+	}
+	
+
 }

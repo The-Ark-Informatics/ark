@@ -14,6 +14,8 @@ public class DataCenterVo implements Serializable {
 	private String directory;
 	
 	private String fileName;
+	
+	private String status;
 
 	public String getName() {
 		return name;
@@ -38,7 +40,13 @@ public class DataCenterVo implements Serializable {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
-	
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	
 }

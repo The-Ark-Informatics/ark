@@ -21,6 +21,8 @@ public class DataCenterVo implements Serializable {
 	
 	private String fileName;
 	
+	private String status;
+	
 	private List<DataSourceVo> dataSourceList;	
 
 	public DataCenterVo() {
@@ -66,5 +68,13 @@ public class DataCenterVo implements Serializable {
 	public void setDataSourceList(List<DataSourceVo> dataSourceList) {
 		this.dataSourceList = dataSourceList;
 	}
-	
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 }

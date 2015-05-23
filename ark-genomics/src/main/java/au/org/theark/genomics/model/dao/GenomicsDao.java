@@ -3,6 +3,7 @@ package au.org.theark.genomics.model.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -28,8 +29,7 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 			getSession().update(microService);
 		}
 	}
-	
-	
+
 	public void saveOrUpdate(DataSource dataSource) {
 		if (dataSource.getId() == null || dataSource.getId() == 0) {
 			getSession().save(dataSource);
@@ -41,7 +41,7 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 	public void delete(MicroService microService) {
 		getSession().delete(microService);
 	}
-	
+
 	public void delete(DataSource dataSource) {
 		getSession().delete(dataSource);
 	}
@@ -59,25 +59,32 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		List<MicroService> list = criteria.list();
 		return list;
 	}
-	
-	public List<DataSourceType> listDataSourceTypes(){
+
+	public List<DataSourceType> listDataSourceTypes() {
 		Criteria criteria = getSession().createCriteria(DataSourceType.class);
 		return criteria.list();
 	}
-	
-	public DataSource getDataSource(DataSourceVo dataSourceVo){
-		List<DataSource> list=null;
-		
+
+	public DataSource getDataSource(DataSourceVo dataSourceVo) {
+		List<DataSource> list = null;
+
 		Criteria criteria = getSession().createCriteria(DataSource.class);
-		
-		criteria.add(Restrictions.eq(Constants.NAME, dataSourceVo.getFileName()));
-		criteria.add(Restrictions.eq(Constants.PATH, dataSourceVo.getPath()));
-		criteria.add(Restrictions.eq(Constants.DATACENTER, dataSourceVo.getDataCenter()));
-		criteria.add(Restrictions.eq(Constants.MICROSERVICE, dataSourceVo.getMicroService()));
-		
-		list= criteria.list();
-		
-		return list.size()>0?list.get(0):null;
+		criteria.setFetchMode("microService", FetchMode.JOIN);
+		if (dataSourceVo.getFileName() != null) {
+			criteria.add(Restrictions.eq(Constants.NAME, dataSourceVo.getFileName()));
+		}
+		if (dataSourceVo.getPath() != null) {
+			criteria.add(Restrictions.eq(Constants.PATH, dataSourceVo.getPath()));
+		}
+		if (dataSourceVo.getDataCenter() != null) {
+			criteria.add(Restrictions.eq(Constants.DATACENTER, dataSourceVo.getDataCenter()));
+		}
+		if (dataSourceVo.getMicroService() != null) {
+			criteria.add(Restrictions.eq(Constants.MICROSERVICE, dataSourceVo.getMicroService()));
+		}
+		list = criteria.list();
+
+		return list.size() > 0 ? list.get(0) : null;
 	}
 
 }

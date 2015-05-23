@@ -3,6 +3,7 @@ package au.org.theark.genomics.web.component.datacenter.form;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -15,6 +16,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.MicroService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
@@ -29,7 +31,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@SpringBean(name = Constants.GENOMIC_SERVICE)
 	private IGenomicService iGenomicService;
 
@@ -43,10 +45,9 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 	private TextField<String> directoryTextField;
 
 	private AjaxButton newButton;
-	
-	
+
 	private List<MicroService> microServiceList;
-	
+
 	private List<String> dataSourceList;
 
 	public SearchForm(String id, CompoundPropertyModel<DataCenterVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<DataSourceVo> listView) {
@@ -65,13 +66,13 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 	private void initialiseSearchForm() {
 		PropertyModel<MicroService> pm = new PropertyModel<MicroService>(cpmModel, "microService");
-		
+
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		MicroService searchCriteria = new MicroService();
 		searchCriteria.setStudyId(studyId);
-		
+
 		this.microServiceList = iGenomicService.searchMicroService(searchCriteria);
-		
+
 		initMicroServiceDropDown(pm);
 		this.dataCentersDDC = new DropDownChoice<String>(Constants.DATA_CENTER_NAME);
 		dataCentersDDC.setOutputMarkupId(true);
@@ -96,47 +97,88 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		this.microServicesDDC = new DropDownChoice(Constants.DATA_CENTER_MICRO_SERVICE, microService, this.microServiceList, defaultChoiceRenderer);
 		this.microServicesDDC.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
-			private static final long	serialVersionUID	= 1L;
-			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				DataCenterVo model = cpmModel.getObject(); 
+				DataCenterVo model = cpmModel.getObject();
 				model.setName(null);
 				dataCentersDDC.setChoices(iGenomicService.searchDataCenters(model.getMicroService()));
 				target.add(dataCentersDDC);
 			}
-			
+
 			@Override
 			protected void onError(AjaxRequestTarget target, RuntimeException e) {
-				
+
 			}
 		});
 
 	}
-	
-	private void initDataCenterDropDown(PropertyModel<MicroService> microService){
-		
+
+	private void initDataCenterDropDown(PropertyModel<MicroService> microService) {
+
 	}
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		
+
 		DataCenterVo dataCenterVo = getModelObject();
-		
+
 		List<DataSourceVo> resultList = iGenomicService.searchDataSources(getModelObject());
+
+		Component uploadBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("plinkUpload");
+		Component deleteBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("plinkDelete");
+
 		if (resultList != null && resultList.size() == 0) {
 			String dataCenter = dataCenterVo.getName();
-			
+
 			MicroService microService = dataCenterVo.getMicroService();
-			
-			if(microService == null || dataCenter == null){
+
+			if (microService == null || dataCenter == null) {
 				this.error("Need to select a service and data center prior to make a search.");
-			}
-			else{			
-				this.info(getModelObject().getName() +" cannot be reach in the " + getModelObject().getMicroService().getName()+" Service");
+			} else {
+				this.info(getModelObject().getName() + " cannot be reach in the " + getModelObject().getMicroService().getName() + " Service");
 			}
 			target.add(feedbackPanel);
+
+			uploadBtn.setEnabled(false);
+			deleteBtn.setEnabled(false);
+
+			cpmModel.getObject().setStatus(null);
+		} else {
+
+			DataSourceVo dataSourceVo = new DataSourceVo();
+			dataSourceVo.setDataCenter(cpmModel.getObject().getName());
+			dataSourceVo.setMicroService(cpmModel.getObject().getMicroService());
+
+			String dir = cpmModel.getObject().getDirectory();
+			dataSourceVo.setPath(dir == null ? "/" : dir.charAt(0) == '/' ? dir : ("/" + dir));
+
+			DataSource dataSource = iGenomicService.getDataSource(dataSourceVo);
+
+			if (dataSource != null && dataSource.getStatus() != null) {
+				cpmModel.getObject().setStatus(dataSource.getStatus());
+			} else {
+				cpmModel.getObject().setStatus("Undefined");
+			}
+
+			if (dataCenterVo.getDirectory() == null) {
+				uploadBtn.setEnabled(false);
+				deleteBtn.setEnabled(false);
+			} else {
+				if (dataSource != null && !(dataSource.getStatus() == null || dataSource.getStatus().trim().length() == 0 || "Deleted".equalsIgnoreCase(dataSource.getStatus()))) {
+					uploadBtn.setEnabled(false);
+				} else {
+					uploadBtn.setEnabled(true);
+				}
+
+				if (dataSource == null || !"Completed".equalsIgnoreCase(dataSource.getStatus())) {
+					deleteBtn.setEnabled(false);
+				} else {
+					deleteBtn.setEnabled(true);
+				}
+			}
 		}
 		getModelObject().setDataSourceList(resultList);
 		listView.removeAll();

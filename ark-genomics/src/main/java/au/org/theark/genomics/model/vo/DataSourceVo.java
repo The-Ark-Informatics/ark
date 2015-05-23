@@ -16,6 +16,8 @@ public class DataSourceVo implements Serializable {
 	private String fileName;
 
 	private String directory;
+	
+	private String directoryName;
 
 	private String path;
 
@@ -28,6 +30,7 @@ public class DataSourceVo implements Serializable {
 	private DataSource dataSource;
 	
 	private int mode;
+
 	
 	public DataSourceVo(){
 		this.dataSource = new DataSource();
@@ -95,6 +98,14 @@ public class DataSourceVo implements Serializable {
 
 	public void setMode(int mode) {
 		this.mode = mode;
+	}
+
+	public String getDirectoryName() {
+		return directoryName;
+	}
+
+	public void setDirectoryName(String directoryName) {
+		this.directoryName = directoryName;
 	}
 
 	public void pupulateDataSource(){

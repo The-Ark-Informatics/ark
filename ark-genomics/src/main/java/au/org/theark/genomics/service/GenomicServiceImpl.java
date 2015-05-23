@@ -40,7 +40,6 @@ public class GenomicServiceImpl implements IGenomicService {
 
 	public void saveOrUpdate(MicroService microService) {
 		genomicsDao.saveOrUpdate(microService);
-
 	}
 
 	public void delete(MicroService microService) {
@@ -92,24 +91,10 @@ public class GenomicServiceImpl implements IGenomicService {
 	}
 
 	public List<String> searchDataCenters(final MicroService microService) {
-		// TODO Auto-generated method stub
 		ArrayList<String> list = new ArrayList<String>();
 
 		String URL = microService.getServiceUrl() + "/datacenters";
 
-		// ArrayList<String> list = new ArrayList<String>();
-
-		// JSONObject jsonObject= new JSONObject();
-
-		// JSONArray jsonArray = new JSONArray();
-		// jsonArray.add("");
-		//
-		// if (jsonArray != null) {
-		// int len = jsonArray.size();
-		// for (int i = 0; i < len; i++) {
-		// list.add(jsonArray.get(i).toString());
-		// }
-		// }
 		StringBuffer sb = new StringBuffer();
 
 		try {
@@ -150,19 +135,6 @@ public class GenomicServiceImpl implements IGenomicService {
 			e.printStackTrace();
 		}
 
-		// if ("SPARK-SERVICE".equalsIgnoreCase(microService.getName())) {
-		// list.add("A");
-		// list.add("B");
-		// list.add("C");
-		// } else if ("WP-service".equalsIgnoreCase(microService.getName())) {
-		// list.add("D");
-		// list.add("E");
-		// list.add("F");
-		// } else {
-		// list.add("G");
-		// list.add("H");
-		// list.add("I");
-		// }
 		return list;
 	}
 
@@ -185,12 +157,7 @@ public class GenomicServiceImpl implements IGenomicService {
 			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
-			//
-			// if (conn.getResponseCode() != 200) {
-			// throw new RuntimeException("Failed : HTTP error code : " +
-			// conn.getResponseCode());
-			// }
-
+			
 			JSONObject obj = new JSONObject();
 			obj.put("name", datacenter.getName());
 			obj.put("directory", datacenter.getDirectory());
@@ -242,9 +209,20 @@ public class GenomicServiceImpl implements IGenomicService {
 
 					ds.setPath(dirPath + fileName);
 				}
-				ds.setStatus(obj2.get("status").toString());
+				// ds.setStatus(obj2.get("status").toString());
 				ds.setMicroService(datacenter.getMicroService());
 				ds.setDataCenter(datacenter.getName());
+				ds.setDirectoryName(datacenter.getDirectory());
+				DataSource dataSource = getDataSource(ds);
+
+				if (dataSource != null) {
+					ds.setDataSource(dataSource);
+					ds.setMode(Constants.MODE_EDIT);
+
+				} else {
+					ds.pupulateDataSource();
+				}
+
 				list.add(ds);
 			}
 		} catch (MalformedURLException e) {
@@ -258,71 +236,209 @@ public class GenomicServiceImpl implements IGenomicService {
 		return list;
 	}
 
-	// public List<DataSourceVo> searchDataSources1(DataCenterVo datacenter) {
-	// ArrayList<DataSourceVo> list = new ArrayList<DataSourceVo>();
-	//
-	// String URL = datacenter.getMicroService().getServiceUrl() +
-	// "/datasources";
-	//
-	// try {
-	//
-	// URL url = new URL(URL);
-	// HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-	// conn.setRequestMethod("POST");
-	// conn.setRequestProperty("Accept", "application/json");
-	// conn.setDoOutput(true);
-	// conn.setDoInput(true);
-	//
-	// String line;
-	// BufferedReader reader = new BufferedReader(new
-	// InputStreamReader(conn.getInputStream()));
-	//
-	// StringBuffer sb = new StringBuffer();
-	// while ((line = reader.readLine()) != null) {
-	// sb.append(line);
-	// }
-	// // writer.close();
-	// reader.close();
-	//
-	// JSONParser parser = new JSONParser();
-	//
-	// Object outobj = parser.parse(sb.toString());
-	// JSONArray array = (JSONArray) outobj;
-	//
-	// for (int i = 0; i < array.size(); ++i) {
-	// JSONObject obj2 = (JSONObject) array.get(i);
-	//
-	// DataSourceVo ds = new DataSourceVo();
-	// ds.setFileName(obj2.get("fileName").toString());
-	// ds.setDirectory(obj2.get("directory").toString());
-	// ds.setPath(obj2.get("path").toString());
-	// ds.setStatus(obj2.get("status").toString());
-	//
-	// list.add(ds);
-	// }
-	//
-	// for (DataSourceVo data : list) {
-	// System.out.println(data.getFileName());
-	// }
-	//
-	// } catch (MalformedURLException e) {
-	// e.printStackTrace();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// return list;
-	// }
-
 	public List<DataSourceType> listDataSourceTypes() {
 		return genomicsDao.listDataSourceTypes();
 	}
-	
+
 	public DataSource getDataSource(DataSourceVo dataSourceVo) {
 		// TODO Auto-generated method stub
 		return genomicsDao.getDataSource(dataSourceVo);
+	}
+
+//	public String executeDataSourceUpload(DataSource dataSource) {
+//
+//		MicroService microService = dataSource.getMicroService();
+//
+//		String URL = microService.getServiceUrl() + "/executeProcess";
+//
+//		String processUID = null;
+//		try {
+//			URL url = new URL(URL);
+//			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//			conn.setRequestMethod("POST");
+//			conn.setRequestProperty("Accept", "application/json");
+//			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+//			conn.setDoOutput(true);
+//			conn.setDoInput(true);
+//			
+//						
+//			if (conn.getResponseCode() != 200) {
+//				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+//			}
+//			
+//			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+//
+//			String output = null;
+//			while ((output = br.readLine()) != null) {
+//				log.info("Process UID -- " + output);
+//				processUID = output;
+//			}
+//			conn.disconnect();
+//		} catch (MalformedURLException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return processUID;
+//	}
+	
+	public String executeDataSourceUpload(DataSourceVo dataSource) {
+
+		MicroService microService = dataSource.getMicroService();
+
+		String URL = microService.getServiceUrl() + "/executeProcess";
+
+		String processUID = null;
+		try {
+			URL url = new URL(URL);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			
+						
+			JSONObject obj = new JSONObject();
+			obj.put("directoryName", dataSource.getDirectoryName());
+			obj.put("dataCenterName", dataSource.getDataCenter());
+			obj.put("path", dataSource.getPath());
+			obj.put("fileName", dataSource.getFileName());
+			obj.put("status", dataSource.getStatus());
+
+			StringWriter out = new StringWriter();
+			obj.writeJSONString(out);
+			String data = out.toString();
+
+			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+			writer.write(data);
+			writer.flush();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output = null;
+			while ((output = br.readLine()) != null) {
+				log.info("Process UID -- " + output);
+				processUID = output;
+			}
+			conn.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return processUID;
+	}
+	
+	
+	public String executeDataSourceUpload(DataCenterVo dataCenter) {
+
+		MicroService microService = dataCenter.getMicroService();
+
+		String URL = microService.getServiceUrl() + "/executePlinkProcess";
+
+		String processUID = null;
+		try {
+			URL url = new URL(URL);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+						
+			JSONObject obj = new JSONObject();
+			obj.put("directory", dataCenter.getDirectory());
+			obj.put("name", dataCenter.getName());
+			obj.put("status", dataCenter.getStatus());
+
+			StringWriter out = new StringWriter();
+			obj.writeJSONString(out);
+			String data = out.toString();
+
+			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+			writer.write(data);
+			writer.flush();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output = null;
+			while ((output = br.readLine()) != null) {
+				log.info("Process UID -- " + output);
+				processUID = output;
+			}
+			conn.disconnect();
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return processUID;
+	}
+
+
+
+	public void updateDataSourceStatus(final String processUID, DataSource dataSource) {
+
+		MicroService microService = dataSource.getMicroService();
+
+		String URL = microService.getServiceUrl() + "/processStatus";
+
+		String result = "Running";
+		
+		String initStatus = dataSource.getStatus();
+
+		while (!("Completed".equalsIgnoreCase(result) || "Error".equalsIgnoreCase(result))) {
+
+			try {
+				URL url = new URL(URL);
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("POST");
+				conn.setRequestProperty("Accept", "application/json");
+				conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+				conn.setDoOutput(true);
+				conn.setDoInput(true);
+				
+				OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+
+				writer.write(processUID);
+				writer.flush();
+
+				BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+				String output = null;
+				while ((output = br.readLine()) != null) {
+					result = output;
+				}
+				conn.disconnect();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			log.info("Process Status -- " + result);
+			
+			log.info("DataSoure Status -- " + dataSource.getStatus());
+			
+			if("Deleting".equalsIgnoreCase(initStatus) && "completed".equalsIgnoreCase(result)){
+				dataSource.setStatus("Deleted");
+			}else{
+				dataSource.setStatus(result);				
+			}
+			
+			saveOrUpdate(dataSource);
+
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
