@@ -97,6 +97,7 @@ import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractArchiveDetailForm;
@@ -185,6 +186,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private ArkBusyAjaxButton								newChildStudyButton;
 	private static final PackageResourceReference	NO_STUDY_LOGO		= new PackageResourceReference(DetailForm.class, "no_study_logo.gif");
 
+	private HistoryButtonPanel historyButtonPanel;
+	
 	/**
 	 * Constructor
 	 * 
@@ -215,6 +218,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		parentStudyContainer.setEnabled(isNew());
 		parentStudyContainer.setVisible(isChildStudy);
 		subjectFileUploadContainer.setVisible(!isNew() && isChildStudy);
+		
+		historyButtonPanel.setVisible(!isNew());
+		
 		super.onBeforeRender();
 	}
 
@@ -491,6 +497,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			}
 		};
 
+		historyButtonPanel = new HistoryButtonPanel(containerForm, studyCrudVO);
+		
 		attachValidators();
 		addComponents();
 	}

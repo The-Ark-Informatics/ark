@@ -3,36 +3,79 @@
 # Define global variables
 #export DEV_USER=$USER   #assumes the same as current user
 export WORKSPACE_DIR=`pwd` #relative to current user HOME dir
+COMPILE_ALL=0
+
+is_changed() {
+	[ "$(git diff --shortstat `pwd` 2> /dev/null | tail -n1)" != "" ] || [ $COMPILE_ALL -eq 1 ]
+}
+
+printHelpAndExit() {
+	printf $"Usage: \n\t -a|--all: Force compile all packages\n"
+	exit
+}
+
+pointer=1
+while [[ $pointer -le $# ]]; do
+	param=${!pointer}
+	if [[ $param != "-"* ]]; then ((pointer++))
+	else
+		case $param in
+		    -a|--all) COMPILE_ALL=1;;
+			-h|--help) printHelpAndExit;;
+			*) printHelpAndExit;;
+		esac
+
+	# splice out pointer frame from positional list
+	[[ $pointer -gt 1 ]] \
+		&& set -- ${@:1:((pointer - 1))} ${@:((pointer + 1)):$#} \
+		|| set -- ${@:((pointer + 1)):$#};
+	fi
+done
 
 # Maven build/install/package the source 
 cd $WORKSPACE_DIR/ark-common
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
+if is_changed; 
+then 
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
 fi
 
 cd $WORKSPACE_DIR/ark-admin
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
 fi
 
 cd $WORKSPACE_DIR/ark-study
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
 fi
 
 cd $WORKSPACE_DIR/ark-registry
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
 fi
 
 cd $WORKSPACE_DIR/ark-phenotypic
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
 fi
 
 #cd $WORKSPACE_DIR/ark-geno
@@ -42,28 +85,40 @@ fi
 #fi
 
 cd $WORKSPACE_DIR/ark-report
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
 fi
 
 cd $WORKSPACE_DIR/ark-lims
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
 fi
 
 cd $WORKSPACE_DIR/ark-work-tracking
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
 fi
 
 
 cd $WORKSPACE_DIR/ark-disease
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
 fi
 
 cd $WORKSPACE_DIR/ark-container
