@@ -23,6 +23,8 @@
 # Dump of table audit_entity
 # ------------------------------------------------------------
 
+use audit;
+
 CREATE TABLE `audit_entity` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `CLASS_IDENTIFIER` varchar(255) DEFAULT NULL,
