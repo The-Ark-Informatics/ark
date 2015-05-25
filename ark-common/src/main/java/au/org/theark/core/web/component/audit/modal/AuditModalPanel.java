@@ -1,14 +1,11 @@
 package au.org.theark.core.web.component.audit.modal;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import jxl.write.DateFormat;
@@ -16,6 +13,7 @@ import jxl.write.DateFormat;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -25,7 +23,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,13 +81,13 @@ public class AuditModalPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
 	private Object entity;
-	private ArkCrudContainerVO arkCrudContainerVO;	
+	private WebMarkupContainer masterContainer;	
 	
-	public AuditModalPanel(String id, Object entity, ArkCrudContainerVO arkCrudContainerVO) {
+	public AuditModalPanel(String id, Object entity, WebMarkupContainer masterContainer) {
 		super(id);
 		this.entity = entity;
 		log.info("entity: " + entity);
-		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.masterContainer = masterContainer;
 		initialisePanel();
 	}
 	
@@ -98,8 +95,8 @@ public class AuditModalPanel extends Panel {
 		log.info("history modal init panel");
 		List<AuditRow> revisionEntities = new ArrayList<AuditRow>();
 		AuditReader reader = iAuditService.getAuditReader();
-		for(int i = 0; i < arkCrudContainerVO.getDetailPanelFormContainer().size(); i++) {
-			Component component = arkCrudContainerVO.getDetailPanelFormContainer().get(i);
+		for(int i = 0; i < masterContainer.size(); i++) {
+			Component component = masterContainer.get(i);
 			Object current = entity;
 			for(String s : component.getId().split(Pattern.quote("."))) {
 				log.info("s: " + s);
