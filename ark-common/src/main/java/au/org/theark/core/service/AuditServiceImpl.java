@@ -3,6 +3,7 @@ package au.org.theark.core.service;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -269,13 +270,16 @@ public class AuditServiceImpl implements IAuditService {
 	 * @return The primary key of the entity. Returns null if any errors.
 	 */
 	public Long getEntityPrimaryKey(Object entity) {
-		try {
-			Class entityClass = entity.getClass();
-			Long id = (Long) entityClass.getMethod("getId", null).invoke(entity, null);
-			return id;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
+		Class entityClass = entity.getClass();
+		if(hasMethod(entityClass, "getID")) {
+			Long id;
+			try {
+				id = (Long) entityClass.getMethod("getId", null).invoke(entity, null);
+				return id;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 
@@ -302,6 +306,11 @@ public class AuditServiceImpl implements IAuditService {
 	@Override
 	public boolean isAudited(Class<?> type) {
 		return iAuditDao.isAudited(type);
+	}
+
+	@Override
+	public String getFieldName(Class<?> cls, String field) {
+		return iAuditDao.getFieldName(cls, field);
 	}
 
 }

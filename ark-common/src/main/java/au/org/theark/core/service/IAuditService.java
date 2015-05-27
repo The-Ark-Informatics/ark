@@ -39,4 +39,6 @@ public interface IAuditService {
 	public Object getPreviousEntity(Long id, Object entity, Number currentRevision);
 
 	public boolean isAudited(Class<?> type);
+
+	public String getFieldName(Class<?> cls, String field);
 }

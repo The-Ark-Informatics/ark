@@ -109,4 +109,14 @@ public class AuditDao extends HibernateSessionDao implements IAuditDao {
 		Long rowCount = (Long) criteria.uniqueResult();
 		return rowCount != 0;
 	}
+
+	@Override
+	public String getFieldName(Class<?> cls, String field) {
+		Criteria criteria = getSession().createCriteria(AuditField.class);
+		criteria.add(Restrictions.eq("fieldName", field));
+		criteria.createAlias("auditEntity", "ae");
+		criteria.add(Restrictions.eq("ae.classIdentifier", cls.getCanonicalName()));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);		
+		return ((AuditField) criteria.uniqueResult()).getName();
+	}
 }

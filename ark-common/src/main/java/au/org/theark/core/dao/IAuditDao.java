@@ -71,4 +71,6 @@ public interface IAuditDao {
 	public List<AuditField> getAuditFieldList();
 
 	public boolean isAudited(Class<?> type);
+
+	public String getFieldName(Class<?> cls, String field);
 }
