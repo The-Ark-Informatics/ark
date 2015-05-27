@@ -28,6 +28,7 @@ public class HistoryButtonPanel extends Panel {
 				AuditModalPanel historyPanel = new AuditModalPanel("content", containerForm.getModelObject(), auditContainer);
 				modalWindow.setTitle("Entity History");
 				modalWindow.setAutoSize(true);
+				modalWindow.setMinimalWidth(950);
 				modalWindow.setContent(historyPanel);
 				target.add(modalWindow);
 				modalWindow.show(target);
