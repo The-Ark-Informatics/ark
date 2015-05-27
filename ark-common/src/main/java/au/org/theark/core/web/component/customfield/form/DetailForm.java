@@ -56,6 +56,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.component.customfield.Constants;
 import au.org.theark.core.web.component.customfield.dataentry.DateDataEntryPanel;
 import au.org.theark.core.web.component.customfield.dataentry.NumberDataEntryPanel;
@@ -116,6 +117,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	private WebMarkupContainer  					panelCustomUnitTypeText;
 	private boolean 								unitTypeDropDownOn;
 	
+	private HistoryButtonPanel historyButtonPanel;
 
 	/**
 	 * Constructor
@@ -356,6 +358,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		defaultValueTextArea = new TextArea<String>("customField.defaultValue");
 		
 		addDetailFormComponents();
+
+		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	protected void attachValidators() {
