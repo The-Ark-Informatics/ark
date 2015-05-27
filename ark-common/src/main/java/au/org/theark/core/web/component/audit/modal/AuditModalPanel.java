@@ -111,6 +111,7 @@ public class AuditModalPanel extends Panel {
 	
 	private void initialisePanel() {
 		tableContainer = new WebMarkupContainer("tableContainer");
+		tableContainer.setOutputMarkupId(true);
 		log.info("history modal init panel");
 		List<AuditRow> revisionEntities = new ArrayList<AuditRow>();
 		AuditReader reader = iAuditService.getAuditReader();
