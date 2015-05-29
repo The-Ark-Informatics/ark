@@ -25,10 +25,14 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,7 +143,6 @@ public class CustomDataUploader {
 			csvReader.readHeaders();
 
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
-			
 			ArkFunction phenoCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);//");
 
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction, customFieldGroup);
@@ -153,6 +156,7 @@ public class CustomDataUploader {
 				log.info("reading record " + subjectCount);				
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
+				String recordDate = stringLineArray[1];
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
 				//log.info("get subject from list");
 				CustomField customField = null;
@@ -162,7 +166,12 @@ public class CustomDataUploader {
 				phenoCollectionIntoDB.setLinkSubjectStudy(subject);
 //				phenoCollectionIntoDB.setName(phenoCollection.getName());
 				phenoCollectionIntoDB.setQuestionnaire(customFieldGroup);
-				phenoCollectionIntoDB.setRecordDate(phenoCollection.getRecordDate()==null?new Date():phenoCollection.getRecordDate());
+				if(recordDate.isEmpty()) {
+					phenoCollectionIntoDB.setRecordDate(new Date());
+				} else {
+					Date recordDate_asDate = DateFormat.getDateInstance().parse(recordDate);
+					phenoCollectionIntoDB.setRecordDate(recordDate_asDate);
+				}
 				phenoCollectionIntoDB.setStatus(uploadingStatus); //TODO for this to be UPLOADED TYPE STATUS
 				
 				for(CustomFieldDisplay cfd : cfdsThatWeNeed){	
