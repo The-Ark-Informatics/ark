@@ -25,14 +25,10 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,7 +165,7 @@ public class CustomDataUploader {
 				if(recordDate.isEmpty()) {
 					phenoCollectionIntoDB.setRecordDate(new Date());
 				} else {
-					Date recordDate_asDate = DateFormat.getDateInstance().parse(recordDate);
+					Date recordDate_asDate = simpleDateFormat.parse(recordDate);
 					phenoCollectionIntoDB.setRecordDate(recordDate_asDate);
 				}
 				phenoCollectionIntoDB.setStatus(uploadingStatus); //TODO for this to be UPLOADED TYPE STATUS
