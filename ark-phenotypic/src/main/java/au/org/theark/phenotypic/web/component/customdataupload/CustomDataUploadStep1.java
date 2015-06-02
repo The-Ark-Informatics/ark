@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -63,6 +64,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	private DropDownChoice<CustomFieldGroup>	customFieldGroupDdc;
 //	private TextField<String>				phenoCollectionName;
 	private TextField<String>				phenoCollectionDescription;
+	private CheckBox						overwriteExistingCheckBox;
 	
 	public CustomDataUploadStep1(String id) {
 		super(id);
@@ -117,6 +119,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 //		phenoCollectionName = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENOCOLLECTION_NAME);
 		phenoCollectionDescription = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENOCOLLECTION_DESCRIPTION);
 		initialiseDropDownChoices();
+		overwriteExistingCheckBox = new CheckBox("updateChkBox");
 		attachValidators();
 		addComponents();
 	}
@@ -137,6 +140,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		add(customFieldGroupDdc);
 //		add(phenoCollectionName);
 		add(phenoCollectionDescription);
+		add(overwriteExistingCheckBox);
 	}
 
 	@Override

@@ -89,10 +89,11 @@ public class CustomDataUploadJob implements Job {
 		List<String> uidsToUpdate=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
 		CustomFieldGroup customFieldGroup = (CustomFieldGroup) data.get(CUSTOM_FIELD_GROUP);
 		PhenoCollection phenoCollection = (PhenoCollection) data.get(PHENO_COLLECTION);
+		boolean overwriteExisting = data.getBoolean("overwrite");
 		
 		try {
 			Date startTime = new Date(System.currentTimeMillis());
-			StringBuffer uploadReport = iPhenoService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate, customFieldGroup, phenoCollection);
+			StringBuffer uploadReport = iPhenoService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate, customFieldGroup, phenoCollection, overwriteExisting);
 			Upload upload = iPhenoService.getUpload(uploadId);
 			save(upload, uploadReport.toString(), originalReport, startTime);
 		}

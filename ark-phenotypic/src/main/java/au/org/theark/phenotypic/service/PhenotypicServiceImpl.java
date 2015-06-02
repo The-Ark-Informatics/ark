@@ -21,6 +21,7 @@ package au.org.theark.phenotypic.service;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -884,14 +885,14 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	/****TODO IMPLEMENT THIS THING AGAIN!****/
 	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, Long studyId, List<String> listOfUIDsToUpdate, 
-			CustomFieldGroup customFieldGroup, PhenoCollection phenoCollection){
+			CustomFieldGroup customFieldGroup, PhenoCollection phenoCollection, boolean overwriteExisting){
 		
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
 		CustomDataUploader dataUploader = new CustomDataUploader(study, iArkCommonService, this);
 		try {
 			//log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
-			uploadReport = dataUploader.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate, customFieldGroup, phenoCollection);
+			uploadReport = dataUploader.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate, customFieldGroup, phenoCollection, overwriteExisting);
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -927,5 +928,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	
 	public CustomFieldGroup getCustomFieldGroupById(Long id) {
 		return phenotypicDao.getCustomFieldGroupById(id);
+	}
+
+	public List<PhenoCollection> getSubjectMatchingPhenoCollections(
+			LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,
+			Date recordDate) {
+		return phenotypicDao.getSubjectMatchingPhenoCollections(subject, customFieldGroup, recordDate);
 	}
 }

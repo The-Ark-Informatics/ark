@@ -80,6 +80,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private char								delimiterType;
 	private HashSet<Integer>				insertRows;
 	private HashSet<Integer>				updateRows;
+	private HashSet<Integer>				warningRows;
 	private HashSet<ArkGridCell>			insertCells;
 	private HashSet<ArkGridCell>			updateCells;
 	private HashSet<ArkGridCell>			warningCells;
@@ -130,6 +131,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = new HashSet<Integer>();
 		this.insertRows = new HashSet<Integer>();
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
 		this.warningCells = new HashSet<ArkGridCell>();
@@ -142,6 +144,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = new HashSet<Integer>();
 		this.insertRows = new HashSet<Integer>();
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
 		this.warningCells = new HashSet<ArkGridCell>();
@@ -159,6 +162,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = new HashSet<Integer>();
 		this.insertRows = new HashSet<Integer>();
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
 		this.warningCells = new HashSet<ArkGridCell>();
@@ -175,6 +179,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = updateRows;
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
 		this.warningCells = new HashSet<ArkGridCell>();
@@ -192,6 +197,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = new HashSet<Integer>();
 		this.insertRows = new HashSet<Integer>();
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
 		this.warningCells = new HashSet<ArkGridCell>();
@@ -207,6 +213,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = updateRows;
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
 		this.warningCells = new HashSet<ArkGridCell>();
@@ -224,6 +231,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.insertRows = insertRows;
 		this.updateRows = updateRows;
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
 		this.warningCells = new HashSet<ArkGridCell>();
@@ -241,6 +249,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.insertRows = insertRows;
 		this.uploadType = uploadType;
 		this.updateRows = updateRows;
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
 		this.warningCells = new HashSet<ArkGridCell>();
@@ -257,6 +266,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.insertRows = insertRows;
 		this.updateRows = updateRows;
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
 		this.warningCells = new HashSet<ArkGridCell>();
@@ -273,9 +283,11 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.insertRows = insertRows;
 		this.updateRows = updateRows;
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = insertCells;
 		this.updateCells = updateCells;
 		this.warningCells = warningCells;
+		
 		this.errorCells = errorCells;
 		this.fileFormat = fileFormat;
 		initialiseWorkbook(inputStream, delimChar);
@@ -289,12 +301,30 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.insertRows = insertRows;
 		this.updateRows = updateRows;
+		this.warningRows = new HashSet<Integer>();
 		this.insertCells = insertCells;
 		this.updateCells = updateCells;
 		this.warningCells = warningCells;
 		this.errorCells = errorCells;
 		this.fileFormat = fileFormat;
 		this.rowsToDisplay = rowsToDisplay;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload, uploadType);
+	}
+	
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
+			HashSet<Integer> warningRows, HashSet<ArkGridCell> insertCells, HashSet<ArkGridCell> errorCells, UploadType uploadType) {
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.insertRows = insertRows;
+		this.updateRows = updateRows;
+		this.warningRows = new HashSet<Integer>();
+		this.insertCells = insertCells;
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
 		initialiseWorkbook(inputStream, delimChar);
 		initialiseGrid();
 		initialiseGridKey(fileUpload, uploadType);
@@ -373,7 +403,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 				
 				final int row = item.getIndex();
 
-				if (!insertRows.isEmpty() || !updateRows.isEmpty()) {
+				if (!insertRows.isEmpty() || !updateRows.isEmpty() || !warningRows.isEmpty()) {
 					setRowCssStyle(row, item);
 				}
 
@@ -452,6 +482,9 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 			private void setRowCssStyle(Integer row, LoopItem item) {
 				if (updateRows.contains(row)) {
 					item.add(updateCellBehavior);
+				} 
+				else if(warningRows.contains(row)) {
+					item.add(warningCellBehavior);
 				}
 				else {
 					item.add(insertCellBehavior);
@@ -472,7 +505,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 				
 				final int row = item.getIndex();
 
-				if (!insertRows.isEmpty() || !updateRows.isEmpty()) {
+				if (!insertRows.isEmpty() || !updateRows.isEmpty() || !warningRows.isEmpty()) {
 					setRowCssStyle(row, item);
 				}
 
@@ -552,8 +585,9 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 			private void setRowCssStyle(Integer row, LoopItem item) {
 				if (updateRows.contains(row)) {
 					item.add(updateCellBehavior);
-				}
-				else {
+				} else if(warningRows.contains(row)) {
+					item.add(warningCellBehavior);
+				}else if(insertRows.contains(row)) {
 					item.add(insertCellBehavior);
 				}
 
@@ -662,7 +696,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		}
 
 		wizardDataGridKeyContainerForCustom.setVisible(false);
-		wizardDataGridKeyContainer.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty()));
+		wizardDataGridKeyContainer.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty() || !warningRows.isEmpty()));
 		wizardDataGridKeyContainer.setOutputMarkupId(true);
 		wizardDataGridKeyContainer.add(updateLegendLabel);
 		// Download file link button

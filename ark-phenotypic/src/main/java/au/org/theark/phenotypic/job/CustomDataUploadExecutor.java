@@ -56,6 +56,7 @@ public class CustomDataUploadExecutor {
 	private List<String>				uidsToUpload;
 	private PhenoCollection				phenoCollection;
 	private CustomFieldGroup			customFieldGroup;
+	private boolean						overwriteExisting;
 	
 	/**
 	 * StudyDataUploadExecutor constructor
@@ -79,7 +80,8 @@ public class CustomDataUploadExecutor {
 											char delimiter,
 											long size, String report, List<String> uidsToUpload,
 											PhenoCollection phenoCollection,
-											CustomFieldGroup customFieldGroup) {
+											CustomFieldGroup customFieldGroup,
+											boolean overwriteExisting) {
 		this.iArkCommonService = iArkCommonService;
 		this.iPhenoService = iPhenoService;
 		this.inputStream = inputStream;
@@ -92,6 +94,7 @@ public class CustomDataUploadExecutor {
 		this.uidsToUpload = uidsToUpload;
 		this.phenoCollection = phenoCollection;
 		this.customFieldGroup = customFieldGroup;
+		this.overwriteExisting = overwriteExisting;
 	}
 
 	public void run() throws Exception {
@@ -115,6 +118,7 @@ public class CustomDataUploadExecutor {
 		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
 		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.PHENO_COLLECTION, phenoCollection);
 		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.CUSTOM_FIELD_GROUP, customFieldGroup);
+		customDataUploadJob.getJobDataMap().put("overwrite", overwriteExisting);
 		
 		Date startTime = nextGivenSecondDate(null, 1);
 		

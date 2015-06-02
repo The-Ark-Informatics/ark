@@ -99,7 +99,7 @@ public class CustomDataUploadStep4 extends AbstractWizardStepPanel {
 			CustomFieldGroup customFieldGroup = containerForm.getModelObject().getCustomFieldGroup();
 			
 			CustomDataUploadExecutor task = new CustomDataUploadExecutor(iArkCommonService, iPhenoService, inputStream, uploadId, //null user
-						studyId, fileFormat, delimiterChar, size, report, uidsToUpload, phenoCollectionCriteria, customFieldGroup);
+						studyId, fileFormat, delimiterChar, size, report, uidsToUpload, phenoCollectionCriteria, customFieldGroup, containerForm.getModelObject().getUpdateChkBox());
 			task.run();
 			
 		}

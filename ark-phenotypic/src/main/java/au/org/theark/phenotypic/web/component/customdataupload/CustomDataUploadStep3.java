@@ -40,6 +40,7 @@ import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.util.CustomDataUploadValidator;
 //import au.org.theark.phenotypic.util.SubjectUploadValidator;
 
@@ -56,6 +57,9 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
 
+	@SpringBean(name = au.org.theark.core.Constants.PHENO_SERVICE)
+	private IPhenotypicService				iPhenotypicService;
+	
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
 
 																					private static final long	serialVersionUID	= 1L;
@@ -123,6 +127,7 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
+		HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 		try {
 			String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 			String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
@@ -130,19 +135,22 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			HashSet<Integer> insertRows = new HashSet<Integer>();
 			HashSet<Integer> updateRows = new HashSet<Integer>();
-			HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
-
+			HashSet<Integer> warningRows = new HashSet<Integer>();
+			HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
+			
 			//this is not the best way to do this fix TODO
 			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
 
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(iArkCommonService.getCustomFieldDataUploadType().getName())){//    "Custom Data Sets")){
-				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
+				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService, iPhenotypicService);
 				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate, containerForm.getModelObject().getCustomFieldGroup());
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				//TODO consider if we want alternative way to do this - and maybe a superclass of uploadvalidator which draws out commonalities
 				insertRows = customFieldUploadValidator.getInsertRows();
 				updateRows = customFieldUploadValidator.getUpdateRows();
 				errorCells = customFieldUploadValidator.getErrorCells();
+				warningRows = customFieldUploadValidator.getWarningRows();
+				insertCells = customFieldUploadValidator.getInsertCells();
 
 			}
 			else{
@@ -156,7 +164,7 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 
 			// Show file data (and key reference)
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
-																		containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells, containerForm.getModelObject().getUpload().getUploadType());
+																		containerForm.getModelObject().getFileUpload(), insertRows, updateRows, warningRows, insertCells, errorCells, containerForm.getModelObject().getUpload().getUploadType());
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
@@ -190,7 +198,9 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		
 		if (validationMessage != null && validationMessage.length() > 0) {
-			form.getNextButton().setEnabled(false);
+			if(!errorCells.isEmpty()) {
+				form.getNextButton().setEnabled(false);
+			}
 			target.add(form.getWizardButtonContainer());
 			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
 

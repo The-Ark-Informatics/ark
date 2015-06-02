@@ -19,6 +19,7 @@
 package au.org.theark.phenotypic.model.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -284,4 +285,8 @@ public interface IPhenotypicDao {
 	public CustomFieldGroup getCustomFieldGroupByNameAndStudy(String name, Study study);
 
 	public CustomFieldGroup getCustomFieldGroupById(Long id);
+
+	public List<PhenoCollection> getSubjectMatchingPhenoCollections(
+			LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,
+			Date recordDate);
 }

@@ -46,6 +46,7 @@ import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -55,6 +56,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 
 import com.csvreader.CsvReader;
 
@@ -69,6 +71,7 @@ public class CustomDataUploadValidator {
 
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
+	private IPhenotypicService		iPhenotypicService;
 	private Long						studyId;
 	private Study						study;
 	java.util.Collection<String>	fileValidationMessages	= new java.util.ArrayList<String>();
@@ -76,6 +79,8 @@ public class CustomDataUploadValidator {
 	private HashSet<Integer>		existantSubjectUIDRows;
 	private HashSet<Integer>		nonExistantUIDs;
 	private HashSet<ArkGridCell>	errorCells;
+	private HashSet<ArkGridCell>	insertCells;
+	private HashSet<Integer>	warningRows;
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
 	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
@@ -89,6 +94,8 @@ public class CustomDataUploadValidator {
 		this.existantSubjectUIDRows = new HashSet<Integer>();
 		this.nonExistantUIDs = new HashSet<Integer>();
 		this.errorCells = new HashSet<ArkGridCell>();
+		this.warningRows = new HashSet<Integer>();
+		this.insertCells = new HashSet<ArkGridCell>();
 		simpleDateFormat.setLenient(false);
 	}
 
@@ -98,19 +105,24 @@ public class CustomDataUploadValidator {
 		this.existantSubjectUIDRows = new HashSet<Integer>();
 		this.nonExistantUIDs = new HashSet<Integer>();
 		this.errorCells = new HashSet<ArkGridCell>();
+		this.warningRows = new HashSet<Integer>();
+		this.insertCells = new HashSet<ArkGridCell>();
 		simpleDateFormat.setLenient(false);
 	}
 
 	@SuppressWarnings("unchecked")
-	public CustomDataUploadValidator(IArkCommonService iArkCommonService) {
+	public CustomDataUploadValidator(IArkCommonService iArkCommonService, IPhenotypicService iPhenotypicService) {
 		super();
 		this.iArkCommonService = iArkCommonService;
+		this.iPhenotypicService = iPhenotypicService;
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		this.study = iArkCommonService.getStudy(studyId);
 		this.existantSubjectUIDRows = new HashSet<Integer>();
 		this.nonExistantUIDs = new HashSet<Integer>();
 		this.errorCells = new HashSet<ArkGridCell>();
+		this.warningRows = new HashSet<Integer>();
+		this.insertCells = new HashSet<ArkGridCell>();
 		simpleDateFormat.setLenient(false);
 	}
 
@@ -170,6 +182,22 @@ public class CustomDataUploadValidator {
 		this.errorCells = errorCells;
 	}
 
+	public HashSet<Integer> getWarningRows() {
+		return warningRows;
+	}
+
+	public void setWarningRows(HashSet<Integer> warningRows) {
+		this.warningRows = warningRows;
+	}
+
+	public HashSet<ArkGridCell> getInsertCells() {
+		return insertCells;
+	}
+
+	public void setInsertCells(HashSet<ArkGridCell> insertCells) {
+		this.insertCells = insertCells;
+	}
+
 	/**
 	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
 	 * 
@@ -184,7 +212,7 @@ public class CustomDataUploadValidator {
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter, phenoCollection, cfg);
+			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter, phenoCollection, cfg, uploadVo.getUpdateChkBox());
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -201,9 +229,10 @@ public class CustomDataUploadValidator {
 	 *           is the file format (eg txt)
 	 * @param delimChar
 	 *           is the delimiter character of the file (eg comma)
+	 * @param updateExisting 
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar, PhenoCollection phenoCollection, CustomFieldGroup cfg) {
+	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar, PhenoCollection phenoCollection, CustomFieldGroup cfg, Boolean updateExisting) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -224,7 +253,7 @@ public class CustomDataUploadValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar, phenoCollection, cfg);
+			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar, phenoCollection, cfg, updateExisting);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -265,7 +294,7 @@ public class CustomDataUploadValidator {
 				}
 			}
 
-			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference, customFieldGroup);
+			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference, customFieldGroup, uploadVo.getUpdateChkBox());
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -273,13 +302,13 @@ public class CustomDataUploadValidator {
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup) {
+	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup, Boolean updateExisting) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
 			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
 			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
-			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference, customFieldGroup);
+			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference, customFieldGroup, updateExisting);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -301,13 +330,14 @@ public class CustomDataUploadValidator {
 	 *           is the input stream of a file
 	 * @param inLength
 	 *           is the length of a file
+	 * @param updateExisting 
 	 * @throws FileFormatException
 	 *            file format Exception
 	 * @throws ArkBaseException
 	 *            general ARK Exception
 	 * @return a collection of file format validation messages
 	 */
-	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, PhenoCollection phenoCollection, CustomFieldGroup customFieldGroup) throws FileFormatException, ArkBaseException {
+	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, PhenoCollection phenoCollection, CustomFieldGroup customFieldGroup, Boolean updateExisting) throws FileFormatException, ArkBaseException {
 		delimiterCharacter = inDelimChr;
 		
 		fileFormat = inFileFormat;
@@ -416,7 +446,7 @@ public class CustomDataUploadValidator {
 	 * @return a collection of data validation messages
 	 */
 	public java.util.Collection<String> validateMatrixCustomFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, 
-			List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup) throws FileFormatException, ArkSystemException {
+			List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup, Boolean updateExisting) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 1;
@@ -457,7 +487,13 @@ public class CustomDataUploadValidator {
 					errorCells.add(new ArkGridCell(0, row));
 				}
 				else{
-					if(uidsToUpdateReference.contains(subjectUID)){
+					Date recordDate = (stringLineArray[1].isEmpty() ? new Date() : simpleDateFormat.parse(stringLineArray[1]));
+					List<PhenoCollection> phenos = iPhenotypicService.getSubjectMatchingPhenoCollections(iArkCommonService.getSubjectByUID(subjectUID, study), customFieldGroup, recordDate);
+					if(phenos.size() >= 2  && updateExisting) {
+						warningRows.add(row);
+						dataValidationMessages.add("WARNING:  Subject " + subjectUID + " on row " + row + " has too many Pheno Collections to automatically update."
+								+ " If you continue, no changes will be made to this subject.");
+					} else if(uidsToUpdateReference.contains(subjectUID)){
 						for(CustomFieldDisplay cfd : cfdsThatWeNeed){
 							errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
 						}
@@ -485,7 +521,37 @@ public class CustomDataUploadValidator {
 								}
 							}
 						}
-						existantSubjectUIDRows.add(row);
+						if(phenos.size() == 1 && updateExisting) {
+							PhenoCollection existingCollection = phenos.get(0);
+							for(CustomFieldDisplay cfd : cfdsThatWeNeed) { //TODO: Optimize to not need multiple loops.
+								for(PhenoData phenoData : existingCollection.getPhenoData()) {
+									if(phenoData.getCustomFieldDisplay().getId() == cfd.getId()) {
+										int index = csvReader.getIndex(cfd.getCustomField().getName());
+										switch (phenoData.getCustomFieldDisplay().getCustomField().getFieldType().getName()) {
+											case Constants.FIELD_TYPE_CHARACTER:
+												if(!phenoData.getTextDataValue().equals(stringLineArray[index])) {
+													insertCells.add(new ArkGridCell(index, row));
+												}
+												break;
+											case Constants.FIELD_TYPE_NUMBER:
+												if(!phenoData.getNumberDataValue().equals(new Double(stringLineArray[index]))) {
+													insertCells.add(new ArkGridCell(index, row));
+												}
+												break;
+											case Constants.FIELD_TYPE_DATE:
+												if(!(simpleDateFormat.format(phenoData.getDateDataValue()).equals(stringLineArray[index]))) {
+													insertCells.add(new ArkGridCell(index, row));
+												}
+												break;
+											default:
+												break;
+											}
+									}
+								}
+							}						
+						} else {
+							existantSubjectUIDRows.add(row);
+						}
 					}
 				}
 				row++;
@@ -942,5 +1008,4 @@ public class CustomDataUploadValidator {
 		stringBuffer.append(" is not amongst the valid status options.");
 		return (stringBuffer.toString());
 	}
-
 }

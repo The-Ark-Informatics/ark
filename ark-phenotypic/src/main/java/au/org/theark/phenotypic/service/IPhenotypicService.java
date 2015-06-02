@@ -20,6 +20,7 @@ package au.org.theark.phenotypic.service;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -167,7 +168,7 @@ public interface IPhenotypicService {
 
 	/****TODO IMPLEMENT THIS THING AGAIN!****/
 	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimiter, Long studyId, List<String> uidsToUpdate, CustomFieldGroup customFieldGroup,
-			PhenoCollection phenoCollection);
+			PhenoCollection phenoCollection, boolean overwriteExisting);
 
 	/****TODO IMPLEMENT THIS THING AGAIN!****/
 	public void refreshUpload(Upload upload);
@@ -185,4 +186,8 @@ public interface IPhenotypicService {
 	public CustomFieldGroup getCustomFieldGroupByNameAndStudy(String name, Study study);
 	
 	public CustomFieldGroup getCustomFieldGroupById(Long id);
+
+	public List<PhenoCollection> getSubjectMatchingPhenoCollections(
+			LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,
+			Date recordDate);
 }

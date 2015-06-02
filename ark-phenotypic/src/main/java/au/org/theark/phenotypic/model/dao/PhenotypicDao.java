@@ -19,6 +19,7 @@
 package au.org.theark.phenotypic.model.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -1882,5 +1883,32 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public CustomFieldGroup getCustomFieldGroupById(Long id) {
 		CustomFieldGroup customFieldGroup = (CustomFieldGroup) getSession().get(CustomFieldGroup.class, id);
 		return customFieldGroup;
+	}
+
+	public List<PhenoCollection> getSubjectMatchingPhenoCollections(
+			LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,
+			Date recordDate) {
+		log.info("subject " + subject.getSubjectUID());
+		log.info("customFieldGroup " + customFieldGroup.getName());
+		log.info("date: " + recordDate);
+		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
+		criteria.add(Restrictions.eq("linkSubjectStudy", subject));
+		criteria.add(Restrictions.eq("questionnaire", customFieldGroup));
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime(recordDate);
+		
+		//Removing the "Time" section of the Dates as that's not important in this context
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		
+		Date low = cal.getTime();
+		cal.add(Calendar.DATE, 1);
+		Date high = cal.getTime();
+		criteria.add(Restrictions.lt("recordDate", high));
+		criteria.add(Restrictions.ge("recordDate", low));
+		
+		return criteria.list();
 	}
 }

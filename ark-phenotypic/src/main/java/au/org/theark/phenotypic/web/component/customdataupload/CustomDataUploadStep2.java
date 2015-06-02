@@ -38,6 +38,7 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.util.CustomDataUploadValidator;
 
 /**
@@ -53,6 +54,9 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
 
+	@SpringBean(name = au.org.theark.core.Constants.PHENO_SERVICE)
+	private IPhenotypicService				iPhenotypicService;
+	
 	private ArkDownloadAjaxButton		downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
 													private static final long	serialVersionUID	= 1L;
 													@Override
@@ -104,7 +108,7 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 				throw new FileFormatException();
 			}
 
-			CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
+			CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService, iPhenotypicService);
 				
 			PhenoCollection phenoCollectionCriteria =containerForm.getModelObject().getPhenoCollection();
 			CustomFieldGroup cfgSelected = containerForm.getModelObject().getCustomFieldGroup();

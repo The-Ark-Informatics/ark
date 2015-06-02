@@ -47,6 +47,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.XLStoCSV;
+import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
 import com.csvreader.CsvReader;
@@ -94,7 +95,7 @@ public class CustomDataUploader {
 		return null;
 	}
 
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate, CustomFieldGroup customFieldGroup, PhenoCollection phenoCollection) throws FileFormatException, ArkSystemException {
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate, CustomFieldGroup customFieldGroup, PhenoCollection phenoCollection, boolean overwriteExisting) throws FileFormatException, ArkSystemException {
 		List<PhenoCollection> phenoCollectionsWithTheirDataToInsert = new ArrayList<PhenoCollection>();
 		
 		delimiterCharacter = delimChar;
@@ -153,22 +154,32 @@ public class CustomDataUploader {
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
 				String recordDate = stringLineArray[1];
+				Date recordDate_asDate = (recordDate.isEmpty() ? new Date() : simpleDateFormat.parse(recordDate));
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
 				//log.info("get subject from list");
 				CustomField customField = null;
-				
+				List<PhenoCollection> subjectExistingMatchingPhenoCollections = iPhenotypicService.getSubjectMatchingPhenoCollections(subject, customFieldGroup, recordDate_asDate);
 				PhenoCollection phenoCollectionIntoDB = new PhenoCollection();
-				phenoCollectionIntoDB.setDescription(phenoCollection.getDescription());
-				phenoCollectionIntoDB.setLinkSubjectStudy(subject);
-//				phenoCollectionIntoDB.setName(phenoCollection.getName());
-				phenoCollectionIntoDB.setQuestionnaire(customFieldGroup);
-				if(recordDate.isEmpty()) {
-					phenoCollectionIntoDB.setRecordDate(new Date());
+				if(subjectExistingMatchingPhenoCollections.size() == 0 || !overwriteExisting) {
+					phenoCollectionIntoDB.setDescription(phenoCollection.getDescription());
+					phenoCollectionIntoDB.setLinkSubjectStudy(subject);
+	//				phenoCollectionIntoDB.setName(phenoCollection.getName());
+					phenoCollectionIntoDB.setQuestionnaire(customFieldGroup);
+					if(recordDate.isEmpty()) {
+						phenoCollectionIntoDB.setRecordDate(new Date());
+					} else {
+						phenoCollectionIntoDB.setRecordDate(recordDate_asDate);
+					}
+					phenoCollectionIntoDB.setStatus(uploadingStatus); //TODO for this to be UPLOADED TYPE STATUS
 				} else {
-					Date recordDate_asDate = simpleDateFormat.parse(recordDate);
-					phenoCollectionIntoDB.setRecordDate(recordDate_asDate);
+					if(subjectExistingMatchingPhenoCollections.size() == 1) {
+						recordDate_asDate = (recordDate.isEmpty() ? new Date() : simpleDateFormat.parse(recordDate));
+						phenoCollectionIntoDB = subjectExistingMatchingPhenoCollections.get(0);
+					} else {
+						subjectCount++;
+						continue;
+					}
 				}
-				phenoCollectionIntoDB.setStatus(uploadingStatus); //TODO for this to be UPLOADED TYPE STATUS
 				
 				for(CustomFieldDisplay cfd : cfdsThatWeNeed){	
 
@@ -190,8 +201,21 @@ public class CustomDataUploader {
 						PhenoData dataToInsert = new PhenoData();
 						dataToInsert.setCustomFieldDisplay(cfd);
 						//as much as i disagree...pheno data isn't tied to subject....pheno collection is dataToInsert.setLinkSubjectStudy(subject);
-						setValue(customField, cfd,  dataToInsert, theDataAsString);	
-						phenoDataToInsertForThisPhenoCollection.add(dataToInsert);
+						setValue(customField, cfd,  dataToInsert, theDataAsString);
+						boolean flag = true;
+						for(PhenoData phenoData : phenoCollectionIntoDB.getPhenoData()) {
+							if(phenoData.getCustomFieldDisplay().getId() == cfd.getId()) {
+								phenoData.setDateDataValue(dataToInsert.getDateDataValue());
+								phenoData.setErrorDataValue(dataToInsert.getErrorDataValue());
+								phenoData.setNumberDataValue(dataToInsert.getNumberDataValue());
+								phenoData.setTextDataValue(dataToInsert.getTextDataValue());
+								flag = false;
+								break;
+							}
+						}
+						if(flag) {
+							phenoDataToInsertForThisPhenoCollection.add(dataToInsert);
+						}
 						insertFieldsCount++;
 					}
 					else
@@ -200,6 +224,7 @@ public class CustomDataUploader {
 					}
 				}
 				phenoCollectionIntoDB.getPhenoData().addAll(phenoDataToInsertForThisPhenoCollection);
+				log.info(phenoCollectionIntoDB.toString());
 				phenoCollectionsWithTheirDataToInsert.add(phenoCollectionIntoDB);
 				subjectCount ++;
 			}
