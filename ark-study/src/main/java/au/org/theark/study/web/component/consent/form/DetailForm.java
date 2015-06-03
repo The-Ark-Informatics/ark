@@ -65,6 +65,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -109,6 +110,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	protected CollapsiblePanel						consentHistoryPanel;
 	protected FileUploadField						fileUploadField;
 	private AjaxButton										clearButton;
+	protected HistoryButtonPanel					historyButtonPanel;
+
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -184,6 +187,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		
 		addDetailFormComponents();
 		attachValidators();
+
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	/**
@@ -520,5 +525,6 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		consentHistoryPanel.setVisible(!isNew());
+		historyButtonPanel.setVisible(!isNew());
 	}
 }
