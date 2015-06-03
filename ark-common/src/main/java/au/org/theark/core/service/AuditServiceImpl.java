@@ -198,6 +198,9 @@ public class AuditServiceImpl implements IAuditService {
 	 * @return The string representation of the provided entity. If no representation could be achieved, an empty string is returned.
 	 */
 	public String getEntityValue(Object entity) {
+		if(entity == null) {
+			return "";
+		}
 		Method displayMethod = getEntityDisplayMethod(entity.getClass());
 		StringBuilder sb = new StringBuilder();
 		try {

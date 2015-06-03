@@ -129,7 +129,6 @@ public class Phone implements java.io.Serializable {
 		this.areaCode = areaCode;
 	}
 
-	@NotAudited
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PHONE_STATUS_ID")
 	public PhoneStatus getPhoneStatus() {
@@ -163,7 +162,6 @@ public class Phone implements java.io.Serializable {
 	 * TODO : Java does already have a concept like this ... boolean ... does
 	 * this code have a legacy reason?
 	 */
-	@NotAudited
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SILENT")
 	public YesNo getSilentMode() {
