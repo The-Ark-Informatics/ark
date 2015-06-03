@@ -57,6 +57,7 @@ import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -94,6 +95,8 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	protected TextField<String>				otherState;
 	protected Label								otherStateInvalidError;
 
+	protected HistoryButtonPanel				historyButtonPanel;
+
 	/**
 	 * 
 	 * @param id
@@ -111,6 +114,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		// Disable preferred mailing for new address and no others exist
 		boolean enabled = !(isNew() && containerForm.getModelObject().getAddresses().size() == 0);
 		preferredMailingAddressChkBox.setEnabled(enabled);
+		historyButtonPanel.setVisible(!isNew());
 		super.onBeforeRender();
 	}
 
@@ -131,6 +135,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		initialiseDatePicker();
 		attachValidators();
 		addDetailFormComponents();
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	public void addDetailFormComponents() {
