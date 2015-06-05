@@ -1,9 +1,7 @@
 package au.org.theark.core.service;
 
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +16,7 @@ import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.envers.query.criteria.AuditProperty;
 import org.hibernate.envers.query.property.OriginalIdPropertyName;
+import org.hibernate.proxy.HibernateProxyHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -201,7 +200,7 @@ public class AuditServiceImpl implements IAuditService {
 		if(entity == null) {
 			return "";
 		}
-		Method displayMethod = getEntityDisplayMethod(entity.getClass());
+		Method displayMethod = getEntityDisplayMethod(HibernateProxyHelper.getClassWithoutInitializingProxy(entity));
 		StringBuilder sb = new StringBuilder();
 		try {
 			if(entity instanceof Date) {
