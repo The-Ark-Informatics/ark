@@ -62,6 +62,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CorrespondenceVO;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -102,10 +103,18 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private Label														fileNameLbl;
 
 	private WebMarkupContainer										workTrackingContainer;
+	private HistoryButtonPanel										historyButtonPanel;
+
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		setMultiPart(true);
+	}
+
+	@Override
+	public void onBeforeRender() {
+		historyButtonPanel.setVisible(!isNew());
+		super.onBeforeRender();
 	}
 
 	public void initialiseDetailForm() {
@@ -191,6 +200,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 		addDetailFormComponents();
 		attachValidators();
+
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	private void initialiseOperatorDropDown() {
