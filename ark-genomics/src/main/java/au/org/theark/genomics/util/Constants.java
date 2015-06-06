@@ -5,6 +5,8 @@ public final class Constants {
 	public static final String MICRO_SERVICE = "MICRO_SERVICE";
 
 	public static final String DATA_CENTER = "DATA_CENTER";
+	
+	public static final String COMPUTATION = "COMPUTATION";
 
 
 	public static final String GENO_SUBMENU = "genoSubMenus";
@@ -41,6 +43,12 @@ public final class Constants {
 	public static final String DATA_SOURCE_DATA_CENTER = "dataSource.dataCenter";
 	public static final String DATA_SOURCE_TYPE = "dataSource.type";
 	public static final String DATA_SOURCE_STATUS = "dataSource.status";
+	
+	public static final String COMPUTATION_ID = "computation.id";
+	public static final String COMPUTATION_NAME = "computation.name";
+	public static final String COMPUTATION_DESCRIPTION = "computation.description";
+	public static final String COMPUTATION_MICROSERVICE_NAME = "computation.microService.name";
+	public static final String COMPUTATION_STATUS = "computation.status";
 	
 	public static final int MODE_NEW = 1;
 	public static final int MODE_EDIT = 2;

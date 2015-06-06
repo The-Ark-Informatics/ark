@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.model.spark.entity.Computation;
 import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.DataSourceType;
 import au.org.theark.core.model.spark.entity.MicroService;
@@ -52,6 +53,16 @@ public class GenomicServiceImpl implements IGenomicService {
 
 	public void delete(DataSource dataSource) {
 		genomicsDao.delete(dataSource);
+	}
+	
+	@Override
+	public void saveOrUpdate(Computation computation) {
+		// TODO Auto-generated method stub	
+	}
+	
+	@Override
+	public void delete(Computation computation) {
+		// TODO Auto-generated method stub		
 	}
 
 	public List<MicroService> searchMicroService(MicroService microService) {
@@ -234,6 +245,12 @@ public class GenomicServiceImpl implements IGenomicService {
 		}
 
 		return list;
+	}
+	
+	@Override
+	public List<Computation> searchComputations(Computation computation) {
+		// TODO Auto-generated method stub
+		return new ArrayList<Computation>();
 	}
 
 	public List<DataSourceType> listDataSourceTypes() {

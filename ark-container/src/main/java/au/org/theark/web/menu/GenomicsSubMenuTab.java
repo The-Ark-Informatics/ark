@@ -15,9 +15,9 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.genomics.util.Constants;
+import au.org.theark.genomics.web.component.computation.ComputationContainerPanel;
 import au.org.theark.genomics.web.component.datacenter.DataCenterContainerPanel;
 import au.org.theark.genomics.web.component.microservice.MicroServiceContainerPanel;
-import au.org.theark.worktracking.web.component.researcher.ResearcherContainerPanel;
 
 public class GenomicsSubMenuTab extends AbstractArkTabPanel {
 	private static final long serialVersionUID = -3695404298701886701L;
@@ -60,6 +60,9 @@ public class GenomicsSubMenuTab extends AbstractArkTabPanel {
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(Constants.DATA_CENTER)) {
 						panelToReturn = new DataCenterContainerPanel(panelId);
+					}
+					else if (menuArkFunction.getName().equalsIgnoreCase(Constants.COMPUTATION)) {
+						panelToReturn = new ComputationContainerPanel(panelId);
 					}
 					return panelToReturn;
 				}

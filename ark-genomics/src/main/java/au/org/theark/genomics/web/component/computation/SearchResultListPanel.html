@@ -1,0 +1,58 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			  
+			<th width="5%">
+				<label for="id">
+					<wicket:message	key="genomics.computation.id">ID:</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="name">
+					<wicket:message	key="genomics.computation.name">Organization:</wicket:message>
+				</label>
+			</th>
+			<th width="40%">
+				<label for="url">
+					<wicket:message	key="genomics.computation.microservice">Last Active Date:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="status">
+					<wicket:message	key="genomics.computation.status">Role:</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="computationList">
+			<td width="2%">&nbsp;</td>
+			<td width="5%">
+				<span wicket:id="computation.id">id</span>
+			</td>
+			<td width="15%">
+			  <a href="#"wicket:id="computation.name">
+			  	<span wicket:id="nameLbl">Name</span>
+			  </a>
+			</td>
+			<td width="40%">
+				<span wicket:id="computation.microService.name">url</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="computation.status">Status</span>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td colspan="5"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

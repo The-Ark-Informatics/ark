@@ -47,7 +47,7 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 	public void initialiseDetailForm() {
 		microServiceIdTxtFld = new TextField<String>(Constants.MICRO_SERVICE_ID);
 		microServiceIdTxtFld.setEnabled(false);
-		microServiceNameTxtFld = new TextField<String>(Constants.MICROSERVICE);
+		microServiceNameTxtFld = new TextField<String>(Constants.MICRO_SERVICE_NAME);
 		microServiceDescription = new TextArea<String>(Constants.MICRO_SERVICE_DESCRIPTION);
 		microServiceTxtArea = new TextArea<String>(Constants.MICRO_SERVICE_URL);
 		addDetailFormComponents();
