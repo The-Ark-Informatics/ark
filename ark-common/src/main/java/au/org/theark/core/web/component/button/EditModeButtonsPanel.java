@@ -19,8 +19,10 @@
 package au.org.theark.core.web.component.button;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
@@ -28,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 
 public class EditModeButtonsPanel extends Panel {
 
@@ -41,6 +45,8 @@ public class EditModeButtonsPanel extends Panel {
 	protected Button deleteButton;
 	protected IEditModeEventHandler eventHandler;
 	
+	private Panel historyButtonPanel;
+
 	public EditModeButtonsPanel(String id, IEditModeEventHandler eventHandler) {
 		super(id);
 		this.eventHandler = eventHandler;
@@ -134,6 +140,9 @@ public class EditModeButtonsPanel extends Panel {
 		
 		deleteButton.setDefaultFormProcessing(false);
 		this.add(deleteButton);
+
+		historyButtonPanel = new EmptyPanel("history");
+		this.addOrReplace(historyButtonPanel);
 	}
 
 	public boolean isSaveButtonVisible() {
@@ -184,4 +193,7 @@ public class EditModeButtonsPanel extends Panel {
 		deleteButton.setEnabled(enabled);
 	}
 	
+	public void createHistoryButtonPanel(ArkCrudContainerVO arkContainerVO) {
+		historyButtonPanel = new HistoryButtonPanel((Form<?>)eventHandler, (WebMarkupContainer)this, arkContainerVO.getDetailPanelFormContainer());
+	}
 }
