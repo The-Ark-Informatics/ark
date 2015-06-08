@@ -78,11 +78,14 @@ then
 	fi
 fi
 
-#cd $WORKSPACE_DIR/ark-geno
-#mvn clean install
-#if [ "$?" != "0" ]; then
-#exit 1
-#fi
+cd $WORKSPACE_DIR/ark-genomics
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
+fi
 
 cd $WORKSPACE_DIR/ark-report
 if is_changed;
