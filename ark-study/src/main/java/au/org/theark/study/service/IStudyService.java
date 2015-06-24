@@ -304,7 +304,7 @@ public interface IStudyService {
 
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId, Study study) throws EntityNotFoundException, ArkSystemException;
 
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count, String type);
 
 	public long getSubjectCustomFieldDataCount(LinkSubjectStudy criteria, ArkFunction arkFunction);
 
@@ -469,5 +469,7 @@ public interface IStudyService {
 	public List<Phone> pageablePersonPhoneList(Long personId,Phone phoneCriteria, int first, int count);
 	
 	public List<Address> pageablePersonAddressList(Long personId,Address addressCriteria, int first, int count);
+	
+	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId);
 
 }

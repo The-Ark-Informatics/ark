@@ -2,6 +2,7 @@ package au.org.theark.genomics.service;
 
 import java.util.List;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.spark.entity.Computation;
 import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.DataSourceType;
@@ -15,7 +16,9 @@ public interface IGenomicService {
 	
 	public void saveOrUpdate(DataSource dataSource);
 	
-	public void saveOrUpdate(Computation computation);
+	public void save(Computation computation, byte[] attachement) throws ArkSystemException;
+
+	public void update(Computation computation,byte[] attachement, String checksum) throws ArkSystemException;
 
 	public void delete(MicroService microService);
 	
@@ -41,6 +44,10 @@ public interface IGenomicService {
 	
 	public void updateDataSourceStatus(final String processUID, DataSource dataSource);
 	
+	public void uploadComputaion(Computation computation);
 	
+	public void uploadComputation(Computation computation);
+	
+	public void compileComputation(Computation computation);
 	
 }

@@ -17,4 +17,8 @@ public interface SshService {
 	
 	public void processPlinkDataSource(DataCenterVo dataSource) throws Exception;
 	
+	public void uploadProgram(String destinationDir, String name);
+	
+	public String compileProgram(String name);
+	
 }

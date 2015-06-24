@@ -81,6 +81,7 @@ public class Constants {
 	public static final String		FIELDVO_CUSTOMFIELD_DESCRIPTION							= "customField.description";
 	public static final String		FIELDVO_CUSTOMFIELD_FIELD_LABEL							= "customField.fieldLabel";
 	public static final String		FIELDVO_CUSTOMFIELD_UNIT_TYPE							= "customField.unitType";
+	public static final String		FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE					= "customField.customFieldType";
 	//Add unit type as text
 	public static final String		FIELDVO_CUSTOMFIELD_UNIT_TYPE_TXT						= "customField.unitTypeInText";
 	public static final String		FIELDVO_CUSTOMFIELD_SEQ_NUM								= "customField.seqNum";

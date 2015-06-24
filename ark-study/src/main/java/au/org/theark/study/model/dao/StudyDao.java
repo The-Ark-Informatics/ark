@@ -26,6 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+
+
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -35,6 +38,7 @@ import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
@@ -1820,23 +1824,31 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * then applies the restrictions on study and module.
 	 * </p>
 	 */
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count, String type) {
 
 		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT cfd, fieldList");
 		sb.append(" FROM  CustomFieldDisplay AS cfd ");
+		sb.append("LEFT JOIN cfd.customField AS cf ");
+		sb.append("LEFT JOIN cf.customFieldType AS cft ");
 		sb.append("LEFT JOIN cfd.subjectCustomFieldData as fieldList ");
 		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
 		sb.append("  where cfd.customField.study.id = :studyId");
 		sb.append(" and cfd.customField.arkFunction.id = :functionId");
+		if(type == null || "STUDY".equalsIgnoreCase(type)){
+			sb.append(" and (cft is null or cft.name = :type)");
+		}else{
+			sb.append(" and cft.name = :type");
+		}
 		sb.append(" order by cfd.sequence");
 
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("functionId", arkFunction.getId());
+		query.setParameter("type", type);
 		query.setFirstResult(first);
 		query.setMaxResults(count);
 
@@ -2319,15 +2331,37 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(CustomField.class, "cf");
 		criteria.createAlias("study", "st", JoinType.INNER_JOIN);
 		criteria.createAlias("arkFunction", "af", JoinType.INNER_JOIN);
+		criteria.createAlias("customFieldType", "cft", JoinType.LEFT_OUTER_JOIN);
 
 		criteria.add(Restrictions.eq("st.id", studyId));
 		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
 		criteria.add(Restrictions.eq("cf.encodedValues", "0=Yes;1=No;").ignoreCase());
+		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "STUDY")));
 
 		pedigreeCustomFields = criteria.list();
 
 		return pedigreeCustomFields;
 	}
+	
+	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId) {
+		List<CustomField> pedigreeCustomFields = null;
+		Criteria criteria = getSession().createCriteria(CustomField.class, "cf");
+		criteria.createAlias("study", "st", JoinType.INNER_JOIN);
+		criteria.createAlias("arkFunction", "af", JoinType.INNER_JOIN);
+		criteria.createAlias("fieldType", "ft", JoinType.INNER_JOIN);
+		criteria.createAlias("customFieldType", "cft", JoinType.LEFT_OUTER_JOIN);
+
+		criteria.add(Restrictions.eq("st.id", studyId));
+		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
+		criteria.add(Restrictions.isNull("cf.encodedValues"));
+		criteria.add(Restrictions.eq("ft.name","CHARACTER"));
+		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "STUDY")));
+		
+		pedigreeCustomFields = criteria.list();
+
+		return pedigreeCustomFields;
+	}
+
 
 	public StudyPedigreeConfiguration getStudyPedigreeConfiguration(Long studyId) {
 

@@ -13,10 +13,12 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.study.model.vo.PedigreeVo;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.pedigree.FamilyCustomDataContainerPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeConfigurationContainerPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeDisplayPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeParentContainerPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeTwinContainerPanel;
+import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataContainerPanel;
 
 public class SearchForm extends Form<PedigreeVo> {
 
@@ -38,6 +40,7 @@ public class SearchForm extends Form<PedigreeVo> {
 	protected AjaxButton						twinButton;
 	protected AjaxButton						viewButton;
 	protected AjaxButton						configButton;
+	protected AjaxButton						familyButton;
 
 	protected AbstractDetailModalWindow	modalWindow;
 
@@ -66,6 +69,7 @@ public class SearchForm extends Form<PedigreeVo> {
 		add(twinButton);
 		add(viewButton);
 		add(configButton);
+		add(familyButton);
 		add(modalWindow);
 	}
 
@@ -143,6 +147,18 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.setInitialWidth(35);
 				modalWindow.setInitialHeight(60);
 				modalWindow.setContent(new PedigreeConfigurationContainerPanel("content", modalWindow));
+				modalWindow.show(target);
+			}
+		};
+		
+		familyButton = new AjaxButton(au.org.theark.core.Constants.FAMILY) {
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				modalWindow.setTitle("Family Data");
+				modalWindow.setInitialWidth(90);
+				modalWindow.setInitialHeight(100);
+				modalWindow.setContent(new FamilyCustomDataContainerPanel("content").initialisePanel(modalWindow));
 				modalWindow.show(target);
 			}
 		};

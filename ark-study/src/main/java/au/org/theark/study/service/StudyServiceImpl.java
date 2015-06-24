@@ -1249,9 +1249,9 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getSubjectLinkedToStudy(personId, study);
 	}
 
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count, String type) {
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
-		customfieldDataList = iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);
+		customfieldDataList = iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count,type);
 		return customfieldDataList;
 	}
 
@@ -2154,6 +2154,10 @@ public class StudyServiceImpl implements IStudyService {
 	}
 	public List<Address> pageablePersonAddressList(Long personId, Address adressCriteria, int first, int count) {
 		return iStudyDao.pageablePersonAddressLst(personId,adressCriteria, first, count);
+	}
+	
+	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId){
+		return iStudyDao.getFamilyIdCustomFieldsForPedigreeRelativesList(studyId);
 	}
 
 }

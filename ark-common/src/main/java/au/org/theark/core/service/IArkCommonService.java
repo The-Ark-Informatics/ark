@@ -77,6 +77,7 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.EmailStatus;
@@ -1012,5 +1013,11 @@ public interface IArkCommonService<T> {
 	 * @throws ArkSystemException
 	 */
 	public String generateArkFileChecksum(File file, String algorithm) throws ArkSystemException;
+	
+	/**
+	 * 
+	 * @return Custom Field types
+	 */
+	public List<CustomFieldType> getCustomFieldTypes();
 	
 }

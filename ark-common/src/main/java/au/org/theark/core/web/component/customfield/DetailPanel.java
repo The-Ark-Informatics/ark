@@ -39,19 +39,21 @@ public class DetailPanel extends Panel {
 	private CompoundPropertyModel<CustomFieldVO> cpModel;
 	private ArkCrudContainerVO arkCrudContainerVO;
 	private boolean unitTypeDropDownOn;
+	private boolean subjectCustomField;
 
-	public DetailPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO,boolean unitTypeDropDownOn) {
+	public DetailPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO,boolean unitTypeDropDownOn, boolean subjectCustomField) {
 		super(id, cpModel);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.setOutputMarkupPlaceholderTag(true);
 		this.unitTypeDropDownOn=unitTypeDropDownOn;
+		this.subjectCustomField=subjectCustomField;
 		initialisePanel();
 	}
 
 	public void initialisePanel() {
-		detailForm = new DetailForm("detailForm", cpModel, feedbackPanel, arkCrudContainerVO,this.unitTypeDropDownOn);
+		detailForm = new DetailForm("detailForm", cpModel, feedbackPanel, arkCrudContainerVO,this.unitTypeDropDownOn, this.subjectCustomField);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}

@@ -47,7 +47,7 @@ public final class Constants {
 	public static final String COMPUTATION_ID = "computation.id";
 	public static final String COMPUTATION_NAME = "computation.name";
 	public static final String COMPUTATION_DESCRIPTION = "computation.description";
-	public static final String COMPUTATION_MICROSERVICE_NAME = "computation.microService.name";
+	public static final String COMPUTATION_MICROSERVICE = "computation.microService";
 	public static final String COMPUTATION_STATUS = "computation.status";
 	
 	public static final int MODE_NEW = 1;
@@ -70,6 +70,8 @@ public final class Constants {
 	public static final String STATUS_AVAILABLE = "Available";
 
 	public static final String STATUS_NOT_AVAILABLE = "Not Available";
+	
+	public static final String ARK_GENOMICS_COMPUTATION_DIR="computation";
 	
 	
 }

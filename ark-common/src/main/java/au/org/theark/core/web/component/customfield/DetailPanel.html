@@ -108,6 +108,25 @@
 						<textarea wicket:id="customField.fieldLabel" rows="4" cols="25" maxlength="255">
 						</textarea>
 					</div>
+					
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+					
+					<div wicket:id="paenlCustomFieldTypeDropDown">
+						<div class="fldLabel">
+							<wicket:message key="customField.customFieldType">
+								Custom Field Type:
+							</wicket:message>
+						</div>
+
+						<div class="fldControl">
+							<select wicket:id="customField.customFieldType">
+								<option>A</option>
+								<option>B</option>
+							</select>
+						</div>
+					</div>
 
 					<div class="detailPanelBreaker">
 						&nbsp;
@@ -236,7 +255,9 @@
 						</textarea>
 					</div>
 				</div>
-
+				<div class="detailPanelBreaker">
+						&nbsp;
+				</div>
 				<div wicket:id="customFieldDisplayDetailWMC">
 					<div class="panelContentLeft">
 						&nbsp;
@@ -251,7 +272,26 @@
 					<div class="fldControl">
 						<input wicket:id="customFieldDisplay.required" type="checkbox" />
 					</div>
+					
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+					<!--  
+					<div wicket:id="paenlCustomFieldTypeDropDown">
+						<div class="fldLabel">
+							<wicket:message key="customField.customFieldType">
+								Custom Field Type:
+							</wicket:message>
+						</div>
 
+						<div class="fldControl">
+							<select wicket:id="customField.customFieldType">
+								<option>A</option>
+								<option>B</option>
+							</select>
+						</div>
+					</div>
+					-->
 					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>

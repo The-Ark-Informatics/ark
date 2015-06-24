@@ -150,6 +150,7 @@ public class Constants {
 	public static final String TWIN = "twin";
 	public static final String EXPORT = "export";
 	public static final String CONFIG = "configure";
+	public static final String FAMILY = "family";
 	/* Delete confirmation */
 	public static final String DELETE_CONFIRM_TITLE = "Delete confirmation";
 	public static final String DELETE_CONFIRM_MESSAGE = "Are you sure you want to delete?";

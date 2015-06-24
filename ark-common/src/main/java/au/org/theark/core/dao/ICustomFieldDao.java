@@ -10,6 +10,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
@@ -193,6 +194,12 @@ public interface ICustomFieldDao {
 	public void convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(Study study);
 
 	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction arkFunction, Study study);
+	
+	/**
+	 * 
+	 * @return Custom Field types
+	 */
+	public List<CustomFieldType> getCustomFieldTypes();
 	
 	
 }

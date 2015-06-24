@@ -43,11 +43,15 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 
 	protected AbstractDetailModalWindow			modalWindow;
 
-	private DropDownChoice<CustomField>			effectedStatuses;
+	private DropDownChoice<CustomField>			effectedStatusDDL;
+	
+	private DropDownChoice<CustomField>			familyIdDDL;
 
 	private CompoundPropertyModel<PedigreeVo>	cpmModel;
 
-	private List<CustomField>						customFieldList;
+	private List<CustomField>						affectedStatusList;
+	
+	private List<CustomField>						familyIdList;
 
 	private CheckBox									dobChkBox;
 
@@ -83,16 +87,20 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 			cpmModel.getObject().setPedigreeConfig(config);
 		}
 		
-		customFieldList = studyService.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
+		affectedStatusList = studyService.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		effectedStatuses = new DropDownChoice("pedigreeConfig.customField", this.customFieldList, defaultChoiceRenderer);
-		effectedStatuses.setOutputMarkupId(true);
+		effectedStatusDDL = new DropDownChoice("pedigreeConfig.customField", this.affectedStatusList, defaultChoiceRenderer);
+		effectedStatusDDL.setOutputMarkupId(true);
+		
+		familyIdList = studyService.getFamilyIdCustomFieldsForPedigreeRelativesList(studyId);
+		familyIdDDL =  new DropDownChoice("pedigreeConfig.familyId", this.familyIdList, defaultChoiceRenderer);
+		familyIdDDL.setOutputMarkupId(true);
 		
 		if(config !=null && config.isStatusAllowed() !=null  && config.isStatusAllowed()){
-			effectedStatuses.setEnabled(true);
+			effectedStatusDDL.setEnabled(true);
 		}
 		else{
-			effectedStatuses.setEnabled(false);
+			effectedStatusDDL.setEnabled(false);
 			cpmModel.getObject().getPedigreeConfig().setCustomField(null);
 		}
 		
@@ -108,12 +116,12 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				cpmModel.getObject().getPedigreeConfig().setCustomField(null);
 				if (cpmModel.getObject().getPedigreeConfig().isStatusAllowed()) {
-					effectedStatuses.setEnabled(true); 
+					effectedStatusDDL.setEnabled(true); 
 				}
 				else {
-					effectedStatuses.setEnabled(false);
+					effectedStatusDDL.setEnabled(false);
 				}
-				target.add(effectedStatuses);
+				target.add(effectedStatusDDL);
 			}
 		});
 		
@@ -145,12 +153,13 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 	}
 
 	protected void addSearchComponentsToForm() {
-		add(effectedStatuses);
+		add(effectedStatusDDL);
 		add(dobChkBox);
 		add(statusChkBox);
 		add(ageChkBox);
 		add(saveButton);
 		add(cancelButton);
+		add(familyIdDDL);
 
 	}
 }

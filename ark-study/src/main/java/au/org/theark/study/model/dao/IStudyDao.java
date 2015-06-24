@@ -353,7 +353,7 @@ public interface IStudyDao {
 
 	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
 
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count, String type);
 
 	/**
 	 * Create a single record of type SubjectCustomFieldData
@@ -472,5 +472,7 @@ public interface IStudyDao {
 	public List<Address> pageablePersonAddressLst(Long personID,final Address addressCriteria,int first,int count);
 	
 	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles);
+	
+	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
 }

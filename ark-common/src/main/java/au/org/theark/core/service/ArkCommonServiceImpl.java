@@ -118,6 +118,7 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.EmailStatus;
@@ -1775,6 +1776,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
 		return stringBuffer.toString().toUpperCase();
+	}
+
+	@Override
+	public List<CustomFieldType> getCustomFieldTypes() {
+		return customFieldDao.getCustomFieldTypes();
 	}
 
 }

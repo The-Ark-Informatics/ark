@@ -13,6 +13,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -25,6 +26,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
@@ -69,6 +71,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 
 	protected Criteria buildGeneralCustomFieldCritera(CustomField customField) {
 		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.createAlias("customFieldType", "cft",JoinType.LEFT_OUTER_JOIN);
 		// Must be constrained on study and function
 		criteria.add(Restrictions.eq("study", customField.getStudy()));
 		
@@ -107,7 +110,12 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		if (customField.getMaxValue() != null) {
 			criteria.add(Restrictions.ilike("maxValue", customField.getMaxValue(), MatchMode.ANYWHERE));
 		}
-	
+		
+		if(customField.getCustomFieldType() == null){
+			criteria.add(Restrictions.or(Restrictions.isNull("cft.name"),Restrictions.eq("cft.name", "STUDY")));
+		}else{
+			criteria.add(Restrictions.eq("cft.name", "FAMILY"));
+		}
 		return criteria;
 	}
 
@@ -536,5 +544,10 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 			log.info(o.toString());
 		}
 		return criteria.list();	
-	}	
+	}
+	
+	public List<CustomFieldType> getCustomFieldTypes(){
+		Criteria criteria = getSession().createCriteria(CustomFieldType.class);
+		return criteria.list();
+	}
 }

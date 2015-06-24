@@ -56,10 +56,10 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildLink(computation));
 				
 				if (computation.getDescription() != null) {
-					item.add(new Label(Constants.COMPUTATION_MICROSERVICE_NAME, computation.getDescription()));
+					item.add(new Label(Constants.COMPUTATION_MICROSERVICE, computation.getMicroService().getName()));
 				}
 				else {
-					item.add(new Label(Constants.COMPUTATION_MICROSERVICE_NAME, ""));
+					item.add(new Label(Constants.COMPUTATION_MICROSERVICE, ""));
 				}			
 				
 				if (computation.getStatus()!= null) {

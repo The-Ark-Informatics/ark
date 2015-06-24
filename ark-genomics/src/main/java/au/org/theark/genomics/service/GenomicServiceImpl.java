@@ -1,6 +1,7 @@
 package au.org.theark.genomics.service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -8,9 +9,25 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.util.EntityUtils;
+import org.apache.shiro.SecurityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,10 +38,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.spark.entity.Computation;
 import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.DataSourceType;
 import au.org.theark.core.model.spark.entity.MicroService;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.genomics.model.dao.IGenomicsDao;
 import au.org.theark.genomics.model.vo.DataCenterVo;
 import au.org.theark.genomics.model.vo.DataSourceVo;
@@ -36,6 +55,9 @@ public class GenomicServiceImpl implements IGenomicService {
 
 	@Autowired
 	IGenomicsDao genomicsDao;
+	
+	@Autowired
+	IArkCommonService iArkCommonService;
 
 	Logger log = LoggerFactory.getLogger(GenomicServiceImpl.class);
 
@@ -56,8 +78,86 @@ public class GenomicServiceImpl implements IGenomicService {
 	}
 	
 	@Override
-	public void saveOrUpdate(Computation computation) {
-		// TODO Auto-generated method stub	
+	public void save(Computation computation, byte[] attachement) throws ArkSystemException {
+		Long computationId= genomicsDao.saveOrUpdate(computation);
+		
+		if (attachement != null) {
+			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+//			String subjectUID = correspondence.getLss().getSubjectUID();
+			String fileName = computation.getProgramName();
+//			byte[] payload = correspondence.getAttachmentPayload();
+
+			// Generate unique file id for given file name
+			String fileId = iArkCommonService.generateArkFileId(fileName);
+
+			// Set unique subject file id
+			computation.setProgramId(fileId);
+
+			// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+			iArkCommonService.saveArkFileAttachment(studyId, computationId.toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR, fileName, attachement, fileId);
+
+			// Remove the attachment
+			genomicsDao.saveOrUpdate(computation);
+		}
+		
+	}
+	
+	@Override
+	public void update(Computation computation,byte[] attachement, String checksum) throws ArkSystemException {
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+//		String subjectUID = correspondence.getLss().getSubjectUID();
+		String fileName = computation.getProgramName();
+		String prevChecksum = computation.getChecksum();
+
+		String fileId = null;
+		if (attachement != null) {
+
+			if (computation.getProgramId() != null) {
+
+				// Get existing file Id
+				fileId = computation.getProgramId();
+
+				// Delete existing attachment
+				iArkCommonService.deleteArkFileAttachment(studyId, computation.getId().toString(), fileId, Constants.ARK_GENOMICS_COMPUTATION_DIR,prevChecksum);
+
+				// Generate unique file id for given file name
+				fileId = iArkCommonService.generateArkFileId(fileName);
+
+				// Set unique subject file id
+				computation.setProgramId(fileId);
+
+				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+				iArkCommonService.saveArkFileAttachment(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR, fileName, attachement, fileId);
+			}
+			else {
+				// Generate unique file id for given file name
+				fileId = iArkCommonService.generateArkFileId(fileName);
+
+				// Set unique subject file id
+				computation.setProgramId(fileId);
+
+				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+				iArkCommonService.saveArkFileAttachment(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR, fileName, attachement, fileId);
+			}
+			//Set new file checksum
+			computation.setChecksum(checksum);
+		}
+		else {
+			if (computation.getProgramId() != null) {
+				// Get existing file Id
+				fileId = computation.getProgramId();
+
+				// Delete existing attachment
+				iArkCommonService.deleteArkFileAttachment(studyId, computation.getId().toString(), fileId, Constants.ARK_GENOMICS_COMPUTATION_DIR,prevChecksum);
+				
+				//remove existing attachment file id and checksum
+				computation.setProgramId(null);
+				computation.setChecksum(null);
+			}
+		}
+		// Remove the attachment
+		genomicsDao.saveOrUpdate(computation);
+		
 	}
 	
 	@Override
@@ -250,7 +350,8 @@ public class GenomicServiceImpl implements IGenomicService {
 	@Override
 	public List<Computation> searchComputations(Computation computation) {
 		// TODO Auto-generated method stub
-		return new ArrayList<Computation>();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		return genomicsDao.searchComputations(computation, studyId);
 	}
 
 	public List<DataSourceType> listDataSourceTypes() {
@@ -457,5 +558,166 @@ public class GenomicServiceImpl implements IGenomicService {
 			}
 		}
 	}
+	
+	public void uploadComputaion(Computation computation){
+		MicroService microService = computation.getMicroService();
+
+		String URL = microService.getServiceUrl() + "/uploadFile";
+
+		String processUID = null;
+		try {
+			URL url = new URL(URL);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+//			conn.setRequestProperty("Content-Transfer-Encoding", "base64");
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+						
+			JSONObject obj = new JSONObject();
+			obj.put("programId", computation.getProgramId());
+			obj.put("name", computation.getName());
+			
+			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			
+			byte[] pdata = iArkCommonService.retriveArkFileAttachmentByteArray(studyId,computation.getId().toString(),Constants.ARK_GENOMICS_COMPUTATION_DIR,computation.getProgramId(),computation.getChecksum());
+			
+			System.out.println(Base64.getEncoder().encode(pdata));
+			
+			obj.put("program", "program");
+			
+
+			StringWriter out = new StringWriter();
+			obj.writeJSONString(out);
+			String data = out.toString();
+
+			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+			writer.write(data);
+			writer.flush();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output = null;
+			while ((output = br.readLine()) != null) {
+				log.info("message -- " + output);
+//				processUID = output;
+			}
+			conn.disconnect();
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}catch(ArkSystemException e){
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void uploadComputation(Computation computation){
+		MicroService microService = computation.getMicroService();
+
+		String URL = microService.getServiceUrl() + "/upload";
+		
+		try{
+			HttpClient httpclient = new DefaultHttpClient();
+		    httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+		    
+		    HttpPost httppost = new HttpPost(URL);
+		    
+		    Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			
+			//byte[] pdata = iArkCommonService.retriveArkFileAttachmentByteArray(studyId,computation.getId().toString(),Constants.ARK_GENOMICS_COMPUTATION_DIR,computation.getProgramId(),computation.getChecksum());
+		    
+		    String directory = iArkCommonService.getArkFileDirName(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR);
+			String location = directory + File.separator + computation.getProgramId();
+			File file = new File(location);
+		    
+
+		    MultipartEntity mpEntity = new MultipartEntity();
+		    ContentBody cbFile = new FileBody(file, "multipart/form-data");
+		    StringBody contentString = new StringBody(computation.getProgramId() + "");
+		    
+		    mpEntity.addPart("file", cbFile);
+		    mpEntity.addPart("name", contentString);
+
+		    
+//		    StringEntity nameEntity = new StringEntity("name","test");
+
+//		    httppost.setEntity(nameEntity);
+		    httppost.setEntity(mpEntity);
+		    System.out.println("executing request " + httppost.getRequestLine());
+		    HttpResponse response = httpclient.execute(httppost);
+		    HttpEntity resEntity = response.getEntity();
+
+		    System.out.println(response.getStatusLine());
+		    if (resEntity != null) {
+		      System.out.println(EntityUtils.toString(resEntity));
+		    }
+		    if (resEntity != null) {
+		      resEntity.consumeContent();
+		    }
+
+		    httpclient.getConnectionManager().shutdown();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void compileComputation(Computation computation){
+		MicroService microService = computation.getMicroService();
+
+		String URL = microService.getServiceUrl() + "/compile";
+		
+		try{
+			HttpClient httpclient = new DefaultHttpClient();
+		    httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+		    
+		    HttpPost httppost = new HttpPost(URL);
+		    
+
+		    
+
+		    MultipartEntity mpEntity = new MultipartEntity();
+//		    ContentBody cbFile = new FileBody(file, "multipart/form-data");
+		    StringBody contentString = new StringBody(computation.getProgramId() + "");
+		    
+//		    mpEntity.addPart("file", cbFile);
+		    mpEntity.addPart("name", contentString);
+
+		    
+//		    StringEntity nameEntity = new StringEntity("name","test");
+
+//		    httppost.setEntity(nameEntity);
+		    httppost.setEntity(mpEntity);
+		    System.out.println("executing request " + httppost.getRequestLine());
+		    HttpResponse response = httpclient.execute(httppost);
+		    HttpEntity resEntity = response.getEntity();
+
+		    System.out.println(response.getStatusLine());
+		    if (resEntity != null) {
+		      System.out.println(EntityUtils.toString(resEntity));
+		    }
+		    if (resEntity != null) {
+		      resEntity.consumeContent();
+		    }
+
+		    httpclient.getConnectionManager().shutdown();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+//	 private String convertFileToString(File file) throws IOException{
+//	        byte[] bytes = Files.readAllBytes(file.toPath());   
+//	        return new String(Base64.getEncoder().encode(bytes));
+//	    }
+//	 
+//	 public static void main(String[] args){
+//		String a ="ABCDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD";
+//		System.out.println(Base64.getEncoder().encode(a.getBytes()));
+//	}
 
 }

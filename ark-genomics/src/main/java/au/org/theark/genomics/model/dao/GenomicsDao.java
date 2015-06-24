@@ -6,11 +6,13 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.model.spark.entity.Computation;
 import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.DataSourceType;
 import au.org.theark.core.model.spark.entity.MicroService;
@@ -37,6 +39,17 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 			getSession().update(dataSource);
 		}
 	}
+	
+	public long saveOrUpdate(Computation computatin){
+		Long id =null;
+		if (computatin.getId() == null || computatin.getId() == 0) {
+			getSession().save(computatin);
+		} else {
+			getSession().update(computatin);
+		}
+		id=computatin.getId();
+		return id;
+	}
 
 	public void delete(MicroService microService) {
 		getSession().delete(microService);
@@ -44,6 +57,10 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 
 	public void delete(DataSource dataSource) {
 		getSession().delete(dataSource);
+	}
+	
+	public void delete(Computation computation) {
+		getSession().delete(computation);
 	}
 
 	public List<MicroService> searchMicroService(MicroService microService) {
@@ -63,6 +80,15 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 	public List<DataSourceType> listDataSourceTypes() {
 		Criteria criteria = getSession().createCriteria(DataSourceType.class);
 		return criteria.list();
+	}
+	
+	public List<Computation> searchComputations(Computation computation, Long studyId){
+		Criteria criteria = getSession().createCriteria(Computation.class);
+		criteria.createAlias("microService", "ms", JoinType.INNER_JOIN);
+		criteria.setFetchMode("microService", FetchMode.JOIN);
+		criteria.add(Restrictions.eq("ms.studyId", studyId));
+		List<Computation> list = criteria.list();
+		return list;
 	}
 
 	public DataSource getDataSource(DataSourceVo dataSourceVo) {

@@ -52,33 +52,35 @@ import au.org.theark.core.web.form.AbstractSearchForm;
 public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService					iArkCommonService;
+	private IArkCommonService iArkCommonService;
 
-	private CompoundPropertyModel<CustomFieldVO>	cpModel;
-	private ArkCrudContainerVO 					arkCrudContainerVO;
-	private TextField<String>					fieldIdTxtFld;
-	private TextField<String>					fieldNameTxtFld;
-	private DropDownChoice<FieldType>			fieldTypeDdc;
-	private TextArea<String>					fieldDescriptionTxtAreaFld;
-	private TextField<String>					fieldUnitsTxtFld;
-	private TextField<String>					fieldUnitsInTextTxtFld;
-	private TextField<String>					fieldMinValueTxtFld;
-	private TextField<String>					fieldMaxValueTxtFld;
-	
-	private WebMarkupContainer  				panelCustomUnitTypeDropDown;
-	private WebMarkupContainer  				panelCustomUnitTypeText;
-	private boolean 							unitTypeDropDownOn;
-	
+	private CompoundPropertyModel<CustomFieldVO> cpModel;
+	private ArkCrudContainerVO arkCrudContainerVO;
+	private TextField<String> fieldIdTxtFld;
+	private TextField<String> fieldNameTxtFld;
+	private DropDownChoice<FieldType> fieldTypeDdc;
+	private TextArea<String> fieldDescriptionTxtAreaFld;
+	private TextField<String> fieldUnitsTxtFld;
+	private TextField<String> fieldUnitsInTextTxtFld;
+	private TextField<String> fieldMinValueTxtFld;
+	private TextField<String> fieldMaxValueTxtFld;
+
+	private WebMarkupContainer panelCustomUnitTypeDropDown;
+	private WebMarkupContainer panelCustomUnitTypeText;
+	private boolean unitTypeDropDownOn;
+	private boolean subjectCustomField;
+
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,boolean unitTypeDropDownOn) {
+	public SearchForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, boolean unitTypeDropDownOn, boolean subjectCustomField) {
 
 		super(id, cpModel, feedBackPanel, arkCrudContainerVO);
-		this.unitTypeDropDownOn=unitTypeDropDownOn;
+		this.unitTypeDropDownOn = unitTypeDropDownOn;
 		this.cpModel = cpModel;
 		this.feedbackPanel = feedBackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.subjectCustomField = subjectCustomField;
 		initialiseFieldForm();
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -95,9 +97,9 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		fieldIdTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_ID);
 		fieldNameTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_NAME);
 		fieldDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_DESCRIPTION);
-		panelCustomUnitTypeDropDown=new WebMarkupContainer("panelCustomUnitTypeDropDown");
+		panelCustomUnitTypeDropDown = new WebMarkupContainer("panelCustomUnitTypeDropDown");
 		panelCustomUnitTypeDropDown.setOutputMarkupId(true);
-		panelCustomUnitTypeText=new WebMarkupContainer("panelCustomUnitTypeText");
+		panelCustomUnitTypeText = new WebMarkupContainer("panelCustomUnitTypeText");
 		panelCustomUnitTypeText.setOutputMarkupId(true);
 		fieldUnitsTxtFld = new AutoCompleteTextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE + ".name") {
 			@Override
@@ -108,7 +110,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 				return iArkCommonService.getUnitTypeNames(unitTypeCriteria, 10).iterator();
 			}
 		};
-		
+
 		fieldUnitsInTextTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE_TXT);
 		fieldMinValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
 		fieldMaxValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
@@ -121,10 +123,10 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		add(fieldNameTxtFld);
 		add(fieldTypeDdc);
 		add(fieldDescriptionTxtAreaFld);
-		if(this.unitTypeDropDownOn){
+		if (this.unitTypeDropDownOn) {
 			panelCustomUnitTypeDropDown.setVisible(true);
 			panelCustomUnitTypeText.setVisible(false);
-		}else{
+		} else {
 			panelCustomUnitTypeDropDown.setVisible(false);
 			panelCustomUnitTypeText.setVisible(true);
 		}
@@ -150,7 +152,15 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 			target.add(feedbackPanel);
 		}
 
-		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);// Make the WebMarkupContainer that houses the search results visible
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);// Make
+																			// the
+																			// WebMarkupContainer
+																			// that
+																			// houses
+																			// the
+																			// search
+																			// results
+																			// visible
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 
@@ -159,7 +169,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		// Instead of having to reset the criteria, we just copy the criteria across
+		// Instead of having to reset the criteria, we just copy the criteria
+		// across
 		CustomField cf = getModelObject().getCustomField();
 		CompoundPropertyModel<CustomFieldVO> newModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
 		CustomField newCF = newModel.getObject().getCustomField();
@@ -169,25 +180,28 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		newCF.setName(cf.getName());
 		newCF.setFieldType(cf.getFieldType());
 		newCF.setDescription(cf.getDescription());
-		/* 
-		 * NB: Do NOT copy unitType across because it is a Textfield on the SearchForm.
-		 * If you copy this through, then DetailForm will have transient error during onSave(..).
-		 * Also, if the user chooses fieldType==DATE, this and unitType is not a valid combination
-		 * (but unitTypeDdc will be disabled, so the user can't make it null for it to be valid).
+		/*
+		 * NB: Do NOT copy unitType across because it is a Textfield on the
+		 * SearchForm. If you copy this through, then DetailForm will have
+		 * transient error during onSave(..). Also, if the user chooses
+		 * fieldType==DATE, this and unitType is not a valid combination (but
+		 * unitTypeDdc will be disabled, so the user can't make it null for it
+		 * to be valid).
 		 */
 		newCF.setMinValue(cf.getMinValue());
 		newCF.setMaxValue(cf.getMaxValue());
 		newModel.getObject().setUseCustomFieldDisplay(getModelObject().isUseCustomFieldDisplay());
-		
-		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO,this.unitTypeDropDownOn);
+
+		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO, this.unitTypeDropDownOn, this.subjectCustomField);
 		arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
-		
-		// Reset model's CF object (do NOT replace the CustomFieldVO in the model)
+
+		// Reset model's CF object (do NOT replace the CustomFieldVO in the
+		// model)
 		cf = new CustomField();
 		cf.setStudy(newCF.getStudy());
 		cf.setArkFunction(newCF.getArkFunction());
 		getModelObject().setCustomField(cf);
-		
+
 		preProcessDetailPanel(target);
 	}
 

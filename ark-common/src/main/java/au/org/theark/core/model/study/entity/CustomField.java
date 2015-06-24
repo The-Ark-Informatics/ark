@@ -68,6 +68,7 @@ public class CustomField implements Serializable {
 	private String defaultValue;
 	//Add unit type as String
 	private String unitTypeInText;
+	private CustomFieldType customFieldType;
 
 	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
 
@@ -236,7 +237,16 @@ public class CustomField implements Serializable {
 	public void setUnitTypeInText(String unitTypeInText) {
 		this.unitTypeInText = unitTypeInText;
 	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CUSTOM_FIELD_TYPE_ID")
+	public CustomFieldType getCustomFieldType() {
+		return customFieldType;
+	}
 
+	public void setCustomFieldType(CustomFieldType customFieldType) {
+		this.customFieldType = customFieldType;
+	}
 
 	@Override
 	public int hashCode() {

@@ -1,0 +1,29 @@
+CREATE TABLE `study`.`custom_field_type` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NULL,
+  `DESCRIPTION` VARCHAR(255) NULL,
+  PRIMARY KEY (`ID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+INSERT INTO `study`.`custom_field_type` (`NAME`, `DESCRIPTION`) VALUES ('STUDY', 'Study custom field to store the subject data');
+INSERT INTO `study`.`custom_field_type` (`NAME`, `DESCRIPTION`) VALUES ('FAMILY', 'Family custom field to store the family data');
+
+ALTER TABLE `study`.`custom_field` 
+ADD COLUMN `CUSTOM_FIELD_TYPE_ID` INT(11) NULL AFTER `CATEGORY_ID`;
+
+ALTER TABLE `study`.`custom_field` 
+ADD COLUMN `CUSTOM_FIELD_TYPE_ID` INT(11) NULL AFTER `CATEGORY_ID`,
+ADD INDEX `FK_CUSTOMFIELD_CUSTOM_FIELD_TYPE_ID_idx` (`CUSTOM_FIELD_TYPE_ID` ASC);
+ALTER TABLE `study`.`custom_field` 
+ADD CONSTRAINT `FK_CUSTOMFIELD_CUSTOM_FIELD_TYPE_ID`
+  FOREIGN KEY (`CUSTOM_FIELD_TYPE_ID`)
+  REFERENCES `study`.`custom_field_type` (`ID`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
+ALTER TABLE `audit`.`aud_custom_field` 
+ADD COLUMN `CUSTOM_FIELD_TYPE_ID` BIGINT(20) NULL AFTER `UNIT_TYPE_ID`;
+
+

@@ -1,5 +1,11 @@
 package au.org.spark.web.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +14,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import au.org.spark.jobs.JobService;
 import au.org.spark.service.CassandraService;
@@ -24,6 +34,7 @@ import au.org.spark.service.OpenStackService;
 import au.org.spark.service.SshService;
 import au.org.spark.util.Constants;
 import au.org.spark.util.Constants.DATA_CENTERS;
+import au.org.spark.web.view.ComputationVo;
 import au.org.spark.web.view.DataCenterVo;
 import au.org.spark.web.view.DataSourceVo;
 import au.org.spark.web.view.JavaBean;
@@ -31,6 +42,9 @@ import au.org.spark.web.view.Report;
 
 @RestController
 public class SparkRestController {
+
+	@Value("${spark.computation.dir}")
+	private String computationDir;
 
 	@Autowired
 	OpenStackService openStackService;
@@ -237,6 +251,164 @@ public class SparkRestController {
 			return "FAILED";
 		}
 		return "SUCCESS";
+	}
+
+	// @RequestMapping(value="/uploadFile", method=RequestMethod.POST)
+	// public @ResponseBody String handleFileUpload(@RequestParam("programId")
+	// String programId, @RequestParam("programName") String programName
+	// ,@RequestParam("file") MultipartFile file){
+	// if (!file.isEmpty()) {
+	// try {
+	// byte[] bytes = file.getBytes();
+	// BufferedOutputStream stream = new BufferedOutputStream(new
+	// FileOutputStream(new File(programId + "-uploaded")));
+	// stream.write(bytes);
+	// stream.close();
+	// return "You successfully uploaded " + programName + " into " + programId
+	// + "-uploaded !";
+	// } catch (Exception e) {
+	// return "You failed to upload " + programName + " => " + e.getMessage();
+	// }
+	// } else {
+	// return "You failed to upload " + programName +
+	// " because the file was empty.";
+	// }
+	// }
+
+	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+	public @ResponseBody String handleFileUpload(@RequestBody ComputationVo computation) {
+
+		// Future<Report> report = null;
+
+		// if ("uploading".equalsIgnoreCase(dataSource.getStatus())) {
+		// report = reportService.uploadDataSource(dataSource);
+		// } else {
+		// report = reportService.deleteDataSource(dataSource);
+		// }
+		//
+		// // Future<Report> report = reportService.generateReport();
+		//
+		// String UID = System.currentTimeMillis() + "_" + UUID.randomUUID();
+		// // session.setAttribute(UID, report);
+		//
+		// System.out.println("Generate from SPARK -- " + UID);
+		// reportMap.put(UID, report);
+
+		System.out.println(computation.getProgram());
+
+		return computation.getProgramId();
+	}
+
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	public @ResponseBody String handleFileUpload(@RequestParam("name") String fileId, @RequestParam("file") MultipartFile file) {
+
+		byte[] buffer = new byte[1024];
+		if (!file.isEmpty()) {
+			try {
+
+				String array[] = fileId.split("[.]");
+				String dirName = computationDir + File.separator + array[0];
+
+				File outputFolder = new File(dirName);
+				if (!outputFolder.exists()) {
+					outputFolder.mkdir();
+				}
+
+				ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(file.getBytes()));
+				// get the zipped file list entry
+				ZipEntry ze = zis.getNextEntry();
+
+				boolean firstEntry = false;
+
+				while (ze != null) {
+
+					String fileName = ze.getName();
+
+					if (!firstEntry) {
+						System.out.println("ROOT_DIR is --- " + fileName);
+						firstEntry = true;
+					}
+
+					File newFile = new File(outputFolder + File.separator + fileName);
+
+					System.out.println("file unzip : " + newFile.getAbsoluteFile());
+
+					if (ze.isDirectory()) {
+						newFile.mkdirs();
+					} else {
+						FileOutputStream fos = new FileOutputStream(newFile);
+						int len;
+						while ((len = zis.read(buffer)) > 0) {
+							fos.write(buffer, 0, len);
+						}
+						fos.close();
+						if (newFile.getName().equals("spark.info")) {
+
+							BufferedReader br = new BufferedReader(new FileReader(newFile));
+							String sCurrentLine;
+							while ((sCurrentLine = br.readLine()) != null) {
+								System.out.println(sCurrentLine);
+							}
+							br.close();
+						}
+					}
+					ze = zis.getNextEntry();
+				}
+
+				zis.closeEntry();
+				zis.close();
+
+				// byte[] bytes = file.getBytes();
+				// BufferedOutputStream stream =
+				// new BufferedOutputStream(new FileOutputStream(new
+				// File(name)));
+				// stream.write(bytes);
+				// stream.close();
+
+				/**
+				 * Start reading the extract file
+				 */
+				
+				sshService.uploadProgram(computationDir, array[0]);
+				return "You successfully uploaded " + fileId + "!";
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "You failed to upload " + fileId + " => " + e.getMessage();
+			}
+		} else {
+			return "You failed to upload " + fileId + " because the file was empty.";
+		}
+	}
+	
+	@RequestMapping(value = "/compile", method = RequestMethod.POST)
+	public @ResponseBody String compileProgram(@RequestParam("name") String fileId) {
+		String array[] = fileId.split("[.]");
+		System.out.println("Call compile");
+		sshService.compileProgram(array[0]);
+		
+		return "Compiled";
+	}
+
+	// public static void main(String[] args) {
+	// String
+	// s="1434431560561_585dcc87-fb41-4929-8519-8b7f61b50367_spark_program.zip";
+	// String array[] = s.split("[.]");
+	// String dirName = "ABC" +File.separator +array[0];
+	//
+	// }
+
+	private static void traverse(File dir) {
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			for (int i = 0; children != null && i < children.length; i++) {
+				traverse(new File(dir, children[i]));
+			}
+		}
+		if (dir.isFile()) {
+			if (dir.getName().endsWith(".zip") || dir.getName().endsWith(".xml")) {
+				System.out.println(dir.getAbsolutePath());// change it if needed
+			}
+		}
 	}
 
 }

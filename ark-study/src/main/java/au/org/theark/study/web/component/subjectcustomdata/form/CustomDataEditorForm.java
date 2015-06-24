@@ -21,6 +21,7 @@ package au.org.theark.study.web.component.subjectcustomdata.form;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -41,14 +42,21 @@ import au.org.theark.study.web.Constants;
 public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCustomDataVO> {
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService	studyService;
+	private IStudyService studyService;
+
+	private ModalWindow modalWindow;
 
 	public CustomDataEditorForm(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedbackPanel) {
 		super(id, cpModel, feedbackPanel);
 	}
 
+	public CustomDataEditorForm(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedbackPanel, ModalWindow modalWindow) {
+		super(id, cpModel, feedbackPanel);
+		this.modalWindow = modalWindow;
+	}
+
 	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
-		
+
 		List<SubjectCustomFieldData> errorList = studyService.createOrUpdateSubjectCustomFieldData(cpModel.getObject().getCustomFieldDataList());
 		if (errorList.size() > 0) {
 			for (SubjectCustomFieldData subjectCustomFieldData : errorList) {
@@ -56,20 +64,30 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCu
 				String fieldType = cf.getFieldType().getName();
 				if (fieldType.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
 					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getDateDataValue());
-				}
-				else {
+				} else {
 					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getTextDataValue());
 				}
 			}
-		}
-		else {
+		} else {
 			this.info("Successfully saved all edits");
 		}
 		/*
-		 * Need to update the dataView, which forces a refresh of the model objects from backend. This is because deleted fields still remain in the
-		 * model, and are stale objects if we try to use them for future saves.
+		 * Need to update the dataView, which forces a refresh of the model
+		 * objects from backend. This is because deleted fields still remain in
+		 * the model, and are stale objects if we try to use them for future
+		 * saves.
 		 */
 		target.add(dataViewWMC);
 		target.add(feedbackPanel);
+	}
+
+	@Override
+	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		if (this.modalWindow != null) {
+			this.modalWindow.close(target);
+		} else {
+			super.onEditCancel(target, form);
+		}
 	}
 }

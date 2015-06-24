@@ -50,6 +50,7 @@ import au.org.theark.core.model.study.entity.Category;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
@@ -89,6 +90,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	private TextArea<String>						fieldDescriptionTxtAreaFld;
 	private DropDownChoice<UnitType>				fieldUnitTypeDdc;
 	private DropDownChoice<Category>				fieldCategoryDdc;
+	private DropDownChoice<CustomFieldType>			fieldCustomFieldTypeDdc;
 	
 	//Add unit type as text
 	private TextField<String>						fieldUnitTypeTxtFld;
@@ -115,7 +117,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	//New two webMarkupContainers to hold different unit types DropDown and Text.
 	private WebMarkupContainer  					panelCustomUnitTypeDropDown;
 	private WebMarkupContainer  					panelCustomUnitTypeText;
+	private WebMarkupContainer  					panelCustomFieldTypeDropDown;
 	private boolean 								unitTypeDropDownOn;
+	private boolean 								subjectCustomField;
 	
 	private HistoryButtonPanel historyButtonPanel;
 
@@ -127,12 +131,13 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 */
-	public DetailForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,boolean unitTypeDropDownOn) {
+	public DetailForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,boolean unitTypeDropDownOn, boolean subjectCustomField) {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		// Initialise the model to be empty for now
 		cfGroupDdcListModel = new ListModel<CustomFieldGroup>();
 		refreshEntityFromBackend();
 		this.unitTypeDropDownOn=unitTypeDropDownOn;
+		this.subjectCustomField = subjectCustomField;
 	}
 
 	protected void refreshEntityFromBackend() {
@@ -182,6 +187,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				target.add(fieldAllowMultiselectChkBox);
 			}
 		});
+	}
+	
+	private void initCustomFieldTypeDdc(){
+		List<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes();
+		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(Constants.FIELDTYPE_NAME, Constants.FIELDTYPE_ID);
+		fieldCustomFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE, customFieldTypeCollection, fieldTypeRenderer);
 	}
 
 	private void updateEncodedValueFld() {
@@ -332,6 +343,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 		// Initialise Drop Down Choices
 		initFieldTypeDdc();
+		initCustomFieldTypeDdc();
 		initUnitTypeDdc();
 
 		// Min and Max Value panels rely on fieldTypeDdc being already established
@@ -482,18 +494,25 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		panelCustomUnitTypeDropDown.setOutputMarkupId(true);
 		panelCustomUnitTypeText=new WebMarkupContainer("panelCustomUnitTypeText");
 		panelCustomUnitTypeText.setOutputMarkupId(true);
+		panelCustomFieldTypeDropDown = new WebMarkupContainer("paenlCustomFieldTypeDropDown");
+		panelCustomFieldTypeDropDown.setOutputMarkupId(true);
 		if(this.unitTypeDropDownOn){
 			panelCustomUnitTypeDropDown.setVisible(true);
 			panelCustomUnitTypeText.setVisible(false);
 		}else{
 			panelCustomUnitTypeDropDown.setVisible(false);
 			panelCustomUnitTypeText.setVisible(true);
+			panelCustomFieldTypeDropDown.setVisible(true);
 		}
 		customFieldDetailWMC.setOutputMarkupPlaceholderTag(true);
 		customFieldDetailWMC.add(fieldIdTxtFld.setEnabled(false)); // Disable ID field editing
 		customFieldDetailWMC.add(fieldNameTxtFld);
 		customFieldDetailWMC.add(fieldDescriptionTxtAreaFld);
 		customFieldDetailWMC.add(fieldTypeDdc);
+		
+		panelCustomFieldTypeDropDown.add(fieldCustomFieldTypeDdc);
+		customFieldDetailWMC.add(panelCustomFieldTypeDropDown);
+				
 		//Unit type changes
 		panelCustomUnitTypeDropDown.add(fieldUnitTypeDdc);
 		customFieldDetailWMC.add(panelCustomUnitTypeDropDown);
@@ -509,10 +528,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
 		customFieldDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
 		customFieldDisplayDetailWMC.add(fieldAllowMultiselectChkBox);
+		
 		// customFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
 		// Only show these fields if necessary...
 		if (getModelObject().isUseCustomFieldDisplay() == false) {
 			customFieldDisplayDetailWMC.setVisible(false);
+		}
+		
+		if(this.subjectCustomField){
+			panelCustomFieldTypeDropDown.setVisible(true);
+		}else{
+			panelCustomFieldTypeDropDown.setVisible(false);
 		}
 
 		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the

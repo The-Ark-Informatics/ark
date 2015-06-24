@@ -23,6 +23,7 @@ http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 	<context:component-scan base-package="au.org.spark.web.controller" />
 	<context:component-scan base-package="au.org.spark.service" />
 	<context:component-scan base-package="au.org.spark.jobs" />
+	<context:component-scan base-package="au.org.spark.factory" />
 
 	<mvc:annotation-driven />
 	<task:annotation-driven />
@@ -65,6 +66,19 @@ http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 
 	<bean id="sftpAccount" factory-bean="sftpSessionFactory"
 		factory-method="getSession" />
+		
+	<bean id="execSessionFactory"
+		class="au.org.spark.factory.DefaultExecSessionFactory">
+		<property name="host" value="${sftp.host}" />
+		<!-- <property name="privateKey" value="classpath:META-INF/keys/sftpTest" 
+			/> <property name="privateKeyPassphrase" value="springIntegration" /> -->
+		<property name="port" value="${sftp.port}" />
+		<property name="user" value="${sftp.user}" />
+		<property name="password" value="${sftp.password}" />
+	</bean>
+	
+	<bean id="execAccount" factory-bean="execSessionFactory"
+		factory-method="getSession" />
 
 
 	<!-- REQUIRED: The Cassandra Cluster -->
@@ -85,6 +99,8 @@ http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 		Data Cassandra -->
 	<cassandra:template id="cassandraTemplate" />
 	
-	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<property name="maxUploadSize" value="268435456"/> <!-- 256 megs -->
+	</bean>
 
 </beans>

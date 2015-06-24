@@ -12,12 +12,14 @@ public class ComputationVo implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private Computation computation;
-	
+
 	private List<Computation> computationList;
-	
-	public ComputationVo(){
+
+	private String file;
+
+	public ComputationVo() {
 		this.computation = new Computation();
 		this.computationList = new ArrayList<Computation>();
 	}
@@ -37,5 +39,13 @@ public class ComputationVo implements Serializable {
 	public void setComputationList(List<Computation> computationList) {
 		this.computationList = computationList;
 	}
-		
+
+	public String getFile() {
+		return file;
+	}
+
+	public void setFile(String file) {
+		this.file = file;
+	}
+
 }

@@ -1,43 +1,69 @@
 package au.org.theark.genomics.web.component.computation.form;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 
+import au.org.theark.core.model.spark.entity.MicroService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.genomics.model.vo.ComputationVo;
 import au.org.theark.genomics.service.IGenomicService;
 import au.org.theark.genomics.util.Constants;
-import au.org.theark.genomics.web.component.computation.form.ContainerForm;
-
 
 public class DetailForm extends AbstractDetailForm<ComputationVo> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private static Logger	log	= org.slf4j.LoggerFactory.getLogger(DetailForm.class);
+
+	private static Logger log = org.slf4j.LoggerFactory.getLogger(DetailForm.class);
 
 	@SpringBean(name = Constants.GENOMIC_SERVICE)
 	private IGenomicService iGenomicService;
 
+	private ArkCrudContainerVO arkCrudContainerVO;
+	
+
 	private TextField<String> computationIdTxtFld;
 	private TextField<String> computationNameTxtFld;
-//	private TextArea<String> microServiceDescription;
-//	private TextArea<String> microServiceTxtArea;
+	private TextArea<String> computationDescTxtArea;
 
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	private TextField<String> computationStatusTxtFld;
+	private DropDownChoice<MicroService> microServicesDDC;
+
+	private FileUploadField fileUploadField;
+	private AjaxButton clearButton;
+	private AjaxButton deleteButton;
+	private Label fileNameLbl;
+	
+	
+
+	private List<MicroService> microServiceList;
+	
+	private AjaxButton uploadButton;
+	private AjaxButton compileButton;
+
+	public DetailForm(String id, FeedbackPanel feedBackPanel,ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
 	public void onBeforeRender() {
@@ -45,19 +71,131 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 	}
 
 	public void initialiseDetailForm() {
-		computationIdTxtFld = new TextField<String>(Constants.COMPUTATION_ID);
-		computationIdTxtFld.setEnabled(false);
-		computationNameTxtFld = new TextField<String>(Constants.COMPUTATION_NAME);
-//		microServiceDescription = new TextArea<String>(Constants.MICRO_SERVICE_DESCRIPTION);
-//		microServiceTxtArea = new TextArea<String>(Constants.MICRO_SERVICE_URL);
+
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		MicroService searchCriteria = new MicroService();
+		searchCriteria.setStudyId(studyId);
+		this.microServiceList = iGenomicService.searchMicroService(searchCriteria);
+
+		this.computationIdTxtFld = new TextField<String>(Constants.COMPUTATION_ID);
+		this.computationIdTxtFld.setEnabled(false);
+		this.computationNameTxtFld = new TextField<String>(Constants.COMPUTATION_NAME);
+
+		this.computationDescTxtArea = new TextArea<String>(Constants.COMPUTATION_DESCRIPTION);
+		this.computationStatusTxtFld = new TextField<String>(Constants.COMPUTATION_STATUS);
+		computationStatusTxtFld.setEnabled(false);
+
+//		PropertyModel<Computation> pm = new PropertyModel<Computation>(cpmModel, "computation");
+		this.initMicroServiceDropDown();
+
+		fileUploadField = new FileUploadField("file");
+		//fileUploadField.setOutputMarkupId(true);
+
+		fileNameLbl = new Label("computation.programName");
+		fileNameLbl.setOutputMarkupId(true);
+
+		clearButton = new AjaxButton("clearButton") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+		};
+		clearButton.add(new AttributeModifier("title", new Model<String>("Clear Attachment")));
+
+		deleteButton = new AjaxButton("deleteButton") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().getComputation().setProgramName(null);
+				// containerForm.getModelObject().getCorrespondence().setAttachmentFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().getComputation().setProgramName(null);
+				// containerForm.getModelObject().getCorrespondence().setAttachmentFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+			}
+
+			@Override
+			public boolean isVisible() {
+				return (containerForm.getModelObject().getComputation().getProgramName() != null) && !containerForm.getModelObject().getComputation().getProgramName().isEmpty();
+			}
+		};
+		deleteButton.add(new AttributeModifier("title", new Model<String>("Delete Attachment")));
+		deleteButton.setOutputMarkupId(true);
+		
+		this.uploadButton = new AjaxButton("upload") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// TODO Auto-generated method stub
+				iGenomicService.uploadComputation(containerForm.getModelObject().getComputation());
+			}
+		};
+		
+		this.compileButton = new AjaxButton("compile") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// TODO Auto-generated method stub
+				iGenomicService.compileComputation(containerForm.getModelObject().getComputation());
+			}
+		};
+		
+		arkCrudContainerVO.getEditButtonContainer().add(uploadButton);
+		arkCrudContainerVO.getEditButtonContainer().add(compileButton);
+
 		addDetailFormComponents();
 		attachValidators();
 	}
 
+	private void initMicroServiceDropDown() {
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		this.microServicesDDC = new DropDownChoice(Constants.COMPUTATION_MICROSERVICE,  this.microServiceList, defaultChoiceRenderer);
+		// this.microServicesDDC.add(new
+		// AjaxFormComponentUpdatingBehavior("onChange") {
+		//
+		// private static final long serialVersionUID = 1L;
+		//
+		// @Override
+		// protected void onUpdate(AjaxRequestTarget target) {
+		// DataCenterVo model = cpmModel.getObject();
+		// model.setName(null);
+		// dataCentersDDC.setChoices(iGenomicService.searchDataCenters(model.getMicroService()));
+		// target.add(dataCentersDDC);
+		// }
+		//
+		// @Override
+		// protected void onError(AjaxRequestTarget target, RuntimeException e)
+		// {
+		//
+		// }
+		// });
+
+	}
+
 	@Override
 	protected void attachValidators() {
-//		microServiceNameTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_MICRO_SERVICE_NAME_REQUIRED, microServiceNameTxtFld, new Model<String>(Constants.ERROR_MICRO_SERVICE_NAME_TAG)));
-//		microServiceTxtArea.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_MICRO_SERVICE_URL_REQUIRED, microServiceNameTxtFld, new Model<String>(Constants.ERROR_MICRO_SERVICE_URL_TAG)));
+		// microServiceNameTxtFld.setRequired(true).setLabel(new
+		// StringResourceModel(Constants.ERROR_MICRO_SERVICE_NAME_REQUIRED,
+		// microServiceNameTxtFld, new
+		// Model<String>(Constants.ERROR_MICRO_SERVICE_NAME_TAG)));
+		// microServiceTxtArea.setRequired(true).setLabel(new
+		// StringResourceModel(Constants.ERROR_MICRO_SERVICE_URL_REQUIRED,
+		// microServiceNameTxtFld, new
+		// Model<String>(Constants.ERROR_MICRO_SERVICE_URL_TAG)));
 	}
 
 	@Override
@@ -68,21 +206,45 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 
 	@Override
 	protected void onSave(Form<ComputationVo> containerForm, AjaxRequestTarget target) {
-		try {
-
-			if (containerForm.getModelObject().getComputation().getId() == null) {
-//				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//				containerForm.getModelObject().getMicroService().setStudyId(studyId);
-				iGenomicService.saveOrUpdate(containerForm.getModelObject().getComputation());
-				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was created successfully");
+		try {			
+			if (containerForm.getModelObject().getComputation().getId() == null) {		
+				
+				byte[] uploadData=null;
+				
+				if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
+					FileUpload fileUpload = fileUploadField.getFileUpload();
+					
+					byte[] byteArray = fileUpload.getMD5();
+					String checksum = getHex(byteArray);
+					uploadData = fileUpload.getBytes();
+					containerForm.getModelObject().getComputation().setProgramName(fileUpload.getClientFileName());
+					containerForm.getModelObject().getComputation().setChecksum(checksum);
+				}
+				
+				this.iGenomicService.save(containerForm.getModelObject().getComputation(),uploadData);
+				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was created successfully");				
 			} else {
-				iGenomicService.saveOrUpdate(containerForm.getModelObject().getComputation());
+				
+				String checksum=null;
+				byte[] uploadData=null;
+				
+				if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
+					// retrieve file and store as Blob in database
+					FileUpload fileUpload = fileUploadField.getFileUpload();
+					
+					byte[] byteArray = fileUpload.getMD5();
+					checksum = getHex(byteArray);
+					uploadData = fileUpload.getBytes();
+					containerForm.getModelObject().getComputation().setProgramName(fileUpload.getClientFileName());
+				}
+				
+				iGenomicService.update(containerForm.getModelObject().getComputation(),uploadData,checksum);
 				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was updated successfully");
 			}
 			processErrors(target);
 			onSavePostProcess(target);
 		} catch (Exception e) {
-			log.error("Error in saving micro service entity ",e);
+			log.error("Error in saving micro service entity ", e);
 			this.error("A System error occured, we will have someone contact you.");
 			processErrors(target);
 		}
@@ -123,9 +285,13 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 	protected void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(computationIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(computationNameTxtFld);
-//		arkCrudContainerVO.getDetailPanelFormContainer().add(microServiceDescription);
-//		arkCrudContainerVO.getDetailPanelFormContainer().add(microServiceTxtArea);
-
+		arkCrudContainerVO.getDetailPanelFormContainer().add(computationDescTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(computationStatusTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(microServicesDDC);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(clearButton);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(deleteButton);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileNameLbl);
 	}
 
 }
