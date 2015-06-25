@@ -10,9 +10,6 @@ INSERT INTO `study`.`custom_field_type` (`NAME`, `DESCRIPTION`) VALUES ('STUDY',
 INSERT INTO `study`.`custom_field_type` (`NAME`, `DESCRIPTION`) VALUES ('FAMILY', 'Family custom field to store the family data');
 
 ALTER TABLE `study`.`custom_field` 
-ADD COLUMN `CUSTOM_FIELD_TYPE_ID` INT(11) NULL AFTER `CATEGORY_ID`;
-
-ALTER TABLE `study`.`custom_field` 
 ADD COLUMN `CUSTOM_FIELD_TYPE_ID` INT(11) NULL AFTER `CATEGORY_ID`,
 ADD INDEX `FK_CUSTOMFIELD_CUSTOM_FIELD_TYPE_ID_idx` (`CUSTOM_FIELD_TYPE_ID` ASC);
 ALTER TABLE `study`.`custom_field` 
