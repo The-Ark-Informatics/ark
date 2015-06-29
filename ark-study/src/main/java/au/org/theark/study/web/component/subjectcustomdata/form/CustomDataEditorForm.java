@@ -21,7 +21,6 @@ package au.org.theark.study.web.component.subjectcustomdata.form;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -44,15 +43,8 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCu
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 
-	private ModalWindow modalWindow;
-
 	public CustomDataEditorForm(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedbackPanel) {
 		super(id, cpModel, feedbackPanel);
-	}
-
-	public CustomDataEditorForm(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedbackPanel, ModalWindow modalWindow) {
-		super(id, cpModel, feedbackPanel);
-		this.modalWindow = modalWindow;
 	}
 
 	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
@@ -81,13 +73,4 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCu
 		target.add(feedbackPanel);
 	}
 
-	@Override
-	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		if (this.modalWindow != null) {
-			this.modalWindow.close(target);
-		} else {
-			super.onEditCancel(target, form);
-		}
-	}
 }

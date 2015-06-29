@@ -7,18 +7,19 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.study.model.vo.PedigreeVo;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.pedigree.FamilyCustomDataContainerPanel;
+import au.org.theark.study.web.component.familycustomdata.FamilyCustomDataContainerPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeConfigurationContainerPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeDisplayPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeParentContainerPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeTwinContainerPanel;
-import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataContainerPanel;
 
 public class SearchForm extends Form<PedigreeVo> {
 
@@ -26,6 +27,9 @@ public class SearchForm extends Form<PedigreeVo> {
 	 * 
 	 */
 	private static final long				serialVersionUID	= 1L;
+	
+	@SpringBean(name = Constants.STUDY_SERVICE)
+	protected IStudyService							iStudyService;
 
 	private WebMarkupContainer				arkContextMarkup;
 	protected WebMarkupContainer			studyNameMarkup;
@@ -58,9 +62,15 @@ public class SearchForm extends Form<PedigreeVo> {
 
 		initialiseSearchForm();
 		addSearchComponentsToForm();
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		
 		disableSearchForm(sessionPersonId, "There is no subject in context. Please bring a subject into context via the Subject tab.");
 		disableSaveButtons();
+		disableFamilyDataButton(sessionStudyId, sessionSubjectUID);
+		
 	}
 
 	protected void addSearchComponentsToForm() {
@@ -158,7 +168,7 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.setTitle("Family Data");
 				modalWindow.setInitialWidth(90);
 				modalWindow.setInitialHeight(100);
-				modalWindow.setContent(new FamilyCustomDataContainerPanel("content").initialisePanel(modalWindow));
+				modalWindow.setContent(new FamilyCustomDataContainerPanel("content",modalWindow).initialisePanel());
 				modalWindow.show(target);
 			}
 		};
@@ -192,6 +202,17 @@ public class SearchForm extends Form<PedigreeVo> {
 			fatherButton.setEnabled(false);
 			motherButton.setEnabled(false);
 			twinButton.setEnabled(false);
+			configButton.setEnabled(false);
+			familyButton.setEnabled(false);
+		}
+	}
+	
+	protected void disableFamilyDataButton(Long studyId, String subjectUID){
+		String familyId = iStudyService.getSubjectFamilyId(studyId, subjectUID);
+		if(familyId == null){
+			familyButton.setEnabled(false);
+		}else{
+			familyButton.setEnabled(true);
 		}
 	}
 }

@@ -79,6 +79,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
@@ -1249,14 +1250,18 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getSubjectLinkedToStudy(personId, study);
 	}
 
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count, String type) {
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
-		customfieldDataList = iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count,type);
+		customfieldDataList = iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);
 		return customfieldDataList;
 	}
 
 	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
 		return iStudyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
+	}
+	
+	public long getFamilyCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction){
+		return iStudyDao.getFamilyCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -1317,6 +1322,66 @@ public class StudyServiceImpl implements IStudyService {
 
 		return listOfExceptions;
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public List<FamilyCustomFieldData> createOrUpdateFamilyCustomFieldData(List<FamilyCustomFieldData> familyCustomFieldDataList) {
+
+		List<FamilyCustomFieldData> listOfExceptions = new ArrayList<FamilyCustomFieldData>();
+		/* Iterate the list and call DAO to persist each Item */
+		for (FamilyCustomFieldData familyCustomFieldData : familyCustomFieldDataList) {
+			
+			try {
+				/* Insert the Field if it does not have a ID and has the required fields */
+				if (canInsert(familyCustomFieldData)) {
+
+					iStudyDao.createOrUpdateFamilyCustomFieldData(familyCustomFieldData);
+					Long id = familyCustomFieldData.getCustomFieldDisplay().getCustomField().getId();
+
+					CustomField customField = iArkCommonService.getCustomField(id);
+					customField.setCustomFieldHasData(true);
+					CustomFieldVO customFieldVO = new CustomFieldVO();
+					customFieldVO.setCustomField(customField);
+
+					iArkCommonService.updateCustomField(customFieldVO);
+
+				}
+				else if (canUpdate(familyCustomFieldData)) {
+
+					// If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and
+					// updated the record.
+					if (familyCustomFieldData.getErrorDataValue() != null) {
+						familyCustomFieldData.setErrorDataValue(null);
+					}
+					iStudyDao.createOrUpdateFamilyCustomFieldData(familyCustomFieldData);
+
+				}
+				else if (canDelete(familyCustomFieldData)) {
+					// Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
+					Long count = iStudyDao.isFamilyCustomFieldUsed(familyCustomFieldData);
+
+					iStudyDao.deleteFamilyCustomFieldData(familyCustomFieldData);
+					if (count <= 1) {
+						// Then update the CustomField's hasDataFlag to false;
+						Long id = familyCustomFieldData.getCustomFieldDisplay().getCustomField().getId();// Reload since the session was closed in the
+						// front end and the child objects won't be lazy
+						// loaded
+						CustomField customField = iArkCommonService.getCustomField(id);
+						customField.setCustomFieldHasData(false);
+						CustomFieldVO customFieldVO = new CustomFieldVO();
+						customFieldVO.setCustomField(customField);
+						iArkCommonService.updateCustomField(customFieldVO); // Update it
+
+					}
+				}
+			}
+			catch (Exception someException) {
+				listOfExceptions.add(familyCustomFieldData);// Continue with rest of the list
+			}
+		}
+
+		return listOfExceptions;
+	}
+
 
 	/**
 	 * In order to delete it must satisfy the following conditions 1. SubjectCustomFieldData must be a persistent entity(with a valid primary key/ID)
@@ -1332,6 +1397,20 @@ public class StudyServiceImpl implements IStudyService {
 
 		if (subjectCustomFieldData.getId() != null
 				&& subjectCustomFieldData.getLinkSubjectStudy() != null
+				&& (subjectCustomFieldData.getTextDataValue() == null || subjectCustomFieldData.getTextDataValue().isEmpty() || subjectCustomFieldData.getNumberDataValue() == null || subjectCustomFieldData
+						.getDateDataValue() == null)) {
+
+			flag = true;
+
+		}
+		return flag;
+	}
+	
+	private Boolean canDelete(FamilyCustomFieldData subjectCustomFieldData) {
+		Boolean flag = false;
+
+		if (subjectCustomFieldData.getId() != null
+				&& subjectCustomFieldData.getFamilyId() != null
 				&& (subjectCustomFieldData.getTextDataValue() == null || subjectCustomFieldData.getTextDataValue().isEmpty() || subjectCustomFieldData.getNumberDataValue() == null || subjectCustomFieldData
 						.getDateDataValue() == null)) {
 
@@ -1363,6 +1442,20 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return flag;
 	}
+	
+	private Boolean canUpdate(FamilyCustomFieldData subjectCustomFieldData) {
+		Boolean flag = false;
+
+		if (subjectCustomFieldData.getId() != null
+				&& subjectCustomFieldData.getFamilyId() != null
+				&& ((subjectCustomFieldData.getTextDataValue() != null && !subjectCustomFieldData.getTextDataValue().isEmpty()) || subjectCustomFieldData.getDateDataValue() != null || subjectCustomFieldData
+						.getNumberDataValue() != null)) {
+
+			flag = true;
+
+		}
+		return flag;
+	}
 
 	/**
 	 * In order to Insert a SubjectCustomFieldData instance the following conditions must be met. 1. SubjectCustomFieldData must be a transient
@@ -1384,6 +1477,19 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return flag;
 	}
+	
+	private Boolean canInsert(FamilyCustomFieldData familyCustomFieldData) {
+		Boolean flag = false;
+
+		if (familyCustomFieldData.getId() == null && familyCustomFieldData.getFamilyId() != null
+				&& (familyCustomFieldData.getNumberDataValue() != null || familyCustomFieldData.getTextDataValue() != null || familyCustomFieldData.getDateDataValue() != null)) {
+
+			flag = true;
+
+		}
+		return flag;
+	}
+
 
 	public boolean isStudyComponentHasAttachments(StudyComp studyComp) {
 		return iStudyDao.isStudyComponentHasAttachments(studyComp);
@@ -2158,6 +2264,13 @@ public class StudyServiceImpl implements IStudyService {
 	
 	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId){
 		return iStudyDao.getFamilyIdCustomFieldsForPedigreeRelativesList(studyId);
+	}
+	
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count){
+		return iStudyDao.getFamilyCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);
+	}
+	public String getSubjectFamilyId(Long studyId, String subjectUID){
+		return iStudyDao.getSubjectFamilyId(studyId, subjectUID);
 	}
 
 }

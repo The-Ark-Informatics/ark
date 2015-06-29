@@ -110,12 +110,10 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		if (customField.getMaxValue() != null) {
 			criteria.add(Restrictions.ilike("maxValue", customField.getMaxValue(), MatchMode.ANYWHERE));
 		}
-		
-		if(customField.getCustomFieldType() == null){
-			criteria.add(Restrictions.or(Restrictions.isNull("cft.name"),Restrictions.eq("cft.name", "STUDY")));
-		}else{
-			criteria.add(Restrictions.eq("cft.name", "FAMILY"));
+		if(customField.getCustomFieldType() != null){
+			criteria.add(Restrictions.eq("cft.name", customField.getCustomFieldType().getName()));
 		}
+		
 		return criteria;
 	}
 

@@ -6,7 +6,7 @@ CREATE TABLE `study`.`custom_field_type` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-INSERT INTO `study`.`custom_field_type` (`NAME`, `DESCRIPTION`) VALUES ('STUDY', 'Study custom field to store the subject data');
+INSERT INTO `study`.`custom_field_type` (`NAME`, `DESCRIPTION`) VALUES ('SUBJECT', 'Subject custom field to store the subject data');
 INSERT INTO `study`.`custom_field_type` (`NAME`, `DESCRIPTION`) VALUES ('FAMILY', 'Family custom field to store the family data');
 
 ALTER TABLE `study`.`custom_field` 
