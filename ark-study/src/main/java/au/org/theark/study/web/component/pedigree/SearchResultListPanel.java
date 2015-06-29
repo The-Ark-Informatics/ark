@@ -186,6 +186,15 @@ public class SearchResultListPanel extends Panel {
 				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("father").setEnabled(true);
 				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("mother").setEnabled(true);
 				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("twin").setEnabled(false);
+				
+				//Enable OR Disable family data button
+				String familyId = iStudyService.getSubjectFamilyId(sessionStudyId, relationshipVo.getIndividualId());
+				if(familyId == null){
+					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get(au.org.theark.core.Constants.FAMILY).setEnabled(false);
+				}else{
+					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get(au.org.theark.core.Constants.FAMILY).setEnabled(true);
+				}
+				
 				sitePageableListView.removeAll();
 				containerForm.getModelObject().setRelationshipList(iStudyService.generateSubjectPedigreeRelativeList(subjectFromBackend.getLinkSubjectStudy().getSubjectUID(),sessionStudyId));
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());

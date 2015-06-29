@@ -52,6 +52,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
@@ -304,9 +305,11 @@ public interface IStudyService {
 
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId, Study study) throws EntityNotFoundException, ArkSystemException;
 
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count, String type);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
 
 	public long getSubjectCustomFieldDataCount(LinkSubjectStudy criteria, ArkFunction arkFunction);
+	
+	public long getFamilyCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
 
 	/**
 	 * Allows to Save(Insert) or Update SubjectCustomFieldData. If there are SubjectCustomFieldData with no data value then it will discard it from the
@@ -315,6 +318,8 @@ public interface IStudyService {
 	 * @param subjectCustomFieldDataList
 	 */
 	public List<SubjectCustomFieldData> createOrUpdateSubjectCustomFieldData(List<SubjectCustomFieldData> subjectCustomFieldDataList);
+	
+	public List<FamilyCustomFieldData> createOrUpdateFamilyCustomFieldData(List<FamilyCustomFieldData> familyCustomFieldDataList);
 
 	/**
 	 * Checks if the given component(study) is or has attachments linked to it
@@ -471,5 +476,8 @@ public interface IStudyService {
 	public List<Address> pageablePersonAddressList(Long personId,Address addressCriteria, int first, int count);
 	
 	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId);
+	
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
 
+	public String getSubjectFamilyId(Long studyId, String subjectUID);
 }

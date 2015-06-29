@@ -69,6 +69,7 @@ public class CustomFieldDisplay implements Serializable {
 	private Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData = new HashSet<BioCollectionCustomFieldData>();
 	private Set<BiospecimenCustomFieldData> biospecimenCustomFieldData = new HashSet<BiospecimenCustomFieldData>();
 	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
+	private Set<FamilyCustomFieldData> familyCustomFieldData = new HashSet<FamilyCustomFieldData>();
 	protected String descriptiveNameIncludingCFGName;
 
 	public CustomFieldDisplay() {
@@ -173,6 +174,15 @@ public class CustomFieldDisplay implements Serializable {
 	public void setBiospecimenCustomFieldData(
 			Set<BiospecimenCustomFieldData> biospecimenCustomFieldData) {
 		this.biospecimenCustomFieldData = biospecimenCustomFieldData;
+	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
+	public Set<FamilyCustomFieldData> getFamilyCustomFieldData() {
+		return familyCustomFieldData;
+	}
+
+	public void setFamilyCustomFieldData(Set<FamilyCustomFieldData> familyCustomFieldData) {
+		this.familyCustomFieldData = familyCustomFieldData;
 	}
 
 	//TODO: Remove NotAudited when pheno auditing is done

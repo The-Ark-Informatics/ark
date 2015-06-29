@@ -458,9 +458,4 @@ public class Constants {
 	public static final String PHONE_DETAIL_PANEL="phoneDetailPanel";
 	public static final String ADDRESS_DETAIL_PANEL="addressDetailPanel";
 	
-	public static final String STUDY_CUSTOM_FIELD_TYPE="STUDY";
-	public static final String FAMILY_CUSTOM_FIELD_TYPE="FAMILY";
-	
-
-	
 }

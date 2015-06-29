@@ -57,7 +57,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 
 	public SubjectCustomDataEditorPanel initialisePanel() {
 
-		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null, au.org.theark.study.web.Constants.STUDY_CUSTOM_FIELD_TYPE);
+		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null);
 
 		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {

@@ -65,8 +65,8 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 		this.setOutputMarkupPlaceholderTag(true);
 	}
 
-	public SubjectCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage, String type) {
-		initialiseDataView(type);
+	public SubjectCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage) {
+		initialiseDataView();
 		if (numRowsPerPage != null) {
 			dataView.setItemsPerPage(numRowsPerPage); // iArkCommonService.getRowsPerPage());
 		}
@@ -75,7 +75,7 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 		return this;
 	}
 
-	private void initialiseDataView(String type) {
+	private void initialiseDataView() {
 		// TODO fix for READ permission check
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 			// Data provider to get pageable results from backend
@@ -93,7 +93,7 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 
-					List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataList(lss, arkFunction, first, count, type);
+					List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataList(lss, arkFunction, first, count);
 					cpModel.getObject().setCustomFieldDataList(subjectCustomDataList);
 					return cpModel.getObject().getCustomFieldDataList().iterator();
 				}

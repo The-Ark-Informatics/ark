@@ -47,6 +47,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
@@ -352,8 +353,10 @@ public interface IStudyDao {
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId, Study study) throws EntityNotFoundException, ArkSystemException;
 
 	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
+	
+	public long getFamilyCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
 
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count, String type);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
 
 	/**
 	 * Create a single record of type SubjectCustomFieldData
@@ -363,10 +366,16 @@ public interface IStudyDao {
 	public void createSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
 
 	public void updateSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
+	
+	public void createOrUpdateFamilyCustomFieldData(FamilyCustomFieldData familyCustomFieldData);
 
 	public void deleteSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
+	
+	public void deleteFamilyCustomFieldData(FamilyCustomFieldData subjectCustomFieldData);
 
 	public Long isCustomFieldUsed(SubjectCustomFieldData subjectCustomFieldData);
+	
+	public Long isFamilyCustomFieldUsed(FamilyCustomFieldData familyCustomFieldData);
 
 	public boolean isStudyComponentHasAttachments(StudyComp studyComp);
 
@@ -475,4 +484,7 @@ public interface IStudyDao {
 	
 	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
+
+	public String getSubjectFamilyId(Long studyId, String subjectUID);
 }

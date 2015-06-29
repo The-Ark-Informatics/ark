@@ -29,6 +29,7 @@ import java.util.Set;
 
 
 
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -83,6 +84,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
@@ -1796,9 +1798,26 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 */
 	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.createAlias("customField", "cfield");
+		criteria.createAlias("customField", "cfield",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("cfield.customFieldType", "cfieldType",JoinType.LEFT_OUTER_JOIN);		
 		criteria.add(Restrictions.eq("cfield.study", linkSubjectStudyCriteria.getStudy()));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
+		criteria.add(Restrictions.or(Restrictions.isNull("cfield.customFieldType"),Restrictions.eq("cfieldType.name", "SUBJECT")));
+		criteria.setProjection(Projections.rowCount());
+		
+		return (Long) criteria.uniqueResult();
+	}
+	
+	/**
+	 * The count can be based on CustomFieldDisplay only instead of a left join with it using FamilyCustomFieldData
+	 */
+	public long getFamilyCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.createAlias("customField", "cfield",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("cfield.customFieldType", "cfieldType",JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("cfield.study", linkSubjectStudyCriteria.getStudy()));
+		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("cfieldType.name", "FAMILY"));
 		criteria.setProjection(Projections.rowCount());
 		return (Long) criteria.uniqueResult();
 	}
@@ -1824,7 +1843,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * then applies the restrictions on study and module.
 	 * </p>
 	 */
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count, String type) {
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
 
 		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
 
@@ -1837,18 +1856,18 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
 		sb.append("  where cfd.customField.study.id = :studyId");
 		sb.append(" and cfd.customField.arkFunction.id = :functionId");
-		if(type == null || "STUDY".equalsIgnoreCase(type)){
-			sb.append(" and (cft is null or cft.name = :type)");
-		}else{
-			sb.append(" and cft.name = :type");
-		}
+//		if(type == null || "SUBJECT".equalsIgnoreCase(type)){
+		sb.append(" and (cft is null or cft.name = :type)");
+//		}else{
+//			sb.append(" and cft.name = :type");
+//		}
 		sb.append(" order by cfd.sequence");
 
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("functionId", arkFunction.getId());
-		query.setParameter("type", type);
+		query.setParameter("type", "SUBJECT");
 		query.setFirstResult(first);
 		query.setMaxResults(count);
 
@@ -1873,6 +1892,75 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	/**
+	 * <p>
+	 * Builds a HQL to Left Join wtih SubjectCustomFieldData and applies a condition using the WITH clause to get a sub-set for the given Subject and
+	 * then applies the restrictions on study and module.
+	 * </p>
+	 */
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
+
+		List<FamilyCustomFieldData> familyCustomFieldDataList = new ArrayList<FamilyCustomFieldData>();
+
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("SELECT cfd, fieldList");
+		sb.append(" FROM  CustomFieldDisplay AS cfd ");
+		sb.append("LEFT JOIN cfd.customField AS cf ");
+		sb.append("LEFT JOIN cf.customFieldType AS cft ");
+		sb.append("LEFT JOIN cfd.familyCustomFieldData as fieldList ");
+		sb.append(" with fieldList.familyId = :familyId ");
+		sb.append("  where cfd.customField.study.id = :studyId");
+		sb.append(" and cfd.customField.arkFunction.id = :functionId");
+//		if(type == null || "SUBJECT".equalsIgnoreCase(type)){
+//			sb.append(" and (cft is null or cft.name = :type)");
+//		}else{
+		sb.append(" and cft.name = :type");
+//		}
+		sb.append(" order by cfd.sequence");
+		
+		Query query = getSession().createQuery(sb.toString());
+		query.setParameter("familyId", getSubjectFamilyId(linkSubjectStudyCriteria.getStudy().getId(),linkSubjectStudyCriteria.getSubjectUID()));
+		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
+		query.setParameter("functionId", arkFunction.getId());
+		query.setParameter("type", "FAMILY");
+		query.setFirstResult(first);
+		query.setMaxResults(count);
+
+		List<Object[]> listOfObjects = query.list();
+		for (Object[] objects : listOfObjects) {
+			CustomFieldDisplay cfd = new CustomFieldDisplay();
+			FamilyCustomFieldData fcfd = new FamilyCustomFieldData();
+			if (objects.length > 0 && objects.length >= 1) {
+
+				cfd = (CustomFieldDisplay) objects[0];
+				if (objects[1] != null) {
+					fcfd = (FamilyCustomFieldData) objects[1];
+				}
+				else {
+					fcfd.setCustomFieldDisplay(cfd);
+				}
+
+				familyCustomFieldDataList.add(fcfd);
+			}
+		}
+		return familyCustomFieldDataList;
+	}
+	
+	
+	public String getSubjectFamilyId(Long studyId, String subjectUID){
+		
+		String result=null;
+		
+		StringBuffer sb= new StringBuffer("select scfd.TEXT_DATA_VALUE from study.link_subject_study lss left outer join study.study st on lss.STUDY_ID = st.ID left outer join study.study_pedigree_config spc on spc.study_id = st.ID left outer join study.custom_field cf on cf.ID = spc.family_id left outer join study.custom_field_display cfd on cfd.custom_field_id = cf.id left outer join study.subject_custom_field_data scfd on scfd.CUSTOM_FIELD_DISPLAY_ID = cfd.id and scfd.LINK_SUBJECT_STUDY_ID = lss.ID where st.ID= :studyId and lss.SUBJECT_UID = :subjectUID and spc.family_id is not null");
+		
+		Query query = getSession().createSQLQuery(sb.toString());
+	    query.setParameter("studyId", studyId);
+	    query.setParameter("subjectUID", subjectUID);
+	    result = (String) query.uniqueResult();
+	    return result;
+	}
+	
+	/**
 	 * Insert a new record of type SubjectCustomFieldData
 	 */
 	public void createSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData) {
@@ -1885,6 +1973,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void updateSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData) {
 		getSession().update(subjectCustomFieldData);
 	}
+	
+	public void createOrUpdateFamilyCustomFieldData(FamilyCustomFieldData familyCustomFieldData){
+		if(familyCustomFieldData.getId() ==null){
+			getSession().save(familyCustomFieldData);
+		}
+		else{
+			getSession().update(familyCustomFieldData);
+		}
+	}
 
 	/**
 	 * Remove/Delete the SubjectCustomFieldData
@@ -1893,6 +1990,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 */
 	public void deleteSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData) {
 		getSession().delete(subjectCustomFieldData);
+	}
+	
+	public void deleteFamilyCustomFieldData(FamilyCustomFieldData familyCustomFieldData) {
+		getSession().delete(familyCustomFieldData);
 	}
 
 	public Long isCustomFieldUsed(SubjectCustomFieldData subjectCustomFieldData) {
@@ -1916,6 +2017,32 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("studyId", study.getId());
 		query.setParameter("functionId", arkFunction.getId());
 		query.setParameter("customFieldDisplayId", subjectCustomFieldData.getCustomFieldDisplay().getId());
+		count = (Long) query.uniqueResult();
+
+		return count;
+	}
+	
+	public Long isFamilyCustomFieldUsed(FamilyCustomFieldData familyCustomFieldData) {
+		Long count = new Long("0");
+		CustomField customField = familyCustomFieldData.getCustomFieldDisplay().getCustomField();
+
+		Study study = customField.getStudy();
+		ArkFunction arkFunction = customField.getArkFunction();
+
+		StringBuffer stringBuffer = new StringBuffer();
+
+		stringBuffer.append(" SELECT COUNT(*) FROM FamilyCustomFieldData AS scfd WHERE EXISTS ");
+		stringBuffer.append(" ( ");
+		stringBuffer.append(" SELECT cfd.id FROM  CustomFieldDisplay AS cfd  WHERE cfd.customField.study.id = :studyId");
+		stringBuffer.append(" AND cfd.customField.arkFunction.id = :functionId AND scfd.customFieldDisplay.id = :customFieldDisplayId");
+		stringBuffer.append(" )");
+
+		String theHQLQuery = stringBuffer.toString();
+
+		Query query = getSession().createQuery(theHQLQuery);
+		query.setParameter("studyId", study.getId());
+		query.setParameter("functionId", arkFunction.getId());
+		query.setParameter("customFieldDisplayId", familyCustomFieldData.getCustomFieldDisplay().getId());
 		count = (Long) query.uniqueResult();
 
 		return count;
