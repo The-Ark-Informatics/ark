@@ -435,6 +435,7 @@ public class Constants {
 	public static final String PEDIGREE_RELATIONSHIP="pedigree.relationship";
 	public static final String PEDIGREE_TWIN="pedigree.twin";
 	public static final String PEDIGREE_RELATIONSHIP_DELETE="pedigree.relationship.delete";
+	public static final String PEDIGREE_INBREED="pedigree.inbreed";
 	
 	public static final String MALE = "male";
 	public static final String FEMALE = "female";
@@ -457,5 +458,7 @@ public class Constants {
 	
 	public static final String PHONE_DETAIL_PANEL="phoneDetailPanel";
 	public static final String ADDRESS_DETAIL_PANEL="addressDetailPanel";
+	
+	public static final String INBREED_ALLOWED="inbreedAllowed";
 	
 }

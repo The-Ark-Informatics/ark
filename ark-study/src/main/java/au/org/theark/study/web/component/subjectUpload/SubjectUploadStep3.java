@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -55,6 +56,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 	private Form<UploadVO>					containerForm;
 	private String								validationMessage;
 	public java.util.Collection<String>	validationMessages	= null;
+	public java.util.Collection<String>	warningMessages	= null;
 	private WizardForm						wizardForm;
 	private WebMarkupContainer				updateExistingDataContainer;
 	private CheckBox							updateChkBox;
@@ -194,6 +196,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.PEDIGREE_DATA)){
 				PedigreeUploadValidator pedigreeUploadValidator=new PedigreeUploadValidator(iArkCommonService,iStudyService);
 				validationMessages = pedigreeUploadValidator.validatePedigreeFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				warningMessages =  pedigreeUploadValidator.getDataWarningMessages();
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				insertRows = pedigreeUploadValidator.getInsertRows();
 				updateRows = pedigreeUploadValidator.getUpdateRows();
@@ -294,6 +297,28 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			addOrReplace(downloadValMsgButton);
 			target.add(downloadValMsgButton);
 		}
+		
+		String warningMessage=getWarningMessagesAsString();
+		
+		if(warningMessage !=null && warningMessage.length()>0){
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage+"\n "+warningMessage));
+			
+			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage+"\n"+warningMessage, "txt") {
+
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= 343293022422099247L;
+
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form) {
+					this.error("Unexpected Error: Download request could not be processed");
+				}
+
+			};
+			addOrReplace(downloadValMsgButton);
+			target.add(downloadValMsgButton);
+		}
 	}
 
 	public void setUpdateChkBox(CheckBox updateChkBox) {
@@ -310,5 +335,19 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 	public WebMarkupContainer getUpdateExistingDataContainer() {
 		return updateExistingDataContainer;
+	}
+	
+	public String getWarningMessagesAsString() {
+		StringBuffer stringBuffer = new StringBuffer("");
+		java.util.Collection<String> msgs = this.warningMessages;
+
+		if (msgs != null) {
+			for (Iterator<String> iterator = msgs.iterator(); iterator.hasNext();) {
+				String string = (String) iterator.next();
+				stringBuffer.append(string);
+				stringBuffer.append("\n");
+			}
+		}
+		return stringBuffer.toString();
 	}
 }

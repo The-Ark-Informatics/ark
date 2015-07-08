@@ -129,6 +129,30 @@
 					&nbsp;
 				</div>
 				
+				<div class="panelContentLeft" style="width:150px;">
+					&nbsp;
+				</div>
+				<div class="fldLabel" style="width:130px;">
+					<div class="label">
+						<label for="inbreedingAllowed">
+							<wicket:message key="pedigree.inbreedAllowed">
+								Inbreeding field:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<!--	this will change to ID -->
+					<input type="checkbox" wicket:id="pedigreeConfig.inbreedAllowed"/>
+					</div>
+				</div>
+				
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>				
+				
 				<div class="actionButtons">
 					<input wicket:id="save" type="submit" wicket:message="value:button.save" />
 					<input wicket:id="close" type="submit" wicket:message="value:button.close" />

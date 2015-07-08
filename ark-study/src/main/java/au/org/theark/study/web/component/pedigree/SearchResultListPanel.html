@@ -80,7 +80,7 @@
 					<span wicket:id="pedigree.lastName">Last Name</span>
 				</td>
 				<td width="15%">
-				  <span wicket:id="pedigree.relationship">relationship to proband</span>
+				  <span wicket:id="pedigree.relationship">relationship to proband</span><sup wicket:id="pedigree.inbreed">*</sup>
 				</td>
 				<td width="15%">
 					<span wicket:id="pedigree.dob">DOB</span>
@@ -98,11 +98,14 @@
 		</tbody>
 
 	</table>
-	<table width="0%" cellspacing="0">
+	<table width="100%" cellspacing="0">
 		<tr>
 			<td>
 				<a href="#" wicket:id ="pedLink"><img  src="images/icons/page_white_put.png" onmouseover="Download MAdeline PED"/></a>
 				<a href="#" wicket:id ="arkLink"><img  src="images/icons/page_white_put.png" onmouseover="Download Ark PED"/></a>
+			</td>
+			<td align="right">
+				<p><b><sup>*</sup></b> Indicates the consanguineous relatives</p>
 			</td>
 		</tr>
 	</table>

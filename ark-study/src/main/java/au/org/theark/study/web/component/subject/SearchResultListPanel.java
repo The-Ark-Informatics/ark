@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -74,19 +75,18 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
 @SuppressWarnings({ "unchecked", "serial" })
 public class SearchResultListPanel extends Panel {
 
-	private static final long	serialVersionUID	= -8517602411833622907L;
-	private WebMarkupContainer	arkContextMarkup;
-	private ContainerForm		subjectContainerForm;
-	private ArkCrudContainerVO	arkCrudContainerVO;
+	private static final long serialVersionUID = -8517602411833622907L;
+	private WebMarkupContainer arkContextMarkup;
+	private ContainerForm subjectContainerForm;
+	private ArkCrudContainerVO arkCrudContainerVO;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService	iArkCommonService;
+	private IArkCommonService iArkCommonService;
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService		iStudyService;
+	private IStudyService iStudyService;
 	private WebMarkupContainer studyNameMarkup;
 	private WebMarkupContainer studyLogoMarkup;
 
-	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer studyNameMarkup,
-			WebMarkupContainer studyLogoMarkup) {
+	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 
 		super(id);
 		this.subjectContainerForm = containerForm;
@@ -105,25 +105,25 @@ public class SearchResultListPanel extends Panel {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
 				item.add(buildLink(item.getModelObject()));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
-/*
-				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
-					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
-				}
-				else {
-					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
-				}
-	*/			
+				/*
+				 * if (subject != null && subject.getPerson() != null &&
+				 * subject.getPerson().getPreferredName() != null) {
+				 * item.add(new Label("linkSubjectStudy.person.preferredName",
+				 * subject.getPerson().getPreferredName())); } else {
+				 * item.add(new Label("linkSubjectStudy.person.preferredName",
+				 * "")); }
+				 */
 				List<PersonLastnameHistory> lastnameHistory = (List<PersonLastnameHistory>) iArkCommonService.getPersonLastNameHistory(subject.getPerson());
 				String lastNameString = "";
-				if(!lastnameHistory.isEmpty()) {
+				if (!lastnameHistory.isEmpty()) {
 					lastNameString = lastnameHistory.get(0).getLastName();
-					for(int i = 1; i < lastnameHistory.size(); i++) {
+					for (int i = 1; i < lastnameHistory.size(); i++) {
 						lastNameString += ", " + lastnameHistory.get(i).getLastName();
 					}
 				}
-								
+
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPersonLastnameHistory() != null && !lastNameString.isEmpty()) {
-					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname" ,lastNameString));
+					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname", lastNameString));
 				} else {
 					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname", ""));
 				}
@@ -135,8 +135,7 @@ public class SearchResultListPanel extends Panel {
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getDateOfBirth() != null) {
 					dateOfBirth = simpleDateFormat.format(subject.getPerson().getDateOfBirth());
 					item.add(new Label("linkSubjectStudy.person.dateOfBirth", dateOfBirth));
-				}
-				else {
+				} else {
 					item.add(new Label("linkSubjectStudy.person.dateOfBirth", ""));
 				}
 
@@ -146,14 +145,13 @@ public class SearchResultListPanel extends Panel {
 
 				if (subject.getConsentStatus() != null) {
 					item.add(new Label("linkSubjectStudy.consentStatus.name", subject.getConsentStatus().getName()));
-				}
-				else {
+				} else {
 					item.add(new Label("linkSubjectStudy.consentStatus.name", ""));
 				}
-				
+
 				List<OtherID> otherIDs = iArkCommonService.getOtherIDs(subject.getPerson());
 				String otherIDstring = "";
-				for(OtherID o : otherIDs) {
+				for (OtherID o : otherIDs) {
 					otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
 				}
 				if (!otherIDs.isEmpty()) {
@@ -161,7 +159,7 @@ public class SearchResultListPanel extends Panel {
 				} else {
 					item.add(new Label("linkSubjectStudy.person.otherIDs.otherID", ""));
 				}
-				
+
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -173,8 +171,7 @@ public class SearchResultListPanel extends Panel {
 		return studyCompDataView;
 	}
 
-	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives,
-			final FeedbackPanel feedbackPanel) {
+	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel) {
 
 		DataView<SubjectVO> studyCompDataView = new DataView<SubjectVO>("subjectList", subjectProvider) {
 
@@ -183,29 +180,29 @@ public class SearchResultListPanel extends Panel {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
 				item.add(buildLink(item, modalWindow, relatives, feedbackPanel));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
-/*
-				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
-					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
-				}
-				else {
-					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
-				}
-*/
+				/*
+				 * if (subject != null && subject.getPerson() != null &&
+				 * subject.getPerson().getPreferredName() != null) {
+				 * item.add(new Label("linkSubjectStudy.person.preferredName",
+				 * subject.getPerson().getPreferredName())); } else {
+				 * item.add(new Label("linkSubjectStudy.person.preferredName",
+				 * "")); }
+				 */
 				List<PersonLastnameHistory> lastnameHistory = (List<PersonLastnameHistory>) iArkCommonService.getPersonLastNameHistory(subject.getPerson());
 				String lastNameString = "";
-				if(!lastnameHistory.isEmpty()) {
+				if (!lastnameHistory.isEmpty()) {
 					lastNameString = lastnameHistory.get(0).getLastName();
-					for(int i = 1; i < lastnameHistory.size(); i++) {
+					for (int i = 1; i < lastnameHistory.size(); i++) {
 						lastNameString += ", " + lastnameHistory.get(i).getLastName();
 					}
 				}
-				
+
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPersonLastnameHistory() != null && !lastNameString.isEmpty()) {
-					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname" ,lastNameString));
+					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname", lastNameString));
 				} else {
 					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname", ""));
 				}
-				
+
 				item.add(new Label("linkSubjectStudy.person.genderType.name", subject.getPerson().getGenderType().getName()));
 
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -213,8 +210,7 @@ public class SearchResultListPanel extends Panel {
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getDateOfBirth() != null) {
 					dateOfBirth = simpleDateFormat.format(subject.getPerson().getDateOfBirth());
 					item.add(new Label("linkSubjectStudy.person.dateOfBirth", dateOfBirth));
-				}
-				else {
+				} else {
 					item.add(new Label("linkSubjectStudy.person.dateOfBirth", ""));
 				}
 
@@ -224,8 +220,7 @@ public class SearchResultListPanel extends Panel {
 
 				if (subject.getConsentStatus() != null) {
 					item.add(new Label("linkSubjectStudy.consentStatus.name", subject.getConsentStatus().getName()));
-				}
-				else {
+				} else {
 					item.add(new Label("linkSubjectStudy.consentStatus.name", ""));
 				}
 
@@ -235,10 +230,10 @@ public class SearchResultListPanel extends Panel {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
 					}
 				}));
-				
+
 				List<OtherID> otherIDs = iArkCommonService.getOtherIDs(subject.getPerson());
 				String otherIDstring = "";
-				for(OtherID o : otherIDs) {
+				for (OtherID o : otherIDs) {
 					otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
 				}
 				if (!otherIDs.isEmpty()) {
@@ -261,28 +256,29 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildLink(item.getModelObject()));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 
-		/*		if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
-					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
-				}
-				else {
-					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
-				}
-		 */
+				/*
+				 * if (subject != null && subject.getPerson() != null &&
+				 * subject.getPerson().getPreferredName() != null) {
+				 * item.add(new Label("linkSubjectStudy.person.preferredName",
+				 * subject.getPerson().getPreferredName())); } else {
+				 * item.add(new Label("linkSubjectStudy.person.preferredName",
+				 * "")); }
+				 */
 				List<PersonLastnameHistory> lastnameHistory = (List<PersonLastnameHistory>) iArkCommonService.getPersonLastNameHistory(subject.getPerson());
 				String lastNameString = "";
-				if(!lastnameHistory.isEmpty()) {
+				if (!lastnameHistory.isEmpty()) {
 					lastNameString = lastnameHistory.get(0).getLastName();
-					for(int i = 1; i < lastnameHistory.size(); i++) {
+					for (int i = 1; i < lastnameHistory.size(); i++) {
 						lastNameString += ", " + lastnameHistory.get(i).getLastName();
 					}
 				}
-								
+
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPersonLastnameHistory() != null && !lastNameString.isEmpty()) {
-					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname" ,lastNameString));
+					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname", lastNameString));
 				} else {
 					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname", ""));
 				}
-				
+
 				item.add(new Label("linkSubjectStudy.person.genderType.name", subject.getPerson().getGenderType().getName()));
 
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -290,8 +286,7 @@ public class SearchResultListPanel extends Panel {
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getDateOfBirth() != null) {
 					dateOfBirth = simpleDateFormat.format(subject.getPerson().getDateOfBirth());
 					item.add(new Label("linkSubjectStudy.person.dateOfBirth", dateOfBirth));
-				}
-				else {
+				} else {
 					item.add(new Label("linkSubjectStudy.person.dateOfBirth", ""));
 				}
 
@@ -305,10 +300,10 @@ public class SearchResultListPanel extends Panel {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
 					}
 				}));
-				
+
 				List<OtherID> otherIDs = iArkCommonService.getOtherIDs(subject.getPerson());
 				String otherIDstring = "";
-				for(OtherID o : otherIDs) {
+				for (OtherID o : otherIDs) {
 					otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
 				}
 				if (!otherIDs.isEmpty()) {
@@ -372,43 +367,80 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxLink buildLink(Item<SubjectVO> item, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel) {
-		
-		AjaxLink link=null;
+
+		AjaxLink link = null;
 		final SubjectVO subject = item.getModelObject();
-		if("Male".equalsIgnoreCase(subject.getLinkSubjectStudy().getPerson().getGenderType().getName())){
+		if ("Male".equalsIgnoreCase(subject.getLinkSubjectStudy().getPerson().getGenderType().getName())) {
 			subject.setParentType("Father");
-		}else{
+		} else {
 			subject.setParentType("Mother");
 		}
 		
-		if(isConsiderParentAge(subject)){
-			link = new AjaxConfirmLink(Constants.SUBJECT_UID, new StringResourceModel("pedigree.parent.dob.warning", this, item.getModel()),item.getModel()) {
-				@Override
-				public void onClick(AjaxRequestTarget target) {
-					processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);	
-				}
-			};
-		}
-		else{
-			link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
-				@Override
-				public void onClick(AjaxRequestTarget target) {
-					processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
-				}	
-			};
+		Boolean inbreedAllowed = (Boolean)SecurityUtils.getSubject().getSession().getAttribute(Constants.INBREED_ALLOWED);
+
+		if (BooleanUtils.isTrue(inbreedAllowed)) {
+			final String result = getCircularRelationships(subject, relatives);
+			item.getModelObject().setMessage(result);
+			if (isConsiderParentAge(subject) && result != null) {
+				link = new AjaxConfirmLink(Constants.SUBJECT_UID, new StringResourceModel("pedigree.parent.dob.circular.warning", this, item.getModel()), item.getModel()) {
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
+					}
+				};
+			} else if (isConsiderParentAge(subject)) {
+				link = new AjaxConfirmLink(Constants.SUBJECT_UID, new StringResourceModel("pedigree.parent.dob.warning", this, item.getModel()), item.getModel()) {
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
+					}
+				};
+			} else if (result != null) {
+				link = new AjaxConfirmLink(Constants.SUBJECT_UID, new StringResourceModel("pedigree.parent.circular.warning", this, item.getModel()), item.getModel()) {
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
+					}
+				};
+			} else {
+				link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
+					}
+				};
+			}
+
+		} else {
+			if (isConsiderParentAge(subject)) {
+				link = new AjaxConfirmLink(Constants.SUBJECT_UID, new StringResourceModel("pedigree.parent.dob.warning", this, item.getModel()), item.getModel()) {
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
+					}
+				};
+			} else {
+				link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
+					}
+				};
+			}
 		}
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());
 		link.add(nameLinkLabel);
 		return link;
 	}
-	
+
 	/**
 	 * Check is the parent age is to be consider for the validation.
+	 * 
 	 * @param parentSubject
 	 * @return
 	 */
-	private boolean isConsiderParentAge(SubjectVO parentSubject){
-		boolean check=false;
+	private boolean isConsiderParentAge(SubjectVO parentSubject) {
+		boolean check = false;
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
@@ -417,27 +449,92 @@ public class SearchResultListPanel extends Panel {
 		criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
 		Collection<SubjectVO> subjects = iArkCommonService.getSubject(criteriaSubjectVo);
 		SubjectVO subjectVo = subjects.iterator().next();
-		
+
 		Date parentDOB = parentSubject.getLinkSubjectStudy().getPerson().getDateOfBirth();
 		Date subjectDOB = subjectVo.getLinkSubjectStudy().getPerson().getDateOfBirth();
-		
-		if( parentDOB != null &&
-				 subjectDOB!=null &&
-				 	parentDOB.compareTo(subjectDOB) >= 0){
-				check =true;	
+
+		if (parentDOB != null && subjectDOB != null && parentDOB.compareTo(subjectDOB) >= 0) {
+			check = true;
 		}
 		return check;
 	}
-	
-	/**After select a parent validate the pedigree for circular relationships and create new parent relationship in database.
+
+	/**
+	 * Create new parent relationship in database for valid relationship.
+	 * 
 	 * @param subject
 	 * @param modalWindow
 	 * @param relatives
 	 * @param feedbackPanel
 	 * @param target
 	 */
-	private void processParentSelection(final SubjectVO subject, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel,
-			AjaxRequestTarget target) {
+	private void processParentSelection(final SubjectVO subject, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel, AjaxRequestTarget target) {
+		
+		String message;
+		
+		Boolean inbreedAllowed = (Boolean)SecurityUtils.getSubject().getSession().getAttribute(Constants.INBREED_ALLOWED);
+		
+		if(BooleanUtils.isNotTrue(inbreedAllowed) && (message = getCircularRelationships(subject,relatives))!=null && message.length() > 0){
+			this.error(message);
+			target.add(feedbackPanel);
+			return;
+		}
+		
+		LinkSubjectPedigree pedigreeRelationship = new LinkSubjectPedigree();
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+
+		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+
+		String parentUID = subject.getLinkSubjectStudy().getSubjectUID();
+
+		SubjectVO criteriaSubjectVo = new SubjectVO();
+		criteriaSubjectVo.getLinkSubjectStudy().setStudy(study);
+		criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
+		Collection<SubjectVO> subjects = iArkCommonService.getSubject(criteriaSubjectVo);
+		SubjectVO subjectVo = subjects.iterator().next();
+		pedigreeRelationship.setSubject(subjectVo.getLinkSubjectStudy());
+
+		criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(parentUID);
+		subjects = iArkCommonService.getSubject(criteriaSubjectVo);
+		subjectVo = subjects.iterator().next();
+		pedigreeRelationship.setRelative(subjectVo.getLinkSubjectStudy());
+
+		String gender = subject.getLinkSubjectStudy().getPerson().getGenderType().getName();
+
+		List<Relationship> relationships = iArkCommonService.getFamilyRelationships();
+		for (Relationship relationship : relationships) {
+			if ("Male".equalsIgnoreCase(gender) && "Father".equalsIgnoreCase(relationship.getName())) {
+				pedigreeRelationship.setRelationship(relationship);
+				break;
+			}
+
+			if ("Female".equalsIgnoreCase(gender) && "Mother".equalsIgnoreCase(relationship.getName())) {
+				pedigreeRelationship.setRelationship(relationship);
+				break;
+			}
+		}
+
+		iStudyService.create(pedigreeRelationship);
+		modalWindow.close(target);
+	}
+	
+	/**
+	 * @deprecated
+	 * 
+	 * After select a parent validate the pedigree for circular relationships
+	 * and create new parent relationship in database.
+	 * 
+	 * @param subject
+	 * @param modalWindow
+	 * @param relatives
+	 * @param feedbackPanel
+	 * @param target
+	 * 
+	 */
+	private void processParentSelectionOld(final SubjectVO subject, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel, AjaxRequestTarget target, boolean inbreedAllowed) {
 		LinkSubjectPedigree pedigreeRelationship = new LinkSubjectPedigree();
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -458,7 +555,9 @@ public class SearchResultListPanel extends Panel {
 
 		RelationshipVo proband = new RelationshipVo();
 		proband.setIndividualId(subjectUID);
+		System.out.println("Existing relatives list size: "+ existingRelatives.size());
 		for (RelationshipVo relative : existingRelatives) {
+			System.out.println("Existing relatives UID: "+relative.getIndividualId()+" Father: "+relative.getFatherId()+" Mother:"+relative.getMotherId());
 			if ("Father".equalsIgnoreCase(relative.getRelationship())) {
 				proband.setFatherId(relative.getIndividualId());
 			}
@@ -470,8 +569,7 @@ public class SearchResultListPanel extends Panel {
 
 		if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("M")) {
 			proband.setFatherId(parentUID);
-		}
-		else if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("F")) {
+		} else if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("F")) {
 			proband.setMotherId(parentUID);
 		}
 		existingRelatives.add(proband);
@@ -495,8 +593,7 @@ public class SearchResultListPanel extends Panel {
 		for (RelationshipVo relative : newRelatives) {
 			if (!existingRelatives.contains(relative)) {
 				existingRelatives.add(relative);
-			}
-			else {
+			} else {
 				for (RelationshipVo existingRelative : existingRelatives) {
 					if (relative.getIndividualId().equals(existingRelative.getIndividualId())) {
 						if (existingRelative.getFatherId() == null) {
@@ -530,8 +627,7 @@ public class SearchResultListPanel extends Panel {
 					if (firstLine) {
 						pedigree.append(father + " " + dummyParent);
 						firstLine = false;
-					}
-					else {
+					} else {
 						pedigree.append("\n" + father + " " + dummyParent);
 					}
 				}
@@ -539,43 +635,43 @@ public class SearchResultListPanel extends Panel {
 					if (firstLine) {
 						pedigree.append(mother + " " + dummyParent);
 						firstLine = false;
-					}
-					else {
+					} else {
 						pedigree.append("\n" + mother + " " + dummyParent);
 					}
 				}
 				pedigree.append("\n" + dummyParent + " " + individual);
-			}
-			else if (!"D-".equals(dummyParent)) {
+			} else if (!"D-".equals(dummyParent)) {
 				if (firstLine) {
 					pedigree.append(dummyParent + " " + individual);
 					firstLine = false;
-				}
-				else {
+				} else {
 					pedigree.append("\n" + dummyParent + " " + individual);
 				}
 			}
 		}
 
-		//TODO comment this block to disable circular validations for inbred relatives
-		Set<String> circularUIDs = PedigreeUploadValidator.getCircularUIDs(pedigree);
-		if (circularUIDs.size() > 0) {
-			this.error("Performing this action will create a circular relationship in the pedigree.");
-			StringBuffer sb = new StringBuffer("The proposed action will cause a pedigree cycle involving subjects with UID:");
-			boolean first = true;
-			for (String uid : circularUIDs) {
-				if (first) {
-					sb.append(uid);
-					first = false;
+		// TODO comment this block to disable circular validations for inbred
+		// relatives
+
+		if (!inbreedAllowed) {
+			Set<String> circularUIDs = PedigreeUploadValidator.getCircularUIDs(pedigree);
+			if (circularUIDs.size() > 0) {
+				this.error("Performing this action will create a circular relationship in the pedigree.");
+				StringBuffer sb = new StringBuffer("The proposed action will cause a pedigree cycle involving subjects with UID:");
+				boolean first = true;
+				for (String uid : circularUIDs) {
+					if (first) {
+						sb.append(uid);
+						first = false;
+					} else {
+						sb.append(", " + uid);
+					}
 				}
-				else {
-					sb.append(", " + uid);
-				}
+				sb.append(".");
+				this.error(sb.toString());
+				target.add(feedbackPanel);
+				return;
 			}
-			sb.append(".");
-			this.error(sb.toString());
-			target.add(feedbackPanel);
-			return;
 		}
 
 		// Assign new parent relationships
@@ -609,6 +705,99 @@ public class SearchResultListPanel extends Panel {
 
 		iStudyService.create(pedigreeRelationship);
 		modalWindow.close(target);
+	}
+
+
+	/**
+	 * Check for circular relationships among the given relative list.
+	 * 
+	 * @param subject
+	 * @param relatives
+	 * @return
+	 */
+	private String getCircularRelationships(final SubjectVO subject, final List<RelationshipVo> relatives) {
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+
+		String parentUID = subject.getLinkSubjectStudy().getSubjectUID();
+
+
+		List<RelationshipVo> existingRelatives = new ArrayList<RelationshipVo>();
+		existingRelatives.addAll(relatives);
+
+		RelationshipVo proband = new RelationshipVo();
+		proband.setIndividualId(subjectUID);
+		for (RelationshipVo relative : existingRelatives) {
+			if ("Father".equalsIgnoreCase(relative.getRelationship())) {
+				proband.setFatherId(relative.getIndividualId());
+			}
+
+			if ("Mother".equalsIgnoreCase(relative.getRelationship())) {
+				proband.setMotherId(relative.getIndividualId());
+			}
+		}
+
+		if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("M")) {
+			proband.setFatherId(parentUID);
+		} else if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("F")) {
+			proband.setMotherId(parentUID);
+		}
+		existingRelatives.add(proband);
+
+		List<RelationshipVo> newRelatives = iStudyService.generateSubjectPedigreeRelativeList(parentUID, sessionStudyId);
+
+		RelationshipVo parent = new RelationshipVo();
+		parent.setIndividualId(parentUID);
+		for (RelationshipVo relative : newRelatives) {
+			if ("Father".equalsIgnoreCase(relative.getRelationship())) {
+				parent.setFatherId(relative.getIndividualId());
+			}
+
+			if ("Mother".equalsIgnoreCase(relative.getRelationship())) {
+				parent.setMotherId(relative.getIndividualId());
+			}
+		}
+
+		newRelatives.add(parent);
+
+		for (RelationshipVo relative : newRelatives) {
+			if (!existingRelatives.contains(relative)) {
+				existingRelatives.add(relative);
+			} else {
+				for (RelationshipVo existingRelative : existingRelatives) {
+					if (relative.getIndividualId().equals(existingRelative.getIndividualId())) {
+						if (existingRelative.getFatherId() == null) {
+							existingRelative.setFatherId(relative.getFatherId());
+						}
+						if (existingRelative.getMotherId() == null) {
+							existingRelative.setMotherId(relative.getMotherId());
+						}
+					}
+				}
+			}
+		}		
+		
+		StringBuilder pedigree = PedigreeUploadValidator.generatePedigreeGraph(existingRelatives);
+
+		Set<String> circularUIDs = PedigreeUploadValidator.getCircularUIDs(pedigree);
+		if (circularUIDs.size() > 0) {
+			StringBuffer sb = new StringBuffer("Setting this relationship lead to consanguineous pedigree structure among following subject UIDs:");
+			boolean first = true;
+			for (String uid : circularUIDs) {
+				if (first) {
+					sb.append(uid);
+					first = false;
+				} else {
+					sb.append(", " + uid);
+				}
+			}
+			sb.append(".");
+			return sb.toString();
+		}
+
+		return null;
+
 	}
 
 }

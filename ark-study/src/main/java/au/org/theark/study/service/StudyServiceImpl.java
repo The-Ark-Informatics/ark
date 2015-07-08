@@ -117,6 +117,7 @@ import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.util.ConsentHistoryComparator;
 import au.org.theark.study.util.DataUploader;
 import au.org.theark.study.util.LinkSubjectStudyConsentHistoryComparator;
+import au.org.theark.study.util.PedigreeUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.Constants;
 
@@ -1978,6 +1979,8 @@ public class StudyServiceImpl implements IStudyService {
 			}
 
 			processTwinRelationships(relativeSubjects, studyId);
+			
+			processInbreeds(relativeSubjects);
 
 			// Remove proband from the list
 			relativeSubjects.remove(0);
@@ -2182,6 +2185,21 @@ public class StudyServiceImpl implements IStudyService {
 					break;
 
 				}
+			}
+		}
+	}
+	
+	public void processInbreeds(List<RelationshipVo> existingRelatives){
+		StringBuilder pedigree = PedigreeUploadValidator.generatePedigreeGraph(existingRelatives); 
+		Set<String> circularUIDs = PedigreeUploadValidator.getCircularUIDs(pedigree);
+		if (circularUIDs.size() > 0) {
+			circularIdLoop:for (String uid : circularUIDs) {
+					relativesLoop:for(RelationshipVo relative : existingRelatives){
+						if(uid.equalsIgnoreCase(relative.getIndividualId())){
+							relative.setInbreed(true);
+							break relativesLoop;
+						}
+					}
 			}
 		}
 	}

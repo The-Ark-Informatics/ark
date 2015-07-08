@@ -103,6 +103,13 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.PEDIGREE_RELATIONSHIP, ""));
 				}
 				
+				if(relationshipVo.isInbreed()){
+					item.add(new Label(Constants.PEDIGREE_INBREED, "*"));
+				}
+				else{
+					item.add(new Label(Constants.PEDIGREE_INBREED, ""));
+				}
+				
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);	
 				String dob = "";
 				if (relationshipVo.getDob() != null) {

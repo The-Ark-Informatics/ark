@@ -36,6 +36,8 @@ public class StudyPedigreeConfiguration implements Serializable {
 	private Boolean statusAllowed;
 	private Boolean ageAllowed;
 	private CustomField familyId;
+	
+	private Boolean inbreedAllowed;
 
 	@Id
 	@SequenceGenerator(name = "study_pedigree_config_generator", sequenceName = "STUDYPEDIGREECONFIG_SEQUENCE")
@@ -105,7 +107,14 @@ public class StudyPedigreeConfiguration implements Serializable {
 	public void setFamilyId(CustomField familyId) {
 		this.familyId = familyId;
 	}
-	
-	
 
+	@Column(name = "INBREED_ALLOWED")
+	public Boolean getInbreedAllowed() {
+		return inbreedAllowed;
+	}
+
+	public void setInbreedAllowed(Boolean inbreedAllowed) {
+		this.inbreedAllowed = inbreedAllowed;
+	}
+	
 }

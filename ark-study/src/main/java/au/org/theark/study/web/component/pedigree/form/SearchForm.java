@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.pedigree.form;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -9,6 +10,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
@@ -26,31 +28,34 @@ public class SearchForm extends Form<PedigreeVo> {
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID	= 1L;
-	
+	private static final long serialVersionUID = 1L;
+
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	protected IStudyService							iStudyService;
+	protected IStudyService iStudyService;
 
-	private WebMarkupContainer				arkContextMarkup;
-	protected WebMarkupContainer			studyNameMarkup;
-	protected WebMarkupContainer			studyLogoMarkup;
+	private WebMarkupContainer arkContextMarkup;
+	protected WebMarkupContainer studyNameMarkup;
+	protected WebMarkupContainer studyLogoMarkup;
 
-	protected FeedbackPanel					feedbackPanel;
+	protected FeedbackPanel feedbackPanel;
 
-	protected ArkCrudContainerVO			arkCrudContainerVO;
+	protected ArkCrudContainerVO arkCrudContainerVO;
 
-	protected AjaxButton						fatherButton;
-	protected AjaxButton						motherButton;
-	protected AjaxButton						twinButton;
-	protected AjaxButton						viewButton;
-	protected AjaxButton						configButton;
-	protected AjaxButton						familyButton;
+	protected AjaxButton fatherButton;
+	protected AjaxButton motherButton;
+	protected AjaxButton twinButton;
+	protected AjaxButton viewButton;
+	protected AjaxButton configButton;
+	protected AjaxButton familyButton;
 
-	protected AbstractDetailModalWindow	modalWindow;
+	protected AbstractDetailModalWindow modalWindow;
+	
+	protected CompoundPropertyModel<PedigreeVo> cpmModel;
 
-	public SearchForm(String id, CompoundPropertyModel<PedigreeVo> cpmModel, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup,
-			ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
+	public SearchForm(String id, CompoundPropertyModel<PedigreeVo> cpmModel, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id, cpmModel);
+		
+		this.cpmModel= cpmModel;
 
 		this.arkContextMarkup = arkContextMarkup;
 		this.studyNameMarkup = studyNameMarkup;
@@ -60,17 +65,24 @@ public class SearchForm extends Form<PedigreeVo> {
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
 
-		initialiseSearchForm();
-		addSearchComponentsToForm();
-		
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+
+		StudyPedigreeConfiguration pedigreeConfig = iStudyService.getStudyPedigreeConfiguration(sessionStudyId);
+		boolean inbreedAllowed = false;
+		if (pedigreeConfig != null && BooleanUtils.isTrue(pedigreeConfig.getInbreedAllowed())) {
+			inbreedAllowed = true;
+		} 
+		SecurityUtils.getSubject().getSession().setAttribute(Constants.INBREED_ALLOWED, inbreedAllowed);
 		
+		initialiseSearchForm();
+		addSearchComponentsToForm();
+
 		disableSearchForm(sessionPersonId, "There is no subject in context. Please bring a subject into context via the Subject tab.");
 		disableSaveButtons();
 		disableFamilyDataButton(sessionStudyId, sessionSubjectUID);
-		
+
 	}
 
 	protected void addSearchComponentsToForm() {
@@ -102,8 +114,7 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.setTitle("Set Father");
 				modalWindow.setInitialWidth(90);
 				modalWindow.setInitialHeight(100);
-				modalWindow.setContent(new PedigreeParentContainerPanel("content", arkContextMarkup, studyNameMarkup, studyLogoMarkup, modalWindow, Constants.MALE, getFormModelObject()
-						.getRelationshipList()));
+				modalWindow.setContent(new PedigreeParentContainerPanel("content", arkContextMarkup, studyNameMarkup, studyLogoMarkup, modalWindow, Constants.MALE, getFormModelObject().getRelationshipList()));
 				modalWindow.show(target);
 			}
 
@@ -116,8 +127,7 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.setTitle("Set Mother");
 				modalWindow.setInitialWidth(90);
 				modalWindow.setInitialHeight(100);
-				modalWindow.setContent(new PedigreeParentContainerPanel("content", arkContextMarkup, studyNameMarkup, studyLogoMarkup, modalWindow, Constants.FEMALE, getFormModelObject()
-						.getRelationshipList()));
+				modalWindow.setContent(new PedigreeParentContainerPanel("content", arkContextMarkup, studyNameMarkup, studyLogoMarkup, modalWindow, Constants.FEMALE, getFormModelObject().getRelationshipList()));
 				modalWindow.show(target);
 			}
 
@@ -160,7 +170,7 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.show(target);
 			}
 		};
-		
+
 		familyButton = new AjaxButton(au.org.theark.core.Constants.FAMILY) {
 
 			@Override
@@ -168,7 +178,7 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.setTitle("Family Data");
 				modalWindow.setInitialWidth(90);
 				modalWindow.setInitialHeight(100);
-				modalWindow.setContent(new FamilyCustomDataContainerPanel("content",modalWindow).initialisePanel());
+				modalWindow.setContent(new FamilyCustomDataContainerPanel("content", modalWindow).initialisePanel());
 				modalWindow.show(target);
 			}
 		};
@@ -181,12 +191,10 @@ public class SearchForm extends Form<PedigreeVo> {
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
 				arkCrudContainerVO.getSearchResultPanelContainer().setEnabled(false);
 				this.error(errorMessage);
-			}
-			else {
+			} else {
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(true);
 			}
-		}
-		else {
+		} else {
 			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
@@ -206,12 +214,12 @@ public class SearchForm extends Form<PedigreeVo> {
 			familyButton.setEnabled(false);
 		}
 	}
-	
-	protected void disableFamilyDataButton(Long studyId, String subjectUID){
+
+	protected void disableFamilyDataButton(Long studyId, String subjectUID) {
 		String familyId = iStudyService.getSubjectFamilyId(studyId, subjectUID);
-		if(familyId == null){
+		if (familyId == null) {
 			familyButton.setEnabled(false);
-		}else{
+		} else {
 			familyButton.setEnabled(true);
 		}
 	}
