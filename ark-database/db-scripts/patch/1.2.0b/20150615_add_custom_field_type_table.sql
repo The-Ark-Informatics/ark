@@ -9,8 +9,8 @@ DEFAULT CHARACTER SET = latin1;
 INSERT INTO `study`.`custom_field_type` (`NAME`, `DESCRIPTION`) VALUES ('SUBJECT', 'Subject custom field to store the subject data');
 INSERT INTO `study`.`custom_field_type` (`NAME`, `DESCRIPTION`) VALUES ('FAMILY', 'Family custom field to store the family data');
 
-ALTER TABLE `study`.`custom_field` 
-ADD COLUMN `CUSTOM_FIELD_TYPE_ID` INT(11) NULL AFTER `CATEGORY_ID`;
+-- ALTER TABLE `study`.`custom_field` 
+-- ADD COLUMN `CUSTOM_FIELD_TYPE_ID` INT(11) NULL AFTER `CATEGORY_ID`;
 
 ALTER TABLE `study`.`custom_field` 
 ADD COLUMN `CUSTOM_FIELD_TYPE_ID` INT(11) NULL AFTER `CATEGORY_ID`,
