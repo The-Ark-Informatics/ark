@@ -230,14 +230,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		otherIdWebMarkupContainer = new WebMarkupContainer("otherIDWMC");
 		otherIdListView = new AbstractListEditor<OtherID>("linkSubjectStudy.person.otherIDs") {			
 			
-			@Override
-			protected void onBeforeRender() {
-				log.info("onBeforeRender: " + this.getModelObject());
-//				removeAll();
-				
-				super.onBeforeRender();
-			}
-			
 			private static final long serialVersionUID = 1L;
 
 			@Override
