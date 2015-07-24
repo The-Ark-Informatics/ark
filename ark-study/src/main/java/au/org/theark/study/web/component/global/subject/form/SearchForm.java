@@ -276,9 +276,10 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		if(otherIDSearch != null) {
 			OtherID o = new OtherID();
 			o.setOtherID(otherIDSearch);
-			Set<OtherID> otherIDs = new HashSet<OtherID>();
-			otherIDs.add(o);
-			cpmModel.getObject().getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
+//			List<OtherID> otherIDs = new ArrayList<OtherID>();
+//			otherIDs.add(o);
+			cpmModel.getObject().getLinkSubjectStudy().getPerson().getOtherIDs().clear();//setOtherIDs(otherIDs);
+			cpmModel.getObject().getLinkSubjectStudy().getPerson().getOtherIDs().add(o);
 		}
 		if(cpmModel.getObject().getLinkSubjectStudy().getStudy() == null) {
 			cpmModel.getObject().setStudyList(studyListForUser);

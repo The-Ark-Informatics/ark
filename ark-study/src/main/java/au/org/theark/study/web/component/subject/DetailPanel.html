@@ -66,13 +66,45 @@
 				</div>
 
 				<div class="fldLabel">
-					<wicket:message key="otherID">
-						OtherID:
-					</wicket:message>
+					OtherID:
 				</div>
 
 				<div class="fldControl">
-					<input placeholder="Source" wicket:id="otherIDSource"/>:<input placeholder="Other ID" wicket:id="otherIDTxtFld"/>
+					<div wicket:id="otherIDWMC">
+						<table cellspacing="0" class="dataview" border="0">
+							<tr>
+								<th width="2%">
+								</th>
+								<th width="48%">
+									OtherID
+								</th>
+								<th width="48%">
+									OtherID Source
+								</th>
+								<th width="2%">
+								</th>
+							</tr>
+							<tr wicket:id="linkSubjectStudy.person.otherIDs">
+								<td width="2%"></td>
+								<td width="48%"><input style="width:90%" wicket:id="otherid"></input></td> 
+								<td width="48%"><input style="width:90%" wicket:id="otherid_source"></input></td>
+								<td width="2%"></td>
+							</tr>
+							<tfoot>
+								<tr>
+									<td width="2%">
+										&nbsp;
+									</td>
+									<td width="96%" colspan="2">
+										<input wicket:id="newOtherID" type="button" value="Add New"/>
+									</td>
+									<td width="2%">
+										&nbsp;
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
 				</div>
 				
 				<div class="detailPanelBreaker">
@@ -83,10 +115,6 @@
 				</div>
 				<div class="fldLabel">
 					&nbsp;
-				</div>
-
-				<div class="fldControl">					
-					<label wicket:id="otherID"/>
 				</div>
 
 				<div class="panelMargin">

@@ -582,7 +582,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 																																																		// when
 																																																		// implemented
 																																																		// properly
-			Set<OtherID> otherIDs = new HashSet<OtherID>();
+			List<OtherID> otherIDs = new ArrayList<OtherID>();
 			subjectVo.getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
 		}
 
