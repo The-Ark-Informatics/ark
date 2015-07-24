@@ -233,11 +233,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void onPopulateItem(ListItem<OtherID> item) {
-				log.info(item.toString());
-				log.info("list model object: " + getModelObject().toString());
-				log.info("onPop item: " + item.getModelObject());
-				
+			protected void onPopulateItem(ListItem<OtherID> item) {				
 				PropertyModel<String> otherIDpropModel = new PropertyModel<String>(item.getModelObject(), "otherID");
 				PropertyModel<String> otherIDSourcepropModel = new PropertyModel<String>(item.getModelObject(), "otherID_Source");
 				TextField<String> otherIdTxtFld = new TextField<String>("otherid", otherIDpropModel);
@@ -683,12 +679,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected void onSave(Form<SubjectVO> containerForm, AjaxRequestTarget target) {
 
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
-
-		log.info("otherid list view model object: " + otherIdListView.getModelObject());
-		
-		for(OtherID otherID : containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs()) {
-			log.info("OtherID: " + otherID.getOtherID() + " " + otherID.getOtherID_Source());
-		}
 		
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
