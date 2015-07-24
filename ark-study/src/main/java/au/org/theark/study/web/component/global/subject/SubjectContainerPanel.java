@@ -76,7 +76,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	private static final Logger									log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
 	private SearchPanel												searchPanel;
 	private SearchResultListPanel									searchResultsPanel;
-	private DetailPanel												detailPanel;
 	private PageableListView<SubjectVO>							pageableListView;
 	private ContainerForm											containerForm;
 
@@ -125,7 +124,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		
@@ -221,8 +219,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 					// Put into Detail View mode
 					arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-					arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-					arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
 					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 				}
 			}
@@ -240,10 +236,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
-		detailPanel.initialisePanel();
-		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
-		return arkCrudContainerVO.getDetailPanelContainer();
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
