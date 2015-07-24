@@ -18,19 +18,19 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subject.form;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -38,13 +38,14 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +74,8 @@ import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
+import au.org.theark.core.web.component.listeditor.AbstractListEditor;
+import au.org.theark.core.web.component.listeditor.ListItem;
 import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.lims.service.ILimsService;
@@ -153,10 +156,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected ChildStudySubjectPanel		childStudySubjectPanel;
 	protected Study											study;
 
-	private MultiLineLabel	otherIDLabel;
-	private TextField<String> otherIDTxtFld;
-	private TextField<String> otherIDSourceTxtFld;
-		
+	private AbstractListEditor<OtherID> otherIdListView;
+	private WebMarkupContainer otherIdWebMarkupContainer;
+	private AjaxButton addNewOtherIdBtn;
+	
 	private HistoryButtonPanel historyButtonPanel;
 	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
@@ -223,44 +226,52 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 		};
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
-
-		otherIDSourceTxtFld = new TextField<String>("otherIDSource") {
-			private static final long serialVersionUID = 1L;
-			
-			protected void onBeforeRender() {
-				this.setDefaultModel(new Model<String>(""));
-				super.onBeforeRender();
-			}
-		};
-		otherIDSourceTxtFld.setModel(new Model<String>(""));
-		otherIDTxtFld = new TextField<String>("otherIDTxtFld") {
-			private static final long serialVersionUID = 1L;
-			
-			protected void onBeforeRender() {
-				this.setDefaultModel(new Model<String>(""));
-				super.onBeforeRender();
-			}
-		};
-		otherIDTxtFld.setModel(new Model<String>(""));
 		
-		otherIDLabel = new MultiLineLabel("otherID", "") {
+		otherIdWebMarkupContainer = new WebMarkupContainer("otherIDWMC");
+		otherIdListView = new AbstractListEditor<OtherID>("linkSubjectStudy.person.otherIDs") {			
+			
 			private static final long serialVersionUID = 1L;
 
-			protected void onBeforeRender() {
-				if(!isNew()) {
-					Set<OtherID> otherIDs = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs();
-					String otherIDstring = "";
-					for(OtherID o : otherIDs) {
-						otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
+			@Override
+			protected void onPopulateItem(ListItem<OtherID> item) {
+				log.info(item.toString());
+				log.info("list model object: " + getModelObject().toString());
+				log.info("onPop item: " + item.getModelObject());
+				
+				PropertyModel<String> otherIDpropModel = new PropertyModel<String>(item.getModelObject(), "otherID");
+				PropertyModel<String> otherIDSourcepropModel = new PropertyModel<String>(item.getModelObject(), "otherID_Source");
+				TextField<String> otherIdTxtFld = new TextField<String>("otherid", otherIDpropModel);
+				otherIdTxtFld.setRequired(true);
+				TextField<String> otherIdSourceTxtFld = new TextField<String>("otherid_source", otherIDSourcepropModel);
+				otherIdSourceTxtFld.setRequired(true);
+				item.add(otherIdTxtFld);
+				item.add(otherIdSourceTxtFld);
+				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
 					}
-					this.setDefaultModel(new Model<String>(otherIDstring));
-				} else {
-					this.setDefaultModel(new Model<String>(""));
-				}
-				super.onBeforeRender();
+				}));
 			}
 		};
+		otherIdWebMarkupContainer.setOutputMarkupId(true);
+		
+		addNewOtherIdBtn = new AjaxButton("newOtherID") {
+			private static final long serialVersionUID = 1L;
 
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				OtherID newOtherID = new OtherID();
+				newOtherID.setPerson(containerForm.getModelObject().getLinkSubjectStudy().getPerson());
+				otherIdListView.addItem(newOtherID);
+				target.add(otherIdWebMarkupContainer);
+				super.onSubmit(target, form);
+			}
+		};
+		addNewOtherIdBtn.setDefaultFormProcessing(false);
+		otherIdWebMarkupContainer.add(otherIdListView);
+		otherIdWebMarkupContainer.add(addNewOtherIdBtn);
+		
 		preferredEmailTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_EMAIL);
 		otherEmailTxtFld = new TextField<String>(Constants.PERSON_OTHER_EMAIL);
 
@@ -491,9 +502,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtAreaFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(heardAboutStudyTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(vitalStatusDdc);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(otherIDLabel);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(otherIDSourceTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(otherIDTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(otherIdWebMarkupContainer);
 
 		// Death details only be edited when vital status set to deceased
 		wmcDeathDetailsContainer.add(dateOfDeathTxtFld);
@@ -545,6 +554,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		subjectVO.setStudyList(containerForm.getModelObject().getStudyList());
 		containerForm.setModelObject(subjectVO);
 		
+		otherIdListView.setModelObject(new ArrayList<OtherID>());
+		otherIdListView.removeAll();
+ 
 		// Clear subject in context
 		ContextHelper contextHelper = new ContextHelper();
 		contextHelper.resetContextLabel(target, arkContextMarkupContainer);
@@ -672,6 +684,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
 
+		log.info("otherid list view model object: " + otherIdListView.getModelObject());
+		
+		for(OtherID otherID : containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs()) {
+			log.info("OtherID: " + otherID.getOtherID() + " " + otherID.getOtherID_Source());
+		}
+		
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
 			// No study in context
@@ -681,23 +699,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		else {
 
 			study = iArkCommonService.getStudy(studyId);
-			if(!(otherIDTxtFld.getValue() == null || otherIDTxtFld.getValue().isEmpty()) && !(otherIDSourceTxtFld.getValue() == null || otherIDSourceTxtFld.getValue().isEmpty())) {
-				if(isNew()) {
-					containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(new HashSet<OtherID>());
-				}
-				Hibernate.initialize(containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
-				log.info("onsave subject otherids (before adding actual): " + containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
-				OtherID newOtherID = new OtherID();
-				newOtherID.setOtherID(otherIDTxtFld.getValue());
-				newOtherID.setOtherID_Source(otherIDSourceTxtFld.getValue());
-				newOtherID.setPerson(containerForm.getModelObject().getLinkSubjectStudy().getPerson());
-				Set<OtherID> o = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs();
-				o.add(newOtherID);
-				containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(o);
-				log.info("onsave subject otherids: " + containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
-			} else {
-				containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(new HashSet<OtherID>());
-			}
 			saveUpdateProcess(containerForm.getModelObject(), target);
 			// String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
 			// containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);

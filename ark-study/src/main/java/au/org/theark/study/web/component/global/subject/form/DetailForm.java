@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -242,7 +243,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 			protected void onBeforeRender() {
 				if(!isNew()) {
-					Set<OtherID> otherIDs = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs();
+					Set<OtherID> otherIDs = new HashSet<OtherID>(getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
 					String otherIDstring = "";
 					for(OtherID o : otherIDs) {
 						otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
@@ -673,23 +674,23 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		else {
 
 			study = iArkCommonService.getStudy(studyId);
-			if(!(otherIDTxtFld.getValue() == null || otherIDTxtFld.getValue().isEmpty()) && !(otherIDSourceTxtFld.getValue() == null || otherIDSourceTxtFld.getValue().isEmpty())) {
-				if(isNew()) {
-					containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(new HashSet<OtherID>());
-				}
-				Hibernate.initialize(containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
-				log.info("onsave subject otherids (before adding actual): " + containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
-				OtherID newOtherID = new OtherID();
-				newOtherID.setOtherID(otherIDTxtFld.getValue());
-				newOtherID.setOtherID_Source(otherIDSourceTxtFld.getValue());
-				newOtherID.setPerson(containerForm.getModelObject().getLinkSubjectStudy().getPerson());
-				Set<OtherID> o = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs();
-				o.add(newOtherID);
-				containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(o);
-				log.info("onsave subject otherids: " + containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
-			} else {
-				containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(new HashSet<OtherID>());
-			}
+//			if(!(otherIDTxtFld.getValue() == null || otherIDTxtFld.getValue().isEmpty()) && !(otherIDSourceTxtFld.getValue() == null || otherIDSourceTxtFld.getValue().isEmpty())) {
+//				if(isNew()) {
+//					containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(new HashSet<OtherID>());
+//				}
+//				Hibernate.initialize(containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
+//				log.info("onsave subject otherids (before adding actual): " + containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
+//				OtherID newOtherID = new OtherID();
+//				newOtherID.setOtherID(otherIDTxtFld.getValue());
+//				newOtherID.setOtherID_Source(otherIDSourceTxtFld.getValue());
+//				newOtherID.setPerson(containerForm.getModelObject().getLinkSubjectStudy().getPerson());
+//				Set<OtherID> o = new HashSet<OtherID>(containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
+//				o.add(newOtherID);
+//				containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(o);
+//				log.info("onsave subject otherids: " + containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
+//			} else {
+//				containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(new HashSet<OtherID>());
+//			}
 			saveUpdateProcess(containerForm.getModelObject(), target);
 			// String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
 			// containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);

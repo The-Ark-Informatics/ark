@@ -271,9 +271,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 			OtherID o;
 			o = new OtherID();
 			o.setOtherID(otherIDSearch);
-			Set<OtherID> otherIDs = new HashSet<OtherID>();
-			otherIDs.add(o);
-			cpModel.getObject().getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
+//			List<OtherID> otherIDs = new ArrayList<OtherID>();
+//			otherIDs.add(o);
+			cpModel.getObject().getLinkSubjectStudy().getPerson().getOtherIDs().clear();//setOtherIDs(otherIDs);
+			cpModel.getObject().getLinkSubjectStudy().getPerson().getOtherIDs().add(o);
 		}
 
 		subjectProvider.setModel(this.cpModel);
