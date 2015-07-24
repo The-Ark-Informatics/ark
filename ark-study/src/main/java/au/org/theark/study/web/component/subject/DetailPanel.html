@@ -37,36 +37,7 @@
 				-->
 
 				<div class="fldLabel">
-					<wicket:message	key="title">
-						Title:
-					</wicket:message>
-				</div>
-
-				<div class="fldControl">
-					<select wicket:id="linkSubjectStudy.person.titleType">
-						<option>
-							Mr.
-						</option>
-						<option>
-							Mrs.
-						</option>
-					</select>
-				</div>
-				
-				<div class="panelMargin">
-					&nbsp;
-				</div>
-
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-		
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div class="fldLabel">
-					OtherID:
+					Other ID:
 				</div>
 
 				<div class="fldControl">
@@ -76,18 +47,18 @@
 								<th width="2%">
 								</th>
 								<th width="48%">
-									OtherID
+									Other ID
 								</th>
 								<th width="48%">
-									OtherID Source
+									Other ID Source
 								</th>
 								<th width="2%">
 								</th>
 							</tr>
 							<tr wicket:id="linkSubjectStudy.person.otherIDs">
 								<td width="2%"></td>
-								<td width="48%"><input style="width:90%" wicket:id="otherid"></input></td> 
 								<td width="48%"><input style="width:90%" wicket:id="otherid_source"></input></td>
+								<td width="48%"><input style="width:90%" wicket:id="otherid"></input></td> 
 								<td width="2%"></td>
 							</tr>
 							<tfoot>
@@ -106,19 +77,33 @@
 						</table>
 					</div>
 				</div>
-				
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-				<div class="fldLabel">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
 
-				<div class="panelMargin">
+				<div class="detailPanelBreaker">
 					&nbsp;
+				</div>
+		
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message	key="title">
+						Title:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="linkSubjectStudy.person.titleType">
+						<option>
+							Mr.
+						</option>
+						<option>
+							Mrs.
+						</option>
+					</select>
 				</div>
 
 				<div class="detailPanelBreaker">
