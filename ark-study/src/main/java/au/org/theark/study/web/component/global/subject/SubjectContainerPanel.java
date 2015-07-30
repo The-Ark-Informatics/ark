@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -34,12 +35,14 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.iterator.ComponentHierarchyIterator;
@@ -48,12 +51,14 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
@@ -97,7 +102,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	protected WebMarkupContainer resultsWmc = new WebMarkupContainer("resultsWmc");
 	
 	private TabbedPanel mainTabs;
-	
+	private List<Study> studyListForUser = new ArrayList<Study>();
 	
 	/**
 	 * @param id
@@ -243,6 +248,17 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	protected WebMarkupContainer initialiseSearchResults() {
 		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup, mainTabs);
 
+		Subject currentUser = SecurityUtils.getSubject();
+		ArkUser arkUser;
+		try {
+			arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo); //getParentAndChildStudies(sessionStudyId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		if (sessionStudyId != null) {
 			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 			linkSubjectStudy.setStudy(study);
@@ -284,6 +300,19 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
 		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
+		if(containerForm.getModelObject().getStudyList().isEmpty()) {
+			containerForm.getModelObject().setStudyList(studyListForUser);
+		}
+		IModel<String> amountModel = new Model<String>(Integer.toString(subjectProvider.size()));
+		resultsWmc.add(new Label("total", amountModel) {
+			private static final long serialVersionUID = 1L;
+
+			protected void onBeforeRender() {
+				amountModel.setObject(Integer.toString(subjectProvider.size()));
+				super.onBeforeRender();
+			};
+		});		
+		
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		resultsWmc.add(pageNavigator);
 		
