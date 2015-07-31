@@ -137,7 +137,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
-		otherIDTxtFld = new TextField<String>("otherID", new Model(""));
+		otherIDTxtFld = new TextField<String>("linkSubjectStudy.person.otherIDs", new Model<String>(""));
 		initVitalStatusDdc();
 		initSubjectStatusDdc();
 		initGenderTypeDdc();
@@ -266,9 +266,11 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		if(otherIDSearch != null) {
 			OtherID o = new OtherID();
 			o.setOtherID(otherIDSearch);
-			Set<OtherID> otherIDs = new HashSet<OtherID>();
+			List<OtherID> otherIDs = new ArrayList<OtherID>();
 			otherIDs.add(o);
-			cpmModel.getObject().getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
+			cpmModel.getObject().getLinkSubjectStudy().getPerson().getOtherIDs().clear();//setOtherIDs(otherIDs);
+			log.info("onsearch otherids: " + cpmModel.getObject().getLinkSubjectStudy().getPerson().getOtherIDs());
+			cpmModel.getObject().getLinkSubjectStudy().getPerson().getOtherIDs().add(o);
 		}
 		long count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
 		if (count == 0L) {
