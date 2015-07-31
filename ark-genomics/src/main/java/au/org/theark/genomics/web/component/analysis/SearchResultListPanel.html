@@ -1,0 +1,74 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			  
+			<th width="5%">
+				<label for="id">
+					<wicket:message	key="genomics.analysis.id">ID:</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="name">
+					<wicket:message	key="genomics.analysis.name">Organization:</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="microService">
+					<wicket:message	key="genomics.analysis.microservice">Last Active Date:</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="dataSource">
+					<wicket:message	key="genomics.analysis.datasource">Last Active Date:</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="computation">
+					<wicket:message	key="genomics.analysis.computation">Last Active Date:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="status">
+					<wicket:message	key="genomics.analysis.status">Role:</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="analysisList">
+			<td width="2%">&nbsp;</td>
+			<td width="5%">
+				<span wicket:id="analysis.id">id</span>
+			</td>
+			<td width="15%">
+			  <a href="#"wicket:id="analysis.name">
+			  	<span wicket:id="nameLbl">Name</span>
+			  </a>
+			</td>
+			<td width="20%">
+				<span wicket:id="analysis.microService">url</span>
+			</td>
+			<td width="20%">
+				<span wicket:id="analysis.dataSource">url</span>
+			</td>
+			<td width="20%">
+				<span wicket:id="analysis.computation">url</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="analysis.status">Status</span>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td colspan="6"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

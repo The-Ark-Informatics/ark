@@ -38,21 +38,13 @@ http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-	<!-- 
-	<bean id="cloudConfig" class="org.javaswift.joss.client.factory.AccountConfig">
-		<property name="tenantName" value="${cloud.tenant.name}" />
-		<property name="username" value="${cloud.username}" />
-		<property name="password" value="${cloud.password}" />
-		<property name="authUrl" value="${cloud.auth.url}" />
-	</bean>
-
-	<bean id="cloudFactory" class="org.javaswift.joss.client.factory.AccountFactory">
-		<constructor-arg ref="cloudConfig" />
-	</bean>
-
-	<bean id="cloudAccount" factory-bean="cloudFactory"
-		factory-method="createAccount" />
- -->
+	<!-- <bean id="cloudConfig" class="org.javaswift.joss.client.factory.AccountConfig"> 
+		<property name="tenantName" value="${cloud.tenant.name}" /> <property name="username" 
+		value="${cloud.username}" /> <property name="password" value="${cloud.password}" 
+		/> <property name="authUrl" value="${cloud.auth.url}" /> </bean> <bean id="cloudFactory" 
+		class="org.javaswift.joss.client.factory.AccountFactory"> <constructor-arg 
+		ref="cloudConfig" /> </bean> <bean id="cloudAccount" factory-bean="cloudFactory" 
+		factory-method="createAccount" /> -->
 
 	<bean id="sftpSessionFactory"
 		class="org.springframework.integration.sftp.session.DefaultSftpSessionFactory">
@@ -66,19 +58,36 @@ http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 
 	<bean id="sftpAccount" factory-bean="sftpSessionFactory"
 		factory-method="getSession" />
-		
-	<bean id="execSessionFactory"
-		class="au.org.spark.factory.DefaultExecSessionFactory">
+
+	<bean id="execProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="StrictHostKeyChecking">no</prop>
+			</props>
+		</property>
+	</bean>
+
+<!--  
+	<bean id="execSessionFactory" class="au.org.spark.factory.DefaultExecSessionFactory">
 		<property name="host" value="${sftp.host}" />
-		<!-- <property name="privateKey" value="classpath:META-INF/keys/sftpTest" 
-			/> <property name="privateKeyPassphrase" value="springIntegration" /> -->
 		<property name="port" value="${sftp.port}" />
 		<property name="user" value="${sftp.user}" />
 		<property name="password" value="${sftp.password}" />
+		<property name="sessionConfig" ref="execProperties" />
 	</bean>
-	
+
 	<bean id="execAccount" factory-bean="execSessionFactory"
 		factory-method="getSession" />
+-->
+
+	<bean id="execSessionFactory" class="au.org.spark.factory.DefaultExecSessionFactory" scope="prototype">
+		<property name="host" value="${sftp.host}" />
+		<property name="port" value="${sftp.port}" />
+		<property name="user" value="${sftp.user}" />
+		<property name="password" value="${sftp.password}" />
+		<property name="sessionConfig" ref="execProperties" />
+	</bean>
 
 
 	<!-- REQUIRED: The Cassandra Cluster -->
@@ -98,9 +107,10 @@ http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 	<!-- REQUIRED: The Cassandra Template is the building block of all Spring 
 		Data Cassandra -->
 	<cassandra:template id="cassandraTemplate" />
-	
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-    	<property name="maxUploadSize" value="268435456"/> <!-- 256 megs -->
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="268435456" /> <!-- 256 megs -->
 	</bean>
 
 </beans>

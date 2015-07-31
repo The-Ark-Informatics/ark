@@ -49,9 +49,9 @@ public class ExecSession {
 				this.jschSession.connect();
 			}
 			this.channel = (ChannelExec) this.jschSession.openChannel("exec");
-			if (this.channel != null && !this.channel.isConnected()) {
-				this.channel.connect();
-			}
+//			if (this.channel != null && !this.channel.isConnected()) {
+//				this.channel.connect();
+//			}
 		} catch (JSchException e) {
 			this.close();
 			throw new IllegalStateException("failed to connect", e);

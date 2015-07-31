@@ -2,6 +2,7 @@ package au.org.theark.genomics.model.dao;
 
 import java.util.List;
 
+import au.org.theark.core.model.spark.entity.Analysis;
 import au.org.theark.core.model.spark.entity.Computation;
 import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.DataSourceType;
@@ -14,6 +15,8 @@ public interface IGenomicsDao {
 	public void saveOrUpdate(DataSource dataSource);
 	
 	public long saveOrUpdate(Computation computatin);
+
+	public void saveOrUpdate(Analysis analysis);
 	
 	public void delete(MicroService microService);
 	
@@ -28,4 +31,10 @@ public interface IGenomicsDao {
 	public List<DataSourceType> listDataSourceTypes();
 	
 	public DataSource getDataSource(DataSourceVo dataSourceVo);	
+	
+	public List<DataSource> searchDataSources(MicroService microService);
+	
+	public List<Computation> searchComputation(MicroService microService);
+	
+	public List<Analysis> searchAnalysis(Analysis analysis, Long studyId);
 }

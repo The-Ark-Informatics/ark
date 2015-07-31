@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import au.org.spark.service.CassandraService;
 import au.org.spark.service.SshService;
+import au.org.spark.web.view.AnalysisVo;
+import au.org.spark.web.view.ComputationVo;
 import au.org.spark.web.view.DataCenterVo;
 import au.org.spark.web.view.DataSourceVo;
 import au.org.spark.web.view.Report;
@@ -91,5 +93,38 @@ public class JobServiceImpl implements JobService {
 
 		return new AsyncResult<Report>(report);
 	}
+	
+	@Async
+	public Future<Report> compileProgram(ComputationVo computation) {
+		try {
+			System.out.println(" ----------- Execute the computation --------------------");
+			sshService.compileProgram(computation);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
+		Report report = new Report();
+		report.setName("New Report");
+		report.setDescription("New Report Description");
+
+		return new AsyncResult<Report>(report);
+	}
+
+	
+	@Async
+	public Future<Report> executeAnalysis(AnalysisVo analysis) {
+		try {
+			System.out.println(" ----------- Execute the Analysis --------------------");
+			sshService.executeAnalysis(analysis);		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		Report report = new Report();
+		report.setName("New Report");
+		report.setDescription("New Report Description");
+
+		return new AsyncResult<Report>(report);
+	}
+	
 }

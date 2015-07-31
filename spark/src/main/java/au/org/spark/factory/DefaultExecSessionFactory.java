@@ -403,7 +403,9 @@ public class DefaultExecSessionFactory implements SharedSessionCapable{
 			jschSession.setPassword(this.password);
 		}
 		jschSession.setUserInfo(new OptimisticUserInfoImpl(this.password));
-
+//		java.util.Properties config = new java.util.Properties();
+//		config.put("StrictHostKeyChecking", "no");
+//		jschSession.setConfig(config);
 		try {
 			if (proxy != null){
 				jschSession.setProxy(proxy);

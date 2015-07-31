@@ -1,6 +1,5 @@
 package au.org.spark.web.controller;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,6 +33,7 @@ import au.org.spark.service.OpenStackService;
 import au.org.spark.service.SshService;
 import au.org.spark.util.Constants;
 import au.org.spark.util.Constants.DATA_CENTERS;
+import au.org.spark.web.view.AnalysisVo;
 import au.org.spark.web.view.ComputationVo;
 import au.org.spark.web.view.DataCenterVo;
 import au.org.spark.web.view.DataSourceVo;
@@ -56,7 +56,7 @@ public class SparkRestController {
 	CassandraService cassandraService;
 
 	@Autowired
-	JobService reportService;
+	JobService jobService;
 
 	private HashMap<String, Future<Report>> reportMap = new HashMap<String, Future<Report>>();
 
@@ -138,15 +138,12 @@ public class SparkRestController {
 		Future<Report> report = null;
 
 		if ("uploading".equalsIgnoreCase(dataSource.getStatus())) {
-			report = reportService.uploadDataSource(dataSource);
+			report = jobService.uploadDataSource(dataSource);
 		} else {
-			report = reportService.deleteDataSource(dataSource);
+			report = jobService.deleteDataSource(dataSource);
 		}
-
-		// Future<Report> report = reportService.generateReport();
-
+		
 		String UID = System.currentTimeMillis() + "_" + UUID.randomUUID();
-		// session.setAttribute(UID, report);
 
 		System.out.println("Generate from SPARK -- " + UID);
 		reportMap.put(UID, report);
@@ -160,9 +157,9 @@ public class SparkRestController {
 		Future<Report> report = null;
 		try {
 			if ("uploading".equalsIgnoreCase(dataCenter.getStatus())) {
-				report = reportService.uploadPlinkDataSource(dataCenter);
+				report = jobService.uploadPlinkDataSource(dataCenter);
 			} else {
-				report = reportService.deletePlinkDataSource(dataCenter);
+				report = jobService.deletePlinkDataSource(dataCenter);
 			}
 		} catch (Exception e) {
 			report = new Future<Report>() {
@@ -253,47 +250,9 @@ public class SparkRestController {
 		return "SUCCESS";
 	}
 
-	// @RequestMapping(value="/uploadFile", method=RequestMethod.POST)
-	// public @ResponseBody String handleFileUpload(@RequestParam("programId")
-	// String programId, @RequestParam("programName") String programName
-	// ,@RequestParam("file") MultipartFile file){
-	// if (!file.isEmpty()) {
-	// try {
-	// byte[] bytes = file.getBytes();
-	// BufferedOutputStream stream = new BufferedOutputStream(new
-	// FileOutputStream(new File(programId + "-uploaded")));
-	// stream.write(bytes);
-	// stream.close();
-	// return "You successfully uploaded " + programName + " into " + programId
-	// + "-uploaded !";
-	// } catch (Exception e) {
-	// return "You failed to upload " + programName + " => " + e.getMessage();
-	// }
-	// } else {
-	// return "You failed to upload " + programName +
-	// " because the file was empty.";
-	// }
-	// }
-
 	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
 	public @ResponseBody String handleFileUpload(@RequestBody ComputationVo computation) {
-
-		// Future<Report> report = null;
-
-		// if ("uploading".equalsIgnoreCase(dataSource.getStatus())) {
-		// report = reportService.uploadDataSource(dataSource);
-		// } else {
-		// report = reportService.deleteDataSource(dataSource);
-		// }
-		//
-		// // Future<Report> report = reportService.generateReport();
-		//
-		// String UID = System.currentTimeMillis() + "_" + UUID.randomUUID();
-		// // session.setAttribute(UID, report);
-		//
-		// System.out.println("Generate from SPARK -- " + UID);
-		// reportMap.put(UID, report);
-
+		
 		System.out.println(computation.getProgram());
 
 		return computation.getProgramId();
@@ -370,32 +329,122 @@ public class SparkRestController {
 				 */
 				
 				sshService.uploadProgram(computationDir, array[0]);
-				return "You successfully uploaded " + fileId + "!";
+				return "uploaded:" + fileId + "!";
 			} catch (Exception e) {
 				e.printStackTrace();
 				return "You failed to upload " + fileId + " => " + e.getMessage();
 			}
 		} else {
-			return "You failed to upload " + fileId + " because the file was empty.";
+			return "You failed to upload" + fileId + " because the file was empty.";
 		}
 	}
 	
-	@RequestMapping(value = "/compile", method = RequestMethod.POST)
-	public @ResponseBody String compileProgram(@RequestParam("name") String fileId) {
-		String array[] = fileId.split("[.]");
-		System.out.println("Call compile");
-		sshService.compileProgram(array[0]);
-		
-		return "Compiled";
-	}
 
-	// public static void main(String[] args) {
-	// String
-	// s="1434431560561_585dcc87-fb41-4929-8519-8b7f61b50367_spark_program.zip";
-	// String array[] = s.split("[.]");
-	// String dirName = "ABC" +File.separator +array[0];
-	//
-	// }
+	@RequestMapping(value = "/compile", method = RequestMethod.POST)
+	public @ResponseBody String compileProgram(@RequestBody ComputationVo computationVo) {
+		Future<Report> report = null;
+		try {
+			report = jobService.compileProgram(computationVo);
+		} catch (Exception e) {
+			report = new Future<Report>() {
+
+				@Override
+				public boolean cancel(boolean mayInterruptIfRunning) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public boolean isCancelled() {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public boolean isDone() {
+
+					return false;
+				}
+
+				@Override
+				public Report get() throws InterruptedException, ExecutionException {
+					throw new InterruptedException();
+					// return null;
+				}
+
+				@Override
+				public Report get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+			};
+		}
+
+		String UID = System.currentTimeMillis() + "_" + UUID.randomUUID();
+
+		System.out.println("Generate from SPARK -- " + UID);
+		reportMap.put(UID, report);
+
+		return UID;
+	}
+	
+	@RequestMapping(value = "/executeAnalysis", method = RequestMethod.POST)
+	public @ResponseBody String executeAnalysis(@RequestBody AnalysisVo analysis) {
+
+		Future<Report> report = null;
+		try {
+			report = jobService.executeAnalysis(analysis);
+		} catch (Exception e) {
+			report = new Future<Report>() {
+
+				@Override
+				public boolean cancel(boolean mayInterruptIfRunning) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public boolean isCancelled() {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public boolean isDone() {
+
+					return false;
+				}
+
+				@Override
+				public Report get() throws InterruptedException, ExecutionException {
+					throw new InterruptedException();
+					// return null;
+				}
+
+				@Override
+				public Report get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+			};
+		}
+
+		String UID = System.currentTimeMillis() + "_" + UUID.randomUUID();
+
+		System.out.println("Generate from SPARK -- " + UID);
+		reportMap.put(UID, report);
+
+		return UID;
+	}
+	
+	@RequestMapping(value = "/getAnalysisResult", method = RequestMethod.POST)
+	public @ResponseBody String getAnalysisResult(@RequestBody AnalysisVo analysis) {
+		String result="";
+		result = sshService.getAnalysisResults(analysis);
+		return result;
+	}
 
 	private static void traverse(File dir) {
 		if (dir.isDirectory()) {

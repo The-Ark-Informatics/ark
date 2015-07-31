@@ -40,6 +40,8 @@ public class DataSource implements Serializable {
 
 	private String status;
 	
+	private Boolean directory;
+	
 	public DataSource() {
 		
 	}
@@ -121,4 +123,13 @@ public class DataSource implements Serializable {
 		this.microService = microService;
 	}
 
+	@Column(name = "DIRECTORY")
+	public Boolean getDirectory() {
+		return directory;
+	}
+
+	public void setDirectory(Boolean directory) {
+		this.directory = directory;
+	}
+	
 }
