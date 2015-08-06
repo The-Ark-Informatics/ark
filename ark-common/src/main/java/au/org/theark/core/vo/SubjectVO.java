@@ -71,6 +71,8 @@ public class SubjectVO implements Serializable {
 	protected boolean enableNewButton =true;
 	
 	private String parentType;
+	
+	private String message;
 
 	
 	public SubjectVO() {
@@ -290,6 +292,14 @@ public class SubjectVO implements Serializable {
 
 	public void setParentType(String parentType) {
 		this.parentType = parentType;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

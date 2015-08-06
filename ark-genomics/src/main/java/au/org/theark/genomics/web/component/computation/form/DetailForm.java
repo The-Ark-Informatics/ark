@@ -15,14 +15,17 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 
+import au.org.theark.core.model.spark.entity.Analysis;
+import au.org.theark.core.model.spark.entity.Computation;
 import au.org.theark.core.model.spark.entity.MicroService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.genomics.jobs.AnalysisExecutor;
+import au.org.theark.genomics.jobs.CompilationExecutor;
 import au.org.theark.genomics.model.vo.ComputationVo;
 import au.org.theark.genomics.service.IGenomicService;
 import au.org.theark.genomics.util.Constants;
@@ -53,8 +56,6 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 	private AjaxButton deleteButton;
 	private Label fileNameLbl;
 	
-	
-
 	private List<MicroService> microServiceList;
 	
 	private AjaxButton uploadButton;
@@ -142,7 +143,24 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// TODO Auto-generated method stub
-				iGenomicService.uploadComputation(containerForm.getModelObject().getComputation());
+				Computation computation = containerForm.getModelObject().getComputation();
+				computation.setStatus("uploading");
+				iGenomicService.uploadComputation(computation);				
+				target.add(computationStatusTxtFld);
+				target.add(this);
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				
+				boolean enabled=true;
+				Computation computation=getFormModelObject().getComputation(); 
+				if(computation!=null && computation.getStatus() !=null && (computation.getStatus().contains("upload") || computation.getStatus().contains("Compiled"))){
+					enabled=false;
+				}
+				
+				// TODO Auto-generated method stub
+				return enabled;
 			}
 		};
 		
@@ -150,7 +168,31 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// TODO Auto-generated method stub
-				iGenomicService.compileComputation(containerForm.getModelObject().getComputation());
+//				iGenomicService.compileComputation(containerForm.getModelObject().getComputation());
+//				target.add(computationStatusTxtFld);
+//				target.add(this);
+				
+				try {
+
+					Computation computation = getFormModelObject().getComputation();
+
+					String processUID = iGenomicService.compileComputation(computation);
+
+					computation.setStatus("Running");
+
+					iGenomicService.saveOrUpdate(computation);
+
+					CompilationExecutor executor = new CompilationExecutor(computation, processUID, iGenomicService);
+
+					executor.run();
+
+				} catch (Exception e) {
+					this.error("Execution failled");
+					e.printStackTrace();
+				}
+
+				target.add(computationStatusTxtFld);
+				target.add(feedBackPanel);			
 			}
 		};
 		
@@ -279,6 +321,10 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 		} else {
 			return false;
 		}
+	}
+	
+	private ComputationVo getFormModelObject(){
+		return containerForm.getModelObject();
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package au.org.theark.genomics.service;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.spark.entity.Analysis;
 import au.org.theark.core.model.spark.entity.Computation;
 import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.DataSourceType;
@@ -15,6 +16,10 @@ public interface IGenomicService {
 	public void saveOrUpdate(MicroService microService);
 	
 	public void saveOrUpdate(DataSource dataSource);
+	
+	public void saveOrUpdate(Computation computation);
+	
+	public void saveOrUpdate(Analysis analysis);
 	
 	public void save(Computation computation, byte[] attachement) throws ArkSystemException;
 
@@ -48,6 +53,20 @@ public interface IGenomicService {
 	
 	public void uploadComputation(Computation computation);
 	
-	public void compileComputation(Computation computation);
+	public String compileComputation(Computation computation);
+	
+	public void updateCompilationStatus(String processUID, Computation computation);
+	
+	public List<DataSource> searchDataSources(MicroService microService);
+	
+	public List<Computation> searchComputation(MicroService microService);
+	
+	public List<Analysis> searchAnalysis(Analysis analysis, Long studyId);
+	
+	public String executeAnalysis(Analysis analysis);
+	
+	public void updateAnalysisStatus(final String processUID, Analysis analysis);
+	
+	public byte[] getAnalysisResult(Analysis analysis);
 	
 }

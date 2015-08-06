@@ -32,6 +32,8 @@ public class RelationshipVo implements Serializable {
 
 	private String					affectedStatus;
 	private Date					dod;
+	
+	private boolean 				inbreed;
 
 	public RelationshipVo() {
 		relationship = "Undetermined";
@@ -180,6 +182,14 @@ public class RelationshipVo implements Serializable {
 
 	public void setDod(Date dod) {
 		this.dod = dod;
+	}
+	
+	public boolean isInbreed() {
+		return inbreed;
+	}
+
+	public void setInbreed(boolean inbreed) {
+		this.inbreed = inbreed;
 	}
 
 	@Override

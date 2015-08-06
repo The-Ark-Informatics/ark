@@ -2,6 +2,8 @@ package au.org.spark.service;
 
 import java.util.List;
 
+import au.org.spark.web.view.AnalysisVo;
+import au.org.spark.web.view.ComputationVo;
 import au.org.spark.web.view.DataCenterVo;
 import au.org.spark.web.view.DataSourceVo;
 
@@ -20,5 +22,11 @@ public interface SshService {
 	public void uploadProgram(String destinationDir, String name);
 	
 	public String compileProgram(String name);
+	
+	public String compileProgram(ComputationVo computationVo);
+	
+	public void executeAnalysis(AnalysisVo analysisVo);
+	
+	public String getAnalysisResults(AnalysisVo analysisVo);
 	
 }

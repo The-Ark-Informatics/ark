@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -44,7 +45,6 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.mapper.HomePageMapper;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,13 +53,13 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.AAFRealm;
-import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
@@ -122,6 +122,8 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	private WebMarkupContainer		studyNameMarkup;
 	private WebMarkupContainer		studyLogoMarkup;
 
+	private List<Study> studyListForUser = new ArrayList<Study>();
+	
 	public BiospecimenListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id, cpModel);
 		this.cpModel = cpModel;
@@ -141,6 +143,18 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	}
 
 	private void initialiseDataView() {
+		
+		Subject currentUser = SecurityUtils.getSubject();
+		ArkUser arkUser;
+		try {
+			arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo); //getParentAndChildStudies(sessionStudyId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		dataViewListWMC = new WebMarkupContainer("dataViewListWMC");
 		dataViewListWMC.setOutputMarkupId(true);
 		// Data provider to paginate resultList
@@ -166,6 +180,17 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		dataView = buildDataView(biospecimenProvider);
 		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
+		
+		final IModel<String> amountModel = new Model<String>(Integer.toString(biospecimenProvider.size()));
+		dataViewListWMC.add(new Label("total", amountModel) {
+			private static final long serialVersionUID = 1L;
+
+			protected void onBeforeRender() {
+				amountModel.setObject(Integer.toString(biospecimenProvider.size()));
+				super.onBeforeRender();
+			};
+		});		
+		
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 
 			private static final long	serialVersionUID	= 1L;

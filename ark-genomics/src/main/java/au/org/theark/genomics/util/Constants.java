@@ -8,6 +8,8 @@ public final class Constants {
 	
 	public static final String COMPUTATION = "COMPUTATION";
 
+	public static final String ANALYSIS = "ANALYSIS";
+
 
 	public static final String GENO_SUBMENU = "genoSubMenus";
 
@@ -49,6 +51,18 @@ public final class Constants {
 	public static final String COMPUTATION_DESCRIPTION = "computation.description";
 	public static final String COMPUTATION_MICROSERVICE = "computation.microService";
 	public static final String COMPUTATION_STATUS = "computation.status";
+	
+	public static final String ANALYIS_ID = "analysis.id";
+	public static final String ANALYIS_NAME = "analysis.name";
+	public static final String ANALYIS_DESCRIPTION = "analysis.description";
+	public static final String ANALYIS_STATUS = "analysis.status";
+	public static final String ANALYIS_MICRO_SERVICE = "analysis.microService";
+	public static final String ANALYIS_DATA_SOURCE = "analysis.dataSource";
+	public static final String ANALYIS_COMPUTAION = "analysis.computation";
+	public static final String ANALYIS_PARAMETERS = "analysis.parameters";
+	public static final String ANALYIS_RESULT = "analysis.result";
+	
+	
 	
 	public static final int MODE_NEW = 1;
 	public static final int MODE_EDIT = 2;

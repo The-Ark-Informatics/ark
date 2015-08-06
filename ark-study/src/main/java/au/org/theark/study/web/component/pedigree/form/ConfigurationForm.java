@@ -2,6 +2,7 @@ package au.org.theark.study.web.component.pedigree.form;
 
 import java.util.List;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -12,6 +13,8 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
@@ -21,6 +24,7 @@ import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.core.web.component.checkbox.ArkConfirmCheckBox;
 import au.org.theark.study.model.vo.PedigreeVo;
 import au.org.theark.study.service.IStudyService;
 
@@ -29,39 +33,41 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 	/**
 	 * 
 	 */
-	private static final long						serialVersionUID	= 1L;
+	private static final long serialVersionUID = 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService							studyService;
+	private IStudyService studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService						iArkCommonService;
+	private IArkCommonService iArkCommonService;
 
-	protected FeedbackPanel							feedbackPanel;
+	protected FeedbackPanel feedbackPanel;
 
-	protected ArkCrudContainerVO					arkCrudContainerVO;
+	protected ArkCrudContainerVO arkCrudContainerVO;
 
-	protected AbstractDetailModalWindow			modalWindow;
+	protected AbstractDetailModalWindow modalWindow;
 
-	private DropDownChoice<CustomField>			effectedStatusDDL;
-	
-	private DropDownChoice<CustomField>			familyIdDDL;
+	private DropDownChoice<CustomField> effectedStatusDDL;
 
-	private CompoundPropertyModel<PedigreeVo>	cpmModel;
+	private DropDownChoice<CustomField> familyIdDDL;
 
-	private List<CustomField>						affectedStatusList;
-	
-	private List<CustomField>						familyIdList;
+	private CompoundPropertyModel<PedigreeVo> cpmModel;
 
-	private CheckBox									dobChkBox;
+	private List<CustomField> affectedStatusList;
 
-	private CheckBox									statusChkBox;
-	
-	private CheckBox									ageChkBox;
+	private List<CustomField> familyIdList;
 
-	protected AjaxButton								saveButton;
+	private CheckBox dobChkBox;
 
-	protected AjaxButton								cancelButton;
+	private CheckBox statusChkBox;
+
+	private CheckBox ageChkBox;
+
+	private ArkConfirmCheckBox inbreedingChkBox;
+
+	protected AjaxButton saveButton;
+
+	protected AjaxButton cancelButton;
 
 	public ConfigurationForm(String id, CompoundPropertyModel<PedigreeVo> cpmModel, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVO, AbstractDetailModalWindow modalWindow) {
 		super(id, cpmModel);
@@ -75,7 +81,7 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 	}
 
 	protected void initialiseSearchForm() {
-		
+
 		this.setOutputMarkupId(true);
 
 		final Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -83,50 +89,66 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 		final Study study = iArkCommonService.getStudy(studyId);
 		StudyPedigreeConfiguration config = study.getPedigreeConfiguration();
 
-		if(config!=null){
+		if (config != null) {
 			cpmModel.getObject().setPedigreeConfig(config);
 		}
-		
+
 		affectedStatusList = studyService.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		effectedStatusDDL = new DropDownChoice("pedigreeConfig.customField", this.affectedStatusList, defaultChoiceRenderer);
 		effectedStatusDDL.setOutputMarkupId(true);
-		
+
 		familyIdList = studyService.getFamilyIdCustomFieldsForPedigreeRelativesList(studyId);
-		familyIdDDL =  new DropDownChoice("pedigreeConfig.familyId", this.familyIdList, defaultChoiceRenderer);
+		familyIdDDL = new DropDownChoice("pedigreeConfig.familyId", this.familyIdList, defaultChoiceRenderer);
 		familyIdDDL.setOutputMarkupId(true);
-		
-		if(config !=null && config.isStatusAllowed() !=null  && config.isStatusAllowed()){
+
+		if (config != null && config.isStatusAllowed() != null && config.isStatusAllowed()) {
 			effectedStatusDDL.setEnabled(true);
-		}
-		else{
+		} else {
 			effectedStatusDDL.setEnabled(false);
 			cpmModel.getObject().getPedigreeConfig().setCustomField(null);
 		}
-		
+
 		dobChkBox = new CheckBox("pedigreeConfig.dobAllowed");
-		
+
 		statusChkBox = new CheckBox("pedigreeConfig.statusAllowed");
-		
+
 		statusChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
-			private static final long	serialVersionUID	= -4514605801401294450L;
+			private static final long serialVersionUID = -4514605801401294450L;
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				cpmModel.getObject().getPedigreeConfig().setCustomField(null);
 				if (cpmModel.getObject().getPedigreeConfig().isStatusAllowed()) {
-					effectedStatusDDL.setEnabled(true); 
-				}
-				else {
+					effectedStatusDDL.setEnabled(true);
+				} else {
 					effectedStatusDDL.setEnabled(false);
 				}
 				target.add(effectedStatusDDL);
 			}
+			
 		});
-		
-		
+
 		ageChkBox = new CheckBox("pedigreeConfig.ageAllowed");
+			
+		inbreedingChkBox = new ArkConfirmCheckBox("pedigreeConfig.inbreedAllowed",new StringResourceModel("confirmChange", this, null),new Model<Boolean>(isInbreedAllowed(config)) ){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				cpmModel.getObject().getPedigreeConfig().setInbreedAllowed(getModel().getObject());				
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				// TODO Auto-generated method stub
+				return BooleanUtils.isNotTrue(isInbreedAllowed(cpmModel.getObject().getPedigreeConfig()));
+			}
+		};
 
 		saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE) {
 
@@ -139,7 +161,9 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 					configObject.setStudy(study);
 				}
 				studyService.saveOrUpdateStudyPedigreeConfiguration(configObject);
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.study.web.Constants.INBREED_ALLOWED, configObject.getInbreedAllowed());
 				modalWindow.close(target);
+
 			}
 		};
 
@@ -160,6 +184,17 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 		add(saveButton);
 		add(cancelButton);
 		add(familyIdDDL);
-
+		add(inbreedingChkBox);
 	}
+	
+	private Boolean isInbreedAllowed(StudyPedigreeConfiguration config){
+		Boolean result=false;
+		if (config != null && BooleanUtils.isTrue(config.getInbreedAllowed())) {
+			result=true;
+		} else {
+			result=false;
+		}
+		return result;
+	}
+
 }

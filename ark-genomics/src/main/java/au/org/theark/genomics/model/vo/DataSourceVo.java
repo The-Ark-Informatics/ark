@@ -114,6 +114,7 @@ public class DataSourceVo implements Serializable {
 		this.dataSource.setPath(path);;
 		this.dataSource.setDataCenter(dataCenter);;
 		this.dataSource.setName(fileName);
+		this.dataSource.setDirectory("yes".equalsIgnoreCase(directory)?true:false);
 		this.mode = Constants.MODE_NEW;
 	}
 

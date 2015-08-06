@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.model.spark.entity.Analysis;
 import au.org.theark.core.model.spark.entity.Computation;
 import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.DataSourceType;
@@ -39,16 +40,25 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 			getSession().update(dataSource);
 		}
 	}
-	
-	public long saveOrUpdate(Computation computatin){
-		Long id =null;
+
+	public long saveOrUpdate(Computation computatin) {
+		Long id = null;
 		if (computatin.getId() == null || computatin.getId() == 0) {
 			getSession().save(computatin);
 		} else {
 			getSession().update(computatin);
 		}
-		id=computatin.getId();
+		id = computatin.getId();
 		return id;
+	}
+
+	@Override
+	public void saveOrUpdate(Analysis analysis) {
+		if (analysis.getId() == null || analysis.getId() == 0) {
+			getSession().save(analysis);
+		} else {
+			getSession().update(analysis);
+		}
 	}
 
 	public void delete(MicroService microService) {
@@ -58,7 +68,7 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 	public void delete(DataSource dataSource) {
 		getSession().delete(dataSource);
 	}
-	
+
 	public void delete(Computation computation) {
 		getSession().delete(computation);
 	}
@@ -81,12 +91,21 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		Criteria criteria = getSession().createCriteria(DataSourceType.class);
 		return criteria.list();
 	}
-	
-	public List<Computation> searchComputations(Computation computation, Long studyId){
-		Criteria criteria = getSession().createCriteria(Computation.class);
+
+	public List<Computation> searchComputations(Computation computation, Long studyId) {
+		Criteria criteria = getSession().createCriteria(Computation.class, "c");
 		criteria.createAlias("microService", "ms", JoinType.INNER_JOIN);
 		criteria.setFetchMode("microService", FetchMode.JOIN);
 		criteria.add(Restrictions.eq("ms.studyId", studyId));
+
+		if (computation.getId() != null) {
+			criteria.add(Restrictions.eq("c.id", computation.getId()));
+		}
+
+		if (computation.getName() != null) {
+			criteria.add(Restrictions.like("c.name", computation.getName(), MatchMode.ANYWHERE));
+		}
+
 		List<Computation> list = criteria.list();
 		return list;
 	}
@@ -111,6 +130,39 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		list = criteria.list();
 
 		return list.size() > 0 ? list.get(0) : null;
+	}
+
+	public List<DataSource> searchDataSources(MicroService microService) {
+		Criteria criteria = getSession().createCriteria(DataSource.class);
+		criteria.add(Restrictions.eq(Constants.MICROSERVICE, microService));
+		List<DataSource> list = criteria.list();
+		return list;
+	}
+
+	public List<Computation> searchComputation(MicroService microService) {
+		Criteria criteria = getSession().createCriteria(Computation.class);
+		criteria.add(Restrictions.eq(Constants.MICROSERVICE, microService));
+		List<Computation> list = criteria.list();
+		return list;
+	}
+	
+	public List<Analysis> searchAnalysis(Analysis analysis, Long studyId){
+		Criteria criteria = getSession().createCriteria(Analysis.class,"a");
+		criteria.createAlias("microService", "ms", JoinType.INNER_JOIN);
+		criteria.add(Restrictions.eq("ms.studyId", studyId));
+		if (analysis.getId() != null) {
+			criteria.add(Restrictions.eq("a.id", analysis.getId()));
+		}
+
+		if (analysis.getName() != null) {
+			criteria.add(Restrictions.like("a.name", analysis.getName(), MatchMode.ANYWHERE));
+		}
+		criteria.setFetchMode("microService", FetchMode.JOIN);
+		criteria.setFetchMode("dataSource", FetchMode.JOIN);
+		criteria.setFetchMode("computation", FetchMode.JOIN);
+		
+		List<Analysis> list= criteria.list();
+		return list;
 	}
 
 }

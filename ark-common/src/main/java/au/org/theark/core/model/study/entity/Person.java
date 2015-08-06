@@ -18,8 +18,10 @@
  ******************************************************************************/
 package au.org.theark.core.model.study.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -37,6 +39,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -80,7 +83,7 @@ public class Person implements java.io.Serializable {
 	private Set<LinkSubjectContact> linkSubjectContactsForContactKey = new HashSet<LinkSubjectContact>(0);
 	private Set<LinkSubjectContact> linkSubjectContactsForSubjectKey = new HashSet<LinkSubjectContact>(0);
 	private Set<PersonLastnameHistory> personLastnameHistory = new HashSet<PersonLastnameHistory>(0);
-	private Set<OtherID> otherIDs = new HashSet<OtherID>(0);
+	private List<OtherID> otherIDs = new ArrayList<OtherID>(0);
 
 	public Person() {
 	}
@@ -312,12 +315,12 @@ public class Person implements java.io.Serializable {
 		return personLastnameHistory;
 	}
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
-	public Set<OtherID> getOtherIDs() {
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person", orphanRemoval=true)
+	public List<OtherID> getOtherIDs() {
 		return otherIDs;
 	}
 	
-	public void setOtherIDs(Set<OtherID> otherIDs) {
+	public void setOtherIDs(List<OtherID> otherIDs) {
 		this.otherIDs = otherIDs;
 	}
 
