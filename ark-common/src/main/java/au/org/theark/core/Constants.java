@@ -244,6 +244,8 @@ public class Constants {
 	public static final String ENTITY_TYPE_SUBJECT_FILE = "Subject File";
 	public static final String ENTITY_TYPE_STUDY_UPLOAD = "Study Upload";
 	public static final String ENTITY_TYPE_CUSTOM_FIELD = "Custom Field";
+	//Add the new custom field category.
+	public static final String ENTITY_TYPE_CUSTOM_FIELD_CATEGORY = "Custom Field Category";
 	public static final String ENTITY_TYPE_CUSTOM_FIELD_DISPLAY = "Custom Field Display";
 	public static final String ENTITY_TYPE_CUSTOM_FIELD_GROUP = "Custom Field Group";
 	public static final String ENTITY_TYPE_INV_SITE = "InvSite";
@@ -293,6 +295,8 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION = "LIMS_COLLECTION";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN = "BIOSPECIMEN";
 	public static final String FUNCTION_KEY_VALUE_INVENTORY = "INVENTORY";
+	//Add on 2015-06-22 to categories  custom field
+	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY = "SUBJECT_CUSTOM_FIELD_CATEGORY";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD = "SUBJECT_CUSTOM_FIELD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA = "SUBJECT_CUSTOM_DATA";
 	public static final String FUNCTION_KEY_VALUE_MODULE = "MODULE";

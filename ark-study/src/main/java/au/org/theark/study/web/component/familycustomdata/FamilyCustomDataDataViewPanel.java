@@ -13,9 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
 import au.org.theark.study.model.vo.FamilyCustomDataVO;
@@ -32,18 +36,20 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	protected IArkCommonService<Void>							iArkCommonService;
+	
 	protected ArkDataProvider2<FamilyCustomDataVO, FamilyCustomFieldData> scdDataProvider;
 	protected DataView<FamilyCustomFieldData> dataView;
 
 	public FamilyCustomDataDataViewPanel(String id, CompoundPropertyModel<FamilyCustomDataVO> cpModel) {
 		super(id);
 		this.cpModel = cpModel;
-
 		this.setOutputMarkupPlaceholderTag(true);
 	}
 
-	public FamilyCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage, String type) {
-		initialiseDataView(type);
+	public FamilyCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage, CustomFieldCategory customFieldCategory) {
+		initialiseDataView(customFieldCategory);
 		if (numRowsPerPage != null) {
 			dataView.setItemsPerPage(numRowsPerPage); // iArkCommonService.getRowsPerPage());
 		}
@@ -52,7 +58,7 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 		return this;
 	}
 
-	private void initialiseDataView(String type) {
+	private void initialiseDataView(CustomFieldCategory customFieldCategory) {
 		// TODO fix for READ permission check
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 			// Data provider to get pageable results from backend
@@ -61,7 +67,6 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 				public int size() {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-
 					return (int) studyService.getFamilyCustomFieldDataCount(lss, arkFunction);// TODO
 																								// safeintconversion
 				}
@@ -69,8 +74,10 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 				public Iterator<FamilyCustomFieldData> iterator(int first, int count) {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-
-					List<FamilyCustomFieldData> familyCustomDataList = studyService.getFamilyCustomFieldDataList(lss, arkFunction, first, count);
+					String familyId=criteriaModel.getObject().getFamilyId();
+					CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.FAMILY);
+					List<FamilyCustomFieldData> familyCustomDataList = studyService.getFamilyCustomFieldDataList(lss, arkFunction,customFieldCategory,customFieldType, first, count);
+					//List<FamilyCustomFieldData> familyCustomDataList = studyService.getFamilyCustomFieldDataListByCategory(lss.getStudy(), familyId, arkFunction, customFieldCategory, customFieldType, first, count);
 					cpModel.getObject().setCustomFieldDataList(familyCustomDataList);
 					return cpModel.getObject().getCustomFieldDataList().iterator();
 				}

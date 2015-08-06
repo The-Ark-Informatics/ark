@@ -100,15 +100,6 @@ public class SearchResultListPanel extends Panel {
 
 				// Component Name Link
 				item.add(buildLinkWMC(item));
-
-				// Field Label
-				if (field.getFieldType() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_FIELD_LABEL, field.getFieldLabel()));
-				}
-				else {
-					item.add(new Label(Constants.CUSTOMFIELD_FIELD_LABEL, ""));
-				}
-
 				// Field Type
 				if (field.getFieldType() != null) {
 					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, field.getFieldType().getName()));
@@ -116,44 +107,34 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, ""));
 				}
-
-				// Description
-				if (field.getDescription() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_DESCRIPTION, field.getDescription()));
+				// Field Label
+				if (field.getFieldLabel() != null) {
+					item.add(new Label(Constants.CUSTOMFIELD_FIELD_LABEL, field.getFieldLabel()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_DESCRIPTION, ""));
+					item.add(new Label(Constants.CUSTOMFIELD_FIELD_LABEL, ""));
 				}
-
-				// Units
-				if (field.getUnitType() != null && field.getUnitType().getName() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, field.getUnitType().getName()));
-				}
-				else if(field.getUnitTypeInText() !=null ){
-					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, field.getUnitTypeInText()));
-				}
-				else  {
-					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, ""));
-				}
-				
-				
-
-				// Min
-				if (field.getMinValue() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_MIN_VALUE, field.getMinValue()));
+				// custom field type
+				if (field.getCustomFieldType() != null) {
+					item.add(new Label(Constants.CUSTOMFIELD_CUSTOME_FIELD_TYPE, field.getCustomFieldType().getName()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_MIN_VALUE, ""));
+					item.add(new Label(Constants.CUSTOMFIELD_CUSTOME_FIELD_TYPE, ""));
 				}
-
-				// Max
-				if (field.getMaxValue() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_MAX_VALUE, field.getMaxValue()));
+				//custom file category
+				if (field.getCustomFieldCategory() != null) {
+					item.add(new Label(Constants.CUSTOMFIELD_CATEGORY, field.getCustomFieldCategory().getName()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_MAX_VALUE, ""));
+					item.add(new Label(Constants.CUSTOMFIELD_CATEGORY, ""));
 				}
-
+				//custom file category order number
+				if (field.getCustomFieldCategory()!=null && field.getCustomFieldCategory().getOrderNumber() != null) {
+					item.add(new Label(Constants.CUSTOMFIELD_CATEGORY_ORDERNUMBER, field.getCustomFieldCategory().getOrderNumber().toString()));
+				}
+				else {
+					item.add(new Label(Constants.CUSTOMFIELD_CATEGORY_ORDERNUMBER, ""));
+				}
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override

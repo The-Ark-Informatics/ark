@@ -53,9 +53,9 @@ public class CustomField implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
-	private Category category;
+	private CustomFieldCategory customFieldCategory;
 	private String description;
-	private FieldType fieldType;
+	private FieldType fieldType;//Charactor,Number,Date,Look up.
 	private Study study;
 	private ArkFunction arkFunction;
 	private UnitType unitType;
@@ -68,7 +68,7 @@ public class CustomField implements Serializable {
 	private String defaultValue;
 	//Add unit type as String
 	private String unitTypeInText;
-	private CustomFieldType customFieldType;
+	private CustomFieldType customFieldType;//Subject or Family
 
 	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
 
@@ -97,18 +97,17 @@ public class CustomField implements Serializable {
 	public void setStudy(Study study) {
 		this.study = study;
 	}
-
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CATEGORY_ID", nullable = false)
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CATEGORY_ID")
+	public CustomFieldCategory getCustomFieldCategory() {
+		return customFieldCategory;
+	}
+
+	public void setCustomFieldCategory(CustomFieldCategory customFieldCategory) {
+		this.customFieldCategory = customFieldCategory;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_TYPE_ID", nullable = false)
 	public FieldType getFieldType() {

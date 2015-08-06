@@ -16,9 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.core.web.component.customfield;
+package au.org.theark.core.web.component.customfieldcategory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,53 +39,49 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
+import au.org.theark.core.vo.CustomFieldCategoryVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.core.web.component.customfield.form.ContainerForm;
+import au.org.theark.core.web.component.customfieldcategory.form.ContainerForm;
+
 
 /**
- * @author elam
  * 
+ * @author smaddumarach
+ *
  */
 @SuppressWarnings("unchecked")
-public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFieldVO> {
+public class CustomFieldCategoryContainerPanel extends AbstractContainerPanel<CustomFieldCategoryVO> {
 
-	private static final long serialVersionUID = -1L;
-	private static final Logger log = LoggerFactory.getLogger(CustomFieldContainerPanel.class);
+	private static final long							serialVersionUID	= -1L;
+	private static final Logger							log					= LoggerFactory.getLogger(CustomFieldCategoryContainerPanel.class);
 
-	private ContainerForm containerForm;
+	private ContainerForm								containerForm;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
+	private IArkCommonService							iArkCommonService;
 
-	private DataView<CustomField> dataView;
-	private ArkDataProvider2<CustomField, CustomField> customFieldProvider;
-	private boolean unitTypeDropDownOn;
-	private boolean subjectCustomField;
-
+	private DataView<CustomFieldCategory>						dataView;
+	private ArkDataProvider2<CustomFieldCategory, CustomFieldCategory>	customFieldCategoryProvider;
+	
+	
+	
 	/**
+	 * 
 	 * @param id
-	 *            -
-	 * @param arkContextMarkup
-	 *            -
 	 * @param useCustomFieldDisplay
-	 *            - enables saving of the VO's customFieldDisplay as well as the
-	 *            customField
 	 * @param associatedPrimaryFn
-	 *            - primary function that the customFields will belong to
 	 */
-	public CustomFieldContainerPanel(String id, boolean useCustomFieldDisplay, ArkFunction associatedPrimaryFn, boolean unitTypeDropDownOn, boolean subjectCustomField) {
+	public CustomFieldCategoryContainerPanel(String id, boolean useCustomFieldCategoryDisplay, ArkFunction associatedPrimaryFn) {
 		super(id);
 		/* Initialise the CPM */
-		this.unitTypeDropDownOn = unitTypeDropDownOn;
-		this.subjectCustomField = subjectCustomField;
-		cpModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
-		cpModel.getObject().getCustomField().setArkFunction(associatedPrimaryFn);
-		cpModel.getObject().setUseCustomFieldDisplay(useCustomFieldDisplay);
+		cpModel = new CompoundPropertyModel<CustomFieldCategoryVO>(new CustomFieldCategoryVO());
+		cpModel.getObject().getCustomFieldCategory().setArkFunction(associatedPrimaryFn);
+		//cpModel.getObject().setUseCustomFieldCategoryDisplay(useCustomFieldCategoryDisplay);
 
 		prerenderContextCheck();
 
@@ -114,16 +112,14 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 			arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
 
 			if (study != null && arkModule != null) {
-				cpModel.getObject().getCustomField().setStudy(study);
-				// TODO: Maybe check that the primary function supplied is of
-				// the same module?
+				cpModel.getObject().getCustomFieldCategory().setStudy(study);
+				// TODO: Maybe check that the primary function supplied is of the same module?
 			}
 		}
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-		SearchPanel searchPanel = new SearchPanel("searchPanel", cpModel, arkCrudContainerVO, feedBackPanel, this.unitTypeDropDownOn, this.subjectCustomField);
-
+		SearchPanel searchPanel = new SearchPanel("searchPanel", cpModel, arkCrudContainerVO, feedBackPanel);//,this.unitTypeDropDownOn);
 		searchPanel.initialisePanel();
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
@@ -131,54 +127,50 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 
 	protected WebMarkupContainer initialiseDetailPanel() {
 		Panel detailPanel = new EmptyPanel("detailPanel");
-		detailPanel.setOutputMarkupPlaceholderTag(true); // ensure this is
-															// replaceable
+		detailPanel.setOutputMarkupPlaceholderTag(true); // ensure this is replaceable
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("resultListPanel", cpModel, arkCrudContainerVO, feedBackPanel, this.unitTypeDropDownOn, this.subjectCustomField);
-
+		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("resultListPanel", cpModel, arkCrudContainerVO, feedBackPanel);
 		// Data providor to paginate resultList
-		customFieldProvider = new ArkDataProvider2<CustomField, CustomField>() {
-
-			private static final long serialVersionUID = 1L;
-
+		customFieldCategoryProvider = new ArkDataProvider2<CustomFieldCategory, CustomFieldCategory>() {
+			private static final long	serialVersionUID	= 1L;
 			public int size() {
-
-				if (criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
+				if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
 					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
-					return (int) iArkCommonService.getCustomFieldCount(criteriaModel.getObject());																									
-				} else {
-					return (int) iArkCommonService.getCustomFieldCount(criteriaModel.getObject());
+					return (int)iArkCommonService.getCustomFieldCategoryCount(criteriaModel.getObject());//todo safe int conversion
+				}
+				else{
+					return (int)iArkCommonService.getCustomFieldCategoryCount(criteriaModel.getObject());//todo safe int conversion
 				}
 			}
-
-			public Iterator<CustomField> iterator(int first, int count) {
-				List<CustomField> listCustomFields = new ArrayList<CustomField>();
+			@SuppressWarnings("static-access")
+			public Iterator<CustomFieldCategory> iterator(int first, int count) {
+				List<CustomFieldCategory> listCustomFieldCategories = new ArrayList<CustomFieldCategory>();
+				
 				if (isActionPermitted()) {
-					if (criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
-						listCustomFields = iArkCommonService.searchPageableCustomFieldsForPheno(criteriaModel.getObject(), first, count);
-					} else {
-						listCustomFields = iArkCommonService.searchPageableCustomFields(criteriaModel.getObject(), first, count);
-					}
+					//if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
+						//listCustomFields = iArkCommonService.searchPageableCustomFieldsForPheno(criteriaModel.getObject(), first, count);
+					//}
+					//else{
+					listCustomFieldCategories = iArkCommonService.searchPageableCustomFieldCategories(criteriaModel.getObject(), first, count);
+					//}
+					
 				}
-				return listCustomFields.iterator();
+				return CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(listCustomFieldCategories).iterator();
+				//return orderHierarchicalyCustomFieldCategories(listCustomFieldCategories).iterator();
 			}
 		};
 		// Set the criteria for the data provider
-		customFieldProvider.setCriteriaModel(new PropertyModel<CustomField>(cpModel, "customField"));
-
-		dataView = searchResultListPanel.buildDataView(customFieldProvider);
+		customFieldCategoryProvider.setCriteriaModel(new PropertyModel<CustomFieldCategory>(cpModel, "customFieldCategory"));
+		dataView = searchResultListPanel.buildDataView(customFieldCategoryProvider);
 		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
-
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void onAjaxEvent(AjaxRequestTarget target) {
+		private static final long	serialVersionUID	= 1L;
+		@Override
+		protected void onAjaxEvent(AjaxRequestTarget target) {
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 			}
 		};
@@ -187,5 +179,5 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
-
+	
 }

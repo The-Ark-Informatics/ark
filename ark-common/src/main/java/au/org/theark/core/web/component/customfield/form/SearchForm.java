@@ -18,11 +18,18 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.form;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -33,7 +40,11 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
@@ -43,6 +54,7 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.component.customfield.Constants;
 import au.org.theark.core.web.component.customfield.DetailPanel;
 import au.org.theark.core.web.form.AbstractSearchForm;
+
 
 /**
  * @author elam
@@ -59,6 +71,11 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 	private TextField<String> fieldIdTxtFld;
 	private TextField<String> fieldNameTxtFld;
 	private DropDownChoice<FieldType> fieldTypeDdc;
+	//Add custom field categories
+	private DropDownChoice<CustomFieldType>		customFieldTypeDdc;
+	private DropDownChoice<CustomFieldCategory>	customeFieldCategoryDdc;
+	private TextField<Long>					customeFieldCategoryOrderNoTxtFld;
+	//**************************************//
 	private TextArea<String> fieldDescriptionTxtAreaFld;
 	private TextField<String> fieldUnitsTxtFld;
 	private TextField<String> fieldUnitsInTextTxtFld;
@@ -69,6 +86,10 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 	private WebMarkupContainer panelCustomUnitTypeText;
 	private boolean unitTypeDropDownOn;
 	private boolean subjectCustomField;
+	private Collection<CustomFieldCategory> customFieldCategoryCollection;
+	private WebMarkupContainer categoryPanel;
+	private WebMarkupContainer orderNumberPanel;
+	
 
 	/**
 	 * @param id
@@ -82,7 +103,6 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.subjectCustomField = subjectCustomField;
 		initialiseFieldForm();
-
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
@@ -114,12 +134,25 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		fieldUnitsInTextTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE_TXT);
 		fieldMinValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
 		fieldMaxValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
+		initCustomFieldTypeDdc();
+		
+		//customfield category order Number.
+		customeFieldCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
+		customeFieldCategoryOrderNoTxtFld.setOutputMarkupId(true);
+		customeFieldCategoryOrderNoTxtFld.setEnabled(false);
+		
+		initCustomeFieldCategoryDdc();
 		initFieldTypeDdc();
 		addFieldComponents();
 	}
 
 	private void addFieldComponents() {
 		add(fieldIdTxtFld);
+		add(customFieldTypeDdc);
+		categoryPanel.add(customeFieldCategoryDdc);
+		add(categoryPanel);
+		orderNumberPanel.add(customeFieldCategoryOrderNoTxtFld);
+		add(orderNumberPanel);
 		add(fieldNameTxtFld);
 		add(fieldTypeDdc);
 		add(fieldDescriptionTxtAreaFld);
@@ -137,6 +170,86 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		add(fieldMinValueTxtFld);
 		add(fieldMaxValueTxtFld);
 	}
+	
+	/**
+	 * initialize Custom Filed Types.
+	 */
+	private void initCustomFieldTypeDdc() {
+		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes();
+		ChoiceRenderer customfieldTypeRenderer = new ChoiceRenderer(Constants.CUSTOM_FIELD_TYPE_NAME, Constants.CUSTOM_FIELD_TYPE_ID);
+		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE, (List) customFieldTypeCollection, customfieldTypeRenderer);
+		customFieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+		private static final long serialVersionUID = 1L;
+				@Override
+			    protected void onUpdate(AjaxRequestTarget target) {
+					cpModel.getObject().getCustomField().setCustomFieldType(customFieldTypeDdc.getModelObject());
+					Collection<CustomFieldCategory> customFieldCategoryCollection=getCategoriesListInCustomFieldsByCustomFieldType();
+					categoryPanel.remove(customeFieldCategoryDdc);
+					ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID);
+					customeFieldCategoryDdc = new DropDownChoice<CustomFieldCategory>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY, (List) customFieldCategoryCollection, customfieldCategoryRenderer);
+					customeFieldCategoryDdc.setOutputMarkupId(true);
+					customeFieldCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+						@Override
+						protected void onUpdate(AjaxRequestTarget target) {
+							customFieldCategoryChangeEvent(target);
+						}
+					});
+					customFieldCategoryChangeEvent(target);
+					categoryPanel.add(customeFieldCategoryDdc);
+			    	target.add(customeFieldCategoryDdc);
+			    	target.add(categoryPanel);
+			    }
+			});
+	}
+	/**
+	 * 
+	 * @param target
+	 */
+	private void customFieldCategoryChangeEvent(AjaxRequestTarget target) {
+		cpModel.getObject().getCustomField().setCustomFieldCategory(customeFieldCategoryDdc.getModelObject());
+		orderNumberPanel.remove(customeFieldCategoryOrderNoTxtFld);
+		customeFieldCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
+		customeFieldCategoryOrderNoTxtFld.setOutputMarkupId(true);
+		customeFieldCategoryOrderNoTxtFld.setEnabled(false);
+		orderNumberPanel.add(customeFieldCategoryOrderNoTxtFld);
+		target.add(customeFieldCategoryOrderNoTxtFld);
+		target.add(orderNumberPanel);
+	}
+	
+	
+	
+	/**
+	 * Initialize Custom Field Categories.
+	 */
+	private void initCustomeFieldCategoryDdc() {
+		categoryPanel = new WebMarkupContainer("categoryPanel");
+		categoryPanel.setOutputMarkupId(true);
+		orderNumberPanel = new WebMarkupContainer("orderNumberPanel");
+		orderNumberPanel.setOutputMarkupId(true);
+		java.util.Collection<CustomFieldCategory> customFieldCategoryCollection=getCategoriesListInCustomFieldsByCustomFieldType();
+		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID);
+		customeFieldCategoryDdc = new DropDownChoice<CustomFieldCategory>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY, (List) customFieldCategoryCollection, customfieldCategoryRenderer);
+		customeFieldCategoryDdc.setOutputMarkupId(true);
+	}
+	/**
+	 * Get custom field category collection from model.
+	 * @return
+	 */
+	private Collection<CustomFieldCategory> getCategoriesListInCustomFieldsByCustomFieldType(){
+		CustomField customField=cpModel.getObject().getCustomField();
+		Study study=customField.getStudy();
+		ArkFunction arkFunction=customField.getArkFunction();
+		CustomFieldType customFieldType=customField.getCustomFieldType();
+		try {
+			customFieldCategoryCollection =  iArkCommonService.getCategoriesListInCustomFieldsByCustomFieldType(study, arkFunction, customFieldType);
+			customFieldCategoryCollection=sortLst(remeoveDuplicates((List<CustomFieldCategory>)customFieldCategoryCollection));
+			
+		} catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return customFieldCategoryCollection;
+	}
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
@@ -151,22 +264,17 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 			this.info("No records match the specified criteria.");
 			target.add(feedbackPanel);
 		}
-
-		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);// Make
-																			// the
-																			// WebMarkupContainer
-																			// that
-																			// houses
-																			// the
-																			// search
-																			// results
-																			// visible
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 
 	// Reset button implemented in AbstractSearchForm
 
 	@Override
+	/**
+	 * 
+	 * @param target
+	 */
 	protected void onNew(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
 		// Instead of having to reset the criteria, we just copy the criteria
@@ -177,6 +285,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		// Copy all the customField attributes across from the SearchForm
 		newCF.setStudy(cf.getStudy());
 		newCF.setArkFunction(cf.getArkFunction());
+		newCF.setCustomFieldType(cf.getCustomFieldType());
+		newCF.setCustomFieldCategory(cf.getCustomFieldCategory());
 		newCF.setName(cf.getName());
 		newCF.setFieldType(cf.getFieldType());
 		newCF.setDescription(cf.getDescription());
@@ -204,5 +314,32 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 
 		preProcessDetailPanel(target);
 	}
+	/**
+	 * Sort custom field list according to the order number.
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> sortLst(List<CustomFieldCategory> customFieldLst){
+		//sort by order number.
+		Collections.sort(customFieldLst, new Comparator<CustomFieldCategory>(){
+		    public int compare(CustomFieldCategory custFieldCategory1, CustomFieldCategory custFieldCatCategory2) {
+		        return custFieldCategory1.getName().compareTo(custFieldCatCategory2.getName());
+		    }
+		});
+				return customFieldLst;
+	}
+	/**
+	 * Remove duplicates from list
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> remeoveDuplicates(List<CustomFieldCategory> customFieldLst){
+		Set<CustomFieldCategory> cusfieldCatSet=new HashSet<CustomFieldCategory>();
+		List<CustomFieldCategory> cusfieldCatLst=new ArrayList<CustomFieldCategory>();
+		cusfieldCatSet.addAll(customFieldLst);
+		cusfieldCatLst.addAll(cusfieldCatSet);
+				return cusfieldCatLst;
+	}
+	
 
 }

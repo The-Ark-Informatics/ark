@@ -16,30 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.study.model.vo;
+package au.org.theark.core.web.component.customfieldcategory.form;
 
-import java.io.Serializable;
+import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.vo.CustomFieldCategoryVO;
+import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.web.form.AbstractContainerForm;
 
-public class SubjectCustomDataVO extends StudyCustomDataVo<SubjectCustomFieldData> implements Serializable {
+/**
+ * @author elam
+ * 
+ */
+@SuppressWarnings("serial")
+public class ContainerForm extends AbstractContainerForm<CustomFieldCategoryVO> {
 
-	private static final long	serialVersionUID	= 1L;
-
-	private SubjectCustomFieldData subjectCustomFieldData;
-	
-	public SubjectCustomDataVO() {
-		super();
-		subjectCustomFieldData=new SubjectCustomFieldData();
-	}
-
-	public SubjectCustomFieldData getSubjectCustomFieldData() {
-		return subjectCustomFieldData;
-	}
-
-	public void setSubjectCustomFieldData(
-			SubjectCustomFieldData subjectCustomFieldData) {
-		this.subjectCustomFieldData = subjectCustomFieldData;
+	public ContainerForm(String id, CompoundPropertyModel<CustomFieldCategoryVO> model) {
+		super(id, model);
 	}
 
 }

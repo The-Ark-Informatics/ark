@@ -30,6 +30,8 @@ import java.util.Set;
 
 
 
+
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -82,7 +84,9 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -1808,6 +1812,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (Long) criteria.uniqueResult();
 	}
 	
+	
 	/**
 	 * The count can be based on CustomFieldDisplay only instead of a left join with it using FamilyCustomFieldData
 	 */
@@ -1843,7 +1848,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * then applies the restrictions on study and module.
 	 * </p>
 	 */
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 
 		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
 
@@ -1856,6 +1861,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
 		sb.append("  where cfd.customField.study.id = :studyId");
 		sb.append(" and cfd.customField.arkFunction.id = :functionId");
+		//Add new requirement for the category
+		if(customFieldCategory!=null){
+			sb.append(" and cfd.customField.customFieldCategory.id = :customFieldCategotyId");
+		}
 //		if(type == null || "SUBJECT".equalsIgnoreCase(type)){
 		sb.append(" and (cft is null or cft.name = :type)");
 //		}else{
@@ -1867,7 +1876,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("functionId", arkFunction.getId());
-		query.setParameter("type", "SUBJECT");
+		//Add type and category
+		if(customFieldCategory!=null){
+			query.setParameter("customFieldCategotyId", customFieldCategory.getId());
+		}
+		query.setParameter("type", customFieldType.getName());
 		query.setFirstResult(first);
 		query.setMaxResults(count);
 
@@ -1890,6 +1903,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		return subjectCustomFieldDataList;
 	}
+	
 
 	/**
 	 * <p>
@@ -1897,7 +1911,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * then applies the restrictions on study and module.
 	 * </p>
 	 */
-	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 
 		List<FamilyCustomFieldData> familyCustomFieldDataList = new ArrayList<FamilyCustomFieldData>();
 
@@ -1911,6 +1925,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" with fieldList.familyId = :familyId ");
 		sb.append("  where cfd.customField.study.id = :studyId");
 		sb.append(" and cfd.customField.arkFunction.id = :functionId");
+		//Add new requirement for the category
+		if(customFieldCategory!=null){
+			sb.append(" and cfd.customField.customFieldCategory.id = :customFieldCategotyId");
+		}
 //		if(type == null || "SUBJECT".equalsIgnoreCase(type)){
 //			sb.append(" and (cft is null or cft.name = :type)");
 //		}else{
@@ -1922,7 +1940,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("familyId", getSubjectFamilyId(linkSubjectStudyCriteria.getStudy().getId(),linkSubjectStudyCriteria.getSubjectUID()));
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("functionId", arkFunction.getId());
-		query.setParameter("type", "FAMILY");
+		//Add type and category
+		if(customFieldCategory!=null){
+			query.setParameter("customFieldCategotyId", customFieldCategory.getId());
+		}
+		query.setParameter("type", customFieldType.getName());
 		query.setFirstResult(first);
 		query.setMaxResults(count);
 
@@ -1951,7 +1973,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		String result=null;
 		
-		StringBuffer sb= new StringBuffer("select scfd.TEXT_DATA_VALUE from study.link_subject_study lss left outer join study.study st on lss.STUDY_ID = st.ID left outer join study.study_pedigree_config spc on spc.study_id = st.ID left outer join study.custom_field cf on cf.ID = spc.family_id left outer join study.custom_field_display cfd on cfd.custom_field_id = cf.id left outer join study.subject_custom_field_data scfd on scfd.CUSTOM_FIELD_DISPLAY_ID = cfd.id and scfd.LINK_SUBJECT_STUDY_ID = lss.ID where st.ID= :studyId and lss.SUBJECT_UID = :subjectUID and spc.family_id is not null");
+		StringBuffer sb= new StringBuffer("select scfd.TEXT_DATA_VALUE from "
+				+ "study.link_subject_study lss "
+				+ "left outer join study.study st on lss.STUDY_ID = st.ID "
+				+ "left outer join study.study_pedigree_config spc on spc.study_id = st.ID "
+				+ "left outer join study.custom_field cf on cf.ID = spc.family_id "
+				+ "left outer join study.custom_field_display cfd on cfd.custom_field_id = cf.id "
+				+ "left outer join study.subject_custom_field_data scfd on scfd.CUSTOM_FIELD_DISPLAY_ID = cfd.id "
+				+ "and scfd.LINK_SUBJECT_STUDY_ID = lss.ID "
+				+ "where st.ID= :studyId and lss.SUBJECT_UID = :subjectUID and spc.family_id is not null");
 		
 		Query query = getSession().createSQLQuery(sb.toString());
 	    query.setParameter("studyId", studyId);
@@ -1959,6 +1989,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	    result = (String) query.uniqueResult();
 	    return result;
 	}
+	
+	
+	
+	
 	
 	/**
 	 * Insert a new record of type SubjectCustomFieldData
@@ -2482,7 +2516,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
 		criteria.add(Restrictions.isNull("cf.encodedValues"));
 		criteria.add(Restrictions.eq("ft.name","CHARACTER"));
-		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "STUDY")));
+		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "SUBJECT")));
 		
 		pedigreeCustomFields = criteria.list();
 
@@ -2618,5 +2652,5 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		return criteria;
 	}
-	
+		
 }

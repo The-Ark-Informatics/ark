@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.form;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -46,12 +47,14 @@ import org.apache.wicket.validation.validator.StringValidator;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.model.study.entity.Category;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -89,8 +92,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 	private TextArea<String>						fieldDescriptionTxtAreaFld;
 	private DropDownChoice<UnitType>				fieldUnitTypeDdc;
-	private DropDownChoice<Category>				fieldCategoryDdc;
-	private DropDownChoice<CustomFieldType>			fieldCustomFieldTypeDdc;
+	private DropDownChoice<CustomFieldCategory>		customeFieldCategoryDdc;
+	private DropDownChoice<CustomFieldType>			customFieldTypeDdc;
 	
 	//Add unit type as text
 	private TextField<String>						fieldUnitTypeTxtFld;
@@ -121,7 +124,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	private boolean 								unitTypeDropDownOn;
 	private boolean 								subjectCustomField;
 	
-	private HistoryButtonPanel historyButtonPanel;
+	private HistoryButtonPanel 						historyButtonPanel;
+	private TextField<Long>						customeFieldCategoryOrderNoTxtFld;
+	private  WebMarkupContainer						categoryPanel;
+	private  WebMarkupContainer						orderNumberPanel;
+	//private Collection<CustomFieldCategory> customFieldCategoryCollection;
+	
 
 	/**
 	 * Constructor
@@ -157,7 +165,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			}
 		}
 	}
-
+	/**
+	 * initialise Field Types.
+	 */
 	private void initFieldTypeDdc() {
 		List<FieldType> fieldTypeCollection = iArkCommonService.getFieldTypes();
 		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(Constants.FIELDTYPE_NAME, Constants.FIELDTYPE_ID);
@@ -179,20 +189,69 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				target.add(minMaxValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
 				target.add(fieldUnitTypeDdc);
-				if(fieldCategoryDdc != null) {
+				/*if(fieldCategoryDdc != null) {
 					target.add(fieldCategoryDdc);
-				}
+				}*/
 				//Add field unite type as text
 				target.add(fieldUnitTypeTxtFld);
 				target.add(fieldAllowMultiselectChkBox);
 			}
 		});
 	}
-	
+	/**
+	 * initialise custom field types.
+	 */
 	private void initCustomFieldTypeDdc(){
 		List<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes();
 		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(Constants.FIELDTYPE_NAME, Constants.FIELDTYPE_ID);
-		fieldCustomFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE, customFieldTypeCollection, fieldTypeRenderer);
+		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE, customFieldTypeCollection, fieldTypeRenderer);
+		customFieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long serialVersionUID = 1L;
+					@Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+						cpModel.getObject().getCustomField().setCustomFieldType(customFieldTypeDdc.getModelObject());
+						Collection<CustomFieldCategory> customFieldCategoryCollection=getAvailableAllCategoryListInStudyByCustomFieldType();
+						categoryPanel.remove(customeFieldCategoryDdc);
+						ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID);
+						customeFieldCategoryDdc = new DropDownChoice<CustomFieldCategory>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY, (List) customFieldCategoryCollection, customfieldCategoryRenderer);
+						customeFieldCategoryDdc.setOutputMarkupId(true);
+						customeFieldCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+							@Override
+							protected void onUpdate(AjaxRequestTarget target) {
+								customFieldCategoryChangeEvent(target);
+							}
+						});
+						customFieldCategoryChangeEvent(target);
+						categoryPanel.add(customeFieldCategoryDdc);
+				    	target.add(customeFieldCategoryDdc);
+				    	target.add(categoryPanel);
+				    }
+				});
+	}
+	
+	private void customFieldCategoryChangeEvent(AjaxRequestTarget target) {
+		cpModel.getObject().getCustomField().setCustomFieldCategory(customeFieldCategoryDdc.getModelObject());
+		orderNumberPanel.remove(customeFieldCategoryOrderNoTxtFld);
+		customeFieldCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
+		customeFieldCategoryOrderNoTxtFld.setOutputMarkupId(true);
+		customeFieldCategoryOrderNoTxtFld.setEnabled(false);
+		orderNumberPanel.add(customeFieldCategoryOrderNoTxtFld);
+		target.add(customeFieldCategoryOrderNoTxtFld);
+		target.add(orderNumberPanel);
+	}
+	
+	/**
+	 * Initialize Custom Field Type Categories.
+	 */
+	private void initCustomeFieldCategoryDdc() {
+		categoryPanel=new WebMarkupContainer("categoryPanel");
+		categoryPanel.setOutputMarkupId(true);
+		orderNumberPanel=new WebMarkupContainer("orderNumberPanel");
+		orderNumberPanel.setOutputMarkupId(true);
+		java.util.Collection<CustomFieldCategory> customFieldCategoryCollection=getAvailableAllCategoryListInStudyByCustomFieldType();
+		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID);
+		customeFieldCategoryDdc = new DropDownChoice<CustomFieldCategory>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY, (List) customFieldCategoryCollection, customfieldCategoryRenderer);
+		customeFieldCategoryDdc.setOutputMarkupId(true);
 	}
 
 	private void updateEncodedValueFld() {
@@ -231,7 +290,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 
 	private void updateCategoryDdc() {
-		Category category = getModelObject().getCustomField().getCategory();
+		CustomFieldCategory category = getModelObject().getCustomField().getCustomFieldCategory();
 		/*if (category != null && !category.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
 			// Only allowed to use unitType when fieldType != DATE
 			fieldUnitTypeDdc.setEnabled(true);
@@ -244,55 +303,62 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		//TODO dependencies?
 		//have to figure out what dependencies exist
 	}
-
+	/**
+	 * initialise max and min values.
+	 */
 	private void initMinMaxValuePnls() {
 		FieldType fieldType = getModelObject().getCustomField().getFieldType();
-		if (fieldType == null || fieldType.getName().equals(Constants.CHARACTER_FIELD_TYPE_NAME)) {
-			// Create disabled min and max value entry panels for fieldType = unspecified (null) / CHARACTER
-			// dummyModel is required to ensure Wicket doesn't try to find the textDateValue in the CompoundPropertyModel
-			IModel<String> dummyModel = new IModel<String>() {
-
-				public String getObject() {
-					return null;
-				}
-
-				public void setObject(String object) {
-				}
-
-				public void detach() {
-				}
-
-			};
-			minValueEntryPnl = new TextDataEntryPanel("minValueEntryPanel", dummyModel, new Model<String>("MinValue"));
-			minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-			minValueEntryPnl.setEnabled(false);
-			maxValueEntryPnl = new TextDataEntryPanel("maxValueEntryPanel", dummyModel, new Model<String>("MinValue"));
-			maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-			maxValueEntryPnl.setEnabled(false);
-		}
-		// Not supporting min and max value for CHARACTER fieldTypes
-		else if (fieldType.getName().equals(Constants.NUMBER_FIELD_TYPE_NAME)) {
-			// NUMBER fieldType
-			IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
-			IModel<Double> maxValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
-			minValueEntryPnl = new NumberDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
-			minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-			maxValueEntryPnl = new NumberDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
-			maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-		}
-		else if (fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
-			// DATE fieldType
-			IModel<Date> minValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-			IModel<Date> maxValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-			minValueEntryPnl = new DateDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
-			minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-			maxValueEntryPnl = new DateDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
-			maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-		}
-		minMaxValueEntryWMC.addOrReplace(minValueEntryPnl);
-		minMaxValueEntryWMC.addOrReplace(maxValueEntryPnl);
+		
+			if (fieldType == null || fieldType.getName().equals(Constants.CHARACTER_FIELD_TYPE_NAME) 
+					|| fieldType.getName().equals(Constants.LOOKUP_FIELD_TYPE_NAME)) {
+				// Create disabled min and max value entry panels for fieldType = unspecified (null) / CHARACTER
+				// dummyModel is required to ensure Wicket doesn't try to find the textDateValue in the CompoundPropertyModel
+				IModel<String> dummyModel = new IModel<String>() {
+	
+					public String getObject() {
+						return null;
+					}
+	
+					public void setObject(String object) {
+					}
+	
+					public void detach() {
+					}
+	
+				};
+				minValueEntryPnl = new TextDataEntryPanel("minValueEntryPanel", dummyModel, new Model<String>("MinValue"));
+				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				minValueEntryPnl.setEnabled(false);
+				maxValueEntryPnl = new TextDataEntryPanel("maxValueEntryPanel", dummyModel, new Model<String>("MinValue"));
+				maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				maxValueEntryPnl.setEnabled(false);
+			}
+			// Not supporting min and max value for CHARACTER fieldTypes
+			else if (fieldType.getName().equals(Constants.NUMBER_FIELD_TYPE_NAME)) {
+				// NUMBER fieldType
+				IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
+				IModel<Double> maxValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
+				minValueEntryPnl = new NumberDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
+				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				maxValueEntryPnl = new NumberDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
+				maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+			}
+			else if (fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
+				// DATE fieldType
+				IModel<Date> minValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
+				IModel<Date> maxValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
+				minValueEntryPnl = new DateDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
+				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				maxValueEntryPnl = new DateDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
+				maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+			}
+			minMaxValueEntryWMC.addOrReplace(minValueEntryPnl);
+			minMaxValueEntryWMC.addOrReplace(maxValueEntryPnl);
+		
 	}
-
+	/**
+	 * initialise unit types.
+	 */
 	private void initUnitTypeDdc() {
 		UnitType unitTypeCriteria = new UnitType();
 		unitTypeCriteria.setArkFunction(cpModel.getObject().getCustomField().getArkFunction());
@@ -311,7 +377,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	}
 
 	/**
-	 * Call this after the constructor is finished
+	 * Call this after the constructor is finished in detail panel.
 	 */
 	public void initialiseDetailForm() {
 		fieldIdTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_ID);
@@ -322,10 +388,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		fieldMissingValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
 		fieldDisplayRequiredChkBox = new CheckBox(Constants.FIELDVO_CUSTOMFIELDDISPLAY_REQUIRED);
 		fieldAllowMultiselectChkBox = new CheckBox(Constants.FIELDVO_CUSTOMFIELD_ALLOW_MULTISELECT) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
+		private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public boolean isEnabled() {
@@ -340,10 +403,15 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		else {
 			customFieldDisplayPositionPanel = new EmptyPanel("customFieldDisplayPositionPanel");
 		}
+		//customfield category order Number.
+		customeFieldCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
+		customeFieldCategoryOrderNoTxtFld.setOutputMarkupId(true);
+		customeFieldCategoryOrderNoTxtFld.setEnabled(false);
 
 		// Initialise Drop Down Choices
 		initFieldTypeDdc();
 		initCustomFieldTypeDdc();
+		initCustomeFieldCategoryDdc();
 		initUnitTypeDdc();
 
 		// Min and Max Value panels rely on fieldTypeDdc being already established
@@ -372,6 +440,25 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		addDetailFormComponents();
 
 		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+	}
+	
+	/**
+	 * Get custom field category collection from model.
+	 * @return
+	 */
+	private Collection<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(){
+		
+		CustomField customField=cpModel.getObject().getCustomField();
+		Study study=customField.getStudy();
+		CustomFieldType customFieldType=customField.getCustomFieldType();
+		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
+		try {
+			customFieldCategoryCollection =  iArkCommonService.getAvailableAllCategoryListInStudyByCustomFieldType(study, customFieldType);
+		} catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return customFieldCategoryCollection;
 	}
 
 	protected void attachValidators() {
@@ -510,9 +597,13 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		customFieldDetailWMC.add(fieldDescriptionTxtAreaFld);
 		customFieldDetailWMC.add(fieldTypeDdc);
 		
-		panelCustomFieldTypeDropDown.add(fieldCustomFieldTypeDdc);
+		panelCustomFieldTypeDropDown.add(customFieldTypeDdc);
 		customFieldDetailWMC.add(panelCustomFieldTypeDropDown);
-				
+		//Add category and order number.
+		categoryPanel.add(customeFieldCategoryDdc);
+		customFieldDetailWMC.add(categoryPanel);
+		orderNumberPanel.add(customeFieldCategoryOrderNoTxtFld);
+		customFieldDetailWMC.add(orderNumberPanel);
 		//Unit type changes
 		panelCustomUnitTypeDropDown.add(fieldUnitTypeDdc);
 		customFieldDetailWMC.add(panelCustomUnitTypeDropDown);

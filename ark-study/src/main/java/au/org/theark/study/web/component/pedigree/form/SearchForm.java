@@ -3,6 +3,7 @@ package au.org.theark.study.web.component.pedigree.form;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -47,6 +48,9 @@ public class SearchForm extends Form<PedigreeVo> {
 	protected AjaxButton						familyButton;
 
 	protected AbstractDetailModalWindow	modalWindow;
+	
+	private  Long sessionStudyId;
+	private  String sessionSubjectUID;
 
 	public SearchForm(String id, CompoundPropertyModel<PedigreeVo> cpmModel, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup,
 			ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
@@ -63,8 +67,8 @@ public class SearchForm extends Form<PedigreeVo> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		
 		disableSearchForm(sessionPersonId, "There is no subject in context. Please bring a subject into context via the Subject tab.");
@@ -157,6 +161,15 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.setInitialWidth(35);
 				modalWindow.setInitialHeight(60);
 				modalWindow.setContent(new PedigreeConfigurationContainerPanel("content", modalWindow));
+				modalWindow.setWindowClosedCallback(new WindowClosedCallback() {
+					private static final long serialVersionUID = 1L; 
+                        @Override 
+                        public void onClose(AjaxRequestTarget target) 
+                        { 
+                        	disableFamilyDataButton(sessionStudyId, sessionSubjectUID);
+                            target.add(familyButton); 
+                        } 
+                });
 				modalWindow.show(target);
 			}
 		};

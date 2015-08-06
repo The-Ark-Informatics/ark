@@ -32,6 +32,8 @@ import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
 import au.org.theark.core.dao.ReCaptchaContextSource;
+import au.org.theark.core.exception.ArkRunTimeException;
+import au.org.theark.core.exception.ArkRunTimeUniqueException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -75,6 +77,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldType;
@@ -111,8 +114,10 @@ import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.util.ArkString;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.CustomFieldCategoryVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
@@ -1019,5 +1024,107 @@ public interface IArkCommonService<T> {
 	 * @return Custom Field types
 	 */
 	public List<CustomFieldType> getCustomFieldTypes();
+		
+	/**
+	 * After introducing the CustomFieldCategory following methods add to the class.
+	 * *****************************************************************************
+	 * A generic interface that will return count of the subjects in the study
+	 * 
+	 * @param customFieldCriteria
+	 * @return int
+	 */
+	public long getCustomFieldCategoryCount(CustomFieldCategory customFieldCategoryCriteria);
 	
+	/**
+	 * Create custom field category
+	 * @param CustomFieldCategoryVO
+	 * @throws ArkSystemException
+	 * @throws ArkUniqueException
+	 */
+	public void createCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO) throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException;
+	/**
+	 * Update custom field category
+	 * 
+	 * @param CustomFieldCategoryVO
+	 * @throws ArkSystemException
+	 * @throws ArkUniqueException
+	 */
+	public void updateCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO) throws ArkSystemException, ArkUniqueException;
+
+	/**
+	 * Delete custom fied category.
+	 * 
+	 * @param CustomFieldCategoryVO
+	 * @throws ArkSystemException
+	 * @throws EntityCannotBeRemoved
+	 */
+	public void deleteCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO) throws ArkSystemException, EntityCannotBeRemoved;
+	
+	/**
+	 * Get custom field category by id.
+	 * @param id
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategory(Long id) throws EntityNotFoundException;
+	/**
+	 * Search pageable custom filed categories.
+	 * @param customFieldCategoryCriteria
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, int first, int count);
+	
+	/**
+	 * Category list By custom field Type.
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<CustomFieldCategory> getParentCategoryListByCustomFieldType(Study study,ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
+	/**
+	 * List of all available category list for update.
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @param thisCustomFieldCategory
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<CustomFieldCategory> getAvailableAllCategoryListByCustomFieldTypeExceptThis(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory thisCustomFieldCategory) throws ArkSystemException;
+	/**
+	 * List of all available category list for new
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<CustomFieldCategory> getAvailableAllCategoryListByCustomFieldType(Study study,ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
+	
+	/**
+	 * List of all available categories in custom fileds by .
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<CustomFieldCategory> getCategoriesListInCustomFieldsByCustomFieldType(Study study, ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
+	/**
+	 *  List of all available categories for study.
+	 * @param study
+	 * @param customFieldType
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study,CustomFieldType customFieldType) throws ArkSystemException;
+	/**
+	 * Get custom field Type by name.
+	 * @param name
+	 * @return
+	 */
+	public CustomFieldType getCustomFieldTypeByName(String name);
 }

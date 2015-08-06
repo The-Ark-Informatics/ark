@@ -84,10 +84,8 @@ public class SubjectCustomDataContainerPanel extends Panel {
 		boolean contextLoaded = prerenderContextCheck();
 
 		if (contextLoaded && isActionPermitted()) {
-			
-			CustomFieldType type = new CustomFieldType();
-			type.setName(au.org.theark.core.Constants.SUBJECT);
-			customFieldCriteria.setCustomFieldType(type);
+			//Get the subject persistance object from the custom field type.
+			//customFieldCriteria.setCustomFieldType(iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT));
 			long fieldCount = iArkCommonService.getCustomFieldCount(customFieldCriteria);
 			if (fieldCount <= 0L) {
 				dataEditorPanel = new EmptyPanel("customDataEditorPanel");
@@ -110,7 +108,7 @@ public class SubjectCustomDataContainerPanel extends Panel {
 		return customDataEditorWMC;
 	}
 	
-	protected WebMarkupContainer initialiseCustomDataEditorWMC(ModalWindow modalWindow) {
+	/*protected WebMarkupContainer initialiseCustomDataEditorWMC(ModalWindow modalWindow) {
 		customDataEditorWMC = new WebMarkupContainer("customDataEditorWMC");
 		Panel dataEditorPanel;
 		boolean contextLoaded = prerenderContextCheck();
@@ -137,7 +135,7 @@ public class SubjectCustomDataContainerPanel extends Panel {
 		}
 		customDataEditorWMC.add(dataEditorPanel);
 		return customDataEditorWMC;
-	}
+	}*/
 
 
 	protected WebMarkupContainer initialiseFeedbackPanel() {
@@ -183,6 +181,8 @@ public class SubjectCustomDataContainerPanel extends Panel {
 					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
 					customFieldCriteria.setStudy(study);
 					customFieldCriteria.setArkFunction(cpModel.getObject().getArkFunction());
+					//Get the subject persistance object from the custom field type.
+					customFieldCriteria.setCustomFieldType(iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT));
 				}
 			}
 			catch (EntityNotFoundException e) {

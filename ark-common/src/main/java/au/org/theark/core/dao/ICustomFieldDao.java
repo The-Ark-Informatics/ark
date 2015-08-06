@@ -8,6 +8,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldType;
@@ -201,5 +202,115 @@ public interface ICustomFieldDao {
 	 */
 	public List<CustomFieldType> getCustomFieldTypes();
 	
+	public long getCustomFieldCategoryCount(CustomFieldCategory customFieldCategoryCriteria);
 	
+	/**
+	 * Create customFieldCategory
+	 * @param customFieldCategory
+	 * @throws ArkSystemException
+	 */
+	public void createCustomFieldCategory(CustomFieldCategory customFieldCategory) throws  ArkSystemException;
+	
+	/**
+	 * Update a CustomFieldCategory
+	 * @param customFieldCategory
+	 * @throws ArkSystemException
+	 */
+	public void updateCustomFieldCategory(CustomFieldCategory customFieldCategory) throws  ArkSystemException;
+	
+	/**
+	 * Delete customFieldCategory
+	 * @param customFieldCategory
+	 * @throws ArkSystemException
+	 */
+	public void deleteCustomFieldCategory(CustomFieldCategory customFieldCategory) throws ArkSystemException;
+	
+	/**
+	 * Determine if the CustomField is unique, based on the name, study and CustomField to update
+	 * @param customFieldName
+	 * @param study
+	 * @param customFieldToUpdate
+	 * @return true if the CustomField is unique
+	 */
+	public boolean isCustomFieldCategoryUnqiue(String customFieldCategoryName, Study study, CustomFieldCategory customFieldCategoryToUpdate);
+	/**
+	 * 
+	 * Get custom field category.
+	 * @param id
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategory(Long id);
+	
+	/**
+	 * Search for CustomFields based on the criteria provided, limiting to the pageable amounts first and count
+	 * @param customFieldCategoryCriteria
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, int first, int count);
+	
+	/**
+	 * Category list By custom field Type.
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<CustomFieldCategory> getParentCategoryListByCustomFieldType(Study study,ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
+	
+	/**
+	 * check this customCategory is a parentcategory of any other category.
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 */
+	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory)throws ArkSystemException;
+	
+	/**
+	 * List of all available category list for update.
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 */
+	public List<CustomFieldCategory> getAvailableAllCategoryListByCustomFieldTypeExceptThis(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory thisCustomFieldCategory) throws ArkSystemException;
+	/**
+	 * List of all available category list by custom field type..
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<CustomFieldCategory> getAvailableAllCategoryListByCustomFieldType(Study study, ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
+	/**
+	 * List of all available categories in custom fileds by .
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<CustomFieldCategory> getCategoriesListInCustomFieldsByCustomFieldType(Study study, ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
+	/**
+	 * List of all available categories for study.
+	 * @param study
+	 * @param customFieldType
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study,CustomFieldType customFieldType) throws ArkSystemException;
+	/**
+	 * Get Custom Field Type by name.
+	 * @param name
+	 * @return
+	 */
+	public CustomFieldType getCustomFieldTypeByName(String name);
 }

@@ -78,6 +78,9 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -1250,11 +1253,11 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getSubjectLinkedToStudy(personId, study);
 	}
 
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
+	/*public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
 		customfieldDataList = iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);
 		return customfieldDataList;
-	}
+	}*/
 
 	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
 		return iStudyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
@@ -2266,11 +2269,17 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getFamilyIdCustomFieldsForPedigreeRelativesList(studyId);
 	}
 	
-	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count){
-		return iStudyDao.getFamilyCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count){
+		return iStudyDao.getFamilyCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, customFieldCategory, customFieldType, first, count);
 	}
 	public String getSubjectFamilyId(Long studyId, String subjectUID){
 		return iStudyDao.getSubjectFamilyId(studyId, subjectUID);
 	}
 
+	@Override
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,
+			CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
+		return iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, customFieldCategory,customFieldType, first, count);
+	}
+	
 }

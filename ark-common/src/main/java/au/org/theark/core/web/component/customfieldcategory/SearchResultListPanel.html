@@ -10,47 +10,41 @@
 				&nbsp;
 			</th>
 			<th width="5%">
-				<wicket:message	key="customField.id">
-					Field ID:
+				<wicket:message	key="customFieldCategory.id">
+					ID:
 				</wicket:message>
 			</th>
-			<th width="15%">
-				<wicket:message	key="customField.name">
-					Field Name:
-				</wicket:message>
-			</th>
-			<th width="15%">
-				<wicket:message	key="customField.fieldType">
-					Field Type:
-				</wicket:message>
-			</th>
-			<th width="15%">
-				<wicket:message	key="customField.fieldLabel">
-					Field Label:
+			<th width="25%">
+				<wicket:message	key="customFieldCategory.name">
+					Name:
 				</wicket:message>
 			</th>
 			<th width="10%">
-				<wicket:message	key="customField.customFieldType">
+				<wicket:message	key="customFieldCategory.customFieldType">
 					Module:
 				</wicket:message>
-			</th>
-			<th width="10%">
-				<wicket:message	key="customField.customFieldCategory">
-					Custom Field Category
+			</th> 
+			<th width="25%">
+				<wicket:message	key="customFieldCategory.description">
+					Description:
 				</wicket:message>
 			</th>
+			<th width="15%">
+				<wicket:message	key="customFieldCategory.parentCategory">
+					Parent:
+				</wicket:message>
+			</th> 
 			<th width="10%">
-				<wicket:message	key="customField.customFieldCategory.orderNumber">
-					Order Number:
+				<wicket:message	key="customFieldCategory.orderNumber">
+					Order No:
 				</wicket:message>
 			</th>
-			
 			<th width="2%">
 				&nbsp;
-			</th>
+			</th> 
 		</tr>
 		<!--	The Data Result Set -->
-		<tr wicket:id="customFieldList">
+		<tr wicket:id="customFieldCategoryList">
 			<td width="2%">
 				&nbsp;
 			</td>
@@ -60,7 +54,7 @@
 				</span>
 			</td>
 			<td width="15%">
-				<div wicket:id="customfieldLinkWMC">
+				<div wicket:id="customfieldCategoryLinkWMC">
 					<a href="#"wicket:id="name">
 						<span wicket:id="nameLbl">
 							Name
@@ -69,28 +63,23 @@
 				</div>
 			</td>
 			<td width="10%">
-				<span wicket:id="fieldType">
+				<span wicket:id="customFieldCategory.customFieldType.name">
 					Field Type
 				</span>
 			</td>
-			<td width="10%">
-				<span wicket:id="fieldLabel">
-					Question/Label
+			<td width="25%">
+				<span wicket:id="description">
+					Description
+				</span>
+			</td>
+			<td width="25%">
+				<span wicket:id="customFieldCategory.parentCategory.name">
+					Parent category
 				</span>
 			</td>
 			<td width="10%">
-				<span wicket:id="customFieldType">
-					custom field type
-				</span>
-			</td>
-			<td width="10%">
-				<span wicket:id="customFieldCategory">
-					Category
-				</span>
-			</td>
-			<td width="10%">
-				<span wicket:id="customFieldCategory.orderNumber">
-					order Number
+				<span wicket:id="orderNumber">
+					Units
 				</span>
 			</td>
 			<td width="2%">

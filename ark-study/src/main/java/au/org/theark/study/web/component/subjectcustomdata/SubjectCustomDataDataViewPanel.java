@@ -31,9 +31,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.ArkCommonServiceImpl;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
 import au.org.theark.study.model.vo.SubjectCustomDataVO;
@@ -51,6 +56,9 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 	private static final Logger log = LoggerFactory.getLogger(SubjectCustomDataDataViewPanel.class);
 
 	private CompoundPropertyModel<SubjectCustomDataVO> cpModel;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	protected IArkCommonService<Void>							iArkCommonService;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
@@ -61,39 +69,36 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 	public SubjectCustomDataDataViewPanel(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel) {
 		super(id);
 		this.cpModel = cpModel;
-
 		this.setOutputMarkupPlaceholderTag(true);
 	}
 
-	public SubjectCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage) {
-		initialiseDataView();
+	public SubjectCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage,CustomFieldCategory customFieldCategory) {
+		initialiseDataView(customFieldCategory);
 		if (numRowsPerPage != null) {
 			dataView.setItemsPerPage(numRowsPerPage); // iArkCommonService.getRowsPerPage());
 		}
-
 		this.add(dataView);
 		return this;
 	}
 
-	private void initialiseDataView() {
+	private void initialiseDataView(CustomFieldCategory customFieldCategory ) {
 		// TODO fix for READ permission check
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 			// Data provider to get pageable results from backend
 			scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData>() {
-
+			
 				public int size() {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-
-					return (int) studyService.getSubjectCustomFieldDataCount(lss, arkFunction);// TODO
-																								// safeintconversion
+					return (int) studyService.getSubjectCustomFieldDataCount(lss, arkFunction);
 				}
-
 				public Iterator<SubjectCustomFieldData> iterator(int first, int count) {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-
-					List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataList(lss, arkFunction, first, count);
+					CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT);
+					//Changed the method with customFieldCategory inclusive.
+					List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataList(lss, arkFunction, customFieldCategory,customFieldType, first, count);
+					//List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataListByCategory(lss, arkFunction, customFieldCategory,customFieldType, first, count);
 					cpModel.getObject().setCustomFieldDataList(subjectCustomDataList);
 					return cpModel.getObject().getCustomFieldDataList().iterator();
 				}
