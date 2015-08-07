@@ -627,9 +627,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		}
 		
 		if(this.subjectCustomField){
-			panelCustomFieldTypeDropDown.setVisible(true);
+			panelCustomFieldTypeDropDown.setEnabled(true);
 		}else{
-			panelCustomFieldTypeDropDown.setVisible(false);
+			panelCustomFieldTypeDropDown.setEnabled(false);
 		}
 
 		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the
