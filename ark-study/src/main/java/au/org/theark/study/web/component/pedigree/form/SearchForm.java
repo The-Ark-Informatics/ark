@@ -82,9 +82,6 @@ public class SearchForm extends Form<PedigreeVo> {
 			inbreedAllowed = true;
 		} 
 		SecurityUtils.getSubject().getSession().setAttribute(Constants.INBREED_ALLOWED, inbreedAllowed);
-		
-		initialiseSearchForm();
-		addSearchComponentsToForm();
 
 		disableSearchForm(sessionPersonId, "There is no subject in context. Please bring a subject into context via the Subject tab.");
 		disableSaveButtons();
