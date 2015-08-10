@@ -65,6 +65,7 @@ public class FamilyCustomDataEditorPanel extends Panel {
 		};
 		customeFieldCategoryDdc = new DropDownChoice<CustomFieldCategory>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY, customFieldCatLst, customfieldCategoryRenderer);
 		customeFieldCategoryDdc.setOutputMarkupId(true);
+		customeFieldCategoryDdc.setNullValid(true);
 		customeFieldCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {

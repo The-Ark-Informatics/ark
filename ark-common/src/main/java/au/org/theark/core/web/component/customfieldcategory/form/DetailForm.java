@@ -232,6 +232,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 		categoryNameTxtFld.setRequired(true);
 		// Enforce particular characters for fieldName
 		categoryNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
+		customFieldTypeDdc.setRequired(true);
+		categoryOrderNoTxtFld.setRequired(true);
 	}
 
 	@Override
