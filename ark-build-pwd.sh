@@ -3,10 +3,10 @@
 # Define global variables
 #export DEV_USER=$USER   #assumes the same as current user
 export WORKSPACE_DIR=`pwd` #relative to current user HOME dir
-COMPILE_ALL=0
+COMPILE_ALL=1
 
 is_changed() {
-	[ "$(git diff --shortstat `pwd` 2> /dev/null | tail -n1)" != "" ] || [ $COMPILE_ALL -eq 1 ]
+	[ $COMPILE_ALL -eq 1 ] || [ "$(git diff --shortstat `pwd` 2> /dev/null | tail -n1)" != "" ]
 }
 
 printHelpAndExit() {
@@ -49,6 +49,15 @@ then
 	if [ "$?" != "0" ]; then
 	exit 1
 	fi
+fi
+
+cd $WORKSPACE_DIR/ark-work-tracking
+if is_changed;
+then
+        mvn clean install
+        if [ "$?" != "0" ]; then
+        exit 1
+        fi
 fi
 
 cd $WORKSPACE_DIR/ark-study
@@ -104,16 +113,6 @@ then
 	exit 1
 	fi
 fi
-
-cd $WORKSPACE_DIR/ark-work-tracking
-if is_changed;
-then
-	mvn clean install
-	if [ "$?" != "0" ]; then
-	exit 1
-	fi
-fi
-
 
 cd $WORKSPACE_DIR/ark-disease
 if is_changed;
