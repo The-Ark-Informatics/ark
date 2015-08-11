@@ -143,7 +143,7 @@ INSERT INTO `aud_study_comp_status` (`ID`, `REV`, `REVTYPE`, `DESCRIPTION`, `NAM
 select `ID`, @REV, 0, `DESCRIPTION`, `NAME` from `study`.`study_comp_status`;
 
 INSERT INTO `aud_study_inv_site` (`id`, `REV`, `REVTYPE`, `INV_SITE_ID`, `STUDY_ID`)
-select `id`, @REV, 0, `INV_SITE_ID`, `STUDY_ID` from `study`.`study_inv_site`;
+select `id`, @REV, 0, `INV_SITE_ID`, `STUDY_ID` from `lims`.`study_inv_site`;
 
 INSERT INTO `aud_subject_custom_field_data` (`ID`, `REV`, `REVTYPE`, `DATE_DATA_VALUE`, `ERROR_DATA_VALUE`, `NUMBER_DATA_VALUE`, `TEXT_DATA_VALUE`, `CUSTOM_FIELD_DISPLAY_ID`, `LINK_SUBJECT_STUDY_ID`)
 select `ID`, @REV, 0, `DATE_DATA_VALUE`, `ERROR_DATA_VALUE`, `NUMBER_DATA_VALUE`, `TEXT_DATA_VALUE`, `CUSTOM_FIELD_DISPLAY_ID`, `LINK_SUBJECT_STUDY_ID` from `study`.`subject_custom_field_data`;
