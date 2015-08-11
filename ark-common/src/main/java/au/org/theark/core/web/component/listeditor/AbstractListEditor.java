@@ -64,6 +64,7 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 	@Override
 	protected void onBeforeRender() {
 //		if (!hasBeenRendered()) {
+			this.removeAll();
 			items = new ArrayList<T>(getModelObject());
 			for (int i = 0; i < items.size(); i++) {
 				ListItem<T> li = new ListItem<T>(newChildId(), i);

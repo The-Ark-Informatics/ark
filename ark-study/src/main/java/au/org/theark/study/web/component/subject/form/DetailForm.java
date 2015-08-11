@@ -259,7 +259,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				OtherID newOtherID = new OtherID();
 				newOtherID.setPerson(containerForm.getModelObject().getLinkSubjectStudy().getPerson());
-				otherIdListView.addItem(newOtherID);
+				otherIdListView.getModelObject().add(newOtherID);
 				target.add(otherIdWebMarkupContainer);
 				super.onSubmit(target, form);
 			}
