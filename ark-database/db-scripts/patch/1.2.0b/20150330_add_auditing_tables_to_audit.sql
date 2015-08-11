@@ -22,7 +22,7 @@
 
 # Dump of table aud_address
 # ------------------------------------------------------------
-
+USE `audit`;
 DROP TABLE IF EXISTS `aud_address`;
 
 CREATE TABLE `aud_address` (

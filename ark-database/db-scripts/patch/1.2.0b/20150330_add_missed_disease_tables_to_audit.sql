@@ -22,7 +22,7 @@
 
 # Dump of table aud_affection
 # ------------------------------------------------------------
-
+USE `audit`;
 DROP TABLE IF EXISTS `aud_affection`;
 
 CREATE TABLE `aud_affection` (
