@@ -252,6 +252,13 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		}
 		getModelObject().setAvailableChildStudies(availableChildStudies);
 
+		getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs().clear();
+		if(!otherIDTxtFld.getValue().isEmpty()) {
+			OtherID searchedOtherID = new OtherID();
+			searchedOtherID.setOtherID(otherIDTxtFld.getValue());
+			getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs().add(searchedOtherID);
+		}
+		
 		preProcessDetailPanel(target);
 	}
 
