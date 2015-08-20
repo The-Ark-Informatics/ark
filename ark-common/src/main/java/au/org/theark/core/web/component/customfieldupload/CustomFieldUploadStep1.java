@@ -40,6 +40,7 @@ import org.apache.wicket.util.io.IOUtils;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.component.customfieldupload.form.WizardForm;
@@ -61,6 +62,8 @@ public class CustomFieldUploadStep1 extends AbstractWizardStepPanel {
 	private Form<CustomFieldUploadVO>		containerForm;
 
 	private FileUploadField						fileUploadField;
+	
+	private DropDownChoice<UploadLevel>		customUploadLevelDdc;
 	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 	private WizardForm							wizardForm;
@@ -80,12 +83,19 @@ public class CustomFieldUploadStep1 extends AbstractWizardStepPanel {
 
 	@SuppressWarnings( { "unchecked" })
 	private void initialiseDropDownChoices() {
-		// Initialise Drop Down Choices
+		
 		java.util.Collection<DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
-		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer("name", "id");
+		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(Constants.DELIMITER_TYPE_NAME, Constants.DELIMITER_TYPE_ID);
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 		// Set to default delimiterType
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
+		
+		java.util.Collection<UploadLevel> uploadLevelCollection = iArkCommonService.getAllUploadLevels(); 
+		ChoiceRenderer uploadLevelRenderer = new ChoiceRenderer(Constants.UPLOADVO_UPLOAD_UPLOAD_LEVEL_NAME, Constants.UPLOADVO_UPLOAD_UPLOAD_LEVEL_ID);
+		customUploadLevelDdc=new DropDownChoice<UploadLevel>(Constants.UPLOADVO_UPLOAD_UPLOAD_LEVEL, (List)uploadLevelCollection,uploadLevelRenderer);
+		
+		
+		
 	}
 
 	public void initialiseDetailForm() {
@@ -109,11 +119,13 @@ public class CustomFieldUploadStep1 extends AbstractWizardStepPanel {
 		// Field validation here
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
+		customUploadLevelDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadLevel.required",this,new Model<String>("UploadLevel")));
 	}
 
 	private void addComponents() {
 		// Add components here
 		add(fileUploadField);
+		add(customUploadLevelDdc);
 		add(delimiterTypeDdc);
 	}
 

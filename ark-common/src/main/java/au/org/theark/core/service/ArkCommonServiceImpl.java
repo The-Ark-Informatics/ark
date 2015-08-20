@@ -151,6 +151,7 @@ import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -1784,11 +1785,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public List<CustomFieldType> getCustomFieldTypes() {
-		return customFieldDao.getCustomFieldTypes();
-	}
-
-	@Override
 	public long getCustomFieldCategoryCount(CustomFieldCategory customFieldCategoryCriteria) {
 		 return customFieldDao.getCustomFieldCategoryCount(customFieldCategoryCriteria);
 	}
@@ -1955,5 +1951,16 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public CustomFieldType getCustomFieldTypeByName(String name) {
 		return customFieldDao.getCustomFieldTypeByName(name);
 	}
+	
+	@Override
+	public List getCustomFieldTypes(ArkModule arkModule) {
+		return customFieldDao.getCustomFieldTypes(arkModule);
+	}
+	@Override
+	public List<UploadLevel> getAllUploadLevels(){
+		return customFieldDao.getAllUploadLevels();
+	}
+	
+	
 
 }

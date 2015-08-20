@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -15,6 +16,7 @@ import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.UploadLevel;
 
 public interface ICustomFieldDao {
 
@@ -196,11 +198,6 @@ public interface ICustomFieldDao {
 
 	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction arkFunction, Study study);
 	
-	/**
-	 * 
-	 * @return Custom Field types
-	 */
-	public List<CustomFieldType> getCustomFieldTypes();
 	
 	public long getCustomFieldCategoryCount(CustomFieldCategory customFieldCategoryCriteria);
 	
@@ -313,4 +310,17 @@ public interface ICustomFieldDao {
 	 * @return
 	 */
 	public CustomFieldType getCustomFieldTypeByName(String name);
+	/**
+	 * Get custom field types for a module.
+	 * @param arkModule
+	 * @return
+	 */
+	public List<CustomFieldType> getCustomFieldTypes(ArkModule arkModule);
+	/**
+	 * Return All Upload levels
+	 * @return
+	 */
+	public List<UploadLevel> getAllUploadLevels();
+	
+	
 }

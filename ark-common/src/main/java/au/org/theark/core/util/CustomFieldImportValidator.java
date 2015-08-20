@@ -383,6 +383,8 @@ public class CustomFieldImportValidator {
 					field.setDescription(csvReader.get("DESCRIPTION"));
 					field.setFieldLabel(csvReader.get("QUESTION"));
 
+					//Remove the Units validation for the unit types.
+					
 					if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
 						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
 						if (unitType == null) {

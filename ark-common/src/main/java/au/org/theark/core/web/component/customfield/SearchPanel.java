@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.component.customfield.form.SearchForm;
@@ -37,21 +38,20 @@ public class SearchPanel extends Panel {
 
 	private FeedbackPanel feedbackPanel;
 	private ArkCrudContainerVO arkCrudContainerVO;
-	private boolean unitTypeDropDownOn;
-	private boolean subjectCustomField;
-
+	
+	
+	
 	/* Constructor */
-	public SearchPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, boolean unitTypeDropDownOn, boolean subjectCustomField) {
+	public SearchPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id);
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
-		this.unitTypeDropDownOn = unitTypeDropDownOn;
-		this.subjectCustomField = subjectCustomField;
+		
 	}
 
 	public void initialisePanel() {
-		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, cpModel, feedbackPanel, arkCrudContainerVO, this.unitTypeDropDownOn, this.subjectCustomField);
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, cpModel, feedbackPanel, arkCrudContainerVO);
 		add(searchForm);
 	}
 }

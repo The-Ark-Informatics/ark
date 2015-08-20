@@ -26,6 +26,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -34,6 +35,7 @@ import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.web.component.customfield.Constants;
 
@@ -657,20 +659,13 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		List<CustomFieldCategory> customFieldCategoryList = (List<CustomFieldCategory>) criteria.list();
 		return customFieldCategoryList;
 	}
-	@SuppressWarnings("unchecked")
-	public List<CustomFieldType> getCustomFieldTypes() {
+	@Override
+	public List<CustomFieldType> getCustomFieldTypes(ArkModule arkModule) {
 		Criteria criteria = getSession().createCriteria(CustomFieldType.class);
+		criteria.add(Restrictions.eq("arkModule",arkModule));
 		List<CustomFieldType> customFieldTypeList = (List<CustomFieldType>) criteria.list();
 		return customFieldTypeList;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public List<CustomFieldType> get() {
-		Criteria criteria = getSession().createCriteria(CustomFieldType.class);
-		List<CustomFieldType> customFieldTypeList = (List<CustomFieldType>) criteria.list();
-		return customFieldTypeList;
-	}
-
 	/**
 	 * Filter for search return distinct values of all the parent fields.
 	 */
@@ -769,6 +764,14 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		criteria.add(Restrictions.eq("name", name));
 		criteria.setMaxResults(1);
 		return (CustomFieldType) criteria.uniqueResult();
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UploadLevel> getAllUploadLevels(){
+		//Criteria criteria = getSession().createCriteria(UploadLevel.class);
+		//List<UploadLevel> uploadLevelList = (List<UploadLevel>) criteria.list();
+		return (List<UploadLevel>)getSession().createCriteria(UploadLevel.class).list();
+		
 	}
 	
 	

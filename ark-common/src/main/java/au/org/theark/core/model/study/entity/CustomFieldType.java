@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -18,6 +21,7 @@ public class CustomFieldType implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Long id;
+	private ArkModule arkModule;
 	private String name;
 	private String description;
 	
@@ -29,6 +33,16 @@ public class CustomFieldType implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_MODULE_ID")
+	public ArkModule getArkModule() {
+		return arkModule;
+	}
+
+	public void setArkModule(ArkModule arkModule) {
+		this.arkModule = arkModule;
 	}
 
 	@Column(name = "NAME", unique = true, length = 20)

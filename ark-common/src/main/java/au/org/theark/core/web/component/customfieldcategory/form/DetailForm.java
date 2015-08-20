@@ -21,6 +21,7 @@ package au.org.theark.core.web.component.customfieldcategory.form;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -42,6 +43,7 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
@@ -70,18 +72,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 	private IArkCommonService<Void>				iArkCommonService;
 
 	private int											mode;
-
 	private TextField<String>						categoryIdTxtFld;
 	private TextField<String>						categoryNameTxtFld;
 	private TextArea<String>						categoryDescriptionTxtAreaFld;
 	private DropDownChoice<CustomFieldType>			customFieldTypeDdc;
 	private DropDownChoice<CustomFieldCategory>		parentCategoryDdc;
 	private TextField<Long>							categoryOrderNoTxtFld;
-	
 	protected WebMarkupContainer					customFieldCategoryDetailWMC;
 	private Collection<CustomFieldCategory> 		customFieldCategoryCollection;
 	private HistoryButtonPanel 						historyButtonPanel;
-	private  WebMarkupContainer						parentPanel;
+	private WebMarkupContainer						parentPanel;
+	
 
 	/**
 	 * Constructor
@@ -94,6 +95,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 	public DetailForm(String id, CompoundPropertyModel<CustomFieldCategoryVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO){//,boolean unitTypeDropDownOn) {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		refreshEntityFromBackend();
+		
 	}
 
 	protected void refreshEntityFromBackend()  {
@@ -138,7 +140,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 	private void initCustomFieldTypeDdc() {
 		parentPanel=new WebMarkupContainer("parentPanel");
 		parentPanel.setOutputMarkupId(true);
-		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes();
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		ArkModule arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
+		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes(arkModule);
 		ChoiceRenderer customfieldTypeRenderer = new ChoiceRenderer(Constants.CUSTOM_FIELD_TYPE_NAME, Constants.CUSTOM_FIELD_TYPE_ID);
 		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELDCATEGORY_CUSTOM_FIELD_TYPE, (List) customFieldTypeCollection, customfieldTypeRenderer);
 		customFieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {

@@ -110,6 +110,7 @@ import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -1018,12 +1019,6 @@ public interface IArkCommonService<T> {
 	 * @throws ArkSystemException
 	 */
 	public String generateArkFileChecksum(File file, String algorithm) throws ArkSystemException;
-	
-	/**
-	 * 
-	 * @return Custom Field types
-	 */
-	public List<CustomFieldType> getCustomFieldTypes();
 		
 	/**
 	 * After introducing the CustomFieldCategory following methods add to the class.
@@ -1127,4 +1122,17 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public CustomFieldType getCustomFieldTypeByName(String name);
+	
+	/**
+	 * Return custom field types by ark module.
+	 * @param arkModule
+	 * @return
+	 */
+	public List<CustomFieldType> getCustomFieldTypes(ArkModule arkModule);
+	
+	/**
+	 * Get all the upload levels
+	 * @return
+	 */
+	public List<UploadLevel> getAllUploadLevels();
 }

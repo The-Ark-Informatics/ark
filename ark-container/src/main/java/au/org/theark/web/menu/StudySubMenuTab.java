@@ -72,6 +72,7 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 	private WebMarkupContainer			arkContextMarkup;
 	private MainTabProviderImpl		mainTabProvider;
 	private List<ITab>					moduleSubTabsList	= new ArrayList<ITab>();
+	
 
 	/**
 	 * StudySubMenuTab Constructor
@@ -151,18 +152,19 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 						panelToReturn = new UserContainerPanel(panelId);
 					}
 					//Added on 2015-06-22 Categorize  the custom field.
+					//Changed the Constant value from "Subject" to "Study" on 2015-08-17.        
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY)){
 						// Clear cache
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, arkFunction);
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, arkFunction);
 						panelToReturn = new CustomFieldCategoryContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY));
 					}else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
 						// Clear cache
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, arkFunction);
-						panelToReturn = new CustomFieldContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD),false,true);
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, arkFunction);
+						panelToReturn = new CustomFieldContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_UPLOAD)) {
 						// Clear cache
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, arkFunction);
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, arkFunction);
 						panelToReturn = new CustomFieldUploadContainerPanel(panelId, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT),"SubjectCustomFieldUpload");
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
