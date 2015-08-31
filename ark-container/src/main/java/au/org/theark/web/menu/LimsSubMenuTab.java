@@ -157,49 +157,55 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, treeModel);
 		}
 		else*/ 
-		
+		//Inventory(1)
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_INVENTORY)) {
 			panelToReturn = new InventoryContainerPanel(panelId, treeModel);
 		}
+		//LIMS Custom field category(2)
+		else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY)){
+			panelToReturn = new CustomFieldCategoryContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY));
+		}
+		// To be merged(Biospecimen with collection)
+		//LIMS custom field(3)
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD)) {
+		// useCustomFieldDisplay = true
+			panelToReturn = new CustomFieldContainerPanel(panelId, true, 
+				iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
+		}
+		//LIMS custom field upload(4)
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CUSTOM_FIELD_UPLOAD)) {
+			panelToReturn = new CustomFieldUploadContainerPanel(panelId, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CUSTOM_FIELD_UPLOAD));
+		}
+		//Biospeciman Upload(5)
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD)) {
 			panelToReturn = new BiospecimenUploadContainerPanel(panelId, arkFunction);
 		}
-		// To be merged(Biospecimen with collection)
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD)) {
-			// useCustomFieldDisplay = true
-			panelToReturn = new CustomFieldContainerPanel(panelId, true, 
-											iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
-		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CUSTOM_FIELD_UPLOAD)) {
-			panelToReturn = new CustomFieldUploadContainerPanel(panelId, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CUSTOM_FIELD_UPLOAD),"CollectionCustomFieldUpload");
+		//Bar code label(6)
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BARCODE_LABEL)) {
+			panelToReturn = new BarcodeLabelContainerPanel(panelId, arkContextMarkup);
 		}
 		// To be merged(Biospecimen with collection)
 		/*else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD)) {
 			// useCustomFieldDisplay = true
 			panelToReturn = new CustomFieldContainerPanel(panelId, true, 
-											iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
+					iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CUSTOM_FIELD_UPLOAD)) {
 			panelToReturn = new CustomFieldUploadContainerPanel(panelId, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CUSTOM_FIELD_UPLOAD),"BiospecimenCustomFieldUpload");
 		}*/
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_DATA)) {
-			panelToReturn = new BioCollectionCustomDataContainerPanel(panelId).initialisePanel();
+			//panelToReturn = new BioCollectionCustomDataContainerPanel(panelId).initialisePanel();
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_DATA)) {
-			panelToReturn = new BiospecimenCustomDataContainerPanel(panelId).initialisePanel();
+			//panelToReturn = new BiospecimenCustomDataContainerPanel(panelId).initialisePanel();
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMENUID_TEMPLATE)) {
-			panelToReturn = new BiospecimenUidTemplateContainerPanel(panelId, arkContextMarkup);
+			//panelToReturn = new BiospecimenUidTemplateContainerPanel(panelId, arkContextMarkup);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BARCODE_LABEL)) {
-			panelToReturn = new BarcodeLabelContainerPanel(panelId, arkContextMarkup);
-		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD)) {
-			panelToReturn = new BioUploadContainerPanel(panelId, arkFunction);
-		}
-		else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY)){
-			panelToReturn = new CustomFieldCategoryContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY));
-		}
+		//Bio Collection and Bio speciman upload.
+		//else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD)) {
+			//panelToReturn = new BioUploadContainerPanel(panelId, arkFunction);
+		//}
 		else {
 			// This shouldn't happen when all functions have been implemented
 			panelToReturn = new EmptyPanel(panelId);

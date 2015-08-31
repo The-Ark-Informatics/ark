@@ -56,6 +56,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
@@ -750,4 +751,6 @@ public interface IStudyDao {
 	public void deleteUserConfig(UserConfig uc);
 	
 	public List<Study> getChildStudiesForStudy(Study study);
+	
+	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload);
 }

@@ -18,10 +18,10 @@
  ******************************************************************************/
 package au.org.theark.core.service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.File;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -119,6 +119,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldType;
@@ -1960,7 +1961,32 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<UploadLevel> getAllUploadLevels(){
 		return customFieldDao.getAllUploadLevels();
 	}
-	
-	
+
+	@Override
+	public List getCustomFieldCategoryByCustomFieldTypeAndStudy(Study study,CustomFieldType customFieldType) {
+		return customFieldDao.getCustomFieldCategoryByCustomFieldTypeAndStudy(study, customFieldType);
+	}
+
+	@Override
+	public CustomFieldCategory getCustomFieldCategotyByName(String name) {
+		return customFieldDao.getCustomFieldCategotyByName(name);
+	}
+	@Override
+	public UploadLevel getUploadLevelByName(String name){
+		return customFieldDao.getUploadLevelByName(name);
+	};
+	@Override
+	public CustomFieldCategory getCustomFieldCategoryByNameStudyAndArkFunction(String name,Study study,ArkFunction arkFunction){
+		return customFieldDao.getCustomFieldCategoryByNameStudyAndArkFunction(name, study, arkFunction);
+	}
+
+	@Override
+	public boolean isCustomFieldCategoryBeingUsed(CustomFieldCategory customFieldCategory) {
+			return customFieldDao.isCustomFieldCategoryBeingUsed(customFieldCategory);
+	}
+	@Override
+	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload){
+			studyDao.createCustomFieldCategoryUpload(cfcUpload);
+	}
 
 }

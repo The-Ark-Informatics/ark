@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IOUtils;
@@ -67,6 +68,7 @@ public class CustomFieldUploadStep1 extends AbstractWizardStepPanel {
 	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 	private WizardForm							wizardForm;
+	
 
 	public CustomFieldUploadStep1(String id) {
 		super(id);
@@ -91,11 +93,10 @@ public class CustomFieldUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
 		
 		java.util.Collection<UploadLevel> uploadLevelCollection = iArkCommonService.getAllUploadLevels(); 
-		ChoiceRenderer uploadLevelRenderer = new ChoiceRenderer(Constants.UPLOADVO_UPLOAD_UPLOAD_LEVEL_NAME, Constants.UPLOADVO_UPLOAD_UPLOAD_LEVEL_ID);
+		ChoiceRenderer uploadLevelRenderer = new ChoiceRenderer(Constants.UPLOAD_LEVEL_NAME, Constants.UPLOAD_LEVEL_ID);
 		customUploadLevelDdc=new DropDownChoice<UploadLevel>(Constants.UPLOADVO_UPLOAD_UPLOAD_LEVEL, (List)uploadLevelCollection,uploadLevelRenderer);
-		
-		
-		
+		// Set the default
+		containerForm.getModelObject().getUpload().setUploadLevel(iArkCommonService.getUploadLevelByName(Constants.UPLOAD_LEVEL_FIELD));
 	}
 
 	public void initialiseDetailForm() {
@@ -213,4 +214,5 @@ public class CustomFieldUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
 		wizardForm.setFileName(fileUpload.getClientFileName());
 	}
+	
 }

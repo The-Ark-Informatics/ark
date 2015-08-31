@@ -319,7 +319,7 @@ public class Constants {
 	//public static final String FUNCTION_KEY_VALUE_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_CUSTOM_FIELD_UPLOAD = "LIMS_CUSTOM_FIELD_UPLOAD";// new LIMS custom field upload.
 	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_CUSTOM_FIELD_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
+	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_DATA_EXTRACTION	= "DATA_EXTRACTION";
 	public static final String FUNCTION_KEY_VALUE_PEDIGREE = "PEDIGREE";
 	public static final String FUNCTION_KEY_VALUE_GENO_TABLE = "GENO_TABLE";
@@ -375,9 +375,92 @@ public class Constants {
 	public static final String[] DATA_DICTIONARY_HEADER = { "FIELD_NAME",
 			"FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
 			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE" }; //ALLOW MULTI  not here because it is Questionairre/customfieldgroup based
-	public static final String[] CUSTOM_FIELD_UPLOAD_HEADER = { "FIELD_NAME",
+	public static final String[][] CUSTOM_FIELD_UPLOAD_HEADER = {{"", "FIELD_NAME","CUSTOM_FIELD_TYPE","CUSTOM_FIELD_CATEGORY",
 			"FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
-			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"  };
+			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
+			{
+				"DESCRIPTION",
+				"The unique identifier of the field",
+				"The type of the field",
+				"The pre defined category name of the field",
+				"The field type of the field",
+				"The details description of the field",
+				"The question or the label for the field ",
+				"The units for the field",
+				"The encoded value for the field ",
+				"The minimum value for the field",
+				"The maximum value for the field",
+				"The missing value for the field",
+				"The required status for the field",
+				"The multiple selection allowed status for the field"
+		},
+		{ 		"MANDATORY", 
+				"Yes", 
+				"No", 
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No"
+		 },
+		{
+				"VALID VALUES",
+				"", 
+				"", 
+				"", 
+				"",
+				"Maximum 255 characters", 
+				"", 
+				"",
+				"0=Yes;1=No;",
+				"",
+				"",
+				"",
+				"true;yes;1;y;false;no;0;n",
+				"true;yes;1;y;false;no;0;n"
+		},
+		{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "","", "", "", "", "", ""
+		}};
+	public static final String[][] CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER={ { "","CATEGORY_NAME",
+		"CUSTOM_FIELD_TYPE","DESCRIPTION","PARENT_CATEGORY_NAME","ORDER_NUMBER"	},
+		{
+			"DESCRIPTION",
+			"The unique identifier of the category",
+			"The type of the category",
+			"The details description of the category",
+			"The parent category of the category",
+			"The order number of the category"
+		},
+		{
+			"MANDATORY", 
+			"Yes", 
+			"Yes", 
+			"No",
+			"No-if blank category becomes a parent category",
+			"Yes"
+		},
+		{
+			"VALID VALUES",
+			"", 
+			"", 
+			"",
+			"",
+			"Any Integer value starting from 1"
+		},
+		{ "NOTE: Removed this first column, and replace rows 2 to 5.",
+				"", "", "", "",""
+		},
+		{
+			"Please maintain the order which parent category must be on top of it's sub category.",
+				 "", "", "", "",""
+		}
+	};
 
 	public static final String NAME = "name";
 	public static final String CUSTOM_FIELD_DOT_NAME = "customField.name";

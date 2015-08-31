@@ -2,16 +2,16 @@ package au.org.theark.core.web.component.customfieldupload;
 
 public class Constants {
 	// relevant to components
-	public static final String	DELETE_FILE														= "deleteFile";
-	public static final String	DELETE															= "Delete";
+	public static final String	DELETE_FILE													= "deleteFile";
+	public static final String	DELETE														= "Delete";
 
 	// relevant to beans/entities
-	public static final String	FILE_FORMAT														= "fileFormat";
-	public static final String	FILE_FORMAT_ID													= "id";
-	public static final String	FILE_FORMAT_NAME												= "name";
+	public static final String	FILE_FORMAT													= "fileFormat";
+	public static final String	FILE_FORMAT_ID												= "id";
+	public static final String	FILE_FORMAT_NAME											= "name";
 
-	public static final String	DELIMITER_TYPE_ID												= "id";
-	public static final String	DELIMITER_TYPE_NAME												= "name";
+	public static final String	DELIMITER_TYPE_ID											= "id";
+	public static final String	DELIMITER_TYPE_NAME											= "name";
 
 	// UploadVO
 	public static final String	UPLOADVO_UPLOAD_ID											= "upload.id";
@@ -42,8 +42,10 @@ public class Constants {
 	public static final String	UPLOADVO_UPLOAD_UPDATE_USER_ID								= "upload.user.id";
 	public static final String	UPLOADVO_UPLOAD_UPDATE_TIME									= "upload.updateTime";
 	//Add new custom type(category or field)	
-	public static final String	UPLOADVO_UPLOAD_UPLOAD_LEVEL								="upload.uploadLevel";
-	public static final String	UPLOADVO_UPLOAD_UPLOAD_LEVEL_ID								="id";
-	public static final String	UPLOADVO_UPLOAD_UPLOAD_LEVEL_NAME							="name";
+	public static final String	UPLOADVO_UPLOAD_UPLOAD_LEVEL								= "upload.uploadLevel";
+	public static final String	UPLOAD_LEVEL_ID												= "id";
+	public static final String	UPLOAD_LEVEL_NAME											= "name";
+	public static final String	UPLOAD_LEVEL_FIELD											= "Field";
+	public static final String	UPLOAD_LEVEL_CATEGORY										= "Category";
 
 }

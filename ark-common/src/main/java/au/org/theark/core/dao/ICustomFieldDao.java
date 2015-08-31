@@ -322,5 +322,37 @@ public interface ICustomFieldDao {
 	 */
 	public List<UploadLevel> getAllUploadLevels();
 	
+	/**
+	 * Get custom field categories by study and custom field type.
+	 * @param study
+	 * @param customFieldType
+	 * @return
+	 */
+	public List<CustomFieldCategory> getCustomFieldCategoryByCustomFieldTypeAndStudy(Study study,CustomFieldType customFieldType);
+	/**
+	 * Get custom field category by name
+	 * @param name
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategotyByName(String name);
 	
+	/**
+	 * Get a upload levels by name
+	 * @return
+	 */
+	public UploadLevel getUploadLevelByName(String name);
+	/**
+	 * Get custom field category by name study and function.
+	 * @param name
+	 * @param study
+	 * @param arkFunction
+	 */
+	public CustomFieldCategory getCustomFieldCategoryByNameStudyAndArkFunction(String name,Study study,ArkFunction arkFunction);
+	
+	/**
+	 * Check for the custom field being used for categorise custom field.
+	 * @param customFieldCategory
+	 * @return
+	 */
+	public boolean isCustomFieldCategoryBeingUsed(CustomFieldCategory customFieldCategory);
 }

@@ -118,6 +118,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
@@ -5051,6 +5052,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		List<Study> childStudies = criteria.list();
 		return childStudies;
 	}
-	
+	@Override
+	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload) {
+		getSession().save(cfcUpload);
+	}
 	
 }

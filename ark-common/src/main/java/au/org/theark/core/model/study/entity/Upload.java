@@ -267,7 +267,7 @@ public class Upload implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "UPLOAD_LEVEL_ID", nullable = false)
+	@JoinColumn(name = "UPLOAD_LEVEL_ID")
 	public UploadLevel getUploadLevel() {
 		return uploadLevel;
 	}

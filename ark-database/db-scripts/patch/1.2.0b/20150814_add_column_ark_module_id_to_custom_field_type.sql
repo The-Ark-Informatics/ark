@@ -20,5 +20,5 @@ WHERE ID =2;
 INSERT INTO `study`.`custom_field_type` (`ARK_MODULE_ID`, `NAME`, `DESCRIPTION`) 
 VALUES ((SELECT id FROM study.ark_module where name='LIMS'), 'BIOSPECIMEN', 'LIMS Biospecimen details');
 INSERT INTO `study`.`custom_field_type` (`ARK_MODULE_ID`, `NAME`, `DESCRIPTION`)
-VALUES ((SELECT id FROM study.ark_module where name='LIMS'), 'COLLECTION', 'LIMS Collection details');
+VALUES ((SELECT id FROM study.ark_module where name='LIMS'), 'BIOCOLLECTION', 'LIMS BioCollection details');
 
