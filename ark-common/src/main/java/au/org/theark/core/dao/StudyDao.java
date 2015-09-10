@@ -3625,6 +3625,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			else if(field.getFieldName().equalsIgnoreCase("name")){
 				map.put(field.getPublicFieldName(), biospecimen.getBioCollection().getName());
 			}
+			else if(field.getFieldName().equalsIgnoreCase("parentUID")) {
+				if(biospecimen.getParent() != null) {
+					map.put(field.getPublicFieldName(), biospecimen.getParent().getBiospecimenUid());
+				}
+			}
 		}
 		return map;
 	}
