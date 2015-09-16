@@ -1271,8 +1271,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getCustomFieldDisplaysIn(study, arkFunction);
 	}
 
-	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
-		return studyDao.getCustomFieldDataFor(customFieldDisplaysThatWeNeed, subjectUIDsToBeIncluded);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
+		return studyDao.getSubjectCustomFieldDataFor(customFieldDisplaysThatWeNeed, subjectUIDsToBeIncluded);
 	}
 
 	public Payload createPayload(byte[] bytes) {
@@ -1987,6 +1987,20 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload){
 			studyDao.createCustomFieldCategoryUpload(cfcUpload);
+	}
+
+	@Override
+	public List<String> getAllFamilyUIDs(Study study) {
+		return studyDao.getAllFamilyUIDs(study);
+	}
+
+	@Override
+	public List getFamilyCustomFieldDataFor(Study study,List customFieldDisplaysThatWeNeed,List familyUIDsToBeIncluded) {
+		return studyDao.getfamilyCustomFieldDataFor(study,customFieldDisplaysThatWeNeed, familyUIDsToBeIncluded);
+	}
+	@Override
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List fieldNameCollection, Study study, ArkFunction arkFunction,CustomFieldType customFieldType) {
+		return studyDao.getCustomFieldDisplaysInWithCustomFieldType(fieldNameCollection, study, arkFunction,customFieldType);
 	}
 
 }

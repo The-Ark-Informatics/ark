@@ -62,16 +62,6 @@ public class SubjectCustomFieldData implements Serializable, ICustomFieldData {
 
 	}
 
-	/*
-	 * @Id
-	 * 
-	 * @SequenceGenerator(name = "subject_custom_field_data_generator",
-	 * sequenceName = "SUBJECT_CUSTOM_FIELD_DATA_SEQ")
-	 * 
-	 * @GeneratedValue(strategy = GenerationType.AUTO, generator =
-	 * "subject_custom_field_data_generator")
-	 */
-
 	@Id
 	@SequenceGenerator(name = "subject_custom_field_data_generator", sequenceName = "SUBJECT_CUSTOM_FIELD_DATA_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "subject_custom_field_data_generator")

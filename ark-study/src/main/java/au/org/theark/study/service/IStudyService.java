@@ -25,6 +25,8 @@ import java.util.Set;
 
 import org.apache.wicket.util.file.File;
 
+import com.csvreader.CsvReader;
+
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -52,11 +54,11 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -396,7 +398,7 @@ public interface IStudyService {
 	
 	public void processBatch(List<LinkSubjectStudy> subjectsToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate);
 
-	public void processFieldsBatch(List<SubjectCustomFieldData> fieldDataList, Study study, List<SubjectCustomFieldData> fieldDataToInsert);
+	public void processFieldsBatch(List<? extends ICustomFieldData> fieldDataList, Study study, List<? extends ICustomFieldData> fieldDataToInsert);
 	
 	/**
 	 * Process the given {@link Consent} lists separately and persist the changes to the table. 
@@ -478,7 +480,7 @@ public interface IStudyService {
 	
 	public List<Address> pageablePersonAddressList(Long personId,Address addressCriteria, int first, int count);
 	
-	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId);
+	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
 	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 

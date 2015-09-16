@@ -65,7 +65,8 @@ public class Constants {
 	public static final String TAB_MODULE_PERSON_CONTACT = "tab.module.person.contact";
 	public static final String TAB_MODULE_SUBJECT_CONSENT = "tab.module.subject.consent";
 	public static final String TAB_MODULE_SUBJECT_SUBJECT_FILE = "tab.module.subject.subjectFile";
-	public static final String TAB_MODULE_SUBJECT_SUBJECT_UPLOAD = "tab.module.subject.subjectUpload";
+	//public static final String TAB_MODULE_SUBJECT_SUBJECT_UPLOAD = "tab.module.subject.subjectUpload";
+	public static final String TAB_MODULE_STUDY_STUDY_DATA_UPLOAD = "tab.module.study.studyDataUpload";
 	public static final String TAB_MODULE_SUBJECT_CORRESPONDENCE = "tab.module.subject.correspondence";
 	public static final String TAB_MODULE_LIMS_SUBJECT_DETAIL = "tab.module.lims.subject.detail";
 
@@ -76,6 +77,8 @@ public class Constants {
 
 	/* Phenotypic data file column names */
 	public static final String SUBJECTUID = "SUBJECTUID";
+	public static final String FAMILYUID = "FAMILYUID";
+	public static final String NOT_SUBJECT_OR_FAMILY = "NOT_SUBJECT_OR_FAMILY";
 	public static final String DATE_COLLECTED = "DATE_COLLECTED";
 
 	/* Tab Panel Names/Keys */
@@ -282,7 +285,8 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_ATTACHMENT = "ATTACHMENT";
 	public static final String FUNCTION_KEY_VALUE_ADDRESS = "ADDRESS";
 	public static final String FUNCTION_KEY_VALUE_CONTACT = "CONTACT";
-	public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD = "SUBJECT_UPLOAD";
+	//public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD = "SUBJECT_UPLOAD";
+	public static final String FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD = "STUDY_DATA_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE = "CORRESPONDENCE";
 	public static final String FUNCTION_KEY_VALUE_REPORT = "REPORT";
 	public static final String FUNCTION_KEY_VALUE_PHENO_SUMMARY = "SUMMARY";

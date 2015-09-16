@@ -167,7 +167,7 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, arkFunction);
 						panelToReturn = new CustomFieldUploadContainerPanel(panelId, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
 					}
-					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
+					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD)) {
 						panelToReturn = new SubjectUploadContainerPanel(panelId, arkFunction);
 					}
 					return panelToReturn;
@@ -183,7 +183,7 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 						// Other functions require study in context 
 						Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 						// Subject Upload only visible to parent studies 
-						if (sessionStudyId !=null && arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
+						if (sessionStudyId !=null && arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD)) {
 							
 							Study study = iArkCommonService.getStudy(sessionStudyId);
 							boolean childStudy = study.getParentStudy() != null  && (study != study.getParentStudy());

@@ -90,7 +90,7 @@ public class SearchResultListPanel extends Panel {
 			}
 
 		};
-		ArkDownloadTemplateButton downloadCustomFieldTemplateButton = new ArkDownloadTemplateButton("downloadCustomFieldTemplate", "SubjectCustomFieldUpload", au.org.theark.study.web.Constants.SUBJECT_CUSTOM_FIELD_TEMPLATE_CELLS) {
+		ArkDownloadTemplateButton downloadCustomFieldTemplateButton = new ArkDownloadTemplateButton("downloadCustomFieldTemplate", "SubjectOrFamilyCustomFieldDataUpload", au.org.theark.study.web.Constants.SUBJECT_OR_FAMILY_CUSTOM_FIELD_DATA_TEMPLATE_CELLS) {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

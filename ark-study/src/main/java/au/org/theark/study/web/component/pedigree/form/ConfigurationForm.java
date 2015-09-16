@@ -98,7 +98,7 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 		effectedStatusDDL = new DropDownChoice("pedigreeConfig.customField", this.affectedStatusList, defaultChoiceRenderer);
 		effectedStatusDDL.setOutputMarkupId(true);
 
-		familyIdList = studyService.getFamilyIdCustomFieldsForPedigreeRelativesList(studyId);
+		familyIdList = studyService.getFamilyUIdCustomFieldsForPedigreeRelativesList(studyId);
 		familyIdDDL = new DropDownChoice("pedigreeConfig.familyId", this.familyIdList, defaultChoiceRenderer);
 		familyIdDDL.setOutputMarkupId(true);
 

@@ -806,7 +806,7 @@ public interface IArkCommonService<T> {
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
 
-	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List<String> subjectUIDsToBeIncluded);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List<String> subjectUIDsToBeIncluded);
 
 	public Payload createPayload(byte[] bytes);
 
@@ -1175,4 +1175,27 @@ public interface IArkCommonService<T> {
 	 * @param cfcUpload
 	 */
 	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload);
+	/**
+	 * Get all family UID's for Subject
+	 * @param study
+	 * @return
+	 */
+	public List<String> getAllFamilyUIDs(Study study);
+	/**
+	 * Get the family customFielddataFor
+	 * @param customFieldDisplaysThatWeNeed
+	 * @param subjectUIDsToBeIncluded
+	 * @return
+	 */
+	public List<SubjectCustomFieldData> getFamilyCustomFieldDataFor(Study study,List customFieldDisplaysThatWeNeed, List<String> familyUIDsToBeIncluded);
+	/**
+	 * Get customFieldDisplaysIn  for a custom field type.
+	 * @param fieldNameCollection
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 */
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<?> fieldNameCollection, Study study, ArkFunction arkFunction,CustomFieldType customFieldType);
+	
 }

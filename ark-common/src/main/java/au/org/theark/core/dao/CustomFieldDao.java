@@ -284,6 +284,8 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		criteria.add(Restrictions.eq("name", customFieldName));
 		criteria.add(Restrictions.eq("study", study));
 		criteria.add(Restrictions.eq("arkFunction", customFieldToUpdate.getArkFunction()));
+		criteria.add(Restrictions.eq("customFieldType", customFieldToUpdate.getCustomFieldType()));
+		criteria.add(Restrictions.eq("customFieldCategory", customFieldToUpdate.getCustomFieldCategory()));
 		criteria.setMaxResults(1);
 		
 		CustomField existingField = (CustomField) criteria.uniqueResult();

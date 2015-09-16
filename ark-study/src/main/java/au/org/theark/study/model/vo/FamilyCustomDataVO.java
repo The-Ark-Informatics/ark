@@ -13,7 +13,7 @@ public class FamilyCustomDataVO extends StudyCustomDataVo<FamilyCustomFieldData>
 	
 	private FamilyCustomFieldData familyCustomFieldData;
 
-	private String familyId;
+	private String familyUId;
 
 	public FamilyCustomDataVO() {
 		super();
@@ -30,13 +30,12 @@ public class FamilyCustomDataVO extends StudyCustomDataVo<FamilyCustomFieldData>
 		this.familyCustomFieldData = familyCustomFieldData;
 	}
 
-
-	public String getFamilyId() {
-		return familyId;
+	public String getFamilyUId() {
+		return familyUId;
 	}
 
-	public void setFamilyId(String familyId) {
-		this.familyId = familyId;
+	public void setFamilyUId(String familyUId) {
+		this.familyUId = familyUId;
 	}
 	
 }
