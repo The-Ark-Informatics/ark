@@ -56,11 +56,14 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -72,6 +75,7 @@ import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -87,7 +91,6 @@ import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
-import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -637,7 +640,7 @@ public interface IStudyDao {
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction);
 
 	@SuppressWarnings("unchecked")
-	public List<SubjectCustomFieldData> getCustomFieldDataFor(Collection customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataFor(Collection customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded);
 
 	public Payload createPayload(byte[] bytes);
 
@@ -750,4 +753,12 @@ public interface IStudyDao {
 	public void deleteUserConfig(UserConfig uc);
 	
 	public List<Study> getChildStudiesForStudy(Study study);
+	
+	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload);
+	
+	public List<String> getAllFamilyUIDs(Study study);
+	
+	public List<FamilyCustomFieldData> getfamilyCustomFieldDataFor(Study study,Collection customFieldDisplaysThatWeNeed, List familyUIDsToBeIncluded);
+	
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<String>fieldNameCollection,Study study,ArkFunction arkFunction,CustomFieldType customFieldType);
 }

@@ -89,7 +89,6 @@ public class BioCollectionCustomDataContainerPanel extends Panel {
 		boolean contextLoaded = prerenderContextCheck();
 		if (contextLoaded && isActionPermitted()) {
 			dataEditorPanel = new BioCollectionCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();
-			;
 		}
 		else if (!contextLoaded) {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");

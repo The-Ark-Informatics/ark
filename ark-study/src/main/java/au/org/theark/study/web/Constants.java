@@ -361,10 +361,12 @@ public class Constants {
 
 	
 	//TODO this is all for validation and templates.  maybe we need some form of validation mapping to db, entities or something like that as this will not be maintainable for long
-	public static final String[][]	SUBJECT_CUSTOM_FIELD_TEMPLATE_CELLS										= {
-			{ "", "SUBJECTUID", "YOUR_FIRST_CUSTOM_FIELD_NAME_HERE", "YOUR_SECOND_CUSTOM_FIELD_NAME_HERE", "AND SO ON"},
-			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "Value for first custom field","Value for second field", "AND SO ON" },
-			{ "NOTE: Removed this first column, and replace row 2 with your actual custom field names (the headers only appear once, row 3 will have your next subject and his/her values", "", "" , "", "" } };
+	public static final String[][]	SUBJECT_OR_FAMILY_CUSTOM_FIELD_DATA_TEMPLATE_CELLS										= {
+			{ "", "SUBJECTUID OR FAMILYUID", "YOUR_FIRST_CUSTOM_FIELD_NAME_HERE", "YOUR_SECOND_CUSTOM_FIELD_NAME_HERE", "AND SO ON"},
+			{ "DESCRIPTION", "The unique identifier assigned for this subject or family.", "Value for first custom field","Value for second field", "AND SO ON" },
+			{ "NOTE: This is the common template to upload the Subject or the Family custom field data.", "This must match the subjectUID in the database or if it's a FAMILYUID it should be the valid FAMILYUID of a SUBJECT", "" , "", "" },
+			{ "		 Please make sure to use either one of a data set.", "", "" , "", "" },
+			{ "		 Removed this first column, and replace row 2 with your actual custom field names (the headers only appear once, row 3 will have your next subject or family and his/her values", "", "" , "", "" } };
 
 	public static final String[][]	SUBJECT_CONSENT_FIELD_TEMPLATE_CELLS										= {
 		{ "", "SUBJECTUID", "STUDY_COMPONENT", "STUDY_COMPONENT_STATUS", "COMPLETED_DATE","CONSENT_TYPE","CONSENT_STATUS","CONSENT_DOWNLOADED","CONSENTED_BY","CONSENT_DATE","COMMENT"},

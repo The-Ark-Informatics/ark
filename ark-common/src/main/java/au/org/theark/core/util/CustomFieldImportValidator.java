@@ -21,6 +21,7 @@ package au.org.theark.core.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -46,7 +47,10 @@ import au.org.theark.core.exception.CustomFieldSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
@@ -64,7 +68,9 @@ import com.csvreader.CsvReader;
  * @author cellis
  * @author elam
  */
-public class CustomFieldImportValidator {
+public class CustomFieldImportValidator implements ICustomImportValidator,Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	static Logger							log							= LoggerFactory.getLogger(CustomFieldImportValidator.class);
 	boolean									qualityControl				= false;
 	private Study							study;
@@ -77,7 +83,7 @@ public class CustomFieldImportValidator {
 	private char							delimChr						= Constants.IMPORT_DELIM_CHAR_COMMA;
 	private List<String>					fileValidationMessages	= new ArrayList<String>();
 	private List<String>					dataValidationMessages	= new ArrayList<String>();
-	private IArkCommonService<Void>	iArkCommonService			= null;
+	private IArkCommonService<Void>			iArkCommonService			= null;
 
 	private HashSet<Integer>			insertRows					= new HashSet<Integer>();
 	private HashSet<Integer>			updateRows					= new HashSet<Integer>();
@@ -88,6 +94,12 @@ public class CustomFieldImportValidator {
 	private String							fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
 	private int								row							= 1;
 	private ArkFunction					arkFunction;
+	private ArkModule 					arkModule;
+	private List<CustomFieldType>       customFieldTypeLstForModule;
+	private static CustomFieldType  selectedCustomFieldType;
+	private List<CustomFieldCategory>  customFieldCategoryLstForCustomFieldType;
+	
+	
 
 	/**
 	 * CustomFieldImportValidator constructor
@@ -104,6 +116,11 @@ public class CustomFieldImportValidator {
 			Study study = iArkCommonService.getStudy(studyId);
 			this.study = study;
 		}
+		
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
+		customFieldTypeLstForModule=iArkCommonService.getCustomFieldTypes(arkModule);
+		
 		this.fileValidationMessages = new ArrayList<String>();
 		this.dataValidationMessages = new ArrayList<String>();
 
@@ -124,7 +141,8 @@ public class CustomFieldImportValidator {
 
 	/**
 	 * Validates the data dictionary file's general structure/format:<BR>
-	 * "FIELD_NAME","FIELD_TYPE","DESCRIPTION", "QUESTION", "UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE","REQUIRED","ALLOW_MULTIPLE_SELECTION"
+	 * "FIELD_NAME","CUSTOM_FIELD_TYPE",CUSTOM_FIELD_CATEGORY,//These fields newly introduced.
+	 * "FIELD_TYPE","DESCRIPTION", "QUESTION", "UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE","REQUIRED","ALLOW_MULTIPLE_SELECTION"
 	 * 
 	 * @param fileInputStream
 	 *           is the input stream of a file
@@ -135,6 +153,7 @@ public class CustomFieldImportValidator {
 	 * @throws CustomFieldSystemException
 	 *            custom field system Exception
 	 */
+	@Override
 	public java.util.Collection<String> validateMatrixFileFormat(InputStream fileInputStream, long inLength, boolean isForPheno) throws FileFormatException, CustomFieldSystemException {
 		curPos = 0;
 		row = 0;
@@ -169,7 +188,8 @@ public class CustomFieldImportValidator {
 				requiredHeaderArray = Constants.DATA_DICTIONARY_HEADER;
 			}
 			else{
-				requiredHeaderArray = Constants.CUSTOM_FIELD_UPLOAD_HEADER;
+				//remove the first element from array.
+				requiredHeaderArray = Arrays.copyOfRange(Constants.CUSTOM_FIELD_UPLOAD_HEADER[0], 1,Constants.CUSTOM_FIELD_UPLOAD_HEADER[0].length ); 
 			}
 			
 			log.info("requiredArray = " + Arrays.toString(requiredHeaderArray));
@@ -325,7 +345,7 @@ public class CustomFieldImportValidator {
 	 * @throws CustomFieldSystemException
 	 *            CustomField System Exception
 	 */
-	public java.util.Collection<String> validateDataDictionaryFileData(InputStream fileInputStream, long inLength) throws FileFormatException, CustomFieldSystemException {
+	private java.util.Collection<String> validateDataDictionaryFileData(InputStream fileInputStream, long inLength) throws FileFormatException, CustomFieldSystemException {
 		curPos = 0;
 		int rowIdx = 1;
 
@@ -348,20 +368,15 @@ public class CustomFieldImportValidator {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimChr);
 			String[] stringLineArray;
-
 			srcLength = inLength;
 			if (srcLength <= 0) {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
-
 //			timer = new StopWatch();
 //			timer.start();
-
 			csvReader.readHeaders();
-
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			log.debug("Header length: " + csvReader.getHeaders().toString().length());
-
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
 				// do something with the newline to put the data into
@@ -379,27 +394,45 @@ public class CustomFieldImportValidator {
 					field = new CustomField();
 					field.setStudy(study);
 					field.setName(fieldName);
-
 					field.setDescription(csvReader.get("DESCRIPTION"));
 					field.setFieldLabel(csvReader.get("QUESTION"));
 
-					if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
-						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
-						if (unitType == null) {
-							gridCell = new ArkGridCell(csvReader.getIndex("UNITS"), rowIdx);
-							StringBuffer stringBuffer = new StringBuffer();
-							stringBuffer.append("Error: ");
-							stringBuffer.append("Unit '");
-							stringBuffer.append(csvReader.get("UNITS"));
-							stringBuffer.append("' in file does not match known units in internal system table");
-							dataValidationMessages.add(stringBuffer.toString());
-							errorCells.add(gridCell);
-						}
-						else {
-							field.setUnitType(unitType);
-						}
+					//Remove the Units validation for the unit types.
+					
+					if(!Constants.ARK_MODULE_STUDY.equalsIgnoreCase(arkModule.getName())){
+							if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
+									UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
+								if (unitType == null) {
+									gridCell = new ArkGridCell(csvReader.getIndex("UNITS"), rowIdx);
+									StringBuffer stringBuffer = new StringBuffer();
+									stringBuffer.append("Error: ");
+									stringBuffer.append("Unit '");
+									stringBuffer.append(csvReader.get("UNITS"));
+									stringBuffer.append("' in file does not match known units in internal system table");
+									dataValidationMessages.add(stringBuffer.toString());
+									errorCells.add(gridCell);
+								}
+								else {
+									field.setUnitType(unitType);
+								}
+							}
+					}else{
+						field.setUnitTypeInText(csvReader.get("UNITS"));
 					}
-
+					//Add the custom field type and the relevant caregory on 2015-08-21
+					
+					if(csvReader.get("CUSTOM_FIELD_TYPE")!=null && !csvReader.get("CUSTOM_FIELD_TYPE").isEmpty()){
+						
+						CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(csvReader.get("CUSTOM_FIELD_TYPE"));
+						field.setCustomFieldType(customFieldType);
+					}
+					if(csvReader.get("CUSTOM_FIELD_CATEGORY")!=null && !csvReader.get("CUSTOM_FIELD_CATEGORY").isEmpty()){
+						
+						CustomFieldCategory customFieldCategory=iArkCommonService.getCustomFieldCategotyByName(csvReader.get("CUSTOM_FIELD_CATEGORY"));
+						field.setCustomFieldCategory(customFieldCategory);
+					}
+					
+		
 					FieldType studyFieldType = new FieldType();
 					try {
 						studyFieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
@@ -419,13 +452,12 @@ public class CustomFieldImportValidator {
 							field.
 						}
 					}*/
-					
-					
-					
 					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					field.setMissingValue(csvReader.get("MISSING_VALUE"));
 
+					//This is how the old custom field being captured by the name.
+					//It is unique field according to the db index defined.
 					CustomField oldField = iArkCommonService.getCustomFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunction);
 					if (oldField == null) {
 						// This is a new record - not able to find an existing field by that name
@@ -456,6 +488,25 @@ public class CustomFieldImportValidator {
 							}
 						}
 					}
+					//Validate Custom field type.
+					if (csvReader.get("CUSTOM_FIELD_TYPE") != null) {
+						gridCell = new ArkGridCell(csvReader.getIndex("CUSTOM_FIELD_TYPE"), rowIdx);
+						if (!CustomFieldImportValidator.validateCustomFieldType(customFieldTypeLstForModule,this.fieldName, csvReader.get("CUSTOM_FIELD_TYPE"), dataValidationMessages)) {
+							errorCells.add(gridCell);
+						}
+					}
+					//We validate the categories just only for that custom field types.
+					customFieldCategoryLstForCustomFieldType=iArkCommonService.getCustomFieldCategoryByCustomFieldTypeAndStudy(study, selectedCustomFieldType);
+					
+					//Validate custom field category
+					if (csvReader.get("CUSTOM_FIELD_CATEGORY") != null) {
+						gridCell = new ArkGridCell(csvReader.getIndex("CUSTOM_FIELD_CATEGORY"), rowIdx);
+						if (!CustomFieldImportValidator.validateCustomFieldCategory(customFieldCategoryLstForCustomFieldType,this.fieldName, csvReader.get("CUSTOM_FIELD_CATEGORY"), dataValidationMessages)) {
+							errorCells.add(gridCell);
+						}
+					}
+					
+					
 
 					if (csvReader.get("FIELD_TYPE") != null) {
 						gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), rowIdx);
@@ -623,6 +674,7 @@ public class CustomFieldImportValidator {
 	 *           is the delimiter character of the file (eg comma)
 	 * @return a collection of validation messages
 	 */
+	@Override
 	public Collection<String> validateCustomDataMatrixFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
@@ -711,6 +763,7 @@ public class CustomFieldImportValidator {
 	 *           is the delimiter character of the file (eg COMMA, TAB, PIPE etc)
 	 * @return a collection of validation messages
 	 */
+	@Override
 	public Collection<String> validateDataDictionaryFileData(InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
@@ -889,7 +942,54 @@ public class CustomFieldImportValidator {
 
 		return isValid;
 	}
-
+	
+	/**
+	 * Validate (module or custom field type) 
+	 * Here we checked the entered module(Subject or Family already exsist in the list)
+	 * @param fieldName
+	 * @param fieldType
+	 * @param errorMessages
+	 * @return
+	 */
+	private static  boolean validateCustomFieldType(List<CustomFieldType> customFieldTypesLst,String fieldName, String fieldType, Collection<String> errorMessages) {
+		boolean isValid = false;
+		
+		if(!customFieldTypesLst.isEmpty()){
+			for (CustomFieldType cusFieldType : customFieldTypesLst) {
+				if(cusFieldType.getName().equalsIgnoreCase(fieldType)){
+					selectedCustomFieldType=cusFieldType;
+					isValid=true;
+					break;
+				}
+			}
+		}
+			if(isValid==false){
+				errorMessages.add(CustomFieldValidationMessage.invalidCustomFieldType(fieldName, fieldType));
+			}
+		return isValid;
+	}
+	/**
+	 * 
+	 * @param fieldName
+	 * @param fieldType
+	 * @param errorMessages
+	 * @return
+	 */
+	private static boolean validateCustomFieldCategory(List<CustomFieldCategory> customFieldCategoryLstForCustomFieldType,String fieldName, String fieldType, Collection<String> errorMessages) {
+		boolean isValid = false;
+		if(!customFieldCategoryLstForCustomFieldType.isEmpty()){
+			for (CustomFieldCategory category : customFieldCategoryLstForCustomFieldType) {
+				if(category.getName().equalsIgnoreCase(fieldType)){
+					isValid=true;
+					break;
+				}
+			} 
+		}
+			if(isValid==false){
+				errorMessages.add(CustomFieldValidationMessage.invalidCategory(fieldName, fieldType));
+			}
+		return isValid;
+	}
 	/**
 	 * Return the progress of the current process in %
 	 * 

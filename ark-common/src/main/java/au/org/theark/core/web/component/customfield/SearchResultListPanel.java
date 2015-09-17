@@ -38,6 +38,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -62,8 +63,8 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
-	private boolean 				unitTypeDropDownOn;
-	private boolean 				subjectCustomField;
+	
+	
 	
 	/**
 	 * Constructor
@@ -73,13 +74,12 @@ public class SearchResultListPanel extends Panel {
 	 * @param feedBackPanel
 	 * @param unitTypeDropDownOn
 	 */
-	public SearchResultListPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel,boolean unitTypeDropDownOn, boolean subjectCustomField) {
+	public SearchResultListPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id);
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
-		this.unitTypeDropDownOn=unitTypeDropDownOn;
-		this.subjectCustomField=subjectCustomField;
+		
 	}
 
 	public DataView<CustomField> buildDataView(ArkDataProvider2<CustomField, CustomField> subjectProvider) {
@@ -163,7 +163,8 @@ public class SearchResultListPanel extends Panel {
 				newModel.getObject().setCustomField(cf);
 				newModel.getObject().setUseCustomFieldDisplay(cpModel.getObject().isUseCustomFieldDisplay());
 
-				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO,unitTypeDropDownOn,subjectCustomField);
+				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
+						//unitTypeDropDownOn,subjectCustomField);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 

@@ -38,15 +38,15 @@ import au.org.theark.core.model.study.entity.Upload;
 @SuppressWarnings("serial")
 public class UploadVO implements Serializable {
 	private Upload								upload;
-	private List<String>								uidsToUpload;
-	private FileFormat								fileFormat;
-	private String										uploadType;//TODO could create type/enum/ref table
-	private FileUpload								fileUpload;
-	private Study										study;
-	private java.util.Collection<Upload>	uploadCollection;
-	private int											mode;
+	private List<String>						uidsToUpload;
+	private FileFormat							fileFormat;
+	private String								uploadType;//TODO could create type/enum/ref table
+	private FileUpload							fileUpload;
+	private Study								study;
+	private java.util.Collection<Upload>		uploadCollection;
+	private int									mode;
 	private java.util.Collection<String>		validationMessages;
-	private Boolean									updateChkBox;
+	private Boolean								updateChkBox;
 	private CustomFieldGroup					customFieldGroup;
 	private PhenoCollection						phenoCollection;
 

@@ -175,6 +175,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				updateRows = subjectUploadValidator.getUpdateRows();
 				errorCells = subjectUploadValidator.getErrorCells();
 			}
+			// custom field data two types of validation subject type or family type.
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.STUDY_SPECIFIC_CUSTOM_DATA)){
 				CustomFieldUploadValidator customFieldUploadValidator = new CustomFieldUploadValidator(iArkCommonService);
 				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);

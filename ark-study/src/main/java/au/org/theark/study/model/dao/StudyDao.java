@@ -32,6 +32,10 @@ import java.util.Set;
 
 
 
+
+
+
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -90,6 +94,7 @@ import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
@@ -192,9 +197,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * @param study
 	 * @param subjectsToUpdate
 	 */
-	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert) {
+	/*public void processFieldsBatch(List<? extends ICustomFieldData> fieldsToUpdate, Study study, List<? extends ICustomFieldData> fieldsToInsert) {
 		Session session = getSession();
 		int count = 0;
+		
+		
 		for (SubjectCustomFieldData dataToUpdate : fieldsToUpdate) {
 			session.update(dataToUpdate);
 			count++;
@@ -219,7 +226,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		session.flush();
 		session.clear();
-	}
+	}*/
 
 	/**
 	 * {@inheritDoc}
@@ -1922,7 +1929,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append("LEFT JOIN cfd.customField AS cf ");
 		sb.append("LEFT JOIN cf.customFieldType AS cft ");
 		sb.append("LEFT JOIN cfd.familyCustomFieldData as fieldList ");
-		sb.append(" with fieldList.familyId = :familyId ");
+		sb.append(" with fieldList.familyUid = :familyUid ");
 		sb.append("  where cfd.customField.study.id = :studyId");
 		sb.append(" and cfd.customField.arkFunction.id = :functionId");
 		//Add new requirement for the category
@@ -1937,7 +1944,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" order by cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
-		query.setParameter("familyId", getSubjectFamilyId(linkSubjectStudyCriteria.getStudy().getId(),linkSubjectStudyCriteria.getSubjectUID()));
+		query.setParameter("familyUid", getSubjectFamilyUId(linkSubjectStudyCriteria.getStudy().getId(),linkSubjectStudyCriteria.getSubjectUID()));
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("functionId", arkFunction.getId());
 		//Add type and category
@@ -1968,9 +1975,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return familyCustomFieldDataList;
 	}
 	
-	
-	public String getSubjectFamilyId(Long studyId, String subjectUID){
-		
+	@Override
+	public String getSubjectFamilyUId(Long studyId, String subjectUID) {
 		String result=null;
 		
 		StringBuffer sb= new StringBuffer("select scfd.TEXT_DATA_VALUE from "
@@ -1989,9 +1995,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	    result = (String) query.uniqueResult();
 	    return result;
 	}
-	
-	
-	
 	
 	
 	/**
@@ -2503,8 +2506,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		return pedigreeCustomFields;
 	}
-	
-	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId) {
+	@Override
+	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId) {
 		List<CustomField> pedigreeCustomFields = null;
 		Criteria criteria = getSession().createCriteria(CustomField.class, "cf");
 		criteria.createAlias("study", "st", JoinType.INNER_JOIN);
@@ -2652,5 +2655,38 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		return criteria;
 	}
+
+	@Override
+	public void processFieldsBatch(List<? extends ICustomFieldData> fieldsToUpdate, Study study,List<? extends ICustomFieldData> fieldsToInsert) {
+		Session session = getSession();
+		int count = 0;
+		for (ICustomFieldData dataToUpdate : fieldsToUpdate) {
+			session.update(dataToUpdate);
+			count++;
+			// based on recommended hibernate practice of <prop key="hibernate.jdbc.batch_size">50</prop>
+			if (count % 50 == 0) {
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!"); // TODO Evaluate why batch not working. hints: may be identity/id generation related.
+																					// Will revisit after all batch work done
+				session.flush();
+				session.clear();
+			}
+		}
+		count = 0;
+		for (ICustomFieldData dataToInsert : fieldsToInsert) {
+			session.save(dataToInsert);
+			count++;
+			// based on recommended hibernate practice of <prop key="hibernate.jdbc.batch_size">50</prop>
+			if (count % 50 == 0) {
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
+				session.flush();
+				session.clear();
+			}
+		}
+		session.flush();
+		session.clear();
+	}
+
+	
+	
 		
 }

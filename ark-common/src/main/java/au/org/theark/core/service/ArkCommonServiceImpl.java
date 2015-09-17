@@ -18,10 +18,10 @@
  ******************************************************************************/
 package au.org.theark.core.service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.File;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -119,6 +119,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldType;
@@ -151,6 +152,7 @@ import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -1269,8 +1271,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getCustomFieldDisplaysIn(study, arkFunction);
 	}
 
-	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
-		return studyDao.getCustomFieldDataFor(customFieldDisplaysThatWeNeed, subjectUIDsToBeIncluded);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
+		return studyDao.getSubjectCustomFieldDataFor(customFieldDisplaysThatWeNeed, subjectUIDsToBeIncluded);
 	}
 
 	public Payload createPayload(byte[] bytes) {
@@ -1784,11 +1786,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public List<CustomFieldType> getCustomFieldTypes() {
-		return customFieldDao.getCustomFieldTypes();
-	}
-
-	@Override
 	public long getCustomFieldCategoryCount(CustomFieldCategory customFieldCategoryCriteria) {
 		 return customFieldDao.getCustomFieldCategoryCount(customFieldCategoryCriteria);
 	}
@@ -1954,6 +1951,56 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public CustomFieldType getCustomFieldTypeByName(String name) {
 		return customFieldDao.getCustomFieldTypeByName(name);
+	}
+	
+	@Override
+	public List getCustomFieldTypes(ArkModule arkModule) {
+		return customFieldDao.getCustomFieldTypes(arkModule);
+	}
+	@Override
+	public List<UploadLevel> getAllUploadLevels(){
+		return customFieldDao.getAllUploadLevels();
+	}
+
+	@Override
+	public List getCustomFieldCategoryByCustomFieldTypeAndStudy(Study study,CustomFieldType customFieldType) {
+		return customFieldDao.getCustomFieldCategoryByCustomFieldTypeAndStudy(study, customFieldType);
+	}
+
+	@Override
+	public CustomFieldCategory getCustomFieldCategotyByName(String name) {
+		return customFieldDao.getCustomFieldCategotyByName(name);
+	}
+	@Override
+	public UploadLevel getUploadLevelByName(String name){
+		return customFieldDao.getUploadLevelByName(name);
+	};
+	@Override
+	public CustomFieldCategory getCustomFieldCategoryByNameStudyAndArkFunction(String name,Study study,ArkFunction arkFunction){
+		return customFieldDao.getCustomFieldCategoryByNameStudyAndArkFunction(name, study, arkFunction);
+	}
+
+	@Override
+	public boolean isCustomFieldCategoryBeingUsed(CustomFieldCategory customFieldCategory) {
+			return customFieldDao.isCustomFieldCategoryBeingUsed(customFieldCategory);
+	}
+	@Override
+	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload){
+			studyDao.createCustomFieldCategoryUpload(cfcUpload);
+	}
+
+	@Override
+	public List<String> getAllFamilyUIDs(Study study) {
+		return studyDao.getAllFamilyUIDs(study);
+	}
+
+	@Override
+	public List getFamilyCustomFieldDataFor(Study study,List customFieldDisplaysThatWeNeed,List familyUIDsToBeIncluded) {
+		return studyDao.getfamilyCustomFieldDataFor(study,customFieldDisplaysThatWeNeed, familyUIDsToBeIncluded);
+	}
+	@Override
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List fieldNameCollection, Study study, ArkFunction arkFunction,CustomFieldType customFieldType) {
+		return studyDao.getCustomFieldDisplaysInWithCustomFieldType(fieldNameCollection, study, arkFunction,customFieldType);
 	}
 
 }

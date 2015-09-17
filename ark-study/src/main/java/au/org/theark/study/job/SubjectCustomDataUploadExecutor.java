@@ -24,6 +24,7 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +34,8 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
+
+import com.csvreader.CsvReader;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.service.IArkCommonService;
@@ -95,17 +98,17 @@ public class SubjectCustomDataUploadExecutor {
 		
 		JobDetail customDataUploadJob = newJob(SubjectCustomDataUploadJob.class).withIdentity("SubjectCustomDataUploadJob", "group2").build();
 		// pass initialization parameters into the job
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.ISTUDYSERVICE, iStudyService);
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.UPLOADID, uploadId);
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.STUDY_ID, studyId);
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.REPORT, report);
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.FILE_FORMAT, fileFormat);
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.INPUT_STREAM, inputStream);
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.DELIMITER, delimiter);
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.SIZE, size);
-		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
-
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.ISTUDYSERVICE, iStudyService);
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.UPLOADID, uploadId);
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.STUDY_ID, studyId);
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.REPORT, report);
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.FILE_FORMAT, fileFormat);
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.INPUT_STREAM, inputStream);
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.DELIMITER, delimiter);
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.SIZE, size);
+		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
+	
 		Date startTime = nextGivenSecondDate(null, 1);
 		
 		SimpleTrigger trigger1 = newTrigger().withIdentity("SubjectCustomDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();

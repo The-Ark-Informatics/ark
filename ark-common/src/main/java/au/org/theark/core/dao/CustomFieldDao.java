@@ -9,14 +9,12 @@ import java.util.StringTokenizer;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -26,6 +24,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -34,6 +33,7 @@ import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.web.component.customfield.Constants;
 
@@ -284,6 +284,8 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		criteria.add(Restrictions.eq("name", customFieldName));
 		criteria.add(Restrictions.eq("study", study));
 		criteria.add(Restrictions.eq("arkFunction", customFieldToUpdate.getArkFunction()));
+		criteria.add(Restrictions.eq("customFieldType", customFieldToUpdate.getCustomFieldType()));
+		criteria.add(Restrictions.eq("customFieldCategory", customFieldToUpdate.getCustomFieldCategory()));
 		criteria.setMaxResults(1);
 		
 		CustomField existingField = (CustomField) criteria.uniqueResult();
@@ -657,20 +659,13 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		List<CustomFieldCategory> customFieldCategoryList = (List<CustomFieldCategory>) criteria.list();
 		return customFieldCategoryList;
 	}
-	@SuppressWarnings("unchecked")
-	public List<CustomFieldType> getCustomFieldTypes() {
+	@Override
+	public List<CustomFieldType> getCustomFieldTypes(ArkModule arkModule) {
 		Criteria criteria = getSession().createCriteria(CustomFieldType.class);
+		criteria.add(Restrictions.eq("arkModule",arkModule));
 		List<CustomFieldType> customFieldTypeList = (List<CustomFieldType>) criteria.list();
 		return customFieldTypeList;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public List<CustomFieldType> get() {
-		Criteria criteria = getSession().createCriteria(CustomFieldType.class);
-		List<CustomFieldType> customFieldTypeList = (List<CustomFieldType>) criteria.list();
-		return customFieldTypeList;
-	}
-
 	/**
 	 * Filter for search return distinct values of all the parent fields.
 	 */
@@ -771,8 +766,55 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return (CustomFieldType) criteria.uniqueResult();
 	}
 	
-	
-	
-	
-	
+	@Override
+	public List<UploadLevel> getAllUploadLevels(){
+		return (List<UploadLevel>)getSession().createCriteria(UploadLevel.class).list();
+		
+	}
+
+	@Override
+	public List<CustomFieldCategory> getCustomFieldCategoryByCustomFieldTypeAndStudy(Study study,CustomFieldType customFieldType) {
+		Criteria criteria = getSession().createCriteria(CustomFieldCategory.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("customFieldType",customFieldType ));
+		return  (List<CustomFieldCategory>) criteria.list();
+	}
+	@Override
+	public CustomFieldCategory getCustomFieldCategotyByName(String name){
+		Criteria criteria = getSession().createCriteria(CustomFieldCategory.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.setMaxResults(1);
+		return (CustomFieldCategory) criteria.uniqueResult();
+		
+	}
+	@Override
+	public UploadLevel getUploadLevelByName(String name){
+		Criteria criteria = getSession().createCriteria(UploadLevel.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.setMaxResults(1);
+		return (UploadLevel) criteria.uniqueResult();
+		
+	}
+	@Override
+	public CustomFieldCategory getCustomFieldCategoryByNameStudyAndArkFunction(String name,Study study,ArkFunction arkFunction){
+		Criteria criteria = getSession().createCriteria(CustomFieldCategory.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.setMaxResults(1);
+		return (CustomFieldCategory) criteria.uniqueResult();
+		
+	}
+	@Override
+	public boolean isCustomFieldCategoryBeingUsed(CustomFieldCategory customFieldCategory){
+		
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.add(Restrictions.eq("customFieldCategory", customFieldCategory));
+		criteria.setMaxResults(1);
+		if (criteria.uniqueResult() != null){
+			return true;
+		}else{
+			return false;
+		}
+	}	
 }

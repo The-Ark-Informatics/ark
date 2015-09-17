@@ -58,5 +58,7 @@ public class Constants {
 	public static final String	ADDRESS_TYPE					= "addressType";
 
 	public static final String	SUBJECTUIDSEQ_STUDYNAMEID	= "studyNameId";
-
+	
+	public static final String	SUBJECTUID	= "SUBJECTUID";
+	
 }

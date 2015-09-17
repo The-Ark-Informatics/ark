@@ -25,7 +25,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -35,8 +34,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.swing.event.ListSelectionEvent;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -120,11 +120,14 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -1547,7 +1550,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<SubjectCustomFieldData> getCustomFieldDataFor(Collection customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataFor(Collection customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
 		if (customFieldDisplaysThatWeNeed == null || customFieldDisplaysThatWeNeed.isEmpty() || subjectUIDsToBeIncluded == null || subjectUIDsToBeIncluded.isEmpty()) {
 			return new ArrayList<SubjectCustomFieldData>();
 		}
@@ -1560,7 +1563,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return query.list();
 		}
 	}
-
 	public Payload createPayload(byte[] bytes) {
 		Payload payload = new Payload(bytes);
 		getSession().save(payload);
@@ -5057,5 +5059,63 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("parentStudy", parentStudy));
 		List<Study> childStudies = criteria.list();
 		return childStudies;
+	}
+	@Override
+	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload) {
+		getSession().save(cfcUpload);
+	}
+	@Override
+	public List<String> getAllFamilyUIDs(Study study) {
+		Criteria criteria = getSession().createCriteria(FamilyCustomFieldData.class);
+		Set<String>  familyUIDSet=new HashSet<String>();
+		criteria.add(Restrictions.eq("study", study));
+		List<FamilyCustomFieldData> familyCustomFieldDatalst = criteria.list();
+		for (FamilyCustomFieldData familyCustomFieldData : familyCustomFieldDatalst) {
+			familyUIDSet.add(familyCustomFieldData.getFamilyUid());
+		}
+		List<String> familyUIDLst=new ArrayList<String>(familyUIDSet);
+		return  familyUIDLst;
+	}
+
+	@Override
+	public List<FamilyCustomFieldData> getfamilyCustomFieldDataFor(Study study,Collection customFieldDisplaysThatWeNeed,List familyUidsToBeIncluded) {
+		if (customFieldDisplaysThatWeNeed == null || customFieldDisplaysThatWeNeed.isEmpty() || familyUidsToBeIncluded == null || familyUidsToBeIncluded.isEmpty()) {
+			return new ArrayList<FamilyCustomFieldData>();
+		}
+		else {
+			String queryString = "select fcfd from FamilyCustomFieldData fcfd where fcfd.familyUid in (:familyUidsToBeIncluded) "
+					+ " and fcfd.customFieldDisplay in (:customFieldDisplaysThatWeNeed) and fcfd.study=:study";
+			Query query = getSession().createQuery(queryString);
+			query.setParameterList("familyUidsToBeIncluded", familyUidsToBeIncluded);
+			query.setParameterList("customFieldDisplaysThatWeNeed", customFieldDisplaysThatWeNeed);
+			query.setParameter("study",study) ;
+			return query.list();
+			
+		}
+	}
+
+	@Override
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<String> fieldNameCollection, Study study,ArkFunction arkFunction, CustomFieldType customFieldType) {
+		if (fieldNameCollection == null || fieldNameCollection.isEmpty()) {
+			return new ArrayList<CustomFieldDisplay>();
+		}
+		else {
+			List<String> lowerCaseNames = new ArrayList<String>();
+			for (String name : fieldNameCollection) {
+				lowerCaseNames.add(name.toLowerCase());
+			}
+			String queryString = "select cfd " + 
+								"from CustomFieldDisplay cfd " + 
+								"where customField.id in ( " + " SELECT id from CustomField cf " + 
+																" where cf.study =:study "
+																+ " and lower(cf.name) in (:names) " + " and cf.arkFunction =:arkFunction and cf.customFieldType=:customFieldType )";
+			Query query = getSession().createQuery(queryString);
+			query.setParameter("study", study);
+			// query.setParameterList("names", fieldNameCollection);
+			query.setParameterList("names", lowerCaseNames);
+			query.setParameter("arkFunction", arkFunction);
+			query.setParameter("customFieldType", customFieldType);
+			return query.list();
+		}
 	}
 }
