@@ -68,7 +68,7 @@ public class CustomField implements Serializable {
 	private String defaultValue;
 	//Add unit type as String
 	private String unitTypeInText;
-	private CustomFieldType customFieldType;//Subject or Family
+	private CustomFieldType customFieldType;//Subject or Family but later can be more types.
 
 	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
 

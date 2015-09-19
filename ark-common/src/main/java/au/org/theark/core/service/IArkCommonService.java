@@ -18,8 +18,8 @@
  ******************************************************************************/
 package au.org.theark.core.service;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,6 +78,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldType;
@@ -110,11 +111,11 @@ import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
-import au.org.theark.core.util.ArkString;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldCategoryVO;
@@ -805,7 +806,7 @@ public interface IArkCommonService<T> {
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
 
-	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List<String> subjectUIDsToBeIncluded);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List<String> subjectUIDsToBeIncluded);
 
 	public Payload createPayload(byte[] bytes);
 
@@ -1018,12 +1019,6 @@ public interface IArkCommonService<T> {
 	 * @throws ArkSystemException
 	 */
 	public String generateArkFileChecksum(File file, String algorithm) throws ArkSystemException;
-	
-	/**
-	 * 
-	 * @return Custom Field types
-	 */
-	public List<CustomFieldType> getCustomFieldTypes();
 		
 	/**
 	 * After introducing the CustomFieldCategory following methods add to the class.
@@ -1114,7 +1109,7 @@ public interface IArkCommonService<T> {
 	 */
 	public List<CustomFieldCategory> getCategoriesListInCustomFieldsByCustomFieldType(Study study, ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
 	/**
-	 *  List of all available categories for study.
+	 * List of all available categories for study.
 	 * @param study
 	 * @param customFieldType
 	 * @return
@@ -1127,4 +1122,80 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public CustomFieldType getCustomFieldTypeByName(String name);
+	
+	/**
+	 * Return custom field types by ark module.
+	 * @param arkModule
+	 * @return
+	 */
+	public List<CustomFieldType> getCustomFieldTypes(ArkModule arkModule);
+	
+	/**
+	 * Get all the upload levels
+	 * @return
+	 */
+	public List<UploadLevel> getAllUploadLevels();
+	
+	/**
+	 * Get custom field categories by custom field type and study.
+	 * @param study
+	 * @param customFieldType
+	 * @return
+	 */
+	public List<CustomFieldCategory> getCustomFieldCategoryByCustomFieldTypeAndStudy(Study study,CustomFieldType customFieldType);
+	/**
+	 * Get custom field category by name.
+	 * @param name
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategotyByName(String name);
+	
+	/**
+	 * Get a upload levels by id
+	 * @return
+	 */
+	public UploadLevel getUploadLevelByName(String name);
+	/**
+	 * Get custom field category by name study and function.
+	 * @param name
+	 * @param study
+	 * @param arkFunction
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategoryByNameStudyAndArkFunction(String name,Study study,ArkFunction arkFunction);
+	
+	/**Check for the custom field being used for categorise custom field.
+	 * 
+	 * @param customFieldCategory
+	 * @return
+	 */
+	public boolean isCustomFieldCategoryBeingUsed(CustomFieldCategory customFieldCategory);
+	/**
+	 * Create the custom field category.
+	 * @param cfcUpload
+	 */
+	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload);
+	/**
+	 * Get all family UID's for Subject
+	 * @param study
+	 * @return
+	 */
+	public List<String> getAllFamilyUIDs(Study study);
+	/**
+	 * Get the family customFielddataFor
+	 * @param customFieldDisplaysThatWeNeed
+	 * @param subjectUIDsToBeIncluded
+	 * @return
+	 */
+	public List<SubjectCustomFieldData> getFamilyCustomFieldDataFor(Study study,List customFieldDisplaysThatWeNeed, List<String> familyUIDsToBeIncluded);
+	/**
+	 * Get customFieldDisplaysIn  for a custom field type.
+	 * @param fieldNameCollection
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 */
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<?> fieldNameCollection, Study study, ArkFunction arkFunction,CustomFieldType customFieldType);
+	
 }

@@ -65,7 +65,8 @@ public class Constants {
 	public static final String TAB_MODULE_PERSON_CONTACT = "tab.module.person.contact";
 	public static final String TAB_MODULE_SUBJECT_CONSENT = "tab.module.subject.consent";
 	public static final String TAB_MODULE_SUBJECT_SUBJECT_FILE = "tab.module.subject.subjectFile";
-	public static final String TAB_MODULE_SUBJECT_SUBJECT_UPLOAD = "tab.module.subject.subjectUpload";
+	//public static final String TAB_MODULE_SUBJECT_SUBJECT_UPLOAD = "tab.module.subject.subjectUpload";
+	public static final String TAB_MODULE_STUDY_STUDY_DATA_UPLOAD = "tab.module.study.studyDataUpload";
 	public static final String TAB_MODULE_SUBJECT_CORRESPONDENCE = "tab.module.subject.correspondence";
 	public static final String TAB_MODULE_LIMS_SUBJECT_DETAIL = "tab.module.lims.subject.detail";
 
@@ -76,6 +77,8 @@ public class Constants {
 
 	/* Phenotypic data file column names */
 	public static final String SUBJECTUID = "SUBJECTUID";
+	public static final String FAMILYUID = "FAMILYUID";
+	public static final String NOT_SUBJECT_OR_FAMILY = "NOT_SUBJECT_OR_FAMILY";
 	public static final String DATE_COLLECTED = "DATE_COLLECTED";
 
 	/* Tab Panel Names/Keys */
@@ -282,7 +285,8 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_ATTACHMENT = "ATTACHMENT";
 	public static final String FUNCTION_KEY_VALUE_ADDRESS = "ADDRESS";
 	public static final String FUNCTION_KEY_VALUE_CONTACT = "CONTACT";
-	public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD = "SUBJECT_UPLOAD";
+	//public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD = "SUBJECT_UPLOAD";
+	public static final String FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD = "STUDY_DATA_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE = "CORRESPONDENCE";
 	public static final String FUNCTION_KEY_VALUE_REPORT = "REPORT";
 	public static final String FUNCTION_KEY_VALUE_PHENO_SUMMARY = "SUMMARY";
@@ -305,18 +309,21 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_ROLE = "ROLE";
 	public static final String FUNCTION_KEY_VALUE_MODULE_ROLE = "MODULE_ROLE";
 	public static final String FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE = "ROLE_POLICY_TEMPLATE";
-	public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_FIELD = "LIMS_COLLECTION_CUSTOM_FIELD";
+	public static final String FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY = "LIMS_CUSTOM_FIELD_CATEGORY";
+	//public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_FIELD = "LIMS_COLLECTION_CUSTOM_FIELD";
+	public static final String FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD = "LIMS_CUSTOM_FIELD";//new LIMS custom field.
 	public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_DATA = "LIMS_COLLECTION_CUSTOM_DATA";
-	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD = "BIOSPECIMEN_CUSTOM_FIELD";
+	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD = "BIOSPECIMEN_CUSTOM_FIELD";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_DATA = "BIOSPECIMEN_CUSTOM_DATA";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMENUID_TEMPLATE = "BIOSPECIMENUID_TEMPLATE";
 	public static final String FUNCTION_KEY_VALUE_BARCODE_PRINTER = "BARCODE_PRINTER";
 	public static final String FUNCTION_KEY_VALUE_BARCODE_LABEL = "BARCODE_LABEL";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD = "BIOSPECIMEN_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_UPLOAD = "SUBJECT_CUSTOM_FIELD_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_CUSTOM_FIELD_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
+	//public static final String FUNCTION_KEY_VALUE_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
+	public static final String FUNCTION_KEY_VALUE_CUSTOM_FIELD_UPLOAD = "LIMS_CUSTOM_FIELD_UPLOAD";// new LIMS custom field upload.
+	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_CUSTOM_FIELD_UPLOAD";
+	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_DATA_EXTRACTION	= "DATA_EXTRACTION";
 	public static final String FUNCTION_KEY_VALUE_PEDIGREE = "PEDIGREE";
 	public static final String FUNCTION_KEY_VALUE_GENO_TABLE = "GENO_TABLE";
@@ -372,9 +379,92 @@ public class Constants {
 	public static final String[] DATA_DICTIONARY_HEADER = { "FIELD_NAME",
 			"FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
 			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE" }; //ALLOW MULTI  not here because it is Questionairre/customfieldgroup based
-	public static final String[] CUSTOM_FIELD_UPLOAD_HEADER = { "FIELD_NAME",
+	public static final String[][] CUSTOM_FIELD_UPLOAD_HEADER = {{"", "FIELD_NAME","CUSTOM_FIELD_TYPE","CUSTOM_FIELD_CATEGORY",
 			"FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
-			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"  };
+			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
+			{
+				"DESCRIPTION",
+				"The unique identifier of the field",
+				"The type of the field",
+				"The pre defined category name of the field",
+				"The field type of the field",
+				"The details description of the field",
+				"The question or the label for the field ",
+				"The units for the field",
+				"The encoded value for the field ",
+				"The minimum value for the field",
+				"The maximum value for the field",
+				"The missing value for the field",
+				"The required status for the field",
+				"The multiple selection allowed status for the field"
+		},
+		{ 		"MANDATORY", 
+				"Yes", 
+				"No", 
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No"
+		 },
+		{
+				"VALID VALUES",
+				"", 
+				"", 
+				"", 
+				"",
+				"Maximum 255 characters", 
+				"", 
+				"",
+				"0=Yes;1=No;",
+				"",
+				"",
+				"",
+				"true;yes;1;y;false;no;0;n",
+				"true;yes;1;y;false;no;0;n"
+		},
+		{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "","", "", "", "", "", ""
+		}};
+	public static final String[][] CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER={ { "","CATEGORY_NAME",
+		"CUSTOM_FIELD_TYPE","DESCRIPTION","PARENT_CATEGORY_NAME","ORDER_NUMBER"	},
+		{
+			"DESCRIPTION",
+			"The unique identifier of the category",
+			"The type of the category",
+			"The details description of the category",
+			"The parent category of the category",
+			"The order number of the category"
+		},
+		{
+			"MANDATORY", 
+			"Yes", 
+			"Yes", 
+			"No",
+			"No-if blank category becomes a parent category",
+			"Yes"
+		},
+		{
+			"VALID VALUES",
+			"", 
+			"", 
+			"",
+			"",
+			"Any Integer value starting from 1"
+		},
+		{ "NOTE: Removed this first column, and replace rows 2 to 5.",
+				"", "", "", "",""
+		},
+		{
+			"Please maintain the order which parent category must be on top of it's sub category.",
+				 "", "", "", "",""
+		}
+	};
 
 	public static final String NAME = "name";
 	public static final String CUSTOM_FIELD_DOT_NAME = "customField.name";

@@ -289,5 +289,52 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append(columnName);
 		return (stringBuffer.toString());
 	}
+	public static String invalidCustomFieldType(String fieldName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" has an invalid custom field type for the column ");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidCategory(String fieldName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" has an invalid category for the column.");
+		stringBuffer.append(columnName+"\n");
+		stringBuffer.append("Please check again category is under your entered custom field Type");
+		return (stringBuffer.toString());
+	}
+	public static String invalidCustomFieldTypeForCategory(String categoryName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The category ");
+		stringBuffer.append(categoryName);
+		stringBuffer.append(" has an invalid custom field type for the column ");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidParentCategryForCategory(String categoryName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The category ");
+		stringBuffer.append(categoryName);
+		stringBuffer.append(" has an invalid parent Category for the column ");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidOrderNumberForCategory(String categoryName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The category ");
+		stringBuffer.append(categoryName);
+		stringBuffer.append(" has an invalid order number for the column ");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	
 
 }

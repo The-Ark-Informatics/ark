@@ -36,7 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.CustomFieldCategoryImportValidator;
 import au.org.theark.core.util.CustomFieldImportValidator;
+import au.org.theark.core.util.ICustomImportValidator;
 import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.customfieldupload.form.WizardForm;
@@ -62,6 +64,7 @@ public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
 	private WizardForm						wizardForm;
 	private WebMarkupContainer				updateExistingDataContainer;
 	private CheckBox							updateChkBox;
+	private ICustomImportValidator 			iCustomFieldValidator;
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
 		/**
@@ -153,10 +156,16 @@ public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
 		if (temp != null && temp.exists()) {
 			InputStream inputStream = null;
 			try {
-				CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
-
+				// Field upload
+				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_FIELD)){
+					iCustomFieldValidator= new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+				//Category upload	
+				}
+				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_CATEGORY)){
+					iCustomFieldValidator= new CustomFieldCategoryImportValidator(iArkCommonService, containerForm.getModelObject());
+				}
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
+				validationMessages = iCustomFieldValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
 				inputStream.close();
 				inputStream = null;
 
@@ -167,12 +176,12 @@ public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
 				HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
 				HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 
-				insertRows = phenotypicValidator.getInsertRows();
-				updateRows = phenotypicValidator.getUpdateRows();
-				insertCells = phenotypicValidator.getInsertCells();
-				updateCells = phenotypicValidator.getUpdateCells();
-				warningCells = phenotypicValidator.getWarningCells();
-				errorCells = phenotypicValidator.getErrorCells();
+				insertRows = iCustomFieldValidator.getInsertRows();
+				updateRows = iCustomFieldValidator.getUpdateRows();
+				insertCells = iCustomFieldValidator.getInsertCells();
+				updateCells = iCustomFieldValidator.getUpdateCells();
+				warningCells = iCustomFieldValidator.getWarningCells();
+				errorCells = iCustomFieldValidator.getErrorCells();
 
 				// Show file data (and key reference)
 				inputStream = new BufferedInputStream(new FileInputStream(temp));

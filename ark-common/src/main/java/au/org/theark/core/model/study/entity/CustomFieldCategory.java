@@ -154,13 +154,13 @@ public class CustomFieldCategory implements java.io.Serializable {
 	 * @return the study
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "STUDY_ID", nullable = false)
+	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return study;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ARK_FUNCTION_ID", nullable = false)
+	@JoinColumn(name = "ARK_FUNCTION_ID")
 	public ArkFunction getArkFunction() {
 		return arkFunction;
 	}

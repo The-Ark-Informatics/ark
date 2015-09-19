@@ -47,11 +47,11 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -96,7 +96,7 @@ public interface IStudyDao {
 	 * @param study
 	 * @param subjectsToUpdate
 	 */
-	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert);
+	public void processFieldsBatch(List<? extends ICustomFieldData> fieldsToUpdate, Study study, List<? extends ICustomFieldData> fieldsToInsert);
 	
 	/**
 	 * Perform all pedigree inserts as an atomic unit.
@@ -486,11 +486,11 @@ public interface IStudyDao {
 	
 	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles);
 	
-	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId);
+	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
 	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 
-	public String getSubjectFamilyId(Long studyId, String subjectUID);
+	public String getSubjectFamilyUId(Long studyId, String subjectUID);
 	
 	//public List<SubjectCustomFieldData> getSubjectCustomFieldDataListByCategory(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 	

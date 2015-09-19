@@ -41,12 +41,16 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.CustomFieldCategoryImporter;
 import au.org.theark.core.util.CustomFieldImporter;
+import au.org.theark.core.util.ICustomImporter;
 import au.org.theark.core.util.UploadReport;
 import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.component.customfieldupload.form.WizardForm;
@@ -64,6 +68,7 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 	private WizardForm						wizardForm;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>		iArkCommonService;
+	private ICustomImporter iCustomImporter;
 
 	public CustomFieldUploadStep4(String id, Form<CustomFieldUploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 4/5: Confirm Upload", "Data will now be written to the database, click Next to continue, otherwise click Cancel.");
@@ -112,7 +117,18 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		Subject currentUser = SecurityUtils.getSubject();
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
-		CustomFieldImporter fieldImporter = new CustomFieldImporter(study, containerForm.getModelObject().getUpload().getArkFunction(), iArkCommonService, fileFormat, delimiterChar);
+		
+		// Field upload
+		if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(au.org.theark.core.web.component.customfieldupload.Constants.UPLOAD_LEVEL_FIELD)){
+			iCustomImporter = new CustomFieldImporter(study, containerForm.getModelObject().getUpload().getArkFunction(), iArkCommonService, fileFormat, delimiterChar);
+		//Category upload	
+		}
+		if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(au.org.theark.core.web.component.customfieldupload.Constants.UPLOAD_LEVEL_CATEGORY)){
+			iCustomImporter  = new CustomFieldCategoryImporter(study, containerForm.getModelObject().getUpload().getArkFunction(), iArkCommonService, fileFormat, delimiterChar);
+		}
+		
+		//Need to persist the custom field category
+		
 
 		try {
 			log.info("Uploading data dictionary file");
@@ -122,7 +138,7 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = fieldImporter.convertXlsToCsv(w);
+					inputStream = iCustomImporter.convertXlsToCsv(w);
 					inputStream.reset();
 				}
 				catch (BiffException e) {
@@ -133,10 +149,14 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 				}
 			}
 
-			uploadReport = fieldImporter.uploadAndReportMatrixDataDictionaryFile(inputStream, containerForm.getModelObject().getFileUpload().getSize());
+			uploadReport = iCustomImporter.uploadAndReportMatrixDataDictionaryFile(inputStream, containerForm.getModelObject().getFileUpload().getSize());
 
 			// Determined FieldUpload entities
-			containerForm.getModelObject().setCustomFieldUploadCollection(fieldImporter.getFieldUploadList());
+			if(iCustomImporter instanceof CustomFieldCategoryImporter)
+					containerForm.getModelObject().setCustomFieldUploadCategoryCollection(((CustomFieldCategoryImporter)iCustomImporter).getFieldUploadList());
+			else if(iCustomImporter instanceof CustomFieldImporter){
+					containerForm.getModelObject().setCustomFieldUploadCollection(((CustomFieldImporter)iCustomImporter).getFieldUploadList());
+			}
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -152,7 +172,7 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		updateUploadReport(uploadReport.toString());
 
 		// Save all objects to the database
-		save();
+		save(iCustomImporter);
 	}
 
 	public void updateUploadReport(String importReport) {
@@ -164,7 +184,7 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setUploadReport(bytes);
 	}
 
-	private void save() {
+	private void save(ICustomImporter iCustomImporter) {
 		File temp = containerForm.getModelObject().getTempFile();
 		InputStream inputStream = null;
 		try {
@@ -175,13 +195,21 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 
 			containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 			containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForUploaded());		
-			
 			//TODO investigate if only one created
 			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
-			Collection<CustomFieldUpload> cfUploadLinks = containerForm.getModelObject().getCustomFieldUploadCollection();
-			for (CustomFieldUpload cfUpload : cfUploadLinks) {
-				cfUpload.setUpload(containerForm.getModelObject().getUpload());
-				iArkCommonService.createCustomFieldUpload(cfUpload);
+			
+			if (iCustomImporter instanceof CustomFieldCategoryImporter){
+				Collection<CustomFieldCategoryUpload> cfcUploadLinks = containerForm.getModelObject().getCustomFieldUploadCategoryCollection();
+				for (CustomFieldCategoryUpload cfcUpload : cfcUploadLinks) {
+					cfcUpload.setUpload(containerForm.getModelObject().getUpload());
+					iArkCommonService.createCustomFieldCategoryUpload(cfcUpload);
+				}
+			}else if(iCustomImporter instanceof CustomFieldImporter){
+				Collection<CustomFieldUpload> cfUploadLinks = containerForm.getModelObject().getCustomFieldUploadCollection();
+				for (CustomFieldUpload cfUpload : cfUploadLinks) {
+					cfUpload.setUpload(containerForm.getModelObject().getUpload());
+					iArkCommonService.createCustomFieldUpload(cfUpload);
+				}
 			}
 		}
 		catch (IOException ioe) {

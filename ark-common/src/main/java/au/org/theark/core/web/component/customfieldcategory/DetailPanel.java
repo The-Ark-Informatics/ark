@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldCategoryVO;
 import au.org.theark.core.vo.CustomFieldVO;
@@ -40,6 +41,7 @@ public class DetailPanel extends Panel {
 
 	private CompoundPropertyModel<CustomFieldCategoryVO> cpModel;
 	private ArkCrudContainerVO arkCrudContainerVO;
+	
 
 	public DetailPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<CustomFieldCategoryVO> cpModel, ArkCrudContainerVO arkCrudContainerVO){
 		super(id, cpModel);

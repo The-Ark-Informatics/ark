@@ -20,6 +20,21 @@
 		<div class="wizardPanelMargin">&nbsp;</div>
 		
 		<div class="fldLabel">
+			<div class="label">
+				<label for="uploadType"><wicket:message	key="upload.uploadLevel">Category or Field</wicket:message></label> 
+			</div>
+		</div>
+		<div class="fldControl">
+			<select wicket:id="upload.uploadLevel">
+			<option>Category or Field</option>
+			</select>
+		</div>
+		
+		<div class="wizardPanelBreaker">&nbsp;</div>
+		
+		<div class="wizardPanelContentLeft">&nbsp;</div>
+		
+		<div class="fldLabel">
 			<wicket:message	key="upload.delimiterType">Delimiter:</wicket:message>
 		</div>
 		
@@ -41,8 +56,6 @@
 				<wicket:message key="delimiterType.note">[NOTE]</wicket:message>
 			</div>
 		</div>
-
-		
 		<div class="wizardPanelBreaker">&nbsp;</div>
 		
 		<div class="wizardPanelContentLeft">&nbsp;</div>

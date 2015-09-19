@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -48,6 +49,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -121,13 +123,15 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	private WebMarkupContainer  					panelCustomUnitTypeDropDown;
 	private WebMarkupContainer  					panelCustomUnitTypeText;
 	private WebMarkupContainer  					panelCustomFieldTypeDropDown;
-	private boolean 								unitTypeDropDownOn;
-	private boolean 								subjectCustomField;
+	//private boolean 								unitTypeDropDownOn;
+	//private boolean 								subjectCustomField;
 	
 	private HistoryButtonPanel 						historyButtonPanel;
-	private TextField<Long>						customeFieldCategoryOrderNoTxtFld;
+	private TextField<Long>							customeFieldCategoryOrderNoTxtFld;
 	private  WebMarkupContainer						categoryPanel;
 	private  WebMarkupContainer						orderNumberPanel;
+	private ArkModule 								arkModule;
+	
 	//private Collection<CustomFieldCategory> customFieldCategoryCollection;
 	
 
@@ -139,13 +143,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 */
-	public DetailForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,boolean unitTypeDropDownOn, boolean subjectCustomField) {
+	public DetailForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO
+			//boolean unitTypeDropDownOn, boolean subjectCustomField) {
+		){	
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		// Initialise the model to be empty for now
 		cfGroupDdcListModel = new ListModel<CustomFieldGroup>();
 		refreshEntityFromBackend();
-		this.unitTypeDropDownOn=unitTypeDropDownOn;
-		this.subjectCustomField = subjectCustomField;
+		//this.unitTypeDropDownOn=unitTypeDropDownOn;
+		//this.subjectCustomField = subjectCustomField;
+		
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
 	}
 
 	protected void refreshEntityFromBackend() {
@@ -202,7 +210,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * initialise custom field types.
 	 */
 	private void initCustomFieldTypeDdc(){
-		List<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes();
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
+		List<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes(arkModule);
 		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(Constants.FIELDTYPE_NAME, Constants.FIELDTYPE_ID);
 		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE, customFieldTypeCollection, fieldTypeRenderer);
 		customFieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -583,13 +593,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		panelCustomUnitTypeText.setOutputMarkupId(true);
 		panelCustomFieldTypeDropDown = new WebMarkupContainer("paenlCustomFieldTypeDropDown");
 		panelCustomFieldTypeDropDown.setOutputMarkupId(true);
-		if(this.unitTypeDropDownOn){
-			panelCustomUnitTypeDropDown.setVisible(true);
-			panelCustomUnitTypeText.setVisible(false);
-		}else{
+		if(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY)){
 			panelCustomUnitTypeDropDown.setVisible(false);
 			panelCustomUnitTypeText.setVisible(true);
-			panelCustomFieldTypeDropDown.setVisible(true);
+		}else{
+			panelCustomUnitTypeDropDown.setVisible(true);
+			panelCustomUnitTypeText.setVisible(false);
 		}
 		customFieldDetailWMC.setOutputMarkupPlaceholderTag(true);
 		customFieldDetailWMC.add(fieldIdTxtFld.setEnabled(false)); // Disable ID field editing
@@ -624,12 +633,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		// Only show these fields if necessary...
 		if (getModelObject().isUseCustomFieldDisplay() == false) {
 			customFieldDisplayDetailWMC.setVisible(false);
-		}
-		
-		if(this.subjectCustomField){
-			panelCustomFieldTypeDropDown.setEnabled(true);
-		}else{
-			panelCustomFieldTypeDropDown.setEnabled(false);
 		}
 
 		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the

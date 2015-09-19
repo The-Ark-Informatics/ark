@@ -29,6 +29,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
+import com.csvreader.CsvReader;
+
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
@@ -55,6 +57,7 @@ public class SubjectCustomDataUploadJob implements Job {
 	public static final String		SIZE					= "size";
 	public static final String		REPORT				= "report";
 	public static final String		LIST_OF_UIDS_TO_UPDATE	= "listOfUidsToUpdate";
+	
 	private IStudyService	iStudyService;
 	private IArkCommonService<Void>	iArkCommonService;
 
@@ -85,6 +88,7 @@ public class SubjectCustomDataUploadJob implements Job {
 		Long studyId 				= data.getLongValue(STUDY_ID);
 		List<String> uidsToUpdate=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
 		
+		
 		try {
 			Date startTime = new Date(System.currentTimeMillis());
 			StringBuffer uploadReport = iStudyService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate);
@@ -106,7 +110,7 @@ public class SubjectCustomDataUploadJob implements Job {
 		upload.setUploadReport(bytes);
 		upload.setStartTime(startTime);
 		upload.setFinishTime(new Date(System.currentTimeMillis()));
-		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
+		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD));
 		upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_COMPLETED));
 		iArkCommonService.updateUpload(upload);
 	}
