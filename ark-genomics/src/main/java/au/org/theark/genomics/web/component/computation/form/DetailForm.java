@@ -155,7 +155,7 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 				
 				boolean enabled=true;
 				Computation computation=getFormModelObject().getComputation(); 
-				if(computation!=null && computation.getStatus() !=null && (computation.getStatus().contains("upload") || computation.getStatus().contains("Compiled"))){
+				if(computation!=null && computation.getStatus() !=null && (computation.getStatus().equalsIgnoreCase(Constants.STATUS_UPLOADED) || computation.getStatus().equalsIgnoreCase(Constants.STATUS_PROCESSED))){
 					enabled=false;
 				}
 				
@@ -167,10 +167,6 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 		this.compileButton = new AjaxButton("compile") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// TODO Auto-generated method stub
-//				iGenomicService.compileComputation(containerForm.getModelObject().getComputation());
-//				target.add(computationStatusTxtFld);
-//				target.add(this);
 				
 				try {
 
@@ -178,7 +174,7 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 
 					String processUID = iGenomicService.compileComputation(computation);
 
-					computation.setStatus("Running");
+					computation.setStatus(Constants.STATUS_PROCESSING);
 
 					iGenomicService.saveOrUpdate(computation);
 

@@ -6,6 +6,7 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.Date;
+import java.util.List;
 
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -24,12 +25,18 @@ public class DataSourceUploadExecutor {
 	private String processUID;
 	
 	private IGenomicService iGenomicService;
+	
+	private List<DataSource> dataSourceList;
+	
+	private String status;
 
-	public DataSourceUploadExecutor(DataSource dataSource, String processUID, IGenomicService iGenomicService) {
+	public DataSourceUploadExecutor(DataSource dataSource, String processUID, IGenomicService iGenomicService, List<DataSource> dataSourceList, String status) {
 		super();
 		this.dataSource = dataSource;
 		this.processUID = processUID;
 		this.iGenomicService = iGenomicService;
+		this.dataSourceList = dataSourceList;
+		this.status=status;
 	}
 	
 	
@@ -42,6 +49,8 @@ public class DataSourceUploadExecutor {
 		studyUploadJob.getJobDataMap().put(DataSourceUploadJob.GENOMICSSERVICE, iGenomicService);
 		studyUploadJob.getJobDataMap().put(DataSourceUploadJob.DATASOURCE, dataSource);
 		studyUploadJob.getJobDataMap().put(DataSourceUploadJob.PROCESSUID, processUID);
+		studyUploadJob.getJobDataMap().put(DataSourceUploadJob.DATASOURCE_LIST, dataSourceList);
+		studyUploadJob.getJobDataMap().put(DataSourceUploadJob.DATASOURCE_INIT_STATUS, status);
 		Date startTime = nextGivenSecondDate(null, 1);
 		SimpleTrigger trigger1 = newTrigger().withIdentity("DataSourceUploadJobTrigger"+processUID, "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
 		sched.scheduleJob(studyUploadJob, trigger1);

@@ -1003,12 +1003,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public String setResetPasswordMessage(final String fullName, final String password) throws VelocityException {
 		// map all the fields for the message template
-		Map<String, String> model = new HashMap<String, String>();
+		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("fullName", fullName);
 		model.put("password", password);
 
 		/* get the text and replace all the mapped fields */
-		String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordMessage.vm", model);
+		String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordMessage.vm","UTF-8", model);
 		/* send out the email */
 		return text;
 	}

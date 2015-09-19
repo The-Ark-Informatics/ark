@@ -84,6 +84,25 @@
 			<artifactId>spring-data-cassandra</artifactId>
 			<version>1.0.0.RELEASE</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>4.0.2.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>4.0.2.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>4.0.2.RELEASE</version>
+		</dependency>
+
 
 		<!-- Other Web dependencies -->
 		<dependency>

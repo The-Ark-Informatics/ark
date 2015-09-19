@@ -7,6 +7,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -44,7 +45,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 	private TextField<String> analysisNameTxtFld;
 	private TextArea<String> analysisDescTxtArea;
 
-	private TextField<String> analysisStatusTxtFld;
+	private Label analysisStatusLbl;
 
 	private DropDownChoice<MicroService> microServicesDDC;
 	private DropDownChoice<DataSource> dataSourcesDDC;
@@ -79,8 +80,9 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 		this.analysisNameTxtFld = new TextField<String>(Constants.ANALYIS_NAME);
 
 		this.analysisDescTxtArea = new TextArea<String>(Constants.ANALYIS_DESCRIPTION);
-		this.analysisStatusTxtFld = new TextField<String>(Constants.ANALYIS_STATUS);
-		this.analysisStatusTxtFld.setEnabled(false);
+		this.analysisStatusLbl = new Label(Constants.ANALYIS_STATUS);
+		this.analysisStatusLbl.setOutputMarkupId(true);
+		this.analysisStatusLbl.setEnabled(false);
 
 		this.parametersTxtArea = new TextArea<String>(Constants.ANALYIS_PARAMETERS);
 		this.resultTxtFld = new TextField<String>(Constants.ANALYIS_RESULT);
@@ -114,7 +116,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 					e.printStackTrace();
 				}
 
-				target.add(analysisStatusTxtFld);
+				target.add(analysisStatusLbl);
 				target.add(feedBackPanel);
 			}
 		};
@@ -238,7 +240,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisDescTxtArea);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisStatusTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisStatusLbl);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(microServicesDDC);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dataSourcesDDC);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(computationsDDC);

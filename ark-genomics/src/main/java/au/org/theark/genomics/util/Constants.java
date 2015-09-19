@@ -72,6 +72,7 @@ public final class Constants {
 	public static final String ID = "id";
 	public static final String NAME = "name";
 	public static final String PATH = "path";
+	public static final String SERVICE_URL = "serviceUrl";
 	public static final String DATACENTER = "dataCenter";
 	public static final String MICROSERVICE = "microService";
 
@@ -81,11 +82,30 @@ public final class Constants {
 	public static final String ERROR_MICRO_SERVICE_URL_TAG = "Micro Service URL";
 	public static final String ERROR_MICRO_SERVICE_URL_REQUIRED = "error.microservice.url.required";
 
-	public static final String STATUS_AVAILABLE = "Available";
+	public static final String STATUS_ONLINE = "Online";
 
-	public static final String STATUS_NOT_AVAILABLE = "Not Available";
+	public static final String STATUS_OFFLINE = "Offline";
 	
 	public static final String ARK_GENOMICS_COMPUTATION_DIR="computation";
 	
+	public static final String STATUS_READY = "Ready";
+
+	public static final String STATUS_NOT_READY = "Not Ready";
+
+	public static final String STATUS_NOT_REQUIRED = "Not Required";
+	
+	public static final String STATUS_PROCESSED="Processed";
+
+	public static final String STATUS_UNPROCESSED="Unprocessed";
+	
+	public static final String STATUS_PROCESSING="Processing";
+
+	public static final String STATUS_UPLOADED="Uploaded";
+	
+	public static final String STATUS_UPLOAD_FAILED="Upload Failed";
+	
+	public static final String STATUS_COMPILED="Compiled";
+	
+	public static final String STATUS_CPMPILE_FAILED="Compile Failed";
 	
 }

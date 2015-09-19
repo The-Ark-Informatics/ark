@@ -1,32 +1,14 @@
 package au.org.theark.genomics.service;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.util.EntityUtils;
+import javax.ws.rs.HttpMethod;
+
 import org.apache.shiro.SecurityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -35,6 +17,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +28,8 @@ import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.DataSourceType;
 import au.org.theark.core.model.spark.entity.MicroService;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.webservice.ArkHTTPService;
+import au.org.theark.core.webservice.ArkMultipartService;
 import au.org.theark.genomics.model.dao.IGenomicsDao;
 import au.org.theark.genomics.model.vo.DataCenterVo;
 import au.org.theark.genomics.model.vo.DataSourceVo;
@@ -56,9 +41,12 @@ public class GenomicServiceImpl implements IGenomicService {
 
 	@Autowired
 	IGenomicsDao genomicsDao;
-	
+
 	@Autowired
 	IArkCommonService iArkCommonService;
+
+	@Value("${service.auth.header}")
+	private String authHeader;
 
 	Logger log = LoggerFactory.getLogger(GenomicServiceImpl.class);
 
@@ -77,25 +65,25 @@ public class GenomicServiceImpl implements IGenomicService {
 	public void delete(DataSource dataSource) {
 		genomicsDao.delete(dataSource);
 	}
-	
+
 	@Override
 	public void saveOrUpdate(Analysis analysis) {
-		genomicsDao.saveOrUpdate(analysis);	
+		genomicsDao.saveOrUpdate(analysis);
 	}
-	
+
 	public void saveOrUpdate(Computation computation) {
-		genomicsDao.saveOrUpdate(computation);	
+		genomicsDao.saveOrUpdate(computation);
 	}
-	
+
 	@Override
 	public void save(Computation computation, byte[] attachement) throws ArkSystemException {
-		Long computationId= genomicsDao.saveOrUpdate(computation);
-		
+		Long computationId = genomicsDao.saveOrUpdate(computation);
+
 		if (attachement != null) {
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//			String subjectUID = correspondence.getLss().getSubjectUID();
+			// String subjectUID = correspondence.getLss().getSubjectUID();
 			String fileName = computation.getProgramName();
-//			byte[] payload = correspondence.getAttachmentPayload();
+			// byte[] payload = correspondence.getAttachmentPayload();
 
 			// Generate unique file id for given file name
 			String fileId = iArkCommonService.generateArkFileId(fileName);
@@ -103,19 +91,20 @@ public class GenomicServiceImpl implements IGenomicService {
 			// Set unique subject file id
 			computation.setProgramId(fileId);
 
-			// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+			// Save the attachment to directory configured in
+			// application.properties {@code fileAttachmentDir}
 			iArkCommonService.saveArkFileAttachment(studyId, computationId.toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR, fileName, attachement, fileId);
 
 			// Remove the attachment
 			genomicsDao.saveOrUpdate(computation);
 		}
-		
+
 	}
-	
+
 	@Override
-	public void update(Computation computation,byte[] attachement, String checksum) throws ArkSystemException {
+	public void update(Computation computation, byte[] attachement, String checksum) throws ArkSystemException {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//		String subjectUID = correspondence.getLss().getSubjectUID();
+		// String subjectUID = correspondence.getLss().getSubjectUID();
 		String fileName = computation.getProgramName();
 		String prevChecksum = computation.getChecksum();
 
@@ -128,7 +117,7 @@ public class GenomicServiceImpl implements IGenomicService {
 				fileId = computation.getProgramId();
 
 				// Delete existing attachment
-				iArkCommonService.deleteArkFileAttachment(studyId, computation.getId().toString(), fileId, Constants.ARK_GENOMICS_COMPUTATION_DIR,prevChecksum);
+				iArkCommonService.deleteArkFileAttachment(studyId, computation.getId().toString(), fileId, Constants.ARK_GENOMICS_COMPUTATION_DIR, prevChecksum);
 
 				// Generate unique file id for given file name
 				fileId = iArkCommonService.generateArkFileId(fileName);
@@ -136,78 +125,81 @@ public class GenomicServiceImpl implements IGenomicService {
 				// Set unique subject file id
 				computation.setProgramId(fileId);
 
-				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+				// Save the attachment to directory configured in
+				// application.properties {@code fileAttachmentDir}
 				iArkCommonService.saveArkFileAttachment(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR, fileName, attachement, fileId);
-			}
-			else {
+			} else {
 				// Generate unique file id for given file name
 				fileId = iArkCommonService.generateArkFileId(fileName);
 
 				// Set unique subject file id
 				computation.setProgramId(fileId);
 
-				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+				// Save the attachment to directory configured in
+				// application.properties {@code fileAttachmentDir}
 				iArkCommonService.saveArkFileAttachment(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR, fileName, attachement, fileId);
 			}
-			//Set new file checksum
+			// Set new file checksum
 			computation.setChecksum(checksum);
-		}
-		else {
+		} else {
 			if (computation.getProgramId() != null) {
 				// Get existing file Id
 				fileId = computation.getProgramId();
 
 				// Delete existing attachment
-				iArkCommonService.deleteArkFileAttachment(studyId, computation.getId().toString(), fileId, Constants.ARK_GENOMICS_COMPUTATION_DIR,prevChecksum);
-				
-				//remove existing attachment file id and checksum
+				iArkCommonService.deleteArkFileAttachment(studyId, computation.getId().toString(), fileId, Constants.ARK_GENOMICS_COMPUTATION_DIR, prevChecksum);
+
+				// remove existing attachment file id and checksum
 				computation.setProgramId(null);
 				computation.setChecksum(null);
 			}
 		}
 		// Remove the attachment
 		genomicsDao.saveOrUpdate(computation);
-		
+
 	}
-	
+
 	@Override
 	public void delete(Computation computation) {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 
 	public List<MicroService> searchMicroService(MicroService microService) {
 		List<MicroService> serviceList = genomicsDao.searchMicroService(microService);
-		for (MicroService service : serviceList) {
-			service.setStatus(checkServiceStatus(service));
+
+		serviceList.forEach(service -> service.setStatus(checkServiceStatus(service)));
+
+		if (microService.getStatus() != null) {
+			serviceList.removeIf(service -> !(microService.getStatus().equalsIgnoreCase(service.getStatus().split("[(]")[0].trim())));
 		}
+
 		return serviceList;
 	}
 
-	private String checkServiceStatus(final MicroService microService) {
-		String status = Constants.STATUS_NOT_AVAILABLE;
-
+	public String checkServiceStatus(final MicroService microService) {
+		String status = Constants.STATUS_OFFLINE;
 		try {
+			
+			String URL = microService.getServiceUrl() + "/status";
+			ArkHTTPService httpService = new ArkHTTPService(URL, this.authHeader);
+			int responseCode = httpService.getResponseCode();
 
-			URL url = new URL(microService.getServiceUrl() + "/status");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Accept", "application/json");
-
-			if (conn.getResponseCode() != 200) {
-				status = status + " - " + conn.getResponseCode();
+			if (responseCode != HttpURLConnection.HTTP_OK) {
+				status = status + " (" + responseCode + ")";
 			} else {
-				status = Constants.STATUS_AVAILABLE;
+				status = Constants.STATUS_ONLINE;
 			}
-			conn.disconnect();
+
 		} catch (MalformedURLException e) {
-			log.error("Invalid URL ", e);
-			status = status + " - 404";
-
+			status = Constants.STATUS_OFFLINE + " (404)";
+			log.error("Invalid URL " + microService.getName() + " has generated " + e.getMessage());
 		} catch (IOException e) {
-			log.error("IO eroor", e);
-			status = status + " - 404";
+			status = Constants.STATUS_OFFLINE + " (404)";
+			log.error("Invalid URL " + microService.getName() + " has generated " + e.getMessage());
+		} catch (Exception e) {
+			status = Constants.STATUS_OFFLINE + " (404)";
+			log.error("Invalid URL " + microService.getName() + " has generated " + e.getMessage());
 		}
-
 		return status;
 	}
 
@@ -219,25 +211,12 @@ public class GenomicServiceImpl implements IGenomicService {
 		StringBuffer sb = new StringBuffer();
 
 		try {
-
-			URL url = new URL(URL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Accept", "application/json");
-
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-			}
-
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-			// System.out.println("Output from Server .... \n");
-			String output = null;
-			while ((output = br.readLine()) != null) {
-				sb.append(output);
-			}
-
-			conn.disconnect();
+			
+			ArkHTTPService httpService = new ArkHTTPService(URL, this.authHeader);
+			
+			List<String> data = httpService.finish();
+			
+			data.forEach(s -> sb.append(s));
 
 			JSONParser parser = new JSONParser();
 
@@ -253,6 +232,8 @@ public class GenomicServiceImpl implements IGenomicService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch(Exception e){
 			e.printStackTrace();
 		}
 
@@ -270,39 +251,20 @@ public class GenomicServiceImpl implements IGenomicService {
 		}
 
 		try {
+		
+			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
 
-			URL url = new URL(URL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
-			
 			JSONObject obj = new JSONObject();
 			obj.put("name", datacenter.getName());
 			obj.put("directory", datacenter.getDirectory());
 			obj.put("fileName", datacenter.getFileName());
-
-			StringWriter out = new StringWriter();
-			obj.writeJSONString(out);
-			String data = out.toString();
-
-			System.out.println(data);
-
-			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-
-			writer.write(data);
-			writer.flush();
-			String line;
-			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
+			
+			httpService.addPostParameters(obj);
+			
 			StringBuffer sb = new StringBuffer();
-			while ((line = reader.readLine()) != null) {
-				sb.append(line);
-			}
-			writer.close();
-			reader.close();
+			List<String> data = httpService.finish();
+			
+			data.forEach(s -> sb.append(s));
 
 			JSONParser parser = new JSONParser();
 
@@ -330,7 +292,6 @@ public class GenomicServiceImpl implements IGenomicService {
 
 					ds.setPath(dirPath + fileName);
 				}
-				// ds.setStatus(obj2.get("status").toString());
 				ds.setMicroService(datacenter.getMicroService());
 				ds.setDataCenter(datacenter.getName());
 				ds.setDirectoryName(datacenter.getDirectory());
@@ -356,15 +317,15 @@ public class GenomicServiceImpl implements IGenomicService {
 
 		return list;
 	}
-	
-	public List<DataSource> searchDataSources(MicroService microService){
+
+	public List<DataSource> searchDataSources(MicroService microService) {
 		return genomicsDao.searchDataSources(microService);
 	}
-	
-	public List<Computation> searchComputation(MicroService microService){
+
+	public List<Computation> searchComputation(MicroService microService) {
 		return genomicsDao.searchComputation(microService);
 	}
-	
+
 	@Override
 	public List<Computation> searchComputations(Computation computation) {
 		// TODO Auto-generated method stub
@@ -380,7 +341,7 @@ public class GenomicServiceImpl implements IGenomicService {
 		// TODO Auto-generated method stub
 		return genomicsDao.getDataSource(dataSourceVo);
 	}
-	
+
 	public String executeDataSourceUpload(DataSourceVo dataSource) {
 
 		MicroService microService = dataSource.getMicroService();
@@ -389,15 +350,9 @@ public class GenomicServiceImpl implements IGenomicService {
 
 		String processUID = null;
 		try {
-			URL url = new URL(URL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
 			
-						
+			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+
 			JSONObject obj = new JSONObject();
 			obj.put("directoryName", dataSource.getDirectoryName());
 			obj.put("dataCenterName", dataSource.getDataCenter());
@@ -405,33 +360,20 @@ public class GenomicServiceImpl implements IGenomicService {
 			obj.put("fileName", dataSource.getFileName());
 			obj.put("status", dataSource.getStatus());
 
-			StringWriter out = new StringWriter();
-			obj.writeJSONString(out);
-			String data = out.toString();
-
-			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-			writer.write(data);
-			writer.flush();
+			httpService.addPostParameters(obj);
+			List<String> data = httpService.finish();
+			processUID = data.stream().findFirst().get();
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-			String output = null;
-			while ((output = br.readLine()) != null) {
-				log.info("Process UID -- " + output);
-				processUID = output;
-			}
-			conn.disconnect();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return processUID;
 	}
-	
-	
-	public String executeDataSourceUpload(DataCenterVo dataCenter) {
+
+	public String executeDataSourceUpload(DataCenterVo dataCenter, String initStatus) {
 
 		MicroService microService = dataCenter.getMicroService();
 
@@ -439,46 +381,24 @@ public class GenomicServiceImpl implements IGenomicService {
 
 		String processUID = null;
 		try {
-			URL url = new URL(URL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
-						
+			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+
 			JSONObject obj = new JSONObject();
 			obj.put("directory", dataCenter.getDirectory());
 			obj.put("name", dataCenter.getName());
-			obj.put("status", dataCenter.getStatus());
-
-			StringWriter out = new StringWriter();
-			obj.writeJSONString(out);
-			String data = out.toString();
-
-			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-			writer.write(data);
-			writer.flush();
-			
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-			String output = null;
-			while ((output = br.readLine()) != null) {
-				log.info("Process UID -- " + output);
-				processUID = output;
-			}
-			conn.disconnect();
-			
+			obj.put("status", initStatus);
+			httpService.addPostParameters(obj);
+			List<String> data = httpService.finish();
+			processUID = data.stream().findFirst().get();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return processUID;
 	}
-	
-	
+
 	public String executeAnalysis(Analysis analysis) {
 
 		MicroService microService = analysis.getMicroService();
@@ -487,14 +407,8 @@ public class GenomicServiceImpl implements IGenomicService {
 
 		String processUID = null;
 		try {
-			URL url = new URL(URL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
-						
+			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+			
 			JSONObject obj = new JSONObject();
 			obj.put("programId", analysis.getComputation().getProgramId().split("[.]")[0]);
 			obj.put("programName", analysis.getComputation().getProgramName().split("[.]")[0]);
@@ -504,49 +418,30 @@ public class GenomicServiceImpl implements IGenomicService {
 			obj.put("sourceDir", analysis.getDataSource().getDirectory());
 			obj.put("parameters", analysis.getParameters());
 			obj.put("result", analysis.getResult());
-
-			StringWriter out = new StringWriter();
-			obj.writeJSONString(out);
-			String data = out.toString();
-
-			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-			writer.write(data);
-			writer.flush();
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+			httpService.addPostParameters(obj);
+			List<String> data = httpService.finish();
+			processUID = data.stream().findFirst().get();
 
-			String output = null;
-			while ((output = br.readLine()) != null) {
-				log.info("Process UID -- " + output);
-				processUID = output;
-			}
-			conn.disconnect();
-			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return processUID;
 	}
-	
-	public byte[] getAnalysisResult(Analysis analysis){
-		byte[] result=null;
+
+	public byte[] getAnalysisResult(Analysis analysis) {
+		byte[] result = null;
 		MicroService microService = analysis.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/getAnalysisResult";
 
 		StringBuffer sb = new StringBuffer();
 		try {
-			URL url = new URL(URL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
-						
+			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+			
 			JSONObject obj = new JSONObject();
 			obj.put("programId", analysis.getComputation().getProgramId().split("[.]")[0]);
 			obj.put("programName", analysis.getComputation().getProgramName().split("[.]")[0]);
@@ -554,70 +449,44 @@ public class GenomicServiceImpl implements IGenomicService {
 			obj.put("parameters", analysis.getParameters());
 			obj.put("result", analysis.getResult());
 			
-			StringWriter out = new StringWriter();
-			obj.writeJSONString(out);
-			String data = out.toString();
-
-			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-			writer.write(data);
-			writer.flush();
-			
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-			String output = null;
-			while ((output = br.readLine()) != null) {
-				log.info("Process UID -- " + output);
-				if(output.contains("\n")){
-					sb.append(output);
-				}else{
-					sb.append(output+"\n");
+			httpService.addPostParameters(obj);
+			List<String> data = httpService.finish();
+			for(String s: data){
+				if (s.contains("\n")) {
+					sb.append(s);
+				} else {
+					sb.append(s + "\n");
 				}
 			}
-			conn.disconnect();
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		result=sb.toString().getBytes();
+
+		result = sb.toString().getBytes();
 		return result;
 	}
 
-
-	public void updateDataSourceStatus(final String processUID, DataSource dataSource) {
+	public void updateDataSourceStatus(final String processUID, DataSource dataSource, List<DataSource> dataSourceList, String initStatus) {
 
 		MicroService microService = dataSource.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/processStatus";
 
-		String result = "Running";
-		
-		String initStatus = dataSource.getStatus();
+		String result = Constants.STATUS_PROCESSING;
 
-		while (!("Completed".equalsIgnoreCase(result) || "Error".equalsIgnoreCase(result))) {
+		while (!(Constants.STATUS_PROCESSED.equalsIgnoreCase(result) || "Error".equalsIgnoreCase(result))) {
 
 			try {
-				URL url = new URL(URL);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Accept", "application/json");
-				conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-				conn.setDoOutput(true);
-				conn.setDoInput(true);
+				ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
 				
-				OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-
-				writer.write(processUID);
-				writer.flush();
-
-				BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-				String output = null;
-				while ((output = br.readLine()) != null) {
-					result = output;
-				}
-				conn.disconnect();
+				httpService.addPostParameters(processUID);
+				
+				List<String> data = httpService.finish();
+				result = data.stream().findFirst().get();
+				
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -625,16 +494,26 @@ public class GenomicServiceImpl implements IGenomicService {
 			}
 
 			log.info("Process Status -- " + result);
-			
+
 			log.info("DataSoure Status -- " + dataSource.getStatus());
-			
-			if("Deleting".equalsIgnoreCase(initStatus) && "completed".equalsIgnoreCase(result)){
-				dataSource.setStatus("Deleted");
-			}else{
-				dataSource.setStatus(result);				
+
+			if (Constants.STATUS_PROCESSED.equalsIgnoreCase(initStatus) && Constants.STATUS_PROCESSED.equalsIgnoreCase(result)) {
+				dataSource.setStatus(Constants.STATUS_UNPROCESSED);
+			} else {
+				dataSource.setStatus(result);
 			}
-			
+
 			saveOrUpdate(dataSource);
+
+			if (Constants.STATUS_UNPROCESSED.equalsIgnoreCase(initStatus) && Constants.STATUS_PROCESSED.equalsIgnoreCase(dataSource.getStatus())) {
+				for (DataSource ds : dataSourceList) {
+					updateDataSourceStatus(ds, Constants.STATUS_READY);
+				}
+			} else {
+				for (DataSource ds : dataSourceList) {
+					updateDataSourceStatus(ds, Constants.STATUS_NOT_READY);
+				}
+			}
 
 			try {
 				Thread.sleep(10000);
@@ -643,39 +522,29 @@ public class GenomicServiceImpl implements IGenomicService {
 			}
 		}
 	}
-	
-	public void updateAnalysisStatus(final String processUID, Analysis analysis){
+
+	private void updateDataSourceStatus(DataSource dataSource, String status) {
+		dataSource.setStatus(status);
+		saveOrUpdate(dataSource);
+	}
+
+	public void updateAnalysisStatus(final String processUID, Analysis analysis) {
 		MicroService microService = analysis.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/processStatus";
 
 		String result = "Running";
-		
+
 		String initStatus = analysis.getStatus();
 
-		while (!("Completed".equalsIgnoreCase(result) || "Error".equalsIgnoreCase(result))) {
+		while (!(Constants.STATUS_PROCESSED.equalsIgnoreCase(result) || "Error".equalsIgnoreCase(result))) {
 
 			try {
-				URL url = new URL(URL);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Accept", "application/json");
-				conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-				conn.setDoOutput(true);
-				conn.setDoInput(true);
+				ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+				httpService.addPostParameters(processUID);
+				List<String> data = httpService.finish();
+				result = data.stream().findFirst().get();
 				
-				OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-
-				writer.write(processUID);
-				writer.flush();
-
-				BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-				String output = null;
-				while ((output = br.readLine()) != null) {
-					result = output;
-				}
-				conn.disconnect();
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -683,11 +552,11 @@ public class GenomicServiceImpl implements IGenomicService {
 			}
 
 			log.info("Process Status -- " + result);
-			
+
 			log.info("DataSoure Status -- " + analysis.getStatus());
-			
+
 			analysis.setStatus(result);
-			
+
 			saveOrUpdate(analysis);
 
 			try {
@@ -697,220 +566,96 @@ public class GenomicServiceImpl implements IGenomicService {
 			}
 		}
 	}
-	
-	public void uploadComputaion(Computation computation){
+
+	public void uploadComputation(Computation computation) {
 		MicroService microService = computation.getMicroService();
-
-		String URL = microService.getServiceUrl() + "/uploadFile";
-
-		String processUID = null;
+		String URL = microService.getServiceUrl() + "/upload";
 		try {
-			URL url = new URL(URL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-//			conn.setRequestProperty("Content-Transfer-Encoding", "base64");
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
-						
-			JSONObject obj = new JSONObject();
-			obj.put("programId", computation.getProgramId());
-			obj.put("name", computation.getName());
+			ArkMultipartService multipartService = new ArkMultipartService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
 			
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			
-			byte[] pdata = iArkCommonService.retriveArkFileAttachmentByteArray(studyId,computation.getId().toString(),Constants.ARK_GENOMICS_COMPUTATION_DIR,computation.getProgramId(),computation.getChecksum());
-			
-			System.out.println(Base64.getEncoder().encode(pdata));
-			
-			obj.put("program", "program");
-			
-
-			StringWriter out = new StringWriter();
-			obj.writeJSONString(out);
-			String data = out.toString();
-
-			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-			writer.write(data);
-			writer.flush();
-			
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-			String output = null;
-			
-			while ((output = br.readLine()) != null) {
-				log.info("message -- " + output);
-//				processUID = output;
-			}
-			conn.disconnect();
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}catch(ArkSystemException e){
-			e.printStackTrace();
-		}
-	}
-	
-	
-	public void uploadComputation(Computation computation){
-		MicroService microService = computation.getMicroService();
-
-		String URL = microService.getServiceUrl() + "/upload";
-		
-		try{
-			HttpClient httpclient = new DefaultHttpClient();
-		    httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-		    
-		    HttpPost httppost = new HttpPost(URL);
-		    
-		    Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			
-			//byte[] pdata = iArkCommonService.retriveArkFileAttachmentByteArray(studyId,computation.getId().toString(),Constants.ARK_GENOMICS_COMPUTATION_DIR,computation.getProgramId(),computation.getChecksum());
-		    
-		    String directory = iArkCommonService.getArkFileDirName(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR);
+			String directory = iArkCommonService.getArkFileDirName(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR);
 			String location = directory + File.separator + computation.getProgramId();
 			File file = new File(location);
-		    
 
-		    MultipartEntity mpEntity = new MultipartEntity();
-		    ContentBody cbFile = new FileBody(file, "multipart/form-data");
-		    StringBody contentString = new StringBody(computation.getProgramId() + "");
-		    
-		    mpEntity.addPart("file", cbFile);
-		    mpEntity.addPart("name", contentString);
+			multipartService.addFormField("name", computation.getProgramId() + "");
+			multipartService.addFilePart("file", file);
 
-		    
-//		    StringEntity nameEntity = new StringEntity("name","test");
-
-//		    httppost.setEntity(nameEntity);
-		    httppost.setEntity(mpEntity);
-		    System.out.println("executing request " + httppost.getRequestLine());
-		    HttpResponse response = httpclient.execute(httppost);
-		    HttpEntity resEntity = response.getEntity();
-
-		    System.out.println(response.getStatusLine());
-		    if (resEntity != null) {
-		      String result= EntityUtils.toString(resEntity);
-		      System.out.println(result);
-		      if(result.contains("uploaded")){
-		    	  
-		    	  computation.setStatus("uploaded");
-		      }
-		      else{
-		    	  computation.setStatus("failed");
-		      }
-		    }
-		    if (resEntity != null) {
-		      resEntity.consumeContent();
-		    }
-
-		    genomicsDao.saveOrUpdate(computation);
-		    httpclient.getConnectionManager().shutdown();
-		}catch(Exception e){
+			List<String> outputList = multipartService.finish();
+			if (outputList.size() > 0) {
+				if (outputList.get(0).contains(Constants.STATUS_UPLOADED)) {
+					computation.setStatus(Constants.STATUS_UPLOADED);
+				} else {
+					computation.setStatus(Constants.STATUS_UPLOAD_FAILED);
+				}
+			}
+			genomicsDao.saveOrUpdate(computation);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public String compileComputation(Computation computation){
+
+	public String compileComputation(Computation computation) {
 		MicroService microService = computation.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/compile";
 
 		String status = null;
-		
-		String processUID = null;;
-		
+
+		String processUID = null;
+
 		try {
-			URL url = new URL(URL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-//			conn.setRequestProperty("Content-Transfer-Encoding", "base64");
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
-						
-			JSONObject obj = new JSONObject();
 			
+			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+
+			JSONObject obj = new JSONObject();
+
 			String programId[] = computation.getProgramId().split("[.]");
 			String programName[] = computation.getProgramName().split("[.]");
 			obj.put("programId", programId[0]);
 			obj.put("name", computation.getName());
 			obj.put("program", programName[0]);
 			
+			httpService.addPostParameters(obj);
+			List<String> data = httpService.finish();
+			processUID = data.stream().findFirst().get();
 
-			StringWriter out = new StringWriter();
-			obj.writeJSONString(out);
-			String data = out.toString();
+			if (Constants.STATUS_COMPILED.equalsIgnoreCase(status)) {
+				computation.setStatus(Constants.STATUS_COMPILED);
+			} else {
+				computation.setStatus(Constants.STATUS_CPMPILE_FAILED);
+			}
 
-			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-			writer.write(data);
-			writer.flush();
-			
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-			String output = null;
-			while ((output = br.readLine()) != null) {
-				log.info("Status -- " + output);
-				processUID = output;
-			}
-			conn.disconnect();
-			
-			if("Compiled".equalsIgnoreCase(status)){
-				computation.setStatus("Compiled");
-			}
-			else{
-				computation.setStatus("Error");
-			}
-			
 			genomicsDao.saveOrUpdate(computation);
-			
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return processUID;
 	}
-	
-	public void updateCompilationStatus(String processUID, Computation computation){
+
+	public void updateCompilationStatus(String processUID, Computation computation) {
 		MicroService microService = computation.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/processStatus";
 
 		String result = "Running";
-		
+
 		String initStatus = computation.getStatus();
 
-		while (!("Completed".equalsIgnoreCase(result) || "Error".equalsIgnoreCase(result))) {
+		while (!(Constants.STATUS_PROCESSED.equalsIgnoreCase(result) || "Error".equalsIgnoreCase(result))) {
 
 			try {
-				URL url = new URL(URL);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Accept", "application/json");
-				conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-				conn.setDoOutput(true);
-				conn.setDoInput(true);
+				ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+				httpService.addPostParameters(processUID);
+				List<String> data = httpService.finish();
+				result = data.stream().findFirst().get();
 				
-				OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-
-				writer.write(processUID);
-				writer.flush();
-
-				BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-				String output = null;
-				while ((output = br.readLine()) != null) {
-					result = output;
-				}
-				conn.disconnect();
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -918,11 +663,11 @@ public class GenomicServiceImpl implements IGenomicService {
 			}
 
 			log.info("Process Status -- " + result);
-			
+
 			log.info("DataSoure Status -- " + computation.getStatus());
-			
+
 			computation.setStatus(result);
-			
+
 			saveOrUpdate(computation);
 
 			try {
@@ -932,7 +677,7 @@ public class GenomicServiceImpl implements IGenomicService {
 			}
 		}
 	}
-	
+
 	@Override
 	public List<Analysis> searchAnalysis(Analysis analysis, Long studyId) {
 		// TODO Auto-generated method stub

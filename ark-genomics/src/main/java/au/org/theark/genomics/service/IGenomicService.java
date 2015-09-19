@@ -33,6 +33,8 @@ public interface IGenomicService {
 
 	public List<MicroService> searchMicroService(final MicroService microService);
 	
+	public String checkServiceStatus(final MicroService microService);
+	
 	public List<String> searchDataCenters(MicroService microService);
 
 	public List<DataSourceVo> searchDataSources(DataCenterVo datacenter);
@@ -45,11 +47,11 @@ public interface IGenomicService {
 	
 	public String executeDataSourceUpload(DataSourceVo dataSource);
 	
-	public String executeDataSourceUpload(DataCenterVo dataCenter);
+	public String executeDataSourceUpload(DataCenterVo dataCenter, String initStatus);
 	
-	public void updateDataSourceStatus(final String processUID, DataSource dataSource);
+	public void updateDataSourceStatus(final String processUID, DataSource dataSource, List<DataSource> dataSourceList, String intStatus);
 	
-	public void uploadComputaion(Computation computation);
+//	public void uploadComputaion(Computation computation);
 	
 	public void uploadComputation(Computation computation);
 	

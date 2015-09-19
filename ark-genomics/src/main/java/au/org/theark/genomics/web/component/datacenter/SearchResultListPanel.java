@@ -1,5 +1,8 @@
 package au.org.theark.genomics.web.component.datacenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -77,9 +80,9 @@ public class SearchResultListPanel extends Panel {
 
 				try {
 					DataCenterVo dataCenter = containerForm.getModelObject();
-					dataCenter.setStatus("Uploading");
+					dataCenter.setStatus(Constants.STATUS_PROCESSING);
 
-					String processUID = iGenomicService.executeDataSourceUpload(dataCenter);
+					String processUID = iGenomicService.executeDataSourceUpload(dataCenter, Constants.STATUS_UNPROCESSED);
 
 					DataSourceVo dataSourceVo = new DataSourceVo();
 					dataSourceVo.setDataCenter(dataCenter.getName());
@@ -100,11 +103,11 @@ public class SearchResultListPanel extends Panel {
 						dataSource = dataSourceVo.getDataSource();
 					}
 					
-					dataSource.setStatus("Uploading");
+					dataSource.setStatus(Constants.STATUS_PROCESSING);
 
 					iGenomicService.saveOrUpdate(dataSource);
 
-					DataSourceUploadExecutor executor = new DataSourceUploadExecutor(dataSource, processUID, iGenomicService);
+					DataSourceUploadExecutor executor = new DataSourceUploadExecutor(dataSource, processUID, iGenomicService,getPlinkDataSourceList(),Constants.STATUS_UNPROCESSED);
 					executor.run();
 					
 					this.setEnabled(false);
@@ -126,15 +129,15 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				try{
+				
 					DataCenterVo dataCenter = containerForm.getModelObject();
-					dataCenter.setStatus("Deleting");
+					dataCenter.setStatus(Constants.STATUS_PROCESSING);
 
-					String processUID = iGenomicService.executeDataSourceUpload(dataCenter);
+					String processUID = iGenomicService.executeDataSourceUpload(dataCenter, Constants.STATUS_PROCESSED);
 
 					DataSourceVo dataSourceVo = new DataSourceVo();
 					dataSourceVo.setDataCenter(dataCenter.getName());
 					dataSourceVo.setMicroService(dataCenter.getMicroService());
-					// dataSourceVo.setFileName(cpmModel.getObject().getName());
 
 					String dir = dataCenter.getDirectory();
 					dataSourceVo.setPath(dir == null ? "/" : dir.charAt(0) == '/' ? dir : ("/" + dir));
@@ -145,12 +148,17 @@ public class SearchResultListPanel extends Panel {
 					}
 
 					DataSource dataSource = iGenomicService.getDataSource(dataSourceVo);
-					dataSource.setStatus("Deleting");
-			
+
+					if (dataSource == null) {
+						dataSourceVo.pupulateDataSource();
+						dataSource = dataSourceVo.getDataSource();
+					}
+					
+					dataSource.setStatus(Constants.STATUS_PROCESSING);
 
 					iGenomicService.saveOrUpdate(dataSource);
 
-					DataSourceUploadExecutor executor = new DataSourceUploadExecutor(dataSource, processUID, iGenomicService);
+					DataSourceUploadExecutor executor = new DataSourceUploadExecutor(dataSource, processUID, iGenomicService,getPlinkDataSourceList(), Constants.STATUS_PROCESSED);
 					executor.run();
 					
 					this.setEnabled(false);
@@ -225,7 +233,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings({ "serial" })
 	private ArkAjaxButton buildSourceLink(final DataSourceVo dataSourceVo) {
 
-		ArkAjaxButton link = new ArkAjaxButton("source") {
+		ArkAjaxButton link = new ArkAjaxButton("details") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// TODO Auto-generated method stub
@@ -240,7 +248,7 @@ public class SearchResultListPanel extends Panel {
 					dataSourceContainerPanel.enableDeleteButton(false);
 				}
 
-				modalWindow.setTitle("Source");
+				modalWindow.setTitle("Details");
 				modalWindow.setInitialWidth(90);
 				modalWindow.setInitialHeight(100);
 				dataSourceContainerPanel.setPropertyModelObject(dataSourceVo);
@@ -251,78 +259,29 @@ public class SearchResultListPanel extends Panel {
 		};
 
 		return link;
-	}
-
-	@SuppressWarnings({ "serial" })
-	private ArkAjaxButton buildUploadLink(final DataSourceVo dataSourceVo) {
-
-		final DataSource dataSource = dataSourceVo.getDataSource();
-
-		ArkAjaxButton link = new ArkAjaxButton("upload") {
-
-			@Override
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				try {
-
-					dataSource.setStatus("Uploading");
-					iGenomicService.saveOrUpdate(dataSource);
-
-					dataSourceVo.setStatus("Uploading");
-
-					String processUID = iGenomicService.executeDataSourceUpload(dataSourceVo);
-
-					DataSourceUploadExecutor executor = new DataSourceUploadExecutor(dataSource, processUID, iGenomicService);
-					executor.run();
-					target.add(SearchResultListPanel.this);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
+	}	
+	
+	private List<DataSource> getPlinkDataSourceList(){
+		List<DataSourceVo> dataSourceList =   containerForm.getModelObject().getDataSourceList();
+		
+		List<DataSource> plinkSourceList = new ArrayList<DataSource>();
+		
+		for(DataSourceVo vo:dataSourceList){
+			if(vo.getFileName().contains(".map") || 
+					vo.getFileName().contains(".ped") ||
+					vo.getFileName().contains(".bim") ||
+					vo.getFileName().contains(".fam") ||
+					vo.getFileName().contains(".bed") 
+					){
+				
+				DataSource dataSource = vo.getDataSource();
+				dataSource.setStatus(Constants.STATUS_NOT_READY);
+				iGenomicService.saveOrUpdate(dataSource);
+				plinkSourceList.add(dataSource);
 			}
-		};
-
-		if (!(dataSource.getStatus() == null || dataSource.getStatus().trim().length() == 0 || "Deleted".equalsIgnoreCase(dataSource.getStatus()))) {
-			link.setVisible(false);
 		}
-
-		// Label nameLinkLabel = new Label("uploadLbl", "Upload");
-		// link.add(nameLinkLabel);
-		return link;
-	}
-
-	@SuppressWarnings({ "serial" })
-	private ArkAjaxButton buildDeleteLink(final DataSourceVo dataSourceVo) {
-
-		final DataSource dataSource = dataSourceVo.getDataSource();
-
-		ArkAjaxButton link = new ArkAjaxButton("delete") {
-
-			@Override
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-
-				try {
-					dataSource.setStatus("Deleting");
-					iGenomicService.saveOrUpdate(dataSource);
-
-					dataSourceVo.setStatus("Deleting");
-
-					String processUID = iGenomicService.executeDataSourceUpload(dataSourceVo);
-
-					DataSourceUploadExecutor executor = new DataSourceUploadExecutor(dataSource, processUID, iGenomicService);
-					executor.run();
-					target.add(SearchResultListPanel.this);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-		};
-
-		if (dataSource == null || !"Completed".equalsIgnoreCase(dataSource.getStatus())) {
-			link.setVisible(false);
-		}
-
-		return link;
+		
+		return plinkSourceList;
 	}
 
 }
