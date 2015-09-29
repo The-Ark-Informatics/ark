@@ -94,7 +94,6 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.vo.UserConfigVO;
 
 /**
  * Interface that provides CRUD and accessor methods to Study entities 

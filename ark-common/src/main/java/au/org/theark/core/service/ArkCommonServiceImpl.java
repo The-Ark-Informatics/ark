@@ -165,7 +165,6 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.vo.UserConfigVO;
 
 /**
  * The implementation of IArkCommonService. We want to auto-wire and hence use
