@@ -744,7 +744,7 @@ public interface IStudyDao {
 	
 	public Collection<ConfigField> getAllConfigFields();
 	
-	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser);
+	public List<UserConfig> getUserConfigs(ArkUser arkUser);
 	
 	public int getRowsPerPage();
 	

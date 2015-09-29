@@ -36,12 +36,14 @@ import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.IPageable;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
@@ -53,9 +55,13 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.config.entity.ConfigField;
+import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.UserConfigVO;
+import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -88,6 +94,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	private ModalWindow					modalWindow;
 	@SuppressWarnings("unchecked")
 	private PageableListView			pageableListView;
+	private AbstractListEditor<UserConfig> userConfigListEditor;
+	
 	// Add a visitor class for required field marking/validation/highlighting
 	ArkFormVisitor							formVisitor					= new ArkFormVisitor();
 
@@ -105,6 +113,10 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			List<ArkUserRole> arkUserRoleList = iArkCommonService.getArkRoleListByUser(arkUserVOFromBackend);
 			arkUserVOFromBackend.setArkUserRoleList(arkUserRoleList);
 			getModelObject().setArkUserRoleList(arkUserRoleList);
+			
+			List<UserConfig> arkUserConfigs = iArkCommonService.getUserConfigs(arkUserVOFromBackend.getArkUserEntity());
+			arkUserVOFromBackend.setArkUserConfigs(arkUserConfigs);
+			getModelObject().setArkUserConfigs(arkUserConfigs);
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
@@ -230,7 +242,30 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
 		add(pageNavigator);
+		
+		userConfigListEditor = new AbstractListEditor<UserConfig>("arkUserConfigs") {
+			@Override
+			protected void onPopulateItem(au.org.theark.core.web.component.listeditor.ListItem<UserConfig> item) {
+				item.add(new Label("configField.description", item.getModelObject().getConfigField().getDescription()));
+				PropertyModel<String> propModel = new PropertyModel<String>(item.getModel(), "value");
+				TextField<String> valueTxtFld = new TextField<String>("value", propModel);
+				item.add(valueTxtFld);
+				
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
+					private static final long	serialVersionUID	= -8887455455175404701L;
 
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
+
+			}
+		};
+
+		add(userConfigListEditor);
+		
+		
 		attachValidators();
 		addComponents();
 	}

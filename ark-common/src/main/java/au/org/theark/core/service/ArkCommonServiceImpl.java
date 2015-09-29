@@ -1563,8 +1563,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getAllConfigFields();
 	}
 
-	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser) {
-		return studyDao.getUserConfigVOs(arkUser);
+	public List<UserConfig> getUserConfigs(ArkUser arkUser) {
+		return studyDao.getUserConfigs(arkUser);
 	}
 
 	public int getRowsPerPage() {
