@@ -123,7 +123,6 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.vo.UserConfigVO;
 
 public interface IArkCommonService<T> {
 
@@ -927,7 +926,7 @@ public interface IArkCommonService<T> {
 
 	public Collection<ConfigField> getAllConfigFields();
 
-	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser);
+	public List<UserConfig> getUserConfigs(ArkUser arkUser);
 
 	public int getRowsPerPage();
 
@@ -1197,5 +1196,4 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<?> fieldNameCollection, Study study, ArkFunction arkFunction,CustomFieldType customFieldType);
-	
 }
