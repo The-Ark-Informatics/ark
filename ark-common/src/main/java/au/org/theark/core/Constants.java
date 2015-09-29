@@ -660,4 +660,8 @@ public class Constants {
 	public static final String CONFIG_ROWS_PER_PAGE = "ROWS_PER_PAGE";
 	public static final String CONFIG_CUSTOM_FIELDS_PER_PAGE = "CUSTOM_FIELDS_PER_PAGE";
 	
+	public static final String MESSAGE_NO_SUBJECT_IN_CONTEXT="There is no subject in context. Please bring a subject into context via the subject tab.";
+	
+	public static final String MESSAGE_NO_STUDY_IN_CONTEXT="There is no study in context. Please select a study";
+	
 }

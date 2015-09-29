@@ -29,6 +29,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -151,7 +152,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
          }
      });
 		
-		add(customFieldGroupDdc);
+		addOrReplace(customFieldGroupDdc);
 	}
 
 	@Override
@@ -417,8 +418,20 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Subject Dataset Details");
 		modalWindow.setContent(modalContentPanel);
-		modalWindow.show(target);
 		modalWindow.repaintComponent(getDataButton);
+		// 2015-09-29 set windows call back
+		modalWindow.setWindowClosedCallback(new WindowClosedCallback() {
+			private static final long serialVersionUID = 1L; 
+                @Override 
+                public void onClose(AjaxRequestTarget target) 
+                { 
+                	initCustomFieldGroupDdc();
+                    target.add(customFieldGroupDdc); 
+                } 
+        });
+		modalWindow.show(target);
+		
+		
 	}
 
 	/**

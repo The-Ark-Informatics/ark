@@ -160,9 +160,9 @@ public class AutoGenBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				if(onSave(target)) {
+					target.add(feedbackPanel);
 					modalWindow.close(target);
 				}
-				target.add(feedbackPanel);
 			}
 
 			@Override

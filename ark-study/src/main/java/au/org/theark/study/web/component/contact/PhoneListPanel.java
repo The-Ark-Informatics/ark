@@ -112,9 +112,12 @@ public class PhoneListPanel extends Panel {
 					if (sessionPersonId != null) {
 						person = studyService.getPerson(sessionPersonId);
 						containerForm.getModelObject().getPhoneVo().getPhone().setPerson(person);
+						listPhoneForSize = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhoneVo().getPhone());
+						return listPhoneForSize.size();
+					}else{
+						return 0;
 					}
-					listPhoneForSize = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhoneVo().getPhone());
-					return listPhoneForSize.size();
+					
 				}
 				catch (ArkSystemException e) {
 					e.printStackTrace();
@@ -144,9 +147,12 @@ public class PhoneListPanel extends Panel {
 					if (sessionPersonId != null) {
 						person = studyService.getPerson(sessionPersonId);
 						containerForm.getModelObject().getPhoneVo().getPhone().setPerson(person);
+						listPhoneForSize = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhoneVo().getPhone());
+						return listPhoneForSize.size();
+					}else{
+						return 0;
 					}
-					listPhoneForSize = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhoneVo().getPhone());
-					return listPhoneForSize.size();
+					
 				}
 				catch (ArkSystemException e) {
 					e.printStackTrace();
@@ -199,6 +205,8 @@ public class PhoneListPanel extends Panel {
 
 		String filename = sessionPersonId != null ? String.valueOf(sessionPersonId) + "_phoneNumberList" : "unknown" + "_phoneNumberList";
 		RepeatingView toolbars = new RepeatingView("toolbars");
+		//Disable the tool bar if session person not exsists.
+		if(sessionPersonId==null){toolbars.setEnabled(false);}else{toolbars.setEnabled(true);}
 		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(exportTable, headers, filename);
 		toolbars.add(new Component[] { exportToolBar });
 		dataContainer.add(toolbars);

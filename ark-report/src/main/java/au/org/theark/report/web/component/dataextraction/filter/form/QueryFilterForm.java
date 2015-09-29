@@ -161,6 +161,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				QueryFilterVO filter= new QueryFilterVO();
 				copyQueryFilter = false;
 				listEditor.addItem(filter);
+				listEditor.updateModel();
 				target.add(form);
 			}
 		}.setDefaultFormProcessing(false));

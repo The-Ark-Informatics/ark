@@ -21,6 +21,9 @@ package au.org.theark.study.web.component.contact;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.Behavior;
@@ -30,13 +33,19 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.State;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.vo.ContactVO;
@@ -127,10 +136,14 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
+		boolean contextLoaded = prerenderContextCheck();
 		initialiseNewPhoneButton();
 		initialiseNewAddressButton();
 		initialiseSearchPhoneResults();
 		initialiseSearchAddressResults();
+		if (!contextLoaded) {
+			this.error(au.org.theark.core.Constants.MESSAGE_NO_SUBJECT_IN_CONTEXT);
+		}	
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 	
@@ -329,5 +342,36 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 protected WebMarkupContainer initialiseSearchPanel() {
 		return null;
 	}
+	/**
+	 * 
+	 * @return
+	 */
+	protected boolean prerenderContextCheck() {
+		// Get the Study, SubjectUID and ArkModule from Context
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		boolean contextLoaded = false;
+		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
+			LinkSubjectStudy linkSubjectStudy = null;
+			ArkModule arkModule = null;
+			Study study = null;
+			try {
+				study = iArkCommonService.getStudy(sessionStudyId);
+				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
+				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+				// cpModel.getObject().setArkModule(arkModule);
+				if (study != null && linkSubjectStudy != null && arkModule != null) {
+					contextLoaded = true;
+				}
+			}
+			catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return contextLoaded;
+	}
+	
 
 }

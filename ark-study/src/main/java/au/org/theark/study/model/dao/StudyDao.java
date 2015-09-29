@@ -969,7 +969,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		}
 
-		if (phone != null) {
+		if (phone  != null) {
 
 			if (phone.getId() != null) {
 				phoneCriteria.add(Restrictions.eq(Constants.PHONE_ID, phone.getId()));
