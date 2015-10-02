@@ -3,6 +3,8 @@ package au.org.theark.core.vo;
 import java.util.Date;
 import java.util.HashMap;
 
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
+
 public class ExtractionVO {
 	/*
 	 * This is only used in pheno now.  Maybe subclass/interface this later instead
@@ -10,6 +12,7 @@ public class ExtractionVO {
 	private String subjectUid;//keeping it a bit stupid and ignorant of entities for rapid moves to other formats
 	// Pheno related field, for date of particular record
 	private Date recordDate;
+	private String collectionName;
 	//private String studyId;
 	private HashMap<String, String> keyValues = new HashMap<String, String>();
 	
@@ -35,5 +38,12 @@ public class ExtractionVO {
 	public void setKeyValues(java.util.HashMap<String, String> keyValues) {
 		this.keyValues = keyValues;
 	}
-	
+
+	public String getCollectionName() {
+		return collectionName;
+	}
+
+	public void setCollectionName(String collectionName) {
+		this.collectionName = collectionName;
+	}
 }

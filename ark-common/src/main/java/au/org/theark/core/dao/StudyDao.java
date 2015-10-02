@@ -2988,6 +2988,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						previousPhenoId = data.getPhenoCollection().getId();
 						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 						valuesForThisPheno.setRecordDate(data.getPhenoCollection().getRecordDate());
+						valuesForThisPheno.setCollectionName(data.getPhenoCollection().getQuestionnaire().getName());
 					}
 					else if(data.getPhenoCollection().getId().equals(previousPhenoId)){
 						//then just put the data in
@@ -3000,6 +3001,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						valuesForThisPheno = new ExtractionVO();
 						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 						valuesForThisPheno.setRecordDate(data.getPhenoCollection().getRecordDate());
+						valuesForThisPheno.setCollectionName(data.getPhenoCollection().getQuestionnaire().getName());
 					}
 
 					//if any error value, then just use that - though, yet again I really question the acceptance of error data
