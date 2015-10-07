@@ -39,6 +39,7 @@ import java.util.Set;
 import javax.swing.event.ListSelectionEvent;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -556,9 +557,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return
 	 */
 	public List<AddressType> getAddressTypes() {
+		List<AddressType> AddressTypeLstNew=new ArrayList<AddressType>();
 		Criteria criteria = getSession().createCriteria(AddressType.class);
 		criteria.addOrder(Order.asc("name"));
-		return criteria.list();
+
+		List<AddressType> AddressTypeLst=criteria.list();
+		for (AddressType addressType : AddressTypeLst) {
+			String name=addressType.getName().toLowerCase();
+			addressType.setName(WordUtils.capitalize(name));
+			AddressTypeLstNew.add(addressType);
+		}
+		return AddressTypeLstNew;
 	}
 
 	/**

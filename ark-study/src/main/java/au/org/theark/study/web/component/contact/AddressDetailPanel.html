@@ -195,6 +195,36 @@
 				<div class="fldControl">
 					<input wicket:id="addressVo.address.dateReceived" type="text"	maxlength="10" />
 				</div>
+				
+				<!-- valid from field add on 2015-10-06(ARK-1498) -->
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				<div class="fldLabel">
+					<wicket:message key="validFrom">
+						Valid from:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="addressVo.address.validFrom" type="text"	maxlength="10" />
+				</div>
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+				<div class="fldLabel">
+					<wicket:message key="validTo">
+						Valid to:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="addressVo.address.validTo" type="text"  maxlength="10" />
+				</div>
+				<!--end of valid from field add on 2015-10-06(ARK-1498) -->
 
 				<div class="detailPanelBreaker">
 					&nbsp;
@@ -235,7 +265,6 @@
 					<textarea wicket:id="addressVo.address.comments" maxlength="255" cols="25">
 					</textarea>
 				</div>
-
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>

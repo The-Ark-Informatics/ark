@@ -53,6 +53,7 @@ import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.util.DateFromToValidator;
 import au.org.theark.study.web.Constants;
 
 /**
@@ -84,6 +85,9 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 	
 	private FeedbackPanel 					feedBackPanel;
 	private ArkCrudContainerVO 			arkCrudContainerVO;
+	
+	private DateTextField 				dateValidFrom;
+	private DateTextField 				dateValidTo;
 
 	/**
 	 * /**
@@ -109,10 +113,22 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		commentsTxtArea = new TextArea<String>("phoneVo.phone.comment");
 
 		dateReceivedDp = new DateTextField("phoneVo.phone.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
-		ArkDatePicker datePicker = new ArkDatePicker();
-		datePicker.bind(dateReceivedDp);
-		dateReceivedDp.add(datePicker);
+		ArkDatePicker dPDateReceived = new ArkDatePicker();
+		dPDateReceived.bind(dateReceivedDp);
+		dateReceivedDp.add(dPDateReceived);
+		
+		//Valid From
+		dateValidFrom=new DateTextField("phoneVo.phone.validFrom", au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker dPDateValidFrom = new ArkDatePicker();
+		dPDateValidFrom.bind(dateValidFrom);
+		dateValidFrom.add(dPDateValidFrom);
 
+		//Valid To
+		dateValidTo=new DateTextField("phoneVo.phone.validTo", au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker dPDateValidTo = new ArkDatePicker();
+		dPDateValidTo.bind(dateValidTo);
+		dateValidTo.add(dPDateValidTo);
+	
 		List<PhoneStatus> phoneStatusSourceList = iArkCommonService.getPhoneStatus();
 		ChoiceRenderer<PhoneStatus> phoneStatusRenderer = new ChoiceRenderer<PhoneStatus>(Constants.NAME, Constants.ID);
 		phoneStatusChoice = new DropDownChoice<PhoneStatus>("phoneVo.phone.phoneStatus", phoneStatusSourceList, phoneStatusRenderer);
@@ -139,6 +155,9 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateReceivedDp);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(silentModeChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(source);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
+		this.add(new DateFromToValidator(dateValidFrom, dateValidTo));
 	}
 
 	/*
@@ -154,6 +173,7 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		phoneStatusChoice.setRequired(true).setLabel((new StringResourceModel("phone.phoneStatus.required", this, new Model<String>("Phone Status"))));
 		phoneNumberTxtFld.add(StringValidator.maximumLength(20));
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("phone.dateReceived.DateValidator.maximum", this, null));
+		
 	}
 
 	/*
