@@ -81,12 +81,12 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	private TextField<String>					streetAddressTxtFld;
 	private TextField<String>					cityTxtFld;
 	private TextField<String>					postCodeTxtFld;
-	private DropDownChoice<Country>			countryChoice;
+	private DropDownChoice<Country>				countryChoice;
 	private DropDownChoice<State>				stateChoice;
-	private DropDownChoice<AddressType>		addressTypeChoice;
+	private DropDownChoice<AddressType>			addressTypeChoice;
 	private WebMarkupContainer					stateSelector;
-	private DropDownChoice<AddressStatus>	addressStatusChoice;
-	private CheckBox								preferredMailingAddressChkBox;
+	private DropDownChoice<AddressStatus>		addressStatusChoice;
+	private CheckBox							preferredMailingAddressChkBox;
 	private DateTextField						dateReceivedDp;
 	private TextArea<String>					commentsTxtArea;
 	private TextField<String>					sourceTxtFld;

@@ -303,7 +303,7 @@ public interface ICustomFieldDao {
 	 * @return
 	 * @throws ArkSystemException
 	 */
-	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study,CustomFieldType customFieldType) throws ArkSystemException;
+	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study,ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
 	/**
 	 * Get Custom Field Type by name.
 	 * @param name
@@ -355,4 +355,5 @@ public interface ICustomFieldDao {
 	 * @return
 	 */
 	public boolean isCustomFieldCategoryBeingUsed(CustomFieldCategory customFieldCategory);
+	
 }

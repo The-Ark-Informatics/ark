@@ -488,8 +488,6 @@ public interface IStudyService {
 	
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 	
-	//public List<SubjectCustomFieldData> getSubjectCustomFieldDataListByCategory(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
-	
-	//public List<FamilyCustomFieldData> getFamilyCustomFieldDataListByCategory(Study study,String familyId, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public void setPreferredPhoneNumberToFalse(Person person);
 	
 }

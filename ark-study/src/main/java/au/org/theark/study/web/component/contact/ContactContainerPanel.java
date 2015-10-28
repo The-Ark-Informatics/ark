@@ -21,9 +21,6 @@ package au.org.theark.study.web.component.contact;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.Behavior;
@@ -33,7 +30,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -45,10 +41,10 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.vo.ContactVO;
+import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.study.service.IStudyService;
@@ -110,10 +106,9 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 * @return
 	 */
 	private void initialiseSearchAddressResults() {
-
 		 addressResultPanel = new AddressListPanel("addressResults", arkCrudContainerVO, containerForm);
 		 addressResultPanel.setOutputMarkupId(true);
-		arkCrudContainerVO.getSearchResultPanelContainer().add(addressResultPanel);
+		 arkCrudContainerVO.getSearchResultPanelContainer().add(addressResultPanel);
 	}
 	
 	/**
@@ -204,6 +199,7 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 * @param target
 	 */
 	private void onPhoneNew(AjaxRequestTarget target){
+		preSetPhoneFormBeforeVisible();
 		switchBetweenPanels(target,au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL);	
 	}
 	/**
@@ -371,6 +367,25 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 			}
 		}
 		return contextLoaded;
+	}
+	
+	/**
+	 * <pre> set the form details before showing to the user.
+	 */
+	private void preSetPhoneFormBeforeVisible(){
+		PhoneVO phoneVo=cpModel.getObject().getPhoneVo();
+
+		// Force new address to be preferred if totally new address
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		try {
+			phoneVo.setPhoneList(studyService.getPersonPhoneList(sessionPersonId, null));
+		}
+		catch (ArkSystemException e) {
+			e.printStackTrace();
+		}
+		if(phoneVo.getPhoneList().size() == 0) {
+			phoneVo.getPhone().setPreferredPhoneNumber(true);
+		}
 	}
 	
 

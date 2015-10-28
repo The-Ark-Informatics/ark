@@ -299,4 +299,12 @@ public interface IInventoryDao {
 	public void unallocateBox(InvBox invBox);
 	
 	public String fillOutAllBoxesWithEmptyInvCellsToCapacity(Study study);
+	
+	public InvSite getInvSiteByname(String siteName);
+	
+	public InvFreezer getFreezerByNameForSite(InvSite invSite,String freezerName);
+	
+	public InvRack getRackByNameForFreezer(InvFreezer invFreezer,String rackName);
+	
+	public InvBox getBoxByNameForRack(InvRack invRack,String boxName);
 }

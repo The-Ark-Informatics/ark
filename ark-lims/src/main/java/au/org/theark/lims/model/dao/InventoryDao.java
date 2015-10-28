@@ -21,6 +21,7 @@ package au.org.theark.lims.model.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -545,31 +546,29 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 
 	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException {
 		InvCell invCell = new InvCell();
-
 		if((siteName == null || freezerName == null || rackName == null || boxName == null || row == null || column == null) ||
 				(siteName.isEmpty() || freezerName.isEmpty() || rackName.isEmpty() || boxName.isEmpty() || row.isEmpty() || column.isEmpty())) {
 			return invCell;
 		}
-		
 		Long rowno;
 		Long colno;
 
-		try {
+		if(StringUtils.isNumeric(row)){
 			rowno = new Long(row);
-		}
-		catch (NumberFormatException e) {
+		}else{
+			row=row.toUpperCase();
 			char c = (char) row.charAt(0);
-			rowno = (long) (c - 64);
+			rowno = (long) ((char) row.charAt(0)- 64);
 		}
-
-		try {
+		
+		if(StringUtils.isNumeric(column)){
 			colno = new Long(column);
-		}
-		catch (NumberFormatException e) {
+		}else{
+			column=column.toUpperCase();
 			char c = (char) column.charAt(0);
-			colno = (long) (c - 64);
+			colno = (long) ((char) column.charAt(0)- 64);
 		}
-
+		
 		Criteria criteria = getSession().createCriteria(InvCell.class);
 		criteria.createAlias("invBox", "box", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("box.invRack", "rack", JoinType.LEFT_OUTER_JOIN);
@@ -588,15 +587,10 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	}
 
 	public void batchUpdateInvCells(List<InvCell> updateInvCells) {
-		// StatelessSession session = getStatelessSession();
-		// Transaction tx = session.beginTransaction();
-
+		
 		for (InvCell invCell : updateInvCells) {
-			// session.update(invCell);
 			getSession().update(invCell);
 		}
-		// tx.commit();
-		// session.close();
 	}
 
 	/*
@@ -641,7 +635,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 					}
 				}
 			} catch (ArkSystemException e) {
-				log.error("you madea mistake trying to insert / fill empty box for study " + study.getName());
+				log.error("you made a mistake trying to insert / fill empty box for study " + study.getName());
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return "failed - " + e.getMessage();
@@ -794,5 +788,52 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 			session.update(invCell);
 		}
 		session.refresh(invBox);
+	}
+	/**
+	 * Get invSite by name
+	 * @param siteName
+	 * @return
+	 */
+	public InvSite getInvSiteByname(String siteName) {
+		Criteria criteria = getSession().createCriteria(InvSite.class);
+		if (siteName != null && !siteName.isEmpty()) {
+			criteria.add(Restrictions.eq("name", siteName));
+		}
+		return (InvSite) criteria.uniqueResult();
+	}
+	
+	public InvFreezer getFreezerByNameForSite(InvSite invSite,String freezerName){
+		Criteria criteria = getSession().createCriteria(InvFreezer.class);
+		if(invSite!=null){
+			criteria.add(Restrictions.eq("invSite", invSite));
+		}
+		if (freezerName != null && !freezerName.isEmpty()) {
+			criteria.add(Restrictions.eq("name", freezerName));
+		}
+		return (InvFreezer) criteria.uniqueResult();
+	}
+	
+	public InvRack getRackByNameForFreezer(InvFreezer invFreezer,String rackName){
+		Criteria criteria = getSession().createCriteria(InvRack.class);
+		if(invFreezer!=null){
+			criteria.add(Restrictions.eq("invFreezer", invFreezer));
+		}
+		if (rackName != null && !rackName.isEmpty()) {
+			criteria.add(Restrictions.eq("name", rackName));
+		}
+		return (InvRack) criteria.uniqueResult();
+	}
+	/**
+	 * 
+	 */
+	public InvBox getBoxByNameForRack(InvRack invRack,String boxName){
+		Criteria criteria = getSession().createCriteria(InvBox.class);
+		if(invRack!=null){
+			criteria.add(Restrictions.eq("invRack", invRack));
+		}
+		if (boxName != null && !boxName.isEmpty()) {
+			criteria.add(Restrictions.eq("name", boxName));
+		}
+		return (InvBox) criteria.uniqueResult();
 	}
 }

@@ -73,7 +73,6 @@ public class BiospecimenUploadContainerPanel extends AbstractContainerPanel<Uplo
 			study = iArkCommonService.getStudy(sessionStudyId);
 		}
 		cpModel.getObject().getUpload().setStudy(study);
-		
 		containerForm.add(initialiseFeedBackPanel());
 		// containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseWizardPanel());

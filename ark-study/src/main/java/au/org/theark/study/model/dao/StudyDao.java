@@ -2685,6 +2685,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.flush();
 		session.clear();
 	}
+	@Override
+	public void setPreferredPhoneNumberToFalse(Person person) {
+		String queryString = "UPDATE Phone SET preferredPhoneNumber = 0 WHERE person = :person";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("person", person);
+		query.executeUpdate();
+	}
 
 	
 	

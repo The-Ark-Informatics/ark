@@ -129,7 +129,8 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		if (!(bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel)) {
 			CompoundPropertyModel<BioCollectionCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BioCollectionCustomDataVO>(new BioCollectionCustomDataVO());		
 			bioCFDataCpModel.getObject().setBioCollection(bioCollection);
-			bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+			//bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+			bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
 			bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
 			replacePanel = true;
 		}

@@ -2314,7 +2314,9 @@ public class StudyServiceImpl implements IStudyService {
 			CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 		return iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, customFieldCategory,customFieldType, first, count);
 	}
-
-	
+	@Override
+	public void setPreferredPhoneNumberToFalse(Person person) {
+		iStudyDao.setPreferredPhoneNumberToFalse(person);
+	}
 	
 }

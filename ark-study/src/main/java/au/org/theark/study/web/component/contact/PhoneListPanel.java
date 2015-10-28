@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.contact;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -66,14 +68,14 @@ public class PhoneListPanel extends Panel {
 	protected ArkCrudContainerVO										arkCrudContainerVO;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService											iArkCommonService;
-	private ArkDataProvider<Phone, IStudyService>				phoneProvider;				// Display and navigate purposes only.
-	private ArkDataProvider<PhoneSubjectVO, IStudyService>	subjectPhoneProvider;	// Export purposes only.
+	private ArkDataProvider<Phone, IStudyService>						phoneProvider;				// Display and navigate purposes only.
+	private ArkDataProvider<PhoneSubjectVO, IStudyService>				subjectPhoneProvider;	// Export purposes only.
 	private DataView<Phone>												dataViewPhone;
 	private DataView<PhoneSubjectVO>									dataViewPhoneSubject;
-	private Long															sessionPersonId;
+	private Long														sessionPersonId;
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService												studyService;
-	private Person															person;
+	private Person														person;
 	private WebMarkupContainer											dataContainer;
 
 	/**
@@ -194,6 +196,9 @@ public class PhoneListPanel extends Panel {
 		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Area Code"), "areaCode"));
 		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Number"), "phoneNumber"));
 		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Type"), "phone.phoneType.name"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Status"), "phone.phoneStatus.name"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Valid From"), "validFrom"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Valid To"), "validTo"));
 		
 		DataTable exportTable = new DataTable("datatable", exportColumns, dataViewPhoneSubject.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
@@ -202,7 +207,10 @@ public class PhoneListPanel extends Panel {
 		headers.add("Area Code:");
 		headers.add("Phone Number:");
 		headers.add("Phone Type:");
-
+		headers.add("Phone Status:");
+		headers.add("Phone Valid From:");
+		headers.add("Phone Valid To:");
+	
 		String filename = sessionPersonId != null ? String.valueOf(sessionPersonId) + "_phoneNumberList" : "unknown" + "_phoneNumberList";
 		RepeatingView toolbars = new RepeatingView("toolbars");
 		//Disable the tool bar if session person not exsists.
@@ -249,6 +257,36 @@ public class PhoneListPanel extends Panel {
 				}
 				else {
 					item.add(new Label("phoneType.name", ""));
+				}
+				if (phone.getPhoneStatus() != null && phone.getPhoneStatus().getName() != null) {
+					item.add(new Label("phoneStatus.name", phone.getPhoneStatus().getName()));
+				}
+				else {
+					item.add(new Label("phoneStatus.name", ""));
+				}
+				if (phone.getValidFrom() != null ) {
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+					String dateValidFrom = "";
+					dateValidFrom = simpleDateFormat.format(phone.getValidFrom());
+					item.add(new Label("validFrom", dateValidFrom));
+				}
+				else {
+					item.add(new Label("validFrom", ""));
+				}
+				if (phone.getValidFrom() != null ) {
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+					String dateValidTo = "";
+					dateValidTo = simpleDateFormat.format(phone.getValidTo());
+					item.add(new Label("validTo", dateValidTo));
+				}
+				else {
+					item.add(new Label("validTo", ""));
+				}
+				if (phone.getPreferredPhoneNumber() != null && phone.getPreferredPhoneNumber() == true) {
+					item.add(new ContextImage("phone.preferredPhoneNumber", new Model<String>("images/icons/tick.png")));
+				}
+				else {
+					item.add(new Label("phone.preferredPhoneNumber", ""));
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {

@@ -39,7 +39,7 @@ import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.util.BiospecimenUploadValidator;
+import au.org.theark.lims.util.BioCollectionSpecimenUploadValidator;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biospecimenupload.form.WizardForm;
 
@@ -151,18 +151,16 @@ public class BiospecimenUploadStep3 extends AbstractWizardStepPanel {
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			String uploadType = containerForm.getModelObject().getUploadType();
 			
-			BiospecimenUploadValidator biospecimenUploadValidator = new BiospecimenUploadValidator(containerForm.getModelObject().getUpload().getStudy(), iArkCommonService, iLimsService, iInventoryService);
-			log.info("upload type ---=" + uploadType);			
-			if(uploadType.equalsIgnoreCase(Constants.UPLOAD_TYPE_FOR_LOCATION_UPLOADER)){
-				validationMessages = biospecimenUploadValidator.validateLocationFileData(containerForm.getModelObject());
-			}
-			else{	//TODO : i dont see biocollection uploader, so let's kill it in the database for now
+			BioCollectionSpecimenUploadValidator biospecimenUploadValidator = new BioCollectionSpecimenUploadValidator(containerForm.getModelObject().getUpload().getStudy(), iArkCommonService, iLimsService, iInventoryService);
+			log.info("upload type ---=" + uploadType);	
+			
+			if(uploadType.equalsIgnoreCase(Constants.UPLOAD_TYPE_FOR_BIOCOLLECTION)){
+				validationMessages = biospecimenUploadValidator.validateBiocollectionFileData(containerForm.getModelObject());
+			}else if(uploadType.equalsIgnoreCase(Constants.UPLOAD_TYPE_FOR_BIOSPECIMEN_INVENTARY)){
+				validationMessages = biospecimenUploadValidator.validateBiospecimenInvetoryFileData(containerForm.getModelObject());
+			}else if(uploadType.equalsIgnoreCase(Constants.UPLOAD_TYPE_FOR_BIOSPECIMEN)){
 				validationMessages = biospecimenUploadValidator.validateBiospecimenFileData(containerForm.getModelObject());
 			}
-			
-			
-			
-			
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));

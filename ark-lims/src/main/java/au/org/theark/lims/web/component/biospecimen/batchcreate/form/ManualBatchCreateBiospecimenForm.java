@@ -458,7 +458,7 @@ public class ManualBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 			getSession().info(message);
 			
 			log.info("Attempting to create " + biospecimenList.size() + " biospecimens");
-			iLimsService.batchInsertBiospecimens(biospecimenList);
+			iLimsService.batchInsertBiospecimensAndUpdateInventoryCell(biospecimenList);
 			return true;
 		}
 		else{

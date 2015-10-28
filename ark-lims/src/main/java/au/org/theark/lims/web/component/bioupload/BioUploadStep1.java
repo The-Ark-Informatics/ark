@@ -143,7 +143,8 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 				containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
 			}
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biocollection Custom Data")){
-				containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+				//containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+				containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
 			}
 			else{
 				log.error("\n\n\n\n\n\n\n\n\n\n\n uploadType unrecognized");

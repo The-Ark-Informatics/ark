@@ -1115,7 +1115,7 @@ public interface IArkCommonService<T> {
 	 * @return
 	 * @throws ArkSystemException
 	 */
-	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study,CustomFieldType customFieldType) throws ArkSystemException;
+	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study,ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
 	/**
 	 * Get custom field Type by name.
 	 * @param name

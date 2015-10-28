@@ -37,7 +37,7 @@ public class AddressDetailPanel extends Panel {
 	private ArkCrudContainerVO	arkCrudContainerVO;
 
 	private ContainerForm		containerForm;
-	private AddressDetailForm			detailForm;
+	private AddressDetailForm	detailForm;
 	private WebMarkupContainer	detailPanelFormContainer;
 	private WebMarkupContainer	editButtonContainer;
 	

@@ -459,7 +459,7 @@ public class AutoGenBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> 
 			}
 			
 			log.info("Attempting to create " + biospecimenList.size() + " biospecimens");
-			iLimsService.batchInsertBiospecimens(biospecimenList);
+			iLimsService.batchInsertBiospecimensAndUpdateInventoryCell(biospecimenList);
 			return true;
 		}
 		else{
