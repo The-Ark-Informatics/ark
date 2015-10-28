@@ -462,8 +462,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		Study study=customField.getStudy();
 		CustomFieldType customFieldType=customField.getCustomFieldType();
 		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
+		ArkFunction arkFunction=customField.getArkFunction();
+		//Select the right categoties according to the function of the custom field generated.
+		ArkFunction arkFunctionCategory=null;
+		
+		if(arkFunction.getName().equals(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)){
+			 arkFunctionCategory=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY);
+		}else if(arkFunction.getName().equals(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD)){
+			arkFunctionCategory=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY);
+		}
 		try {
-			customFieldCategoryCollection =  iArkCommonService.getAvailableAllCategoryListInStudyByCustomFieldType(study, customFieldType);
+			customFieldCategoryCollection =  iArkCommonService.getAvailableAllCategoryListInStudyByCustomFieldType(study,arkFunctionCategory, customFieldType);
 		} catch (ArkSystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

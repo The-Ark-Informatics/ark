@@ -296,7 +296,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	}
 
 	protected void attachValidators() {
-		dateFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("correspondence.date", this, null));
+		//dateFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("correspondence.date", this, null));
+		dateFld.setLabel(new StringResourceModel("correspondence.date", this, null));
 		dateFld.setRequired(true);
 	}
 

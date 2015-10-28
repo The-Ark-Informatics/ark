@@ -57,17 +57,30 @@ public class SearchResultListPanel extends Panel {
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "BiospecimenUpload", Constants.BIOSPECIMEN_TEMPLATE_CELLS) {
-
+		ArkDownloadTemplateButton downloadBiocollectionTemplateButton = new ArkDownloadTemplateButton("downloadBiocollectionTemplate", "BiocollectionUpload", Constants.BIOCOLLECTION_TEMPLATE_CELLS) {
 			private static final long	serialVersionUID	= 1L;
-
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download of the template.");
+				this.error("Unexpected Error: Could not proceed with download biocollection template.");
 			}
-			
 		};
-		add(downloadTemplateButton);
+		ArkDownloadTemplateButton downloadBiospecimanInventoryTemplate = new ArkDownloadTemplateButton("downloadBiospecimanInventoryTemplate", "BiospecimenInventaryUpload", Constants.BIOSPECIMEN_INVENTORY_TEMPLATE_CELLS) {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not proceed with download biocollection template.");
+			}
+		};
+		ArkDownloadTemplateButton downloadBiospecimanTemplate = new ArkDownloadTemplateButton("downloadBiospecimanTemplate", "BiospecimanUpload", Constants.BIOSPECIMEN_TEMPLATE_CELLS) {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not proceed with download biocollection template.");
+			}
+		};
+		add(downloadBiocollectionTemplateButton);
+		add(downloadBiospecimanInventoryTemplate);
+		add(downloadBiospecimanTemplate);
 	}
 
 	/**

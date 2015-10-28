@@ -34,12 +34,17 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.State;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.vo.ContactVO;
+import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.study.service.IStudyService;
@@ -101,10 +106,9 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 * @return
 	 */
 	private void initialiseSearchAddressResults() {
-
 		 addressResultPanel = new AddressListPanel("addressResults", arkCrudContainerVO, containerForm);
 		 addressResultPanel.setOutputMarkupId(true);
-		arkCrudContainerVO.getSearchResultPanelContainer().add(addressResultPanel);
+		 arkCrudContainerVO.getSearchResultPanelContainer().add(addressResultPanel);
 	}
 	
 	/**
@@ -127,10 +131,14 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
+		boolean contextLoaded = prerenderContextCheck();
 		initialiseNewPhoneButton();
 		initialiseNewAddressButton();
 		initialiseSearchPhoneResults();
 		initialiseSearchAddressResults();
+		if (!contextLoaded) {
+			this.error(au.org.theark.core.Constants.MESSAGE_NO_SUBJECT_IN_CONTEXT);
+		}	
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 	
@@ -191,6 +199,7 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 * @param target
 	 */
 	private void onPhoneNew(AjaxRequestTarget target){
+		preSetPhoneFormBeforeVisible();
 		switchBetweenPanels(target,au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL);	
 	}
 	/**
@@ -329,5 +338,55 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 protected WebMarkupContainer initialiseSearchPanel() {
 		return null;
 	}
+	/**
+	 * 
+	 * @return
+	 */
+	protected boolean prerenderContextCheck() {
+		// Get the Study, SubjectUID and ArkModule from Context
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		boolean contextLoaded = false;
+		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
+			LinkSubjectStudy linkSubjectStudy = null;
+			ArkModule arkModule = null;
+			Study study = null;
+			try {
+				study = iArkCommonService.getStudy(sessionStudyId);
+				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
+				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+				// cpModel.getObject().setArkModule(arkModule);
+				if (study != null && linkSubjectStudy != null && arkModule != null) {
+					contextLoaded = true;
+				}
+			}
+			catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return contextLoaded;
+	}
+	
+	/**
+	 * <pre> set the form details before showing to the user.
+	 */
+	private void preSetPhoneFormBeforeVisible(){
+		PhoneVO phoneVo=cpModel.getObject().getPhoneVo();
+
+		// Force new address to be preferred if totally new address
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		try {
+			phoneVo.setPhoneList(studyService.getPersonPhoneList(sessionPersonId, null));
+		}
+		catch (ArkSystemException e) {
+			e.printStackTrace();
+		}
+		if(phoneVo.getPhoneList().size() == 0) {
+			phoneVo.getPhone().setPreferredPhoneNumber(true);
+		}
+	}
+	
 
 }

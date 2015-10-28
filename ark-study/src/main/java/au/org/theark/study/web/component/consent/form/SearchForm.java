@@ -94,7 +94,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 		resetButton.setVisible(false);
 		searchButton.setVisible(false);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
+		disableSearchForm(sessionPersonId, au.org.theark.core.Constants.MESSAGE_NO_SUBJECT_IN_CONTEXT);
 	}
 
 	protected void initialiseSearchForm() {

@@ -217,7 +217,7 @@ public class SubjectUploadValidator {
 	 *           is the delimiter character of the file (eg comma)
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
+	private Collection<String> validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -287,7 +287,7 @@ public class SubjectUploadValidator {
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateRefence) {
+	private Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateRefence) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {

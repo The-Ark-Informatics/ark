@@ -18,11 +18,17 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subject.form;
 
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -31,6 +37,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -61,6 +68,7 @@ import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.OtherID;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -161,6 +169,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private AjaxButton addNewOtherIdBtn;
 	
 	private HistoryButtonPanel historyButtonPanel;
+	private Label currentOrDeathageLable;
 	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
@@ -276,6 +285,20 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
+		currentOrDeathageLable=new Label(Constants.PERSON_CURRENT_OR_DEATH_AGE);
+		currentOrDeathageLable.setOutputMarkupId(true);
+		
+		dateOfBirthTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//update label at date of birth change.
+				setCurrentOrDeathAgeLabel();
+				setDeathDetailsContainer();
+				target.add(wmcDeathDetailsContainer);
+				target.add(currentOrDeathageLable);
+			}
+		});
 
 		dateLastKnownAliveTxtFld = new DateTextField("linkSubjectStudy.person.dateLastKnownAlive", au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker dateLastKnownAlivePicker = new ArkDatePicker();
@@ -287,6 +310,20 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		ArkDatePicker dodDatePicker = new ArkDatePicker();
 		dodDatePicker.bind(dateOfDeathTxtFld);
 		dateOfDeathTxtFld.add(dodDatePicker);
+		
+		dateOfDeathTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//update label at date of text change.
+				setCurrentOrDeathAgeLabel();
+				setDeathDetailsContainer();
+				target.add(wmcDeathDetailsContainer);
+				target.add(currentOrDeathageLable);
+			}
+		});
+		
+		
 
 		commentTxtAreaFld = new TextArea<String>(Constants.PERSON_COMMENT);
 
@@ -320,16 +357,21 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
 		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS, (List<VitalStatus>) vitalStatusList, vitalStatusRenderer);
-				vitalStatusDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-
+		vitalStatusDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
+				//update label at vital status change.
+				setCurrentOrDeathAgeLabel();
 				setDeathDetailsContainer();
 				target.add(wmcDeathDetailsContainer);
+				target.add(currentOrDeathageLable);
 			}
 		});
+		
+		//initialise the current or death label.
+		setCurrentOrDeathAgeLabel();
 
 		// Gender Type
 		Collection<GenderType> genderTypeList = iArkCommonService.getGenderTypes();
@@ -426,7 +468,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 			else {
 				wmcDeathDetailsContainer.setEnabled(false);
-				;
+			
 			}
 		}
 		else {
@@ -494,6 +536,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(previousLastNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(preferredNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateOfBirthTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(currentOrDeathageLable);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateLastKnownAliveTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtAreaFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(heardAboutStudyTxtFld);
@@ -752,5 +795,35 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	 */
 	public void setChildStudyPalettePanel(ChildStudyPalettePanel<SubjectVO> childStudyPalettePanel) {
 		this.childStudyPalettePanel = childStudyPalettePanel;
+	}
+	/**
+	 * Calculate the age knowing birthDay
+	 * @param birthDay
+	 * @return
+	 */
+	private  Map<String,Integer> calculateAgeDifference(LocalDate birthDay,LocalDate nowOrDeathAge){
+		Map<String,Integer> timeMap =new HashMap<String,Integer>();
+		Period period=Period.between(birthDay, nowOrDeathAge);
+		timeMap.put("years", period.getYears());
+		timeMap.put("months", period.getMonths());
+		return timeMap;
+	}
+	/**
+	 * Set the age label. 
+	 */
+	private void setCurrentOrDeathAgeLabel(){
+		Person person=containerForm.getModelObject().getLinkSubjectStudy().getPerson();
+		VitalStatus virStatus=vitalStatusDdc.getModelObject();
+		if(person!=null && virStatus!=null){
+			if ((person.getDateOfBirth()!=null) && (virStatus.getName().equalsIgnoreCase("Alive"))){
+				Map<String,Integer> timeMap=calculateAgeDifference(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(person.getDateOfBirth())),LocalDate.now());
+				person.setCurrentOrDeathAge("currentAge="+timeMap.get("years")+" Y "+ ((timeMap.get("months").equals(0)) ?"" :timeMap.get("months")+" months"));
+			}
+			if ((person.getDateOfBirth()!=null) && (virStatus.getName().equalsIgnoreCase("Deceased"))&&(person.getDateOfDeath()!=null)){
+				Map<String,Integer> timeMap=calculateAgeDifference(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(person.getDateOfBirth())),
+				LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(person.getDateOfDeath())));
+				person.setCurrentOrDeathAge("Age at death="+timeMap.get("years")+" Y "+ ((timeMap.get("months").equals(0)) ?"" :timeMap.get("months")+" months"));
+			}
+		}
 	}
 }

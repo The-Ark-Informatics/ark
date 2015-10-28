@@ -161,6 +161,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				QueryFilterVO filter= new QueryFilterVO();
 				copyQueryFilter = false;
 				listEditor.addItem(filter);
+				listEditor.updateModel();
 				target.add(form);
 			}
 		}.setDefaultFormProcessing(false));
@@ -449,7 +450,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				}
 	
 				case BIOCOLLECTION_CFD:{
-					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 					
 					List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
 					ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
@@ -685,7 +686,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					}
 
 					case BIOCOLLECTION_CFD:{
-						ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+						ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 						
 						List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
 						ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);

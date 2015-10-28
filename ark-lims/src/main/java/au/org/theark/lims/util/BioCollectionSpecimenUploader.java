@@ -63,7 +63,7 @@ import com.csvreader.CsvReader;
  * 
  * @author cellis
  */
-public class BiospecimenUploader {
+public class BioCollectionSpecimenUploader {
 	private long					recordCount;
 	private long					insertCount;
 	private long					updateCount;
@@ -72,7 +72,7 @@ public class BiospecimenUploader {
 	private StopWatch				timer						= null;
 	private char					delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;
 	private Study					study;
-	static Logger					log						= LoggerFactory.getLogger(BiospecimenUploader.class);
+	static Logger					log						= LoggerFactory.getLogger(BioCollectionSpecimenUploader.class);
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService		= null;
 	private ILimsService			iLimsService			= null;
@@ -80,7 +80,9 @@ public class BiospecimenUploader {
 	private StringBuffer			uploadReport			= null;
 	private SimpleDateFormat		simpleDateFormat		= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private List<Biospecimen>		insertBiospecimens	= new ArrayList<Biospecimen>();
-	private List<Biospecimen>		updateBiospecimens	= new ArrayList<Biospecimen>();
+	//private List<Biospecimen>		updateBiospecimens	= new ArrayList<Biospecimen>();
+	private List<BioCollection>		insertBiocollections	= new ArrayList<BioCollection>();
+	private List<BioCollection>		updateBiocollections	= new ArrayList<BioCollection>();
 	private List<InvCell>			updateInvCells			= new ArrayList<InvCell>();
 
 	/**
@@ -96,17 +98,16 @@ public class BiospecimenUploader {
 	 * 	       LIMS inventory service to perform select/insert/updates to the LIMS database
 	 */
 	@SuppressWarnings("unchecked")
-	public BiospecimenUploader(Study study, IArkCommonService iArkCommonService, ILimsService iLimsService, IInventoryService iInventoryService) {
+	public BioCollectionSpecimenUploader(Study study, IArkCommonService iArkCommonService, ILimsService iLimsService, IInventoryService iInventoryService) {
 		this.study = study;
 		this.iArkCommonService = iArkCommonService;
 		this.iLimsService = iLimsService;
 		this.iInventoryService = iInventoryService;
 		simpleDateFormat.setLenient(false);
 	}
-
 	/**
-	 * Imports the subject data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file format:
-	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... 1,01/01/1900,99.99,99.99,, ...
+	 * 
+	 * Upload the biocollection file data.
 	 * 
 	 * Where N is any number of columns
 	 * 
@@ -120,7 +121,7 @@ public class BiospecimenUploader {
 	 *            general ARK Exception
 	 * @return the upload report detailing the upload process
 	 */
-	public StringBuffer uploadAndReportMatrixBiospecimenFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
+	public StringBuffer uploadAndReportMatrixBiocollectionFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		uploadReport = new StringBuffer();
 		curPos = 0;
@@ -158,180 +159,70 @@ public class BiospecimenUploader {
 				uploadReport.append("\n");
 				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
 			}
-
 			timer = new StopWatch();
 			timer.start();
-
-			// Set field list (note 2th column to Nth column)
-			// SUBJECTUID BIOSPECIMENUID F1 F2 FN
-			// 0 1 2 3 N
 			csvReader.readHeaders();
-
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			log.debug("Header length: " + csvReader.getHeaders().toString().length());
-
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
-				
 				log.info("At record: " + recordCount);
 				String subjectUID = csvReader.get("SUBJECTUID");
-				String biospecimenUID = csvReader.get("BIOSPECIMENUID");
-
-				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-				//linkSubjectStudy.setStudy(study);
-
-				linkSubjectStudy = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
-
+				String biocollectionUID = csvReader.get("BIOCOLLECTIONUID");
+				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
 				//this is validated in prior step and should never happen
 				if(linkSubjectStudy==null){
 					log.error("\n\n\n\n\n\n\n\n\n\n\n\nUnexpected subject? a shouldnt happen...we should have errored this in validation");
 					break;//TODO : log appropriately or do some handling
 				}
+				BioCollection bioCollection = iLimsService.getBioCollectionForStudySubjectByUID(biocollectionUID, study, linkSubjectStudy);
+				if(bioCollection == null) {
+					bioCollection = new BioCollection();
+					if(study.getAutoGenerateBiocollectionUid()){
+						// if biocollection not in the system we have to create a new biocollection uid.
+						bioCollection.setBiocollectionUid(iLimsService.getNextGeneratedBiospecimenUID(study));
+					}else{
+						bioCollection.setBiocollectionUid(biocollectionUID);
+					}
+				}else{// if exsists we do not want to auto genetared the uid.
+					bioCollection.setBiocollectionUid(biocollectionUID);
+				}
+				bioCollection.setStudy(study);
+				bioCollection.setLinkSubjectStudy(linkSubjectStudy);
 
-				Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);
-				if(biospecimen == null) {
-					biospecimen = new Biospecimen();
+				if (csvReader.getIndex("NAME") > 0) {
+					String name = csvReader.get("NAME");
+					bioCollection.setName(name);
 				}
-				else{
-					log.error("\n\n\n\n\n\n\n\n\n....We should NEVER have existing biospecimens this should be  validated in prior step");
-					break;
+				if (csvReader.getIndex("COLLECTIONDATE") > 0) {
+					String collectionDate = csvReader.get("COLLECTIONDATE");
+					bioCollection.setCollectionDate(simpleDateFormat.parse(collectionDate));
 				}
-				biospecimen.setLinkSubjectStudy(linkSubjectStudy);
+				if (csvReader.getIndex("COMMENTS") > 0) {
+					String comments = csvReader.get("COMMENTS");
+					bioCollection.setComments(comments);
+				}
+				//validation SHOULD make sure these cases will work.  TODO:  test scripts
 				
-				if (csvReader.getIndex("BIOCOLLECTIONUID") > 0) {
-					String biocollectionUid = csvReader.get("BIOCOLLECTIONUID");
-					BioCollection bioCollection = iLimsService.getBioCollectionByUID(biocollectionUid,this.study.getId(), subjectUID);
-					if(bioCollection == null){
-						bioCollection = new BioCollection();
-						bioCollection.setLinkSubjectStudy(linkSubjectStudy);
-						bioCollection.setStudy(study);
-						bioCollection.setBiocollectionUid(biocollectionUid);
-						bioCollection = iLimsService.createBioCollection(bioCollection);
-						biospecimen.setBioCollection(bioCollection);
-					}
-					else{
-						biospecimen.setBioCollection(bioCollection);
-					}
-				}
-
-				if (csvReader.getIndex("SAMPLETYPE") > 0) {
-					String name = csvReader.get("SAMPLETYPE");
-					BioSampletype sampleType = new BioSampletype();
-					sampleType = iLimsService.getBioSampleTypeByName(name);
-					biospecimen.setSampleType(sampleType);
-				}
-
-				if (csvReader.getIndex("QUANTITY") > 0) {
-					String quantity = csvReader.get("QUANTITY");
-					biospecimen.setQuantity(new Double(quantity));
-				}
-
-
-				if (csvReader.getIndex("CONCENTRATION") > 0) {
-					String concentration = csvReader.get("CONCENTRATION");
-					biospecimen.setConcentration(new Double(concentration));
-				}
-				
-				if (csvReader.getIndex("UNITS") > 0) {
-					String name = csvReader.get("UNITS");
-					Unit unit = iLimsService.getUnitByName(name);
-					biospecimen.setUnit(unit);
-				}
-
-				if (csvReader.getIndex("TREATMENT") > 0) {
-					String name = csvReader.get("TREATMENT");
-					TreatmentType treatmentType = new TreatmentType(); 
-					treatmentType = iLimsService.getTreatmentTypeByName(name);
-					biospecimen.setTreatmentType(treatmentType);
-				}
-				
-				if (biospecimen.getBiospecimenUid() == null || biospecimen.getBiospecimenUid().isEmpty()) {
-					biospecimen.setStudy(study);
-					
-					Set<BioTransaction> bioTransactions = new HashSet<BioTransaction>(0);
-					
-					// Inheriently create a transaction for the initial quantity
-					BioTransaction bioTransaction = new BioTransaction();
-					bioTransaction.setBiospecimen(biospecimen);
-					bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
-					bioTransaction.setQuantity(biospecimen.getQuantity());
-					bioTransaction.setReason(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
-					
-					BioTransactionStatus initialStatus = iLimsService.getBioTransactionStatusByName(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
-					bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
-					bioTransactions.add(bioTransaction);
-					biospecimen.setBioTransactions(bioTransactions);
-					//validation SHOULD make sure these cases will work.  TODO:  test scripts
-					if(study.getAutoGenerateBiospecimenUid()){
-						biospecimen.setBiospecimenUid(iLimsService.getNextGeneratedBiospecimenUID(study));
-					}
-					else{
-						biospecimen.setBiospecimenUid(biospecimenUID);
-					}
-					insertBiospecimens.add(biospecimen);
+				if(bioCollection.getId()==null){
+					insertBiocollections.add(bioCollection);
 					StringBuffer sb = new StringBuffer();
-					sb.append("Biospecimen UID: ");
-					sb.append(biospecimen.getBiospecimenUid());
+					sb.append("BioCollectionUID: ");
+					sb.append(bioCollection.getBiocollectionUid());
 					sb.append(" has been created successfully.");
 					sb.append("\n");
 					uploadReport.append(sb);
 					insertCount++;
-				}
-				else {
-					updateBiospecimens.add(biospecimen);
+				}else {
+					updateBiocollections.add(bioCollection);
 					StringBuffer sb = new StringBuffer();
-					sb.append("Biospecimen UID: ");
-					sb.append(biospecimen.getBiospecimenUid());
+					sb.append("BioCollectionUID: ");
+					sb.append(bioCollection.getBiocollectionUid());
 					sb.append(" has been updated successfully.");
 					sb.append("\n");
 					uploadReport.append(sb);
 					updateCount++;
 				}
-				
-				// Allocation details
-				InvCell invCell;
-				String siteName = null;
-				String freezerName = null;
-				String rackName = null;
-				String boxName = null;
-				String row = null;
-				String column = null;
-				
-				if (csvReader.getIndex("SITE") > 0) {
-					siteName = csvReader.get("SITE");
-				}
-
-				if (csvReader.getIndex("FREEZER") > 0) {
-					freezerName = csvReader.get("FREEZER");
-				}
-
-				if (csvReader.getIndex("RACK") > 0) {
-					rackName = csvReader.get("RACK");
-				}
-
-				if (csvReader.getIndex("BOX") > 0) {
-					boxName = csvReader.get("BOX");
-				}
-				
-				if (csvReader.getIndex("ROW") > 0) {
-					row = csvReader.get("ROW");
-				}
-				
-				if (csvReader.getIndex("COLUMN") > 0) {
-					column = csvReader.get("COLUMN");
-				}
-				
-				invCell = new InvCell();
-				invCell = iInventoryService.getInvCellByLocationNames(siteName, freezerName, rackName, boxName, row, column);
-				//TODO : null checking here.  should be picked up ikn validation  JIRA 657 Created  log.info("invcell null?" + (invCell == null));
-
-				if(invCell != null && invCell.getId() != null) {
-					biospecimen.setInvCell(invCell); //.set
-//					invCell.setBiospecimen(biospecimen);
-					
-					//updateInvCells.add(invCell);
-				}
-				
 				recordCount++;
 			}
 		}
@@ -398,19 +289,14 @@ public class BiospecimenUploader {
 		uploadReport.append("\n");
 
 		// Batch insert/update
-		iLimsService.batchInsertBiospecimens(insertBiospecimens);
-		//iLimsService.batchUpdateBiospecimens(updateBiospecimens);
-		//iLimsService.batchUpdateInvCells(updateInvCells);
+		iLimsService.batchInsertBiocollections(insertBiocollections);
+		iLimsService.batchUpdateBiocollections(updateBiocollections);
 		
 		return uploadReport;
 	}
-
-	
-
-
-	/**
-	 * Imports the subject data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file format:
-	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... 1,01/01/1900,99.99,99.99,, ...
+		/**
+	 * Upload Biospecimen Inventory location file.
+	 * 
 	 * 
 	 * Where N is any number of columns
 	 * 
@@ -424,7 +310,7 @@ public class BiospecimenUploader {
 	 *            general ARK Exception
 	 * @return the upload report detailing the upload process
 	 */
-	public StringBuffer uploadAndReportMatrixLocationFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
+	public StringBuffer uploadAndReportMatrixBiospecimenInventoryFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		uploadReport = new StringBuffer();
 		curPos = 0;
@@ -466,10 +352,6 @@ public class BiospecimenUploader {
 
 			timer = new StopWatch();
 			timer.start();
-
-			// Set field list (note 2th column to Nth column)
-			// BIOSPECIMENUID F1 F2 FN
-			// 0 1 2 N
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
@@ -477,23 +359,13 @@ public class BiospecimenUploader {
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
-				
 				log.info("At record: " + recordCount);
 				String biospecimenUID = csvReader.get("BIOSPECIMENUID");
-
-/*				//this is validated in prior step and should never happen
-				if(linkSubjectStudy==null){
-					log.error("\n\n\n\n\n\n\n\n\n\n\n\nUnexpected subject? a shouldnt happen...we should have errored this in validation");
-					break;//TODO : log appropriately or do some handling
-				}
-*/
 				Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);
 				if(biospecimen == null) {
 					log.error("\n\n\n\n\n\n\n\n\n....We should NEVER have null biospecimens this should be  validated in prior step");
 					break;
 				}
-								
-					
 				// Allocation details
 				InvCell invCell;
 				String siteName = null;
@@ -528,7 +400,6 @@ public class BiospecimenUploader {
 				}
 				
 				invCell = iInventoryService.getInvCellByLocationNames(siteName, freezerName, rackName, boxName, row, column);
-				//TODO : null checking here.  should be picked up ikn validation  JIRA 657 Created  log.info("invcell null?" + (invCell == null));
 
 				if(invCell != null && invCell.getId() != null) {
 					if(invCell.getBiospecimen()!=null){
@@ -537,8 +408,7 @@ public class BiospecimenUploader {
 					}
 					invCell.setBiospecimen(biospecimen);
 					cellsToUpdate.add(invCell);
-//					biospecimen.setInvCell(invCell); 
-					updateCount++;
+ 					updateCount++;
 				}
 				else{
 					log.error("This should NEVER happen as validation should ensure all cells valid");
@@ -597,7 +467,6 @@ public class BiospecimenUploader {
 			// Restore the state of variables
 			srcLength = -1;
 		}
-		iLimsService.batchUpdateInvCells(cellsToUpdate);//TODO:  finally after everything for timing...or remove timing
 		uploadReport.append("Processed ");
 		uploadReport.append(recordCount);
 		uploadReport.append(" records.");
@@ -606,22 +475,243 @@ public class BiospecimenUploader {
 		uploadReport.append(updateCount);
 		uploadReport.append(" records.");
 		uploadReport.append("\n");
-
-		// Batch insert/update
-		//iLimsService.batchInsertBiospecimens(insertBiospecimens);
-		//iLimsService.batchUpdateBiospecimens(updateBiospecimens);
-		//iLimsService.batchUpdateInvCells(updateInvCells);
+		
+		iLimsService.batchUpdateInvCells(cellsToUpdate);
 		
 		return uploadReport;
 	}
+	/**
+	 * 
+	 * Upload the biospecimen file data.
+	 * 
+	 * Where N is any number of columns
+	 * 
+	 * @param fileInputStream
+	 *           is the input stream of a file
+	 * @param inLength
+	 *           is the length of a file
+	 * @throws FileFormatException
+	 *            file format Exception
+	 * @throws ArkBaseException
+	 *            general ARK Exception
+	 * @return the upload report detailing the upload process
+	 */
+	public StringBuffer uploadAndReportMatrixBiospecimenFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
+		delimiterCharacter = inDelimChr;
+		uploadReport = new StringBuffer();
+		curPos = 0;
 
-	
-	
-	
-	
-	
-	
-	
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		
+		// If Excel, convert to CSV for validation
+		if (inFileFormat.equalsIgnoreCase("XLS")) {
+			Workbook w;
+			try {
+				w = Workbook.getWorkbook(fileInputStream);
+				delimiterCharacter = ',';
+				XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+				fileInputStream = xlsToCsv.convertXlsToCsv(w);
+				fileInputStream.reset();
+			}
+			catch (BiffException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
+
+		try {
+			inputStreamReader = new InputStreamReader(fileInputStream);
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+
+			srcLength = inLength;
+			if (srcLength <= 0) {
+				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
+				uploadReport.append(srcLength);
+				uploadReport.append("\n");
+				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
+			}
+			timer = new StopWatch();
+			timer.start();
+			csvReader.readHeaders();
+			srcLength = inLength - csvReader.getHeaders().toString().length();
+			log.debug("Header length: " + csvReader.getHeaders().toString().length());
+
+			// Loop through all rows in file
+			while (csvReader.readRecord()) {
+				log.info("At record: " + recordCount);
+				String subjectUID = csvReader.get("SUBJECTUID");
+				String biospecimenUID = csvReader.get("BIOSPECIMENUID");
+				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
+				//this is validated in prior step and should never happen
+				if(linkSubjectStudy==null){
+					log.error("\n\n\n\n\n\n\n\n\n\n\n\n Unexpected subject? a shouldnt happen...we should have errored this in validation");
+					break;//TODO : log appropriately or do some handling
+				}
+				//Always create a new biospecimen in this time 
+				//exsisting biospecimen are not allow to update in here.
+				Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);
+				if(biospecimen == null) {
+					biospecimen = new Biospecimen();
+				}else{
+					log.error("\n\n\n\n\n\n\n\n\n....We should NEVER have existing biospecimens this should be  validated in prior step");
+					break;
+				}
+				biospecimen.setStudy(study);
+				biospecimen.setLinkSubjectStudy(linkSubjectStudy);
+				if (csvReader.getIndex("BIOCOLLECTIONUID") > 0) {
+					String biocollectionUid = csvReader.get("BIOCOLLECTIONUID");
+					BioCollection bioCollection = iLimsService.getBioCollectionByUID(biocollectionUid,this.study.getId(), subjectUID);
+					if(bioCollection == null){
+						log.error("\n\n\n\n\n\n\n\n\n....We already validated for the exsisting biocollection and we never created "
+								+ "new one if it does not exsists.");
+						break;
+					}
+					else{
+						biospecimen.setBioCollection(bioCollection);
+					}
+				}
+				if (csvReader.getIndex("SAMPLETYPE") > 0) {
+					String name = csvReader.get("SAMPLETYPE");
+					BioSampletype sampleType = new BioSampletype();
+					sampleType = iLimsService.getBioSampleTypeByName(name);
+					biospecimen.setSampleType(sampleType);
+				}
+				if (csvReader.getIndex("QUANTITY") > 0) {
+					String quantity = csvReader.get("QUANTITY");
+					biospecimen.setQuantity(new Double(quantity));
+				}
+				if (csvReader.getIndex("CONCENTRATION") > 0) {
+					String concentration = csvReader.get("CONCENTRATION");
+					if (concentration != null && !concentration.isEmpty()) {
+						try{
+							biospecimen.setConcentration(Double.parseDouble(concentration));
+						}
+						catch(NumberFormatException ne){
+							log.error("Already validated in the previous step and never happen the for error");
+						}
+					}
+				}
+				if (csvReader.getIndex("UNITS") > 0) {
+					String name = csvReader.get("UNITS");
+					Unit unit = iLimsService.getUnitByName(name);
+					biospecimen.setUnit(unit);
+				}
+				if (csvReader.getIndex("TREATMENT") > 0) {
+					String name = csvReader.get("TREATMENT");
+					TreatmentType treatmentType = iLimsService.getTreatmentTypeByName(name);
+					biospecimen.setTreatmentType(treatmentType);
+				}
+				Set<BioTransaction> bioTransactions = new HashSet<BioTransaction>(0);
+				// Inheriently create a transaction for the initial quantity
+				BioTransaction bioTransaction = new BioTransaction();
+				bioTransaction.setBiospecimen(biospecimen);
+				bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
+				bioTransaction.setQuantity(biospecimen.getQuantity());
+				bioTransaction.setReason(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
+					
+				BioTransactionStatus initialStatus = iLimsService.getBioTransactionStatusByName(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
+				bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
+				bioTransactions.add(bioTransaction);
+				biospecimen.setBioTransactions(bioTransactions);
+				//validation SHOULD make sure these cases will work.  TODO:  test scripts
+				if(study.getAutoGenerateBiospecimenUid()){
+					biospecimen.setBiospecimenUid(iLimsService.getNextGeneratedBiospecimenUID(study));
+				}else{
+					biospecimen.setBiospecimenUid(biospecimenUID);
+				}
+				insertBiospecimens.add(biospecimen);
+				StringBuffer sb = new StringBuffer();
+				sb.append("Biospecimen UID: ");
+				sb.append(biospecimen.getBiospecimenUid());
+				sb.append(" has been created successfully.");
+				sb.append("\n");
+				uploadReport.append(sb);
+				insertCount++;
+				// Allocation details
+				String siteName =  csvReader.get("SITE");
+				String freezerName =csvReader.get("FREEZER");
+				String rackName = csvReader.get("RACK");
+				String boxName = csvReader.get("BOX");
+				String row = csvReader.get("ROW");
+				String column = csvReader.get("COLUMN");
+				InvCell invCell = iInventoryService.getInvCellByLocationNames(siteName, freezerName, rackName, boxName, row, column);
+				//Biospecimen was supposed to locate in the following valid, empty inventory cell
+				// inventory cell is not persist with biospeciman. So we have to update the valid inventory cell location with the 
+				//biospecimen uid which we will do it while bispecimen creates.
+				biospecimen.setInvCell(invCell);
+				recordCount++;
+			}
+		}
+		catch (IOException ioe) {
+			uploadReport.append("Unexpected I/O exception whilst reading the biospecimen data file\n");
+			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the biospecimen data file");
+		}
+		catch (Exception ex) {
+			uploadReport.append("Unexpected exception whilst reading the biospecimen data file\n");
+			log.error("processMatrixBiospecimenFile Exception stacktrace:", ex);
+			throw new ArkSystemException("Unexpected exception occurred when trying to process biospecimen data file");
+		}
+		finally {
+			// Clean up the IO objects
+			timer.stop();
+			uploadReport.append("\n");
+			uploadReport.append("Total elapsed time: ");
+			uploadReport.append(timer.getTime());
+			uploadReport.append(" ms or ");
+			uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
+			uploadReport.append(" s");
+			uploadReport.append("\n");
+			uploadReport.append("Total file size: ");
+			uploadReport.append(inLength);
+			uploadReport.append(" B or ");
+			uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
+			uploadReport.append(" MB");
+			uploadReport.append("\n");
+
+			if (timer != null)
+				timer = null;
+
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+			// Restore the state of variables
+			srcLength = -1;
+		}
+		uploadReport.append("Processed ");
+		uploadReport.append(recordCount);
+		uploadReport.append(" records.");
+		uploadReport.append("\n");
+		uploadReport.append("Inserted ");
+		uploadReport.append(insertCount);
+		uploadReport.append(" records.");
+		uploadReport.append("\n");
+		uploadReport.append("Updated ");
+		uploadReport.append(updateCount);
+		uploadReport.append(" records.");
+		uploadReport.append("\n");
+
+		// Batch insert/update
+		iLimsService.batchInsertBiospecimensAndUpdateInventoryCell(insertBiospecimens);
+		return uploadReport;
+	}
 	/**
 	 * Return the progress of the current process in %
 	 * 
@@ -635,7 +725,6 @@ public class BiospecimenUploader {
 
 		return progress;
 	}
-
 	/**
 	 * Return the speed of the current process in KB/s
 	 * 

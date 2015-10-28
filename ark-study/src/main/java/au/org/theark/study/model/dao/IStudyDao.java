@@ -492,7 +492,7 @@ public interface IStudyDao {
 
 	public String getSubjectFamilyUId(Long studyId, String subjectUID);
 	
-	//public List<SubjectCustomFieldData> getSubjectCustomFieldDataListByCategory(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public void setPreferredPhoneNumberToFalse(Person person);
 	
-	//public List<FamilyCustomFieldData> getFamilyCustomFieldDataListByCategory(Study study,String familyId, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	
 }

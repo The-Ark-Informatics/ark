@@ -64,7 +64,7 @@ import au.org.theark.lims.model.dao.IBioTransactionDao;
 import au.org.theark.lims.model.dao.IBiospecimenDao;
 import au.org.theark.lims.model.dao.IInventoryDao;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.util.BiospecimenUploader;
+import au.org.theark.lims.util.BioCollectionSpecimenUploader;
 import au.org.theark.lims.web.Constants;
 
 /**
@@ -763,8 +763,8 @@ public class LimsServiceImpl implements ILimsService {
 		return iBiospecimenDao.getNextGeneratedBiospecimenUID(study);
 	}
 
-	public void batchInsertBiospecimens(Collection<Biospecimen> insertBiospecimens) {
-		iBiospecimenDao.batchInsertBiospecimens(insertBiospecimens);
+	public void batchInsertBiospecimensAndUpdateInventoryCell(Collection<Biospecimen> insertBiospecimens) {
+		iBiospecimenDao.batchInsertBiospecimensAndUpdateInventoryCell(insertBiospecimens);
 	}
 
 	public void batchUpdateBiospecimens(Collection<Biospecimen> updateBiospecimens) {
@@ -782,14 +782,33 @@ public class LimsServiceImpl implements ILimsService {
 	public TreatmentType getTreatmentTypeByName(String name) {
 		return iBiospecimenDao.getTreatmentTypeByName(name);
 	}
-
-	public StringBuffer uploadAndReportMatrixLocationFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar) {
+	
+	public StringBuffer uploadAndReportMatrixBiocollectionFile(Study study,InputStream inputStream, long size, String fileFormat,char delimiterChar) {
 		StringBuffer uploadReport = null;
-		BiospecimenUploader biospecimenUploader = new BiospecimenUploader(study, arkCommonService, this, iInventoryService);
+		BioCollectionSpecimenUploader bioCollectionSpecimenUploader = new BioCollectionSpecimenUploader(study, arkCommonService, this, iInventoryService);
 		
 		try {
-			log.debug("Importing and reporting Biospecimen file");
-			uploadReport = biospecimenUploader.uploadAndReportMatrixLocationFile(inputStream, size, fileFormat, delimiterChar);
+			log.debug("Importing and reporting Biocollection file");
+			uploadReport = bioCollectionSpecimenUploader.uploadAndReportMatrixBiocollectionFile(inputStream, size, fileFormat, delimiterChar);
+		}
+		catch (FileFormatException ffe) {
+			log.error(au.org.theark.core.Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(au.org.theark.core.Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return uploadReport;
+		
+		
+	}
+
+	public StringBuffer uploadAndReportMatrixBiospecimenInventoryFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar) {
+		StringBuffer uploadReport = null;
+		BioCollectionSpecimenUploader bioCollectionSpecimenUploader = new BioCollectionSpecimenUploader(study, arkCommonService, this, iInventoryService);
+		
+		try {
+			log.debug("Importing and reporting Biospecimen inventory file");
+			uploadReport = bioCollectionSpecimenUploader.uploadAndReportMatrixBiospecimenInventoryFile(inputStream, size, fileFormat, delimiterChar);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.core.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -800,14 +819,16 @@ public class LimsServiceImpl implements ILimsService {
 		return uploadReport;
 	}
 
-
+	/**
+	 * 
+	 */
 	public StringBuffer uploadAndReportMatrixBiospecimenFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar) {
 		StringBuffer uploadReport = null;
-		BiospecimenUploader biospecimenUploader = new BiospecimenUploader(study, arkCommonService, this, iInventoryService);
+		BioCollectionSpecimenUploader bioCollectionSpecimenUploader = new BioCollectionSpecimenUploader(study, arkCommonService, this, iInventoryService);
 		
 		try {
 			log.debug("Importing and reporting Biospecimen file");
-			uploadReport = biospecimenUploader.uploadAndReportMatrixBiospecimenFile(inputStream, size, fileFormat, delimiterChar);
+			uploadReport = bioCollectionSpecimenUploader.uploadAndReportMatrixBiospecimenFile(inputStream, size, fileFormat, delimiterChar);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.core.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -853,4 +874,17 @@ public class LimsServiceImpl implements ILimsService {
 	public List<Biospecimen> getRootBiospecimensForBiocollection(BioCollection bc) {
 		return iBiospecimenDao.getRootBiospecimensForBiocollection(bc);
 	}
+
+	public BioCollection getBioCollectionForStudySubjectByUID(String biocollectionUid,Study study, LinkSubjectStudy linkSubjectStudy) {
+		return iBioCollectionDao.getBioCollectionForStudySubjectByUID(biocollectionUid,study, linkSubjectStudy);
+	}
+
+	public void batchInsertBiocollections(Collection<BioCollection> insertBioCollections) {
+		iBioCollectionDao.batchInsertBiocollections(insertBioCollections);
+	}
+
+	public void batchUpdateBiocollections(Collection<BioCollection> updateBioCollections) {
+		iBioCollectionDao.batchUpdateBiocollections(updateBioCollections);
+	}
+	
 }

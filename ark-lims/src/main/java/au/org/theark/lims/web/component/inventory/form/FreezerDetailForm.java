@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -111,6 +112,19 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("invFreezer.id");
 		nameTxtFld = new TextField<String>("invFreezer.name");
+		nameTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				String freezerName = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
+				InvFreezer invFreezer=iInventoryService.getInvFreezerByNameForSite(invSiteDdc.getModelObject(), freezerName);
+				if (invFreezer != null && invFreezer.getId() != null) {
+					error("Freezer name must be unique for a site. Please try again.");
+					target.focusComponent(getComponent());
+				}
+					target.add(feedbackPanel);
+			}
+		});
 		capacityTxtFld = new TextField<Integer>("invFreezer.capacity"){
 
 			private static final long	serialVersionUID	= 1L;
@@ -195,6 +209,19 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		}
 		ChoiceRenderer<InvSite> choiceRenderer = new ChoiceRenderer<InvSite>(Constants.NAME, Constants.ID);
 		invSiteDdc = new DropDownChoice<InvSite>("invFreezer.invSite", (List<InvSite>) invSiteList, choiceRenderer);
+		invSiteDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				String freezerName = (nameTxtFld.getModelObject().toString() != null ? nameTxtFld.getModelObject().toString() : new String());
+				InvFreezer invFreezer=iInventoryService.getInvFreezerByNameForSite(invSiteDdc.getModelObject(), freezerName);
+				if (invFreezer != null && invFreezer.getId() != null) {
+					error("Freezer name must be unique for a site. Please try again.");
+					target.focusComponent(getComponent());
+				}
+					target.add(feedbackPanel);
+			}
+		});
 	}
 
 	protected void attachValidators() {

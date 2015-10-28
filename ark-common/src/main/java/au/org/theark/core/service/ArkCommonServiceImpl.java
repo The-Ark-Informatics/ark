@@ -1943,8 +1943,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public List getAvailableAllCategoryListInStudyByCustomFieldType(Study study, CustomFieldType customFieldType)throws ArkSystemException {
-		return customFieldDao.getAvailableAllCategoryListInStudyByCustomFieldType(study, customFieldType);
+	public List getAvailableAllCategoryListInStudyByCustomFieldType(Study study, ArkFunction arkFunction,CustomFieldType customFieldType)throws ArkSystemException {
+		return customFieldDao.getAvailableAllCategoryListInStudyByCustomFieldType(study,arkFunction, customFieldType);
 	}
 
 	@Override

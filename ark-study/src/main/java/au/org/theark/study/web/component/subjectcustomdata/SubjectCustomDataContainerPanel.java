@@ -98,7 +98,7 @@ public class SubjectCustomDataContainerPanel extends Panel {
 		}
 		else if (!contextLoaded) {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
-			this.error("A study and subject in context are required to proceed.");
+			this.error(au.org.theark.core.Constants.MESSAGE_NO_SUBJECT_IN_CONTEXT);
 		}
 		else {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");

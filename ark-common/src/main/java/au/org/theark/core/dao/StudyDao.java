@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -506,7 +507,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return LinkSubjectStudy
 	 */
 	public LinkSubjectStudy getSubjectByUIDAndStudy(String subjectUID, Study study) {
-		log.warn("about to create query right now");
+		//log.warn("about to create query right now");
 		Criteria linkSubjectStudyCriteria = getSession().createCriteria(LinkSubjectStudy.class);
 		linkSubjectStudyCriteria.add(Restrictions.eq("subjectUID", subjectUID));
 		linkSubjectStudyCriteria.add(Restrictions.eq("study", study));
@@ -553,9 +554,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return
 	 */
 	public List<AddressType> getAddressTypes() {
+		List<AddressType> AddressTypeLstNew=new ArrayList<AddressType>();
 		Criteria criteria = getSession().createCriteria(AddressType.class);
 		criteria.addOrder(Order.asc("name"));
-		return criteria.list();
+
+		List<AddressType> AddressTypeLst=criteria.list();
+		for (AddressType addressType : AddressTypeLst) {
+			String name=addressType.getName().toLowerCase();
+			addressType.setName(WordUtils.capitalize(name));
+			AddressTypeLstNew.add(addressType);
+		}
+		return AddressTypeLstNew;
 	}
 
 	/**
@@ -1172,7 +1181,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		// uploadCriteria.getArkFunction()));
 
 		ArkFunction biospecArkFunction = getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN);
-		ArkFunction biocollArkFunction = getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+		//ArkFunction biocollArkFunction = getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+		ArkFunction biocollArkFunction = getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 
 		List<ArkFunction> arkFunctionsForBio = new ArrayList<ArkFunction>();
 		arkFunctionsForBio.add(biospecArkFunction);
@@ -1616,6 +1626,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public Collection<UploadType> getUploadTypesForLims() {
 		Criteria criteria = getSession().createCriteria(UploadType.class);
 		criteria.add(Restrictions.eq("arkModule", getArkModuleForLims()));
+		criteria.addOrder(Order.asc("order"));
 		return criteria.list();
 	}
 
@@ -2002,7 +2013,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
-		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+		//query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
 		return query.list();
 	}
 
@@ -4076,8 +4088,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
 			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
-			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
-
+			//if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
+			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD)) {
 				String tablePrefix = "data" + count++;
 				log.info("what is this BIOSPECIMEN CUSTOM filter? " + filter.getId() + "     for data row? " + tablePrefix );
 
@@ -4438,7 +4450,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else if (arkFunction.getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION)) {
 			return FieldCategory.PHENO_CFD;
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
+		//else if (arkFunction.getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
+		else if (arkFunction.getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD)) {
 			return FieldCategory.BIOCOLLECTION_CFD;
 		}
 		else {// should really have a default! TODO

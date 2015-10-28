@@ -296,7 +296,7 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_FIELD_DATA = "FIELD_DATA";
 	public static final String FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD = "FIELD_DATA_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_LIMS_SUBJECT = "LIMS_SUBJECT";
-	public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION = "LIMS_COLLECTION";
+	//public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION = "LIMS_COLLECTION";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN = "BIOSPECIMEN";
 	public static final String FUNCTION_KEY_VALUE_INVENTORY = "INVENTORY";
 	//Add on 2015-06-22 to categories  custom field
@@ -321,7 +321,7 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD = "BIOSPECIMEN_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_UPLOAD = "SUBJECT_CUSTOM_FIELD_UPLOAD";
 	//public static final String FUNCTION_KEY_VALUE_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_CUSTOM_FIELD_UPLOAD = "LIMS_CUSTOM_FIELD_UPLOAD";// new LIMS custom field upload.
+	public static final String FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_UPLOAD = "LIMS_CUSTOM_FIELD_UPLOAD";// new LIMS custom field upload.
 	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_CUSTOM_FIELD_UPLOAD";
 	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_DATA_EXTRACTION	= "DATA_EXTRACTION";
@@ -531,17 +531,43 @@ public class Constants {
 	// to 20
 	public static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";
 
+	public static final String[] BIOCOLLECTION_TEMPLATE_HEADER = { "SUBJECTUID",
+		"BIOCOLLECTIONUID","NAME","COLLECTIONDATE","COMMENTS"};
+	
 	public static final String[] BIOSPECIMEN_TEMPLATE_HEADER = { "SUBJECTUID",
-			"BIOSPECIMENUID", "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
-			"UNITS", "TREATMENT", "CONCENTRATION", "SITE", "FREEZER", "RACK", "BOX", "ROW", "COLUMN" };
+		"BIOSPECIMENUID", "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
+		"UNITS", "TREATMENT", "CONCENTRATION", "SITE", "FREEZER", "RACK", "BOX", "ROW", "COLUMN" };
 	
-	public static final String[] LOCATION_UPLOAD_TEMPLATE_HEADER = { // "SUBJECTUID",
-		"BIOSPECIMENUID", 											// , "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
-																	//"UNITS", "TREATMENT", "CONCENTRATION",
+	public static final String[] BIOSPECIMEN_INVENTORY_TEMPLATE_HEADER = {"BIOSPECIMENUID",
 		"SITE", "FREEZER", "RACK", "BOX", "ROW","COLUMN" };
-
 	
-	public static final String[][] LOCATION_UPLOAD_TEMPLATE_CELLS = {
+	public static final String[][] BIOCOLLECTION_TEMPLATE_CELLS = {
+		{ "", "SUBJECTUID",  "BIOCOLLECTIONUID","NAME","COLLECTIONDATE","COMMENTS" },
+		{
+				"DESCRIPTION",
+				"The unique identifier assigned for this subject.",
+				"The unique identifier of the biospecimen",
+				"The name of the collection",
+				"The collection date",
+				"The comment"
+		},
+		{ 		"MANDATORY", 
+				"Mandatory IF study not set to autogenerate id's for biocollections",
+				"Yes",
+				"No", 
+				"No", 
+				"No" },
+		{
+				"VALID VALUES",
+				"",
+				"",
+				"",
+				"",
+				""},
+		{ "NOTE: Removed this first column, and replace rows 2 to 5",
+				"", "",	"", "", "" } };
+	
+	public static final String[][] BIOSPECIMEN_INVENTORY_TEMPLATE_CELLS = {
 			{  "", "BIOSPECIMENUID", "SITE",
 					"FREEZER", "RACK", "BOX", "ROW", "COLUMN" 
 			},
@@ -564,8 +590,7 @@ public class Constants {
 					"Yes",
 					"Yes",
 			 },
-			{
-					"VALID VALUES",
+			{		"VALID VALUES",
 					"",
 					"", 
 					"", 
@@ -574,8 +599,7 @@ public class Constants {
 					"", 
 					""
 			},
-			{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", ""
-			} };
+			{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", ""} };
 	
 	public static final String[][] BIOSPECIMEN_TEMPLATE_CELLS = {
 			{ "", "SUBJECTUID", "BIOSPECIMENUID", "BIOCOLLECTIONUID",
@@ -659,5 +683,9 @@ public class Constants {
 	
 	public static final String CONFIG_ROWS_PER_PAGE = "ROWS_PER_PAGE";
 	public static final String CONFIG_CUSTOM_FIELDS_PER_PAGE = "CUSTOM_FIELDS_PER_PAGE";
+	
+	public static final String MESSAGE_NO_SUBJECT_IN_CONTEXT="There is no subject in context. Please bring a subject into context via the subject tab.";
+	
+	public static final String MESSAGE_NO_STUDY_IN_CONTEXT="There is no study in context. Please select a study";
 	
 }

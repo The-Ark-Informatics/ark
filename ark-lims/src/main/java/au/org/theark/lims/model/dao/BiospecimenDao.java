@@ -604,15 +604,15 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		Long count = (Long) criteria.uniqueResult();
 		return count>0;
 	}
-
-	public void batchInsertBiospecimens(Collection<Biospecimen> insertBiospecimens) {
+	/**
+	 * 
+	 */
+	public void batchInsertBiospecimensAndUpdateInventoryCell(Collection<Biospecimen> insertBiospecimens) {
 		for (Biospecimen biospecimen : insertBiospecimens) {
-
 			getSession().save(biospecimen);
 			for(BioTransaction bioTransaction : biospecimen.getBioTransactions()){
 				getSession().save(bioTransaction);
 			}
-
 			InvCell invCell = biospecimen.getInvCell();
 			if(invCell!=null){
 				getSession().refresh(biospecimen);
@@ -660,8 +660,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		if(study!=null){
 			criteria.add(Restrictions.eq("study", study));
 		}
-		Biospecimen biospecimen = (Biospecimen) criteria.uniqueResult();
-		return biospecimen;
+		return  (Biospecimen) criteria.uniqueResult();
 	}
 
 	public List<String> getAllBiospecimenUIDs(Study study) {

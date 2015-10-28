@@ -749,9 +749,10 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	@Override
-	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study, CustomFieldType customFieldType)throws ArkSystemException {
+	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study, ArkFunction arkFunction,CustomFieldType customFieldType)throws ArkSystemException {
 		Criteria criteria = getSession().createCriteria(CustomFieldCategory.class);
 		criteria.add(Restrictions.eq("customFieldType", customFieldType));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
 		criteria.add(Restrictions.eq("study", study));
 		List<CustomFieldCategory> customFieldCategoryList = (List<CustomFieldCategory>) criteria.list();
 		return customFieldCategoryList;
@@ -816,5 +817,6 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		}else{
 			return false;
 		}
-	}	
+	}
+	
 }

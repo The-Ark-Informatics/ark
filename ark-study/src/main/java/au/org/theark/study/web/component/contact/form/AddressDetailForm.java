@@ -59,6 +59,7 @@ import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.util.DateFromToValidator;
 import au.org.theark.study.web.Constants;
 
 /**
@@ -80,22 +81,24 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	private TextField<String>					streetAddressTxtFld;
 	private TextField<String>					cityTxtFld;
 	private TextField<String>					postCodeTxtFld;
-	private DropDownChoice<Country>			countryChoice;
+	private DropDownChoice<Country>				countryChoice;
 	private DropDownChoice<State>				stateChoice;
-	private DropDownChoice<AddressType>		addressTypeChoice;
+	private DropDownChoice<AddressType>			addressTypeChoice;
 	private WebMarkupContainer					stateSelector;
-	private DropDownChoice<AddressStatus>	addressStatusChoice;
-	private CheckBox								preferredMailingAddressChkBox;
+	private DropDownChoice<AddressStatus>		addressStatusChoice;
+	private CheckBox							preferredMailingAddressChkBox;
 	private DateTextField						dateReceivedDp;
 	private TextArea<String>					commentsTxtArea;
 	private TextField<String>					sourceTxtFld;
 	private TextField<String>					addressLineOneTxtFld;
 
-	protected TextField<String>				otherState;
+	protected TextField<String>					otherState;
 	protected Label								otherStateInvalidError;
 	
 	private FeedbackPanel 					feedBackPanel;
 	private ArkCrudContainerVO 			arkCrudContainerVO;
+	private DateTextField 				dateValidFrom;
+	private DateTextField 				dateValidTo;
 
 	/**
 	 * 
@@ -152,6 +155,9 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(preferredMailingAddressChkBox);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(sourceTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(addressLineOneTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
+		this.add(new DateFromToValidator(dateValidFrom, dateValidTo));
 	}
 
 	private void initialiseAddressTypeDropDown() {
@@ -252,9 +258,34 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	private void initialiseDatePicker() {
 		// Create new DateTextField and assign date format
 		dateReceivedDp = new DateTextField("addressVo.address.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
-		ArkDatePicker datePicker = new ArkDatePicker();
-		datePicker.bind(dateReceivedDp);
-		dateReceivedDp.add(datePicker);
+		ArkDatePicker dPDateReceived = new ArkDatePicker();
+		dPDateReceived.bind(dateReceivedDp);
+		dateReceivedDp.add(dPDateReceived);
+		
+		//Valid From
+		dateValidFrom=new DateTextField("addressVo.address.validFrom", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidFrom.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long	serialVersionUID	= 1L;
+				@Override
+				protected void onUpdate(AjaxRequestTarget target) {
+					target.add(dateValidFrom);
+				}
+			});
+		ArkDatePicker dPDateValidFrom = new ArkDatePicker();
+		dPDateValidFrom.bind(dateValidFrom);
+		dateValidFrom.add(dPDateValidFrom);
+		//Valid To
+		dateValidTo=new DateTextField("addressVo.address.validTo", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidTo.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+		private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				target.add(dateValidTo);
+			}
+		});
+		ArkDatePicker dPDateValidTo = new ArkDatePicker();
+		dPDateValidTo.bind(dateValidTo);
+		dateValidTo.add(dPDateValidTo);
 	}
 
 	/*
@@ -285,6 +316,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		addressTypeChoice.setRequired(true).setLabel(new StringResourceModel("address.addressType.RequiredValidator", this, new Model<String>("Address Type")));
 		addressStatusChoice.setRequired(true).setLabel(new StringResourceModel("address.addressStatus.RequiredValidator", this, new Model<String>("Address Status")));
 		stateChoice.setRequired(true).setLabel(new StringResourceModel("address.state.RequiredValidator", this, new Model<String>("State")));
+		
 	}
 
 	/*

@@ -18,7 +18,9 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biospecimen;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -52,6 +54,7 @@ public class BiospecimenModalDetailPanel extends Panel {
 
 	protected FeedbackPanel initialiseFeedBackPanel() {
 		/* Feedback Panel */
+		Session.get().getFeedbackMessages().clear();
 		detailFeedbackPanel = new FeedbackPanel("detailFeedback");
 		detailFeedbackPanel.setOutputMarkupId(true);
 		return detailFeedbackPanel;

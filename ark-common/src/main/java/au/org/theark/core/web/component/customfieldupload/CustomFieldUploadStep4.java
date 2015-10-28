@@ -41,12 +41,15 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryImporter;
 import au.org.theark.core.util.CustomFieldImporter;
@@ -117,18 +120,43 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		Subject currentUser = SecurityUtils.getSubject();
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
+		//We have to decide the custom filed/category goes under which function to the DB.
+		//At the moment if it is subject or the lims
+		//Knowing the Module and the current fuction we can dicide that
+		ArkFunction currentFunction=containerForm.getModelObject().getUpload().getArkFunction();
+		UploadLevel uploadLevel=containerForm.getModelObject().getUpload().getUploadLevel();
+		ArkFunction adjustedArkFunctionForCustomField=null;
 		
-		// Field upload
-		if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(au.org.theark.core.web.component.customfieldupload.Constants.UPLOAD_LEVEL_FIELD)){
-			iCustomImporter = new CustomFieldImporter(study, containerForm.getModelObject().getUpload().getArkFunction(), iArkCommonService, fileFormat, delimiterChar);
-		//Category upload	
+		//Common custom field update split to study in here.
+		if(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY)&& 
+		    currentFunction.getName().equals(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_UPLOAD)){
+			// Field upload
+			if(uploadLevel.getName().equalsIgnoreCase(au.org.theark.core.web.component.customfieldupload.Constants.UPLOAD_LEVEL_FIELD)){
+				adjustedArkFunctionForCustomField=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+				iCustomImporter = new CustomFieldImporter(study, adjustedArkFunctionForCustomField, iArkCommonService, fileFormat, delimiterChar);
+			//Category upload		
+			}else if(uploadLevel.getName().equalsIgnoreCase(au.org.theark.core.web.component.customfieldupload.Constants.UPLOAD_LEVEL_CATEGORY)){
+				adjustedArkFunctionForCustomField=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY);
+				iCustomImporter  = new CustomFieldCategoryImporter(study, adjustedArkFunctionForCustomField, iArkCommonService, fileFormat, delimiterChar);
+			}
 		}
-		if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(au.org.theark.core.web.component.customfieldupload.Constants.UPLOAD_LEVEL_CATEGORY)){
-			iCustomImporter  = new CustomFieldCategoryImporter(study, containerForm.getModelObject().getUpload().getArkFunction(), iArkCommonService, fileFormat, delimiterChar);
+
+		//Common custom field update split to lims in here.
+		if(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_LIMS)&& 
+			    currentFunction.getName().equals(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_UPLOAD)){
+			// Field upload
+			if(uploadLevel.getName().equalsIgnoreCase(au.org.theark.core.web.component.customfieldupload.Constants.UPLOAD_LEVEL_FIELD)){
+				adjustedArkFunctionForCustomField=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
+				iCustomImporter = new CustomFieldImporter(study, adjustedArkFunctionForCustomField, iArkCommonService, fileFormat, delimiterChar);
+			//Category upload		
+			}else if(uploadLevel.getName().equalsIgnoreCase(au.org.theark.core.web.component.customfieldupload.Constants.UPLOAD_LEVEL_CATEGORY)){
+				adjustedArkFunctionForCustomField=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY);
+				iCustomImporter  = new CustomFieldCategoryImporter(study, adjustedArkFunctionForCustomField, iArkCommonService, fileFormat, delimiterChar);
+			}
 		}
-		
 		//Need to persist the custom field category
-		
 
 		try {
 			log.info("Uploading data dictionary file");
@@ -169,8 +197,9 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		}
 
 		// Update the report
-		updateUploadReport(uploadReport.toString());
-
+		if(uploadReport!=null){
+			updateUploadReport(uploadReport.toString());
+		}
 		// Save all objects to the database
 		save(iCustomImporter);
 	}
