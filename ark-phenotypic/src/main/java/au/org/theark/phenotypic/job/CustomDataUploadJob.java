@@ -30,11 +30,12 @@ import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.audit.AuditThreadLocalHelper;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.phenotypic.service.*;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 
 /**
  * @author tendersby
@@ -58,6 +59,8 @@ public class CustomDataUploadJob implements Job {
 	public static final String		REPORT				= "report";
 	public static final String		LIST_OF_UIDS_TO_UPDATE	= "listOfUidsToUpdate";
 	public static final String		CUSTOM_FIELD_GROUP = "customFieldGroup";
+	public static final String		OVERWRITE_EXISTING = "overwriteExisting";
+	public static final String		USERNAME 			= "username";
 	
 	private 	IPhenotypicService	iPhenoService;
 	private 	IArkCommonService<Void>	iArkCommonService;
@@ -89,7 +92,10 @@ public class CustomDataUploadJob implements Job {
 		List<String> uidsToUpdate=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
 		CustomFieldGroup customFieldGroup = (CustomFieldGroup) data.get(CUSTOM_FIELD_GROUP);
 		PhenoCollection phenoCollection = (PhenoCollection) data.get(PHENO_COLLECTION);
-		boolean overwriteExisting = data.getBoolean("overwrite");
+		boolean overwriteExisting = data.getBoolean(OVERWRITE_EXISTING);
+		String username 			= data.getString(USERNAME);
+		
+		AuditThreadLocalHelper.USERNAME.set(username);
 		
 		try {
 			Date startTime = new Date(System.currentTimeMillis());
