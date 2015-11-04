@@ -53,13 +53,13 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.util.DateFromToValidator;
 import au.org.theark.study.web.Constants;
 
 /**
@@ -96,9 +96,9 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	protected Label								otherStateInvalidError;
 	
 	private FeedbackPanel 					feedBackPanel;
-	private ArkCrudContainerVO 			arkCrudContainerVO;
-	private DateTextField 				dateValidFrom;
-	private DateTextField 				dateValidTo;
+	private ArkCrudContainerVO 				arkCrudContainerVO;
+	private DateTextField 					dateValidFrom;
+	private DateTextField 					dateValidTo;
 
 	/**
 	 * 
@@ -157,7 +157,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(addressLineOneTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
-		this.add(new DateFromToValidator(dateValidFrom, dateValidTo));
+		this.add(new DateFromToValidator(dateValidFrom, dateValidTo,"Valid from date","Valid to date"));
 	}
 
 	private void initialiseAddressTypeDropDown() {

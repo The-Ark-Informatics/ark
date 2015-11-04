@@ -242,7 +242,9 @@
 					<div class="panelContentLeft">
 						&nbsp;
 					</div>
-
+			
+				<!-- Add this web container on 2015-10-29 -->	
+				<div wicket:id="missingValueEntryWMC">
 					<div class="fldLabel">
 						<wicket:message key="customField.missingValue">
 							Missing Value:
@@ -253,11 +255,12 @@
 							</wicket:message>
 						</div>
 					</div>
-
 					<div class="fldControl">
-						<input wicket:id="customField.missingValue"	type="text" />
+						<div wicket:id="missingValueEntryPanel">
+							[missingValueEntryPanel]
+						</div>	
 					</div>
-					
+				</div>	
 					<div class="panelMargin">
 						&nbsp;
 					</div>					

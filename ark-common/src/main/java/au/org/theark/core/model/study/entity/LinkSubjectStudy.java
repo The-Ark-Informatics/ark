@@ -71,7 +71,9 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	private Set<Consent> consents = new HashSet<Consent>();
 	private Set<SubjectCustomFieldData> subjectCustomFieldDataSet = new HashSet<SubjectCustomFieldData>();
-
+	private Set<LinkSubjectTwin> linkSubjectTwinsAsFirstSubject=new HashSet<LinkSubjectTwin>(0);
+	private Set<LinkSubjectTwin> linkSubjectTwinsAsSecondSubject=new HashSet<LinkSubjectTwin>(0);
+	
 	public LinkSubjectStudy() {
 		person = new Person();
 	}
@@ -264,7 +266,28 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public Boolean getUpdateConsent() {
 		return updateConsent;
 	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "firstSubject")
+	public Set<LinkSubjectTwin> getLinkSubjectTwinsAsFirstSubject() {
+		return linkSubjectTwinsAsFirstSubject;
+	}
 
+	public void setLinkSubjectTwinsAsFirstSubject(
+			Set<LinkSubjectTwin> linkSubjectTwinsAsFirstSubject) {
+		this.linkSubjectTwinsAsFirstSubject = linkSubjectTwinsAsFirstSubject;
+	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "secondSubject")
+	public Set<LinkSubjectTwin> getLinkSubjectTwinsAsSecondSubject() {
+		return linkSubjectTwinsAsSecondSubject;
+	}
+
+	public void setLinkSubjectTwinsAsSecondSubject(
+			Set<LinkSubjectTwin> linkSubjectTwinsAsSecondSubject) {
+		this.linkSubjectTwinsAsSecondSubject = linkSubjectTwinsAsSecondSubject;
+	}
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
