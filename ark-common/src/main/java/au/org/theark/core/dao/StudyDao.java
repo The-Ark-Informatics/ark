@@ -131,6 +131,7 @@ import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Payload;
@@ -2035,12 +2036,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
 			List<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
 			List<DemographicField> otherIDDFs = getSelectedDemographicFieldsForSearch(search, Entity.OtherID);
+			//added on 2015-11-03 include the twin subject uid and the twin type.
+			List<DemographicField> twinDetailDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectTwin);
 			
 			List<DemographicField> allSubjectFields = new ArrayList<DemographicField>();
 			allSubjectFields.addAll(addressDFs);
 			allSubjectFields.addAll(lssDFs);
 			allSubjectFields.addAll(personDFs);
 			allSubjectFields.addAll(phoneDFs);
+			allSubjectFields.addAll(twinDetailDFs);
 
 			List<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
 			List<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
@@ -2111,7 +2115,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering, biospecimenIdsAfterFiltering,  getBiospecimenQueryFilters(search));
 
-			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, otherIDDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
+			//2015-11-03 include the Twin subject uid with the twin type after the otherIDFs
+			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, otherIDDFs, twinDetailDFs,scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
 
 			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
 
@@ -3076,7 +3081,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return
 	 */
 	private HashMap<String, String> constructKeyValueHashmap(LinkSubjectStudy lss, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
-			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<DemographicField> otherIDFields) {
+			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<DemographicField> otherIDFields,Collection<DemographicField> linkSubjectTwinsFields) {
 		HashMap map = new HashMap<String, String>();
 		for (DemographicField field : personFields) {
 			// TODO: Analyse performance cost of using reflection instead...would be CLEANER code...maybe dangerous/slow
@@ -3279,6 +3284,26 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
 					}
 				}
+				//valid From	
+				else if (field.getFieldName().equalsIgnoreCase("validFrom")) {
+
+					if(a.getValidFrom() != null) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), formatDate(a.getValidFrom().toString()));
+					}
+					else{
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
+					}
+				}
+				//valid To
+				else if (field.getFieldName().equalsIgnoreCase("validTo")) {
+
+					if(a.getValidTo() != null) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), formatDate(a.getValidTo().toString()));
+					}
+					else{
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
+					}
+				}
 				else if (field.getFieldName().equalsIgnoreCase("comments")) {
 					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getComments());
 				}
@@ -3318,6 +3343,26 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
 					}
 				}
+				//valid From	
+				else if (field.getFieldName().equalsIgnoreCase("validFrom")) {
+
+					if(phone.getValidFrom() != null) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), formatDate(phone.getValidFrom().toString()));
+					}
+					else{
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
+					}
+				}
+				//valid To
+				else if (field.getFieldName().equalsIgnoreCase("validTo")) {
+
+					if(phone.getValidTo() != null) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), formatDate(phone.getValidTo().toString()));
+					}
+					else{
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
+					}
+				}
 				else if (field.getFieldName().equalsIgnoreCase("silentMode")) {
 					if(phone.getSilentMode() != null) {
 						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getSilentMode().getName());
@@ -3352,6 +3397,32 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 		}
+		// Generate the twin or triplet details for a subject.
+		for (DemographicField field : linkSubjectTwinsFields) {
+			int count = 0;
+			for(LinkSubjectTwin lst: lss.getLinkSubjectTwinsAsFirstSubject()){
+				count++;
+				if(lss.getId().equals(lst.getFirstSubject().getId())){
+					if (field.getFieldName().equalsIgnoreCase("secondSubject")) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), lst.getSecondSubject().getSubjectUID());
+					}
+					else if(field.getFieldName().equalsIgnoreCase("twinType")) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), lst.getTwinType().getName());
+					}
+				}
+			}
+			for(LinkSubjectTwin lst: lss.getLinkSubjectTwinsAsSecondSubject()){
+				count++;
+				if(lss.getId().equals(lst.getSecondSubject().getId())){
+					if (field.getFieldName().equalsIgnoreCase("secondSubject")) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), lst.getFirstSubject().getSubjectUID());
+					}
+					else if(field.getFieldName().equalsIgnoreCase("twinType")) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), lst.getTwinType().getName());
+					}
+				}
+			}
+		} 
 		return map;
 	}
 
@@ -4650,16 +4721,33 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 
+	/**
+	 * 
+	 * 
+	 * @param allTheData
+	 * @param personFields
+	 * @param lssFields
+	 * @param addressFields
+	 * @param phoneFields
+	 * @param otherIDFields
+	 * @param subjectCFDs
+	 * @param search
+	 * @param idsAfterFiltering
+	 */
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
-			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<DemographicField> otherIDFields, Collection<CustomFieldDisplay> subjectCFDs, Search search, List<Long> idsAfterFiltering) {
+			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<DemographicField> otherIDFields, 
+			Collection<DemographicField> linkSubjectTwinsFields,Collection<CustomFieldDisplay> subjectCFDs, Search search, List<Long> idsAfterFiltering) {
 		log.info("in addDataFromMegaDemographicQuery");																						//if no id's, no need to run this
-		if ((!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) && !idsAfterFiltering.isEmpty()) { // hasEmailFields(dfs)
+		if ((!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !linkSubjectTwinsFields.isEmpty() ||
+				!subjectCFDs.isEmpty()) && !idsAfterFiltering.isEmpty()) { // hasEmailFields(dfs)
 			//note.  filtering is happening previously...we then do the fetch when we have narrowed down the list of subjects to save a lot of processing
 			String queryString = "select distinct lss " // , address, lss, email " +
 					+ " from LinkSubjectStudy lss " 
 					+ ((!personFields.isEmpty()) ? " left join fetch lss.person person " : "") 
 					+ ((!addressFields.isEmpty()) ? " left join lss.person.addresses a " : "")
-					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "") 
+					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "")
+					+ ((!linkSubjectTwinsFields.isEmpty()) ? " left join lss.linkSubjectTwinsAsFirstSubject lstAsFirst  " : "")
+					+ ((!linkSubjectTwinsFields.isEmpty()) ? " left join lss.linkSubjectTwinsAsSecondSubject lstAsSecond  " : "")
 					+ " where lss.study.id = " + search.getStudy().getId()
 					+ " and lss.id in (:idsToInclude) "
 					+ " order by lss.subjectUID";
@@ -4674,7 +4762,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			/* this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as csv/xls/pdf/xml/etc) */
 			for (LinkSubjectStudy lss : subjects) {
 				ExtractionVO sev = new ExtractionVO();
-				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields, otherIDFields));
+				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields, otherIDFields,linkSubjectTwinsFields));
 				hashOfSubjectsWithTheirDemographicData.put(lss.getSubjectUID(), sev);
 			}
 

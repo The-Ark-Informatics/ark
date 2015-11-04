@@ -9,14 +9,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
 
 @Entity
 @Table(name = "LINK_SUBJECT_TWIN", schema = Constants.STUDY_SCHEMA)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class LinkSubjectTwin implements Serializable {
 
 	/**
