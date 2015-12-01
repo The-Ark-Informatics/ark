@@ -56,7 +56,7 @@ public class ArkUserVO extends BaseVO {
 	private ArkUser				arkUserEntity;
 	private List<ArkUserRole>	arkUserRoleList;					// A List that will contain the current user's List Modules and Roles he is linked with
 																				// for the study in context
-	private List<UserConfig> 	arkUserConfigs;
+	private List<UserConfig> 	arkUserConfigs = new ArrayList<UserConfig>();
 	
 	private Study					study;
 	private boolean				isArkUserPresentInDatabase;	// Specifies if the user was found in database. if this field is false then changePassword
