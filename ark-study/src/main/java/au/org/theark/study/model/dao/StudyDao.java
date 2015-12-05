@@ -2500,7 +2500,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("st.id", studyId));
 		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
 		criteria.add(Restrictions.eq("cf.encodedValues", "0=Yes;1=No;").ignoreCase());
-		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "STUDY")));
+		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "SUBJECT")));
 
 		pedigreeCustomFields = criteria.list();
 
