@@ -213,13 +213,15 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				String freezerName = (nameTxtFld.getModelObject().toString() != null ? nameTxtFld.getModelObject().toString() : new String());
-				InvFreezer invFreezer=iInventoryService.getInvFreezerByNameForSite(invSiteDdc.getModelObject(), freezerName);
-				if (invFreezer != null && invFreezer.getId() != null) {
-					error("Freezer name must be unique for a site. Please try again.");
-					target.focusComponent(getComponent());
+				String freezerName = (nameTxtFld.getModelObject() != null ? nameTxtFld.getModelObject().toString() : new String());
+				if(!freezerName.isEmpty()) {
+					InvFreezer invFreezer=iInventoryService.getInvFreezerByNameForSite(invSiteDdc.getModelObject(), freezerName);
+					if (invFreezer != null && invFreezer.getId() != null) {
+						error("Freezer name must be unique for a site. Please try again.");
+						target.focusComponent(getComponent());
+					}
 				}
-					target.add(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 		});
 	}
