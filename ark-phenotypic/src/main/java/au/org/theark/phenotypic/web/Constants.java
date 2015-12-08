@@ -20,7 +20,7 @@ package au.org.theark.phenotypic.web;
 
 public class Constants {
 	public static final String			UPLOAD_STATUS_OF_AWAITING_VALIDATION				= "AWAITING_VALIDATION";
-	public static final String			UPLOAD_STATUS_OF_COMPLETED								= "COMPLETED";
+	public static final String			UPLOAD_STATUS_OF_COMPLETED							= "COMPLETED";
 	public static final String			UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION			= "ERROR_IN_DATA_VALIDATION";
 	public static final String			UPLOAD_STATUS_OF_ERROR_IN_FILE_VALIDATION			= "ERROR_IN_FILE_VALIDATION";
 	public static final String			UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT				= "ERROR_ON_DATA_IMPORT";
@@ -41,17 +41,21 @@ public class Constants {
 	// Sub tabs/menus
 	public static final String		PHENOTYPIC_SUBMENU											= "phenotypicSubMenus";
 	public static final String		PHENOTYPIC_SUMMARY_SUBMENU									= "Summary";
-	public static final String		FIELD_SUBMENU													= "DATA_DICTIONARY";
-	public static final String		FIELD_UPLOAD_SUBMENU											= "DATA_DICTIONARY_UPLOAD";
+	public static final String		FIELD_CATEGORY_SUBMENU										= "DATASET_CATEGORY";
+	public static final String		FIELD_CATEGORY_UPLOAD_SUBMENU								= "DATASET_CATEGORY_UPLOAD";
+	public static final String		FIELD_SUBMENU												= "DATA_DICTIONARY";
+	public static final String		FIELD_UPLOAD_SUBMENU										= "DATA_DICTIONARY_UPLOAD";
 	public static final String		PHENO_COLLECTION_SUBMENU									= "PHENO_COLLECTION";
 	public static final String		FIELD_DATA_SUBMENU											= "FIELD_DATA";
 	public static final String		FIELD_DATA_UPLOAD_SUBMENU									= "FIELD_DATA_UPLOAD";
 	public static final String		REPORT_SUBMENU													= "Reports";
 
 	// Resource keys
-	public static final String		PHENOTYPIC_SUMMARY_RESOURCEKEY							= "tab.module.phenotypic.summaryModule";
+	public static final String		PHENOTYPIC_SUMMARY_RESOURCEKEY								= "tab.module.phenotypic.summaryModule";
 	public static final String		COLLECTION_RESOURCEKEY										= "tab.module.phenotypic.collection";
-	public static final String		FIELD_RESOURCEKEY												= "tab.module.phenotypic.field";
+	public static final String		CATEGORY_RESOURCEKEY										= "tab.module.phenotypic.category";
+	public static final String		CATEGORY_UPLOAD_RESOURCEKEY									= "tab.module.phenotypic.categoryupload";
+	//public static final String		FIELD_RESOURCEKEY											= "tab.module.phenotypic.field";
 	public static final String		FIELD_UPLOAD_RESOURCEKEY									= "tab.module.phenotypic.fieldUpload";
 	public static final String		FIELD_DATA_RESOURCEKEY										= "tab.module.phenotypic.fieldData";
 	public static final String		FIELD_DATA_UPLOAD_RESOURCEKEY								= "tab.module.phenotypic.phenoUpload";

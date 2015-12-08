@@ -17,6 +17,7 @@ import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.UploadLevel;
+import au.org.theark.core.vo.CustomFieldCategoryVO;
 
 public interface ICustomFieldDao {
 
@@ -355,5 +356,27 @@ public interface ICustomFieldDao {
 	 * @return
 	 */
 	public boolean isCustomFieldCategoryBeingUsed(CustomFieldCategory customFieldCategory);
-	
+	/**
+	 * Get children of custom field categories.
+	 * @param study
+	 * @param arkFunction
+	 * @param parentcustomFieldCategory
+	 * @return
+	 */
+	public List<CustomFieldCategory> getAllSubCategoriesOfThisCategory(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory parentcustomFieldCategory);
+	/**
+	 * Get siblings of custom field categories.
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @param customFieldCategory
+	 * @return
+	 */
+	public List<CustomFieldCategory> getSiblingList(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory customFieldCategory);
+	/**
+	 * Merged custom field category.
+	 * @param CustomFieldCategoryVO
+	 * @throws ArkSystemException
+	 */
+	public void mergeCustomFieldCategory(CustomFieldCategory CustomFieldCategory)throws ArkSystemException;;
 }

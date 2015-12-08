@@ -127,11 +127,12 @@ public class CustomField implements Serializable {
 		this.name = name;
 	}
 
+	@Column(name = "DESCRIPTION", length = 1024)
 	public String getDescription() {
 		return description;
 	}
 
-	@Column(name = "DESCRIPTION", length = 1024)
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}

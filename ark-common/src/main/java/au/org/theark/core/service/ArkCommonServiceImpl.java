@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,6 +108,7 @@ import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -204,7 +206,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void setGenoDao(IGenoDao genoDao) {
 		this.genoDao = genoDao;
 	}
-
+	
 	public ICustomFieldDao getCustomFieldDao() {
 		return customFieldDao;
 	}
@@ -2003,4 +2005,55 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getCustomFieldDisplaysInWithCustomFieldType(fieldNameCollection, study, arkFunction,customFieldType);
 	}
 
+	@Override
+	public List getAllChildrenCategoriedBelongToThisParent(Study study,ArkFunction arkFunction, CustomFieldType customFieldType,CustomFieldCategory parentCategory, List allChildrenLst) {
+		List<CustomFieldCategory> immediateSubCategories=customFieldDao.getAllSubCategoriesOfThisCategory(study,arkFunction,customFieldType,parentCategory);
+		if(!immediateSubCategories.isEmpty()){
+			allChildrenLst.addAll(immediateSubCategories);
+				for (CustomFieldCategory customFieldCategory : immediateSubCategories) {
+					allChildrenLst.addAll(getAllChildrenCategoriedBelongToThisParent(study, arkFunction, customFieldType, customFieldCategory,allChildrenLst));
+				}
+		}
+		return allChildrenLst;
+	}
+
+	@Override
+	public List getSiblingList(Study study, ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory customFieldCategory) {
+		return customFieldDao.getSiblingList(study, arkFunction, customFieldType, customFieldCategory);
+	}
+
+	@Override
+	public void mergeCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException {
+		customFieldDao.mergeCustomFieldCategory(CustomFieldCategoryVO.getCustomFieldCategory());
+	}
+
+	@Override
+	public List<ArkRolePolicyTemplate> getArkRolePolicytemplateList(ArkUserVO arkUserVO) {
+		List<ArkRolePolicyTemplate> allArkRolePolicyTemplates=new ArrayList<ArkRolePolicyTemplate>();
+		List<ArkUserRole> roleLst=arkUserVO.getArkUserRoleList();
+		for (ArkUserRole arkUserRole :roleLst) {
+				allArkRolePolicyTemplates.addAll((List<ArkRolePolicyTemplate>)arkAuthorisationDao.getArkRolePolicytemplateList(arkUserRole));
+		}
+		log.info("RoleSize:"+roleLst.size());
+		log.info("Function Size:"+removeDuplicates(allArkRolePolicyTemplates).size());
+		return removeDuplicates(allArkRolePolicyTemplates);
+		
+		 
+	}
+	@Override
+	public List<ArkPermission> getArkPremissionListForRoleAndModule(ArkRolePolicyTemplate arkRolePolicyTemplate){
+		return arkAuthorisationDao.getArkPremissionListForRoleAndModule(arkRolePolicyTemplate);
+	}
+	/**
+	 * Remove duplicates from list
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<ArkRolePolicyTemplate> removeDuplicates(List<ArkRolePolicyTemplate> fieldLst){
+		 return new ArrayList<ArkRolePolicyTemplate>(new LinkedHashSet<ArkRolePolicyTemplate>(fieldLst));
+		
+	}
+	
+	
+	
 }

@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Example;
@@ -35,6 +36,7 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -43,6 +45,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
@@ -159,7 +162,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 
 	}
 
-	private boolean isUserAdminHelper(String ldapUserName, String roleName) throws EntityNotFoundException {
+	public boolean isUserAdminHelper(String ldapUserName, String roleName) throws EntityNotFoundException {
 		boolean isAdminType = false;
 		StatelessSession session = getStatelessSession();
 		// Check or get user ark_user object based on ldapUserName
@@ -796,14 +799,24 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 
 	@SuppressWarnings("unchecked")
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study) {
-		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
+		List<ArkUserRole> arkUserRoleList;
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
-		Criteria studycriteria = criteria.createCriteria("study");
-		studycriteria.addOrder(Order.asc("name"));
-		criteria.addOrder(Order.asc("study.name"));
+		try {
+			if(!isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)
+					&& study!=null && study.getId()!=null){
+				criteria.add(Restrictions.eq("study", study));	
+			}
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		//Criteria studycriteria = criteria.createCriteria("study");
+		//studycriteria.addOrder(Order.asc("name"));
+		//criteria.addOrder(Order.asc("study.name"));
 		criteria.addOrder(Order.asc("arkModule"));
 		criteria.addOrder(Order.asc("arkRole"));
+		
 		arkUserRoleList = (List<ArkUserRole>) criteria.list();
 		return arkUserRoleList;
 	}
@@ -1160,4 +1173,48 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	public void createArkUserRole(ArkUserRole arkUserRole) {
 		getSession().save(arkUserRole);
 	}
+	
+	/**
+	 * List of ArkRolePolicyTemplates for users other than the super Admin.
+	 * 
+	 * Here I was failed to use the projection list because I need the whole "ArkRolePolicyTemplate" object list
+	 * So I used instead of a query for that. 
+	 * 
+	 * Group by function.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ArkRolePolicyTemplate> getArkRolePolicytemplateList(ArkUserRole arkUserRole){
+		String queryString = "SELECT  arpt FROM ArkRolePolicyTemplate arpt where arpt.arkRole=(:arkRole) and "
+							 + "arpt.arkModule=(:arkModule) group by arpt.arkFunction";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("arkRole",arkUserRole.getArkRole() );
+		query.setParameter("arkModule",arkUserRole.getArkModule() );
+		List<ArkRolePolicyTemplate> arkRolePolicyTemplateLst = query.list();
+		return arkRolePolicyTemplateLst;
+	}
+	/**
+	 * List of Permission for function. 
+	 *
+	 * Just I need the list of permission list for a particular function I manage to use the hibernate projectionList property.
+	 * Group by Permission.
+	 * But still used setResultTransformer to transform the list which include the permission list.
+	 * @return
+	 */
+	public List<ArkPermission> getArkPremissionListForRoleAndModule(ArkRolePolicyTemplate arkRolePolicyTemplate){
+		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
+		criteria.add(Restrictions.eq("arkRole", arkRolePolicyTemplate.getArkRole()));
+		criteria.add(Restrictions.eq("arkModule", arkRolePolicyTemplate.getArkModule()));
+		criteria.add(Restrictions.eq("arkFunction", arkRolePolicyTemplate.getArkFunction()));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("arkPermission"), "arkPermission");
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Transformers.aliasToBean(ArkRolePolicyTemplate.class));
+		List<ArkRolePolicyTemplate> arkRolePolicyTemplatesLst=	 (List<ArkRolePolicyTemplate>)criteria.list();
+		List<ArkPermission> arkPermissionLst= new ArrayList<ArkPermission>();
+		for (ArkRolePolicyTemplate arkRolePol : arkRolePolicyTemplatesLst) {
+			arkPermissionLst.add(arkRolePol.getArkPermission());
+		}
+		return arkPermissionLst;
+	}
+	
 }

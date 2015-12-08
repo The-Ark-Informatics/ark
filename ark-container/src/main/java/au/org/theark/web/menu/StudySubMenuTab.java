@@ -154,21 +154,13 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 					//Added on 2015-06-22 Categorize  the custom field.
 					//Changed the Constant value from "Subject" to "Study" on 2015-08-17.        
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY)){
-						// Clear cache
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, arkFunction);
 						panelToReturn = new CustomFieldCategoryContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY));
 						
 					}else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
-						// Clear cache
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, arkFunction);
 						panelToReturn = new CustomFieldContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
-						
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_UPLOAD)) {
-						// Clear cache
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, arkFunction);
 						panelToReturn = new CustomFieldUploadContainerPanel(panelId, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_UPLOAD));
-						
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD)) {
 						panelToReturn = new SubjectUploadContainerPanel(panelId, arkFunction);

@@ -59,12 +59,16 @@ public class CharactorMissingAndEncodedValueValidator  extends AbstractFormValid
 	 * @return
 	 */
 	private List<String> filterValuesOfEncoded(String encoded ){
-		List<String> allItemsLst = Arrays.asList(encoded.split(";"));
-		List<String> onlyvaluesLst=new ArrayList<String>();
+		if(encoded!=null){
+			List<String> allItemsLst = Arrays.asList(encoded.split(";"));
+			List<String> onlyvaluesLst=new ArrayList<String>();
 		for (String string : allItemsLst) {
 			onlyvaluesLst.add(string.substring(string.indexOf("=")+1));
 		}
-		return onlyvaluesLst;
+			return onlyvaluesLst;
+		}else{
+			return null;
+		}
 	}
 	/**
 	 * 

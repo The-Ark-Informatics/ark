@@ -23,12 +23,18 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import au.org.theark.core.exception.ArkRunTimeException;
+import au.org.theark.core.exception.ArkRunTimeUniqueException;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
@@ -39,6 +45,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
+import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 
 public interface IPhenotypicService {
 
@@ -187,7 +194,80 @@ public interface IPhenotypicService {
 	
 	public CustomFieldGroup getCustomFieldGroupById(Long id);
 
-	public List<PhenoCollection> getSubjectMatchingPhenoCollections(
-			LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,
-			Date recordDate);
+	public List<PhenoCollection> getSubjectMatchingPhenoCollections(LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,Date recordDate);
+	
+	/**
+	 * Get pheno dataset category by id.
+	 * @param id
+	 * @return
+	 */
+	public PhenoDataSetCategory getPhenoDataSetCategory(Long id) throws EntityNotFoundException;
+	
+	/**
+	 * Get available all Pheno data set category.
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<PhenoDataSetCategory> getAvailableAllCategoryList(Study study,ArkFunction arkFunction) throws ArkSystemException;
+	
+	
+	/**
+	 * Count all the PhenoDataset categories.
+	 * 
+	 * @param phenoDataSetCategoryCriteria
+	 * @return
+	 */
+	public long getPhenoDatasetCategoryCount(PhenoDataSetCategory phenoDataSetCategoryCriteria);
+	
+	
+	/**
+	 * Category list.
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<PhenoDataSetCategory> getPhenoParentCategoryList(Study study,ArkFunction arkFunction) throws ArkSystemException;
+	
+	/**
+	 * List of all available Pheno category list for update.
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @param thisCustomFieldCategory
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<PhenoDataSetCategory> getAvailableAllCategoryListExceptThis(Study study,ArkFunction arkFunction,PhenoDataSetCategory thisPhenoDataSetCategory) throws ArkSystemException;
+	/**
+	 * Search pageable pheno data set categories.
+	 * @param customFieldCategoryCriteria
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, int first, int count);
+	/**
+	 * Create Pheno Data set category
+	 * @throws ArkSystemException
+	 * @throws ArkUniqueException
+	 */
+	public void createPhenoDataSetCategory(PhenoDataSetCategoryVO phenoDataSetCategoryvo) throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException;
+	/**
+	 * Update  Pheno Data set category
+	 * @throws ArkSystemException
+	 * @throws ArkUniqueException
+	 */
+	public void updatePhenoDataSetCategory(PhenoDataSetCategoryVO phenoDataSetCategoryvo) throws ArkSystemException, ArkUniqueException;
+	/**
+	 * Delete Pheno Data set category
+	 * @throws ArkSystemException
+	 * @throws EntityCannotBeRemoved
+	 */
+	public void deletePhenoDataSetCategory(PhenoDataSetCategoryVO phenoDataSetCategoryvo) throws ArkSystemException, EntityCannotBeRemoved;
+
 }

@@ -35,6 +35,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.util.CsvListReader;
+import au.org.theark.core.vo.CustomFieldCategoryVO;
 import au.org.theark.core.web.component.customfield.Constants;
 
 @Repository("customFieldDao")
@@ -817,6 +818,34 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		}else{
 			return false;
 		}
+	}
+	@Override
+	public List<CustomFieldCategory> getAllSubCategoriesOfThisCategory(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory parentcustomFieldCategory){
+		Criteria criteria = getSession().createCriteria(CustomFieldCategory.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("customFieldType",customFieldType ));
+		criteria.add(Restrictions.eq("parentCategory", parentcustomFieldCategory));
+		return  (List<CustomFieldCategory>) criteria.list();
+		
+	}
+	@Override
+	public List<CustomFieldCategory> getSiblingList(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory customFieldCategory){
+		Criteria criteria = getSession().createCriteria(CustomFieldCategory.class);
+		if(customFieldCategory.getParentCategory()!=null){
+			criteria.add(Restrictions.eq("study", study));
+			criteria.add(Restrictions.eq("arkFunction", arkFunction));
+			criteria.add(Restrictions.eq("customFieldType",customFieldType ));
+			criteria.add(Restrictions.eq("parentCategory", customFieldCategory.getParentCategory()));
+			return (List<CustomFieldCategory>) criteria.list();
+		}
+		return null;
+	}
+
+	@Override
+	public void mergeCustomFieldCategory(CustomFieldCategory CustomFieldCategory)throws ArkSystemException {
+		getSession().merge(CustomFieldCategory);
+		
 	}
 	
 }

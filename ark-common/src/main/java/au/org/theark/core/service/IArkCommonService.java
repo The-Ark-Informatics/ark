@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
+import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
@@ -52,6 +53,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -66,6 +68,7 @@ import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -120,6 +123,7 @@ import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldCategoryVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -1197,5 +1201,45 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<?> fieldNameCollection, Study study, ArkFunction arkFunction,CustomFieldType customFieldType);
+	/**
+	 *  Get all children
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @param parentCategory
+	 * @param allChilrenLst
+	 * @return
+	 */
+	public List<CustomFieldCategory> getAllChildrenCategoriedBelongToThisParent(Study study, ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory parentCategory,List<CustomFieldCategory> allChildrenLst);
+	/**
+	 * Get sibling of a custom field category.
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @param customFieldCategory
+	 * @return
+	 */
+	public List<CustomFieldCategory> getSiblingList(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory customFieldCategory);
+	/**
+	 * Merged custom field categories.
+	 * @param CustomFieldCategoryVO
+	 * @throws ArkSystemException
+	 * @throws ArkRunTimeUniqueException
+	 * @throws ArkRunTimeException
+	 */
+	public void mergeCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO) throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException;
 	
+	/**
+	 * Get all the function and permission list for user.
+	 * @param arkUserRole
+	 * @return
+	 */
+	public List<ArkRolePolicyTemplate> getArkRolePolicytemplateList(ArkUserVO arkUserVO);
+	/**
+	 * 
+	 * @param arkUserRole
+	 * @param arkFunction
+	 * @return
+	 */
+	public List<ArkPermission> getArkPremissionListForRoleAndModule(ArkRolePolicyTemplate arkRolePolicyTemplate);
 }

@@ -19,8 +19,12 @@
 package au.org.theark.core.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
 /**
@@ -34,13 +38,25 @@ public class CustomFieldVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private CustomField customField;
 	private CustomFieldDisplay customFieldDisplay;
-	
+	//please remove not needed unless used for phenoDataSetCategories.
+	protected List<CustomFieldCategory>			customFieldCategoryLst;
 	protected boolean useCustomFieldDisplay;	// Flags whether or not CustomFieldDisplay should be saved, etc
+	//Below fields used for testing purpose only.
+	private List<CustomFieldCategory>			selectedCategories;
+	private List<CustomFieldCategory>  			firstLevelAvailableCategories;
+	private List<CustomFieldCategory>  			firstLevelSelectedCategories;
+	private List<CustomFieldCategory>  			lastLevelAvailableCategories;
+	private List<CustomFieldCategory>  			lastLevelSelectedCategories;
 	
+
 	public CustomFieldVO() {
 		super();
 		customField = new CustomField();
 		customFieldDisplay = new CustomFieldDisplay();
+		customFieldCategoryLst=new ArrayList<CustomFieldCategory>(0);
+		selectedCategories=new ArrayList<CustomFieldCategory>(0);
+		firstLevelAvailableCategories=new ArrayList<CustomFieldCategory>(0);
+		lastLevelAvailableCategories=new ArrayList<CustomFieldCategory>(0);
 		useCustomFieldDisplay = false;
 	}
 
@@ -67,5 +83,59 @@ public class CustomFieldVO implements Serializable {
 	public void setUseCustomFieldDisplay(boolean useCustomFieldDisplay) {
 		this.useCustomFieldDisplay = useCustomFieldDisplay;
 	}
+
+	public List<CustomFieldCategory> getCustomFieldCategoryLst() {
+		return customFieldCategoryLst;
+	}
+
+	public void setCustomFieldCategoryLst(
+			List<CustomFieldCategory> customFieldCategoryLst) {
+		this.customFieldCategoryLst = customFieldCategoryLst;
+	}
+
+	public List<CustomFieldCategory> getSelectedCategories() {
+		return selectedCategories;
+	}
+
+	public void setSelectedCategories(List<CustomFieldCategory> selectedCategories) {
+		this.selectedCategories = selectedCategories;
+	}
+	public List<CustomFieldCategory> getFirstLevelAvailableCategories() {
+		return firstLevelAvailableCategories;
+	}
+
+	public void setFirstLevelAvailableCategories(List<CustomFieldCategory> firstLevelAvailableCategories) {
+		this.firstLevelAvailableCategories = firstLevelAvailableCategories;
+	}
+
+	public List<CustomFieldCategory> getFirstLevelSelectedCategories() {
+		return firstLevelSelectedCategories;
+	}
+
+	public void setFirstLevelSelectedCategories(
+			List<CustomFieldCategory> firstLevelSelectedCategories) {
+		this.firstLevelSelectedCategories = firstLevelSelectedCategories;
+	}
+
+	public List<CustomFieldCategory> getLastLevelAvailableCategories() {
+		return lastLevelAvailableCategories;
+	}
+
+	public void setLastLevelAvailableCategories(
+			List<CustomFieldCategory> lastLevelAvailableCategories) {
+		this.lastLevelAvailableCategories = lastLevelAvailableCategories;
+	}
+
+	public List<CustomFieldCategory> getLastLevelSelectedCategories() {
+		return lastLevelSelectedCategories;
+	}
+
+	public void setLastLevelSelectedCategories(
+			List<CustomFieldCategory> lastLevelSelectedCategories) {
+		this.lastLevelSelectedCategories = lastLevelSelectedCategories;
+	}
+	
+
+	
 
 }

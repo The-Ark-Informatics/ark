@@ -2496,11 +2496,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.createAlias("study", "st", JoinType.INNER_JOIN);
 		criteria.createAlias("arkFunction", "af", JoinType.INNER_JOIN);
 		criteria.createAlias("customFieldType", "cft", JoinType.LEFT_OUTER_JOIN);
-
+		criteria.createAlias("fieldType", "ft", JoinType.INNER_JOIN);
 		criteria.add(Restrictions.eq("st.id", studyId));
-		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
+		criteria.add(Restrictions.eq("af.name", au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
 		criteria.add(Restrictions.eq("cf.encodedValues", "0=Yes;1=No;").ignoreCase());
-		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "STUDY")));
+		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", au.org.theark.core.Constants.SUBJECT)));
 
 		pedigreeCustomFields = criteria.list();
 
@@ -2514,12 +2514,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.createAlias("arkFunction", "af", JoinType.INNER_JOIN);
 		criteria.createAlias("fieldType", "ft", JoinType.INNER_JOIN);
 		criteria.createAlias("customFieldType", "cft", JoinType.LEFT_OUTER_JOIN);
-
 		criteria.add(Restrictions.eq("st.id", studyId));
-		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
+		criteria.add(Restrictions.eq("af.name",  au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
 		criteria.add(Restrictions.isNull("cf.encodedValues"));
-		criteria.add(Restrictions.eq("ft.name","CHARACTER"));
-		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "SUBJECT")));
+		criteria.add(Restrictions.eq("ft.name",au.org.theark.core.Constants.FIELD_TYPE_CHARACTER));
+		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", au.org.theark.core.Constants.SUBJECT)));
 		
 		pedigreeCustomFields = criteria.list();
 

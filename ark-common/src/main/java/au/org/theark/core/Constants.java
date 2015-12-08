@@ -290,19 +290,27 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE = "CORRESPONDENCE";
 	public static final String FUNCTION_KEY_VALUE_REPORT = "REPORT";
 	public static final String FUNCTION_KEY_VALUE_PHENO_SUMMARY = "SUMMARY";
-	public static final String FUNCTION_KEY_VALUE_DATA_DICTIONARY = "DATA_DICTIONARY";
-	public static final String FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD = "DATA_DICTIONARY_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_PHENO_COLLECTION = "PHENO_COLLECTION";
-	public static final String FUNCTION_KEY_VALUE_FIELD_DATA = "FIELD_DATA";
-	public static final String FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD = "FIELD_DATA_UPLOAD";
+	
 	public static final String FUNCTION_KEY_VALUE_LIMS_SUBJECT = "LIMS_SUBJECT";
 	//public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION = "LIMS_COLLECTION";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN = "BIOSPECIMEN";
 	public static final String FUNCTION_KEY_VALUE_INVENTORY = "INVENTORY";
+	
 	//Add on 2015-06-22 to categories  custom field
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY = "SUBJECT_CUSTOM_FIELD_CATEGORY";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD = "SUBJECT_CUSTOM_FIELD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA = "SUBJECT_CUSTOM_DATA";
+	
+	//Add on 2015-11-05 to categories the data set
+	public static final String FUNCTION_KEY_VALUE_DATA_CATEGORY = "DATASET_CATEGORY";//(1)
+	public static final String FUNCTION_KEY_VALUE_DATA_CATEGORY_UPLOAD = "DATASET_CATEGORY_UPLOAD";//(2)
+	public static final String FUNCTION_KEY_VALUE_DATA_DICTIONARY = "DATA_DICTIONARY";//(3)
+	public static final String FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD = "DATA_DICTIONARY_UPLOAD";//(4)
+	public static final String FUNCTION_KEY_VALUE_PHENO_COLLECTION = "PHENO_COLLECTION";//(5)
+	public static final String FUNCTION_KEY_VALUE_FIELD_DATA = "FIELD_DATA";//(6)
+	public static final String FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD = "FIELD_DATA_UPLOAD";//(7)
+	
+	
 	public static final String FUNCTION_KEY_VALUE_MODULE = "MODULE";
 	public static final String FUNCTION_KEY_VALUE_FUNCTION = "FUNCTION";
 	public static final String FUNCTION_KEY_VALUE_MODULE_FUNCTION = "MODULE_FUNCTION";
@@ -687,5 +695,7 @@ public class Constants {
 	public static final String MESSAGE_NO_SUBJECT_IN_CONTEXT="There is no subject in context. Please bring a subject into context via the subject tab.";
 	
 	public static final String MESSAGE_NO_STUDY_IN_CONTEXT="There is no study in context. Please select a study";
+	
+	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY = "Pheno Data Set Category";
 	
 }

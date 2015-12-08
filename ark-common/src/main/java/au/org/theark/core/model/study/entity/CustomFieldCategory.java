@@ -31,6 +31,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import au.org.theark.core.Constants;
 
 /**
@@ -38,7 +41,8 @@ import au.org.theark.core.Constants;
  */
 @Entity
 @Table(name = "CUSTOM_FIELD_CATEGORY", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
-public class CustomFieldCategory implements java.io.Serializable {
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+public class CustomFieldCategory implements  java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -53,8 +57,6 @@ public class CustomFieldCategory implements java.io.Serializable {
 	private CustomFieldCategory parentCategory;
 	private Long orderNumber;
 	private Long displayLevel;
-		
-
 	
 
 	public CustomFieldCategory() {
@@ -176,6 +178,11 @@ public class CustomFieldCategory implements java.io.Serializable {
 	public void setDisplayLevel(Long displayLevel) {
 		this.displayLevel = displayLevel;
 	}
+	
+	
+	
+	
+	
 
 	@Override
 	public int hashCode() {

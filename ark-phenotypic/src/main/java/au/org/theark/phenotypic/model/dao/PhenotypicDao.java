@@ -27,10 +27,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -46,13 +50,20 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.exception.ArkRunTimeException;
+import au.org.theark.core.exception.ArkRunTimeUniqueException;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
@@ -63,6 +74,7 @@ import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
+import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 
 @SuppressWarnings("unchecked")
 @Repository("phenotypicDao")
@@ -1910,5 +1922,199 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.add(Restrictions.ge("recordDate", low));
 		
 		return criteria.list();
+	}
+
+	@Override
+	public PhenoDataSetCategory getPhenoDataSetCategory(Long id) {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCategory.class);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setMaxResults(1);
+		return (PhenoDataSetCategory)criteria.uniqueResult();
+	}
+
+	@Override
+	public List<PhenoDataSetCategory> getAvailableAllCategoryList(Study study,ArkFunction arkFunction) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCategory.class);
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("study", study));
+		List<PhenoDataSetCategory> phenoDataSetCategoryList = (List<PhenoDataSetCategory>) criteria.list();
+		return phenoDataSetCategoryList;
+	}
+
+	@Override
+	public long getPhenoDatasetCategoryCount(PhenoDataSetCategory phenoDataSetCategoryCriteria) {
+		// Handle for study or function not in context
+		if (phenoDataSetCategoryCriteria.getStudy() == null || phenoDataSetCategoryCriteria.getArkFunction() == null) {
+			return 0;
+		}
+		Criteria criteria = buildGeneralPhenoDataSetCategoryCritera(phenoDataSetCategoryCriteria);
+		criteria.setProjection(Projections.rowCount());
+		Long totalCount = (Long) criteria.uniqueResult();
+		return totalCount;
+	}
+	
+	protected Criteria buildGeneralPhenoDataSetCategoryCritera(PhenoDataSetCategory phenoDataSetCategory) {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCategory.class);
+		
+		// Must be constrained on study and function
+		criteria.add(Restrictions.eq("study", phenoDataSetCategory.getStudy()));
+		
+		criteria.add(Restrictions.eq("arkFunction", phenoDataSetCategory.getArkFunction()));
+		
+		if (phenoDataSetCategory.getId() != null) {
+			criteria.add(Restrictions.eq("id", phenoDataSetCategory.getId()));
+		}
+	
+		if (phenoDataSetCategory.getName() != null) {
+			criteria.add(Restrictions.ilike("name", phenoDataSetCategory.getName(), MatchMode.ANYWHERE));
+		}
+		if (phenoDataSetCategory.getDescription() != null) {
+			criteria.add(Restrictions.ilike("description", phenoDataSetCategory.getDescription(), MatchMode.ANYWHERE));
+		}
+		if (phenoDataSetCategory.getParentCategory() != null) {
+			criteria.add(Restrictions.eq("parentCategory", phenoDataSetCategory.getParentCategory()));
+		}
+		if (phenoDataSetCategory.getOrderNumber() != null) {
+			criteria.add(Restrictions.eq("orderNumber", phenoDataSetCategory.getOrderNumber()));
+		}
+		return criteria;
+	}
+
+	@Override
+	public List<PhenoDataSetCategory> getPhenoParentCategoryList(Study study,ArkFunction arkFunction) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCategory.class);
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.isNotNull("parentCategory"));
+		//All categories which having the parent categories
+		//So we have to filter the parent categories after that 
+		List<PhenoDataSetCategory> phenoDataSetCategoryList = (List<PhenoDataSetCategory>) criteria.list();
+		List<PhenoDataSetCategory> parentCategoryList=new ArrayList<PhenoDataSetCategory>();
+		for (PhenoDataSetCategory phenoDataSetCategory : phenoDataSetCategoryList) {
+			parentCategoryList.add(phenoDataSetCategory.getParentCategory());
+		}
+		//Remove the duplicates.
+		Set<PhenoDataSetCategory> phenoDataSetCategoriesSet=new HashSet<PhenoDataSetCategory>();
+		phenoDataSetCategoriesSet.addAll(parentCategoryList);
+		parentCategoryList.clear();
+		parentCategoryList.addAll(phenoDataSetCategoriesSet);
+		return parentCategoryList;
+	}
+
+	@Override
+	public List<PhenoDataSetCategory> getAvailableAllCategoryListExceptThis(Study study, ArkFunction arkFunction,PhenoDataSetCategory thisPhenoDataSetCategory)throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCategory.class);
+		criteria.add(Restrictions.ne("id", thisPhenoDataSetCategory.getId()));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("study", study));
+		List<PhenoDataSetCategory> phenoDataSetCategoryList = (List<PhenoDataSetCategory>) criteria.list();
+		return phenoDataSetCategoryList;
+	}
+
+	@Override
+	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, int first,int count) {
+		Criteria criteria = buildGeneralPhenoDataSetCategoryCritera(phenoDataSetCategoryCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		criteria.addOrder(Order.asc("name"));
+		List<PhenoDataSetCategory> phenoDataSetCategoryList = (List<PhenoDataSetCategory>) criteria.list();
+		return phenoDataSetCategoryList;
+	}
+
+	@Override
+	public void createPhenoDataSetCategory(PhenoDataSetCategory phenoDataSetCategory)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException {
+		getSession().save(phenoDataSetCategory);
+		
+	}
+
+	@Override
+	public void updatePhenoDataSetCategory(PhenoDataSetCategory phenoDataSetCategory)throws ArkSystemException, ArkUniqueException {
+		getSession().update(phenoDataSetCategory);
+		
+	}
+
+	@Override
+	public void deletePhenoDataSetCategory(PhenoDataSetCategory phenoDataSetCategory)throws ArkSystemException, EntityCannotBeRemoved {
+		getSession().delete(phenoDataSetCategory);
+		
+	}
+	public void createAuditHistory(AuditHistory auditHistory, String userId, Study study) {
+		Date date = new Date(System.currentTimeMillis());
+
+		if (userId == null) {// if not forcing a userID manually, get
+			// currentuser
+			Subject currentUser = SecurityUtils.getSubject();
+			auditHistory.setArkUserId((String) currentUser.getPrincipal());
+		}
+		else {
+			auditHistory.setArkUserId(userId);
+		}
+		if (study == null) {
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			if (sessionStudyId != null && auditHistory.getStudyStatus() == null) {
+				auditHistory.setStudyStatus(getStudy(sessionStudyId).getStudyStatus());
+			}
+			else {
+
+				if (auditHistory.getEntityType().equalsIgnoreCase(au.org.theark.core.Constants.ENTITY_TYPE_STUDY)) {
+					Study studyFromDB = getStudy(auditHistory.getEntityId());
+					if (studyFromDB != null) {
+						auditHistory.setStudyStatus(studyFromDB.getStudyStatus());
+					}
+				}
+			}
+		}
+		else {
+			auditHistory.setStudyStatus(study.getStudyStatus());
+		}
+		auditHistory.setDateTime(date);
+		getSession().save(auditHistory);
+	}
+	private Study getStudy(Long id) {
+		Study study = (Study) getSession().get(Study.class, id);
+		return study;
+	}
+	@Override
+	public boolean isPhenoDataSetCategoryUnique(String phenoDataSetCategoryName,Study study, PhenoDataSetCategory phenoDataSetCategoryToUpdate){
+		boolean isUnique = true;
+		StatelessSession stateLessSession = getStatelessSession();
+		Criteria criteria = stateLessSession.createCriteria(CustomFieldCategory.class);
+		criteria.add(Restrictions.eq("name", phenoDataSetCategoryName));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", phenoDataSetCategoryToUpdate.getArkFunction()));
+		criteria.setMaxResults(1);
+		
+		PhenoDataSetCategory existingPhenoDataSetCategory = (PhenoDataSetCategory) criteria.uniqueResult();
+		
+		if( (phenoDataSetCategoryToUpdate.getId() != null && phenoDataSetCategoryToUpdate.getId() > 0)){
+			
+			if(existingPhenoDataSetCategory != null && !phenoDataSetCategoryToUpdate.getId().equals(existingPhenoDataSetCategory.getId())){
+				isUnique = false;
+			}
+		}else{
+			if(existingPhenoDataSetCategory != null){
+				isUnique = false;
+			}
+		}
+		stateLessSession.close();
+		return isUnique;
+	}
+	/**
+	 * check the Custom field category for the data intergrity.
+	 */
+	@Override
+	public boolean isThisPhenoDataSetCategoryWasAParentCategoryOfAnother(PhenoDataSetCategory phenoDataSetCategory) {
+		StatelessSession stateLessSession = getStatelessSession();
+		Criteria criteria = stateLessSession.createCriteria(PhenoDataSetCategory.class);
+		criteria.add(Restrictions.eq("arkFunction", phenoDataSetCategory.getArkFunction()));
+		criteria.add(Restrictions.eq("study", phenoDataSetCategory.getStudy()));
+		criteria.add(Restrictions.eq("parentCategory", phenoDataSetCategory));
+		criteria.setMaxResults(1);
+		PhenoDataSetCategory existingFieldCategory = (PhenoDataSetCategory) criteria.uniqueResult();
+		if (existingFieldCategory!=null){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

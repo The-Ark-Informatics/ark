@@ -27,6 +27,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -193,4 +194,11 @@ public interface IArkAuthorisation<T> {
 	public void deleteArkUserRolesForStudy(Study study, ArkUser arkUser);
 	
 	public void createArkUserRole(ArkUserRole arkUserRole);
+	
+	public List<ArkRolePolicyTemplate> getArkRolePolicytemplateList(ArkUserRole arkUserRole);
+	
+	public List<ArkPermission> getArkPremissionListForRoleAndModule(ArkRolePolicyTemplate arkRolePolicyTemplate);
+	
+	public boolean isUserAdminHelper(String ldapUserName, String roleName) throws EntityNotFoundException; 
+	
 }

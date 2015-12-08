@@ -92,7 +92,7 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 		if (config != null) {
 			cpmModel.getObject().setPedigreeConfig(config);
 		}
-
+	
 		affectedStatusList = studyService.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		effectedStatusDDL = new DropDownChoice("pedigreeConfig.customField", this.affectedStatusList, defaultChoiceRenderer);

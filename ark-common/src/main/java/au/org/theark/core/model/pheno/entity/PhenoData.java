@@ -32,19 +32,17 @@ import au.org.theark.core.model.study.entity.ICustomFieldData;
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "PHENO_DATA", schema = Constants.PHENO_TABLE_SCHEMA)
-public class PhenoData implements Serializable, ICustomFieldData {
-	
+public class PhenoData implements Serializable ,ICustomFieldData{
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private CustomFieldDisplay customFieldDisplay;
+	//private PhenoDataSetFieldDisplay phenoDataSetFieldDisplay;
 	private PhenoCollection phenoCollection;
 	private String textDataValue;
 	private Date dateDataValue;
 	private Double numberDataValue;
 	private String errorDataValue;
-	
-
 
 	
 	public PhenoData(){
@@ -74,8 +72,18 @@ public class PhenoData implements Serializable, ICustomFieldData {
 	public void setCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) {
 		this.customFieldDisplay = customFieldDisplay;
 	}
+	/*@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CUSTOM_FIELD_DISPLAY_ID")
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplay() {
+		return phenoDataSetFieldDisplay;
+	}
 
 
+	public void setPhenoDataSetFieldDisplay(
+			PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) {
+		this.phenoDataSetFieldDisplay = phenoDataSetFieldDisplay;
+	}
+*/
 	@Column(name = "TEXT_DATA_VALUE")
 	public String getTextDataValue() {
 		return textDataValue;
