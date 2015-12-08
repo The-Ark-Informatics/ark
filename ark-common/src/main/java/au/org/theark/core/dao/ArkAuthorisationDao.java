@@ -46,6 +46,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
+import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
@@ -480,6 +481,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				session.save(arkUserRole);
 			}
 		}
+		for (UserConfig config : arkUserVO.getArkUserConfigs()) {
+			session.update(config);
+		}
 	}
 
 	/**
@@ -592,9 +596,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		try {
 			if (arkUserVO.getArkUserEntity() != null && arkUserVO.getArkUserEntity().getId() != null) {	
 				// Never update/delete Super User records
+				Session session = getSession();
 				if(!isUserAdminHelper(arkUserVO.getArkUserEntity().getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 					// User is present in the ArkUserTable can go for update of the entity and related objects (ArkUserRoles)
-					Session session = getSession();
 					session.update(arkUserVO.getArkUserEntity());
 	
 					// Insert new ArkUserRole
@@ -608,6 +612,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 					for (ArkUserRole arkUserRoleToRemove : getArkUserRolesToRemove(arkUserVO)) {
 						session.delete(arkUserRoleToRemove);
 					}
+				}
+				for (UserConfig config : arkUserVO.getArkUserConfigs()) {
+					session.update(config);
 				}
 			}
 			else {

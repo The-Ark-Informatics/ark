@@ -486,7 +486,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 				else if(warningRows.contains(row)) {
 					item.add(warningCellBehavior);
 				}
-				else {
+				else if(insertRows.contains(row)){
 					item.add(insertCellBehavior);
 				}
 

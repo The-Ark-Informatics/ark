@@ -31,7 +31,6 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
-import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
@@ -53,7 +52,6 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -123,11 +121,9 @@ import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldCategoryVO;
 import au.org.theark.core.vo.CustomFieldVO;
-import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.vo.UserConfigVO;
 
 public interface IArkCommonService<T> {
 
@@ -931,7 +927,7 @@ public interface IArkCommonService<T> {
 
 	public Collection<ConfigField> getAllConfigFields();
 
-	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser);
+	public List<UserConfig> getUserConfigs(ArkUser arkUser);
 
 	public int getRowsPerPage();
 
@@ -1242,4 +1238,5 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public List<ArkPermission> getArkPremissionListForRoleAndModule(ArkRolePolicyTemplate arkRolePolicyTemplate);
+
 }

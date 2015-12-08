@@ -38,6 +38,7 @@ import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.IPageable;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -55,12 +56,18 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource;
 import au.org.theark.core.exception.ArkSystemException;
+
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
+
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.config.entity.UserConfig;
+
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -94,9 +101,15 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	private AjaxButton					closeButton;
 	private FeedbackPanel				feedbackPanel;
 	private ModalWindow					modalWindow;
+
 	private IModel<List<ArkRolePolicyTemplate>> iModel;
 	private PageableListView<ArkRolePolicyTemplate>		pageableListView;
 	private AjaxPagingNavigator         pageNavigator;
+
+	@SuppressWarnings("unchecked")
+	private AbstractListEditor<UserConfig> userConfigListEditor;
+	
+
 	// Add a visitor class for required field marking/validation/highlighting
 	ArkFormVisitor							formVisitor					= new ArkFormVisitor();
 	private DropDownChoice<Study>		studyDdc;
@@ -114,6 +127,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	public void initialiseForm() {
 		//ArkUserVO arkUserVOFromBackend = new ArkUserVO();
 		try {
+
 			ArkUserVO arkUserVOFromBackend = iUserService.lookupArkUser(getModelObject().getUserName(), getModelObject().getStudy());
 			arkUserVOFromBackend.setStudy(getModelObject().getStudy());
 			//Study will selected with model object and that will be the page list view accordingly.
@@ -126,6 +140,11 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 				}
 			};
 			initStudyDdc(arkUserVOFromBackend);
+			
+			List<UserConfig> arkUserConfigs = iArkCommonService.getUserConfigs(arkUserVOFromBackend.getArkUserEntity());
+			arkUserVOFromBackend.setArkUserConfigs(arkUserConfigs);
+			getModelObject().setArkUserConfigs(arkUserConfigs);
+
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
@@ -179,6 +198,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		
 		shibbolethSession.setVisible(loggedInViaAAF);
 		shibbolethSession.add(shibbolethSessionDetails);
+
 		attachValidators();
 		addComponents();
 	}
@@ -219,7 +239,6 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		add(new EqualPasswordInputValidator(userPasswordField, confirmPasswordField));
 		add(saveButton);
 		add(closeButton);
-		
 		add(listViewPanel);
 		add(studyDdc);
 		

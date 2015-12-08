@@ -167,7 +167,6 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.vo.UserConfigVO;
 
 /**
  * The implementation of IArkCommonService. We want to auto-wire and hence use
@@ -1565,8 +1564,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getAllConfigFields();
 	}
 
-	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser) {
-		return studyDao.getUserConfigVOs(arkUser);
+	public List<UserConfig> getUserConfigs(ArkUser arkUser) {
+		return studyDao.getUserConfigs(arkUser);
 	}
 
 	public int getRowsPerPage() {

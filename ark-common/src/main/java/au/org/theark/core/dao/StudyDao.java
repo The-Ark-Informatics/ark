@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.event.ListSelectionEvent;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -166,7 +164,6 @@ import au.org.theark.core.vo.LinkedExtractionVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.vo.UserConfigVO;
 
 /**
  * @author nivedann
@@ -3008,6 +3005,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						previousPhenoId = data.getPhenoCollection().getId();
 						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 						valuesForThisPheno.setRecordDate(data.getPhenoCollection().getRecordDate());
+						valuesForThisPheno.setCollectionName(data.getPhenoCollection().getQuestionnaire().getName());
 					}
 					else if(data.getPhenoCollection().getId().equals(previousPhenoId)){
 						//then just put the data in
@@ -3020,6 +3018,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						valuesForThisPheno = new ExtractionVO();
 						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 						valuesForThisPheno.setRecordDate(data.getPhenoCollection().getRecordDate());
+						valuesForThisPheno.setCollectionName(data.getPhenoCollection().getQuestionnaire().getName());
 					}
 
 					//if any error value, then just use that - though, yet again I really question the acceptance of error data
@@ -5081,22 +5080,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 	
-	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser)  {
-		List<UserConfigVO> userConfigVOs = new ArrayList<UserConfigVO>();
+	public List<UserConfig> getUserConfigs(ArkUser arkUser) {
+		List<UserConfig> userConfigs = new ArrayList<UserConfig>();
 		Criteria criteria = getSession().createCriteria(UserConfig.class);
 		log.info("arkuser: " + arkUser);
 		log.info("arkuser.id: " + arkUser.getId());
 		if(arkUser != null && arkUser.getId() != null) {
 			criteria.add(Restrictions.eq("arkUser", arkUser));
-			List<UserConfig> userConfs = criteria.list();
-			log.info("userconfs.size: " + userConfs.size());
-			for(UserConfig uc : userConfs) {
-				UserConfigVO userConfigVO = new UserConfigVO();
-				userConfigVO.setUserConfig(uc);
-				userConfigVOs.add(userConfigVO);
-			}
+			userConfigs = criteria.list();
+			log.info("userconfs.size: " + userConfigs.size());
 		}
-		return userConfigVOs;
+		return userConfigs;
 	}
 
 	

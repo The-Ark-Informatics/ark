@@ -58,7 +58,7 @@ public class UserConfig implements Serializable{
 		this.arkUser = arkUser;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "FIELD_ID")
 	public ConfigField getConfigField() {
 		return configField;

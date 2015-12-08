@@ -24,16 +24,16 @@ public class Constants {
 	public static final String	REPORT_SERVICE							= "reportService";
 
 	// Constants to match database lookup tables
-	public static final String	STUDY_SUMMARY_REPORT_NAME			= "Study Summary Report";
-	public static final String	STUDY_COMP_CONSENT_REPORT_NAME	= "Study Component Consent Details Report";
-	public static final String	STUDY_LEVEL_CONSENT_REPORT_NAME	= "Study-level Consent Details Report";
-	public static final String	PHENO_FIELD_DETAILS_REPORT_NAME	= "Datasets Field Details Report (Data Dictionary)";
-	public static final String	STUDY_USER_ROLE_PERMISSIONS	= "Study User Role Permissions Report";
-	public static final String	WORK_RESEARCHER_COST_REPORT_NAME			= "Work Researcher Cost Report";
-	public static final String	WORK_RESEARCHER_DETAIL_COST_REPORT_NAME		= "Work Researcher Detail Cost Report";
-	public static final String	WORK_STUDY_DETAIL_COST_REPORT_NAME			= "Work Study Detail Cost Report";
-	public static final String	LIMS_BIOSPECIMEN_SUMMARY_REPORT_NAME		= "Biospecimen Summary Report";
-	public static final String	LIMS_BIOSPECIMEN_DETAIL_REPORT_NAME			= "Biospecimen Detail Report";
+	public static final String	STUDY_SUMMARY_REPORT_NAME			= "Study Summary";
+	public static final String	STUDY_COMP_CONSENT_REPORT_NAME	= "Study Component Consent";
+	public static final String	STUDY_LEVEL_CONSENT_REPORT_NAME	= "Study-level Consent";
+	public static final String	PHENO_FIELD_DETAILS_REPORT_NAME	= "Dataset Field Details";
+	public static final String	STUDY_USER_ROLE_PERMISSIONS	= "Study User Roles";
+	public static final String	WORK_RESEARCHER_COST_REPORT_NAME			= "Researcher Costs";
+	public static final String	WORK_RESEARCHER_DETAIL_COST_REPORT_NAME		= "Detailed Costs";
+	public static final String	WORK_STUDY_DETAIL_COST_REPORT_NAME			= "Study Costs";
+	public static final String	LIMS_BIOSPECIMEN_SUMMARY_REPORT_NAME		= "Biospecimen Summary";
+	public static final String	LIMS_BIOSPECIMEN_DETAIL_REPORT_NAME			= "Biospecimen Details";
 
 	public static final String	PDF_REPORT_FORMAT						= "PDF";
 	public static final Object	CSV_REPORT_FORMAT						= "CSV";

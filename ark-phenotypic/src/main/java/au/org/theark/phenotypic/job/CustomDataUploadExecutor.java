@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.jfree.util.Log;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -118,7 +119,8 @@ public class CustomDataUploadExecutor {
 		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
 		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.PHENO_COLLECTION, phenoCollection);
 		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.CUSTOM_FIELD_GROUP, customFieldGroup);
-		customDataUploadJob.getJobDataMap().put("overwrite", overwriteExisting);
+		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.OVERWRITE_EXISTING, overwriteExisting);
+		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.USERNAME, SecurityUtils.getSubject().getPrincipal().toString());
 		
 		Date startTime = nextGivenSecondDate(null, 1);
 		

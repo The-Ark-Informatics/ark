@@ -273,7 +273,7 @@ public class PhoneListPanel extends Panel {
 				else {
 					item.add(new Label("validFrom", ""));
 				}
-				if (phone.getValidFrom() != null ) {
+				if (phone.getValidTo() != null ) {
 					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 					String dateValidTo = "";
 					dateValidTo = simpleDateFormat.format(phone.getValidTo());

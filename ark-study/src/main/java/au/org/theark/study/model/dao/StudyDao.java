@@ -25,17 +25,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-
-
-
-
-
-
-
-
-
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -2501,7 +2490,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("af.name", au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
 		criteria.add(Restrictions.eq("cf.encodedValues", "0=Yes;1=No;").ignoreCase());
 		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", au.org.theark.core.Constants.SUBJECT)));
-
 		pedigreeCustomFields = criteria.list();
 
 		return pedigreeCustomFields;

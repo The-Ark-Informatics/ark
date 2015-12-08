@@ -3,10 +3,10 @@
 # Define global variables
 #export DEV_USER=$USER   #assumes the same as current user
 export WORKSPACE_DIR=`pwd` #relative to current user HOME dir
-COMPILE_ALL=1
+COMPILE_ALL=0
 
 is_changed() {
-	[ $COMPILE_ALL -eq 1 ] || [ "$(git diff --shortstat `pwd` 2> /dev/null | tail -n1)" != "" ]
+	[ "$(git diff --shortstat `pwd` 2> /dev/null | tail -n1)" != "" ] || [ $COMPILE_ALL -eq 1 ]
 }
 
 printHelpAndExit() {
@@ -49,15 +49,6 @@ then
 	if [ "$?" != "0" ]; then
 	exit 1
 	fi
-fi
-
-cd $WORKSPACE_DIR/ark-work-tracking
-if is_changed;
-then
-        mvn clean install
-        if [ "$?" != "0" ]; then
-        exit 1
-        fi
 fi
 
 cd $WORKSPACE_DIR/ark-study
@@ -114,6 +105,16 @@ then
 	fi
 fi
 
+cd $WORKSPACE_DIR/ark-work-tracking
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
+fi
+
+
 cd $WORKSPACE_DIR/ark-disease
 if is_changed;
 then
@@ -132,3 +133,17 @@ fi
 
 SCRIPTPATH=$(dirname $0)
 echo "Ark war file built"
+
+export PWD_DIR=`pwd`
+
+sudo service tomcat7 stop
+
+cd /var/lib/tomcat7/webapps/
+
+sudo rm -rf ark*
+
+sudo cp $PWD_DIR/target/ark.war .
+
+sudo service tomcat7 start
+
+sudo tail -1000f /var/log/tomcat7/catalina.out
