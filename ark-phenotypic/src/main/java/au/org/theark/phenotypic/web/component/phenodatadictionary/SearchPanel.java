@@ -23,7 +23,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.phenotypic.web.component.phenodatadictionary.form.SearchForm;
 
 
@@ -34,7 +34,7 @@ import au.org.theark.phenotypic.web.component.phenodatadictionary.form.SearchFor
 @SuppressWarnings("serial")
 public class SearchPanel extends Panel {
 
-	private CompoundPropertyModel<CustomFieldVO> cpModel;
+	private CompoundPropertyModel<PhenoDataSetFieldVO> cpModel;
 
 	private FeedbackPanel feedbackPanel;
 	private ArkCrudContainerVO arkCrudContainerVO;
@@ -42,7 +42,7 @@ public class SearchPanel extends Panel {
 	
 	
 	/* Constructor */
-	public SearchPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
+	public SearchPanel(String id, CompoundPropertyModel<PhenoDataSetFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id);
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;

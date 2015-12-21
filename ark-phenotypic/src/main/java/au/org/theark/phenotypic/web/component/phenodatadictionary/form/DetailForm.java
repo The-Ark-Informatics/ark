@@ -32,7 +32,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -64,6 +63,9 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -81,9 +83,12 @@ import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
 import au.org.theark.core.util.MissingValueDateRangeValidator;
 import au.org.theark.core.util.MissingValueDoubleRangeValidator;
+import au.org.theark.core.util.PhenoDataSetCategoryOrderingHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldCategoryVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.PhenoDataSetCategoryVO;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.component.customfield.dataentry.DateDataEntryPanel;
@@ -91,6 +96,8 @@ import au.org.theark.core.web.component.customfield.dataentry.NumberDataEntryPan
 import au.org.theark.core.web.component.customfield.dataentry.StringDateModel;
 import au.org.theark.core.web.component.customfield.dataentry.TextDataEntryPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenodatadictionary.Constants;
 
 
@@ -106,7 +113,7 @@ import au.org.theark.phenotypic.web.component.phenodatadictionary.Constants;
  *         Does not use the containerForm under the revised abstraction.
  */
 @SuppressWarnings( { "serial", "unchecked", "unused" })
-public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
+public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 	private static final Logger				log	= LoggerFactory.getLogger(DetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>				iArkCommonService;
@@ -118,64 +125,49 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	private DropDownChoice<FieldType>				fieldTypeDdc;
 	private TextArea<String>						fieldDescriptionTxtAreaFld;
 	private DropDownChoice<UnitType>				fieldUnitTypeDdc;
-	//private DropDownChoice<CustomFieldCategory>		customeFieldCategoryDdc;
-	//private DropDownChoice<CustomFieldType>			customFieldTypeDdc;
-	//Add unit type as text
 	private TextField<String>						fieldUnitTypeTxtFld;
-	//****************//
 	private TextArea<String>						fieldEncodedValuesTxtFld;
-	//private TextField<String>						fieldMissingValueTxtFld;
 
 	private TextArea<String>						fieldLabelTxtAreaFld;
 	private CheckBox								fieldDisplayRequiredChkBox;
 	private CheckBox								fieldAllowMultiselectChkBox;
-	private DropDownChoice<CustomFieldGroup>		fieldDisplayFieldGroupDdc;
+	private DropDownChoice<PhenoDataSetGroup>		fieldDisplayFieldGroupDdc;
 
-	protected WebMarkupContainer					customFieldDetailWMC;
+	protected WebMarkupContainer					phenoDataSetDetailWMC;
 	protected WebMarkupContainer					minMaxValueEntryWMC;
 	protected WebMarkupContainer					missingValueEntryWMC;
 	
-	protected WebMarkupContainer					customFieldDisplayDetailWMC;
-	protected Panel									customFieldDisplayPositionPanel;
+	protected WebMarkupContainer					phenoDataSetDisplayDetailWMC;
+	protected Panel									phenoDataSetDisplayPositionPanel;
 	protected Panel									minValueEntryPnl;
 	protected Panel									maxValueEntryPnl;
 	protected Panel									missingValueEntryPnl;
 
 	private TextArea<String>						defaultValueTextArea;
 	
-	protected IModel<List<CustomFieldGroup>>		cfGroupDdcListModel;
+	protected IModel<List<PhenoDataSetGroup>>		cfGroupDdcListModel;
 	
 	//New two webMarkupContainers to hold different unit types DropDown and Text.
 	private WebMarkupContainer  					panelCustomUnitTypeDropDown;
 	private WebMarkupContainer  					panelCustomUnitTypeText;
-	//private WebMarkupContainer  					panelCustomFieldTypeDropDown;
-	//private boolean 								unitTypeDropDownOn;
-	//private boolean 								subjectCustomField;
 	
 	private HistoryButtonPanel 						historyButtonPanel;
-	private TextField<Long>							customeFieldCategoryOrderNoTxtFld;
-	//private  WebMarkupContainer						categoryPanel;
-	//private  WebMarkupContainer						orderNumberPanel;
+	//private TextField<Long>							phenoDataSetCategoryOrderNoTxtFld;
 	private ArkModule 								arkModule;
 	
-	//private Collection<CustomFieldCategory> customFieldCategoryCollection;
-	//protected  WebMarkupContainer 					phenoDataSetCategoryDetailWMC;
-	//private Palette<CustomFieldCategory>			CustomFieldCategoryPalette;
 	private Study study;
 	private ArkFunction arkFunction;
-	private CustomFieldType customFieldType;
-	private List<CustomFieldCategory> allChildrenCategories=new ArrayList<CustomFieldCategory>();
+	private List<PhenoDataSetCategory> allChildrenCategories=new ArrayList<PhenoDataSetCategory>();
 	
 	protected  WebMarkupContainer 					phenoDataSetListchoiceCategoryDetailWMC;
-	private ListMultipleChoice<CustomFieldCategory> customFieldCategoryAvailableListChoice; 
+	private ListMultipleChoice<PhenoDataSetCategory> phenoDataSetCategoryAvailableListChoice; 
 	private Button addButtonFL,removeButtonFL,addButtonLL,removeButtonLL,upButton,downButton,leftButton,rightButton;
-	private ListMultipleChoice<CustomFieldCategory> customFieldCategoryFirstLevelListChoice; 
-	private ListMultipleChoice<CustomFieldCategory> customFieldCategoryLastLevelListChoice;
+	private ListMultipleChoice<PhenoDataSetCategory> phenoDataSetCategoryFirstLevelListChoice; 
+	private ListMultipleChoice<PhenoDataSetCategory> phenoDataSetCategoryLastLevelListChoice;
+	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService			iPhenotypicService;
 	
 	
-	/*= new ListMultipleChoice<String>(
-			"number", new Model(selectedNumber), NUMBERS);
-*/
 	/**
 	 * Constructor
 	 * 
@@ -184,32 +176,29 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 */
-	public DetailForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO){
+	public DetailForm(String id, CompoundPropertyModel<PhenoDataSetFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO){
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
-		cfGroupDdcListModel = new ListModel<CustomFieldGroup>();
+		cfGroupDdcListModel = new ListModel<PhenoDataSetGroup>();
 		refreshEntityFromBackend();
 		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
-		
-		study =cpModel.getObject().getCustomField().getStudy();
+		study =cpModel.getObject().getPhenoDataSetField().getStudy();
 		arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY);
-		customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT);
-		
 	}
 
 	protected void refreshEntityFromBackend() {
 		// Refresh the entity from the backend
-		if (getModelObject().getCustomField().getId() != null) {
-			CustomField cfFromBackend = iArkCommonService.getCustomField(getModelObject().getCustomField().getId());
-			getModelObject().setCustomField(cfFromBackend);
+		if (getModelObject().getPhenoDataSetField().getId() != null) {
+			PhenoDataSetField cfFromBackend = iPhenotypicService.getPhenoDataSetField(getModelObject().getPhenoDataSetField().getId());
+			getModelObject().setPhenoDataSetField(cfFromBackend);
 
-			CustomFieldDisplay cfdFromBackend;
-			cfdFromBackend = iArkCommonService.getCustomFieldDisplayByCustomField(cfFromBackend);
-			getModelObject().setCustomFieldDisplay(cfdFromBackend);
+			PhenoDataSetFieldDisplay pdsdFromBackend;
+			pdsdFromBackend = iPhenotypicService.getPhenoDataSetFieldDisplayByPhenoDataSet(getModelObject().getPhenoDataSetField());
+			getModelObject().setPhenoDataSetFieldDisplay(pdsdFromBackend);
 		}
-		if (getModelObject().isUseCustomFieldDisplay() == true) {
-			// Ensure the customFieldDisplay.require is never NULL
-			if (getModelObject().getCustomFieldDisplay().getRequired() == null) {
-				getModelObject().getCustomFieldDisplay().setRequired(false);
+		if (getModelObject().isUsePhenoDataSetFieldDisplay() == true) {
+			// Ensure the phenoDataSetFieldDisplay.require is never NULL
+			if (getModelObject().getPhenoDataSetFieldDisplay().getRequired() == null) {
+				getModelObject().getPhenoDataSetFieldDisplay().setRequired(false);
 			}
 		}
 	}
@@ -219,12 +208,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	private void initFieldTypeDdc() {
 		List<FieldType> fieldTypeCollection = iArkCommonService.getFieldTypes();
 		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(Constants.FIELDTYPE_NAME, Constants.FIELDTYPE_ID);
-		fieldTypeDdc = new DropDownChoice<FieldType>(Constants.FIELDVO_CUSTOMFIELD_FIELD_TYPE, fieldTypeCollection, fieldTypeRenderer) {
+		fieldTypeDdc = new DropDownChoice<FieldType>(Constants.FIELDVO_PHENODATASET_FIELD_TYPE, fieldTypeCollection, fieldTypeRenderer) {
 			@Override
 			protected void onBeforeRender() {
 				if (!isNew()) {
 					// Disable fieldType if data exists for the field
-					setEnabled(!cpModel.getObject().getCustomField().getCustomFieldHasData());
+					setEnabled(!cpModel.getObject().getPhenoDataSetField().getPhenoFieldHasData());
 				}
 				super.onBeforeRender();
 			}
@@ -250,22 +239,22 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	
 	
 	private void initCategoryListChoiceContainer(){
-		List<CustomFieldCategory> customFieldCategories = new ArrayList<CustomFieldCategory>(0);
-		customFieldCategories= CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(getAvailableAllCategoryListInStudyByCustomFieldType());
-		cpModel.getObject().setCustomFieldCategoryLst(customFieldCategories);
+		List<PhenoDataSetCategory> phenoDataSetFieldCategories = new ArrayList<PhenoDataSetCategory>(0);
+		phenoDataSetFieldCategories= PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(getAvailableAllCategoryListInStudy());
+		cpModel.getObject().setPhenoDataSetFieldCategoryLst(phenoDataSetFieldCategories);
 		IChoiceRenderer<String> renderer = new ChoiceRenderer("name", "id"){
 			@Override
 			public Object getDisplayValue(Object object) {
-			CustomFieldCategory cuscat=(CustomFieldCategory)object;
-				return CustomFieldCategoryOrderingHelper.getInstance().preTextDecider(cuscat)+ super.getDisplayValue(object);
+				PhenoDataSetCategory cuscat=(PhenoDataSetCategory)object;
+				return PhenoDataSetCategoryOrderingHelper.getInstance().preTextDecider(cuscat)+ super.getDisplayValue(object);
 			}
 		};
-		PropertyModel<List<CustomFieldCategory>> availableCategories = new PropertyModel<List<CustomFieldCategory>>(cpModel, "customFieldCategoryLst");
-		PropertyModel<List<CustomFieldCategory>> selectedCategories = new PropertyModel<List<CustomFieldCategory>>(cpModel, "selectedCategories");
-		PropertyModel<List<CustomFieldCategory>> firstLevelAvailableCategories = new PropertyModel<List<CustomFieldCategory>>(cpModel, "firstLevelAvailableCategories");
-		PropertyModel<List<CustomFieldCategory>> firstLevelSelectedCategories = new PropertyModel<List<CustomFieldCategory>>(cpModel, "firstLevelSelectedCategories");
-		PropertyModel<List<CustomFieldCategory>> lastLevelAvailableCategories = new PropertyModel<List<CustomFieldCategory>>(cpModel, "lastLevelAvailableCategories");
-		PropertyModel<List<CustomFieldCategory>> lastLevelSelectedCategories = new PropertyModel<List<CustomFieldCategory>>(cpModel, "lastLevelSelectedCategories");
+		PropertyModel<List<PhenoDataSetCategory>> availableCategories = new PropertyModel<List<PhenoDataSetCategory>>(cpModel, "phenoDataSetFieldCategoryLst");
+		PropertyModel<List<PhenoDataSetCategory>> selectedCategories = new PropertyModel<List<PhenoDataSetCategory>>(cpModel, "selectedCategories");
+		PropertyModel<List<PhenoDataSetCategory>> firstLevelAvailableCategories = new PropertyModel<List<PhenoDataSetCategory>>(cpModel, "firstLevelAvailableCategories");
+		PropertyModel<List<PhenoDataSetCategory>> firstLevelSelectedCategories = new PropertyModel<List<PhenoDataSetCategory>>(cpModel, "firstLevelSelectedCategories");
+		PropertyModel<List<PhenoDataSetCategory>> lastLevelAvailableCategories = new PropertyModel<List<PhenoDataSetCategory>>(cpModel, "lastLevelAvailableCategories");
+		PropertyModel<List<PhenoDataSetCategory>> lastLevelSelectedCategories = new PropertyModel<List<PhenoDataSetCategory>>(cpModel, "lastLevelSelectedCategories");
 		
 		availableCategories(renderer, availableCategories, selectedCategories);
 		firstLevelAvailableCategories(renderer, firstLevelAvailableCategories,firstLevelSelectedCategories);
@@ -288,13 +277,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param selectedCategories
 	 */
 	private void availableCategories(IChoiceRenderer<String> renderer,
-			PropertyModel<List<CustomFieldCategory>> availableCategories,
-			PropertyModel<List<CustomFieldCategory>> selectedCategories) {
-		customFieldCategoryAvailableListChoice=new ListMultipleChoice("customFieldCategoryLst", selectedCategories,availableCategories,renderer);
-		customFieldCategoryAvailableListChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			PropertyModel<List<PhenoDataSetCategory>> availableCategories,PropertyModel<List<PhenoDataSetCategory>> selectedCategories) {
+		phenoDataSetCategoryAvailableListChoice=new ListMultipleChoice("phenoDataSetCategoryLst", selectedCategories,availableCategories,renderer);
+		phenoDataSetCategoryAvailableListChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             protected void onUpdate(AjaxRequestTarget target) {
             	cpModel.getObject().setSelectedCategories(selectedCategories.getObject());
-            	target.add(customFieldCategoryAvailableListChoice);
+            	target.add(phenoDataSetCategoryAvailableListChoice);
             }
             });
 	}
@@ -305,26 +293,26 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param firstLevelSelectedCategories
 	 */
 	private void firstLevelAvailableCategories(IChoiceRenderer<String> renderer,
-			PropertyModel<List<CustomFieldCategory>> firstLevelAvailableCategories,
-			PropertyModel<List<CustomFieldCategory>> firstLevelSelectedCategories) {
-		customFieldCategoryFirstLevelListChoice=new ListMultipleChoice("firstLevelAvailableCategories", firstLevelSelectedCategories,firstLevelAvailableCategories,renderer);
-		customFieldCategoryFirstLevelListChoice.setOutputMarkupId(true);
-		customFieldCategoryFirstLevelListChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			PropertyModel<List<PhenoDataSetCategory>> firstLevelAvailableCategories,
+			PropertyModel<List<PhenoDataSetCategory>> firstLevelSelectedCategories) {
+		phenoDataSetCategoryFirstLevelListChoice=new ListMultipleChoice("firstLevelAvailableCategories", firstLevelSelectedCategories,firstLevelAvailableCategories,renderer);
+		phenoDataSetCategoryFirstLevelListChoice.setOutputMarkupId(true);
+		phenoDataSetCategoryFirstLevelListChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             protected void onUpdate(AjaxRequestTarget target) {
             	cpModel.getObject().setFirstLevelSelectedCategories(firstLevelSelectedCategories.getObject());
-            	target.add(customFieldCategoryFirstLevelListChoice);
+            	target.add(phenoDataSetCategoryFirstLevelListChoice);
             }
             });
 	}
 	
 	private void lastLevelAvailableCategories(IChoiceRenderer<String> renderer,
-			PropertyModel<List<CustomFieldCategory>> lastLevelAvailableCategories,
-			PropertyModel<List<CustomFieldCategory>> lastLevelSelectedCategories) {
-		customFieldCategoryLastLevelListChoice=new ListMultipleChoice("lastLevelAvailableCategories", lastLevelSelectedCategories,lastLevelAvailableCategories,renderer);
-		customFieldCategoryLastLevelListChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			PropertyModel<List<PhenoDataSetCategory>> lastLevelAvailableCategories,
+			PropertyModel<List<PhenoDataSetCategory>> lastLevelSelectedCategories) {
+		phenoDataSetCategoryLastLevelListChoice=new ListMultipleChoice("lastLevelAvailableCategories", lastLevelSelectedCategories,lastLevelAvailableCategories,renderer);
+		phenoDataSetCategoryLastLevelListChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             protected void onUpdate(AjaxRequestTarget target) {
             	cpModel.getObject().setLastLevelSelectedCategories(lastLevelSelectedCategories.getObject());
-            	target.add(customFieldCategoryLastLevelListChoice);
+            	target.add(phenoDataSetCategoryLastLevelListChoice);
             }
             });
 		
@@ -335,22 +323,22 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param selectedCategories
 	 */
 	private void addButtonFirstLevel(
-			PropertyModel<List<CustomFieldCategory>> selectedCategories) {
+			PropertyModel<List<PhenoDataSetCategory>> selectedCategories) {
 		addButtonFL = new AjaxButton("addButtonFL") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<CustomFieldCategory> clickAndSelectedCategories=selectedCategories.getObject();
-				for (CustomFieldCategory customFieldCategory : clickAndSelectedCategories) {
-            		allChildrenCategories=removeDuplicates(iArkCommonService.getAllChildrenCategoriedBelongToThisParent(study, arkFunction, customFieldType, customFieldCategory,allChildrenCategories));
+				List<PhenoDataSetCategory> clickAndSelectedCategories=selectedCategories.getObject();
+				for (PhenoDataSetCategory phenoDataSetFieldCategory : clickAndSelectedCategories) {
+            		allChildrenCategories=removeDuplicates(iPhenotypicService.getAllChildrenCategoriedBelongToThisParent(study, arkFunction, phenoDataSetFieldCategory,allChildrenCategories));
 				}
-					List<CustomFieldCategory> alreadyInFirstLevelCategories=cpModel.getObject().getFirstLevelAvailableCategories();
-            		List<CustomFieldCategory> allFirstLevel=addChildrenWithoutDuplicates(clickAndSelectedCategories, allChildrenCategories);
-            		cpModel.getObject().setFirstLevelAvailableCategories(CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(addChildrenWithoutDuplicates(alreadyInFirstLevelCategories, allFirstLevel)));
-            		cpModel.getObject().getCustomFieldCategoryLst().removeAll(allFirstLevel);
+					List<PhenoDataSetCategory> alreadyInFirstLevelCategories=cpModel.getObject().getFirstLevelAvailableCategories();
+            		List<PhenoDataSetCategory> allFirstLevel=addChildrenWithoutDuplicates(clickAndSelectedCategories, allChildrenCategories);
+            		cpModel.getObject().setFirstLevelAvailableCategories(PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(addChildrenWithoutDuplicates(alreadyInFirstLevelCategories, allFirstLevel)));
+            		cpModel.getObject().getPhenoDataSetFieldCategoryLst().removeAll(allFirstLevel);
             		allChildrenCategories.clear();
-            	    target.add(customFieldCategoryAvailableListChoice);
-                    target.add(customFieldCategoryFirstLevelListChoice);
+            	    target.add(phenoDataSetCategoryAvailableListChoice);
+                    target.add(phenoDataSetCategoryFirstLevelListChoice);
                     super.onSubmit(target, form);
 			}
 		};
@@ -361,24 +349,24 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param firstLevelSelectedCategories
 	 */
 	private void removeButtonFirstLevel(
-			PropertyModel<List<CustomFieldCategory>> firstLevelSelectedCategories) {
+			PropertyModel<List<PhenoDataSetCategory>> firstLevelSelectedCategories) {
 		removeButtonFL = new AjaxButton("removeButtonFL") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<CustomFieldCategory> clickAndSelectedCategories=firstLevelSelectedCategories.getObject();
-				for (CustomFieldCategory customFieldCategory : clickAndSelectedCategories) {
-            		allChildrenCategories=removeDuplicates(iArkCommonService.getAllChildrenCategoriedBelongToThisParent(study, arkFunction, customFieldType, customFieldCategory,allChildrenCategories));
+				List<PhenoDataSetCategory> clickAndSelectedCategories=firstLevelSelectedCategories.getObject();
+				for (PhenoDataSetCategory phenoDataSetFieldCategory : clickAndSelectedCategories) {
+            		allChildrenCategories=removeDuplicates(iPhenotypicService.getAllChildrenCategoriedBelongToThisParent(study, arkFunction, phenoDataSetFieldCategory,allChildrenCategories));
 				}
-					List<CustomFieldCategory> currentlyAvailable=cpModel.getObject().getCustomFieldCategoryLst();
-					List<CustomFieldCategory> childAndAvailable=addChildrenWithoutDuplicates(currentlyAvailable,allChildrenCategories);
-					List<CustomFieldCategory> allAvailable=addChildrenWithoutDuplicates(childAndAvailable,clickAndSelectedCategories);
-					cpModel.getObject().setCustomFieldCategoryLst(CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(allAvailable));
+					List<PhenoDataSetCategory> currentlyAvailable=cpModel.getObject().getPhenoDataSetFieldCategoryLst();
+					List<PhenoDataSetCategory> childAndAvailable=addChildrenWithoutDuplicates(currentlyAvailable,allChildrenCategories);
+					List<PhenoDataSetCategory> allAvailable=addChildrenWithoutDuplicates(childAndAvailable,clickAndSelectedCategories);
+					cpModel.getObject().setPhenoDataSetFieldCategoryLst(PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(allAvailable));
             		cpModel.getObject().getFirstLevelAvailableCategories().removeAll(allChildrenCategories);
             		cpModel.getObject().getFirstLevelAvailableCategories().removeAll(clickAndSelectedCategories);
             		allChildrenCategories.clear();
-            	    target.add(customFieldCategoryAvailableListChoice);
-                    target.add(customFieldCategoryFirstLevelListChoice);
+            	    target.add(phenoDataSetCategoryAvailableListChoice);
+                    target.add(phenoDataSetCategoryFirstLevelListChoice);
                     super.onSubmit(target, form);
 			}
 		};
@@ -390,18 +378,18 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param selectedCategories
 	 */
 	private void addButtonLastLevel(
-			PropertyModel<List<CustomFieldCategory>> firstLevelSelectedCategories) {
+			PropertyModel<List<PhenoDataSetCategory>> firstLevelSelectedCategories) {
 		addButtonLL = new AjaxButton("addButtonLL") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-					List<CustomFieldCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
-					List<CustomFieldCategory> currentlyAvailable=cpModel.getObject().getLastLevelAvailableCategories();
-					List<CustomFieldCategory> allAvailable=addChildrenWithoutDuplicates(currentlyAvailable,initialSelectedCategories);
-					cpModel.getObject().setLastLevelAvailableCategories(CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(allAvailable));
+					List<PhenoDataSetCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
+					List<PhenoDataSetCategory> currentlyAvailable=cpModel.getObject().getLastLevelAvailableCategories();
+					List<PhenoDataSetCategory> allAvailable=addChildrenWithoutDuplicates(currentlyAvailable,initialSelectedCategories);
+					cpModel.getObject().setLastLevelAvailableCategories(PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(allAvailable));
 		    		cpModel.getObject().getFirstLevelAvailableCategories().removeAll(initialSelectedCategories);
-            	    target.add(customFieldCategoryFirstLevelListChoice);
-            	    target.add(customFieldCategoryLastLevelListChoice);
+            	    target.add(phenoDataSetCategoryFirstLevelListChoice);
+            	    target.add(phenoDataSetCategoryLastLevelListChoice);
                     super.onSubmit(target, form);
 			}
 		};
@@ -412,18 +400,18 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param firstLevelSelectedCategories
 	 */
 	private void removeButtonLastLevel(
-			PropertyModel<List<CustomFieldCategory>> lastLevelSelectedCategories) {
+			PropertyModel<List<PhenoDataSetCategory>> lastLevelSelectedCategories) {
 		removeButtonLL = new AjaxButton("removeButtonLL") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<CustomFieldCategory> initialSelectedCategories=lastLevelSelectedCategories.getObject();
-					List<CustomFieldCategory> currentlyAvailable=cpModel.getObject().getFirstLevelAvailableCategories();
-					List<CustomFieldCategory> allAvailable=addChildrenWithoutDuplicates(currentlyAvailable,initialSelectedCategories);
-					cpModel.getObject().setFirstLevelAvailableCategories(CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(allAvailable));
+				List<PhenoDataSetCategory> initialSelectedCategories=lastLevelSelectedCategories.getObject();
+					List<PhenoDataSetCategory> currentlyAvailable=cpModel.getObject().getFirstLevelAvailableCategories();
+					List<PhenoDataSetCategory> allAvailable=addChildrenWithoutDuplicates(currentlyAvailable,initialSelectedCategories);
+					cpModel.getObject().setFirstLevelAvailableCategories(PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(allAvailable));
             		cpModel.getObject().getLastLevelAvailableCategories().removeAll(initialSelectedCategories);
-            	    target.add(customFieldCategoryFirstLevelListChoice);
-                    target.add(customFieldCategoryLastLevelListChoice);
+            	    target.add(phenoDataSetCategoryFirstLevelListChoice);
+                    target.add(phenoDataSetCategoryLastLevelListChoice);
                     super.onSubmit(target, form);
 			}
 		};
@@ -435,26 +423,26 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param firstLevelSelectedCategories
 	 */
 	private void upButton(
-			PropertyModel<List<CustomFieldCategory>> firstLevelSelectedCategories) {
+			PropertyModel<List<PhenoDataSetCategory>> firstLevelSelectedCategories) {
 			upButton = new AjaxButton("upButton") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<CustomFieldCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
-				CustomFieldCategory selectedCategory = null;
-				List<CustomFieldCategory> availableCats=cpModel.getObject().getFirstLevelAvailableCategories();
+				List<PhenoDataSetCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
+				PhenoDataSetCategory selectedCategory = null;
+				List<PhenoDataSetCategory> availableCats=cpModel.getObject().getFirstLevelAvailableCategories();
 				if(initialSelectedCategories.size()==1){
 					selectedCategory=initialSelectedCategories.get(0);
 					if(selectedCategory.getParentCategory()!=null){
-						List<CustomFieldCategory> sortedLst=getMySortedSiblingList(selectedCategory);
+						List<PhenoDataSetCategory> sortedLst=getMySortedSiblingList(selectedCategory);
 						if(sortedLst.indexOf(selectedCategory)!=0){
-							List<CustomFieldCategory> updateList=upButtonUpdateCustomfieldCategoryOrder(sortedLst,selectedCategory);
-								for (CustomFieldCategory item : updateList) {
+							List<PhenoDataSetCategory> updateList=upButtonUpdatePhenoFieldCategoryOrder(sortedLst,selectedCategory);
+								for (PhenoDataSetCategory item : updateList) {
 									if(availableCats.contains(item)){
 										availableCats.get(availableCats.indexOf(item)).setOrderNumber(item.getOrderNumber());
 									}
 								}
-							cpModel.getObject().setFirstLevelAvailableCategories(CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(availableCats));
+							cpModel.getObject().setFirstLevelAvailableCategories(PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(availableCats));
 						}else{
 							//top level selected
 						}
@@ -464,8 +452,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				}else{
 					//more than one selected.
 				}	
-				target.add(customFieldCategoryAvailableListChoice);
-				target.add(customFieldCategoryFirstLevelListChoice);
+				target.add(phenoDataSetCategoryAvailableListChoice);
+				target.add(phenoDataSetCategoryFirstLevelListChoice);
 				super.onSubmit(target, form);
 			}
 		};
@@ -476,26 +464,26 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param firstLevelSelectedCategories
 	 */
 	private void downButton(
-			PropertyModel<List<CustomFieldCategory>> firstLevelSelectedCategories) {
+			PropertyModel<List<PhenoDataSetCategory>> firstLevelSelectedCategories) {
 		downButton = new AjaxButton("downButton") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<CustomFieldCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
-				CustomFieldCategory selectedCategory = null;
-				List<CustomFieldCategory> availableCats=cpModel.getObject().getFirstLevelAvailableCategories();
+				List<PhenoDataSetCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
+				PhenoDataSetCategory selectedCategory = null;
+				List<PhenoDataSetCategory> availableCats=cpModel.getObject().getFirstLevelAvailableCategories();
 				if(initialSelectedCategories.size()==1){
 					selectedCategory=initialSelectedCategories.get(0);
 					if(selectedCategory.getParentCategory()!=null){
-						List<CustomFieldCategory> sortedLst=getMySortedSiblingList(selectedCategory);
+						List<PhenoDataSetCategory> sortedLst=getMySortedSiblingList(selectedCategory);
 						if(sortedLst.indexOf(selectedCategory)< (sortedLst.size()-1)){
-							List<CustomFieldCategory> updateList=downButtonUpdateCustomfieldCategoryOrder(sortedLst,selectedCategory);
-								for (CustomFieldCategory item : updateList) {
+							List<PhenoDataSetCategory> updateList=downButtonUpdatePhenoFieldCategoryOrder(sortedLst,selectedCategory);
+								for (PhenoDataSetCategory item : updateList) {
 									if(availableCats.contains(item)){
 										availableCats.get(availableCats.indexOf(item)).setOrderNumber(item.getOrderNumber());
 									}
 								}
-							cpModel.getObject().setFirstLevelAvailableCategories(CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(availableCats));
+							cpModel.getObject().setFirstLevelAvailableCategories(PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(availableCats));
 						}else{
 							//bottom level selected
 						}
@@ -505,8 +493,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				}else{
 					//more than one selected.
 				}
-				target.add(customFieldCategoryAvailableListChoice);
-				target.add(customFieldCategoryFirstLevelListChoice);
+				target.add(phenoDataSetCategoryAvailableListChoice);
+				target.add(phenoDataSetCategoryFirstLevelListChoice);
 	            super.onSubmit(target, form);
 			}
 		};
@@ -519,14 +507,14 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param firstLevelSelectedCategories
 	 */
 	private void leftButton(
-			PropertyModel<List<CustomFieldCategory>> firstLevelSelectedCategories) {
+			PropertyModel<List<PhenoDataSetCategory>> firstLevelSelectedCategories) {
 			leftButton = new AjaxButton("leftButton") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<CustomFieldCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
-				CustomFieldCategory selectedCategory = null;
-				List<CustomFieldCategory> availableCats=cpModel.getObject().getFirstLevelAvailableCategories();
+				List<PhenoDataSetCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
+				PhenoDataSetCategory selectedCategory = null;
+				List<PhenoDataSetCategory> availableCats=cpModel.getObject().getFirstLevelAvailableCategories();
 				if(initialSelectedCategories.size()==1){
 					selectedCategory=initialSelectedCategories.get(0);
 					if(selectedCategory.getParentCategory()!=null){
@@ -536,10 +524,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 							else{
 								selectedCategory.setParentCategory(null);
 							}
-							CustomFieldCategoryVO customFieldCategoryVO=new CustomFieldCategoryVO();
-							customFieldCategoryVO.setCustomFieldCategory(selectedCategory);
+							PhenoDataSetCategoryVO phenoDataSetCategoryVO=new PhenoDataSetCategoryVO();
+							phenoDataSetCategoryVO.setPhenoDataSetCategory(selectedCategory);
 							try {
-								iArkCommonService.updateCustomFieldCategory(customFieldCategoryVO);
+								iPhenotypicService.updatePhenoDataSetCategory(phenoDataSetCategoryVO);
 							} catch (ArkSystemException| ArkRunTimeUniqueException| ArkRunTimeException | ArkUniqueException e) {
 								e.printStackTrace();
 							}
@@ -548,12 +536,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 					}else{
 						//no parent category so no left function.
 					}
-					cpModel.getObject().setFirstLevelAvailableCategories(CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(availableCats));
+					cpModel.getObject().setFirstLevelAvailableCategories(PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(availableCats));
 				}else{
 					//more than one selected.
 				}	
-				target.add(customFieldCategoryAvailableListChoice);
-				target.add(customFieldCategoryFirstLevelListChoice);
+				target.add(phenoDataSetCategoryAvailableListChoice);
+				target.add(phenoDataSetCategoryFirstLevelListChoice);
 				super.onSubmit(target, form);
 			}
 		};
@@ -566,23 +554,23 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param firstLevelSelectedCategories
 	 */
 	private void rightButton(
-			PropertyModel<List<CustomFieldCategory>> firstLevelSelectedCategories) {
+			PropertyModel<List<PhenoDataSetCategory>> firstLevelSelectedCategories) {
 			rightButton = new AjaxButton("rightButton") {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<CustomFieldCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
-				CustomFieldCategory selectedCategory = null;
-				List<CustomFieldCategory> availableCats=cpModel.getObject().getFirstLevelAvailableCategories();
+				List<PhenoDataSetCategory> initialSelectedCategories=firstLevelSelectedCategories.getObject();
+				PhenoDataSetCategory selectedCategory = null;
+				List<PhenoDataSetCategory> availableCats=cpModel.getObject().getFirstLevelAvailableCategories();
 				if(initialSelectedCategories.size()==1){
 					selectedCategory=initialSelectedCategories.get(0);
 					//if(selectedCategory.getParentCategory()!=null){
 						if(availableCats.indexOf(selectedCategory)!=0){
 							selectedCategory.setParentCategory(availableCats.get(availableCats.indexOf(selectedCategory)-1));
-							CustomFieldCategoryVO customFieldCategoryVO=new CustomFieldCategoryVO();
-							customFieldCategoryVO.setCustomFieldCategory(selectedCategory);
+							PhenoDataSetCategoryVO phenoDataSetCategoryVO=new PhenoDataSetCategoryVO();
+							phenoDataSetCategoryVO.setPhenoDataSetCategory(selectedCategory);
 							try {
-								iArkCommonService.updateCustomFieldCategory(customFieldCategoryVO);
+								iPhenotypicService.updatePhenoDataSetCategory(phenoDataSetCategoryVO);
 							} catch (ArkSystemException| ArkRunTimeUniqueException| ArkRunTimeException | ArkUniqueException e) {
 								e.printStackTrace();
 							}
@@ -591,13 +579,13 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				//	}else{
 						//no parent category
 				//	}
-					cpModel.getObject().setFirstLevelAvailableCategories(CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(availableCats));
+					cpModel.getObject().setFirstLevelAvailableCategories(PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(availableCats));
 						
 				}else{
 					//more than one selected.
 				}	
-				target.add(customFieldCategoryAvailableListChoice);
-				target.add(customFieldCategoryFirstLevelListChoice);
+				target.add(phenoDataSetCategoryAvailableListChoice);
+				target.add(phenoDataSetCategoryFirstLevelListChoice);
 				super.onSubmit(target, form);
 			}
 		};
@@ -606,8 +594,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	
 
 	private void updateEncodedValueFld() {
-		FieldType fieldType = getModelObject().getCustomField().getFieldType();
-		if (fieldType != null && fieldType.getName().equals(Constants.CHARACTER_FIELD_TYPE_NAME)) {
+		FieldType fieldType = getModelObject().getPhenoDataSetField().getFieldType();
+		if (fieldType != null && fieldType.getName().equals(Constants.FIELD_TYPE_CHARACTER)) {
 			// Only allowed to use encodedValues when fieldType == CHARACTER
 			fieldEncodedValuesTxtFld.setEnabled(true);
 			fieldAllowMultiselectChkBox.setEnabled(true);
@@ -627,8 +615,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	}
 
 	private void updateUnitTypeDdc() {
-		FieldType fieldType = getModelObject().getCustomField().getFieldType();
-		if (fieldType != null && !fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
+		FieldType fieldType = getModelObject().getPhenoDataSetField().getFieldType();
+		if (fieldType != null && !fieldType.getName().equals(Constants.FIELD_TYPE_DATE)) {
 			// Only allowed to use unitType when fieldType != DATE
 			fieldUnitTypeDdc.setEnabled(true);
 			fieldUnitTypeTxtFld.setEnabled(true);
@@ -640,9 +628,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	}
 
 
-	private void updateCategoryDdc() {
-		CustomFieldCategory category = getModelObject().getCustomField().getCustomFieldCategory();
-		/*if (category != null && !category.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
+	/*private void updateCategoryDdc() {
+		CustomFieldCategory category = getModelObject().getPhenoDataSetField().getCustomFieldCategory();
+		if (category != null && !category.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
 			// Only allowed to use unitType when fieldType != DATE
 			fieldUnitTypeDdc.setEnabled(true);
 			fieldUnitTypeTxtFld.setEnabled(true);
@@ -650,17 +638,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		else {
 			fieldUnitTypeDdc.setEnabled(false);
 			fieldUnitTypeTxtFld.setEnabled(false);
-		}*/
+		}
 		//TODO dependencies?
 		//have to figure out what dependencies exist
-	}
+	}*/
 	/**
 	 * initialise max and min values.
 	 */
 	private void initMinMaxValuePnls() {
-		FieldType fieldType = getModelObject().getCustomField().getFieldType();
+		FieldType fieldType = getModelObject().getPhenoDataSetField().getFieldType();
 		
-			if (fieldType == null || fieldType.getName().equals(Constants.CHARACTER_FIELD_TYPE_NAME) 
+			if (fieldType == null || fieldType.getName().equals(Constants.FIELD_TYPE_CHARACTER) 
 					|| fieldType.getName().equals(Constants.LOOKUP_FIELD_TYPE_NAME)) {
 				// Create disabled min and max value entry panels for fieldType = unspecified (null) / CHARACTER
 				// dummyModel is required to ensure Wicket doesn't try to find the textDateValue in the CompoundPropertyModel
@@ -673,7 +661,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 					public void detach() {
 					}
 				};
-				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
+				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
 				minValueEntryPnl = new TextDataEntryPanel("minValueEntryPanel", dummyModel, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				minValueEntryPnl.setEnabled(false);
@@ -688,11 +676,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				
 			}
 			// Not supporting min and max value for CHARACTER fieldTypes
-			else if (fieldType.getName().equals(Constants.NUMBER_FIELD_TYPE_NAME)) {
+			else if (fieldType.getName().equals(Constants.FIELD_TYPE_CHARACTER)) {
 				// NUMBER fieldType
-				IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
-				IModel<Double> maxValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
-				IModel<Double> missingValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
+				IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MIN_VALUE);
+				IModel<Double> maxValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MAX_VALUE);
+				IModel<Double> missingValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
 				minValueEntryPnl = new NumberDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				maxValueEntryPnl = new NumberDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
@@ -708,11 +696,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				this.add(new MissingValueDoubleRangeValidator(min,max,missingDate,"Minimum Value","Maximum Value","Missing Value"));
 				
 			}
-			else if (fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
+			else if (fieldType.getName().equals(Constants.FIELD_TYPE_DATE)) {
 				// DATE fieldType
-				IModel<Date> minValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				IModel<Date> maxValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				IModel<Date> missingValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
+				IModel<Date> minValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MIN_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
+				IModel<Date> maxValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MAX_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
+				IModel<Date> missingValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
 				
 				minValueEntryPnl = new DateDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
@@ -738,17 +726,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 */
 	private void initUnitTypeDdc() {
 		UnitType unitTypeCriteria = new UnitType();
-		unitTypeCriteria.setArkFunction(cpModel.getObject().getCustomField().getArkFunction());
+		unitTypeCriteria.setArkFunction(cpModel.getObject().getPhenoDataSetField().getArkFunction());
 		List<UnitType> unitTypeList = iArkCommonService.getUnitTypes(unitTypeCriteria);
 		// assumes that if the unit.name will appear within the unit.description
 
 		ChoiceRenderer unitTypeRenderer = new ChoiceRenderer(Constants.UNITTYPE_DESCRIPTION, Constants.UNITTYPE_ID);
-		fieldUnitTypeDdc = new DropDownChoice<UnitType>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE, unitTypeList, unitTypeRenderer);
+		fieldUnitTypeDdc = new DropDownChoice<UnitType>(Constants.FIELDVO_PHENODATASET_UNIT_TYPE, unitTypeList, unitTypeRenderer);
 		fieldUnitTypeDdc.setNullValid(true); // null is ok for units
 		fieldUnitTypeDdc.setOutputMarkupId(true); // unitTypeDdc can be enabled/disabled
 		
 		//Add the Unit type text.
-		fieldUnitTypeTxtFld=new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE_TXT);
+		fieldUnitTypeTxtFld=new TextField<String>(Constants.FIELDVO_PHENODATASET_UNIT_TYPE_TXT);
 		fieldUnitTypeTxtFld.setOutputMarkupId(true);
 		
 	}
@@ -759,14 +747,14 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	public void initialiseDetailForm() {
 		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
 		arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
-		fieldIdTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_ID);
-		fieldNameTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_NAME);
+		fieldIdTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASET_ID);
+		fieldNameTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASET_NAME);
 		fieldNameTxtFld.add(new ArkDefaultFormFocusBehavior());
-		fieldDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_DESCRIPTION);
-		fieldLabelTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_FIELD_LABEL);
+		fieldDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_PHENODATASET_DESCRIPTION);
+		fieldLabelTxtAreaFld = new TextArea<String>(Constants.FIELDVO_PHENODATASET_FIELD_LABEL);
 		//fieldMissingValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
-		fieldDisplayRequiredChkBox = new CheckBox(Constants.FIELDVO_CUSTOMFIELDDISPLAY_REQUIRED);
-		fieldAllowMultiselectChkBox = new CheckBox(Constants.FIELDVO_CUSTOMFIELD_ALLOW_MULTISELECT) {
+		fieldDisplayRequiredChkBox = new CheckBox(Constants.FIELDVO_PHENODATASETDISPLAY_REQUIRED);
+		fieldAllowMultiselectChkBox = new CheckBox(Constants.FIELDVO_PHENODATASET_ALLOW_MULTISELECT) {
 		private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -775,17 +763,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			}
 		};
 
-		if (getModelObject().isUseCustomFieldDisplay()) {
+		if (getModelObject().isUsePhenoDataSetFieldDisplay()) {
 			// TODO: Have not implemented position support right now
-			customFieldDisplayPositionPanel = new EmptyPanel("customFieldDisplayPositionPanel");
+			phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
 		}
 		else {
-			customFieldDisplayPositionPanel = new EmptyPanel("customFieldDisplayPositionPanel");
+			phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
 		}
-		//customfield category order Number.
-		customeFieldCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
-		customeFieldCategoryOrderNoTxtFld.setOutputMarkupId(true);
-		customeFieldCategoryOrderNoTxtFld.setEnabled(false);
+		//phenoDataSetfield category order Number.
+		//phenoDataSetCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_PHENODATASET_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
+		//phenoDataSetCategoryOrderNoTxtFld.setOutputMarkupId(true);
+		//phenoDataSetCategoryOrderNoTxtFld.setEnabled(false);
 		initCategoryListChoiceContainer();
 		
 		//initCategoryPalette();
@@ -802,7 +790,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		missingValueEntryWMC.setOutputMarkupPlaceholderTag(true);
 
 		// unitType and encodedValues rely on fieldTypeDdc being already established
-		fieldEncodedValuesTxtFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_ENCODED_VALUES);
+		fieldEncodedValuesTxtFld = new TextArea<String>(Constants.FIELDVO_PHENODATASET_ENCODED_VALUES);
 		fieldEncodedValuesTxtFld.setOutputMarkupId(true);
 		fieldEncodedValuesTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
@@ -817,7 +805,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		// Have to Edit, before allowing delete
 		deleteButton.setEnabled(false);
 
-		defaultValueTextArea = new TextArea<String>("customField.defaultValue");
+		defaultValueTextArea = new TextArea<String>("phenoDataSetField.defaultValue");
 		
 		addDetailFormComponents();
 		attachValidators();
@@ -828,25 +816,25 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	}
 	
 	protected void attachValidators() {
-		fieldNameTxtFld.setRequired(true).setLabel((new StringResourceModel("customField.name.required", this, new Model<String>("Custom Field Name"))));
+		fieldNameTxtFld.setRequired(true).setLabel((new StringResourceModel("phenoDataSetField.name.required", this, new Model<String>("Custom Field Name"))));
 		// Enforce particular characters for fieldName
 		fieldNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
-		fieldTypeDdc.setRequired(true).setLabel((new StringResourceModel("customField.fieldType.required", this, new Model<String>("Custom Field Type"))));
+		fieldTypeDdc.setRequired(true).setLabel((new StringResourceModel("phenoDataSetField.fieldType.required", this, new Model<String>("Custom Field Type"))));
 		fieldLabelTxtAreaFld.add(StringValidator.maximumLength(255));
 
-		// TODO: Add correct validator, possibly custom with better validation message
+		// TODO: Add correct validator, possibly phenoDataSet with better validation message
 		fieldEncodedValuesTxtFld.add(new PatternValidator(au.org.theark.core.Constants.ENCODED_VALUES_PATTERN)).setLabel(
-				new StringResourceModel("customField.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
+				new StringResourceModel("phenoDataSetField.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
 	}
 
 	@Override
-	protected void onSave(Form<CustomFieldVO> containerForm, AjaxRequestTarget target) {
-		// NB: creating/updating the customFieldDisplay will be tied to the customField by the service
-		if (getModelObject().getCustomField().getId() == null) {
+	protected void onSave(Form<PhenoDataSetFieldVO> containerForm, AjaxRequestTarget target) {
+		// NB: creating/updating the phenoDataSetFieldDisplay will be tied to the phenoDataSetField by the service
+		if (getModelObject().getPhenoDataSetField().getId() == null) {
 			// Save the Field
 			try {
-				iArkCommonService.createCustomField(getModelObject());
-				this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
+				iPhenotypicService.createPhenoDataSetField(getModelObject());
+				this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
@@ -854,7 +842,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				e.printStackTrace();
 			}
 			catch (ArkUniqueException e) {
-				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
+				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
 				e.printStackTrace();
 			}
 			processErrors(target);
@@ -862,8 +850,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		else {
 			// Update the Field
 			try {
-				iArkCommonService.updateCustomField(getModelObject());
-				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
+				iPhenotypicService.updatePhenoDataSetField(getModelObject());
+				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
@@ -871,7 +859,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				e.printStackTrace();
 			}
 			catch (ArkUniqueException e) {
-				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
+				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
 				e.printStackTrace();
 			}
 			processErrors(target);
@@ -889,8 +877,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
-			iArkCommonService.deleteCustomField(getModelObject());
-			this.info("Field " + getModelObject().getCustomField().getName() + " was deleted successfully");
+			iPhenotypicService.deletePhenoDataSetField(getModelObject());
+			this.info("Field " + getModelObject().getPhenoDataSetField().getName() + " was deleted successfully");
 		}
 		catch (ArkSystemException e) {
 			this.error(e.getMessage());
@@ -917,7 +905,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 */
 	@Override
 	protected boolean isNew() {
-		if (getModelObject().getCustomField().getId() == null) {
+		if (getModelObject().getPhenoDataSetField().getId() == null) {
 			return true;
 		}
 		else {
@@ -927,7 +915,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	}
 
 	// Allow the model for the CustomFieldGroups to be assessed (but not allow it be to be set)
-	public IModel<List<CustomFieldGroup>> getCfGroupDdcListModel() {
+	public IModel<List<PhenoDataSetGroup>> getCfGroupDdcListModel() {
 		return cfGroupDdcListModel;
 	}
 
@@ -938,7 +926,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 */
 	@Override
 	protected void addDetailFormComponents() {
-		customFieldDetailWMC = new WebMarkupContainer("customFieldDetailWMC");
+		phenoDataSetDetailWMC = new WebMarkupContainer("phenoDataSetFieldDetailWMC");
 		//Add new panels to handle the Unit Type changes.
 		panelCustomUnitTypeDropDown=new WebMarkupContainer("panelCustomUnitTypeDropDown");
 		panelCustomUnitTypeDropDown.setOutputMarkupId(true);
@@ -953,40 +941,40 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			panelCustomUnitTypeDropDown.setVisible(true);
 			panelCustomUnitTypeText.setVisible(false);
 		}
-		customFieldDetailWMC.setOutputMarkupPlaceholderTag(true);
-		customFieldDetailWMC.add(fieldIdTxtFld.setEnabled(false)); // Disable ID field editing
-		customFieldDetailWMC.add(fieldNameTxtFld);
-		customFieldDetailWMC.add(fieldDescriptionTxtAreaFld);
-		customFieldDetailWMC.add(fieldTypeDdc);
+		phenoDataSetDetailWMC.setOutputMarkupPlaceholderTag(true);
+		phenoDataSetDetailWMC.add(fieldIdTxtFld.setEnabled(false)); // Disable ID field editing
+		phenoDataSetDetailWMC.add(fieldNameTxtFld);
+		phenoDataSetDetailWMC.add(fieldDescriptionTxtAreaFld);
+		phenoDataSetDetailWMC.add(fieldTypeDdc);
 		
-		//panelCustomFieldTypeDropDown.add(customFieldTypeDdc);
-		//customFieldDetailWMC.add(panelCustomFieldTypeDropDown);
+		//panelCustomFieldTypeDropDown.add(phenoDataSetFieldTypeDdc);
+		//phenoDataSetFieldDetailWMC.add(panelCustomFieldTypeDropDown);
 		//Add category and order number.
-		//categoryPanel.add(customeFieldCategoryDdc);
-		//customFieldDetailWMC.add(categoryPanel);
-		//orderNumberPanel.add(customeFieldCategoryOrderNoTxtFld);
-		//customFieldDetailWMC.add(orderNumberPanel);
+		//categoryPanel.add(phenoDataSetCategoryDdc);
+		//phenoDataSetFieldDetailWMC.add(categoryPanel);
+		//orderNumberPanel.add(phenoDataSetCategoryOrderNoTxtFld);
+		//phenoDataSetFieldDetailWMC.add(orderNumberPanel);
 		//Unit type changes
 		panelCustomUnitTypeDropDown.add(fieldUnitTypeDdc);
-		customFieldDetailWMC.add(panelCustomUnitTypeDropDown);
+		phenoDataSetDetailWMC.add(panelCustomUnitTypeDropDown);
 		panelCustomUnitTypeText.add(fieldUnitTypeTxtFld);
-		customFieldDetailWMC.add(panelCustomUnitTypeText);
+		phenoDataSetDetailWMC.add(panelCustomUnitTypeText);
 		//End of Unit type changes.
-		customFieldDetailWMC.add(minMaxValueEntryWMC);
-		customFieldDetailWMC.add(fieldEncodedValuesTxtFld);
-		//customFieldDetailWMC.add(fieldMissingValueTxtFld);
-		customFieldDetailWMC.add(missingValueEntryWMC);
-		customFieldDetailWMC.add(fieldLabelTxtAreaFld);
-		customFieldDetailWMC.add(defaultValueTextArea);
-		customFieldDisplayDetailWMC = new WebMarkupContainer("customFieldDisplayDetailWMC");
-		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
-		customFieldDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
-		customFieldDisplayDetailWMC.add(fieldAllowMultiselectChkBox);
+		phenoDataSetDetailWMC.add(minMaxValueEntryWMC);
+		phenoDataSetDetailWMC.add(fieldEncodedValuesTxtFld);
+		//phenoDataSetFieldDetailWMC.add(fieldMissingValueTxtFld);
+		phenoDataSetDetailWMC.add(missingValueEntryWMC);
+		phenoDataSetDetailWMC.add(fieldLabelTxtAreaFld);
+		phenoDataSetDetailWMC.add(defaultValueTextArea);
+		phenoDataSetDisplayDetailWMC = new WebMarkupContainer("phenoDataSetFieldDisplayDetailWMC");
+		phenoDataSetDisplayDetailWMC.add(phenoDataSetDisplayPositionPanel);
+		phenoDataSetDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
+		phenoDataSetDisplayDetailWMC.add(fieldAllowMultiselectChkBox);
 		
-		// customFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
+		// phenoDataSetFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
 		// Only show these fields if necessary...
-		if (getModelObject().isUseCustomFieldDisplay() == false) {
-			customFieldDisplayDetailWMC.setVisible(false);
+		if (getModelObject().isUsePhenoDataSetFieldDisplay() == false) {
+			phenoDataSetDisplayDetailWMC.setVisible(false);
 		}
 		
 		/*phenoDataSetCategoryDetailWMC= new WebMarkupContainer("phenoDataSetCategoryDetailWMC");
@@ -995,21 +983,21 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		
 		phenoDataSetListchoiceCategoryDetailWMC=new WebMarkupContainer("phenoDataSetListchoiceCategoryDetailWMC");
 		phenoDataSetListchoiceCategoryDetailWMC.setOutputMarkupPlaceholderTag(true);
-		phenoDataSetListchoiceCategoryDetailWMC.add(customFieldCategoryAvailableListChoice);
+		phenoDataSetListchoiceCategoryDetailWMC.add(phenoDataSetCategoryAvailableListChoice);
 		phenoDataSetListchoiceCategoryDetailWMC.add(addButtonFL);
 		phenoDataSetListchoiceCategoryDetailWMC.add(removeButtonFL);
-		phenoDataSetListchoiceCategoryDetailWMC.add(customFieldCategoryFirstLevelListChoice);
+		phenoDataSetListchoiceCategoryDetailWMC.add(phenoDataSetCategoryFirstLevelListChoice);
 		phenoDataSetListchoiceCategoryDetailWMC.add(addButtonLL);
 		phenoDataSetListchoiceCategoryDetailWMC.add(removeButtonLL);
 		phenoDataSetListchoiceCategoryDetailWMC.add(upButton);
 		phenoDataSetListchoiceCategoryDetailWMC.add(downButton);
 		phenoDataSetListchoiceCategoryDetailWMC.add(leftButton);
 		phenoDataSetListchoiceCategoryDetailWMC.add(rightButton);
-		phenoDataSetListchoiceCategoryDetailWMC.add(customFieldCategoryLastLevelListChoice);
+		phenoDataSetListchoiceCategoryDetailWMC.add(phenoDataSetCategoryLastLevelListChoice);
 		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the
 		// detailPanelFormContainer being initialised only once at the top-level container panel.
-		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldDetailWMC);
-		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldDisplayDetailWMC);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(phenoDataSetDetailWMC);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(phenoDataSetDisplayDetailWMC);
 		//arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(phenoDataSetCategoryDetailWMC);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(phenoDataSetListchoiceCategoryDetailWMC);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
@@ -1017,51 +1005,50 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	
 	/**
 	 * Remove duplicates from list
-	 * @param customFieldLst
+	 * @param phenoDataSetFieldLst
 	 * @return
 	 */
-	private  List<CustomFieldCategory> removeDuplicates(List<CustomFieldCategory> customFieldLst){
-		Set<CustomFieldCategory> cusfieldCatSet=new HashSet<CustomFieldCategory>();
-		List<CustomFieldCategory> cusfieldCatLst=new ArrayList<CustomFieldCategory>();
-		cusfieldCatSet.addAll(customFieldLst);
+	private  List<PhenoDataSetCategory> removeDuplicates(List<PhenoDataSetCategory> phenoDataSetFieldLst){
+		Set<PhenoDataSetCategory> cusfieldCatSet=new HashSet<PhenoDataSetCategory>();
+		List<PhenoDataSetCategory> cusfieldCatLst=new ArrayList<PhenoDataSetCategory>();
+		cusfieldCatSet.addAll(phenoDataSetFieldLst);
 		cusfieldCatLst.addAll(cusfieldCatSet);
 				return cusfieldCatLst;
 	}
 	
-	private  List<CustomFieldCategory> sortLst(List<CustomFieldCategory> customFieldLst){
+	private  List<PhenoDataSetCategory> sortLst(List<PhenoDataSetCategory> phenoFieldLst){
 		//sort by order number.
-		Collections.sort(customFieldLst, new Comparator<CustomFieldCategory>(){
-		    public int compare(CustomFieldCategory custFieldCategory1, CustomFieldCategory custFieldCatCategory2) {
-		        return custFieldCategory1.getOrderNumber().compareTo(custFieldCatCategory2.getOrderNumber());
+		Collections.sort(phenoFieldLst, new Comparator<PhenoDataSetCategory>(){
+		    public int compare(PhenoDataSetCategory phenoFieldCat1, PhenoDataSetCategory phenoFieldFieldCat2) {
+		        return phenoFieldCat1.getOrderNumber().compareTo(phenoFieldFieldCat2.getOrderNumber());
 		    }
 		});
-				return customFieldLst;
+				return phenoFieldLst;
 	}
 	
 	/** This is for testing purpose please remove after that.
-	 * Get custom field category collection from model.
+	 * Get phenoDataSet field category collection from model.
 	 * @return
 	 */
-	private List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(){
+	private List<PhenoDataSetCategory> getAvailableAllCategoryListInStudy(){
 		
-		Study study =cpModel.getObject().getCustomField().getStudy();
-		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY);
-		
-		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT);
-		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
+		Study study =cpModel.getObject().getPhenoDataSetField().getStudy();
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_CATEGORY);
+	
+		Collection<PhenoDataSetCategory> phenoDataSetFieldCategoryCollection = null;
 		try {
-			customFieldCategoryCollection =  iArkCommonService.getAvailableAllCategoryListInStudyByCustomFieldType(study,arkFunction, customFieldType);
+			phenoDataSetFieldCategoryCollection =  iPhenotypicService.getAvailableAllCategoryListInStudy(study,arkFunction);
 		} catch (ArkSystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return (List<CustomFieldCategory>) customFieldCategoryCollection;
+		return (List<PhenoDataSetCategory>) phenoDataSetFieldCategoryCollection;
 	}
 	
-	private List<CustomFieldCategory> addChildrenWithoutDuplicates(List<CustomFieldCategory> exsistingLst,List<CustomFieldCategory> childrenLst){
-		for (CustomFieldCategory customFieldCategory : childrenLst) {
-			if(!exsistingLst.contains(customFieldCategory)){
-				exsistingLst.add(customFieldCategory);
+	private List<PhenoDataSetCategory> addChildrenWithoutDuplicates(List<PhenoDataSetCategory> exsistingLst,List<PhenoDataSetCategory> childrenLst){
+		for (PhenoDataSetCategory phenoDataSetCategory : childrenLst) {
+			if(!exsistingLst.contains(phenoDataSetCategory)){
+				exsistingLst.add(phenoDataSetCategory);
 			}
 		}
 		return exsistingLst;
@@ -1070,41 +1057,36 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	}
 	
 	/** This is for testing purpose please remove after that.
-	 * Get custom field category collection from model.
+	 * Get phenoDataSet field category collection from model.
 	 * @return
 	 */
-	private List<CustomFieldCategory> getMySortedSiblingList(CustomFieldCategory customFieldCategory){
+	private List<PhenoDataSetCategory> getMySortedSiblingList(PhenoDataSetCategory phenoDataSetFieldCategory){
 		
-		Study study =cpModel.getObject().getCustomField().getStudy();
-		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY);
-		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT);
-		return sortLst(iArkCommonService.getSiblingList(study, arkFunction, customFieldType, customFieldCategory));
+		Study study =cpModel.getObject().getPhenoDataSetField().getStudy();
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_CATEGORY);
+		return sortLst(iPhenotypicService.getSiblingList(study, arkFunction, phenoDataSetFieldCategory));
 		
 	}
 	/** This is for testing purpose please remove after that.
-	 * Get custom field category collection from model.
+	 * Get pheno field category collection from model.
 	 * @return
 	 */
-	private List<CustomFieldCategory> upButtonUpdateCustomfieldCategoryOrder(List<CustomFieldCategory> sortedSlibingLst,CustomFieldCategory customFieldCategory){
-		CustomFieldCategory aboveSibling=sortedSlibingLst.get(sortedSlibingLst.indexOf(customFieldCategory)-1);
-		List<CustomFieldCategory> updateList=new ArrayList<CustomFieldCategory>(0);
+	private List<PhenoDataSetCategory> upButtonUpdatePhenoFieldCategoryOrder(List<PhenoDataSetCategory> sortedSlibingLst,PhenoDataSetCategory phenoDataSetCategory){
+		PhenoDataSetCategory aboveSibling=sortedSlibingLst.get(sortedSlibingLst.indexOf(phenoDataSetCategory)-1);
+		List<PhenoDataSetCategory> updateList=new ArrayList<PhenoDataSetCategory>(0);
 		Long aboveSiblingOrdNumber=aboveSibling.getOrderNumber();
-			aboveSibling.setOrderNumber(customFieldCategory.getOrderNumber());
-			customFieldCategory.setOrderNumber(aboveSiblingOrdNumber);
-			CustomFieldCategoryVO updateCFCVoAbove = new CustomFieldCategoryVO();
-			CustomFieldCategoryVO updateCFCVoBelow = new CustomFieldCategoryVO();
-			updateCFCVoAbove.setCustomFieldCategory(aboveSibling);
+			aboveSibling.setOrderNumber(phenoDataSetCategory.getOrderNumber());
+			phenoDataSetCategory.setOrderNumber(aboveSiblingOrdNumber);
 			updateList.add(aboveSibling);
 			try {
-				iArkCommonService.mergeCustomFieldCategory(updateCFCVoAbove);
+				iPhenotypicService.mergePhenoDataSetFieldCategory(aboveSibling);
 			} catch (ArkSystemException | ArkRunTimeUniqueException
 					| ArkRunTimeException e) {
 				e.printStackTrace();
 			}
-			updateCFCVoBelow.setCustomFieldCategory(customFieldCategory);
-			updateList.add(customFieldCategory);
+			updateList.add(phenoDataSetCategory);
 			try {
-				iArkCommonService.mergeCustomFieldCategory(updateCFCVoBelow);
+				iPhenotypicService.mergePhenoDataSetFieldCategory(phenoDataSetCategory);
 			} catch (ArkSystemException | ArkRunTimeUniqueException
 					| ArkRunTimeException e) {
 				e.printStackTrace();
@@ -1112,29 +1094,25 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			return updateList;
 	}
 	/** This is for testing purpose please remove after that.
-	 * Get custom field category collection from model.
+	 * Get phenoDataSet field category collection from model.
 	 * @return
 	 */
-	private List<CustomFieldCategory> downButtonUpdateCustomfieldCategoryOrder(List<CustomFieldCategory> sortedSlibingLst,CustomFieldCategory customFieldCategory){
-		CustomFieldCategory benethSibling=sortedSlibingLst.get(sortedSlibingLst.indexOf(customFieldCategory)+1);
-		List<CustomFieldCategory> updateList=new ArrayList<CustomFieldCategory>(0);
+	private List<PhenoDataSetCategory> downButtonUpdatePhenoFieldCategoryOrder(List<PhenoDataSetCategory> sortedSlibingLst,PhenoDataSetCategory phenoDataSetCategory){
+		PhenoDataSetCategory benethSibling=sortedSlibingLst.get(sortedSlibingLst.indexOf(phenoDataSetCategory)+1);
+		List<PhenoDataSetCategory> updateList=new ArrayList<PhenoDataSetCategory>(0);
 		Long benethSiblingOrdNumber=benethSibling.getOrderNumber();
-			benethSibling.setOrderNumber(customFieldCategory.getOrderNumber());
-			customFieldCategory.setOrderNumber(benethSiblingOrdNumber);
-			CustomFieldCategoryVO updateCFCVoAbove = new CustomFieldCategoryVO();
-			CustomFieldCategoryVO updateCFCVoBelow = new CustomFieldCategoryVO();
-			updateCFCVoAbove.setCustomFieldCategory(benethSibling);
+			benethSibling.setOrderNumber(phenoDataSetCategory.getOrderNumber());
+			phenoDataSetCategory.setOrderNumber(benethSiblingOrdNumber);
 			updateList.add(benethSibling);
 			try {
-				iArkCommonService.mergeCustomFieldCategory(updateCFCVoAbove);
+				iPhenotypicService.mergePhenoDataSetFieldCategory(benethSibling);
 			} catch (ArkSystemException | ArkRunTimeUniqueException
 					| ArkRunTimeException e) {
 				e.printStackTrace();
 			}
-			updateCFCVoBelow.setCustomFieldCategory(customFieldCategory);
-			updateList.add(customFieldCategory);
+			updateList.add(phenoDataSetCategory);
 			try {
-				iArkCommonService.mergeCustomFieldCategory(updateCFCVoBelow);
+				iPhenotypicService.mergePhenoDataSetFieldCategory(phenoDataSetCategory);
 			} catch (ArkSystemException | ArkRunTimeUniqueException
 					| ArkRunTimeException e) {
 				e.printStackTrace();

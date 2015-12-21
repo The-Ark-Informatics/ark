@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -35,7 +36,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.util.CsvListReader;
-import au.org.theark.core.vo.CustomFieldCategoryVO;
 import au.org.theark.core.web.component.customfield.Constants;
 
 @Repository("customFieldDao")
@@ -254,6 +254,8 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	@SuppressWarnings("unchecked")
 	public List<FieldType> getFieldTypes() {
 		Criteria criteria = getSession().createCriteria(FieldType.class);
+		//Add on 21-12-2015 to hide the look up field type from user.
+		criteria.add(Restrictions.eq("visible", true));
 		List<FieldType> customFieldTypeList = (List<FieldType>) criteria.list();
 		return customFieldTypeList;
 	}
@@ -662,10 +664,16 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 	@Override
 	public List<CustomFieldType> getCustomFieldTypes(ArkModule arkModule) {
+		List<CustomFieldType> customFieldTypeNewList = new ArrayList<CustomFieldType>();
 		Criteria criteria = getSession().createCriteria(CustomFieldType.class);
 		criteria.add(Restrictions.eq("arkModule",arkModule));
 		List<CustomFieldType> customFieldTypeList = (List<CustomFieldType>) criteria.list();
-		return customFieldTypeList;
+		for (CustomFieldType customFieldType : customFieldTypeList) {
+			String name=customFieldType.getName().toLowerCase();
+			customFieldType.setName(WordUtils.capitalize(name));
+			customFieldTypeNewList.add(customFieldType);
+		}
+		return customFieldTypeNewList;
 	}
 	/**
 	 * Filter for search return distinct values of all the parent fields.
@@ -842,10 +850,6 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return null;
 	}
 
-	@Override
-	public void mergeCustomFieldCategory(CustomFieldCategory CustomFieldCategory)throws ArkSystemException {
-		getSession().merge(CustomFieldCategory);
-		
-	}
+	
 	
 }

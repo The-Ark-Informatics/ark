@@ -52,6 +52,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -748,7 +749,7 @@ public interface IArkCommonService<T> {
 
 	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate);
 
-	public List<ArkUser> getArkUserListByStudy(Study study);
+	public List<ArkUser> getArkUserListByStudy(ArkUser arkUser,Study study);
 
 	public List<Study> getParentStudyList();
 
@@ -1216,14 +1217,6 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public List<CustomFieldCategory> getSiblingList(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory customFieldCategory);
-	/**
-	 * Merged custom field categories.
-	 * @param CustomFieldCategoryVO
-	 * @throws ArkSystemException
-	 * @throws ArkRunTimeUniqueException
-	 * @throws ArkRunTimeException
-	 */
-	public void mergeCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO) throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException;
 	
 	/**
 	 * Get all the function and permission list for user.

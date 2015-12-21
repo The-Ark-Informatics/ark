@@ -32,12 +32,16 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -390,4 +394,128 @@ public interface IPhenotypicDao {
 	 * @return
 	 */
 	public boolean isThisPhenoDataSetCategoryWasAParentCategoryOfAnother(PhenoDataSetCategory phenoDataSetCategory);
+	/**
+	 * Get Pheno field data set by Id,
+	 * @param id
+	 * @return
+	 */
+	public PhenoDataSetField getPhenoDataSetField(Long id);
+	/**
+	 * Number of Pheno field count.
+	 * 
+	 * @param phenofieldcriteria
+	 * @return
+	 */
+	public long getPhenoFieldCount(PhenoDataSetField phenofieldcriteria);
+	/**
+	 * getPhenoDataSetFieldDisplayByPhenoDataSetField
+	 * 
+	 * @param cfCriteria
+	 * @return
+	 */
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSetField(PhenoDataSetField cfCriteria);
+	/**
+	 * getCategoriesListInPhenoDataSetField
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<PhenoDataSetCategory> getCategoriesListInPhenoDataSetField(Study study, ArkFunction arkFunction) throws ArkSystemException;
+	/**
+	 * searchPageablePhenoFields
+	 * 
+	 * @param phenoDataSetCriteria
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count);
+	/**
+	 * searchPageablePhenoFields
+	 * 
+	 * @param pheDataSetFieldCriteria
+	 * @return
+	 */
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSet(PhenoDataSetField pheDataSetFieldCriteria);
+	/**
+	 * getAvailableAllCategoryListInStudy
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<PhenoDataSetCategory> getAvailableAllCategoryListInStudy(Study study, ArkFunction arkFunction)throws ArkSystemException;
+	/**
+	 * 
+	 * @param phenoFieldName
+	 * @param study
+	 * @param phenoFieldToUpdate
+	 * @return
+	 */
+	public boolean isPhenoDataSetFieldUnqiue(String phenoFieldName, Study study, PhenoDataSetField phenoFieldToUpdate);
+	/**
+	 * 
+	 * @param phenoDataSetField
+	 * @throws ArkSystemException
+	 */
+	public void updatePhenoDataSetField(PhenoDataSetField phenoDataSetField) throws  ArkSystemException;
+	
+	/**
+	 * 
+	 * @param phenDataSetFieldDisplay
+	 * @throws ArkSystemException
+	 */
+	public void updatePhenoDataSetFieldDisplay(PhenoDataSetFieldDisplay phenDataSetFieldDisplay) throws  ArkSystemException;
+	/**
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @param phenoDataSetCategory
+	 * @return
+	 */
+	public List<PhenoDataSetCategory> getSiblingList(Study study,ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory);
+	/**
+	 * 
+	 * @param CustomFieldCategory
+	 * @throws ArkSystemException
+	 */
+	public void mergePhenoDataSetFieldCategory(PhenoDataSetCategory phenoDataSetCategory)throws ArkSystemException;
+	
+	/**
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @param parentcustomFieldCategory
+	 * @return
+	 */
+	public List<PhenoDataSetCategory> getAllSubCategoriesOfThisCategory(Study study,ArkFunction arkFunction,PhenoDataSetCategory parentcustomFieldCategory);
+	/**
+	 * 
+	 * @param phenoDataSetField
+	 * @throws ArkSystemException
+	 */
+	public void deletePhenoDataSetField(PhenoDataSetField phenoDataSetField) throws ArkSystemException;
+	/**
+	 * 
+	 * @param phenoDataSetFieldDisplay
+	 * @throws ArkSystemException
+	 */
+	public void deletePhenoDataSetFieldDisplay(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) throws ArkSystemException;
+	/**
+	 * 
+	 * @param phenoDataSetField
+	 * @throws ArkSystemException
+	 */
+	public void createPhenoDataSetField(PhenoDataSetField phenoDataSetField)throws ArkSystemException;
+	/**
+	 * 
+	 * @param phenoDataSetFieldDisplay
+	 * @throws ArkSystemException
+	 */
+	public void createPhenoDataSetFieldDisplay(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay)throws ArkSystemException;
+	
+	
 }

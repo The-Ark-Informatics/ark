@@ -59,6 +59,8 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.AuditHistory;
@@ -66,6 +68,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -2117,4 +2120,198 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			return false;
 		}
 	}
+	public PhenoDataSetField getPhenoDataSetField(Long id){
+		Criteria criteria = getSession().createCriteria(PhenoDataSetField.class);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setMaxResults(1);
+		return (PhenoDataSetField)criteria.uniqueResult();	
+	}
+	public long getPhenoFieldCount(PhenoDataSetField phenofieldcriteria) {
+		// Handle for study or function not in context
+		if (phenofieldcriteria.getStudy() == null || phenofieldcriteria.getArkFunction() == null) {
+				return 0;
+		}
+			Criteria criteria = buildGeneralPhenoFieldCritera(phenofieldcriteria);
+			criteria.setProjection(Projections.rowCount());
+			Long totalCount = (Long) criteria.uniqueResult();
+			return totalCount;
+	}
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSetField(PhenoDataSetField cfCriteria){
+		Criteria criteria = getSession().createCriteria(PhenoDataSetFieldDisplay.class);
+		criteria.add(Restrictions.eq("phenoDataSetField.id", cfCriteria.getId()));
+		criteria.setMaxResults(1);
+		return (PhenoDataSetFieldDisplay)criteria.uniqueResult();
+	}
+	/**
+	 * Search method to the  fileds.
+	 * @param phenoDataSet
+	 * @return
+	 */
+	protected Criteria buildGeneralPhenoFieldCritera(PhenoDataSetField phenoDataSetField) {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetField.class);
+		
+		criteria.add(Restrictions.eq("study", phenoDataSetField.getStudy()));
+		criteria.add(Restrictions.eq("arkFunction", phenoDataSetField.getArkFunction()));
+		
+		
+		if(phenoDataSetField.getFieldType()!=null){
+			criteria.add(Restrictions.eq("fieldType", phenoDataSetField.getFieldType()));
+		}
+		if (phenoDataSetField.getId() != null) {
+			criteria.add(Restrictions.eq("id", phenoDataSetField.getId()));
+		}
+		if (phenoDataSetField.getName() != null) {
+			criteria.add(Restrictions.ilike("name", phenoDataSetField.getName(), MatchMode.ANYWHERE));
+		}
+		if (phenoDataSetField.getDescription() != null) {
+			criteria.add(Restrictions.ilike("description", phenoDataSetField.getDescription(), MatchMode.ANYWHERE));
+		}
+		if (phenoDataSetField.getUnitType() != null && phenoDataSetField.getUnitType().getName() != null && phenoDataSetField.getUnitTypeInText() !=null) {
+			criteria.createAlias("unitType", "ut");
+			criteria.add(Restrictions.ilike("ut.name", phenoDataSetField.getUnitType().getName(), MatchMode.ANYWHERE));
+		}
+		if(phenoDataSetField.getUnitTypeInText() !=null){
+			criteria.add(Restrictions.ilike("unitTypeInText", phenoDataSetField.getUnitTypeInText(),MatchMode.ANYWHERE));
+		}
+		if (phenoDataSetField.getMinValue() != null) {
+			criteria.add(Restrictions.ilike("minValue", phenoDataSetField.getMinValue(), MatchMode.ANYWHERE));
+		}
+		if (phenoDataSetField.getMaxValue() != null) {
+			criteria.add(Restrictions.ilike("maxValue", phenoDataSetField.getMaxValue(), MatchMode.ANYWHERE));
+		}
+		return criteria;
+	}
+	
+	@Override
+	public List<PhenoDataSetCategory> getCategoriesListInPhenoDataSetField(Study study, ArkFunction arkFunction) throws ArkSystemException {
+		List<PhenoDataSetCategory> phenoDataSetCategories= new ArrayList<PhenoDataSetCategory>();
+		
+		return phenoDataSetCategories;
+	}
+	@SuppressWarnings("unchecked")
+	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count) {
+		Criteria criteria = buildGeneralPhenoFieldCritera(phenoDataSetCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		criteria.addOrder(Order.asc("name"));
+		List<PhenoDataSetField> phenoDataSetList = (List<PhenoDataSetField>) criteria.list();
+		return phenoDataSetList;
+	}
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSet(PhenoDataSetField pheDataSetFieldCriteria){
+		Criteria criteria = getSession().createCriteria(PhenoDataSetFieldDisplay.class);
+		criteria.add(Restrictions.eq("phenoDataSetField.id", pheDataSetFieldCriteria.getId()));
+		criteria.setMaxResults(1);
+		return (PhenoDataSetFieldDisplay)criteria.uniqueResult();
+	}
+	
+	@Override
+	public List<PhenoDataSetCategory> getAvailableAllCategoryListInStudy(Study study, ArkFunction arkFunction)throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCategory.class);
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("study", study));
+		List<PhenoDataSetCategory> phenoFiedCategoryList = (List<PhenoDataSetCategory>) criteria.list();
+		return phenoFiedCategoryList;
+		
+	}
+	public boolean isPhenoDataSetFieldUnqiue(String phenoFieldName, Study study, PhenoDataSetField phenoFieldToUpdate){
+		boolean isUnique = true;
+		StatelessSession stateLessSession = getStatelessSession();
+		Criteria criteria = stateLessSession.createCriteria(PhenoDataSetField.class);
+		criteria.add(Restrictions.eq("name", phenoFieldName));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", phenoFieldToUpdate.getArkFunction()));
+		criteria.setMaxResults(1);
+		
+		PhenoDataSetField existingField = (PhenoDataSetField) criteria.uniqueResult();
+		
+		if( (phenoFieldToUpdate.getId() != null && phenoFieldToUpdate.getId() > 0)){
+			
+			if(existingField != null && !phenoFieldToUpdate.getId().equals(existingField.getId())){
+				isUnique = false;
+			}
+		}else{
+			if(existingField != null){
+				isUnique = false;
+			}
+		}
+		stateLessSession.close();
+		return isUnique;
+	}
+	public void updatePhenoDataSetField(PhenoDataSetField phenoDataSetField) throws  ArkSystemException{
+		if(phenoDataSetField.getFieldType().getName().equals(Constants.FIELD_TYPE_NUMBER)) {
+			if(phenoDataSetField.getMinValue()!=null){
+				phenoDataSetField.setMinValue(phenoDataSetField.getMinValue().replace(",",""));				
+			}
+			if(phenoDataSetField.getMaxValue()!=null){
+				phenoDataSetField.setMaxValue(phenoDataSetField.getMaxValue().replace(",",""));
+			}
+		}
+		getSession().update(phenoDataSetField);
+	}
+	
+	public void updatePhenoDataSetDisplay(PhenoDataSetFieldDisplay phenDataSetFieldDisplay) throws  ArkSystemException{
+		if(!phenDataSetFieldDisplay.getRequired()){
+			phenDataSetFieldDisplay.setRequiredMessage(null);
+		}
+		getSession().update(phenDataSetFieldDisplay);
+	}
+	
+	@Override
+	public List<PhenoDataSetCategory> getSiblingList(Study study,ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory){
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCategory.class);
+		if(phenoDataSetCategory.getParentCategory()!=null){
+			criteria.add(Restrictions.eq("study", study));
+			criteria.add(Restrictions.eq("arkFunction", arkFunction));
+			criteria.add(Restrictions.eq("parentCategory", phenoDataSetCategory.getParentCategory()));
+			return (List<PhenoDataSetCategory>) criteria.list();
+		}
+		return null;
+	}
+	@Override
+	public void mergePhenoDataSetFieldCategory(PhenoDataSetCategory phenoDataSetCategory)throws ArkSystemException {
+		getSession().merge(phenoDataSetCategory);
+		
+	}
+	public List<PhenoDataSetCategory> getAllSubCategoriesOfThisCategory(Study study,ArkFunction arkFunction,PhenoDataSetCategory parentphenoDataSetFieldCategory){
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCategory.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("parentCategory", parentphenoDataSetFieldCategory));
+		return  (List<PhenoDataSetCategory>) criteria.list();
+		
+	}
+	/**
+	 * 
+	 */
+	public void deletePhenoDataSetField(PhenoDataSetField phenoDataSetField) throws ArkSystemException{
+		getSession().delete(phenoDataSetField);
+	}
+	/**
+	 * 
+	 */
+	public void deletePhenoDataSetFieldDisplay(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) throws ArkSystemException{
+		getSession().delete(phenoDataSetFieldDisplay);
+	}
+	/**
+	 * 
+	 */
+	public void createPhenoDataSetField(PhenoDataSetField phenoDataSetField)throws ArkSystemException{
+		getSession().save(phenoDataSetField);
+	}
+	/**
+	 * 
+	 */
+	public void createPhenoDataSetFieldDisplay(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay)throws ArkSystemException{
+		getSession().save(phenoDataSetFieldDisplay);
+	}
+	/**
+	 * 
+	 * @param phenoDataSetFieldDisplay
+	 * @throws ArkSystemException
+	 */
+	public void updatePhenoDataSetFieldDisplay(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay)throws ArkSystemException{
+		getSession().update(phenoDataSetFieldDisplay);
+		
+	}
+	
 }

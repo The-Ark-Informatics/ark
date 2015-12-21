@@ -21,6 +21,7 @@ package au.org.theark.phenotypic.web.component.phenodatadictionary.form;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.core.web.form.AbstractContainerForm;
 
 /**
@@ -28,9 +29,9 @@ import au.org.theark.core.web.form.AbstractContainerForm;
  * 
  */
 @SuppressWarnings("serial")
-public class ContainerForm extends AbstractContainerForm<CustomFieldVO> {
+public class ContainerForm extends AbstractContainerForm<PhenoDataSetFieldVO> {
 
-	public ContainerForm(String id, CompoundPropertyModel<CustomFieldVO> model) {
+	public ContainerForm(String id, CompoundPropertyModel<PhenoDataSetFieldVO> model) {
 		super(id, model);
 	}
 

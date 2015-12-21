@@ -1114,17 +1114,21 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ArkUser> getArkUserListByStudy(Study study) {
-		List<ArkUser> arkUserList = new ArrayList<ArkUser>(0);
-		
-		if(study != null && study.getId() != null) {
+	public List<ArkUser> getArkUserListByStudy(ArkUser arkUser,Study study) {
 			Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-			criteria.add(Restrictions.eq("study", study));
-			criteria.setProjection(Projections.groupProperty("arkUser"));
-			arkUserList = criteria.list();
-		}
-		
-		return arkUserList;
+			// Restrict by user if NOT Super Administrator
+			try {
+				if (!isUserAdminHelper(arkUser.getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+					criteria.add(Restrictions.eq("study", study));
+				}
+			} catch (EntityNotFoundException e) {
+				log.info("User Name doen not exsists");
+			}
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.groupProperty("arkUser"), "arkUser");
+			criteria.setProjection(projectionList);
+			//Added on 2015-12-10 filter study wise users.
+		return	(List<ArkUser>)criteria.list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1222,6 +1226,24 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			arkPermissionLst.add(arkRolePol.getArkPermission());
 		}
 		return arkPermissionLst;
+	}
+	
+	/**
+	 * This method will update the ark user role for a study for a existing user.
+	 * @param arkUserVO
+	 */
+	public void updateArkUserRoleListForExsistingUser(ArkUserVO arkUserVO) {
+		Session session = getSession();
+		List<ArkUserRole> arkUserRoleList = arkUserVO.getArkUserRoleList();
+		for (ArkUserRole arkUserRole : arkUserRoleList) {
+			if (arkUserRole.getArkRole() != null) {
+				arkUserRole.setArkUser(arkUserVO.getArkUserEntity());
+				session.save(arkUserRole);
+			}
+		}
+		for (UserConfig config : arkUserVO.getArkUserConfigs()) {
+			session.update(config);
+		}
 	}
 	
 }

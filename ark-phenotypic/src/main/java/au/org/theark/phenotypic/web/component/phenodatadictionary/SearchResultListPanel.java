@@ -38,11 +38,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.export.ExportToolbar;
@@ -57,7 +58,7 @@ import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 public class SearchResultListPanel extends Panel {
 
 	private static final long							serialVersionUID	= -1L;
-	private CompoundPropertyModel<CustomFieldVO>		cpModel;
+	private CompoundPropertyModel<PhenoDataSetFieldVO>		cpModel;
 	private FeedbackPanel								feedbackPanel;
 	private ArkCrudContainerVO							arkCrudContainerVO;
 
@@ -74,7 +75,7 @@ public class SearchResultListPanel extends Panel {
 	 * @param feedBackPanel
 	 * @param unitTypeDropDownOn
 	 */
-	public SearchResultListPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
+	public SearchResultListPanel(String id, CompoundPropertyModel<PhenoDataSetFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id);
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
@@ -82,58 +83,37 @@ public class SearchResultListPanel extends Panel {
 		
 	}
 
-	public DataView<CustomField> buildDataView(ArkDataProvider2<CustomField, CustomField> subjectProvider) {
+	public DataView<PhenoDataSetField> buildDataView(ArkDataProvider2<PhenoDataSetField, PhenoDataSetField> subjectProvider) {
 
-		DataView<CustomField> customFieldDataView = new DataView<CustomField>("customFieldList", subjectProvider) {
+		DataView<PhenoDataSetField> phonoFieldDataView = new DataView<PhenoDataSetField>("phenoDataSetFieldLst", subjectProvider) {
 
 			@Override
-			protected void populateItem(final Item<CustomField> item) {
-				CustomField field = item.getModelObject();
+			protected void populateItem(final Item<PhenoDataSetField> item) {
+				PhenoDataSetField field = item.getModelObject();
 
 				if (field.getId() != null) {
 					// Add the id component here
-					item.add(new Label(Constants.CUSTOMFIELD_ID, field.getId().toString()));
+					item.add(new Label(Constants.PHENODATASET_ID, field.getId().toString()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_ID, ""));
+					item.add(new Label(Constants.PHENODATASET_ID, ""));
 				}
 
 				// Component Name Link
 				item.add(buildLinkWMC(item));
 				// Field Type
 				if (field.getFieldType() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, field.getFieldType().getName()));
+					item.add(new Label(Constants.PHENODATASET_FIELD_TYPE, field.getFieldType().getName()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, ""));
+					item.add(new Label(Constants.PHENODATASET_FIELD_TYPE, ""));
 				}
 				// Field Label
 				if (field.getFieldLabel() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_FIELD_LABEL, field.getFieldLabel()));
+					item.add(new Label(Constants.PHENODATASET_FIELD_LABEL, field.getFieldLabel()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_FIELD_LABEL, ""));
-				}
-				// custom field type
-				/*if (field.getCustomFieldType() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_CUSTOME_FIELD_TYPE, field.getCustomFieldType().getName()));
-				}
-				else {
-					item.add(new Label(Constants.CUSTOMFIELD_CUSTOME_FIELD_TYPE, ""));
-				}*/
-				//custom file category
-				if (field.getCustomFieldCategory() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_CATEGORY, field.getCustomFieldCategory().getName()));
-				}
-				else {
-					item.add(new Label(Constants.CUSTOMFIELD_CATEGORY, ""));
-				}
-				//custom file category order number
-				if (field.getCustomFieldCategory()!=null && field.getCustomFieldCategory().getOrderNumber() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_CATEGORY_ORDERNUMBER, field.getCustomFieldCategory().getOrderNumber().toString()));
-				}
-				else {
-					item.add(new Label(Constants.CUSTOMFIELD_CATEGORY_ORDERNUMBER, ""));
+					item.add(new Label(Constants.PHENODATASET_FIELD_LABEL, ""));
 				}
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
@@ -146,22 +126,22 @@ public class SearchResultListPanel extends Panel {
 			}
 		};
 
-		addToolbars(customFieldDataView);
+		addToolbars(phonoFieldDataView);
 
-		return customFieldDataView;
+		return phonoFieldDataView;
 	}
 
-	private WebMarkupContainer buildLinkWMC(final Item<CustomField> item) {
+	private WebMarkupContainer buildLinkWMC(final Item<PhenoDataSetField> item) {
 
-		WebMarkupContainer customfieldLinkWMC = new WebMarkupContainer("customfieldLinkWMC", item.getModel());
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.CUSTOMFIELD_NAME) {
+		WebMarkupContainer phenoDataSetfieldLinkWMC = new WebMarkupContainer("phenoDataSetfieldLinkWMC", item.getModel());
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.PHENODATASET_NAME) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				// Sets the selected object into the model
-				CustomField cf = (CustomField) (getParent().getDefaultModelObject());
-				CompoundPropertyModel<CustomFieldVO> newModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
-				newModel.getObject().setCustomField(cf);
-				newModel.getObject().setUseCustomFieldDisplay(cpModel.getObject().isUseCustomFieldDisplay());
+				PhenoDataSetField phenoField = (PhenoDataSetField) (getParent().getDefaultModelObject());
+				CompoundPropertyModel<PhenoDataSetFieldVO> newModel = new CompoundPropertyModel<PhenoDataSetFieldVO>(new PhenoDataSetFieldVO());
+				newModel.getObject().setPhenoDataSetField(phenoField);
+				newModel.getObject().setUsePhenoDataSetFieldDisplay(cpModel.getObject().isUsePhenoDataSetFieldDisplay());
 
 				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
 						//unitTypeDropDownOn,subjectCustomField);
@@ -172,26 +152,26 @@ public class SearchResultListPanel extends Panel {
 		};
 
 		// Add the label for the link
-		CustomField field = item.getModelObject();
+		PhenoDataSetField field = item.getModelObject();
 		Label nameLinkLabel = new Label("nameLbl", field.getName());
 		link.add(nameLinkLabel);
-		customfieldLinkWMC.add(link);
-		return customfieldLinkWMC;
+		phenoDataSetfieldLinkWMC.add(link);
+		return phenoDataSetfieldLinkWMC;
 	}
 
-	private void addToolbars(DataView<CustomField> customFieldDataView) {
-		List<IColumn<CustomField>> columns = new ArrayList<IColumn<CustomField>>();
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("name"), "name"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("fieldType"), "fieldType.name"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("description"), "description"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("fieldLabel"), "fieldLabel"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("unitType"), "unitType.name"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("encodedValues"), "encodedValues"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("minValue"), "minValue"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("maxValue"), "maxValue"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("missingValue"), "missingValue"));
+	private void addToolbars(DataView<PhenoDataSetField> phenoDataSetFieldDataView) {
+		List<IColumn<PhenoDataSetField>> columns = new ArrayList<IColumn<PhenoDataSetField>>();
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("name"), "name"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("fieldType"), "fieldType.name"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("description"), "description"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("fieldLabel"), "fieldLabel"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("unitType"), "unitType.name"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("encodedValues"), "encodedValues"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("minValue"), "minValue"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("maxValue"), "maxValue"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("missingValue"), "missingValue"));
 
-		DataTable table = new DataTable("datatable", columns, customFieldDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
+		DataTable table = new DataTable("datatable", columns, phenoDataSetFieldDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("FIELD_NAME");
 		headers.add("FIELD_TYPE");
@@ -203,7 +183,7 @@ public class SearchResultListPanel extends Panel {
 		headers.add("MAXIMUM_VALUE");
 		headers.add("MISSING_VALUE");
 
-		String filename = "data_dictionary";
+		String filename = "pheno_data_dictionary";
 		RepeatingView toolbars = new RepeatingView("toolbars");
 		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
 		toolbars.add(new Component[] { exportToolBar });

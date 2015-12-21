@@ -23,7 +23,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.phenotypic.web.component.phenodatadictionary.form.DetailForm;
 
 
@@ -36,12 +36,12 @@ public class DetailPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 	private DetailForm			detailForm;
 	private FeedbackPanel		feedbackPanel;
-	private CompoundPropertyModel<CustomFieldVO> cpModel;
+	private CompoundPropertyModel<PhenoDataSetFieldVO> cpModel;
 	private ArkCrudContainerVO arkCrudContainerVO;
 	
 
-	public DetailPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO
-			){//boolean unitTypeDropDownOn, boolean subjectCustomField) {
+	public DetailPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<PhenoDataSetFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO
+			){
 		super(id, cpModel);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = cpModel;

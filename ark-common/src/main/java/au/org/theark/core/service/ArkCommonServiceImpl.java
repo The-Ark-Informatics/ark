@@ -94,6 +94,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -192,6 +193,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private JavaMailSender javaMailSender;
 	private VelocityEngine velocityEngine;
 	private IGenoDao genoDao;
+	
 	
 	
 	@Value("${file.attachment.dir}")
@@ -1164,8 +1166,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		studyDao.updateBioCollectionUidTemplate(bioCollectionUidTemplate);
 	}
 
-	public List<ArkUser> getArkUserListByStudy(Study study) {
-		return arkAuthorisationDao.getArkUserListByStudy(study);
+	public List<ArkUser> getArkUserListByStudy(ArkUser arkUser,Study study) {
+		return arkAuthorisationDao.getArkUserListByStudy(arkUser,study);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -2022,11 +2024,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public void mergeCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException {
-		customFieldDao.mergeCustomFieldCategory(CustomFieldCategoryVO.getCustomFieldCategory());
-	}
-
-	@Override
 	public List<ArkRolePolicyTemplate> getArkRolePolicytemplateList(ArkUserVO arkUserVO) {
 		List<ArkRolePolicyTemplate> allArkRolePolicyTemplates=new ArrayList<ArkRolePolicyTemplate>();
 		List<ArkUserRole> roleLst=arkUserVO.getArkUserRoleList();
@@ -2052,7 +2049,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		 return new ArrayList<ArkRolePolicyTemplate>(new LinkedHashSet<ArkRolePolicyTemplate>(fieldLst));
 		
 	}
-	
 	
 	
 }

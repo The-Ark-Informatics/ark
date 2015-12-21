@@ -1,5 +1,6 @@
 package au.org.theark.core.model.pheno.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,9 +29,11 @@ import au.org.theark.core.model.study.entity.UnitType;
 @Entity
 @Table(name = "PHENO_DATASET_FIELD", schema = Constants.PHENO_TABLE_SCHEMA)
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-public class PhenoDataSetField {
-	
-	
+public class PhenoDataSetField implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
 	private String description;

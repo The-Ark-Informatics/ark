@@ -32,6 +32,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.Constants;
+import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -43,12 +45,16 @@ import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -59,17 +65,21 @@ import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.vo.PhenoDataSetCategoryVO;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
 import au.org.theark.phenotypic.util.CustomDataUploader;
 
 @Transactional
 @Service("phenotypicService")
 public class PhenotypicServiceImpl implements IPhenotypicService {
+	
+	
 	static final Logger log = LoggerFactory
 			.getLogger(PhenotypicServiceImpl.class);
 
 	private IArkCommonService<Void> iArkCommonService;
 	private IPhenotypicDao phenotypicDao;
+	private IStudyDao studyDao;
 
 	@Autowired
 	public void setiArkCommonService(IArkCommonService<Void> iArkCommonService) {
@@ -79,6 +89,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	@Autowired
 	public void setPhenotypicDao(IPhenotypicDao phenotypicDao) {
 		this.phenotypicDao = phenotypicDao;
+	}
+	@Autowired
+	public void setStudyoDao(IStudyDao studyDao) {
+		this.studyDao = studyDao;
 	}
 
 	/**
@@ -893,8 +907,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 
 	public QuestionnaireStatus getDefaultPhenoCollectionStatus() {
-		return phenotypicDao
-				.getPhenoCollectionStatusByName(Constants.PHENOCOLLECTION_STATUS_IN_PROGRESS);
+		return phenotypicDao.getPhenoCollectionStatusByName(au.org.theark.phenotypic.service.Constants.PHENOCOLLECTION_STATUS_IN_PROGRESS);
 	}
 
 	public java.util.Collection<Upload> searchUpload(Upload upload) {
@@ -1014,7 +1027,7 @@ try {
 			phenoDataSetCategoryvo.getPhenoDataSetCategory().getName().toUpperCase();
 			phenoDataSetCategoryvo.getPhenoDataSetCategory().getName().replaceAll(" ", "_");
 			phenotypicDao.createPhenoDataSetCategory(phenoDataSetCategoryvo.getPhenoDataSetCategory());
-			// Custom Field History
+			// PhenoDataSet Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 			ah.setComment("Created phono Data Set category " + phenoDataSetCategoryvo.getPhenoDataSetCategory().getName());
 			ah.setEntityId(phenoDataSetCategoryvo.getPhenoDataSetCategory().getId());
@@ -1078,6 +1091,199 @@ try {
 				}
 
 	}
+	/**
+	 * 
+	 */
+	public PhenoDataSetField getPhenoDataSetField(Long id){
+		return phenotypicDao.getPhenoDataSetField(id);
+	}
+
+	@Override
+	public long getPhenoFieldCount(PhenoDataSetField phenoFieldCriteria) {
+		return phenotypicDao.getPhenoFieldCount(phenoFieldCriteria);
+	}
+	/**
+	 * 
+	 */
+	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count){
+		return phenotypicDao.searchPageablePhenoFields(phenoDataSetCriteria,first,count);
+	}
+	/**
+	 * 		
+	 * @param pheDataSetFieldCriteria
+	 * @return
+	 */
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSet(PhenoDataSetField pheDataSetFieldCriteria){
+		
+		return phenotypicDao.getPhenoDataSetFieldDisplayByPhenoDataSet(pheDataSetFieldCriteria);
+	}
+	
+	public List<PhenoDataSetCategory> getAvailableAllCategoryListInStudy(Study study, ArkFunction arkFunction)throws ArkSystemException{
+		return phenotypicDao.getAvailableAllCategoryListInStudy(study,arkFunction);
+	}
+	
+	/**
+	 * Update a Pheno Field if it is not yet any data and update the PhenoDataSet
+	 * Field display details.
+	 */
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void updatePhenoDataSetField(PhenoDataSetFieldVO phenoDataSetFieldVO) throws ArkSystemException, ArkUniqueException {
+
+		boolean isUnique = phenotypicDao.isPhenoDataSetFieldUnqiue(phenoDataSetFieldVO.getPhenoDataSetField().getName(), phenoDataSetFieldVO.getPhenoDataSetField().getStudy(), phenoDataSetFieldVO.getPhenoDataSetField());
+		if (!isUnique) {
+			log.error("Pheno Field of this name Already Exists.: ");
+			throw new ArkUniqueException("A Pheno Field of this name already exists.");
+		}
+		try {
+			// Remove any encoded values if DATE or NUMBER
+			if (phenoDataSetFieldVO.getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) || phenoDataSetFieldVO.getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+				phenoDataSetFieldVO.getPhenoDataSetField().setEncodedValues(null);
+			}
+
+			phenotypicDao.updatePhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
+			// PhenoDataSet Field History
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+			ah.setComment("Updated PhenoDataSet Field " + phenoDataSetFieldVO.getPhenoDataSetField().getName());
+			ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD);
+			createAuditHistory(ah);
+
+			// Only Update PhenoDataSetFieldDisplay when it is allowed
+			if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
+				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
+				phenotypicDao.updatePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
+				// PhenoDataSet Field Display History
+				ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+				ah.setComment("Updated PhenoDataSet Field Display " + phenoDataSetFieldVO.getPhenoDataSetField().getName());
+				ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD);
+				createAuditHistory(ah);
+			}
+
+		} catch (ConstraintViolationException cvex) {
+			log.error("PhenoDataSet Field Already Exists.: " + cvex);
+			throw new ArkUniqueException("A PhenoDataSet Field already exits.");
+		} catch (Exception ex) {
+			log.error("Problem updating PhenoDataSet Field: " + ex);
+			throw new ArkSystemException("Problem updating PhenoDataSet Field: " + ex.getMessage());
+		}
+	}
+	public void createAuditHistory(AuditHistory auditHistory) {
+		studyDao.createAuditHistory(auditHistory);
+	}
+	public List getSiblingList(Study study, ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory) {
+		return phenotypicDao.getSiblingList(study, arkFunction, phenoDataSetCategory);
+	}
+	public void mergePhenoDataSetFieldCategory(PhenoDataSetCategory phenoDataSetCategory)throws ArkSystemException{
+		 phenotypicDao.mergePhenoDataSetFieldCategory(phenoDataSetCategory);
+		
+	}
+	@Override
+	public List getAllChildrenCategoriedBelongToThisParent(Study study,ArkFunction arkFunction,PhenoDataSetCategory parentCategory, List allChildrenLst) {
+		List<PhenoDataSetCategory> immediateSubCategories=phenotypicDao.getAllSubCategoriesOfThisCategory(study,arkFunction,parentCategory);
+		if(!immediateSubCategories.isEmpty()){
+			allChildrenLst.addAll(immediateSubCategories);
+				for (PhenoDataSetCategory customFieldCategory : immediateSubCategories) {
+					allChildrenLst.addAll(getAllChildrenCategoriedBelongToThisParent(study, arkFunction, customFieldCategory,allChildrenLst));
+				}
+		}
+		return allChildrenLst;
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void createPhenoDataSetField(PhenoDataSetFieldVO phenoDataSetFieldVO) throws ArkSystemException, ArkUniqueException {
+		try {
+			// Create Both CustomField and CustomFieldDisplay
+			AuditHistory ah = new AuditHistory();
+
+			// Force uppercase and replace erroneous characters
+			phenoDataSetFieldVO.getPhenoDataSetField().getName().toUpperCase();
+			phenoDataSetFieldVO.getPhenoDataSetField().getName().replaceAll(" ", "_");
+
+			// Remove any encoded values if DATE or NUMBER
+			if (phenoDataSetFieldVO.getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) || phenoDataSetFieldVO.getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+				phenoDataSetFieldVO.getPhenoDataSetField().setEncodedValues(null);
+			}
+
+			// Field can not have data yet (since it's new)
+			phenoDataSetFieldVO.getPhenoDataSetField().setPhenoFieldHasData(false);;
+			phenotypicDao.createPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
+
+			// PhenoDataSet Field History
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+			ah.setComment("Created PhenoDataSet " + phenoDataSetFieldVO.getPhenoDataSetField().getName());
+			ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD);
+
+			createAuditHistory(ah);
+			// Create PhenoDataSetFieldDisplay only if allowed
+			if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
+				// Set the PhenoDataSetField this PhenoDataSetFieldDisplay entity is linked
+				// to
+				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
+				phenotypicDao.createPhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
+				// Put in the sequence based on the ID
+				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setSequence(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());
+				phenotypicDao.updatePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
+
+				// PhenoDataSet Field Display History
+				ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+				ah.setComment("Created PhenoDataSet Field Display" + phenoDataSetFieldVO.getPhenoDataSetField().getName());
+				ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY);
+				createAuditHistory(ah);
+			}
+		} catch (ConstraintViolationException cvex) {
+			log.error("PhenoDataSet Field Already Exists.: " + cvex);
+			throw new ArkUniqueException("A PhenoDataSet Field already exits.");
+		} catch (Exception ex) {
+			log.error("Problem creating PhenoDataSet Field: " + ex);
+			throw new ArkSystemException("Problem creating PhenoDataSet Field: " + ex.getMessage());
+		}
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void deletePhenoDataSetField(PhenoDataSetFieldVO phenoDataSetFieldVO) throws ArkSystemException, EntityCannotBeRemoved {
+		try {
+			if (!phenoDataSetFieldVO.getPhenoDataSetField().getPhenoFieldHasData()) {
+				String fieldName = phenoDataSetFieldVO.getPhenoDataSetField().getName();
+
+				if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
+					phenotypicDao.deletePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
+
+					// History for PhenoDataSet Field Display
+					AuditHistory ah = new AuditHistory();
+					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+					ah.setComment("Deleted PhenoDataSet Display Field For PhenoDataSet Field " + fieldName);
+					ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());
+					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY);
+					createAuditHistory(ah);
+				}
+				phenotypicDao.deletePhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
+
+				// History for PhenoDataSet Field
+				AuditHistory ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+				ah.setComment("Deleted PhenoDataSet Field " + fieldName);
+				ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY);
+				createAuditHistory(ah);
+			} else {
+				throw new EntityCannotBeRemoved("PhenoDataSet Field cannot be removed, it is used in the system");
+			}
+		} catch (Exception ex) {
+			log.error("Unable to delete PhenoDataSetField. " + ex);
+			throw new ArkSystemException("Unable to delete PhenoDataSet Field: " + ex.getMessage());
+		}
+	}
+	
+
+	
+		
+	
 	
 
 }

@@ -38,7 +38,6 @@ import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.IPageable;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -56,13 +55,9 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource;
 import au.org.theark.core.exception.ArkSystemException;
-
+import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
-
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.config.entity.UserConfig;
-
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -73,7 +68,6 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
 public class MyDetailsForm extends Form<ArkUserVO> {
-
 
 	private static final long			serialVersionUID			= 2381693804874240001L;
 	private transient static Logger	log							= LoggerFactory.getLogger(MyDetailsForm.class);
@@ -113,6 +107,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	// Add a visitor class for required field marking/validation/highlighting
 	ArkFormVisitor							formVisitor					= new ArkFormVisitor();
 	private DropDownChoice<Study>		studyDdc;
+	private Study defaultValue;
 	
 	
 
@@ -129,7 +124,12 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		try {
 
 			ArkUserVO arkUserVOFromBackend = iUserService.lookupArkUser(getModelObject().getUserName(), getModelObject().getStudy());
-			arkUserVOFromBackend.setStudy(getModelObject().getStudy());
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			if(sessionStudyId!=null){
+				arkUserVOFromBackend.setStudy(iArkCommonService.getStudy(sessionStudyId));
+			}else{
+				arkUserVOFromBackend.setStudy(getModelObject().getStudy());
+			}
 			//Study will selected with model object and that will be the page list view accordingly.
 			listViewPanel.setOutputMarkupId(true);
 			iModel = new LoadableDetachableModel() {
@@ -151,14 +151,6 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		}
 		
 		emailTxtField.setOutputMarkupId(true);
-		lastNameTxtField.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			private static final long serialVersionUID = -4514605801401294450L;
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				getModelObject().setEmail(lastNameTxtField.getValue());
-				target.add(emailTxtField);
-			}
-		});
 
 		saveButton = new AjaxButton(Constants.SAVE) {
 
@@ -198,6 +190,26 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		
 		shibbolethSession.setVisible(loggedInViaAAF);
 		shibbolethSession.add(shibbolethSessionDetails);
+		
+		userConfigListEditor = new AbstractListEditor<UserConfig>("arkUserConfigs") {
+			@Override
+			protected void onPopulateItem(au.org.theark.core.web.component.listeditor.ListItem<UserConfig> item) {
+				item.add(new Label("configField.description", item.getModelObject().getConfigField().getDescription()));
+				PropertyModel<String> propModel = new PropertyModel<String>(item.getModel(), "value");
+				TextField<String> valueTxtFld = new TextField<String>("value", propModel);
+				item.add(valueTxtFld);
+				
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
+					private static final long	serialVersionUID	= -8887455455175404701L;
+
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
+
+			}
+		};
 
 		attachValidators();
 		addComponents();
@@ -241,6 +253,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		add(closeButton);
 		add(listViewPanel);
 		add(studyDdc);
+		add(userConfigListEditor);
 		
 	}
 	
@@ -277,7 +290,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		List<Study> studyListForUser =iArkCommonService.getStudyListForUser(arkUserVO);
 		ChoiceRenderer<Study> choiceRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		//Set to selected study.
-		studyDdc = new DropDownChoice<Study>("studyLst", new PropertyModel(this, getModelObject().getStudy().getName()),studyListForUser, choiceRenderer);
+		defaultValue=arkUserVO.getStudy();
+		studyDdc = new DropDownChoice<Study>("studyLst", new PropertyModel<Study>(this, "defaultValue"),studyListForUser, choiceRenderer);
 		studyDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			private static final long serialVersionUID = -4514605801401294450L;
 			@Override
@@ -305,7 +319,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	 * @param arkUserVO
 	 */
 	private void initiPageListViewWithSelectedStudy(ArkUserVO arkUserVO) {
-		List<ArkUserRole> arkUserRoleList = iArkCommonService.getArkRoleListByUserAndStudy(arkUserVO, getModelObject().getStudy());
+		List<ArkUserRole> arkUserRoleList = iArkCommonService.getArkRoleListByUserAndStudy(arkUserVO, arkUserVO.getStudy());
 		arkUserVO.setArkUserRoleList(arkUserRoleList);
 		getModelObject().setArkUserRoleList(arkUserRoleList);
 		//Add Ark Role Policy Templates
@@ -397,4 +411,11 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		listViewPanel.add(pageNavigator);
 	}
 
+	public Study getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(Study defaultValue) {
+		this.defaultValue = defaultValue;
+	}
 }

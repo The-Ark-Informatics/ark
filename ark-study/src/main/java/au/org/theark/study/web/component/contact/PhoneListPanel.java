@@ -264,7 +264,7 @@ public class PhoneListPanel extends Panel {
 				else {
 					item.add(new Label("phoneStatus.name", ""));
 				}
-				if (phone.getValidFrom() != null ) {
+				if (phone.getValidFrom() != null  ) {
 					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 					String dateValidFrom = "";
 					dateValidFrom = simpleDateFormat.format(phone.getValidFrom());

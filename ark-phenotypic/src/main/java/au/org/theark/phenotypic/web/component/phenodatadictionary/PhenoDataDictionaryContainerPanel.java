@@ -35,14 +35,15 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenodatadictionary.form.ContainerForm;
 
 
@@ -51,7 +52,7 @@ import au.org.theark.phenotypic.web.component.phenodatadictionary.form.Container
  * 
  */
 @SuppressWarnings("unchecked")
-public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<CustomFieldVO> {
+public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<PhenoDataSetFieldVO> {
 
 	private static final long serialVersionUID = -1L;
 	private static final Logger log = LoggerFactory.getLogger(PhenoDataDictionaryContainerPanel.class);
@@ -60,9 +61,10 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Cu
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
-
-	private DataView<CustomField> dataView;
-	private ArkDataProvider2<CustomField, CustomField> customFieldProvider;
+	private DataView<PhenoDataSetField> dataView;
+	private ArkDataProvider2<PhenoDataSetField, PhenoDataSetField> phenoDataSetFieldProvider;
+	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService			iPhenotypicService;
 	
 	
 
@@ -72,18 +74,18 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Cu
 	 * @param arkContextMarkup
 	 *            -
 	 * @param useCustomFieldDisplay
-	 *            - enables saving of the VO's customFieldDisplay as well as the
-	 *            customField
+	 *            - enables saving of the VO's phenoDataSetFieldDisplay as well as the
+	 *            phenoDataSetField
 	 * @param associatedPrimaryFn
-	 *            - primary function that the customFields will belong to
+	 *            - primary function that the phenoDataSetFields will belong to
 	 */
 	public PhenoDataDictionaryContainerPanel(String id, boolean useCustomFieldDisplay, ArkFunction associatedPrimaryFn) {
 		super(id);
 		/* Initialise the CPM */
 		
-		cpModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
-		cpModel.getObject().getCustomField().setArkFunction(associatedPrimaryFn);
-		cpModel.getObject().setUseCustomFieldDisplay(useCustomFieldDisplay);
+		cpModel = new CompoundPropertyModel<PhenoDataSetFieldVO>(new PhenoDataSetFieldVO());
+		cpModel.getObject().getPhenoDataSetField().setArkFunction(associatedPrimaryFn);
+		cpModel.getObject().setUsePhenoDataSetFieldDisplay(useCustomFieldDisplay);
 
 		prerenderContextCheck();
 
@@ -114,7 +116,7 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Cu
 			arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
 
 			if (study != null && arkModule != null) {
-				cpModel.getObject().getCustomField().setStudy(study);
+				cpModel.getObject().getPhenoDataSetField().setStudy(study);
 				// TODO: Maybe check that the primary function supplied is of
 				// the same module?
 			}
@@ -140,7 +142,7 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Cu
 		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("resultListPanel", cpModel, arkCrudContainerVO, feedBackPanel);
 
 		// Data providor to paginate resultList
-		customFieldProvider = new ArkDataProvider2<CustomField, CustomField>() {
+		phenoDataSetFieldProvider = new ArkDataProvider2<PhenoDataSetField, PhenoDataSetField>() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -148,28 +150,28 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Cu
 
 				if (criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
 					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
-					return (int) iArkCommonService.getCustomFieldCount(criteriaModel.getObject());																									
+					return (int) iPhenotypicService.getPhenoFieldCount(criteriaModel.getObject());																									
 				} else {
-					return (int) iArkCommonService.getCustomFieldCount(criteriaModel.getObject());
+					return (int) iPhenotypicService.getPhenoFieldCount(criteriaModel.getObject());
 				}
 			}
 
-			public Iterator<CustomField> iterator(int first, int count) {
-				List<CustomField> listCustomFields = new ArrayList<CustomField>();
+			public Iterator<PhenoDataSetField> iterator(int first, int count) {
+				List<PhenoDataSetField> listCustomFields = new ArrayList<PhenoDataSetField>();
 				if (isActionPermitted()) {
-					if (criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
-						listCustomFields = iArkCommonService.searchPageableCustomFieldsForPheno(criteriaModel.getObject(), first, count);
-					} else {
-						listCustomFields = iArkCommonService.searchPageableCustomFields(criteriaModel.getObject(), first, count);
-					}
+					//if (criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
+						listCustomFields = iPhenotypicService.searchPageablePhenoFields(criteriaModel.getObject(), first, count);
+					//} else {
+						//listCustomFields = iPhenotypicService.searchPageableCustomFields(criteriaModel.getObject(), first, count);
+					//}
 				}
 				return listCustomFields.iterator();
 			}
 		};
 		// Set the criteria for the data provider
-		customFieldProvider.setCriteriaModel(new PropertyModel<CustomField>(cpModel, "customField"));
+		phenoDataSetFieldProvider.setCriteriaModel(new PropertyModel<PhenoDataSetField>(cpModel, "phenoDataSetField"));
 
-		dataView = searchResultListPanel.buildDataView(customFieldProvider);
+		dataView = searchResultListPanel.buildDataView(phenoDataSetFieldProvider);
 		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {

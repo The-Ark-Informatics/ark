@@ -62,9 +62,10 @@ public class Constants {
 	public static final String			RESET																= "reset";
 	public static final String			CLOSE																= "close";
 	public static final String			ADD_PHONE														= "addPhone";
-	public static final int				MODE_NEW															= 1;
+	public static final int				MODE_NEW														= 1;
 	public static final int				MODE_EDIT														= 2;
 	public static final int				MODE_READ														= 3;
+	//public static final int				MODE_EDIT_USER_ROLE_ONLY										= 4;
 
 	/* Person */
 	public static final String			PERSON_PREFERRED_EMAIL										= "linkSubjectStudy.person.preferredEmail";

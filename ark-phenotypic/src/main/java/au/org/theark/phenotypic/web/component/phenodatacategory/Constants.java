@@ -23,7 +23,6 @@ public class Constants {
 	//TODO make all of these constants firstly look in common?
 	public static final String		FUNCTION_KEY_VALUE_PHENO_COLLECTION							= "PHENO_COLLECTION";
 	public static final String		FUNCTION_KEY_VALUE_DATA_DICTIONARY							= "DATA_DICTIONARY";
-
 	public static final String 		FIELD_TYPE_NUMBER 											= "NUMBER";
 	public static final String 		FIELD_TYPE_CHARACTER 										= "CHARACTER";
 	public static final String 		FIELD_TYPE_DATE 											= "DATE";
@@ -31,18 +30,15 @@ public class Constants {
 	public static final String 		ENCODED_VALUES_TOKEN 										= ";";
 	public static final String 		ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE 					= " ";
 	public static final String 		ENCODED_VALUES_SEPARATOR 									= "=";
-	
 	public static final String		CHARACTER_FIELD_TYPE_NAME									= "CHARACTER";
 	public static final String		DATE_FIELD_TYPE_NAME										= "DATE";
 	public static final String		NUMBER_FIELD_TYPE_NAME										= "NUMBER";
-
 	public static final String		PHENODATASETCATEGORY										= "phenoDataSetCategory";
 	public static final String		PHENODATASETCATEGORY_ID										= "id";
 	public static final String		PHENODATASETCATEGORY_STUDY									= "study";
 	public static final String		PHENODATASETCATEGORY_NAME									= "name";
 	public static final String		PHENODATASETCATEGORY_DESCRIPTION							= "description";
 	public static final String		PHENODATASETCATEGORY_ORDERNUMBER							= "orderNumber";
-	
 	public static final String		FIELDVO_PHENODATASETCATEGORY_ID								= "phenoDataSetCategory.id";
 	public static final String		FIELDVO_PHENODATASETCATEGORY_STUDY							= "phenoDataSetCategory.study";
 	public static final String		FIELDVO_PHENODATASETCATEGORY_NAME							= "phenoDataSetCategory.name";
@@ -50,13 +46,10 @@ public class Constants {
 	public static final String		FIELDVO_PHENODATASETCATEGORY_CUSTOM_FIELD_TYPE				= "phenoDataSetCategory.customFieldType";
 	public static final String		FIELDVO_PHENODATASETCATEGORY_PARENTCATEGORY					= "phenoDataSetCategory.parentCategory";
 	public static final String		FIELDVO_PHENODATASETCATEGORY_ORDERNUMBER					= "phenoDataSetCategory.orderNumber";
-	
 	public static final String		FIELDVO_PHENODATASETCATEGORY_CUSTOM_FIELD_TYPE_NAME			= "phenoDataSetCategory.customFieldType.name";
 	public static final String		FIELDVO_PHENODATASETCATEGORY_PARENTCATEGORY_NAME			= "phenoDataSetCategory.parentCategory.name";
-	
 	// Services
-	public static final String	PHENOTYPIC_SERVICE				= "phenotypicService";
-	
-	public static final int PHENO_CATEGORY_PALETTE_ROWS = 10;
+	public static final String	PHENOTYPIC_SERVICE												= "phenotypicService";
+	public static final int PHENO_CATEGORY_PALETTE_ROWS 										= 10;
 
 }

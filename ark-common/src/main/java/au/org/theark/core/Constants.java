@@ -698,4 +698,8 @@ public class Constants {
 	
 	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY = "Pheno Data Set Category";
 	
+	public static final String ENTITY_TYPE_PHENO_DATASET_FIELD = "PhenoDataSet Field";
+	
+	public static final String ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY = "PhenoDataSet Field Display";
+	
 }

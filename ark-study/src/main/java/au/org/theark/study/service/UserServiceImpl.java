@@ -273,4 +273,7 @@ public class UserServiceImpl implements IUserService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
 		iArkCommonService.createAuditHistory(ah);
 	}
+	public void updateArkUserRoleListForExsistingUser(ArkUserVO arkUserVO){
+		iArkAuthorisationService.updateArkUserRoleListForExsistingUser(arkUserVO);
+	}
 }

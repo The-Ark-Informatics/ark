@@ -817,12 +817,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		if(person!=null && virStatus!=null){
 			if ((person.getDateOfBirth()!=null) && (virStatus.getName().equalsIgnoreCase("Alive"))){
 				Map<String,Integer> timeMap=calculateAgeDifference(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(person.getDateOfBirth())),LocalDate.now());
-				person.setCurrentOrDeathAge("currentAge="+timeMap.get("years")+" Y "+ ((timeMap.get("months").equals(0)) ?"" :timeMap.get("months")+" months"));
+				person.setCurrentOrDeathAge("Current age:"+timeMap.get("years")+" years"+ ((timeMap.get("months").equals(0)) ?"." :", "+timeMap.get("months")+" months"));
 			}
 			if ((person.getDateOfBirth()!=null) && (virStatus.getName().equalsIgnoreCase("Deceased"))&&(person.getDateOfDeath()!=null)){
 				Map<String,Integer> timeMap=calculateAgeDifference(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(person.getDateOfBirth())),
 				LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(person.getDateOfDeath())));
-				person.setCurrentOrDeathAge("Age at death="+timeMap.get("years")+" Y "+ ((timeMap.get("months").equals(0)) ?"" :timeMap.get("months")+" months"));
+				person.setCurrentOrDeathAge("Age at death:"+timeMap.get("years")+" years"+ ((timeMap.get("months").equals(0)) ?"." :", "+timeMap.get("months")+" months"));
 			}
 		}
 	}

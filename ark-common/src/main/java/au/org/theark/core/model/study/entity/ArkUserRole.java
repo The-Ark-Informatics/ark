@@ -91,7 +91,7 @@ public class ArkUserRole implements Serializable {
 		this.arkModule = arkModule;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ARK_USER_ID")
 	public ArkUser getArkUser() {
 		return arkUser;

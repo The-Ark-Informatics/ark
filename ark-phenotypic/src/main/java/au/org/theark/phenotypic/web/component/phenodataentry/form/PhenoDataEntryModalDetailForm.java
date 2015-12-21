@@ -21,6 +21,7 @@ package au.org.theark.phenotypic.web.component.phenodataentry.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -39,6 +40,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -202,8 +204,15 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	}
 
 	private void initReviewedByDdc() {
+		String sessionUserName	= (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_USERID);
+		ArkUser arkUser = null;
+		try {
+			 arkUser=iArkCommonService.getArkUser(sessionUserName);
+		} catch (EntityNotFoundException e1) {
+			e1.printStackTrace();
+		}
 		List<ArkUser> arkUserList = new ArrayList<ArkUser>(0);
-		arkUserList = iArkCommonService.getArkUserListByStudy(cpModel.getObject().getPhenoCollection().getLinkSubjectStudy().getStudy());
+		arkUserList = iArkCommonService.getArkUserListByStudy(arkUser,cpModel.getObject().getPhenoCollection().getLinkSubjectStudy().getStudy());
 		ChoiceRenderer<ArkUser> choiceRenderer = new ChoiceRenderer<ArkUser>("ldapUserName", "id");
 		reviewedByDdc = new DropDownChoice<ArkUser>("PhenoCollection.reviewedBy", arkUserList, choiceRenderer);
 	}

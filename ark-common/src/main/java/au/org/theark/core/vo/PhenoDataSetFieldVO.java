@@ -1,15 +1,14 @@
 package au.org.theark.core.vo;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
-public class PhenoDataSetFieldVO {
+public class PhenoDataSetFieldVO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private PhenoDataSetField phenoDataSetField;
@@ -23,6 +22,17 @@ public class PhenoDataSetFieldVO {
 	private List<PhenoDataSetCategory>  			firstLevelSelectedCategories;
 	private List<PhenoDataSetCategory>  			lastLevelAvailableCategories;
 	private List<PhenoDataSetCategory>  			lastLevelSelectedCategories;
+	
+	public PhenoDataSetFieldVO() {
+		super();
+		phenoDataSetField = new PhenoDataSetField();
+		phenoDataSetFieldDisplay = new PhenoDataSetFieldDisplay();
+		phenoDataSetFieldCategoryLst=new ArrayList<PhenoDataSetCategory>();
+		selectedCategories=new ArrayList<PhenoDataSetCategory>(0);
+		firstLevelAvailableCategories=new ArrayList<PhenoDataSetCategory>(0);
+		lastLevelAvailableCategories=new ArrayList<PhenoDataSetCategory>(0);	
+		usePhenoDataSetFieldDisplay = false;
+	}
 	
 	
 	public PhenoDataSetField getPhenoDataSetField() {

@@ -33,9 +33,13 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
@@ -46,6 +50,7 @@ import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.vo.PhenoDataSetCategoryVO;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
 
 public interface IPhenotypicService {
 
@@ -269,5 +274,86 @@ public interface IPhenotypicService {
 	 * @throws EntityCannotBeRemoved
 	 */
 	public void deletePhenoDataSetCategory(PhenoDataSetCategoryVO phenoDataSetCategoryvo) throws ArkSystemException, EntityCannotBeRemoved;
-
+	/**
+	 * Get phenoDataSet
+	 * @param id
+	 * @return
+	 */
+	public PhenoDataSetField getPhenoDataSetField(Long id);
+	/**
+	 * 
+	 * @param phenoFieldCriteria
+	 * @return
+	 */
+	public long getPhenoFieldCount(PhenoDataSetField phenoFieldCriteria);
+	/**
+	 * 
+	 * @param phenoDataSetCriteria
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count);
+	/**
+	 * 
+	 * @param pheDataSetFieldCriteria
+	 * @return
+	 */
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSet(PhenoDataSetField pheDataSetFieldCriteria);
+	/**
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<PhenoDataSetCategory> getAvailableAllCategoryListInStudy(Study study, ArkFunction arkFunction)throws ArkSystemException;
+	/**
+	 * 
+	 * @param auditHistory
+	 */
+	public void createAuditHistory(AuditHistory auditHistory);
+	/**
+	 * 
+	 * @param phenoDataSetField
+	 * @throws ArkSystemException
+	 */
+	public void updatePhenoDataSetField(PhenoDataSetFieldVO phenoDataSetFieldVO) throws ArkSystemException, ArkUniqueException;
+	/**
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @param phenoDataSetCategory
+	 * @return
+	 */
+	public List getSiblingList(Study study, ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory);
+	/**
+	 * 
+	 * @param CustomFieldCategory
+	 * @throws ArkSystemException
+	 */
+	public void mergePhenoDataSetFieldCategory(PhenoDataSetCategory phenoDataSetCategory)throws ArkSystemException;
+	/**
+	 * 
+	 * @param study
+	 * @param arkFunction
+	 * @param parentCategory
+	 * @param allChildrenLst
+	 * @return
+	 */
+	public List getAllChildrenCategoriedBelongToThisParent(Study study,ArkFunction arkFunction,PhenoDataSetCategory parentCategory, List allChildrenLst);
+	/**
+	 * 
+	 * @param phenoDataSetFieldVO
+	 * @throws ArkSystemException
+	 * @throws EntityCannotBeRemoved
+	 */
+	public void deletePhenoDataSetField(PhenoDataSetFieldVO phenoDataSetFieldVO) throws ArkSystemException, EntityCannotBeRemoved;
+	/**
+	 * 
+	 * @param phenoDataSetFieldVO
+	 * @throws ArkSystemException
+	 * @throws ArkUniqueException
+	 */
+	public void createPhenoDataSetField(PhenoDataSetFieldVO phenoDataSetFieldVO) throws ArkSystemException, ArkUniqueException;
 }

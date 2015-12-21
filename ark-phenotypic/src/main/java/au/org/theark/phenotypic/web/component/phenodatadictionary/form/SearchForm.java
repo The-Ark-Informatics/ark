@@ -40,18 +40,18 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenodatadictionary.Constants;
 import au.org.theark.phenotypic.web.component.phenodatadictionary.DetailPanel;
 
@@ -62,21 +62,19 @@ import au.org.theark.phenotypic.web.component.phenodatadictionary.DetailPanel;
  * 
  */
 @SuppressWarnings({ "serial", "unchecked" })
-public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
+public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 
-	private CompoundPropertyModel<CustomFieldVO> cpModel;
+	private CompoundPropertyModel<PhenoDataSetFieldVO> cpModel;
 	private ArkCrudContainerVO arkCrudContainerVO;
 	private TextField<String> fieldIdTxtFld;
 	private TextField<String> fieldNameTxtFld;
 	private DropDownChoice<FieldType> fieldTypeDdc;
-	//Add custom field categories
-	//private DropDownChoice<CustomFieldType>		customFieldTypeDdc;
-	private DropDownChoice<CustomFieldCategory>	customeFieldCategoryDdc;
-	private TextField<Long>					customeFieldCategoryOrderNoTxtFld;
-	//**************************************//
+	
+	private DropDownChoice<PhenoDataSetCategory>	phenoDataSetCategoryDdc;
+	private TextField<Long>					phenoDataSetCategoryOrderNoTxtFld;
 	private TextArea<String> fieldDescriptionTxtAreaFld;
 	private TextField<String> fieldUnitsTxtFld;
 	private TextField<String> fieldUnitsInTextTxtFld;
@@ -85,19 +83,20 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 
 	private WebMarkupContainer panelCustomUnitTypeDropDown;
 	private WebMarkupContainer panelCustomUnitTypeText;
-	//private boolean unitTypeDropDownOn;
-	//private boolean subjectCustomField;
-	private Collection<CustomFieldCategory> customFieldCategoryCollection;
+	private Collection<PhenoDataSetCategory> phenoDataSetFieldCategoryCollection;
 	private WebMarkupContainer categoryPanel;
-	private WebMarkupContainer orderNumberPanel;
+	//private WebMarkupContainer orderNumberPanel;
 	private ArkModule arkModule;
+	
+	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService			iPhenotypicService;
 	
 	
 
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchForm(String id, CompoundPropertyModel<PhenoDataSetFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, cpModel, feedBackPanel, arkCrudContainerVO);
 		//this.unitTypeDropDownOn = unitTypeDropDownOn;
 		this.cpModel = cpModel;
@@ -112,36 +111,36 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 	private void initFieldTypeDdc() {
 		java.util.Collection<FieldType> fieldTypeCollection = iArkCommonService.getFieldTypes();
 		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(Constants.FIELDTYPE_NAME, Constants.FIELDTYPE_ID);
-		fieldTypeDdc = new DropDownChoice<FieldType>(Constants.FIELDVO_CUSTOMFIELD_FIELD_TYPE, (List) fieldTypeCollection, fieldTypeRenderer);
+		fieldTypeDdc = new DropDownChoice<FieldType>(Constants.FIELDVO_PHENODATASET_FIELD_TYPE, (List) fieldTypeCollection, fieldTypeRenderer);
 	}
 
 	public void initialiseFieldForm() {
-		fieldIdTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_ID);
-		fieldNameTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_NAME);
-		fieldDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_DESCRIPTION);
+		fieldIdTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASET_ID);
+		fieldNameTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASET_NAME);
+		fieldDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_PHENODATASET_DESCRIPTION);
 		panelCustomUnitTypeDropDown = new WebMarkupContainer("panelCustomUnitTypeDropDown");
 		panelCustomUnitTypeDropDown.setOutputMarkupId(true);
 		panelCustomUnitTypeText = new WebMarkupContainer("panelCustomUnitTypeText");
 		panelCustomUnitTypeText.setOutputMarkupId(true);
-		fieldUnitsTxtFld = new AutoCompleteTextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE + ".name") {
+		fieldUnitsTxtFld = new AutoCompleteTextField<String>(Constants.FIELDVO_PHENODATASET_UNIT_TYPE+ ".name") {
 			@Override
 			protected Iterator getChoices(String input) {
 				UnitType unitTypeCriteria = new UnitType();
 				unitTypeCriteria.setName(input);
-				unitTypeCriteria.setArkFunction(cpModel.getObject().getCustomField().getArkFunction());
+				unitTypeCriteria.setArkFunction(cpModel.getObject().getPhenoDataSetField().getArkFunction());
 				return iArkCommonService.getUnitTypeNames(unitTypeCriteria, 10).iterator();
 			}
 		};
 
-		fieldUnitsInTextTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE_TXT);
-		fieldMinValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
-		fieldMaxValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
+		fieldUnitsInTextTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASET_UNIT_TYPE_TXT);
+		fieldMinValueTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASET_MIN_VALUE);
+		fieldMaxValueTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASET_MAX_VALUE);
 		//initCustomFieldTypeDdc();
 		
 		//customfield category order Number.
-		customeFieldCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
-		customeFieldCategoryOrderNoTxtFld.setOutputMarkupId(true);
-		customeFieldCategoryOrderNoTxtFld.setEnabled(false);
+		//phenoDataSetCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_PHENODATASET_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
+		//phenoDataSetCategoryOrderNoTxtFld.setOutputMarkupId(true);
+		//phenoDataSetCategoryOrderNoTxtFld.setEnabled(false);
 		
 		initCustomeFieldCategoryDdc();
 		initFieldTypeDdc();
@@ -151,10 +150,10 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 	private void addFieldComponents() {
 		add(fieldIdTxtFld);
 		//add(customFieldTypeDdc);
-		categoryPanel.add(customeFieldCategoryDdc);
+		categoryPanel.add(phenoDataSetCategoryDdc);
 		add(categoryPanel);
-		orderNumberPanel.add(customeFieldCategoryOrderNoTxtFld);
-		add(orderNumberPanel);
+		//orderNumberPanel.add(phenoDataSetCategoryOrderNoTxtFld);
+		//add(orderNumberPanel);
 		add(fieldNameTxtFld);
 		add(fieldTypeDdc);
 		add(fieldDescriptionTxtAreaFld);
@@ -173,51 +172,20 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		add(fieldMaxValueTxtFld);
 	}
 	
-	/**
-	 * initialize Custom Filed Types.
-	 */
-	/*private void initCustomFieldTypeDdc() {
-		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
-		arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
-		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes(arkModule);
-		ChoiceRenderer customfieldTypeRenderer = new ChoiceRenderer(Constants.CUSTOM_FIELD_TYPE_NAME, Constants.CUSTOM_FIELD_TYPE_ID);
-		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE, (List) customFieldTypeCollection, customfieldTypeRenderer);
-		customFieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-		private static final long serialVersionUID = 1L;
-				@Override
-			    protected void onUpdate(AjaxRequestTarget target) {
-					cpModel.getObject().getCustomField().setCustomFieldType(customFieldTypeDdc.getModelObject());
-					Collection<CustomFieldCategory> customFieldCategoryCollection=getCategoriesListInCustomFieldsByCustomFieldType();
-					categoryPanel.remove(customeFieldCategoryDdc);
-					ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID);
-					customeFieldCategoryDdc = new DropDownChoice<CustomFieldCategory>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY, (List) customFieldCategoryCollection, customfieldCategoryRenderer);
-					customeFieldCategoryDdc.setOutputMarkupId(true);
-					customeFieldCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-						@Override
-						protected void onUpdate(AjaxRequestTarget target) {
-							customFieldCategoryChangeEvent(target);
-						}
-					});
-					customFieldCategoryChangeEvent(target);
-					categoryPanel.add(customeFieldCategoryDdc);
-			    	target.add(customeFieldCategoryDdc);
-			    	target.add(categoryPanel);
-			    }
-			});
-	}*/
+	
 	/**
 	 * 
 	 * @param target
 	 */
 	private void customFieldCategoryChangeEvent(AjaxRequestTarget target) {
-		cpModel.getObject().getCustomField().setCustomFieldCategory(customeFieldCategoryDdc.getModelObject());
-		orderNumberPanel.remove(customeFieldCategoryOrderNoTxtFld);
-		customeFieldCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
-		customeFieldCategoryOrderNoTxtFld.setOutputMarkupId(true);
-		customeFieldCategoryOrderNoTxtFld.setEnabled(false);
-		orderNumberPanel.add(customeFieldCategoryOrderNoTxtFld);
-		target.add(customeFieldCategoryOrderNoTxtFld);
-		target.add(orderNumberPanel);
+		//Here we have to pick all the pheno field category related custom fileds. 
+		//cpModel.getObject().getPhenoDataSetField().setPhe(phenoDataSetCategoryDdc.getModelObject());
+		//orderNumberPanel.remove(phenoDataSetCategoryOrderNoTxtFld);
+		//phenoDataSetCategoryOrderNoTxtFld = new TextField<Long>(Constants.FIELDVO_PHENODATASET_CUSTOEMFIELDCATEGORY_ORDERNUMBER);
+		//phenoDataSetCategoryOrderNoTxtFld.setOutputMarkupId(true);
+		//phenoDataSetCategoryOrderNoTxtFld.setEnabled(false);
+		//orderNumberPanel.add(phenoDataSetCategoryOrderNoTxtFld);
+		//target.add(phenoDataSetCategoryOrderNoTxtFld);
 	}
 	
 	
@@ -230,34 +198,34 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
 		categoryPanel = new WebMarkupContainer("categoryPanel");
 		categoryPanel.setOutputMarkupId(true);
-		orderNumberPanel = new WebMarkupContainer("orderNumberPanel");
-		orderNumberPanel.setOutputMarkupId(true);
-		java.util.Collection<CustomFieldCategory> customFieldCategoryCollection=getCategoriesListInCustomFieldsByCustomFieldType();
-		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID);
-		customeFieldCategoryDdc = new DropDownChoice<CustomFieldCategory>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY, (List) customFieldCategoryCollection, customfieldCategoryRenderer);
-		customeFieldCategoryDdc.setOutputMarkupId(true);
+		//orderNumberPanel = new WebMarkupContainer("orderNumberPanel");
+		//orderNumberPanel.setOutputMarkupId(true);
+		java.util.Collection<PhenoDataSetCategory> phenoDataSetFieldCategoryCollection=getCategoriesListInCustomFieldsByCustomFieldType();
+		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.PHENODATASETCATEGORY_NAME, Constants.PHENODATASETCATEGORY_ID);
+		phenoDataSetCategoryDdc = new DropDownChoice<PhenoDataSetCategory>(Constants.FIELDVO_PHENODATASET_CUSTOEMFIELDCATEGORY, (List) phenoDataSetFieldCategoryCollection, customfieldCategoryRenderer);
+		phenoDataSetCategoryDdc.setOutputMarkupId(true);
 	}
 	/**
 	 * Get custom field category collection from model.
 	 * @return
 	 */
-	private Collection<CustomFieldCategory> getCategoriesListInCustomFieldsByCustomFieldType(){
-		CustomField customField=cpModel.getObject().getCustomField();
-		Study study=customField.getStudy();
+	private Collection<PhenoDataSetCategory> getCategoriesListInCustomFieldsByCustomFieldType(){
+		PhenoDataSetField phenoDataSetField=cpModel.getObject().getPhenoDataSetField();
+		Study study=phenoDataSetField.getStudy();
 		/*Here I am changing the customfield type and the ark fuction to get all the 
 		categories to display later we have to replace all the things with 
 		PhenoDataDictionary*/
 		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
-		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT);
 		try {
-			customFieldCategoryCollection =  iArkCommonService.getCategoriesListInCustomFieldsByCustomFieldType(study, arkFunction, customFieldType);
-			customFieldCategoryCollection=sortLst(remeoveDuplicates((List<CustomFieldCategory>)customFieldCategoryCollection));
+			phenoDataSetFieldCategoryCollection=iPhenotypicService.getPhenoParentCategoryList(study, arkFunction);
+			//phenoDataSetFieldCategoryCollection =  iArkCommonService.getCategoriesListInCustomFieldsByCustomFieldType(study, arkFunction, phenoDataSetFieldType);
+			phenoDataSetFieldCategoryCollection=sortLst(remeoveDuplicates((List<PhenoDataSetCategory>)phenoDataSetFieldCategoryCollection));
 			
 		} catch (ArkSystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return customFieldCategoryCollection;
+		return phenoDataSetFieldCategoryCollection;
 	}
 
 	@Override
@@ -266,9 +234,9 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		final Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		// Get a list of all Fields for the Study in context
 		Study study = iArkCommonService.getStudy(sessionStudyId);
-		getModelObject().getCustomField().setStudy(study);
+		getModelObject().getPhenoDataSetField().setStudy(study);
 
-		long count = iArkCommonService.getCustomFieldCount(getModelObject().getCustomField());
+		long count = iPhenotypicService.getPhenoFieldCount(getModelObject().getPhenoDataSetField());
 		if (count <= 0L) {
 			this.info("No records match the specified criteria.");
 			target.add(feedbackPanel);
@@ -288,17 +256,15 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		target.add(feedbackPanel);
 		// Instead of having to reset the criteria, we just copy the criteria
 		// across
-		CustomField cf = getModelObject().getCustomField();
-		CompoundPropertyModel<CustomFieldVO> newModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
-		CustomField newCF = newModel.getObject().getCustomField();
-		// Copy all the customField attributes across from the SearchForm
-		newCF.setStudy(cf.getStudy());
-		newCF.setArkFunction(cf.getArkFunction());
-		newCF.setCustomFieldType(cf.getCustomFieldType());
-		newCF.setCustomFieldCategory(cf.getCustomFieldCategory());
-		newCF.setName(cf.getName());
-		newCF.setFieldType(cf.getFieldType());
-		newCF.setDescription(cf.getDescription());
+		PhenoDataSetField phenoField = getModelObject().getPhenoDataSetField();
+		CompoundPropertyModel<PhenoDataSetFieldVO> newModel = new CompoundPropertyModel<PhenoDataSetFieldVO>(new PhenoDataSetFieldVO());
+		PhenoDataSetField newPhenoDataSet = newModel.getObject().getPhenoDataSetField();
+		// Copy all the phenoDataSetField attributes across from the SearchForm
+		newPhenoDataSet.setStudy(phenoField.getStudy());
+		newPhenoDataSet.setArkFunction(phenoField.getArkFunction());
+		newPhenoDataSet.setName(phenoField.getName());
+		newPhenoDataSet.setFieldType(phenoField.getFieldType());
+		newPhenoDataSet.setDescription(phenoField.getDescription());
 		/*
 		 * NB: Do NOT copy unitType across because it is a Textfield on the
 		 * SearchForm. If you copy this through, then DetailForm will have
@@ -307,9 +273,9 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		 * unitTypeDdc will be disabled, so the user can't make it null for it
 		 * to be valid).
 		 */
-		newCF.setMinValue(cf.getMinValue());
-		newCF.setMaxValue(cf.getMaxValue());
-		newModel.getObject().setUseCustomFieldDisplay(getModelObject().isUseCustomFieldDisplay());
+		newPhenoDataSet.setMinValue(phenoField.getMinValue());
+		newPhenoDataSet.setMaxValue(phenoField.getMaxValue());
+		newModel.getObject().setUsePhenoDataSetFieldDisplay(getModelObject().isUsePhenoDataSetFieldDisplay());
 
 		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
 				//this.unitTypeDropDownOn, this.subjectCustomField);
@@ -317,36 +283,36 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 
 		// Reset model's CF object (do NOT replace the CustomFieldVO in the
 		// model)
-		cf = new CustomField();
-		cf.setStudy(newCF.getStudy());
-		cf.setArkFunction(newCF.getArkFunction());
-		getModelObject().setCustomField(cf);
+		phenoField = new PhenoDataSetField();
+		phenoField.setStudy(newPhenoDataSet.getStudy());
+		phenoField.setArkFunction(newPhenoDataSet.getArkFunction());
+		getModelObject().setPhenoDataSetField(phenoField);
 
 		preProcessDetailPanel(target);
 	}
 	/**
 	 * Sort custom field list according to the order number.
-	 * @param customFieldLst
+	 * @param phenoDataSetFieldLst
 	 * @return
 	 */
-	private  List<CustomFieldCategory> sortLst(List<CustomFieldCategory> customFieldLst){
+	private  List<PhenoDataSetCategory> sortLst(List<PhenoDataSetCategory> phenoDataSetFieldLst){
 		//sort by order number.
-		Collections.sort(customFieldLst, new Comparator<CustomFieldCategory>(){
-		    public int compare(CustomFieldCategory custFieldCategory1, CustomFieldCategory custFieldCatCategory2) {
+		Collections.sort(phenoDataSetFieldLst, new Comparator<PhenoDataSetCategory>(){
+		    public int compare(PhenoDataSetCategory custFieldCategory1, PhenoDataSetCategory custFieldCatCategory2) {
 		        return custFieldCategory1.getName().compareTo(custFieldCatCategory2.getName());
 		    }
 		});
-				return customFieldLst;
+				return phenoDataSetFieldLst;
 	}
 	/**
 	 * Remove duplicates from list
-	 * @param customFieldLst
+	 * @param phenoDataSetFieldLst
 	 * @return
 	 */
-	private  List<CustomFieldCategory> remeoveDuplicates(List<CustomFieldCategory> customFieldLst){
-		Set<CustomFieldCategory> cusfieldCatSet=new HashSet<CustomFieldCategory>();
-		List<CustomFieldCategory> cusfieldCatLst=new ArrayList<CustomFieldCategory>();
-		cusfieldCatSet.addAll(customFieldLst);
+	private  List<PhenoDataSetCategory> remeoveDuplicates(List<PhenoDataSetCategory> phenoDataSetFieldLst){
+		Set<PhenoDataSetCategory> cusfieldCatSet=new HashSet<PhenoDataSetCategory>();
+		List<PhenoDataSetCategory> cusfieldCatLst=new ArrayList<PhenoDataSetCategory>();
+		cusfieldCatSet.addAll(phenoDataSetFieldLst);
 		cusfieldCatLst.addAll(cusfieldCatSet);
 				return cusfieldCatLst;
 	}

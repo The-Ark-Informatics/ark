@@ -19,10 +19,13 @@
 package au.org.theark.study.web.component.manageuser.form;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -46,18 +49,22 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractUserDetailForm;
+import au.org.theark.study.model.dao.LdapUserDao;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -75,19 +82,25 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService			iStudyService;
+	
 
-	protected TextField<String>	userNameTxtField			= new TextField<String>(Constants.USER_NAME);
-	protected TextField<String>	firstNameTxtField			= new TextField<String>(Constants.FIRST_NAME);
-	protected TextField<String>	lastNameTxtField			= new TextField<String>(Constants.LAST_NAME);
-	protected TextField<String>	emailTxtField				= new TextField<String>(Constants.EMAIL);
-	protected PasswordTextField	userPasswordField			= new PasswordTextField(Constants.PASSWORD);
-	protected PasswordTextField	confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
-	protected PasswordTextField	oldPasswordField			= new PasswordTextField(Constants.OLD_PASSWORD);
+	protected TextField<String>		userNameTxtField			= new TextField<String>(Constants.USER_NAME);
+	protected TextField<String>		firstNameTxtField			= new TextField<String>(Constants.FIRST_NAME);
+	protected TextField<String>		lastNameTxtField			= new TextField<String>(Constants.LAST_NAME);
+	protected TextField<String>		emailTxtField				= new TextField<String>(Constants.EMAIL);
+	protected PasswordTextField		userPasswordField			= new PasswordTextField(Constants.PASSWORD);
+	protected PasswordTextField		confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
+	protected PasswordTextField		oldPasswordField			= new PasswordTextField(Constants.OLD_PASSWORD);
 	protected WebMarkupContainer	groupPasswordContainer	= new WebMarkupContainer("groupPasswordContainer");
 	protected Label					assignedChildStudiesLabel;
-	protected ArkPalette<Study>	assignedChildStudiesPalette;
+	protected ArkPalette<Study>		assignedChildStudiesPalette;
 	protected Label					assignedChildStudiesNote;
-
+	private ModalWindow 			confirmModal;
+	private ModalWindow 			successModal;
+	private ConfirmationAnswer		confirmationAnswer;
+	
+	private final String modalText = "<p>This user already exists in The Ark. The user will be granted access to this study, but other user details (first name, last name, "
+			+ "email and password) will not be updated..</p>";
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, feedBackPanel, arkCrudContainerVO, containerForm);
 		initialiseRemoveButton();
@@ -96,6 +109,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
 		userNameTxtField = new TextField<String>(Constants.USER_NAME);
+		userNameTxtField.setOutputMarkupId(true);
 		firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
 		lastNameTxtField = new TextField<String>(Constants.LAST_NAME);
 		emailTxtField = new TextField<String>(Constants.EMAIL);
@@ -103,15 +117,13 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		confirmPasswordField = new PasswordTextField(Constants.CONFIRM_PASSWORD);
 		oldPasswordField = new PasswordTextField(Constants.OLD_PASSWORD);
 		groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
+		
 
 		IModel<List<ArkUserRole>> iModel = new LoadableDetachableModel() {
 			private static final long	serialVersionUID	= 1L;
-
 			@Override
 			protected Object load() {
-
 				return containerForm.getModelObject().getArkUserRoleList();
-
 			}
 		};
 
@@ -145,9 +157,29 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 		listView.setReuseItems(true);
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().add(listView);
-
+		confirmationAnswer = new ConfirmationAnswer(false);
+		confirmModal = new ModalWindow("modalWindow");
+		confirmModal.setCookieName("yesNoPanel");
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText, confirmModal, confirmationAnswer));
+		confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+		private static final long serialVersionUID = 1L;
+			public void onClose(AjaxRequestTarget target) {
+				if (confirmationAnswer.isAnswer() ) {
+					//Add new roles for module wise to study
+					iUserService.updateArkUserRoleListForExsistingUser(containerForm.getModelObject());
+					//Up date for all the child studies.
+					reNewArkUserRoleForChildStudies(containerForm);
+					containerForm.getModelObject().setMode(Constants.MODE_EDIT);
+					//onSavePostProcess(target);
+					successModal.show(target);
+				} else {//if no nothing be done.Just close I guess
+				}
+			}
+		});
+		successModal = new ModalWindow("successModalWindow");
+		successModal.setCookieName("okPanel");
+		successModal.setContent(new SuccessFullySaved(confirmModal.getContentId(), "The exsisting user added sucessfully to the Study", successModal));
 		initChildStudyPalette();
-
 		attachValidators();
 		addDetailFormComponents();
 
@@ -201,6 +233,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		firstNameTxtField.setEnabled(okToUpdate);
 		lastNameTxtField.setEnabled(okToUpdate);
 		
+		
 		groupPasswordContainer.setVisible(okToUpdate);
 		containerForm.getModelObject().setChangePassword(okToUpdate);
 		super.onBeforeRender();
@@ -208,6 +241,8 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 	protected void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(userNameTxtField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(confirmModal);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(successModal);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(lastNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(emailTxtField);
@@ -261,87 +296,63 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 	@Override
 	protected void onSave(Form<ArkUserVO> containerForm, AjaxRequestTarget target) {
+		
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		containerForm.getModelObject().setStudy(study);
-
 		if (containerForm.getModelObject().getMode() == Constants.MODE_NEW) {
-			try {
-				iUserService.createArkUser(containerForm.getModelObject());
-				
-			// Delete ArkUser for all unassigned child studies
-				List<Study> availableChildStudies = null;
-				availableChildStudies = iStudyService.getChildStudyListOfParent(study);
-				for (Study childStudy : availableChildStudies) {
-					iUserService.deleteArkUserRolesForStudy(childStudy, containerForm.getModelObject().getArkUserEntity());
-				}
-
-				// Update ArkUser for all child studies
-				List<Study> childStudies =availableChildStudies;
-					//containerForm.getModelObject().getSelectedChildStudies();
-				for (Study childStudy : childStudies) {
-					for (ArkUserRole parentArkUserRole : containerForm.getModelObject().getArkUserRoleList()) {
-						// Only create roles where selected
-						if (parentArkUserRole.getArkRole() != null) {
-							ArkUserRole arkUserRole = new ArkUserRole();
-							arkUserRole.setArkUser(containerForm.getModelObject().getArkUserEntity());
-							arkUserRole.setArkRole(parentArkUserRole.getArkRole());
-							arkUserRole.setArkModule(parentArkUserRole.getArkModule());
-							arkUserRole.setStudy(childStudy);
-							iUserService.createArkUserRole(arkUserRole);
-						}
-					}
+			
+			/******************************************* Added for handle the current user in the system but not showing for the *********************************/
+			ArkUser arkUser=getArkUserInDB(userNameTxtField.getModelObject());
+			//Checking for the data base
+			if(arkUser!=null){
+				//getCurrentLdapUser(*) will only set the First Name,Last name,Email address,etc and some basic properties only refer the mapper class.
+				ArkUserVO ldapuser=getCurrentLdapUser(userNameTxtField.getModelObject());
+				ldapuser.setArkUserRoleList(containerForm.getModelObject().getArkUserRoleList());
+				ldapuser.setArkUserEntity(arkUser);
+				ldapuser.setArkUserConfigs(containerForm.getModelObject().getArkUserConfigs());
+				ldapuser.setStudy(study);
+				@SuppressWarnings("unchecked")
+				List<ArkUserRole> arkUserRoleLst=iArkCommonService.getArkRoleListByUserAndStudy(ldapuser,ldapuser.getStudy());
+				//Check for existing user in ldap server.
+				if(arkUserRoleLst.size() < 1){
+					//containerForm.getModelObject().setMode(Constants.MODE_EDIT_USER_ROLE_ONLY);
+					containerForm.setModelObject(ldapuser);
+					target.add(containerForm);
+					//formComponentAjaxCall(target, false);
+					confirmModal.show(target);
+				}else{
+					this.info(new StringResourceModel("user.exists", this, null).getString());
 				}
 				
-				containerForm.getModelObject().setArkUserPresentInDatabase(true);
-				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
-				userNameTxtField.setEnabled(false);
-				onSavePostProcess(target);
-				this.info(new StringResourceModel("user.saved", this, null).getString());
-				target.add(feedBackPanel);
+			}else{
+			/********************************************************** end **********************************************************************************/	
+				try {
+					iUserService.createArkUser(containerForm.getModelObject());
+					reNewArkUserRoleForChildStudies(containerForm);
+					containerForm.getModelObject().setMode(Constants.MODE_EDIT);
+					userNameTxtField.setEnabled(false);
+					onSavePostProcess(target);
+					this.info(new StringResourceModel("user.saved", this, null).getString());
+					target.add(feedBackPanel);
+				}
+				catch (UserNameExistsException e) {
+					this.error(new StringResourceModel("user.exists", this, null).getString());
+				}
+				catch (ArkSystemException e) {
+					this.error(new StringResourceModel("ark.system.error", this, null).getString());
+				}
+				catch (Exception e) {
+					this.error(new StringResourceModel("severe.system.error", this, null).getString());
+				}
 			}
-			catch (UserNameExistsException e) {
-				this.error(new StringResourceModel("user.exists", this, null).getString());
-			}
-			catch (ArkSystemException e) {
-				this.error(new StringResourceModel("ark.system.error", this, null).getString());
-			}
-			catch (Exception e) {
-				this.error(new StringResourceModel("severe.system.error", this, null).getString());
-			}
-		}
-		else if (containerForm.getModelObject().getMode() == Constants.MODE_EDIT) {
+		}else if (containerForm.getModelObject().getMode() == Constants.MODE_EDIT) {
 			try {
 				// Update ArkUser for study in context
 				iUserService.updateArkUser(containerForm.getModelObject());
-
-				// Delete ArkUser for all unassigned child studies
-				List<Study> availableChildStudies = null;
-				availableChildStudies = iStudyService.getChildStudyListOfParent(study);
-				for (Study childStudy : availableChildStudies) {
-					iUserService.deleteArkUserRolesForStudy(childStudy, containerForm.getModelObject().getArkUserEntity());
-				}
-
-				// Update ArkUser for all child studies
-				List<Study> childStudies =availableChildStudies;
-					//containerForm.getModelObject().getSelectedChildStudies();
-				for (Study childStudy : childStudies) {
-					for (ArkUserRole parentArkUserRole : containerForm.getModelObject().getArkUserRoleList()) {
-						// Only create roles where selected
-						if (parentArkUserRole.getArkRole() != null) {
-							ArkUserRole arkUserRole = new ArkUserRole();
-							arkUserRole.setArkUser(containerForm.getModelObject().getArkUserEntity());
-							arkUserRole.setArkRole(parentArkUserRole.getArkRole());
-							arkUserRole.setArkModule(parentArkUserRole.getArkModule());
-							arkUserRole.setStudy(childStudy);
-							iUserService.createArkUserRole(arkUserRole);
-						}
-					}
-				}
-
-				containerForm.getModelObject().setArkUserPresentInDatabase(true);
-				this.info(new StringResourceModel("user.updated", this, null).getString());
+				reNewArkUserRoleForChildStudies(containerForm);
 				onSavePostProcess(target);
+				this.info(new StringResourceModel("user.updated", this, null).getString());
 
 			}
 			catch (EntityNotFoundException e) {
@@ -351,8 +362,40 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				this.error(new StringResourceModel("ark.system.error", this, null).getString());
 			}
 		}
+		
 		target.add(this);
 		target.add(feedBackPanel);
+	}
+
+	/**
+	 * This method will apply the new user role list for all child studies. 
+	 * @param containerForm
+	 * @param study
+	 */
+	private void reNewArkUserRoleForChildStudies(Form<ArkUserVO> containerForm) {
+		// Delete ArkUser for all unassigned child studies
+			List<Study> availableChildStudies = null;
+			availableChildStudies = iStudyService.getChildStudyListOfParent(containerForm.getModelObject().getStudy());
+			for (Study childStudy : availableChildStudies) {
+				iUserService.deleteArkUserRolesForStudy(childStudy, containerForm.getModelObject().getArkUserEntity());
+			}
+			// Update ArkUser for all child studies
+			List<Study> childStudies =availableChildStudies;
+				//containerForm.getModelObject().getSelectedChildStudies();
+			for (Study childStudy : childStudies) {
+				for (ArkUserRole parentArkUserRole : containerForm.getModelObject().getArkUserRoleList()) {
+					// Only create roles where selected
+					if (parentArkUserRole.getArkRole() != null) {
+						ArkUserRole arkUserRole = new ArkUserRole();
+						arkUserRole.setArkUser(containerForm.getModelObject().getArkUserEntity());
+						arkUserRole.setArkRole(parentArkUserRole.getArkRole());
+						arkUserRole.setArkModule(parentArkUserRole.getArkModule());
+						arkUserRole.setStudy(childStudy);
+						iUserService.createArkUserRole(arkUserRole);
+					}
+				}
+			}
+			containerForm.getModelObject().setArkUserPresentInDatabase(true);
 	}
 
 	@Override
@@ -402,6 +445,62 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		catch (ArkSystemException e) {
 
 			e.printStackTrace();
+		}
+	}
+	/**
+	 * 
+	 * @param userName
+	 * @return
+	 * @throws EntityNotFoundException 
+	 */
+	private ArkUserVO getCurrentLdapUser(String arkLdapUserName) {
+		ArkUserVO arkUserVO=null;
+		if(arkLdapUserName!=null){
+			try {
+					arkUserVO=iUserService.getCurrentUser(userNameTxtField.getModelObject());
+			} catch (EntityNotFoundException e1) {
+					return null;
+			}
+		} 
+		return arkUserVO;
+	}
+	
+	private ArkUser getArkUserInDB(String ldapUserName){
+		try {
+			return iUserService.getArkUser(ldapUserName);
+		} catch (EntityNotFoundException e) {
+			return null;
+		}
+	}
+	/**
+	 * 
+	 * @param arkUserVOFromBackend
+	 */
+	private void prePopulateArkUserRoleList(ArkUserVO arkUserVOFromBackend) {
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		// Get a List of ArkModules and associated ArkRoles linked to the study
+		Collection<ArkModuleVO> listOfModulesAndRolesForStudy = iArkCommonService.getArkModulesAndRolesLinkedToStudy(study);
+		// Note:Ideally using a Hibernate Criteria we should be able to get a List of Modules
+		for (ArkModuleVO arkModuleVO : listOfModulesAndRolesForStudy) {
+
+			boolean moduleFoundFlag = false;
+			ArkModule module = arkModuleVO.getArkModule();
+			for (ArkUserRole arkUserRole : arkUserVOFromBackend.getArkUserRoleList()) {
+				ArkModule arkModule = arkUserRole.getArkModule();
+				if (module.equals(arkModule)) {
+					moduleFoundFlag = true;
+					break;
+				}
+			}
+
+			if (!moduleFoundFlag) {
+				ArkUserRole userRole = new ArkUserRole();
+				userRole.setStudy(study);
+				userRole.setArkModule(module);
+				arkUserVOFromBackend.getArkUserRoleList().add(userRole);
+			}
 		}
 	}
 }

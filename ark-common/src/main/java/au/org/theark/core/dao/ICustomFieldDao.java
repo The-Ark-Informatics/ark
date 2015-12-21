@@ -373,10 +373,5 @@ public interface ICustomFieldDao {
 	 * @return
 	 */
 	public List<CustomFieldCategory> getSiblingList(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory customFieldCategory);
-	/**
-	 * Merged custom field category.
-	 * @param CustomFieldCategoryVO
-	 * @throws ArkSystemException
-	 */
-	public void mergeCustomFieldCategory(CustomFieldCategory CustomFieldCategory)throws ArkSystemException;;
+	
 }
