@@ -32,6 +32,15 @@ while [[ $pointer -le $# ]]; do
 	fi
 done
 
+cd $WORKSPACE_DIR/recaptcha4j
+if [ ! -d "target" ];
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
+fi
+
 # Maven build/install/package the source 
 cd $WORKSPACE_DIR/ark-common
 if is_changed; 
@@ -133,17 +142,3 @@ fi
 
 SCRIPTPATH=$(dirname $0)
 echo "Ark war file built"
-
-export PWD_DIR=`pwd`
-
-sudo service tomcat7 stop
-
-cd /var/lib/tomcat7/webapps/
-
-sudo rm -rf ark*
-
-sudo cp $PWD_DIR/target/ark.war .
-
-sudo service tomcat7 start
-
-sudo tail -1000f /var/log/tomcat7/catalina.out
