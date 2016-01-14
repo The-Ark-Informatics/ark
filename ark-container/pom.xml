@@ -53,11 +53,11 @@
 		</dependency>
 
 		<!-- Ark Genotypic Module -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>au.org.theark.geno</groupId>
 			<artifactId>ark-geno</artifactId>
 			<version>${ark-geno.version}</version>
-		</dependency>
+		</dependency> -->
 		
 		
 		<!-- Ark Registry Module -->
