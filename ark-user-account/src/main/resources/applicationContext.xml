@@ -25,9 +25,9 @@
     
     <!--  LDAP Data Source -->
     <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
-      <property name="url"  value="ldap://ark-ldap:389"/>
-      <property name="base" value="dc=ldapdevel,dc=wager,dc=org,dc=au"/>
-      <property name="userDn" value="cn=admin,dc=ldapdevel,dc=wager,dc=org,dc=au" />
+      <property name="url"  value="ldap://localhost:389"/>
+      <property name="base" value="dc=the-ark,dc=org,dc=au"/>
+      <property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
       <property name="password" value="type-in-password" />
     </bean>
     
@@ -39,6 +39,6 @@
 	<bean id="arkUserDao" class="au.org.theark.dao.ArkUserDao">
 		<property name="ldapTemplate" ref="ldapTemplate" />
 		<property name="basePeopleDn" value="ou=arkUsers" />
-		<property name="baseDC" value="dc=ldapdevel,dc=wager,dc=org,dc=au" />
+		<property name="baseDC" value="dc=the-ark,dc=org,dc=au" />
 	</bean>
 </beans>
