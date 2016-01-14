@@ -60,15 +60,6 @@ then
 	fi
 fi
 
-cd $WORKSPACE_DIR/ark-study
-if is_changed;
-then
-	mvn clean install
-	if [ "$?" != "0" ]; then
-	exit 1
-	fi
-fi
-
 cd $WORKSPACE_DIR/ark-registry
 if is_changed;
 then
@@ -125,6 +116,15 @@ fi
 
 
 cd $WORKSPACE_DIR/ark-disease
+if is_changed;
+then
+	mvn clean install
+	if [ "$?" != "0" ]; then
+	exit 1
+	fi
+fi
+
+cd $WORKSPACE_DIR/ark-study
 if is_changed;
 then
 	mvn clean install
