@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>au.org.theark</groupId>
+	<artifactId>ark</artifactId>
+	<packaging>pom</packaging>
+	<version>1.2</version>
+	<name>Ark</name>
+	<description>The top level container web application that will contain other sub-modules.</description>
+	<organization>
+		<name>Centre for Genetic Epidemiology and Biostatistics (CGEB)</name>
+		<url>http://www.genepi.meddent.uwa.edu.au/</url>
+	</organization>
+	<url>http://the-ark.org.au/</url>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>https://the-ark.atlassian.net/secure/Dashboard.jspa</url>
+	</issueManagement>
+	<licenses>
+		<license>
+			<name>GNU GENERAL PUBLIC LICENSE, Version 3.0</name>
+			<url>http://www.gnu.org/copyleft/gpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<modules>
+		<module>ark-admin</module>
+		<module>ark-common</module>
+		<module>ark-container</module>
+		<module>ark-disease</module>
+		<module>ark-genomics</module>
+		<module>ark-lims</module>
+		<module>ark-phenotypic</module>
+		<module>ark-registry</module>
+		<module>ark-report</module>
+		<module>ark-study</module>
+		<module>ark-work-tracking</module>
+		<module>recaptcha4j</module>
+		<module>spark</module>
+	</modules>
+
+</project>
