@@ -11,3 +11,5 @@
 ark-container/src/main/resources/applicationContext.xml
 ark-container/src/main/resources/application.properties
 spark/src/main/resources/spark.properties
+ark-user-account/src/main/resources/applicationContext.xml
+
