@@ -2150,9 +2150,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				createSearchResult(search, iDataExtractionDao.createGenoCSV(search, allTheData, FieldCategory.GENO, maxProcessesPerPipeline, maxInputList, maxOutputList),currentUser);				
 			}
 			createSearchResult(search, iDataExtractionDao.createConsentStatusCSV(search, allTheData, consentStatus, FieldCategory.CONSENT_STATUS_FIELD), currentUser);
-			if(search.getIncludeMega()) {
-				createSearchResult(search, iDataExtractionDao.createMegaCSV(search, allTheData, allSubjectFields, bccfds, bscfds, pcfds, consentStatus), currentUser);
-			}
+			createSearchResult(search, iDataExtractionDao.createMegaCSV(search, allTheData, allSubjectFields, bccfds, bscfds, pcfds, consentStatus), currentUser);
 			try {
 				search.setFinishTime(new java.util.Date(System.currentTimeMillis()));
 				search.setStatus("FINISHED");

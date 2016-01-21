@@ -983,7 +983,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 
 	public File createMegaCSV(Search search, DataExtractionVO allTheData, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> biocollectionCustomFieldDisplay, List<CustomFieldDisplay> biospecimenCustomFieldDisplay, List<CustomFieldDisplay> phenotypicCustomFieldDisplay, List<ConsentStatusField> consentStatusFields) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		String filename = new String("MEGA.csv");
+		String filename = new String("COMBINED.csv");
 		final java.io.File file = new File(tempDir, filename);
 		
 		long start = System.currentTimeMillis();
