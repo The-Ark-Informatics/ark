@@ -31,7 +31,7 @@ public class SubjectAttachmentDataUploadJob implements Job {
 	public static final String		INPUT_STREAM		= "inputStream";
 	public static final String		SIZE					= "size";
 	public static final String		REPORT				= "report";
-	
+
 	private IStudyService	iStudyService;
 	private IArkCommonService<Void>	iArkCommonService;
 	
@@ -49,10 +49,11 @@ public class SubjectAttachmentDataUploadJob implements Job {
 		long size 					= data.getLongValue(SIZE);
 		String originalReport 	= data.getString(REPORT);
 		Long studyId 				= data.getLongValue(STUDY_ID);
-		
+		String userId				= data.getString(StudyDataUploadJob.CURRENT_USER);
+
 		try {
 			Date startTime = new Date(System.currentTimeMillis());
-			StringBuffer uploadReport = iStudyService.uploadAndReportSubjectAttachmentDataFile(inputStream, size, fileFormat, delimiter, studyId);
+			StringBuffer uploadReport = iStudyService.uploadAndReportSubjectAttachmentDataFile(inputStream, size, fileFormat, delimiter, studyId, userId);
 			Upload upload = iStudyService.getUpload(uploadId);
 			save(upload, uploadReport.toString(), originalReport, startTime);
 		}
