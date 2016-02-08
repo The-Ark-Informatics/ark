@@ -134,6 +134,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	private void initIncludeGeno() {
 		includeGenoChkBox = new CheckBox(Constants.SEARCH_INCLUDE_GENO);
+		includeGenoChkBox.setVisible(false);
 	}
 
 	public void initialiseDetailForm() {
