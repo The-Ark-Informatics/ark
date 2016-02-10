@@ -291,6 +291,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							
 							newModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 							newModel.getObject().setBiospecimen(biospecimenFromDB);
+							newModel.getObject().setBioCollection(biospecimenFromDB.getBioCollection());
 							newModel.getObject().setTreeModel(cpModel.getObject().getTreeModel());
 							showModalWindow(target, newModel);
 						}
