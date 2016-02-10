@@ -343,6 +343,8 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS_DISPLAY = "DISEASE_CUSTOM_FIELD_DISPLAY";
 	public static final String FUNCTION_KEY_VALUE_DISEASE_AFFECTION = "DISEASE_AFFECTION";
 
+	public static final String FUNCTION_KEY_VALUE_GLOBAL_BIOSPECIMEN_SEARCH = "GLOBAL_BIOSPECIMEN_SEARCH";
+	
 	/* Ark Module Keys */
 	public static final String ARK_MODULE_KEY = "MODULE_KEY";
 
