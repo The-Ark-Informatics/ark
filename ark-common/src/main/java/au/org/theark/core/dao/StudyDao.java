@@ -873,6 +873,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			criteria.add(Restrictions.eq("study.id", subjectVO.getLinkSubjectStudy().getStudy().getId()));
 		} else {
 			criteria.add(Restrictions.in("study", subjectVO.getStudyList()));
+			criteria.createAlias("study", "st");
+			criteria.addOrder(Order.asc("st.name"));
 		}
 		if (subjectVO.getLinkSubjectStudy().getPerson() != null) {
 
