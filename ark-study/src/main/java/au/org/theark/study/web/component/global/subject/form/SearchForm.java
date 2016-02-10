@@ -20,12 +20,9 @@ package au.org.theark.study.web.component.global.subject.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -43,7 +40,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -150,6 +146,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
+		
+		remove(newButton);
 	}
 	
 	@SuppressWarnings("unchecked")
