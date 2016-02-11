@@ -207,7 +207,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("BiospecimenUID"), "biospecimenUid"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Study"), "study.name"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("SubjectUID"), "linkSubjectStudy.subjectUID"));
-		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("ParentUID"), "parentUID"));
+		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("ParentUID"), "parentUid"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Collection"), "bioCollection.name"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Sample Type"), "sampleType.name"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Quantity"), "quantity"));
