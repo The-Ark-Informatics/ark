@@ -481,8 +481,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				session.save(arkUserRole);
 			}
 		}
+		
 		for (UserConfig config : arkUserVO.getArkUserConfigs()) {
-			session.update(config);
+			session.saveOrUpdate(config);
 		}
 	}
 

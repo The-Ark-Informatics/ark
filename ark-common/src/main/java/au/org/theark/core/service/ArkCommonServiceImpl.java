@@ -1562,7 +1562,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		studyDao.createUserConfigs(userConfigList);
 	}
 
-	public Collection<ConfigField> getAllConfigFields() {
+	public List<ConfigField> getAllConfigFields() {
 		return studyDao.getAllConfigFields();
 	}
 

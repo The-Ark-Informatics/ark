@@ -5075,9 +5075,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 	}
 			
-	public Collection<ConfigField> getAllConfigFields() {
+	public List<ConfigField> getAllConfigFields() {
 		Criteria criteria = getSession().createCriteria(ConfigField.class);
-		return criteria.list();
+		final List<ConfigField> configFields = criteria.list();
+		return configFields;
 	}
 	
 	public List<UserConfig> getUserConfigs(ArkUser arkUser) {

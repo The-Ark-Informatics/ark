@@ -926,7 +926,7 @@ public interface IArkCommonService<T> {
 
 	public List<ProcessOutput> getProcessOutputsForProcess(Process process);
 
-	public Collection<ConfigField> getAllConfigFields();
+	public List<ConfigField> getAllConfigFields();
 
 	public List<UserConfig> getUserConfigs(ArkUser arkUser);
 
