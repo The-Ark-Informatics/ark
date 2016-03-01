@@ -44,6 +44,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.DetachedCriteria;
@@ -5093,56 +5094,36 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		return userConfigs;
 	}
-
 	
-	public UserConfig getUserConfigForUser(String configField) {
-		String currentUserName = (String) SecurityUtils.getSubject().getPrincipal();
-		Criteria userCriteria = getSession().createCriteria(ArkUser.class);
-		if (currentUserName != null) {
-			userCriteria.add(Restrictions.eq("ldapUserName", currentUserName));
-		}
-		ArkUser user = (ArkUser) userCriteria.uniqueResult();
+	@Override
+	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField) {
 		Criteria criteria = getSession().createCriteria(UserConfig.class);
-		criteria.add(Restrictions.eq("arkUser", user));
-		criteria.createAlias("configField", "cf");
-		criteria.add(Restrictions.eq("cf.name", configField));
+		if(arkUser != null && arkUser.getId() != null) {
+			criteria.add(Restrictions.eq("arkUser",  arkUser));
+		}
+		if(configField != null && configField.getId() != null) {
+			criteria.add(Restrictions.eq("configField", configField));
+		}
+		UserConfig userConfig = null;
+		try {
+			userConfig = (UserConfig) criteria.uniqueResult();
+		} catch (HibernateException e) {
+			log.error(e.getMessage());
+			e.printStackTrace();
+			userConfig = new UserConfig();
+			userConfig.setArkUser(arkUser);
+			userConfig.setConfigField(configField);
+//			userConfig.setValue(configField.getDefaultValue());
+		}
+		return userConfig;
+	}	
+	
+	public ConfigField getConfigFieldByName(String configField) {
+		Criteria criteria = getSession().createCriteria(ConfigField.class);
+		criteria.add(Restrictions.eq("NAME", configField));
+		return (ConfigField) criteria.uniqueResult();
+	}
 		
-		UserConfig config = (UserConfig) criteria.uniqueResult();
-		return config;
-	}
-	
-	public int getRowsPerPage() {
-		UserConfig config = getUserConfigForUser(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE);
-
-		if(config != null) {
-			int rows_per_page = au.org.theark.core.Constants.ROWS_PER_PAGE;
-			try {
-				rows_per_page = Integer.parseInt(config.getValue());
-			} catch(NumberFormatException e) {
-				log.error("Caught NumberFormatException, setting to default value " + e.getMessage());
-			}
-			return rows_per_page;
-		} else {
-			return au.org.theark.core.Constants.ROWS_PER_PAGE;
-		}
-	}
-	
-	public int getCustomFieldsPerPage() {
-		UserConfig config = getUserConfigForUser(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE);
-
-		if(config != null) {
-			int rows_per_page = au.org.theark.core.Constants.CUSTOM_FIELDS_PER_PAGE;
-			try {
-				rows_per_page = Integer.parseInt(config.getValue());
-			} catch(NumberFormatException e) {
-				log.error("Caught NumberFormatException, setting to default value " + e.getMessage());
-			}
-			return rows_per_page;
-		} else {
-			return au.org.theark.core.Constants.CUSTOM_FIELDS_PER_PAGE;
-		}
-	}
-	
 	public void deleteUserConfig(UserConfig uc) {
 		if(uc != null) {
 			getSession().delete(uc);

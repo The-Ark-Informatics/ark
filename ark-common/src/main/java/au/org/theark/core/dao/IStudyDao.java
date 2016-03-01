@@ -745,10 +745,6 @@ public interface IStudyDao {
 	
 	public List<UserConfig> getUserConfigs(ArkUser arkUser);
 	
-	public int getRowsPerPage();
-	
-	public int getCustomFieldsPerPage();
-	
 	public void deleteUserConfig(UserConfig uc);
 	
 	public List<Study> getChildStudiesForStudy(Study study);
@@ -762,4 +758,6 @@ public interface IStudyDao {
 	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<String>fieldNameCollection,Study study,ArkFunction arkFunction,CustomFieldType customFieldType);
 
 	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField);
+
+	public ConfigField getConfigFieldByName(String configName);
 }

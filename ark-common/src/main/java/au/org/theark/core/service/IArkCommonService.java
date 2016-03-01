@@ -52,7 +52,6 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -930,10 +929,10 @@ public interface IArkCommonService<T> {
 
 	public List<UserConfig> getUserConfigs(ArkUser arkUser);
 
-	public int getRowsPerPage();
-
-	public int getCustomFieldsPerPage();
-
+	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField);
+	
+	public UserConfig getUserConfig(String configName);
+	
 	public void createUserConfigs(List userConfigList) throws ArkSystemException;
 
 	public void deleteUserConfig(UserConfig userConfig);
