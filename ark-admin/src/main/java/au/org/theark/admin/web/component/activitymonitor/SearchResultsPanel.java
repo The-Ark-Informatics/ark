@@ -53,7 +53,7 @@ public class SearchResultsPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	public PageableListView<ArkSubjectSessionVO> buildPageableListView(IModel iModel) {
-		PageableListView<ArkSubjectSessionVO> pageableListView = new PageableListView<ArkSubjectSessionVO>("list", iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<ArkSubjectSessionVO> pageableListView = new PageableListView<ArkSubjectSessionVO>("list", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 
 			private static final long	serialVersionUID	= 1L;

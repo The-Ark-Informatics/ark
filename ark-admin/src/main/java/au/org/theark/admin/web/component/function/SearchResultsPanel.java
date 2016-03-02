@@ -106,7 +106,7 @@ public class SearchResultsPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	public PageableListView<ArkFunction> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
-		PageableListView<ArkFunction> pageableListView = new PageableListView<ArkFunction>("arkFunctionList", iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<ArkFunction> pageableListView = new PageableListView<ArkFunction>("arkFunctionList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 			private static final long	serialVersionUID	= 3350183112731574263L;
 

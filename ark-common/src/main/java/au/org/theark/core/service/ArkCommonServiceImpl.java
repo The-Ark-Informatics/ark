@@ -47,6 +47,7 @@ import javax.naming.ldap.Rdn;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -1562,22 +1563,36 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		studyDao.createUserConfigs(userConfigList);
 	}
 
-	public Collection<ConfigField> getAllConfigFields() {
+	public List<ConfigField> getAllConfigFields() {
 		return studyDao.getAllConfigFields();
 	}
 
 	public List<UserConfig> getUserConfigs(ArkUser arkUser) {
 		return studyDao.getUserConfigs(arkUser);
 	}
-
-	public int getRowsPerPage() {
-		return studyDao.getRowsPerPage();
+	
+	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField) {
+		return studyDao.getUserConfig(arkUser, configField);
 	}
-
-	public int getCustomFieldsPerPage() {
-		return studyDao.getCustomFieldsPerPage();
+	
+	public UserConfig getUserConfig(String configName) {
+		String currentUser = SecurityUtils.getSubject().getPrincipal().toString();
+		ArkUser arkUser = null;
+		try {
+			arkUser = getArkUser(currentUser);
+			
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ConfigField configField = studyDao.getConfigFieldByName(configName);
+		
+		UserConfig config = studyDao.getUserConfig(arkUser, configField);
+		
+		return config;
 	}
-
+	
 	public void deleteUserConfig(UserConfig uc) {
 		studyDao.deleteUserConfig(uc);
 	}

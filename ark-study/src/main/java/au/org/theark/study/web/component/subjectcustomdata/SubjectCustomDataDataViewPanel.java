@@ -75,7 +75,7 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 	public SubjectCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage,CustomFieldCategory customFieldCategory) {
 		initialiseDataView(customFieldCategory);
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage); // iArkCommonService.getRowsPerPage());
+			dataView.setItemsPerPage(numRowsPerPage); // iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		}
 		this.add(dataView);
 		return this;
