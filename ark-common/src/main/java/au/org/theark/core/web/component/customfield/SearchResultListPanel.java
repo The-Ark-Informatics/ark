@@ -38,7 +38,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -191,7 +190,7 @@ public class SearchResultListPanel extends Panel {
 		columns.add(new ExportableTextColumn<CustomField>(Model.of("maxValue"), "maxValue"));
 		columns.add(new ExportableTextColumn<CustomField>(Model.of("missingValue"), "missingValue"));
 
-		DataTable table = new DataTable("datatable", columns, customFieldDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
+		DataTable table = new DataTable("datatable", columns, customFieldDataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("FIELD_NAME");
 		headers.add("FIELD_TYPE");

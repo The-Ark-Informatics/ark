@@ -124,7 +124,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCpModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 			phenoDataCpModel.getObject().setPhenoCollection(pc);
 			phenoDataCpModel.getObject().setArkFunction(cpModel.getObject().getArkFunction());
-			PhenoDataDataViewPanel phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage());
+			PhenoDataDataViewPanel phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue());
 			
 			dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
 				/**

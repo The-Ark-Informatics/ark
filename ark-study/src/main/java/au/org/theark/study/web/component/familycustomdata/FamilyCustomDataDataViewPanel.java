@@ -51,7 +51,7 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 	public FamilyCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage, CustomFieldCategory customFieldCategory) {
 		initialiseDataView(customFieldCategory);
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage); // iArkCommonService.getRowsPerPage());
+			dataView.setItemsPerPage(numRowsPerPage); // iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		}
 
 		this.add(dataView);

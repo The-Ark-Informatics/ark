@@ -73,7 +73,7 @@ public class SearchResultListPanel extends Panel {
 	 */
 	@SuppressWarnings("unchecked")
 	public PageableListView<Pipeline> buildPageableListView(IModel iModel) {
-		PageableListView<Pipeline> pageableListView = new PageableListView<Pipeline>(Constants.RESULT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<Pipeline> pageableListView = new PageableListView<Pipeline>(Constants.RESULT_LIST, iModel, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 			
 			private static final long	serialVersionUID	= 1L;
 

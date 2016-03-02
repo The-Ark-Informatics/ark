@@ -185,7 +185,7 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	public PageableListView<DataSourceVo> buildPageableListView(IModel iModel) {
-		PageableListView<DataSourceVo> sitePageableListView = new PageableListView<DataSourceVo>("dataSourceList", iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<DataSourceVo> sitePageableListView = new PageableListView<DataSourceVo>("dataSourceList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 			@Override
 			protected void populateItem(final ListItem<DataSourceVo> item) {

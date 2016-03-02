@@ -5120,7 +5120,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	public ConfigField getConfigFieldByName(String configField) {
 		Criteria criteria = getSession().createCriteria(ConfigField.class);
-		criteria.add(Restrictions.eq("NAME", configField));
+		criteria.add(Restrictions.eq("name", configField));
 		return (ConfigField) criteria.uniqueResult();
 	}
 		

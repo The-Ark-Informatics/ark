@@ -144,7 +144,7 @@ public class SearchResultsPanel extends Panel {
 					}
 				};
 				
-				fldAuditDataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+				fldAuditDataView.setItemsPerPage(iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 				
 				fldPageNavigator = new AjaxPagingNavigator("fldNavigator", fldAuditDataView){
 
@@ -209,7 +209,7 @@ public class SearchResultsPanel extends Panel {
 					}
 				};
 				
-				auditDataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+				auditDataView.setItemsPerPage(iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 				
 				pageNavigator = new AjaxPagingNavigator("navigator", auditDataView){
 
