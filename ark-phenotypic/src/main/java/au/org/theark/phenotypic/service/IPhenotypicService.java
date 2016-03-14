@@ -30,17 +30,18 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
+import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -50,6 +51,7 @@ import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.vo.PhenoDataSetCategoryVO;
+import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataSetFieldVO;
 
 public interface IPhenotypicService {
@@ -154,7 +156,7 @@ public interface IPhenotypicService {
 
 	public List<PhenoCollection> searchPageablePhenoCollections(PhenoDataCollectionVO criteria, int first, int count);
 
-	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria);
+	public List<PhenoDataSetField> getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroup);
 
 	public void createPhenoCollection(PhenoCollection phenoCollection);
 
@@ -164,9 +166,9 @@ public interface IPhenotypicService {
 	
 	public List<QuestionnaireStatus> getPhenoCollectionStatusList();
 	
-	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup , int first, int count);
+	public Collection<PhenoDataSetFieldDisplay> getCFDLinkedToQuestionnaire(PhenoDataSetGroup phenoDataSetGroup , int first, int count);
 	
-	public long getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup);
+	public long getCFDLinkedToQuestionnaireCount(PhenoDataSetGroup phenoDataSetGroup);
 
 	public QuestionnaireStatus getPhenoCollectionStatusByName(String statusName);
 
@@ -191,13 +193,13 @@ public interface IPhenotypicService {
 			List<PhenoCollection> phenoCollectionsWithTheirDataToInsert,
 			Study study);
 	
-	public List<List<String>> getPhenoDataAsMatrix (Study study, List<String> subjectUids, List<CustomField> customFields, List<CustomFieldGroup> customFieldGroups);
+	public List<List<String>> getPhenoDataAsMatrix (Study study, List<String> subjectUids, List<PhenoDataSetField> customFields, List<PhenoDataSetGroup> phenoDataSetGroups);
 	
-	public List<CustomFieldGroup> getCustomFieldGroupsByLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy);
+	public List<PhenoDataSetGroup> getPhenoDataSetGroupsByLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy);
 
 	public CustomFieldGroup getCustomFieldGroupByNameAndStudy(String name, Study study);
 	
-	public CustomFieldGroup getCustomFieldGroupById(Long id);
+	public PhenoDataSetGroup getPhenoFieldGroupById(Long id);
 
 	public List<PhenoCollection> getSubjectMatchingPhenoCollections(LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,Date recordDate);
 	
@@ -236,7 +238,7 @@ public interface IPhenotypicService {
 	 * @return
 	 * @throws ArkSystemException
 	 */
-	public List<PhenoDataSetCategory> getPhenoParentCategoryList(Study study,ArkFunction arkFunction) throws ArkSystemException;
+	//public List<PhenoDataSetCategory> getPhenoParentCategoryList(Study study,ArkFunction arkFunction) throws ArkSystemException;
 	
 	/**
 	 * List of all available Pheno category list for update.
@@ -326,7 +328,7 @@ public interface IPhenotypicService {
 	 * @param phenoDataSetCategory
 	 * @return
 	 */
-	public List getSiblingList(Study study, ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory);
+	//public List getSiblingList(Study study, ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory);
 	/**
 	 * 
 	 * @param CustomFieldCategory
@@ -356,4 +358,70 @@ public interface IPhenotypicService {
 	 * @throws ArkUniqueException
 	 */
 	public void createPhenoDataSetField(PhenoDataSetFieldVO phenoDataSetFieldVO) throws ArkSystemException, ArkUniqueException;
+	
+	/*new pheno data group crud operations*/
+	
+	public void createPhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO) throws EntityExistsException, ArkSystemException;
+
+	public void updatePhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO) throws EntityExistsException,ArkSystemException;
+	
+	public void deletePhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO);
+	
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSetField(PhenoDataSetField phenoDataSetField);
+
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(PhenoDataSetField phenoDataSetField, PhenoDataSetGroup phenoDataSetGroup);
+	
+	public long getPhenoDataSetFieldGroupCount(PhenoDataSetGroup phenoDataSetGroup);
+	
+	public List<PhenoDataSetField> getPhenoDataSetFieldList(PhenoDataSetField phenoDataSetFieldCriteria);
+	
+	public List<PhenoDataSetGroup> getPhenoDataSetGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count);
+	
+	public void createPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException,EntityExistsException;
+	
+	public void deletePickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) throws ArkSystemException, EntityCannotBeRemoved;
+		
+	public List<PickedPhenoDataSetCategory> getPickedPhenoDataSetCategories(Study study,ArkFunction arkFunction,ArkUser arkUser);
+	
+	public List<PhenoDataSetCategory> getAvailablePhenoCategoryListNotPicked(Study study,ArkFunction arkFunctionPhenoCat,ArkFunction arkFunctionPhenoCollection,ArkUser arkUser) throws ArkSystemException;
+	
+	public PickedPhenoDataSetCategory getPickedPhenoDataSetCategoryFromPhenoDataSetCategory(Study study,ArkFunction arkFunction,ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory);
+	
+	public void deleteLinkPhenoDataSetCategoryField(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField) throws ArkSystemException, EntityCannotBeRemoved;
+	
+	public void  createLinkPhenoDataSetCategoryField(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField) throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException,EntityExistsException;
+	
+	public List<PhenoDataSetField> getAvailablePhenoFieldListNotInLinked(Study study,ArkFunction arkFunctionPhenoDataDictionary,ArkFunction arkFunctionPhenoCollection,ArkUser arkUser) throws ArkSystemException;
+	
+	public List<LinkPhenoDataSetCategoryField> getLinkPhenoDataSetCategoryFieldLst(Study study, ArkFunction arkFunction,ArkUser arkUser);
+	
+	public void updatePickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException;
+	
+	//public boolean isLinkPhenoDataSetCategoryFieldExsists(Study study, ArkFunction arkFunction,ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory,PhenoDataSetField phenoDataSetField);
+	
+	public List<PhenoDataSetField> getLinkedPhenoDataSetFieldsForSelectedCategories(Study study, ArkFunction arkFunction,ArkUser arkUser,List<PhenoDataSetCategory> phenoDataSetCategories);
+	
+	public LinkPhenoDataSetCategoryField getLinkPhenoDataSetCategoryField(Study study, ArkFunction arkFunction,ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory,PhenoDataSetField phenoDataSetField);
+	
+	public boolean isSelectedCategoriesAlreadyAssignedToFields(Study study, ArkFunction arkFunction,ArkUser arkUser,List<PhenoDataSetCategory> phenoDataSetCategories);
+	
+	public Long getNextAvailbleNumberForPickedCategory(Study study, ArkFunction arkFunction,ArkUser arkUser);
+	
+	public PickedPhenoDataSetCategory getSwapOverPickedPhenoDataSetCategoryForUpButton(PickedPhenoDataSetCategory pickedPhenoDataSetCategory);
+	
+	public PickedPhenoDataSetCategory getSwapOverPickedPhenoDataSetCategoryForDownButton(PickedPhenoDataSetCategory pickedPhenoDataSetCategory);
+	
+	public Long getNextAvailbleNumberForAssignedField(Study study, ArkFunction arkFunction,ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory);
+	
+	public PhenoDataSetCategory getPhenoDataSetCategoryForAssignedPhenoDataSetField(Study study, ArkFunction arkFunction,ArkUser arkUser,PhenoDataSetField phenoDataSetField);
+	
+	public LinkPhenoDataSetCategoryField getSwapOverPhenoDataSetFieldForUpButton(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField);
+	
+	public LinkPhenoDataSetCategoryField getSwapOverPhenoDataSetFieldForDownButton(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField);
+	
+	public void updateLinkPhenoDataSetCategoryField(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField) throws ArkSystemException, ArkRunTimeUniqueException, ArkRunTimeException;
+	
+	public Boolean isPickedPhenoDataSetCategoryIsAParentOfAnotherCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory);
+	
 }
+

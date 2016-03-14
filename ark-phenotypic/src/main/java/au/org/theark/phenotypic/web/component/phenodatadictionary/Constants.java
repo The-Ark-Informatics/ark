@@ -19,14 +19,7 @@
 package au.org.theark.phenotypic.web.component.phenodatadictionary;
 
 public class Constants {
-
-	//TODO make all of these constants firstly look in common?
-	public static final String		FUNCTION_KEY_VALUE_PHENO_COLLECTION							= "PHENO_COLLECTION";
 	public static final String		FUNCTION_KEY_VALUE_DATA_DICTIONARY							= "DATA_DICTIONARY";
-	
-	
-
-
 	public static final String 		FIELD_TYPE_NUMBER 											= "NUMBER";
 	public static final String 		FIELD_TYPE_CHARACTER 										= "CHARACTER";
 	public static final String 		FIELD_TYPE_DATE 											= "DATE";
@@ -43,12 +36,14 @@ public class Constants {
 	public static final String		PHENODATASET_DESCRIPTION									= "description";
 	public static final String		PHENODATASET_FIELD_LABEL									= "fieldLabel";
 	public static final String		PHENODATASET_CUSTOME_FIELD_TYPE								= "phenoDataSetType";
-	public static final String		PHENODATASET_CATEGORY										= "phenoDataSetCategory";
-	public static final String		PHENODATASET_CATEGORY_ORDERNUMBER							= "phenoDataSetCategory.orderNumber";
 	public static final String		PHENODATASET_UNIT_TYPE										= "unitType";
+	public static final String		PHENODATASET_DEFAULT_VALUE									= "defaultValue";
+	public static final String		PHENODATASET_MISSING_VALUE									= "missingValue";
 	public static final String		PHENODATASET_MIN_VALUE										= "minValue";
 	public static final String		PHENODATASET_MAX_VALUE										= "maxValue";
 	public static final String		PHENODATASET_HAS_DATA										= "phenoDataSetHasData";
+	public static final String		PHENODATASET_REQUIRED										= "required";
+	public static final String		PHENODATASET_ALLOW_MULTIPLE_SELECTION						= "allowMultiselect";
 	public static final String		FIELDTYPE 													= "fieldType";
 	public static final String		FIELDTYPE_ID 												= "id";
 	public static final String		FIELDTYPE_NAME 												= "name";
@@ -75,6 +70,9 @@ public class Constants {
 	public static final String		FIELDVO_PHENODATASET_DESCRIPTION							= "phenoDataSetField.description";
 	public static final String		FIELDVO_PHENODATASET_FIELD_LABEL							= "phenoDataSetField.fieldLabel";
 	public static final String		FIELDVO_PHENODATASET_UNIT_TYPE								= "phenoDataSetField.unitType";
+	public static final String		FIELDVO_PHENODATASET_REQUIRED								= "phenoDataSetField.required";
+	public static final String		FIELDVO_PHENODATASET_ALLOW_MULTIPLE_SELECTION				= "phenoDataSetField.allowMultiselect";
+	public static final String		FIELDVO_PHENODATASET_DEFAULT_VALUE							= "phenoDataSetField.defaultValue";
 	//Add unit type as text
 	public static final String		FIELDVO_PHENODATASET_UNIT_TYPE_TXT						= "phenoDataSetField.unitTypeInText";
 	public static final String		FIELDVO_PHENODATASET_SEQ_NUM							= "phenoDataSetField.seqNum";
@@ -82,7 +80,6 @@ public class Constants {
 	public static final String		FIELDVO_PHENODATASET_MAX_VALUE							= "phenoDataSetField.maxValue";
 	public static final String		FIELDVO_PHENODATASET_ENCODED_VALUES						= "phenoDataSetField.encodedValues";
 	public static final String		FIELDVO_PHENODATASET_MISSING_VALUE						= "phenoDataSetField.missingValue";
-	public static final String		FIELDVO_PHENODATASET_ALLOW_MULTISELECT					= "phenoDataSetFieldDisplay.allowMultiselect";
 	
 	public static final String		FIELDVO_PHENODATASETDISPLAY_ID							= "phenoDataSetFieldDisplay.id";
 	public static final String		FIELDVO_PHENODATASETDISPLAY_CUSTOM_FIELD				= "phenoDataSetFieldDisplay.phenoDataSetField";
@@ -95,7 +92,6 @@ public class Constants {
 	public static final String		CUSTOM_FIELD_TYPE_ID									="id";
 	public static final String 		PHENODATASETCATEGORY_NAME								="name";
 	public static final String 		PHENODATASETCATEGORY_ID									="id";
-	public static final String		FIELDVO_PHENODATASET_CUSTOEMFIELDCATEGORY				= "lastLevelSelectedCategories";
 	public static final int 		PHENO_CATEGORY_PALETTE_ROWS 							= 10;
 	// Services
 	public static final String	PHENOTYPIC_SERVICE				= "phenotypicService";

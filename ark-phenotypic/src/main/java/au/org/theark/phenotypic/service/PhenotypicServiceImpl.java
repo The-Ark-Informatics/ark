@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.QueryException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,19 +43,20 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
+import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
-import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -65,6 +67,7 @@ import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.vo.PhenoDataSetCategoryVO;
+import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
 import au.org.theark.phenotypic.util.CustomDataUploader;
@@ -791,11 +794,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.searchPageablePhenoCollection(criteria, first,
 				count);
 	}
-
-	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(
-			CustomFieldGroup customFieldCriteria) {
-		return phenotypicDao
-				.getCustomFieldsLinkedToCustomFieldGroup(customFieldCriteria);
+	
+	public List<PhenoDataSetField> getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroup)
+	{
+		return phenotypicDao.getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(phenoDataSetGroup);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = {
@@ -824,15 +826,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	}
 
-	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(
-			CustomFieldGroup customFieldGroup, int first, int count) {
-		return phenotypicDao.getCFDLinkedToQuestionnaire(customFieldGroup,
-				first, count);
+	public Collection<PhenoDataSetFieldDisplay> getCFDLinkedToQuestionnaire(PhenoDataSetGroup phenoDataSetGroup, int first, int count) {
+		return phenotypicDao.getCFDLinkedToQuestionnaire(phenoDataSetGroup,first, count);
 	}
 
-	public long getCFDLinkedToQuestionnaireCount(
-			CustomFieldGroup customFieldGroup) {
-		return phenotypicDao.getCFDLinkedToQuestionnaireCount(customFieldGroup);
+	public long getCFDLinkedToQuestionnaireCount(PhenoDataSetGroup phenoDataSetGroup) {
+		return phenotypicDao.getCFDLinkedToQuestionnaireCount(phenoDataSetGroup);
 	}
 
 	public List<QuestionnaireStatus> getPhenoCollectionStatusList() {
@@ -963,17 +962,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 				phenoCollectionsWithTheirDataToInsert, study);
 	}
 
-	public List<List<String>> getPhenoDataAsMatrix(Study study,
-			List<String> subjectUids, List<CustomField> customFields,
-			List<CustomFieldGroup> customFieldGroups) {
-		return phenotypicDao.getPhenoDataAsMatrix(study, subjectUids,
-				customFields, customFieldGroups);
+	public List<List<String>> getPhenoDataAsMatrix(Study study,List<String> subjectUids, List<PhenoDataSetField> phenoDataSetFields,List<PhenoDataSetGroup> phenoDataSetGroups) {
+		return phenotypicDao.getPhenoDataAsMatrix(study, subjectUids,phenoDataSetFields, phenoDataSetGroups);
 	}
 
-	public List<CustomFieldGroup> getCustomFieldGroupsByLinkSubjectStudy(
-			LinkSubjectStudy linkSubjectStudy) {
-		return phenotypicDao
-				.getCustomFieldGroupsByLinkSubjectStudy(linkSubjectStudy);
+	public List<PhenoDataSetGroup> getPhenoDataSetGroupsByLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		return phenotypicDao.getPhenoDataSetGroupsByLinkSubjectStudy(linkSubjectStudy);
 	}
 
 	public CustomFieldGroup getCustomFieldGroupByNameAndStudy(String name,
@@ -981,8 +975,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getCustomFieldGroupByNameAndStudy(name, study);
 	}
 
-	public CustomFieldGroup getCustomFieldGroupById(Long id) {
-		return phenotypicDao.getCustomFieldGroupById(id);
+	public PhenoDataSetGroup getPhenoFieldGroupById(Long id) {
+		return phenotypicDao.getPhenoFieldGroupById(id);
 	}
 
 	public List<PhenoCollection> getSubjectMatchingPhenoCollections(LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,Date recordDate) {
@@ -1004,10 +998,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenoDatasetCategoryCount(phenoDataSetCategoryCriteria);
 	}
 
-	@Override
+	/*@Override
 	public List<PhenoDataSetCategory> getPhenoParentCategoryList(Study study,ArkFunction arkFunction) throws ArkSystemException {
 		return phenotypicDao.getPhenoParentCategoryList(study, arkFunction);
-	}
+	}*/
 
 	@Override
 	public List<PhenoDataSetCategory> getAvailableAllCategoryListExceptThis(Study study, ArkFunction arkFunction,PhenoDataSetCategory thisPhenoDataSetCategory)throws ArkSystemException {
@@ -1075,10 +1069,10 @@ try {
 	}
 
 	@Override
-	public void deletePhenoDataSetCategory(PhenoDataSetCategoryVO phenoDataSetCategoryvo)throws ArkSystemException, EntityCannotBeRemoved {
+	public void deletePhenoDataSetCategory(PhenoDataSetCategoryVO phenoDataSetCategoryvo)throws ArkSystemException, EntityCannotBeRemoved, QueryException {
 		String fieldName = phenoDataSetCategoryvo.getPhenoDataSetCategory().getName();
-		if(phenotypicDao.isThisPhenoDataSetCategoryWasAParentCategoryOfAnother(phenoDataSetCategoryvo.getPhenoDataSetCategory())){
-					throw new EntityCannotBeRemoved("Can not delete Pheno DataSet Category which already assiged as parent category.");
+		if(phenotypicDao.isPhenoDataSetCategoryAlreadyUsed(phenoDataSetCategoryvo.getPhenoDataSetCategory())){
+					throw new EntityCannotBeRemoved("Can not delete Pheno DataSet Category which already being used.");
 		}else{
 			phenotypicDao.deletePhenoDataSetCategory(phenoDataSetCategoryvo.getPhenoDataSetCategory());
 					// History for Pheno DataSet Category
@@ -1088,7 +1082,7 @@ try {
 					ah.setEntityId(phenoDataSetCategoryvo.getPhenoDataSetCategory().getId());
 					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_CATEGORY);
 					phenotypicDao.createAuditHistory(ah,null,null);
-				}
+	}
 
 	}
 	/**
@@ -1115,7 +1109,7 @@ try {
 	 */
 	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSet(PhenoDataSetField pheDataSetFieldCriteria){
 		
-		return phenotypicDao.getPhenoDataSetFieldDisplayByPhenoDataSet(pheDataSetFieldCriteria);
+		return phenotypicDao.getPhenoDataSetFieldDisplayByPhenoDataSetField(pheDataSetFieldCriteria);
 	}
 	
 	public List<PhenoDataSetCategory> getAvailableAllCategoryListInStudy(Study study, ArkFunction arkFunction)throws ArkSystemException{
@@ -1173,9 +1167,9 @@ try {
 	public void createAuditHistory(AuditHistory auditHistory) {
 		studyDao.createAuditHistory(auditHistory);
 	}
-	public List getSiblingList(Study study, ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory) {
+	/*public List getSiblingList(Study study, ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory) {
 		return phenotypicDao.getSiblingList(study, arkFunction, phenoDataSetCategory);
-	}
+	}*/
 	public void mergePhenoDataSetFieldCategory(PhenoDataSetCategory phenoDataSetCategory)throws ArkSystemException{
 		 phenotypicDao.mergePhenoDataSetFieldCategory(phenoDataSetCategory);
 		
@@ -1223,7 +1217,9 @@ try {
 				// Set the PhenoDataSetField this PhenoDataSetFieldDisplay entity is linked
 				// to
 				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
-				phenotypicDao.createPhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
+				PhenoDataSetFieldDisplay phenoDataSetFieldDisplay=phenoDataSetFieldVO.getPhenoDataSetFieldDisplay();
+				phenoDataSetFieldDisplay.setAllowMultiselect(false);
+				phenotypicDao.createPhenoDataSetFieldDisplay(phenoDataSetFieldDisplay);
 				// Put in the sequence based on the ID
 				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setSequence(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());
 				phenotypicDao.updatePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
@@ -1279,10 +1275,182 @@ try {
 			throw new ArkSystemException("Unable to delete PhenoDataSet Field: " + ex.getMessage());
 		}
 	}
-	
 
-	
+	@Override
+	public void createPhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO)throws EntityExistsException, ArkSystemException {
+		try {
+			phenotypicDao.createPhenoDataSetFieldGroup(phenoDataSetFieldGroupVO);
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+			ah.setComment("Created Pheno Data Field Group "
+					+ phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getName());
+			ah.setEntityId(phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_GROUP);
+			iArkCommonService.createAuditHistory(ah);
+		} catch (ConstraintViolationException cvex) {
+			log.error("A Questionnaire with this name for the given study  exists.: "
+					+ cvex);
+			throw new EntityExistsException(
+					"A Questionnaire with that name already exits.");
+		} catch (Exception ex) {
+			log.error("Problem creating Questionnaire: " + ex);
+			throw new ArkSystemException("Problem creating Questionnaire: "
+					+ ex.getMessage());
+		}
 		
+	}
+
+	@Override
+	public void updatePhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO)throws EntityExistsException, ArkSystemException {
+		
+		
+	}
+
+	@Override
+	public void deletePhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO) {
+		phenotypicDao.deletePhenoDataSetFieldGroup(phenoDataSetFieldGroupVO);
+	}
+
+	@Override
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSetField(PhenoDataSetField phenoDataSetField) {
+		return phenotypicDao.getPhenoDataSetFieldDisplayByPhenoDataSetField(phenoDataSetField);
+	}
+
+	@Override
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(PhenoDataSetField phenoDataSetField,PhenoDataSetGroup phenoDataSetGroup) {
+		return phenotypicDao.getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(phenoDataSetField,phenoDataSetGroup);
+	}
+
+	@Override
+	public long getPhenoDataSetFieldGroupCount(PhenoDataSetGroup phenoDataSetGroup) {
+		
+		return phenotypicDao.getPhenoDataSetFieldGroupCount(phenoDataSetGroup);
+	}
+	
+	public List<PhenoDataSetField> getPhenoDataSetFieldList(PhenoDataSetField phenoDataSetFieldCriteria){
+		return phenotypicDao.getPhenoDataSetFieldList(phenoDataSetFieldCriteria);
+	}
+
+	@Override
+	public List<PhenoDataSetGroup> getPhenoDataSetGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count) {
+		
+		return phenotypicDao.getPhenoDataSetGroups(phenoDataSetGroup, first, count);
+	}
+
+	@Override
+	public void createPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException, EntityExistsException {
+		phenotypicDao.createPickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
+		
+	}
+
+	@Override
+	public void deletePickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory)throws ArkSystemException, EntityCannotBeRemoved {
+		phenotypicDao.deletePickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
+		
+	}
+
+	@Override
+	public List<PickedPhenoDataSetCategory> getPickedPhenoDataSetCategories(Study study, ArkFunction arkFunction, ArkUser arkUser) {
+		return phenotypicDao.getPickedPhenoDataSetCategories(study, arkFunction, arkUser);
+	}
+
+	@Override
+	public List<PhenoDataSetCategory> getAvailablePhenoCategoryListNotPicked(Study study, ArkFunction arkFunctionPhenoCat,ArkFunction arkFunctionPhenoCollection, ArkUser arkUser)throws ArkSystemException {
+		return phenotypicDao.getAvailablePhenoCategoryListNotPicked(study, arkFunctionPhenoCat, arkFunctionPhenoCollection, arkUser);
+	}
+
+	@Override
+	public PickedPhenoDataSetCategory getPickedPhenoDataSetCategoryFromPhenoDataSetCategory(Study study, ArkFunction arkFunction, ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory) {
+		return phenotypicDao.getPickedPhenoDataSetCategoryFromPhenoDataSetCategory(study, arkFunction, arkUser, phenoDataSetCategory);
+	}
+
+	@Override
+	public void deleteLinkPhenoDataSetCategoryField(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField)throws ArkSystemException, EntityCannotBeRemoved {
+		phenotypicDao.deleteLinkPhenoDataSetCategoryField(linkPhenoDataSetCategoryField);
+		
+	}
+
+	@Override
+	public void createLinkPhenoDataSetCategoryField(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException, EntityExistsException {
+		phenotypicDao.createLinkPhenoDataSetCategoryField(linkPhenoDataSetCategoryField);
+		
+	}
+
+	@Override
+	public List<PhenoDataSetField> getAvailablePhenoFieldListNotInLinked(Study study, ArkFunction arkFunctionPhenoDataDictionary,ArkFunction arkFunctionPhenoCollection, ArkUser arkUser)throws ArkSystemException {
+		return phenotypicDao.getAvailablePhenoFieldListNotInLinked(study, arkFunctionPhenoDataDictionary, arkFunctionPhenoCollection, arkUser);
+	}
+
+	@Override
+	public List<LinkPhenoDataSetCategoryField> getLinkPhenoDataSetCategoryFieldLst(Study study, ArkFunction arkFunction, ArkUser arkUser) {
+		return phenotypicDao.getLinkPhenoDataSetCategoryFieldLst(study, arkFunction, arkUser);
+	}
+
+	@Override
+	public void updatePickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException {
+		phenotypicDao.updatePickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
+		
+	}
+	@Override
+	public List<PhenoDataSetField> getLinkedPhenoDataSetFieldsForSelectedCategories(Study study, ArkFunction arkFunction, ArkUser arkUser,List<PhenoDataSetCategory> phenoDataSetCategories) {
+		return phenotypicDao.getLinkedPhenoDataSetFieldsForSelectedCategories(study, arkFunction, arkUser, phenoDataSetCategories);
+	}
+
+	@Override
+	public LinkPhenoDataSetCategoryField getLinkPhenoDataSetCategoryField(Study study, ArkFunction arkFunction, ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory,PhenoDataSetField phenoDataSetField) {
+		return phenotypicDao.getLinkPhenoDataSetCategoryField(study, arkFunction, arkUser, phenoDataSetCategory, phenoDataSetField);
+	}
+
+	@Override
+	public boolean isSelectedCategoriesAlreadyAssignedToFields(Study study,ArkFunction arkFunction, ArkUser arkUser,List<PhenoDataSetCategory> phenoDataSetCategories) {
+		return phenotypicDao.isSelectedCategoriesAlreadyAssignedToFields(study, arkFunction, arkUser, phenoDataSetCategories);
+	}
+
+	@Override
+	public Long getNextAvailbleNumberForPickedCategory(Study study,ArkFunction arkFunction, ArkUser arkUser) {
+		return phenotypicDao.getNextAvailbleNumberForPickedCategory(study, arkFunction, arkUser);
+	}
+
+	@Override
+	public PickedPhenoDataSetCategory getSwapOverPickedPhenoDataSetCategoryForUpButton(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) {
+		return phenotypicDao.getSwapOverPickedPhenoDataSetCategoryForUpButton(pickedPhenoDataSetCategory);
+	}
+
+	@Override
+	public PickedPhenoDataSetCategory getSwapOverPickedPhenoDataSetCategoryForDownButton(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) {
+		return phenotypicDao.getSwapOverPickedPhenoDataSetCategoryForDownButton(pickedPhenoDataSetCategory);
+	}
+
+	@Override
+	public Long getNextAvailbleNumberForAssignedField(Study study,ArkFunction arkFunction, ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory) {
+		return phenotypicDao.getNextAvailbleNumberForAssignedField(study, arkFunction, arkUser, phenoDataSetCategory);
+	}
+
+	@Override
+	public PhenoDataSetCategory getPhenoDataSetCategoryForAssignedPhenoDataSetField(Study study, ArkFunction arkFunction, ArkUser arkUser,PhenoDataSetField phenoDataSetField) {
+		return phenotypicDao.getPhenoDataSetCategoryForAssignedPhenoDataSetField(study, arkFunction, arkUser, phenoDataSetField);
+	}
+
+	@Override
+	public LinkPhenoDataSetCategoryField getSwapOverPhenoDataSetFieldForUpButton(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField) {
+		return phenotypicDao.getSwapOverPhenoDataSetFieldForUpButton(linkPhenoDataSetCategoryField);
+	}
+
+	@Override
+	public LinkPhenoDataSetCategoryField getSwapOverPhenoDataSetFieldForDownButton(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField) {
+		return phenotypicDao.getSwapOverPhenoDataSetFieldForDownButton(linkPhenoDataSetCategoryField);
+	}
+
+	@Override
+	public void updateLinkPhenoDataSetCategoryField(LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException {
+		 phenotypicDao.updateLinkPhenoDataSetCategoryField(linkPhenoDataSetCategoryField);
+	}
+
+	@Override
+	public Boolean isPickedPhenoDataSetCategoryIsAParentOfAnotherCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) {
+		return phenotypicDao.isPickedPhenoDataSetCategoryIsAParentOfAnotherCategory(pickedPhenoDataSetCategory);
+	}
+
 	
 	
 

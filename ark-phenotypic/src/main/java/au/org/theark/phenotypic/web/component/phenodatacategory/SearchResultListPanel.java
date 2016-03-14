@@ -41,7 +41,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
-import au.org.theark.core.util.PhenoDataSetCategoryOrderingHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldCategoryVO;
 import au.org.theark.core.vo.PhenoDataSetCategoryVO;
@@ -50,6 +49,7 @@ import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.export.ExportToolbar;
 import au.org.theark.core.web.component.export.ExportableTextColumn;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.phenotypic.util.PhenoDataSetCategoryOrderingHelper;
 
 /**
  * @author elam
@@ -104,22 +104,6 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.PHENODATASETCATEGORY_DESCRIPTION, ""));
 				}
-				//Parent Category
-				if (category.getParentCategory() != null) {
-					item.add(new Label(Constants.FIELDVO_PHENODATASETCATEGORY_PARENTCATEGORY_NAME, category.getParentCategory().getName()));
-				}
-				else {
-					item.add(new Label(Constants.FIELDVO_PHENODATASETCATEGORY_PARENTCATEGORY_NAME, ""));
-				}
-				
-				//Order Number
-				if (category.getOrderNumber() != null) {
-					item.add(new Label(Constants.PHENODATASETCATEGORY_ORDERNUMBER, category.getOrderNumber().toString()));
-				}
-				else {
-					item.add(new Label(Constants.PHENODATASETCATEGORY_ORDERNUMBER, ""));
-				}
-			
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override
@@ -147,18 +131,15 @@ public class SearchResultListPanel extends Panel {
 				CompoundPropertyModel<PhenoDataSetCategoryVO> newModel = new CompoundPropertyModel<PhenoDataSetCategoryVO>(new PhenoDataSetCategoryVO());
 				newModel.getObject().setPhenoDataSetCategory(cf);
 				//newModel.getObject().setUseCustomFieldCategoryDisplay(cpModel.getObject().isUseCustomFieldCategoryDisplay());
-
 				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-
 			}
 		};
-
 		// Add the label for the link
 		PhenoDataSetCategory category = item.getModelObject();
-		//Label nameLinkLabel = new Label("nameLbl", category.getName());
-		Label nameLinkLabel = new Label("nameLbl",PhenoDataSetCategoryOrderingHelper.getInstance().preTextDecider(category).concat(category.getName()));
+		Label nameLinkLabel = new Label("nameLbl", category.getName());
+		//Label nameLinkLabel = new Label("nameLbl",PhenoDataSetCategoryOrderingHelper.getInstance().preTextDecider(category).concat(category.getName()));
 		link.add(nameLinkLabel);
 		phenoDatasetCategoryLinkWMC.add(link);
 		return phenoDatasetCategoryLinkWMC;
@@ -168,17 +149,11 @@ public class SearchResultListPanel extends Panel {
 		List<IColumn<PhenoDataSetCategory>> columns = new ArrayList<IColumn<PhenoDataSetCategory>>();
 		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("name"), "name"));
 		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("description"), "description"));
-		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("parentCategory"), "parentCategory.name"));
-		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("orderNumber"), "orderNumber"));
-		
 		DataTable table = new DataTable("datatable", columns, phenoDataSetCategoryDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("FIELD_NAME");
 		headers.add("DESCRIPTION");
-		headers.add("PARENT_CATEGORY");
-		headers.add("ORDER_NUMBER");
-		
-		String filename = "data_dictionary";
+		String filename = "pheno_dataset_category";
 		RepeatingView toolbars = new RepeatingView("toolbars");
 		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
 		toolbars.add(new Component[] { exportToolBar });

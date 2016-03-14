@@ -28,6 +28,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -98,7 +99,6 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.PHENODATASET_ID, ""));
 				}
-
 				// Component Name Link
 				item.add(buildLinkWMC(item));
 				// Field Type
@@ -115,6 +115,25 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.PHENODATASET_FIELD_LABEL, ""));
 				}
+				if (field.getDefaultValue() != null) {
+					item.add(new Label(Constants.PHENODATASET_DEFAULT_VALUE, field.getDefaultValue()));
+				}
+				else {
+					item.add(new Label(Constants.PHENODATASET_DEFAULT_VALUE, ""));
+				}
+				if (field.getMissingValue() != null) {
+					item.add(new Label(Constants.PHENODATASET_MISSING_VALUE, field.getMissingValue()));
+				}
+				else {
+					item.add(new Label(Constants.PHENODATASET_MISSING_VALUE, ""));
+				}
+				if (field.getRequired() != null && field.getRequired()==true) {
+					item.add(new ContextImage(Constants.PHENODATASET_REQUIRED, new Model<String>("images/icons/tick.png")));
+				}
+				else {
+					item.add(new ContextImage(Constants.PHENODATASET_REQUIRED, new Model<String>("images/icons/cross.png")));
+				}
+				
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override
@@ -165,11 +184,13 @@ public class SearchResultListPanel extends Panel {
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("fieldType"), "fieldType.name"));
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("description"), "description"));
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("fieldLabel"), "fieldLabel"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("unitType"), "unitType.name"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("unitTypeInText"), "unitTypeInText"));
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("encodedValues"), "encodedValues"));
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("minValue"), "minValue"));
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("maxValue"), "maxValue"));
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("missingValue"), "missingValue"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("defaultValue"), "defaultValue"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("required"), "required"));
 
 		DataTable table = new DataTable("datatable", columns, phenoDataSetFieldDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
@@ -182,8 +203,10 @@ public class SearchResultListPanel extends Panel {
 		headers.add("MINIMUM_VALUE");
 		headers.add("MAXIMUM_VALUE");
 		headers.add("MISSING_VALUE");
-
-		String filename = "pheno_data_dictionary";
+		headers.add("DEFAULT_VALUE");
+		headers.add("REQUIRED");
+	
+		String filename = "pheno_dataset_dictionary";
 		RepeatingView toolbars = new RepeatingView("toolbars");
 		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
 		toolbars.add(new Component[] { exportToolBar });

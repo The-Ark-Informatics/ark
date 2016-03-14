@@ -20,17 +20,17 @@ package au.org.theark.phenotypic.web.component.phenofielduploader.form;
 
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.form.AbstractContainerForm;
-import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
 
 /**
  * @author nivedann
  * 
  */
 @SuppressWarnings("serial")
-public class ContainerForm extends AbstractContainerForm<PhenoFieldUploadVO> {
+public class ContainerForm extends AbstractContainerForm<CustomFieldUploadVO> {
 
-	public ContainerForm(String id, CompoundPropertyModel<PhenoFieldUploadVO> model) {
+	public ContainerForm(String id, CompoundPropertyModel<CustomFieldUploadVO> model) {
 		super(id, model);
 		setMultiPart(true);
 	}

@@ -90,8 +90,8 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetCategoryVO> {
 		categoryIdTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASETCATEGORY_ID);
 		categoryNameTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASETCATEGORY_NAME);
 		categoryDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_PHENODATASETCATEGORY_DESCRIPTION);
-		initParentCategoryDdc();
-		categoryOrderNoTxtFld=new TextField<Long>(Constants.FIELDVO_PHENODATASETCATEGORY_ORDERNUMBER);
+		//initParentCategoryDdc();
+		//categoryOrderNoTxtFld=new TextField<Long>(Constants.FIELDVO_PHENODATASETCATEGORY_ORDERNUMBER);
 		addFieldComponents();
 		addValidators();
 	}
@@ -100,9 +100,9 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetCategoryVO> {
 		add(categoryIdTxtFld);
 		add(categoryNameTxtFld);
 		add(categoryDescriptionTxtAreaFld);
-		categoryPanel.add(parentCategoryDdc);
-		add(categoryPanel);
-		add(categoryOrderNoTxtFld);
+		//categoryPanel.add(parentCategoryDdc);
+		//add(categoryPanel);
+		//add(categoryOrderNoTxtFld);
 	}
 	private void addValidators(){
 		categoryNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
@@ -112,30 +112,30 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetCategoryVO> {
 	/**
 	 * Initialize Custom Field Categories.
 	 */
-	private void initParentCategoryDdc() {
+	/*private void initParentCategoryDdc() {
 		categoryPanel = new WebMarkupContainer("categoryPanel");
 		categoryPanel.setOutputMarkupId(true);
 		Collection<PhenoDataSetCategory> phenoDatasetCollection=getParentCategoryCollectionFromModel();
 		ChoiceRenderer phenoDatasetCategoryRenderer = new ChoiceRenderer(Constants.PHENODATASETCATEGORY_NAME, Constants.PHENODATASETCATEGORY_ID);
 		parentCategoryDdc = new DropDownChoice<PhenoDataSetCategory>(Constants.FIELDVO_PHENODATASETCATEGORY_PARENTCATEGORY, (List) phenoDatasetCollection, phenoDatasetCategoryRenderer);
 		parentCategoryDdc.setOutputMarkupId(true);
-	}
+	}*/
 	/**
 	 * Get custom field category collection from model.
 	 * @return
 	 */
-	private Collection<PhenoDataSetCategory> getParentCategoryCollectionFromModel(){
+	/*private Collection<PhenoDataSetCategory> getParentCategoryCollectionFromModel(){
 		PhenoDataSetCategory phenoDataSetCategory=cpModel.getObject().getPhenoDataSetCategory(); 
 		Study study=phenoDataSetCategory.getStudy();
 		ArkFunction arkFunction=phenoDataSetCategory.getArkFunction();
 		try {
-			phenoDataSetCategoryCollection = iPhenotypicService.getPhenoParentCategoryList(study, arkFunction);
+			//phenoDataSetCategoryCollection = iPhenotypicService.getPhenoParentCategoryList(study, arkFunction);
 		} catch (ArkSystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return phenoDataSetCategoryCollection;
-	}
+	}*/
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
@@ -178,8 +178,8 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetCategoryVO> {
 		 */
 		//newCF.setMinValue(cf.getMinValue());
 		//newCF.setMaxValue(cf.getMaxValue());
-		newModelPDSC.setOrderNumber(pdscat.getOrderNumber());
-		newModelPDSC.setParentCategory(pdscat.getParentCategory());
+		//newModelPDSC.setOrderNumber(pdscat.getOrderNumber());
+		//newModelPDSC.setParentCategory(pdscat.getParentCategory());
 		//newModel.getObject().setUseCustomFieldCategoryDisplay(getModelObject().isUseCustomFieldCategoryDisplay());
 		
 		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);

@@ -3,72 +3,6 @@
 	<form wicket:id="detailForm">
 		<div class="detailsPanelBorder">
 			<div wicket:id="detailFormContainer">
-				 <div wicket:id="phenoDataSetListchoiceCategoryDetailWMC">
-					<div class="detailSubForm">
-						<div class="detailPanelBreaker">
-							&nbsp;
-						</div>
-						<div class="panelContentLeft">
-							&nbsp;
-						</div>
-						<div class=fldListMultipleChoice>
-							<div class="headerAv">
-								<wicket:message	key="availableCategories">
-									Available	PhenoCategories:
-								</wicket:message>
-							</div>
-							<select wicket:id="phenoDataSetCategoryLst" class="listMultipleSize"></select>
-							<div class="footerAv">
-							</div>
-						</div>
-						<div class="fldListMultipleChoiceButton">
-							<div class="headerAv">
-							</div>	
-								<div class="buttonsPhenoCatFilter">
-											<input wicket:id="addButtonFL" type="button" class="buttonPhenoCatFilter addMe" />
-											<input wicket:id="removeButtonFL" type="button" class="buttonPhenoCatFilter removeMe" />
-								</div>
-								<div class="footerAv">
-								</div>
-						</div>
-						<div class="fldListMultipleChoice">
-							<div class="headerAv">
-								<wicket:message	key="firstLevelAvailableCategories">
-									First Level PhenoCategories:
-								</wicket:message>
-							</div>
-							<select wicket:id="firstLevelAvailableCategories" class="listMultipleSize"></select>
-							<div class="footerAv">
-								<div class="buttonsPhenoCatFilter">
-											<input wicket:id="leftButton" type="button" class="buttonPhenoCatFilter removeMe" />
-											<input wicket:id="rightButton" type="button" class="buttonPhenoCatFilter addMe" />
-								</div>
-							</div>
-						</div>
-						<div class="fldListMultipleChoiceButton">
-							<div class="headerAv">
-							</div>	
-								<div class="buttonsPhenoCatFilter">
-											<input wicket:id="addButtonLL" type="button" class="buttonPhenoCatFilter addMe" />
-											<input wicket:id="removeButtonLL" type="button" class="buttonPhenoCatFilter removeMe" />
-											<input wicket:id="upButton" type="button" class="buttonPhenoCatFilter upMe" />
-											<input wicket:id="downButton" type="button" class="buttonPhenoCatFilter downMe" />
-								</div>
-								<div class="footerAv">
-								</div>
-						</div> 
-						<div class="fldListMultipleChoice">
-							<div class="headerAv">
-								<wicket:message	key="lastLevelAvailableCategories">
-									Selected PhenoCategories:
-								</wicket:message>
-							</div>
-							<select wicket:id="lastLevelAvailableCategories" class="listMultipleSize"></select>
-							<div class="footerAv">
-							</div>
-						</div>
-					</div>
-				</div> 
 				<div wicket:id="phenoDataSetFieldDetailWMC">
 					<div class="detailPanelBreaker">
 						&nbsp;
@@ -304,12 +238,12 @@
 
 					<!-- This will slot the Required field at the back of Missing Value -->
 					<div class="fldLabel">
-						<wicket:message key="phenoDataSetFieldDisplay.required">
+						<wicket:message key="phenoDataSetField.required">
 							Required Field:
 						</wicket:message>
 					</div>
 					<div class="fldControl">
-						<input wicket:id="phenoDataSetFieldDisplay.required" type="checkbox" />
+						<input wicket:id="phenoDataSetField.required" type="checkbox" />
 					</div>
 					
 					<div class="panelMargin">
@@ -323,12 +257,12 @@
 					</div>
 
 					<div class="fldLabel">
-						<wicket:message key="phenoDataSetFieldDisplay.allowMultiselect">
+						<wicket:message key="phenoDataSetField.allowMultiselect">
 							Allow Multiple Selections:
 						</wicket:message>
 					</div>
 					<div class="fldControl">
-						<input wicket:id="phenoDataSetFieldDisplay.allowMultiselect" type="checkbox" />
+						<input wicket:id="phenoDataSetField.allowMultiselect" type="checkbox" />
 					</div>
 
 					<div class="detailPanelBreaker">

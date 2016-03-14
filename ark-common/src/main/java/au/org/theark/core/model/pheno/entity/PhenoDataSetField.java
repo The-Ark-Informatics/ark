@@ -1,10 +1,7 @@
 package au.org.theark.core.model.pheno.entity;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -50,8 +46,10 @@ public class PhenoDataSetField implements Serializable{
 	private String defaultValue;
 	//Add unit type as String
 	private String unitTypeInText;
+	private Boolean required;
+	private Boolean allowMultiselect = Boolean.FALSE;
 
-	private Set<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplay = new HashSet<PhenoDataSetFieldDisplay>();
+	//private Set<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplay = new HashSet<PhenoDataSetFieldDisplay>();
 
 	public PhenoDataSetField(){
 		
@@ -198,15 +196,28 @@ public class PhenoDataSetField implements Serializable{
 		this.unitTypeInText = unitTypeInText;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetField")
+	/*@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetField")
 	public Set<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplay() {
 		return phenoDataSetFieldDisplay;
 	}
 
 	public void setPhenoDataSetFieldDisplay(Set<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplay) {
 		this.phenoDataSetFieldDisplay = phenoDataSetFieldDisplay;
+	}*/
+	@Column(name = "REQUIRED")
+	public Boolean getRequired() {
+		return required;
 	}
-	
+	public void setRequired(Boolean required) {
+		this.required = required;
+	}
+	@Column(name = "ALLOW_MULTIPLE_SELECTION", precision = 1, scale = 0)
+	public Boolean getAllowMultiselect() {
+		return allowMultiselect;
+	}
+	public void setAllowMultiselect(Boolean allowMultiselect) {
+		this.allowMultiselect = allowMultiselect;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

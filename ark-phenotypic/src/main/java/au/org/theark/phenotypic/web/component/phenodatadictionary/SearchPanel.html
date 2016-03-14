@@ -59,12 +59,31 @@
 				<div class="panelMargin">
 					&nbsp;
 				</div>
-				 <div class="fldLabel">
+				<div class="fldLabel">
+					<wicket:message key="phenoDataSetField.fieldType">
+						Field Type:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="phenoDataSetField.fieldType">
+						<option>
+							Number
+						</option>
+						<option>
+							Character
+						</option>
+						<option>
+							Date
+						</option>
+					</select>
+				</div>
+				 <!-- <div class="fldLabel">
 					<wicket:message key="lastLevelAvailableCategories">
 						Category Name:
 					</wicket:message>
 				</div>
-				<!-- Add panel to refresh -->
+				Add panel to refresh
 				<div  wicket:id="categoryPanel">
 					<div class="fldControl">
 						<select wicket:id="lastLevelSelectedCategories">
@@ -76,7 +95,7 @@
 						</option>
 						</select>
 					</div>
-				</div>
+				</div> -->
 				<div class="searchPanelBreaker">
 					&nbsp;
 				</div>
@@ -104,48 +123,6 @@
 						<input wicket:id="phenoDataSetField.phenoDataSetFieldCategory.orderNumber"	type="text" />
 					</div>
 				</div> -->
-				<div class="searchPanelBreaker">
-					&nbsp;
-				</div>
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-				<div class="fldLabel">
-					<wicket:message key="phenoDataSetField.maxValue">
-						Maximum Value:
-					</wicket:message>
-				</div>
-				<div class="fldControl">
-					<input wicket:id="phenoDataSetField.maxValue"	type="text" />
-				</div>
-				<div class="panelMargin">
-					&nbsp;
-				</div>
-				<div class="fldLabel">
-					<wicket:message key="phenoDataSetField.fieldType">
-						Field Type:
-					</wicket:message>
-				</div>
-
-				<div class="fldControl">
-					<select wicket:id="phenoDataSetField.fieldType">
-						<option>
-							Number
-						</option>
-						<option>
-							Character
-						</option>
-						<option>
-							Date
-						</option>
-					</select>
-				</div>
-				<div class="searchPanelBreaker">
-					&nbsp;
-				</div>
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
 				<div class="fldLabel">
 					<wicket:message key="phenoDataSetField.unitType">
 						Units:
@@ -164,6 +141,30 @@
 							<input wicket:id="phenoDataSetField.unitTypeInText"	type="text" />
 						</div>
 					</div>
+				</div>
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				<div class="fldLabel">
+					<wicket:message key="phenoDataSetField.maxValue">
+						Maximum Value:
+					</wicket:message>
+				</div>
+				<div class="fldControl">
+					<input wicket:id="phenoDataSetField.maxValue"	type="text" />
+				</div>
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+				
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
 				</div>
 				<div class="panelMargin">
 					&nbsp;

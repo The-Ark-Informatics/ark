@@ -102,6 +102,8 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldVO> {
 		this.cpModel = cpModel;
 		this.feedbackPanel = feedBackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
 		//this.subjectCustomField = subjectCustomField;
 		initialiseFieldForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -142,7 +144,7 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldVO> {
 		//phenoDataSetCategoryOrderNoTxtFld.setOutputMarkupId(true);
 		//phenoDataSetCategoryOrderNoTxtFld.setEnabled(false);
 		
-		initCustomeFieldCategoryDdc();
+		//initCustomeFieldCategoryDdc();
 		initFieldTypeDdc();
 		addFieldComponents();
 	}
@@ -150,8 +152,8 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldVO> {
 	private void addFieldComponents() {
 		add(fieldIdTxtFld);
 		//add(customFieldTypeDdc);
-		categoryPanel.add(phenoDataSetCategoryDdc);
-		add(categoryPanel);
+		//categoryPanel.add(phenoDataSetCategoryDdc);
+		//add(categoryPanel);
 		//orderNumberPanel.add(phenoDataSetCategoryOrderNoTxtFld);
 		//add(orderNumberPanel);
 		add(fieldNameTxtFld);
@@ -186,6 +188,7 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldVO> {
 		//phenoDataSetCategoryOrderNoTxtFld.setEnabled(false);
 		//orderNumberPanel.add(phenoDataSetCategoryOrderNoTxtFld);
 		//target.add(phenoDataSetCategoryOrderNoTxtFld);
+		
 	}
 	
 	
@@ -193,7 +196,7 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldVO> {
 	/**
 	 * Initialize Custom Field Categories.
 	 */
-	private void initCustomeFieldCategoryDdc() {
+	/*private void initCustomeFieldCategoryDdc() {
 		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
 		arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
 		categoryPanel = new WebMarkupContainer("categoryPanel");
@@ -204,7 +207,7 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldVO> {
 		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.PHENODATASETCATEGORY_NAME, Constants.PHENODATASETCATEGORY_ID);
 		phenoDataSetCategoryDdc = new DropDownChoice<PhenoDataSetCategory>(Constants.FIELDVO_PHENODATASET_CUSTOEMFIELDCATEGORY, (List) phenoDataSetFieldCategoryCollection, customfieldCategoryRenderer);
 		phenoDataSetCategoryDdc.setOutputMarkupId(true);
-	}
+	}*/
 	/**
 	 * Get custom field category collection from model.
 	 * @return
@@ -216,15 +219,15 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldVO> {
 		categories to display later we have to replace all the things with 
 		PhenoDataDictionary*/
 		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
-		try {
-			phenoDataSetFieldCategoryCollection=iPhenotypicService.getPhenoParentCategoryList(study, arkFunction);
+		/*try {
+			//phenoDataSetFieldCategoryCollection=iPhenotypicService.getPhenoParentCategoryList(study, arkFunction);
 			//phenoDataSetFieldCategoryCollection =  iArkCommonService.getCategoriesListInCustomFieldsByCustomFieldType(study, arkFunction, phenoDataSetFieldType);
 			phenoDataSetFieldCategoryCollection=sortLst(remeoveDuplicates((List<PhenoDataSetCategory>)phenoDataSetFieldCategoryCollection));
 			
 		} catch (ArkSystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		return phenoDataSetFieldCategoryCollection;
 	}
 

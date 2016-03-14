@@ -34,8 +34,11 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private PhenoDataSetField phenoDataSetField;
 	private PhenoDataSetGroup phenoDataSetGroup;
+	private PhenoDataSetCategory phenoDataSetCategory;
+	private Long phenoDataSetCategoryOrderNumber;
+	private PhenoDataSetField phenoDataSetField;
+	private Long phenoDataSetOrderNumber;
 	private Boolean required;
 	private String requiredMessage;
 	private Boolean allowMultiselect = Boolean.FALSE;
@@ -44,7 +47,7 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	protected String descriptiveNameIncludingCFGName;
 
 	public PhenoDataSetFieldDisplay() {
-
+		phenoDataSetField=new PhenoDataSetField();
 	}
 	
 	@Id
@@ -58,6 +61,34 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PHENO_DATASET_FIELD_GROUP_ID")
+	public PhenoDataSetGroup getPhenoDataSetGroup() {
+		return phenoDataSetGroup;
+	}
+
+	public void setPhenoDataSetGroup(PhenoDataSetGroup phenoDataSetGroup) {
+		this.phenoDataSetGroup = phenoDataSetGroup;
+	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PHENO_DATASET_CATEGORY_ID", nullable = false)
+	public PhenoDataSetCategory getPhenoDataSetCategory() {
+		return phenoDataSetCategory;
+	}
+
+	public void setPhenoDataSetCategory(PhenoDataSetCategory phenoDataSetCategory) {
+		this.phenoDataSetCategory = phenoDataSetCategory;
+	}
+
+	@Column(name = "PHENO_DATASET_CATEGORY_ORDER_NUMBER")
+	public Long getPhenoDataSetCategoryOrderNumber() {
+		return phenoDataSetCategoryOrderNumber;
+	}
+
+	public void setPhenoDataSetCategoryOrderNumber(
+			Long phenoDataSetCategoryOrderNumber) {
+		this.phenoDataSetCategoryOrderNumber = phenoDataSetCategoryOrderNumber;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PHENO_DATASET_FIELD_ID", nullable = false)
@@ -68,15 +99,14 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	public void setPhenoDataSetField(PhenoDataSetField phenoDataSetField) {
 		this.phenoDataSetField = phenoDataSetField;
 	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PHENO_DATASET_FIELD_GROUP_ID")
-	public PhenoDataSetGroup getPhenoDataSetGroup() {
-		return phenoDataSetGroup;
+	
+	@Column(name = "PHENO_DATASET_FIELD_ORDER_NUMBER")
+	public Long getPhenoDataSetOrderNumber() {
+		return phenoDataSetOrderNumber;
 	}
 
-	public void setPhenoDataSetGroup(PhenoDataSetGroup phenoDataSetGroup) {
-		this.phenoDataSetGroup = phenoDataSetGroup;
+	public void setPhenoDataSetOrderNumber(Long phenoDataSetOrderNumber) {
+		this.phenoDataSetOrderNumber = phenoDataSetOrderNumber;
 	}
 
 	@Column(name = "REQUIRED")

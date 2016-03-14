@@ -44,7 +44,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Entity
 @Table(name = "PHENO_DATASET_CATEGORY", schema = Constants.PHENO_TABLE_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-public class PhenoDataSetCategory  implements java.io.Serializable {
+public class PhenoDataSetCategory implements java.io.Serializable  {
 
 	private static final long serialVersionUID = 1L;
 
@@ -53,10 +53,7 @@ public class PhenoDataSetCategory  implements java.io.Serializable {
 	private String description;
 	private Study study;
 	private ArkFunction arkFunction;
-	private PhenoDataSetCategory parentCategory;
-	private Long orderNumber;
-	private Long displayLevel;
-
+	
 	public PhenoDataSetCategory() {
 	}
 
@@ -101,39 +98,6 @@ public class PhenoDataSetCategory  implements java.io.Serializable {
 	}
 
 	/**
-	 * @param parentCategory
-	 *            the parentCategory to set
-	 */
-	public void setParentCategory(PhenoDataSetCategory parentCategory) {
-		this.parentCategory = parentCategory;
-	}
-
-	/**
-	 * @return the parentCategory
-	 */
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "PARENT_ID")
-	public PhenoDataSetCategory getParentCategory() {
-		return parentCategory;
-	}
-	/**
-	 * 
-	 * @return the orderNumber
-	 */
-	@Column(name = "ORDER_NUMBER", nullable = false )
-	public Long getOrderNumber() {
-		return orderNumber;
-	}
-
-	/**
-	 * 
-	 * @param orderNumber the orderNumber to set
-	 */
-	public void setOrderNumber(Long orderNumber) {
-		this.orderNumber = orderNumber;
-	}
-
-	/**
 	 * @param study  the study to set
 	 */
 	public void setStudy(Study study) {
@@ -158,15 +122,7 @@ public class PhenoDataSetCategory  implements java.io.Serializable {
 	public void setArkFunction(ArkFunction arkFunction) {
 		this.arkFunction = arkFunction;
 	}
-	@Transient
-	public Long getDisplayLevel() {
-		return displayLevel;
-	}
-
-	public void setDisplayLevel(Long displayLevel) {
-		this.displayLevel = displayLevel;
-	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -197,44 +153,5 @@ public class PhenoDataSetCategory  implements java.io.Serializable {
 			return false;
 		return true;
 	}
-
-/*
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((filename == null) ? 0 : filename.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}*/
-/*
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Category other = (Category) obj;
-		if (filename == null) {
-			if (other.filename != null)
-				return false;
-		} else if (!filename.equals(other.filename))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}*/
-
-	/*@Transient
-	public boolean isParentStudy() {
-		return (parentStudy != null && parentStudy.equals(this));
-	}
-*/
 
 }

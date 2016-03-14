@@ -23,7 +23,8 @@
 				<wicket:message	key="upload.finishTime">Finish Time</wicket:message>
 			</th>
 			<th width="20%" colspan="2">
-				<input wicket:id="downloadTemplate" type="button" value="Download Template" />
+				<input wicket:id="downloadTemplateField" type="button" value="Download Pheno DataSet Field Template" /><br/>
+				<input wicket:id="downloadTemplateCategory" type="button" value="Download Pheno DataSet Category Template " />
 			</th>
 			<th width="22%">
 				<wicket:message	key="upload.uploadStatusName">Upload Status</wicket:message>				
@@ -55,11 +56,12 @@
 			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />&nbsp;
 			</td>
 			<td width="10%">
-				<input wicket:id="upload.uploadReport" type="submit" wicket:message="value:button.downloadReport" />&nbsp;
+				<input wicket:id="downloadReport" type="submit" wicket:message="value:button.downloadReport" />&nbsp;
 			</td>
 			<td width="22%">
 				<span wicket:id="upload.uploadStatus.name">Upload Status</span>
 			</td>
+			
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<!--  The navigation bar -->

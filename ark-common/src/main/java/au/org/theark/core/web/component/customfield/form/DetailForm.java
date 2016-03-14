@@ -207,9 +207,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				target.add(missingValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
 				target.add(fieldUnitTypeDdc);
-				/*if(fieldCategoryDdc != null) {
-					target.add(fieldCategoryDdc);
-				}*/
 				//Add field unite type as text
 				target.add(fieldUnitTypeTxtFld);
 				target.add(fieldAllowMultiselectChkBox);
@@ -307,22 +304,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			fieldUnitTypeTxtFld.setEnabled(false);
 		}
 	}
-
-
-	private void updateCategoryDdc() {
-		CustomFieldCategory category = getModelObject().getCustomField().getCustomFieldCategory();
-		/*if (category != null && !category.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
-			// Only allowed to use unitType when fieldType != DATE
-			fieldUnitTypeDdc.setEnabled(true);
-			fieldUnitTypeTxtFld.setEnabled(true);
-		}
-		else {
-			fieldUnitTypeDdc.setEnabled(false);
-			fieldUnitTypeTxtFld.setEnabled(false);
-		}*/
-		//TODO dependencies?
-		//have to figure out what dependencies exist
-	}
+	
 	/**
 	 * initialise max and min values.
 	 */
@@ -639,6 +621,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		panelCustomUnitTypeText.setOutputMarkupId(true);
 		panelCustomFieldTypeDropDown = new WebMarkupContainer("paenlCustomFieldTypeDropDown");
 		panelCustomFieldTypeDropDown.setOutputMarkupId(true);
+		
 		if(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY)){
 			panelCustomUnitTypeDropDown.setVisible(false);
 			panelCustomUnitTypeText.setVisible(true);
