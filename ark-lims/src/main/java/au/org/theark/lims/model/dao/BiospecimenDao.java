@@ -254,6 +254,9 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
 		Biospecimen biospecimen = limsVo.getBiospecimen();
 		
+		criteria.createAlias("bioCollection", "bc");
+		criteria.createAlias("linkSubjectStudy", "lss");
+		
 		// If study chosen, restrict otherwise restrict on users' studyList
 		if(limsVo.getStudy() != null && limsVo.getStudy().getId() != null) {
 		//if(limsVo.getStudy().isParentStudy()) {
@@ -272,9 +275,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			criteria.add(Restrictions.in("study", limsVo.getStudyList()));
 			criteria.createAlias("study", "st");
 			criteria.addOrder(Order.asc("st.name"));
-			criteria.createAlias("linkSubjectStudy", "lss");
 			criteria.addOrder(Order.asc("lss.subjectUID"));
-			criteria.createAlias("bioCollection", "bc");
 			criteria.addOrder(Order.asc("bc.biocollectionUid"));
 			criteria.addOrder(Order.asc("biospecimenUid"));
 		}
@@ -289,13 +290,11 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		
 		if(limsVo.getLinkSubjectStudy() != null) {
 			if (limsVo.getLinkSubjectStudy().getSubjectUID() != null) {
-				criteria.createAlias("linkSubjectStudy", "lss");
 				criteria.add(Restrictions.ilike("lss.subjectUID", limsVo.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
 			}
 		}
 		
 		if(limsVo.getBioCollection() != null && limsVo.getBioCollection().getBiocollectionUid() != null) {
-			criteria.createAlias("bioCollection", "bc");
 			criteria.add(Restrictions.ilike("bc.biocollectionUid",  limsVo.getBioCollection().getBiocollectionUid(), MatchMode.ANYWHERE));
 		}
 		
