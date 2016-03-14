@@ -196,7 +196,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		biospecimenProvider.setCriteriaModel(cpModel);
 
 		dataView = buildDataView(biospecimenProvider);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 
@@ -220,7 +220,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Sample Type"), "sampleType.name"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Quantity"), "quantity"));
 		
-		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("BiospecimenUID");
 		headers.add("Study");

@@ -106,7 +106,7 @@ public class SearchResultListPanel extends Panel {
 	
 	public PageableListView<GeneVO> buildListView(IModel iModel) {
 
-		PageableListView<GeneVO> listView = new PageableListView<GeneVO>("diseaseList", iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<GeneVO> listView = new PageableListView<GeneVO>("diseaseList", iModel, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 			@Override
 			protected void populateItem(final ListItem<GeneVO> item) {

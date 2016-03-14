@@ -1,2 +1,2 @@
-file.attachment.dir=/mnt/data/arkFileData
+file.attachment.dir=~/arkFileData
 service.auth.header=

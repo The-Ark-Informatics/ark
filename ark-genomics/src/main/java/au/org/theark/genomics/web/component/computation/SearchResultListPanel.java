@@ -37,7 +37,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<Computation> buildPageableListView(IModel iModel) {
 
-		PageableListView<Computation> sitePageableListView = new PageableListView<Computation>("computationList", iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<Computation> sitePageableListView = new PageableListView<Computation>("computationList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 			private static final long	serialVersionUID	= 1L;
 

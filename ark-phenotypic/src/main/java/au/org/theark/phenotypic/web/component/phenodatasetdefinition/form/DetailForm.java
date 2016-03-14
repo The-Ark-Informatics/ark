@@ -155,8 +155,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 		cfdListPanel.setOutputMarkupId(true);
 		cfdListPanel.initialisePanel();
 		dataView = cfdListPanel.buildDataView(cfdProvider);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
-
+		//dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("cfDisplayNavigator", dataView) {
 
 			private static final long	serialVersionUID	= 1L;

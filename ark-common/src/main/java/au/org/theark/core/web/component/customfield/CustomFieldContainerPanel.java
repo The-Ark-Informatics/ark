@@ -170,7 +170,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		customFieldProvider.setCriteriaModel(new PropertyModel<CustomField>(cpModel, "customField"));
 
 		dataView = searchResultListPanel.buildDataView(customFieldProvider);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 

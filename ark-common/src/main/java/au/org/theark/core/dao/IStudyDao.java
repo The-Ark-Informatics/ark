@@ -741,13 +741,9 @@ public interface IStudyDao {
 
 	public void createUserConfigs(List<UserConfig> userConfigList) throws ArkSystemException;
 	
-	public Collection<ConfigField> getAllConfigFields();
+	public List<ConfigField> getAllConfigFields();
 	
 	public List<UserConfig> getUserConfigs(ArkUser arkUser);
-	
-	public int getRowsPerPage();
-	
-	public int getCustomFieldsPerPage();
 	
 	public void deleteUserConfig(UserConfig uc);
 	
@@ -760,4 +756,8 @@ public interface IStudyDao {
 	public List<FamilyCustomFieldData> getfamilyCustomFieldDataFor(Study study,Collection customFieldDisplaysThatWeNeed, List familyUIDsToBeIncluded);
 	
 	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<String>fieldNameCollection,Study study,ArkFunction arkFunction,CustomFieldType customFieldType);
+
+	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField);
+
+	public ConfigField getConfigFieldByName(String configName);
 }

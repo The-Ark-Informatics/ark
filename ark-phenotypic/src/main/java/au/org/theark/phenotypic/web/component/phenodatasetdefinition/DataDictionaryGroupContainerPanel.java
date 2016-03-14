@@ -147,7 +147,7 @@ public class DataDictionaryGroupContainerPanel extends AbstractContainerPanel<Ph
 		arkDataProvider.setCriteriaModel(new PropertyModel<PhenoDataSetGroup>(cpModel, "phenoDataSetGroup"));
 
 		dataView = searchResultListPanel.buildDataView(arkDataProvider);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 

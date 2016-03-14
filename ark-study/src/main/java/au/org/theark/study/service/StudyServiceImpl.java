@@ -1160,13 +1160,13 @@ public class StudyServiceImpl implements IStudyService {
 		return uploadReport;
 	}
 	
-	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId) {
+	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId, String user_id) {
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
 		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
 		try {
 			// log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
-			uploadReport = dataUploader.uploadAndReportSubjectAttachmentDataFile(inputStream, size, fileFormat, delimChar);
+			uploadReport = dataUploader.uploadAndReportSubjectAttachmentDataFile(inputStream, size, fileFormat, delimChar, user_id);
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);

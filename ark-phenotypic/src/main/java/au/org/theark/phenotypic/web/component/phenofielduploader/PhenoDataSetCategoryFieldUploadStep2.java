@@ -168,7 +168,11 @@ public class PhenoDataSetCategoryFieldUploadStep2 extends AbstractWizardStepPane
 				// Show file data
 				FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, iArkCommonService.getRowsPerPage(),containerForm.getModelObject().getUpload().getUploadType());
+//<<<<<<< HEAD:ark-phenotypic/src/main/java/au/org/theark/phenotypic/web/component/phenofielduploader/PhenoDataSetCategoryFieldUploadStep2.java
+				//ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, iArkCommonService.getRowsPerPage(),containerForm.getModelObject().getUpload().getUploadType());
+//=======
+				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+//>>>>>>> 4b2ee82df6c9be8635fdb51db93dd50f8753dcdb:ark-phenotypic/src/main/java/au/org/theark/phenotypic/web/component/phenofielduploader/FieldUploadStep2.java
 				inputStream.close();
 				inputStream = null;
 				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);

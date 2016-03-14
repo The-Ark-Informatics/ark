@@ -1914,7 +1914,7 @@ public class DataUploader {
 		return exists;
 	}
 
-	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar) throws FileFormatException, ArkSystemException {
+	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, String user_id) throws FileFormatException, ArkSystemException {
 		uploadReport = new StringBuffer();
 		long rowCount = 0;
 		long insertFieldsCount = 0;
@@ -1963,8 +1963,7 @@ public class DataUploader {
 
 				SubjectFile subjectFile = new SubjectFile();
 				
-				String userId = SecurityUtils.getSubject().getPrincipal().toString();
-				subjectFile.setUserId(userId);
+				subjectFile.setUserId(user_id);
 				
 				String subjectUID = stringLineArray[subjectUidIndex];
 				String studyCompName = stringLineArray[studyComponentIndex];
