@@ -16,7 +16,6 @@ public class DetailPanel extends Panel {
 	private ArkCrudContainerVO	arkCrudContainerVO;
 
 	public DetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
-
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;

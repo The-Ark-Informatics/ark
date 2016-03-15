@@ -463,4 +463,11 @@ public class Constants {
 	
 	public static final String INBREED_ALLOWED="inbreedAllowed";
 	
+	public static final String STUDY_CALENDAR_ID = "studyCalendar.id";
+	public static final String STUDY_CALENDAR_NAME = "studyCalendar.name";
+	public static final String STUDY_CALENDAR_START_DATE = "studyCalendar.startDate";
+	public static final String STUDY_CALENDAR_END_DATE = "studyCalendar.endDate";
+	public static final String STUDY_CALENDAR_DESCRIPTION = "studyCalendar.description";
+	public static final String STUDY_CALENDAR_STUDY_COMP = "studyCalendar.studyComp";
+	
 }

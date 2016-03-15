@@ -1,0 +1,3 @@
+ALTER TABLE `spark`.`analysis` 
+ADD COLUMN `JOB_ID` VARCHAR(100) NULL AFTER `RESULT`;
+

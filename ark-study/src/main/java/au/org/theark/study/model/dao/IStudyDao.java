@@ -18,9 +18,13 @@
  ******************************************************************************/
 package au.org.theark.study.model.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -64,6 +68,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCalendar;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -78,6 +83,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.model.vo.StudyCalendarVo;
 
 public interface IStudyDao {
 	
@@ -492,7 +498,16 @@ public interface IStudyDao {
 
 	public String getSubjectFamilyUId(Long studyId, String subjectUID);
 	
-	//public List<SubjectCustomFieldData> getSubjectCustomFieldDataListByCategory(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public void saveOrUpdate(StudyCalendar studyCalendar);
+
+	public void delete(StudyCalendar studyCalendar);
 	
-	//public List<FamilyCustomFieldData> getFamilyCustomFieldDataListByCategory(Study study,String familyId, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public List<StudyCalendar> searchStudyCalenderList(StudyCalendar studyCalendar);
+	
+	public List<CustomField> getStudySubjectCustomFieldList(Long studyId);
+	
+	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar);
+	
+	public void saveOrUpdate(StudyCalendarVo studyCalendar);
+
 }

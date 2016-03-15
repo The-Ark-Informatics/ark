@@ -53,12 +53,15 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 	}
 
 	@Override
-	public void saveOrUpdate(Analysis analysis) {
+	public long saveOrUpdate(Analysis analysis) {
+		Long id = null;
 		if (analysis.getId() == null || analysis.getId() == 0) {
 			getSession().save(analysis);
 		} else {
 			getSession().update(analysis);
 		}
+		id=analysis.getId();
+		return id;
 	}
 
 	public void delete(MicroService microService) {

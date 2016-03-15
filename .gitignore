@@ -10,3 +10,5 @@
 ark-container/src/main/resources/applicationContext.xml
 ark-container/src/main/resources/application.properties
 spark/src/main/resources/spark.properties
+spark-bluegene/src/main/resources/spark.properties
+ark-calendar/src/main/resources/ark-calendar.properties

@@ -45,6 +45,7 @@ import au.org.theark.core.web.component.customfieldcategory.CustomFieldCategoryC
 import au.org.theark.core.web.component.customfieldupload.CustomFieldUploadContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
+import au.org.theark.study.web.component.calendar.CalendarContainerPanel;
 import au.org.theark.study.web.component.managestudy.StudyContainerPanel;
 import au.org.theark.study.web.component.manageuser.UserContainerPanel;
 import au.org.theark.study.web.component.studycomponent.StudyComponentContainerPanel;
@@ -169,6 +170,9 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD)) {
 						panelToReturn = new SubjectUploadContainerPanel(panelId, arkFunction);
+					}
+					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CALENDAR)) {
+						panelToReturn = new CalendarContainerPanel(panelId);
 					}
 					return panelToReturn;
 				}

@@ -21,7 +21,8 @@
 		<property name="url" value="ldap://ark-ldap:389" />
 		<property name="base" value="dc=the-ark,dc=org,dc=au" />
 		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
-		<property name="password" value="Ultra-Secure_Password" />
+		<!--  <property name="password" value="Ultra-Secure_Password" /> -->
+		<property name="password" value="password" />
 	</bean>
 
 	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">

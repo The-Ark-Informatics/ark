@@ -35,7 +35,6 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.disease.web.component.affection.AffectionContainerPanel;
-import au.org.theark.geno.web.component.table.GenoTableContainerPanel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.inventory.tree.TreeModel;

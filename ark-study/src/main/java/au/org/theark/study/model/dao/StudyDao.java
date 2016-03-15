@@ -36,6 +36,10 @@ import java.util.Set;
 
 
 
+
+
+
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -71,6 +75,7 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
+import au.org.theark.core.model.report.entity.SearchSubject;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -95,6 +100,7 @@ import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.ICustomFieldData;
+import au.org.theark.core.model.study.entity.LinkCalendarCustomField;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
@@ -108,6 +114,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCalendar;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -124,6 +131,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.model.vo.StudyCalendarVo;
 import au.org.theark.study.service.Constants;
 
 @Repository("studyDao")
@@ -2500,7 +2508,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("st.id", studyId));
 		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
 		criteria.add(Restrictions.eq("cf.encodedValues", "0=Yes;1=No;").ignoreCase());
-		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "STUDY")));
+		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "SUBJECT")));
 
 		pedigreeCustomFields = criteria.list();
 
@@ -2685,8 +2693,91 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.flush();
 		session.clear();
 	}
+	
+	public void saveOrUpdate(StudyCalendar studyCalendar){
+		if(studyCalendar.getId() == null || studyCalendar.getId() == 0){
+			getSession().save(studyCalendar);
+		}else{
+			getSession().update(studyCalendar);
+		}
+	}
+	
+	@Override
+	public void saveOrUpdate(StudyCalendarVo studyCalendarVo) {
+		StudyCalendar calendar = studyCalendarVo.getStudyCalendar();
+		saveOrUpdate(calendar);
+		
+		Criteria criteria = getSession().createCriteria(LinkCalendarCustomField.class);
+		criteria.add(Restrictions.eq("studyCalendar", calendar));
+		List<LinkCalendarCustomField> searchResults = criteria.list();
+		for (LinkCalendarCustomField calendarCustomFields : searchResults) {
+			deleteCalendarCustomField(calendarCustomFields);
+		}
+		
+		for(CustomField customField : studyCalendarVo.getSelectedCustomFields()){
+			LinkCalendarCustomField linkCalendarCustomField = new LinkCalendarCustomField();
+			linkCalendarCustomField.setStudyCalendar(calendar);
+			linkCalendarCustomField.setCustomField(customField);
+			saveCalendarCustomField(linkCalendarCustomField);
+		}
+	}
+	
+	private void saveCalendarCustomField(LinkCalendarCustomField calendarCustomField){
+		getSession().save(calendarCustomField);
+	}
+	
+	private void deleteCalendarCustomField(LinkCalendarCustomField calendarCustomField){
+		getSession().delete(calendarCustomField);
+	}
 
+	public void delete(StudyCalendar studyCalendar){
+		getSession().delete(studyCalendar);
+	}
 	
+	public List<StudyCalendar> searchStudyCalenderList(StudyCalendar studyCalendar){
+		List<StudyCalendar> list = new ArrayList<StudyCalendar>();
+		Criteria criteria = getSession().createCriteria(StudyCalendar.class);
+		
+		criteria.add(Restrictions.eq("study", studyCalendar.getStudy()));
+		
+		if(studyCalendar.getName() !=null){
+			criteria.add(Restrictions.ilike("name", studyCalendar.getName(),MatchMode.ANYWHERE));
+		}
+		
+		if(studyCalendar.getStartDate() !=null){
+			criteria.add(Restrictions.ge("startDate", studyCalendar.getStartDate()));
+		}
+		
+		if(studyCalendar.getEndDate() !=null){
+			criteria.add(Restrictions.le("endDate", studyCalendar.getEndDate()));
+		}
+		
+		criteria.setFetchMode("studyComp", FetchMode.JOIN);
+		
+		list = criteria.list();
+		
+		return list;
+	}
 	
+	public List<CustomField> getStudySubjectCustomFieldList(Long studyId){
+		List<CustomField> list = new ArrayList<CustomField>();
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.createAlias("study", "st", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("customFieldType", "cft", JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("st.id", studyId));
+		criteria.add(Restrictions.eq("cft.name", au.org.theark.core.Constants.SUBJECT));
+		list=criteria.list();
+		return list;
+	}
+	
+	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar){
+		List<CustomField> list = new ArrayList<CustomField>();
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.createAlias("linkCalendarCustomField", "lccf", JoinType.INNER_JOIN);
+		criteria.createAlias("linkCalendarCustomField.studyCalendar", "sc", JoinType.INNER_JOIN);
+		criteria.add(Restrictions.eq("sc.id", studyCalendar.getId()));
+		list=criteria.list();
+		return list;
+	}
 		
 }

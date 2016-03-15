@@ -285,6 +285,7 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_ATTACHMENT = "ATTACHMENT";
 	public static final String FUNCTION_KEY_VALUE_ADDRESS = "ADDRESS";
 	public static final String FUNCTION_KEY_VALUE_CONTACT = "CONTACT";
+	public static final String FUNCTION_KEY_VALUE_CALENDAR = "CALENDAR";
 	//public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD = "SUBJECT_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD = "STUDY_DATA_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE = "CORRESPONDENCE";
