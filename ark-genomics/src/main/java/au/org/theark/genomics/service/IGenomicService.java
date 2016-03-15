@@ -71,4 +71,14 @@ public interface IGenomicService {
 	
 	public byte[] getAnalysisResult(Analysis analysis);
 	
+	public String submitJob(Analysis analysis);
+	
+	public void save(Analysis analysis, byte[] attachement) throws ArkSystemException; 
+	
+	public void update(Analysis analysis, byte[] attachement, String checksum) throws ArkSystemException;
+	
+	public String submitToQueue(Analysis analysis);
+	
+	public void updateQueueStatus(Analysis analysis);
+	
 }
