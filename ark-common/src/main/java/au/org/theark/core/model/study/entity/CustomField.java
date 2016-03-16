@@ -32,6 +32,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -71,6 +72,8 @@ public class CustomField implements Serializable {
 	private CustomFieldType customFieldType;//Subject or Family but later can be more types.
 
 	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
+	
+	private Set<LinkCalendarCustomField> linkCalendarCustomField = new HashSet<LinkCalendarCustomField>();
 
 	public CustomField() {
 
@@ -246,6 +249,15 @@ public class CustomField implements Serializable {
 
 	public void setCustomFieldType(CustomFieldType customFieldType) {
 		this.customFieldType = customFieldType;
+	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customField")
+	public Set<LinkCalendarCustomField> getLinkCalendarCustomField() {
+		return linkCalendarCustomField;
+	}
+
+	public void setLinkCalendarCustomField(Set<LinkCalendarCustomField> linkCalendarCustomField) {
+		this.linkCalendarCustomField = linkCalendarCustomField;
 	}
 
 	@Override

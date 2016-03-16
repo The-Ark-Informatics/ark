@@ -97,6 +97,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCalendar;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -118,6 +119,7 @@ import au.org.theark.study.model.capsule.ArkRelativeCapsule;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.model.vo.StudyCalendarVo;
 import au.org.theark.study.util.ConsentHistoryComparator;
 import au.org.theark.study.util.DataUploader;
 import au.org.theark.study.util.LinkSubjectStudyConsentHistoryComparator;
@@ -2314,9 +2316,38 @@ public class StudyServiceImpl implements IStudyService {
 			CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 		return iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, customFieldCategory,customFieldType, first, count);
 	}
+
 	@Override
 	public void setPreferredPhoneNumberToFalse(Person person) {
 		iStudyDao.setPreferredPhoneNumberToFalse(person);
+	}
+
+	@Override
+	public void saveOrUpdate(StudyCalendar studyCalendar) {
+		iStudyDao.saveOrUpdate(studyCalendar);
+	}
+	
+	@Override
+	public void saveOrUpdate(StudyCalendarVo studyCalendarVo) {
+		iStudyDao.saveOrUpdate(studyCalendarVo);
+	}
+
+	@Override
+	public void delete(StudyCalendar studyCalendar) {
+		iStudyDao.delete(studyCalendar);
+	}
+
+	@Override
+	public List<StudyCalendar> searchStudyCalenderList(StudyCalendar studyCalendar) {
+		return iStudyDao.searchStudyCalenderList(studyCalendar);
+	}
+	
+	public List<CustomField> getStudySubjectCustomFieldList(Long studyId){
+		return iStudyDao.getStudySubjectCustomFieldList(studyId);
+	}
+	
+	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar){
+		return iStudyDao.getSelectedCalendarCustomFieldList(studyCalendar);
 	}
 	
 }

@@ -55,7 +55,7 @@ public class SearchResultListPanel extends Panel {
 				
 				item.add(buildLink(computation));
 				
-				if (computation.getDescription() != null) {
+				if (computation.getMicroService() != null) {
 					item.add(new Label(Constants.COMPUTATION_MICROSERVICE, computation.getMicroService().getName()));
 				}
 				else {

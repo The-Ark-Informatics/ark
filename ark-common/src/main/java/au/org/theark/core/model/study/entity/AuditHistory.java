@@ -37,9 +37,11 @@ import au.org.theark.core.Constants;
 
 /**
  * AuditHistory entity. @author MyEclipse Persistence Tools
+ * @deprecated This class has been depreciated, and is superseded by the utilizing the Envers Auditing feature built in to Hibernate.
  */
 @Entity
 @Table(name = "AUDIT_HISTORY", schema = Constants.STUDY_SCHEMA)
+@Deprecated
 public class AuditHistory implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -52,13 +54,16 @@ public class AuditHistory implements java.io.Serializable {
 	private Long entityId;
 	private String entityType;
 
+	@Deprecated
 	public AuditHistory() {
 	}
 
+	@Deprecated
 	public AuditHistory(Long id) {
 		this.id = id;
 	}
 
+	@Deprecated
 	public AuditHistory(Long id, StudyStatus studyStatus, Date dateTime,
 			String actionType, String etaUserId, String comment,
 			Long entityKey, String entityType) {
