@@ -299,38 +299,41 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				// NUMBER fieldType
 				IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MIN_VALUE);
 				IModel<Double> maxValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MAX_VALUE);
-				IModel<Double> missingValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
+				//IModel<Double> missingValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
+				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
 				minValueEntryPnl = new NumberDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				maxValueEntryPnl = new NumberDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
 				maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-				missingValueEntryPnl = new NumberDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
+				//missingValueEntryPnl = new NumberDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
+				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
 				TextField<?> min= ((NumberDataEntryPanel)minValueEntryPnl).getDataValueTxtFld();
 				TextField<?> max= ((NumberDataEntryPanel)maxValueEntryPnl).getDataValueTxtFld();
-				TextField<?> missingDate= ((NumberDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
-				
+				TextField<?> missingText= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
 				this.add(new DoubleMinimumToMaximumValidator(min, max, "Minimum Value", "Maximum Value"));
-				this.add(new MissingValueDoubleRangeValidator(min,max,missingDate,"Minimum Value","Maximum Value","Missing Value"));
+				this.add(new MissingValueDoubleRangeValidator(min,max,missingText,"Minimum Value","Maximum Value","Missing Value"));
 				
 			}
 			else if (fieldType.getName().equals(Constants.FIELD_TYPE_DATE)) {
 				// DATE fieldType
 				IModel<Date> minValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MIN_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
 				IModel<Date> maxValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MAX_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				IModel<Date> missingValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				
+				//IModel<Date> missingValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
+				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
 				minValueEntryPnl = new DateDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				maxValueEntryPnl = new DateDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
 				maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-				missingValueEntryPnl = new DateDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
+				//missingValueEntryPnl = new DateDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
+				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
 				DateTextField fromDate= ((DateDataEntryPanel)minValueEntryPnl).getDataValueDateFld();
 				DateTextField toDate= ((DateDataEntryPanel)maxValueEntryPnl).getDataValueDateFld();
-				DateTextField missingDate= ((DateDataEntryPanel)missingValueEntryPnl).getDataValueDateFld();
+				//DateTextField missingDate= ((DateDataEntryPanel)missingValueEntryPnl).getDataValueDateFld();
+				TextField<?> missingDate= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
 				
 				this.add(new DateFromToValidator(fromDate,toDate,"Minimum Date","Maximum Date"));
 				this.add(new MissingValueDateRangeValidator(fromDate,toDate,missingDate,"Minimum Date","Maximum Date","Missing Date"));
