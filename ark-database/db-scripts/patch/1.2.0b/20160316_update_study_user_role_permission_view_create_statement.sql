@@ -1,5 +1,5 @@
 CREATE ALGORITHM=UNDEFINED 
-	DEFINER=`arkadmin`@`127.0.0.1` 
+	DEFINER=`arkadmin`@`130.95.56.%` 
 	SQL SECURITY DEFINER VIEW `study_user_role_permission_view` AS 
 	select distinct `study`.`NAME` AS `studyName`,`ark_user`.`LDAP_USER_NAME` AS `userName`,
 	`ark_role`.`NAME` AS `roleName`,`ark_module`.`NAME` AS `moduleName`,max(if((`arpt`.`ARK_PERMISSION_ID` = 1),_utf8'Y',_utf8'N')) AS `create`,
