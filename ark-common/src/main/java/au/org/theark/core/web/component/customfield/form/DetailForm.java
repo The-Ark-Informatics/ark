@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -33,6 +34,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -183,7 +185,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		}
 	}
 	/**
-	 * initialise Field Types.
+	 * initialize Field Types.
 	 */
 	private void initFieldTypeDdc() {
 		List<FieldType> fieldTypeCollection = iArkCommonService.getFieldTypes();
@@ -214,7 +216,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		});
 	}
 	/**
-	 * initialise custom field types.
+	 * initialize custom field types.
 	 */
 	private void initCustomFieldTypeDdc(){
 		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
@@ -343,38 +345,42 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				// NUMBER fieldType
 				IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
 				IModel<Double> maxValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
-				IModel<Double> missingValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
+				//IModel<Double> missingValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
+				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
 				minValueEntryPnl = new NumberDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				maxValueEntryPnl = new NumberDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
 				maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-				missingValueEntryPnl = new NumberDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
+				
+				//missingValueEntryPnl = new NumberDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
+				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
 				TextField<?> min= ((NumberDataEntryPanel)minValueEntryPnl).getDataValueTxtFld();
 				TextField<?> max= ((NumberDataEntryPanel)maxValueEntryPnl).getDataValueTxtFld();
-				TextField<?> missingDate= ((NumberDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
-				
+				TextField<?> missingText= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
 				this.add(new DoubleMinimumToMaximumValidator(min, max, "Minimum Value", "Maximum Value"));
-				this.add(new MissingValueDoubleRangeValidator(min,max,missingDate,"Minimum Value","Maximum Value","Missing Value"));
+				this.add(new MissingValueDoubleRangeValidator(min,max,missingText,"Minimum Value","Maximum Value","Missing Value"));
 				
 			}
 			else if (fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
 				// DATE fieldType
 				IModel<Date> minValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
 				IModel<Date> maxValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				IModel<Date> missingValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				
+				//IModel<Date> missingValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
+				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
 				minValueEntryPnl = new DateDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				maxValueEntryPnl = new DateDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
 				maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-				missingValueEntryPnl = new DateDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
+				//missingValueEntryPnl = new DateDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
+				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
 				DateTextField fromDate= ((DateDataEntryPanel)minValueEntryPnl).getDataValueDateFld();
 				DateTextField toDate= ((DateDataEntryPanel)maxValueEntryPnl).getDataValueDateFld();
-				DateTextField missingDate= ((DateDataEntryPanel)missingValueEntryPnl).getDataValueDateFld();
+				//DateTextField missingDate= ((DateDataEntryPanel)missingValueEntryPnl).getDataValueDateFld();
+				TextField<?> missingDate= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
 				
 				this.add(new DateFromToValidator(fromDate,toDate,"Minimum Date","Maximum Date"));
 				this.add(new MissingValueDateRangeValidator(fromDate,toDate,missingDate,"Minimum Date","Maximum Date","Missing Date"));
@@ -393,7 +399,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		List<UnitType> unitTypeList = iArkCommonService.getUnitTypes(unitTypeCriteria);
 		// assumes that if the unit.name will appear within the unit.description
 
-		ChoiceRenderer unitTypeRenderer = new ChoiceRenderer(Constants.UNITTYPE_DESCRIPTION, Constants.UNITTYPE_ID);
+		ChoiceRenderer unitTypeRenderer = new ChoiceRenderer(Constants.UNITTYPE_NAME, Constants.UNITTYPE_ID);
 		fieldUnitTypeDdc = new DropDownChoice<UnitType>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE, unitTypeList, unitTypeRenderer);
 		fieldUnitTypeDdc.setNullValid(true); // null is ok for units
 		fieldUnitTypeDdc.setOutputMarkupId(true); // unitTypeDdc can be enabled/disabled
