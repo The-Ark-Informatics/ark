@@ -51,7 +51,7 @@ public class MissingValueDoubleRangeValidator  extends AbstractFormValidator{
 		Double max = (Double) components[1].getConvertedInput();
 		//Double missingValueDouble = (Double) components[2].getConvertedInput();
 		String missingValueString = (String) components[2].getConvertedInput();
-		if(!missingValueString.isEmpty() && isDouble(missingValueString)){
+		if(missingValueString!=null && !missingValueString.isEmpty() && isDouble(missingValueString)){
 			Double missingValueDouble=Double.valueOf(missingValueString);
 	        if(min!=null && max!=null && missingValueDouble !=null){
 		        if (missingValueDouble > min && missingValueDouble < max){
