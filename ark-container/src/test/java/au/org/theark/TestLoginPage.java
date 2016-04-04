@@ -20,6 +20,7 @@ package au.org.theark;
 
 import java.util.concurrent.TimeUnit;
 
+import au.org.theark.core.selenium.utilities.WicketBy;
 import junit.framework.TestCase;
 
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -29,6 +30,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -38,8 +40,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import au.org.theark.core.testcategories.IntegrationTests;
 import au.org.theark.web.pages.login.LoginPage;
 
+@Category(IntegrationTests.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/test/resources/applicationContext.xml"})
 public class TestLoginPage extends TestCase {
@@ -61,7 +65,7 @@ public class TestLoginPage extends TestCase {
 	public void setup() {
 		tester = new WicketTester();
 		tester.startPage(LoginPage.class);
-		driver.get("http://192.168.33.10:8080/ark");	
+		driver.get("http://192.168.33.11:8080/ark");	
 	}
 
 	@Test
@@ -95,7 +99,7 @@ public class TestLoginPage extends TestCase {
 	public void testInvalidLogin() {
 		log.info("Starting test " + new Object(){}.getClass().getEnclosingMethod().getName());
 		driver.findElement(By.name("userName")).sendKeys("arksuperuser@ark.org.au");
-		driver.findElement(By.name("password")).sendKeys("Incorrext Password");
+		driver.findElement(By.name("password")).sendKeys("Incorrect Password");
 		driver.findElement(By.name("signInButton")).click();
 		
 		//If the "Invalid username and password" warning comes up, then we didn't log in.
