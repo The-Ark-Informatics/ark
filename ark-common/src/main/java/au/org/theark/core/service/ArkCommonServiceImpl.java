@@ -95,6 +95,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -1288,11 +1289,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	public UploadStatus getUploadStatusForUploaded() {
-		return studyDao.getUploadStatusForUploaded();
+		return studyDao.getUploadStatusFor(Constants.UPLOAD_STATUS_COMPLETED);
 	}
 
 	public UploadStatus getUploadStatusForAwaitingValidation() {
-		return studyDao.getUploadStatusForAwaitingValidation();
+		return studyDao.getUploadStatusFor(Constants.UPLOAD_STATUS_AWAITING_VALIDATION);
 	}
 
 	public UploadStatus getUploadStatusFor(String uploadStatusConstant) {
@@ -2064,6 +2065,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		 return new ArrayList<ArkRolePolicyTemplate>(new LinkedHashSet<ArkRolePolicyTemplate>(fieldLst));
 		
 	}
+
+	@Override
+	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name) {
+		return studyDao.getUploadTypeByModuleAndName(arkModule, name);
+	}
+
+	
 	
 	
 }

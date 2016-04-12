@@ -289,6 +289,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 			containerForm.getModelObject().getSearch().setStudy(study);
 			containerForm.getModelObject().getSearch().setStatus("READY TO RUN");
 			containerForm.getModelObject().getSearch().setFinishTime(null);
+			//Add to fix bug  ARK-1581 
+			containerForm.getModelObject().getSearch().setIncludeGeno(false);
 
 			FileUpload subjectFileUpload = subjectListFileUploadField.getFileUpload();
 			List<SubjectVO> selectedSubjects = iArkCommonService.matchSubjectsFromInputFile(subjectFileUpload, study);

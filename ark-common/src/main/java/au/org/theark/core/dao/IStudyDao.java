@@ -645,11 +645,11 @@ public interface IStudyDao {
 
 	public Payload getPayloadForUpload(Upload upload);
 
-	public UploadStatus getUploadStatusForUploaded();
+	//public UploadStatus getUploadStatusForUploaded();
 
-	public UploadStatus getUploadStatusForValidated();
+	//public UploadStatus getUploadStatusForValidated();
 	
-	public UploadStatus getUploadStatusForAwaitingValidation();
+	//public UploadStatus getUploadStatusForAwaitingValidation();
 
 	public Collection<UploadType> getUploadTypesForSubject();
 
@@ -760,4 +760,6 @@ public interface IStudyDao {
 	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField);
 
 	public ConfigField getConfigFieldByName(String configName);
+	
+	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
 }

@@ -45,6 +45,8 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.PhenoDataSetFieldCategoryUpload;
+import au.org.theark.core.model.study.entity.PhenoFieldUpload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -577,4 +579,17 @@ public interface IPhenotypicDao {
 	
 	public Boolean isPickedPhenoDataSetCategoryIsAParentOfAnotherCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory);
 	
+	public List<PickedPhenoDataSetCategory> getChildrenOfPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory);
+	
+	public List<PickedPhenoDataSetCategory> getAllParentPickedPhenoDataSetCategories(Study study, ArkFunction arkFunction,ArkUser arkUser);
+	
+	public List<LinkPhenoDataSetCategoryField> getLinkPhenoDataSetCategoryFieldsForPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory);
+	
+	public PhenoDataSetCategory getPhenoDataFieldCategoryByNameStudyAndArkFunction(String name,Study study,ArkFunction arkFunction);
+	
+	public PhenoDataSetField getPhenoDataSetFieldByNameStudyArkFunction(String name,Study study,ArkFunction arkFunction);
+
+	public void createPhenoDataSetFieldCategoryUpload(PhenoDataSetFieldCategoryUpload phenoDataSetFieldCategoryUpload);
+	
+	public void createPhenoDataSetFieldUpload(PhenoFieldUpload phenoFieldUpload);
 }

@@ -36,6 +36,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenodatacategory.PhenoDataCategoryContainerPanel;

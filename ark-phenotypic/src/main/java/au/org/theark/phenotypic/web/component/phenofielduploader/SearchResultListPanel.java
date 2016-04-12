@@ -50,7 +50,7 @@ public class SearchResultListPanel extends Panel {
 	 */
 	public SearchResultListPanel(String id) {
 		super(id);
-		ArkDownloadTemplateButton downloadFieldTemplateButton = new ArkDownloadTemplateButton("downloadTemplateField", "PhenoDataSetFieldUpload", Constants.PHENO_DATASET_CATEGORY_UPLOAD_HEADER) {
+		ArkDownloadTemplateButton downloadFieldTemplateButton = new ArkDownloadTemplateButton("downloadTemplateField", "PhenoDataSetFieldUpload", Constants.PHENO_DATASET_FIELD_UPLOAD_HEADER) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
@@ -75,14 +75,7 @@ public class SearchResultListPanel extends Panel {
 	 * @return the pageableListView of Upload
 	 */
 	public PageableListView<Upload> buildPageableListView(IModel iModel) {
-//<<<<<<< HEAD
-	//	PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
-
-		//	private static final long	serialVersionUID	= 1L;
-
-//=======
 		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
-//>>>>>>> 4b2ee82df6c9be8635fdb51db93dd50f8753dcdb
 			@Override
 			protected void populateItem(final ListItem<Upload> item) {
 				Upload upload = item.getModelObject();

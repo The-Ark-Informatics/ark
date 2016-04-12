@@ -17,6 +17,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +25,16 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
-import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PhenoDataSetFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.CustomFieldCategoryVO;
+import au.org.theark.core.vo.PhenoDataSetCategoryVO;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 
 import com.csvreader.CsvReader;
 
@@ -51,24 +52,25 @@ public class PhenoDataSetFieldCategoryImporter implements IPhenoImporter,Seriali
 	private char phenotypicDelimChr = Constants.IMPORT_DELIM_CHAR_COMMA; 
 	private String fileFormat;
 	private Person person;
-	private List<CustomField> fieldList;
+	private List<PhenoDataSetField> fieldList;
 	private Study study;
 	static Logger log = LoggerFactory.getLogger(PhenoDataSetFieldCategoryImporter.class);
 	java.util.Collection<String> fileValidationMessages = new ArrayList<String>();
 	java.util.Collection<String> dataValidationMessages = new ArrayList<String>();
 	private IArkCommonService<Void> iArkCommonService = null;
 	private StringBuffer uploadReport = null;
-	private List<CustomFieldCategoryUpload> fieldUploadList = new ArrayList<CustomFieldCategoryUpload>();
+	private List<PhenoDataSetFieldCategoryUpload> fieldUploadList = new ArrayList<PhenoDataSetFieldCategoryUpload>();
 	private Long phenoCollectionId = null;
 	private ArkFunction arkFunction;
 	private Date completionTime = null;
 	private ArkModule arkModule;
-
-	public PhenoDataSetFieldCategoryImporter(Study study, ArkFunction arkFunction,
-			IArkCommonService<Void> iArkCommonService, String fileFormat,
-			char delimiterChar) {
+	private IPhenotypicService		iPhenotypicService;
+	
+	
+	public PhenoDataSetFieldCategoryImporter(Study study, ArkFunction arkFunction,IArkCommonService<Void> iArkCommonService,IPhenotypicService iPhenotypicService, String fileFormat,char delimiterChar) {
 		this.study = study;
 		this.iArkCommonService = iArkCommonService;
+		this.iPhenotypicService=iPhenotypicService;
 		this.fileFormat = fileFormat;
 		this.phenotypicDelimChr = delimiterChar;
 		this.arkFunction = arkFunction;
@@ -85,7 +87,7 @@ public class PhenoDataSetFieldCategoryImporter implements IPhenoImporter,Seriali
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
 		Date dateCollected = new Date();
-		CustomFieldCategory category= null;
+		PhenoDataSetCategory category= null;
 
 		completionTime = null;
 		
@@ -111,26 +113,17 @@ public class PhenoDataSetFieldCategoryImporter implements IPhenoImporter,Seriali
 				
 			log.info("ark function = " + arkFunction.getName());
 			
-			//these fields must be available for phenocollection...therefore we are to save / update / get by that ark function...ideally this should be by ark module
-			if(arkModule.getName().equals(Constants.ARK_MODULE_LIMS)){
-				arkFunctionToBeUsed = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY);
-			}
-			if(arkModule.getName().equals(Constants.ARK_MODULE_STUDY)){
-				arkFunctionToBeUsed = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY);
-			}
-	
+				arkFunctionToBeUsed = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_CATEGORY);
+			
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
 				String categoryName = stringLineArray[0];
-
-				// Set field
-				category = new CustomFieldCategory();
-				category.setStudy(study);
-
-				CustomFieldCategory categoryOld = iArkCommonService.getCustomFieldCategoryByNameStudyAndArkFunction(csvReader.get("CATEGORY_NAME"), study, arkFunctionToBeUsed);
+				
+				//CustomFieldCategory categoryOld = iArkCommonService.getCustomFieldCategoryByNameStudyAndArkFunction(csvReader.get("CATEGORY_NAME"), study, arkFunctionToBeUsed);
+				PhenoDataSetCategory categoryOld=iPhenotypicService.getPhenoDataFieldCategoryByNameStudyAndArkFunction(csvReader.get("CATEGORY_NAME"), study, arkFunctionToBeUsed);
 				if (categoryOld != null) {
 					uploadReport.append("Updating category for: ");
 					uploadReport.append("\tATEGORY: ");
@@ -139,55 +132,39 @@ public class PhenoDataSetFieldCategoryImporter implements IPhenoImporter,Seriali
 					uploadReport.append("\n");
 
 					categoryOld.setName(categoryName);
-					
-					CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(csvReader.get("CUSTOM_FIELD_TYPE"));
-					categoryOld.setCustomFieldType(customFieldType);
 					categoryOld.setDescription(csvReader.get("DESCRIPTION"));
-					if(!csvReader.get("PARENT_CATEGORY_NAME").isEmpty()|| csvReader.get("PARENT_CATEGORY_NAME")!=null){
-						CustomFieldCategory parentCategory = iArkCommonService.getCustomFieldCategoryByNameStudyAndArkFunction(csvReader.get("PARENT_CATEGORY_NAME"), study, arkFunctionToBeUsed);
-						categoryOld.setParentCategory(parentCategory);
-					}
-					categoryOld.setOrderNumber(Long.valueOf(csvReader.get("ORDER_NUMBER")));
-					CustomFieldCategoryVO updateCFCVo = new CustomFieldCategoryVO();
-					updateCFCVo.setCustomFieldCategory(categoryOld);
 					
-					iArkCommonService.updateCustomFieldCategory(updateCFCVo);
+					PhenoDataSetCategoryVO updatePFCVo = new PhenoDataSetCategoryVO();
+					updatePFCVo.setPhenoDataSetCategory(categoryOld);
+					
+					iPhenotypicService.updatePhenoDataSetCategory(updatePFCVo);
 					updateCount++;
 
-					CustomFieldCategoryUpload categoryUpload = new CustomFieldCategoryUpload();
-					categoryUpload.setCustomFieldCategoty(categoryOld);
+					PhenoDataSetFieldCategoryUpload categoryUpload = new PhenoDataSetFieldCategoryUpload();
+					categoryUpload.setPhenoDataSetCategory(categoryOld);
 					fieldUploadList.add(categoryUpload);
 				}
 				else {
-					CustomFieldCategory categoryNew= new CustomFieldCategory();
+					PhenoDataSetCategory categoryNew= new PhenoDataSetCategory();
 					categoryNew.setStudy(study);
 					categoryNew.setName(csvReader.get("CATEGORY_NAME"));
 					categoryNew.setArkFunction(arkFunctionToBeUsed);
-					
-					//insert the Custom field Type and Custom Field Category on 2015-08-24
-					CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(csvReader.get("CUSTOM_FIELD_TYPE"));
-					categoryNew.setCustomFieldType(customFieldType);
-					categoryNew.setDescription(csvReader.get("DESCRIPTION"));
-					if(!csvReader.get("PARENT_CATEGORY_NAME").isEmpty()|| csvReader.get("PARENT_CATEGORY_NAME")!=null){
-						CustomFieldCategory parentCategory = iArkCommonService.getCustomFieldCategoryByNameStudyAndArkFunction(csvReader.get("PARENT_CATEGORY_NAME"), study, arkFunctionToBeUsed);
-						categoryNew.setParentCategory(parentCategory);
-					}
-					categoryNew.setOrderNumber(Long.valueOf(csvReader.get("ORDER_NUMBER")));
+							categoryNew.setDescription(csvReader.get("DESCRIPTION"));
 					uploadReport.append("Creating new category: ");
 					uploadReport.append("\tCATEGORY: ");
 					uploadReport.append((stringLineArray[csvReader.getIndex("CATEGORY_NAME")]));
 					uploadReport.append("\n");
 
 					// Try to create the field
-					CustomFieldCategoryVO saveCFCVo = new CustomFieldCategoryVO();
-					saveCFCVo.setCustomFieldCategory(categoryNew);
+					PhenoDataSetCategoryVO saveCFCVo = new PhenoDataSetCategoryVO();
+					saveCFCVo.setPhenoDataSetCategory(categoryNew);
 					
-					iArkCommonService.createCustomFieldCategory(saveCFCVo);
+					iPhenotypicService.createPhenoDataSetCategory(saveCFCVo);
 					insertCount++;
 
-					CustomFieldCategoryUpload customFieldCategoryUpload = new CustomFieldCategoryUpload();
-					customFieldCategoryUpload.setCustomFieldCategoty(categoryNew);
-					fieldUploadList.add(customFieldCategoryUpload);
+					PhenoDataSetFieldCategoryUpload categoryUpload = new PhenoDataSetFieldCategoryUpload();
+					categoryUpload.setPhenoDataSetCategory(categoryNew);
+					fieldUploadList.add(categoryUpload);
 				}
 
 				fieldCount++;
@@ -286,13 +263,17 @@ public class PhenoDataSetFieldCategoryImporter implements IPhenoImporter,Seriali
 		}
 		return new ByteArrayInputStream(out.toByteArray());
 	}
-	
-	public List<CustomFieldCategoryUpload> getFieldUploadList() {
+
+	public List<PhenoDataSetFieldCategoryUpload> getFieldUploadList() {
 		return fieldUploadList;
 	}
-	public void setFieldUploadList(List<CustomFieldCategoryUpload> fieldUploadList) {
+
+	public void setFieldUploadList(
+			List<PhenoDataSetFieldCategoryUpload> fieldUploadList) {
 		this.fieldUploadList = fieldUploadList;
 	}
+	
+	
 	
 
 }

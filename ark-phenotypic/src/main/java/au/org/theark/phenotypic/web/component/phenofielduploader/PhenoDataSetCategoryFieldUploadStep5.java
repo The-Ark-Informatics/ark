@@ -21,9 +21,9 @@ package au.org.theark.phenotypic.web.component.phenofielduploader;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 
-import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
 
 /**
  * The final step of this wizard.
@@ -31,12 +31,12 @@ import au.org.theark.core.web.form.AbstractWizardStepPanel;
 public class PhenoDataSetCategoryFieldUploadStep5 extends AbstractWizardStepPanel {
 
 	private static final long				serialVersionUID	= -6803600838428204753L;
-	private Form<CustomFieldUploadVO>	containerForm;
+	private Form<PhenoDataSetFieldUploadVO>	containerForm;
 
 	/**
 	 * Construct.
 	 */
-	public PhenoDataSetCategoryFieldUploadStep5(String id, Form<CustomFieldUploadVO> containerForm) {
+	public PhenoDataSetCategoryFieldUploadStep5(String id, Form<PhenoDataSetFieldUploadVO> containerForm) {
 		super(id, "Step 5/5: Data Upload Finished", 
 				"The data has been successfully submitted, When the actual upload is finished it will have a status of \"Successfully Completed\".");
 		this.containerForm = containerForm;

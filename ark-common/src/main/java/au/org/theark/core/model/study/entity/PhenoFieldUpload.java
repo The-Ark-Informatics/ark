@@ -38,45 +38,37 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 @Entity
 @Table(name = "PHENO_FIELD_UPLOAD", schema = au.org.theark.core.model.Constants.PHENO_TABLE_SCHEMA)
 public class PhenoFieldUpload implements java.io.Serializable {
-
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Upload studyUpload;
 	private PhenoDataSetField phenoDataSetField;
-
 	public PhenoFieldUpload() {
 
 	}
 	@Id
-	@SequenceGenerator(name = "CustomFieldUpload_PK_Seq", sequenceName = "STUDY.CUSTOM_FIELD_UPLOAD_PK_SEQ")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "CustomFieldUpload_PK_Seq")
+	@SequenceGenerator(name = "PhenoDataSetFieldUpload_PK_Seq", sequenceName = "PHENO.PHENODATASETFIELD_UPLOAD_PK_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "PhenoDataSetFieldUpload_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPLOAD_ID")
 	public Upload getUpload() {
 		return studyUpload;
 	}
-
 	public void setUpload(Upload studyUpload) {
 		this.studyUpload = studyUpload;
 	}
-
-	/*@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOM_FIELD_ID")
-	public CustomField getCustomField() {
-		return customField;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PHENO_FIELD_ID")
+	public PhenoDataSetField getPhenoDataSetField() {
+		return phenoDataSetField;
 	}
-
-	public void setCustomField(CustomField customField) {
-		this.customField = customField;
-	}*/
-
+	public void setPhenoDataSetField(PhenoDataSetField phenoDataSetField) {
+		this.phenoDataSetField = phenoDataSetField;
+	}
 }

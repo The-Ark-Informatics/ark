@@ -40,19 +40,20 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
 
 /**
  * @author cellis
  * @author elam
  */
 @SuppressWarnings({ "serial", "unused" })
-public class SearchForm extends AbstractSearchForm<CustomFieldUploadVO> {
+public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldUploadVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>				iArkCommonService;
 
 	private PageableListView<Upload>		listView;
-	private CompoundPropertyModel<CustomFieldUploadVO>	cpmModel;
+	private CompoundPropertyModel<PhenoDataSetFieldUploadVO>	cpmModel;
 	private WebMarkupContainer						wizardContainer;
 
 	private TextField<String>						uploadIdTxtFld;
@@ -67,7 +68,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldUploadVO> {
 	 * @param feedBackPanel
 	 * @param listView
 	 */
-	public SearchForm(String id, CompoundPropertyModel<CustomFieldUploadVO> model, ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel, PageableListView<Upload> listView) {
+	public SearchForm(String id, CompoundPropertyModel<PhenoDataSetFieldUploadVO> model, ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel, PageableListView<Upload> listView) {
 
 		super(id, model, feedBackPanel,arkCrudContainerVO);
 
@@ -83,7 +84,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldUploadVO> {
 	private void initDropDownChoice() {
 		// Initialise any drop-downs
 		java.util.Collection<FileFormat> fileFormatCollection = iArkCommonService.getFileFormats();
-		CompoundPropertyModel<CustomFieldUploadVO> uploadCpm = cpmModel;
+		CompoundPropertyModel<PhenoDataSetFieldUploadVO> uploadCpm = cpmModel;
 		PropertyModel<Upload> uploadPm = new PropertyModel<Upload>(uploadCpm, Constants.UPLOAD);
 		PropertyModel<FileFormat> fileFormatPm = new PropertyModel<FileFormat>(uploadPm, Constants.FILE_FORMAT);
 		ChoiceRenderer fileFormatRenderer = new ChoiceRenderer(Constants.FILE_FORMAT_NAME, Constants.FILE_FORMAT_ID);
@@ -137,7 +138,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldUploadVO> {
 	protected void onNew(AjaxRequestTarget target) {
 		// NB: Should not be possible to get here (GUI should be using Wizard for new)
 		// Due to ARK-108 :: No longer reset the VO onNew(..)
-		CustomFieldUploadVO uploadVo = getModelObject();
+		PhenoDataSetFieldUploadVO uploadVo = getModelObject();
 		uploadVo.setMode(au.org.theark.core.Constants.MODE_NEW);
 		uploadVo.getUpload().setId(null); // must ensure Id is blank onNew
 		setModelObject(uploadVo);

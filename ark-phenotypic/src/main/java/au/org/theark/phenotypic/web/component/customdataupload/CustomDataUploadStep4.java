@@ -49,7 +49,7 @@ public class CustomDataUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 
-	@SpringBean(name = au.org.theark.core.Constants.PHENO_SERVICE)
+	@SpringBean(name = au.org.theark.core.Constants.ARK_PHENO_DATA_SERVICE)
 	private IPhenotypicService		iPhenoService;
 
 	public CustomDataUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {

@@ -75,6 +75,8 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.PhenoDataSetFieldCategoryUpload;
+import au.org.theark.core.model.study.entity.PhenoFieldUpload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
@@ -1379,7 +1381,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		sb.append("  LEFT JOIN cfd.phenoData AS pd ");
 		sb.append("  WITH pd.phenoCollection.id = :pcId ");
 		sb.append(" WHERE pc.id = :pcId ");
-		sb.append(" ORDER BY cfd.sequence ");
+		sb.append(" ORDER BY cfd.phenoDataSetFiledOrderNumber ");
 		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("pcId", phenoCollection.getId());
@@ -1623,7 +1625,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.add(Restrictions.eq("phenoDataSetGroup",phenoDataSetGroup));
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
-		criteria.addOrder(Order.asc("sequence"));
+		criteria.addOrder(Order.asc("phenoDataSetFiledOrderNumber"));
 		return criteria.list();
 		
 	}
@@ -2357,7 +2359,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("phenoDataSetField"));
 		criteria.setProjection(projectionList);
-		criteria.addOrder(Order.asc("sequence"));
+		criteria.addOrder(Order.asc("phenoDataSetFiledOrderNumber"));
 		List<PhenoDataSetField> fieldsList = criteria.list();
 		//log.warn("______________customFieldsList = " + fieldsList.size());
 		return fieldsList;
@@ -2372,19 +2374,36 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			phenoDataSetGroup.setPublished( new Boolean("false"));
 		}
 		session.save(phenoDataSetGroup);
-		List<PhenoDataSetField> phenoDataSetFieldList = phenoDataSetFieldGroupVO.getSelectedPhenoDataSetFields();
-		
-		int fieldposition = 0;
-		for (PhenoDataSetField phenoDataSetField : phenoDataSetFieldList) {
-			++fieldposition;
-			PhenoDataSetFieldDisplay phenoDataSetFieldDisplay = new PhenoDataSetFieldDisplay();
-			phenoDataSetFieldDisplay.setPhenoDataSetGroup(phenoDataSetGroup);
-			phenoDataSetFieldDisplay.setPhenoDataSetField(phenoDataSetField);
-			phenoDataSetFieldDisplay.setSequence( new Long(fieldposition));
-			session.save(phenoDataSetFieldDisplay);
-			log.debug("Saved PhenoDataSetFieldDisplay for PhenoDataSet Group");
-		}
-		
+		//Get the Picked Pheno Dataset categories.
+		List<PickedPhenoDataSetCategory> phenoDataSetCategories=phenoDataSetFieldGroupVO.getPickedAvailableCategories();
+		for (PickedPhenoDataSetCategory pickedPhenoDataSetCategory : phenoDataSetCategories) {
+				//Get the Linked Pheno Dataset fields for  PickedPhenoDataSetCategory
+				List<LinkPhenoDataSetCategoryField> linkPhenoDataSetCategoryFields=getLinkPhenoDataSetCategoryFieldsForPickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
+				if(linkPhenoDataSetCategoryFields.size()>0){
+					for (LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField : linkPhenoDataSetCategoryFields) {
+						PhenoDataSetFieldDisplay phenoDataSetFieldDisplay = new PhenoDataSetFieldDisplay();
+						phenoDataSetFieldDisplay.setPhenoDataSetGroup(phenoDataSetGroup);
+						phenoDataSetFieldDisplay.setPhenoDataSetCategory(pickedPhenoDataSetCategory.getPhenoDataSetCategory());
+						if(pickedPhenoDataSetCategory.getParentPickedPhenoDataSetCategory()!=null){
+							phenoDataSetFieldDisplay.setParentPhenoDataSetCategory(pickedPhenoDataSetCategory.getParentPickedPhenoDataSetCategory().getPhenoDataSetCategory());
+						}
+						phenoDataSetFieldDisplay.setPhenoDataSetCategoryOrderNumber(pickedPhenoDataSetCategory.getOrderNumber());
+						phenoDataSetFieldDisplay.setPhenoDataSetField(linkPhenoDataSetCategoryField.getPhenoDataSetField());
+						phenoDataSetFieldDisplay.setPhenoDataSetFiledOrderNumber(linkPhenoDataSetCategoryField.getOrderNumber());
+						session.save(phenoDataSetFieldDisplay);	
+					}
+				}else{
+					PhenoDataSetFieldDisplay phenoDataSetFieldDisplay = new PhenoDataSetFieldDisplay();
+					phenoDataSetFieldDisplay.setPhenoDataSetGroup(phenoDataSetGroup);
+					phenoDataSetFieldDisplay.setPhenoDataSetCategory(pickedPhenoDataSetCategory.getPhenoDataSetCategory());
+					if(pickedPhenoDataSetCategory.getParentPickedPhenoDataSetCategory()!=null){
+						phenoDataSetFieldDisplay.setParentPhenoDataSetCategory(pickedPhenoDataSetCategory.getParentPickedPhenoDataSetCategory().getPhenoDataSetCategory());
+					}
+					phenoDataSetFieldDisplay.setPhenoDataSetCategoryOrderNumber(pickedPhenoDataSetCategory.getOrderNumber());
+					session.save(phenoDataSetFieldDisplay);
+				}
+		}	
+		log.debug("Saved All PhenoDataSetDisplays for PhenoDataSet Group");	
 	}
 
 	@Override
@@ -2394,27 +2413,42 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		session.update(phenoDataSetGroup);//Update
 		
 		if(!phenoDataSetGroup.getPublished()){//Allow Removal only if the form is not published
-			Collection<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplayToRemove = getPhenoFieldDisplayToRemove(phenoDataSetFieldGroupVO.getSelectedPhenoDataSetFields(), phenoDataSetGroup);	
+			Collection<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplayToRemove = getPhenoFieldDisplayToRemove(phenoDataSetGroup);	
 			for (PhenoDataSetFieldDisplay cfd : phenoDataSetFieldDisplayToRemove) {
 				session.delete(cfd);
 			}
 		}
 	
-		ArrayList<PhenoDataSetFieldDisplay> customFieldsToAdd = getPhenoDataSetFieldsToAdd(phenoDataSetFieldGroupVO.getSelectedPhenoDataSetFields(), phenoDataSetGroup);
-		for (PhenoDataSetFieldDisplay fieldToAdd : customFieldsToAdd) {
-			session.saveOrUpdate(fieldToAdd);//Add a new CustomFieldDisplay field that is linked to the CustomField	
-		}
-		
-		List<PhenoDataSetField> list = phenoDataSetFieldGroupVO.getSelectedPhenoDataSetFields();
-		int position = 0;
-		
-		for (PhenoDataSetField phenoDataSetField : list) {
-			++position;
-			//CustomFieldDisplay cfd = iArkCommonService.getCustomFieldDisplayByCustomField(customField,customFieldGroupVO.getCustomFieldGroup());
-			PhenoDataSetFieldDisplay pdsfd=getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(phenoDataSetField, phenoDataSetGroup);
-			pdsfd.setSequence(new Long(position));
-			session.update(pdsfd);
-		}
+		//Get the Picked Pheno Dataset categories.
+		List<PickedPhenoDataSetCategory> phenoDataSetCategories=phenoDataSetFieldGroupVO.getPickedAvailableCategories();
+		for (PickedPhenoDataSetCategory pickedPhenoDataSetCategory : phenoDataSetCategories) {
+				//Get the Linked Pheno Dataset fields for  PickedPhenoDataSetCategory
+				List<LinkPhenoDataSetCategoryField> linkPhenoDataSetCategoryFields=getLinkPhenoDataSetCategoryFieldsForPickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
+				if(linkPhenoDataSetCategoryFields.size()>0){
+					for (LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField : linkPhenoDataSetCategoryFields) {
+						PhenoDataSetFieldDisplay phenoDataSetFieldDisplay = new PhenoDataSetFieldDisplay();
+						phenoDataSetFieldDisplay.setPhenoDataSetGroup(phenoDataSetGroup);
+						phenoDataSetFieldDisplay.setPhenoDataSetCategory(pickedPhenoDataSetCategory.getPhenoDataSetCategory());
+						if(pickedPhenoDataSetCategory.getParentPickedPhenoDataSetCategory()!=null){
+							phenoDataSetFieldDisplay.setParentPhenoDataSetCategory(pickedPhenoDataSetCategory.getParentPickedPhenoDataSetCategory().getPhenoDataSetCategory());
+						}
+						phenoDataSetFieldDisplay.setPhenoDataSetCategoryOrderNumber(pickedPhenoDataSetCategory.getOrderNumber());
+						phenoDataSetFieldDisplay.setPhenoDataSetField(linkPhenoDataSetCategoryField.getPhenoDataSetField());
+						phenoDataSetFieldDisplay.setPhenoDataSetFiledOrderNumber(linkPhenoDataSetCategoryField.getOrderNumber());
+						session.save(phenoDataSetFieldDisplay);	
+					}
+				}else{
+					PhenoDataSetFieldDisplay phenoDataSetFieldDisplay = new PhenoDataSetFieldDisplay();
+					phenoDataSetFieldDisplay.setPhenoDataSetGroup(phenoDataSetGroup);
+					phenoDataSetFieldDisplay.setPhenoDataSetCategory(pickedPhenoDataSetCategory.getPhenoDataSetCategory());
+					if(pickedPhenoDataSetCategory.getParentPickedPhenoDataSetCategory()!=null){
+						phenoDataSetFieldDisplay.setParentPhenoDataSetCategory(pickedPhenoDataSetCategory.getParentPickedPhenoDataSetCategory().getPhenoDataSetCategory());
+					}
+					phenoDataSetFieldDisplay.setPhenoDataSetCategoryOrderNumber(pickedPhenoDataSetCategory.getOrderNumber());
+					session.save(phenoDataSetFieldDisplay);
+				}
+		}	
+		log.debug("Update PhenoDataSetFieldDisplay for PhenoDataSet Group");	
 	
 		
 	}
@@ -2469,18 +2503,13 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	 * @param customFieldGroup
 	 * @return
 	 */
-	private Collection<PhenoDataSetFieldDisplay> getPhenoFieldDisplayToRemove(Collection<PhenoDataSetField> selectedPhenoDataSetFields, PhenoDataSetGroup phenoDataSetGroup){
+	private Collection<PhenoDataSetFieldDisplay> getPhenoFieldDisplayToRemove(PhenoDataSetGroup phenoDataSetGroup){
 		
 		Collection<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplaysList = getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroup(phenoDataSetGroup);
 		Collection<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplayToRemove = new ArrayList<PhenoDataSetFieldDisplay>();
-		for (PhenoDataSetFieldDisplay existingPhenoDataSetFieldDisplay: phenoDataSetFieldDisplaysList) {
-			
-			if(existingPhenoDataSetFieldDisplay.getPhenoDataSetField() instanceof HibernateProxy){
-				CustomField  cf = (CustomField)((HibernateProxy)existingPhenoDataSetFieldDisplay.getPhenoDataSetField()).getHibernateLazyInitializer().getImplementation();
-				if(!selectedPhenoDataSetFields.contains(cf)){
-					phenoDataSetFieldDisplayToRemove.add(existingPhenoDataSetFieldDisplay);	
-				}
-			}
+		//To do discard all the used pheno fileds 
+		for (PhenoDataSetFieldDisplay phenoDataSetFieldDisplay : phenoDataSetFieldDisplaysList) {
+				phenoDataSetFieldDisplayToRemove.add(phenoDataSetFieldDisplay);
 		}
 		return phenoDataSetFieldDisplayToRemove;
 	}
@@ -2488,7 +2517,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	private List<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroup){
 		Criteria criteria = getSession().createCriteria(PhenoDataSetFieldDisplay.class);
 		criteria.add(Restrictions.eq("phenoDataSetGroup",phenoDataSetGroup));
-		criteria.addOrder(Order.asc("sequence"));
+		criteria.addOrder(Order.asc("phenoDataSetFiledOrderNumber"));
 		return criteria.list();
 	}
 	
@@ -2507,7 +2536,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	private List<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplayForPhenoDataSetFieldGrroup(PhenoDataSetGroup phenoDataSetGroup){
 		Criteria criteria = getSession().createCriteria(PhenoDataSetFieldDisplay.class);
 		criteria.add(Restrictions.eq("phenoDataSetGroup",phenoDataSetGroup));
-		criteria.addOrder(Order.asc("sequence"));
+		criteria.addOrder(Order.asc("phenoDataSetFiledOrderNumber"));
 		return criteria.list();
 	}
 	@Override
@@ -2834,5 +2863,66 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.add(Restrictions.eq("parentPickedPhenoDataSetCategory", pickedPhenoDataSetCategory));
 		return !((List<PickedPhenoDataSetCategory>)criteria.list()).isEmpty();
 	}
+
+	@Override
+	public List<PickedPhenoDataSetCategory> getChildrenOfPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) {
+		Criteria criteria = getSession().createCriteria(PickedPhenoDataSetCategory.class);
+		criteria.add(Restrictions.eq("arkFunction", pickedPhenoDataSetCategory.getArkFunction()));
+		criteria.add(Restrictions.eq("study", pickedPhenoDataSetCategory.getStudy()));
+		criteria.add(Restrictions.eq("arkUser", pickedPhenoDataSetCategory.getArkUser()));
+		criteria.add(Restrictions.eq("parentPickedPhenoDataSetCategory", pickedPhenoDataSetCategory));
+		criteria.addOrder(Order.asc("orderNumber"));
+		return (List<PickedPhenoDataSetCategory>)criteria.list();
+	}
+
+	@Override
+	public List<PickedPhenoDataSetCategory> getAllParentPickedPhenoDataSetCategories(Study study, ArkFunction arkFunction, ArkUser arkUser) {
+		Criteria criteria = getSession().createCriteria(PickedPhenoDataSetCategory.class);
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		criteria.add(Restrictions.isNull("parentPickedPhenoDataSetCategory"));
+		criteria.addOrder(Order.asc("orderNumber"));
+		return (List<PickedPhenoDataSetCategory>)criteria.list();
+	}
+
+	@Override
+	public List<LinkPhenoDataSetCategoryField> getLinkPhenoDataSetCategoryFieldsForPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) {
+		Criteria criteria = getSession().createCriteria(LinkPhenoDataSetCategoryField.class);
+		criteria.add(Restrictions.eq("study", pickedPhenoDataSetCategory.getStudy()));
+		criteria.add(Restrictions.eq("arkFunction", pickedPhenoDataSetCategory.getArkFunction()));
+		criteria.add(Restrictions.eq("arkUser", pickedPhenoDataSetCategory.getArkUser()));
+		criteria.add(Restrictions.eq("phenoDataSetCategory",pickedPhenoDataSetCategory.getPhenoDataSetCategory()));
+		criteria.addOrder(Order.asc("orderNumber"));
+		return(List<LinkPhenoDataSetCategoryField>)criteria.list();
+	}
+	@Override
+	public PhenoDataSetCategory getPhenoDataFieldCategoryByNameStudyAndArkFunction(String name, Study study, ArkFunction arkFunction) {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCategory.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		return (PhenoDataSetCategory) criteria.uniqueResult();
+	}
+
+	@Override
+	public PhenoDataSetField getPhenoDataSetFieldByNameStudyArkFunction(String name, Study study, ArkFunction arkFunction) {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetField.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		return (PhenoDataSetField) criteria.uniqueResult();
+	}
+
+	@Override
+	public void createPhenoDataSetFieldCategoryUpload(PhenoDataSetFieldCategoryUpload phenoDataSetFieldCategoryUpload) {
+		getSession().save(phenoDataSetFieldCategoryUpload);
+	}
+
+	@Override
+	public void createPhenoDataSetFieldUpload(PhenoFieldUpload phenoFieldUpload) {
+		getSession().save(phenoFieldUpload);
+	}
+	
 
 }

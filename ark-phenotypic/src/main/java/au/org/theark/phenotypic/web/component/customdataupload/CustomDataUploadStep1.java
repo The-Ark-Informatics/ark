@@ -184,7 +184,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD));
 		wizardForm.setFileName(filename);
 
-		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForUploaded());		
+		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(Constants.UPLOAD_STATUS_COMPLETED));		
 		//TODO analyse how many times this is saved and where it should be saved
 		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 	}

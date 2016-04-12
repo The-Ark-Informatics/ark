@@ -36,15 +36,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.CustomFieldCategoryImportValidator;
-import au.org.theark.core.util.CustomFieldImportValidator;
-import au.org.theark.core.util.ICustomImportValidator;
-import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
+import au.org.theark.phenotypic.util.IPhenoImportValidator;
+import au.org.theark.phenotypic.util.PhenoDataSetFieldCategoryImportValidator;
+import au.org.theark.phenotypic.util.PhenoDataSetFieldImportValidator;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm;
 
 /**
@@ -54,24 +54,17 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 
 	private static final long				serialVersionUID		= 5099768179441679542L;
 	static Logger								log						= LoggerFactory.getLogger(PhenoDataSetCategoryFieldUploadStep3.class);
-
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
-
-	private Form<CustomFieldUploadVO>	containerForm;
+	private Form<PhenoDataSetFieldUploadVO>	containerForm;
 	private String								validationMessage;
 	public java.util.Collection<String>	validationMessages	= null;
 	private WizardForm						wizardForm;
 	private WebMarkupContainer				updateExistingDataContainer;
 	private CheckBox							updateChkBox;
-	private ICustomImportValidator 			iCustomFieldValidator;
-
+	private IPhenoImportValidator iPhenoImportValidator;
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
-		/**
-		 * 
-		 */
 		private static final long	serialVersionUID	= 1L;
-
 		@Override
 		protected void onError(AjaxRequestTarget target, Form<?> form) {
 			this.error("Unexpected Error: Download request could not be processed");
@@ -81,7 +74,7 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 	/**
 	 * Construct.
 	 */
-	public PhenoDataSetCategoryFieldUploadStep3(String id, Form<CustomFieldUploadVO> containerForm, WizardForm wizardForm) {
+	public PhenoDataSetCategoryFieldUploadStep3(String id, Form<PhenoDataSetFieldUploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 3/5: Data Validation", "The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;
@@ -91,20 +84,14 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 	private void initialiseDetailForm() {
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
 		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
-
 		add(downloadValMsgButton);
-
 		updateExistingDataContainer = new WebMarkupContainer("updateExistingDataContainer");
 		updateExistingDataContainer.setOutputMarkupId(true);
 		updateChkBox = new CheckBox("updateChkBox");
 		updateChkBox.setVisible(true);
-
 		containerForm.getModelObject().setUpdateChkBox(false);
-
 		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-
 			private static final long	serialVersionUID	= -4514605801401294450L;
-
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				if (containerForm.getModelObject().getUpdateChkBox()) {
@@ -116,7 +103,6 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 				target.add(wizardForm.getWizardButtonContainer());
 			}
 		});
-
 		updateExistingDataContainer.add(updateChkBox);
 		add(updateExistingDataContainer);
 	}
@@ -128,19 +114,15 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 	public void setValidationMessage(String validationMessage) {
 		this.validationMessage = validationMessage;
 	}
-
 	/**
 	 * @return the validationMessages
 	 */
 	public String getValidationMessage() {
 		return validationMessage;
 	}
-
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
-
 	}
-
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		containerForm.getModelObject().setValidationMessages(null);
@@ -158,14 +140,14 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 			try {
 				// Field upload
 				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_FIELD)){
-					iCustomFieldValidator= new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+					iPhenoImportValidator=new PhenoDataSetFieldImportValidator(iArkCommonService, containerForm.getModelObject());
 				//Category upload	
 				}
 				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_CATEGORY)){
-					iCustomFieldValidator= new CustomFieldCategoryImportValidator(iArkCommonService, containerForm.getModelObject());
+					iPhenoImportValidator=new PhenoDataSetFieldCategoryImportValidator(iArkCommonService, containerForm.getModelObject());
 				}
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				validationMessages = iCustomFieldValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
+				validationMessages=iPhenoImportValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
 				inputStream.close();
 				inputStream = null;
 
@@ -176,12 +158,12 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 				HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
 				HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 
-				insertRows = iCustomFieldValidator.getInsertRows();
-				updateRows = iCustomFieldValidator.getUpdateRows();
-				insertCells = iCustomFieldValidator.getInsertCells();
-				updateCells = iCustomFieldValidator.getUpdateCells();
-				warningCells = iCustomFieldValidator.getWarningCells();
-				errorCells = iCustomFieldValidator.getErrorCells();
+				insertRows = iPhenoImportValidator.getInsertRows();
+				updateRows = iPhenoImportValidator.getUpdateRows();
+				insertCells = iPhenoImportValidator.getInsertCells();
+				updateCells = iPhenoImportValidator.getUpdateCells();
+				warningCells = iPhenoImportValidator.getWarningCells();
+				errorCells = iPhenoImportValidator.getErrorCells();
 
 				// Show file data (and key reference)
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
@@ -197,7 +179,6 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 				// Repaint
 				target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
 				target.add(form.getWizardPanelFormContainer());
-
 				if (updateCells.isEmpty()) {
 					containerForm.getModelObject().setUpdateChkBox(true);
 					updateExistingDataContainer.setVisible(false);
@@ -230,18 +211,14 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 					}
 				}
 			}
-
 			containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-
 			if (validationMessage != null && validationMessage.length() > 0) {
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
-
 					private static final long	serialVersionUID	= 1L;
-
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {
 						this.error("Unexpected Error: Download request could not be processed");

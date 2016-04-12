@@ -54,7 +54,7 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
 
-	@SpringBean(name = au.org.theark.core.Constants.PHENO_SERVICE)
+	@SpringBean(name = au.org.theark.core.Constants.ARK_PHENO_DATA_SERVICE)
 	private IPhenotypicService				iPhenotypicService;
 	
 	private ArkDownloadAjaxButton		downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {

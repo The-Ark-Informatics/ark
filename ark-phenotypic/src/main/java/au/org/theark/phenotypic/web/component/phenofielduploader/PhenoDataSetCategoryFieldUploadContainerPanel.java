@@ -31,12 +31,12 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.ContainerForm;
 
 
-public class PhenoDataSetCategoryFieldUploadContainerPanel extends AbstractContainerPanel<CustomFieldUploadVO> {
+public class PhenoDataSetCategoryFieldUploadContainerPanel extends AbstractContainerPanel<PhenoDataSetFieldUploadVO> {
 	private static final long					serialVersionUID	= 1L;
 
 	private SearchPanel							searchPanel;
@@ -57,7 +57,7 @@ public class PhenoDataSetCategoryFieldUploadContainerPanel extends AbstractConta
 		//this.templateName = templateName;
 
 		/* Initialise the CPM */
-		cpModel = new CompoundPropertyModel<CustomFieldUploadVO>(new CustomFieldUploadVO());
+		cpModel = new CompoundPropertyModel<PhenoDataSetFieldUploadVO>(new PhenoDataSetFieldUploadVO());
 		cpModel.getObject().getUpload().setArkFunction(arkFunction); // set the relevant arkFunction
 
 		/* Bind the CPM to the Form */

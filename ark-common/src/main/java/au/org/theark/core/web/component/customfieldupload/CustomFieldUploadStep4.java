@@ -223,7 +223,7 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 			containerForm.getModelObject().getUpload().setPayload(payload);
 
 			containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
-			containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForUploaded());		
+			containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(Constants.UPLOAD_STATUS_COMPLETED));		
 			//TODO investigate if only one created
 			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 			
