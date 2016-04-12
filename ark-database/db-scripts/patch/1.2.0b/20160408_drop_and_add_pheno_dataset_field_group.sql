@@ -1,4 +1,7 @@
 USE `pheno`;
+
+set foreign_key_checks = 0;
+
 DROP TABLE IF EXISTS `pheno_dataset_field_group`;
 CREATE TABLE `pheno_dataset_field_group` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -17,3 +20,7 @@ CREATE TABLE `pheno_dataset_field_group` (
   CONSTRAINT `FK_PHENO_DATASET_FIELD_GROUP_ARK_FUNCTION_ID` FOREIGN KEY (`ARK_FUNCTION_ID`) REFERENCES `study`.`ark_function` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_PHENO_DATASET_FIELD_GROUP_STUDY_ID` FOREIGN KEY (`STUDY_ID`) REFERENCES `study`.`study` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+set foreign_key_checks = 1;
+
+commit;

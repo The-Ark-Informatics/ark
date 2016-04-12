@@ -1,6 +1,7 @@
 USE `pheno`;
 --
 -- 
+set foreign_key_checks = 0;
 --
 DROP TABLE IF EXISTS `pheno_dataset_field_display`;
 CREATE TABLE `pheno_dataset_field_display` (
@@ -23,3 +24,7 @@ CREATE TABLE `pheno_dataset_field_display` (
   CONSTRAINT `FK_PHENO_DATASET_FIELD_GROUP_ID` FOREIGN KEY (`PHENO_DATASET_FIELD_GROUP_ID`) REFERENCES `pheno_dataset_field_group` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_PHENO_DATASET_FIELD_ID` FOREIGN KEY (`PHENO_DATASET_FIELD_ID`) REFERENCES `pheno_dataset_field` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+set foreign_key_checks = 1;
+
+commit;

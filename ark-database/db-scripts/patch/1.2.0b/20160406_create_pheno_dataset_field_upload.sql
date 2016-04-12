@@ -1,3 +1,4 @@
+use `pheno`;
 DROP TABLE IF EXISTS `pheno`.`pheno_field_upload`;
 CREATE TABLE `pheno`.`pheno_field_upload` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
