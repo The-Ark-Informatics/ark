@@ -73,7 +73,7 @@ public class SearchResultListPanel extends Panel {
 
 	public DataView<PhenoDataSetGroup> buildDataView(ArkDataProvider2<PhenoDataSetGroup, PhenoDataSetGroup> provider) {
 
-		DataView<PhenoDataSetGroup> dataView = new DataView<PhenoDataSetGroup>("customFieldGroupList", provider) {
+		DataView<PhenoDataSetGroup> dataView = new DataView<PhenoDataSetGroup>("phenoDataSetGroupList", provider) {
 
 
 			private static final long	serialVersionUID	= 1L;
@@ -120,7 +120,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public WebMarkupContainer buildLink(final Item<PhenoDataSetGroup> item) {
 
-		WebMarkupContainer linkWmc = new WebMarkupContainer("customfieldGroupLinkWMC", item.getModel());
+		WebMarkupContainer linkWmc = new WebMarkupContainer("phenoDataSetGroupLinkWMC", item.getModel());
 
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("name") {
 

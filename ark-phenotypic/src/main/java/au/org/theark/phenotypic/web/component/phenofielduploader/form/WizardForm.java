@@ -24,8 +24,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.util.file.File;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
+import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
 import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCategoryFieldUploadStep1;
 import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCategoryFieldUploadStep2;
 import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCategoryFieldUploadStep3;
@@ -36,7 +36,7 @@ import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCat
  * @author cellis
  * @author elam
  */
-public class WizardForm extends AbstractWizardForm<CustomFieldUploadVO> {
+public class WizardForm extends AbstractWizardForm<PhenoDataSetFieldUploadVO> {
 
 	private static final long	serialVersionUID	= 5494062431372163197L;
 
@@ -85,7 +85,7 @@ public class WizardForm extends AbstractWizardForm<CustomFieldUploadVO> {
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
 		// Implement Cancel
-		CustomFieldUploadVO uploadVO = new CustomFieldUploadVO();
+		PhenoDataSetFieldUploadVO uploadVO = new PhenoDataSetFieldUploadVO();
 		uploadVO.getUpload().setArkFunction(containerForm.getModelObject().getUpload().getArkFunction());
 		containerForm.setModelObject(uploadVO);
 		initialiseSteps();

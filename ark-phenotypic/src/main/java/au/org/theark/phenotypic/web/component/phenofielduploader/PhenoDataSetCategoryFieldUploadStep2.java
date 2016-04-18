@@ -34,13 +34,13 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.CustomFieldCategoryImportValidator;
-import au.org.theark.core.util.CustomFieldImportValidator;
-import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
+import au.org.theark.phenotypic.util.PhenoDataSetFieldCategoryImportValidator;
+import au.org.theark.phenotypic.util.PhenoDataSetFieldImportValidator;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm;
 
 /**
@@ -51,7 +51,7 @@ public class PhenoDataSetCategoryFieldUploadStep2 extends AbstractWizardStepPane
 
 	private static final long				serialVersionUID		= -6923277221441497110L;
 	static Logger								log						= LoggerFactory.getLogger(PhenoDataSetCategoryFieldUploadStep2.class);
-	private Form<CustomFieldUploadVO>	containerForm;
+	private Form<PhenoDataSetFieldUploadVO>	containerForm;
 	private String								validationMessage;
 	public java.util.Collection<String>	validationMessages	= null;
 
@@ -71,7 +71,7 @@ public class PhenoDataSetCategoryFieldUploadStep2 extends AbstractWizardStepPane
 		initialiseDetailForm();
 	}
 
-	public PhenoDataSetCategoryFieldUploadStep2(String id, Form<CustomFieldUploadVO> containerForm, WizardForm wizardForm) {
+	public PhenoDataSetCategoryFieldUploadStep2(String id, Form<PhenoDataSetFieldUploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 2/5: File Format Validation", "The file format has been validated. If there are no errors, click Next to continue.");
 
 		this.containerForm = containerForm;
@@ -124,37 +124,27 @@ public class PhenoDataSetCategoryFieldUploadStep2 extends AbstractWizardStepPane
 					throw new FileFormatException();
 				}
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				
-				
-				// Field upload
 				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_FIELD)){
-					CustomFieldImportValidator fieldvalidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
-					validationMessages = fieldvalidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
+					PhenoDataSetFieldImportValidator phenoDataSetFieldImportValidator=new PhenoDataSetFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+					validationMessages = phenoDataSetFieldImportValidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
 					
 				}
 				//Categoty upload
 				else if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_CATEGORY)){
-					CustomFieldCategoryImportValidator categoryValidator = new CustomFieldCategoryImportValidator(iArkCommonService, containerForm.getModelObject());
-					validationMessages = categoryValidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
+					PhenoDataSetFieldCategoryImportValidator phenoDataSetFieldCategoryImportValidator=new PhenoDataSetFieldCategoryImportValidator(iArkCommonService, containerForm.getModelObject());
+					validationMessages = phenoDataSetFieldCategoryImportValidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
 					
 				}
 					inputStream.close();
 					inputStream = null;
-	
 				containerForm.getModelObject().setValidationMessages(validationMessages);
 				validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-
 				if (validationMessage != null && validationMessage.length() > 0) {
 					form.getNextButton().setEnabled(false);
 					target.add(form.getWizardButtonContainer());
 					downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
-
-						/**
-						 * 
-						 */
 						private static final long	serialVersionUID	= 1L;
-
 						@Override
 						protected void onError(AjaxRequestTarget target, Form<?> form) {
 							this.error("Unexpected Error: Download request could not be processed");
@@ -164,15 +154,10 @@ public class PhenoDataSetCategoryFieldUploadStep2 extends AbstractWizardStepPane
 					addOrReplace(downloadValMsgButton);
 					target.add(downloadValMsgButton);
 				}
-
 				// Show file data
 				FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-//<<<<<<< HEAD:ark-phenotypic/src/main/java/au/org/theark/phenotypic/web/component/phenofielduploader/PhenoDataSetCategoryFieldUploadStep2.java
-				//ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, iArkCommonService.getRowsPerPage(),containerForm.getModelObject().getUpload().getUploadType());
-//=======
 				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
-//>>>>>>> 4b2ee82df6c9be8635fdb51db93dd50f8753dcdb:ark-phenotypic/src/main/java/au/org/theark/phenotypic/web/component/phenofielduploader/FieldUploadStep2.java
 				inputStream.close();
 				inputStream = null;
 				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);

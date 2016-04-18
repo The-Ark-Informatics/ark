@@ -2,7 +2,6 @@ package au.org.theark.core.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
@@ -10,7 +9,6 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
-import au.org.theark.core.model.study.entity.CustomField;
 
 public class PhenoDataSetFieldGroupVO implements Serializable {
 
@@ -33,6 +31,8 @@ public class PhenoDataSetFieldGroupVO implements Serializable {
 	
 	
 	protected boolean 						usePhenoDataSetFieldDisplay;	// Flags whether or not CustomFieldDisplay should be saved, etc
+	
+	private String 							phenoDataSetFieldFileUploadField;
 	
 	
 	public PhenoDataSetFieldGroupVO() {
@@ -138,6 +138,15 @@ public class PhenoDataSetFieldGroupVO implements Serializable {
 
 	public void setUsePhenoDataSetFieldDisplay(boolean usePhenoDataSetFieldDisplay) {
 		this.usePhenoDataSetFieldDisplay = usePhenoDataSetFieldDisplay;
+	}
+
+	public String getPhenoDataSetFieldFileUploadField() {
+		return phenoDataSetFieldFileUploadField;
+	}
+
+	public void setPhenoDataSetFieldFileUploadField(
+			String phenoDataSetFieldFileUploadField) {
+		this.phenoDataSetFieldFileUploadField = phenoDataSetFieldFileUploadField;
 	}
 
 	

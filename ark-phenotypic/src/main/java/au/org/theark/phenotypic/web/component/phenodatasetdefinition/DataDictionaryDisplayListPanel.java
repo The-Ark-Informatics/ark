@@ -95,8 +95,8 @@ public class DataDictionaryDisplayListPanel extends Panel {
 					item.add(new Label("fieldLabel", ""));
 				}
 				
-				if (cfd.getSequence() != null) {
-					item.add(new Label("sequence", cfd.getSequence().toString()));
+				if (cfd.getPhenoDataSetFiledOrderNumber() != null) {
+					item.add(new Label("sequence", cfd.getPhenoDataSetCategoryOrderNumber().toString()));
 				}
 				else {
 					item.add(new Label("sequence", ""));

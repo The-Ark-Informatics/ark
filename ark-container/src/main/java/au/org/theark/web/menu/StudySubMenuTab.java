@@ -182,14 +182,7 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 						// Other functions require study in context 
 						Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 						// Subject Upload only visible to parent studies 
-						if (sessionStudyId !=null && arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD)) {
-							
-							Study study = iArkCommonService.getStudy(sessionStudyId);
-							boolean childStudy = study.getParentStudy() != null  && (study != study.getParentStudy());
-							return (!childStudy);
-						}
-						// Manage Users only visible to Super Administrators or Study Administrators 
-						else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_USER)) {
+						if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_USER)) {
 							processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, arkFunction);
 							SecurityManager securityManager = ThreadContext.getSecurityManager();
 							Subject currentUser = SecurityUtils.getSubject();

@@ -14,12 +14,14 @@ text-align:left;
 .listMultipleSize{
 height:200px;
 width:250px;
-background-color: white;	
+background-color: white;
+padding: 2.5px;	
 }
 .listMultipleSizeSub{
 height:100px;
 width:250px;
-background-color: white;	
+background-color: white;
+padding: 2.5px;	
 }
 .fldListMultipleChoice {
 float: left;
@@ -92,5 +94,15 @@ background-image: url("../images/icons/minus.png");
 }
 .stop{
 background-image: url("../images/icons/stop.png");	
+}
+.colorLink{
+color:#37927A	
+}
+.tree {
+float: left;
+width: 500px;
+height:500px;
+background-color: white;
+overflow: auto;
 }
 

@@ -133,11 +133,17 @@
 								<div class="footerAv">
 								</div>
 						</div>
-						<div class="fldListMultipleChoice">
+						<!-- <div class="fldListMultipleChoice">
 							<div class="headerAv">
 								<wicket:message	key="categoryFieldSummary"></wicket:message>
 							</div>
 							<div wicket:id="panels" ></div>
+						</div> -->
+						<div class="tree">
+							<div class="headerAv">
+								<wicket:message	key="categoryFieldSummary"></wicket:message>
+							</div>
+							<div wicket:id="tree" ></div>
 						</div>
 					</div> 
 				</div>
@@ -179,18 +185,18 @@
 				</div>
 				
 				<div class="fldLabel">
-					<wicket:message	key="customFieldFileUploadField">
+					<wicket:message	key="phenoDataSetFieldFileUploadField">
 						File of Custom Fields:
 					</wicket:message>
 					<div class="note">
-						<wicket:message	key="customFieldFileUploadField.note">
+						<wicket:message	key="phenoDataSetFieldFileUploadField.note">
 							Note: Will replace selected list
 						</wicket:message>
 					</div>
 				</div>
 				
 				<div class="fldControl">
-					<input wicket:id="customFieldFileUploadField" id="upload" type="file"/>
+					<input wicket:id="phenoDataSetFieldFileUploadField" id="upload" type="file"/>
 					<input wicket:id="uploadCustomFieldField" type="submit" wicket:message="value:uploadCustomFieldField" />
 				</div>
 			</div>

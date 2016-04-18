@@ -23,6 +23,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 
 @Entity
@@ -37,6 +38,7 @@ public class PhenoDataSetGroup  implements Serializable{
 	private Study study;
 	private Boolean published;
 	private ArkFunction arkFunction;
+	private ArkUser arkUser;
 	private Set<PhenoCollection> phenoCollection = new HashSet<PhenoCollection>();
 
 	public PhenoDataSetGroup() {
@@ -111,8 +113,14 @@ public class PhenoDataSetGroup  implements Serializable{
 	public void setPhenoCollection(Set<PhenoCollection> phenoCollection) {
 		this.phenoCollection = phenoCollection;
 	}
-	
-
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_USER_ID")
+	public ArkUser getArkUser() {
+		return arkUser;
+	}
+	public void setArkUser(ArkUser arkUser) {
+		this.arkUser = arkUser;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

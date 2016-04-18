@@ -1,12 +1,10 @@
 package au.org.theark.phenotypic.util;
 
 import java.io.InputStream;
-import java.util.List;
 
 import jxl.Workbook;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.study.entity.CustomFieldUpload;
 
 public interface IPhenoImporter {
 	

@@ -60,6 +60,8 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.PhenoDataSetFieldCategoryUpload;
+import au.org.theark.core.model.study.entity.PhenoFieldUpload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
@@ -1174,7 +1176,7 @@ try {
 		 phenotypicDao.mergePhenoDataSetFieldCategory(phenoDataSetCategory);
 		
 	}
-	@Override
+	/*@Override
 	public List getAllChildrenCategoriedBelongToThisParent(Study study,ArkFunction arkFunction,PhenoDataSetCategory parentCategory, List allChildrenLst) {
 		List<PhenoDataSetCategory> immediateSubCategories=phenotypicDao.getAllSubCategoriesOfThisCategory(study,arkFunction,parentCategory);
 		if(!immediateSubCategories.isEmpty()){
@@ -1184,7 +1186,7 @@ try {
 				}
 		}
 		return allChildrenLst;
-	}
+	}*/
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void createPhenoDataSetField(PhenoDataSetFieldVO phenoDataSetFieldVO) throws ArkSystemException, ArkUniqueException {
@@ -1221,7 +1223,7 @@ try {
 				phenoDataSetFieldDisplay.setAllowMultiselect(false);
 				phenotypicDao.createPhenoDataSetFieldDisplay(phenoDataSetFieldDisplay);
 				// Put in the sequence based on the ID
-				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setSequence(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());
+				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetFiledOrderNumber(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());
 				phenotypicDao.updatePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
 
 				// PhenoDataSet Field Display History
@@ -1285,7 +1287,7 @@ try {
 			ah.setComment("Created Pheno Data Field Group "
 					+ phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getName());
 			ah.setEntityId(phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getId());
-			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_GROUP);
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_CATEGORY_FIELD_GROUP);
 			iArkCommonService.createAuditHistory(ah);
 		} catch (ConstraintViolationException cvex) {
 			log.error("A Questionnaire with this name for the given study  exists.: "
@@ -1302,7 +1304,25 @@ try {
 
 	@Override
 	public void updatePhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO)throws EntityExistsException, ArkSystemException {
-		
+		try {
+			phenotypicDao.updatePhenoDataSetFieldGroup(phenoDataSetFieldGroupVO);
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+			ah.setComment("Updated Pheno Data Field Group "
+					+ phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getName());
+			ah.setEntityId(phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_CATEGORY_FIELD_GROUP);
+			iArkCommonService.createAuditHistory(ah);
+		} catch (ConstraintViolationException cvex) {
+			log.error("A Questionnaire with this name for the given study  exists.: "
+					+ cvex);
+			throw new EntityExistsException(
+					"A Questionnaire with that name already exits.");
+		} catch (Exception ex) {
+			log.error("Problem creating Questionnaire: " + ex);
+			throw new ArkSystemException("Problem creating Questionnaire: "
+					+ ex.getMessage());
+		}
 		
 	}
 
@@ -1450,6 +1470,39 @@ try {
 	public Boolean isPickedPhenoDataSetCategoryIsAParentOfAnotherCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) {
 		return phenotypicDao.isPickedPhenoDataSetCategoryIsAParentOfAnotherCategory(pickedPhenoDataSetCategory);
 	}
+
+	@Override
+	public List<PickedPhenoDataSetCategory> getChildrenOfPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) {
+		return phenotypicDao.getChildrenOfPickedPhenoDataSetCategory( pickedPhenoDataSetCategory);
+	}
+
+	@Override
+	public List<PickedPhenoDataSetCategory> getAllParentPickedPhenoDataSetCategories(Study study, ArkFunction arkFunction, ArkUser arkUser) {
+		return phenotypicDao.getAllParentPickedPhenoDataSetCategories(study, arkFunction, arkUser);
+	}
+
+	@Override
+	public List<LinkPhenoDataSetCategoryField> getLinkPhenoDataSetCategoryFieldsForPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) {
+		return phenotypicDao.getLinkPhenoDataSetCategoryFieldsForPickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
+	}
+	
+	@Override
+	public PhenoDataSetCategory getPhenoDataFieldCategoryByNameStudyAndArkFunction(String name, Study study, ArkFunction arkFunction) {
+		return phenotypicDao.getPhenoDataFieldCategoryByNameStudyAndArkFunction(name,study,arkFunction);
+	}
+	@Override
+	public PhenoDataSetField getPhenoDataSetFieldByNameStudyArkFunction(String name,Study study,ArkFunction arkFunction){
+		return phenotypicDao.getPhenoDataSetFieldByNameStudyArkFunction(name, study, arkFunction);
+	}
+	
+	public void createPhenoDataSetFieldCategoryUpload(PhenoDataSetFieldCategoryUpload phenoDataSetFieldCategoryUpload){
+		phenotypicDao.createPhenoDataSetFieldCategoryUpload(phenoDataSetFieldCategoryUpload);
+	}
+	
+	public void createPhenoDataSetFieldUpload(PhenoFieldUpload phenoFieldUpload){
+		phenotypicDao.createPhenoDataSetFieldUpload(phenoFieldUpload);
+	}
+	
 
 	
 	

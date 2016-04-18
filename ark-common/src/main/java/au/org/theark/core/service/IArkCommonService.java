@@ -52,6 +52,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -687,7 +688,7 @@ public interface IArkCommonService<T> {
 
 	public Collection<UploadType> getUploadTypes();
 
-	public Collection<UploadType> getUploadTypesForSubject();
+	public Collection<UploadType> getUploadTypesForSubject(Study study);
 
 	public Collection<UploadType> getUploadTypesForLims();
 
@@ -811,10 +812,6 @@ public interface IArkCommonService<T> {
 	public Payload createPayload(byte[] bytes);
 
 	public Payload getPayloadForUpload(Upload upload);
-
-	public UploadStatus getUploadStatusForUploaded();
-
-	public UploadStatus getUploadStatusForAwaitingValidation();
 
 	public UploadStatus getUploadStatusFor(String uploadStatusConstant);
 
@@ -1230,5 +1227,12 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public List<ArkPermission> getArkPremissionListForRoleAndModule(ArkRolePolicyTemplate arkRolePolicyTemplate);
+	/**
+	 * 
+	 * @param arkModule
+	 * @param name
+	 * @return
+	 */
+	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
 
 }

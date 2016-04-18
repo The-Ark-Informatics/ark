@@ -42,11 +42,10 @@ import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UploadLevel;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm;
-import au.org.theark.phenotypic.web.component.phenofielduploader.Constants;
 
 /**
  * The first step of this wizard.
@@ -60,7 +59,7 @@ public class PhenoDataSetCategoryFieldUploadStep1 extends AbstractWizardStepPane
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
-	private Form<CustomFieldUploadVO>		containerForm;
+	private Form<PhenoDataSetFieldUploadVO>		containerForm;
 
 	private FileUploadField						fileUploadField;
 	
@@ -75,7 +74,7 @@ public class PhenoDataSetCategoryFieldUploadStep1 extends AbstractWizardStepPane
 		initialiseDetailForm();
 	}
 
-	public PhenoDataSetCategoryFieldUploadStep1(String id, Form<CustomFieldUploadVO> containerForm, WizardForm wizardForm) {
+	public PhenoDataSetCategoryFieldUploadStep1(String id, Form<PhenoDataSetFieldUploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 1/5: Select data file to upload", "Select the file containing data and the specified delimiter, click Next to continue.");
 
 		this.containerForm = containerForm;
