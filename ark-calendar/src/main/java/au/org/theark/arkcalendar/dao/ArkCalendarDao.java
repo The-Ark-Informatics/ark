@@ -15,6 +15,7 @@ import org.threeten.bp.format.DateTimeFormatter;
 import au.org.theark.arkcalendar.data.ArkCalendarEvent;
 import au.org.theark.arkcalendar.data.ArkCalendarEvent.Category;
 import au.org.theark.arkcalendar.data.ArkCalendarVo;
+import au.org.theark.arkcalendar.data.CalendarCustomFieldData;
 
 public class ArkCalendarDao {
 	
@@ -54,6 +55,35 @@ public class ArkCalendarDao {
 
 	public static ArkCalendarEvent newEvent(LocalDateTime start, LocalDateTime end) {
 		return new ArkCalendarEvent(ID, "", Category.PUBLIC, start, end);
+	}
+	
+	public static final List<CalendarCustomFieldData> getCustomFieldList(long calendarId, String subjectUID){
+		
+		String sql= "select scfd.ID id, lss.ID linkSubjectStudyId, cfd.ID customFieldDisplayId,\n" + 
+				"			scfd.TEXT_DATA_VALUE textDataValue, scfd.DATE_DATA_VALUE dateDataValue, scfd.NUMBER_DATA_VALUE numberDataValue,\n" + 
+				"			scfd.ERROR_DATA_VALUE errorDataValue,\n" + 
+				"			cfd.CUSTOM_FIELD_ID customFieldId, cfd.CUSTOM_FIELD_GROUP_ID customFieldGroupId, cfd.REQUIRED required,\n" + 
+				"			cfd.REQUIRED_MESSAGE requiredMessage, cfd.ALLOW_MULTIPLE_SELECTION allowMultiselect, cfd.SEQUENCE sequence,\n" + 
+				"			cf.NAME name, cf.CATEGORY_ID customFieldCategoryId, cf.DESCRIPTION description, ft.name fieldType,\n" + 
+				"			cf.STUDY_ID studyId, cf.UNIT_TYPE_ID unitTypeId, cf.MIN_VALUE minValue, cf.MAX_VALUE 'maxValue',\n" + 
+				"			cf.ENCODED_VALUES encodedValues, cf.MISSING_VALUE missingValue, cf.HAS_DATA customFieldHasData,\n" + 
+				"			cf.CUSTOM_FIELD_LABEL fieldLabel, cf.DEFAULT_VALUE defaultValue, cf.UNIT_TYPE_IN_TEXT unitTypeInText\n" + 
+				"from study.link_calendar_custom_field lccf\n" + 
+				"	left outer join study.study_calendar sc on sc.ID = lccf.CALENDAR_ID\n" + 
+				"	left outer join study.custom_field cf on cf.ID = lccf.CUSTOM_FIELD_ID \n" + 
+				"	left outer join study.link_subject_study lss on lss.SUBJECT_UID = :subjectUID  and lss.STUDY_ID = sc.STUDY_ID\n" + 
+				"	left outer join study.field_type ft on ft.ID =cf.FIELD_TYPE_ID\n" + 
+				"	left outer join study.custom_field_display cfd on cfd.CUSTOM_FIELD_ID = cf.ID and cfd.CUSTOM_FIELD_GROUP_ID is null \n" + 
+				"	left outer join study.subject_custom_field_data scfd on scfd.CUSTOM_FIELD_DISPLAY_ID = cfd.ID and scfd.LINK_SUBJECT_STUDY_ID = lss.ID\n" + 
+				"where lccf.CALENDAR_ID = :calendarId";
+		
+		List<CalendarCustomFieldData> calendarCustomFields = new ArrayList<CalendarCustomFieldData>();
+		
+		try (Connection con = ArkCalendarDao.sql2o.open()) {
+			calendarCustomFields = con.createQuery(sql).addParameter("subjectUID", subjectUID).addParameter("calendarId", calendarId).executeAndFetch(CalendarCustomFieldData.class);	
+		}
+		
+		return calendarCustomFields;
 	}
 
 	public static ArkCalendarEvent getEvent(int eventId) {
@@ -106,10 +136,10 @@ public class ArkCalendarDao {
 	public static void updateEvent(ArkCalendarEvent event) {
 
 		if (event != null) {
-			String sql = "update calendar.calendar_event set STUDY_CALENDAR_ID = :val1, SUBJECT_UID = :val2, TITLE = :val3, START_TIME = :val4, END_TIME = :val5, CATEGORY = :val6, ALL_DAY = :val7  where id = :val8";
+			String updateEventSql = "update calendar.calendar_event set STUDY_CALENDAR_ID = :val1, SUBJECT_UID = :val2, TITLE = :val3, START_TIME = :val4, END_TIME = :val5, CATEGORY = :val6, ALL_DAY = :val7  where id = :val8";
 
 			try (Connection con = sql2o.open()) {
-				Query query=con.createQuery(sql);
+				Query query=con.createQuery(updateEventSql);
 				
 				query.addParameter("val1", event.getCalenderId())
 				.addParameter("val2", event.getSubjectUID())
@@ -126,6 +156,34 @@ public class ArkCalendarDao {
 				
 			}
 			
+			String insertCustomDataSql = "insert into study.subject_custom_field_data ( LINK_SUBJECT_STUDY_ID, CUSTOM_FIELD_DISPLAY_ID, TEXT_DATA_VALUE, DATE_DATA_VALUE, ERROR_DATA_VALUE, NUMBER_DATA_VALUE ) values ( :val1,:val2,:val3,:val4,:val5,:val6 )";
+			
+			String updateCustomDataSql = "update study.subject_custom_field_data set  TEXT_DATA_VALUE =:textValue, DATE_DATA_VALUE=:dateValue,NUMBER_DATA_VALUE=:numValue where ID =:id";
+			
+			Query query=null;
+			
+			for(CalendarCustomFieldData data: event.getCustomFieldData()){
+				try(Connection con = sql2o.open()){
+					
+					if(data.getId() == null || data.getId() == 0){
+						query=con.createQuery(insertCustomDataSql);
+						query.addParameter("val1", data.getLinkSubjectStudyId())
+						.addParameter("val2", data.getCustomFieldDisplayId())
+						.addParameter("val3", data.getTextDataValue())
+						.addParameter("val4", data.getDateDataValue())
+						.addParameter("val5", data.getErrorDataValue())
+						.addParameter("val6", data.getNumberDataValue())
+						.executeUpdate();
+					}else{
+						query=con.createQuery(updateCustomDataSql);
+						query.addParameter("textValue", data.getTextDataValue())
+						.addParameter("dateValue", data.getDateDataValue())
+						.addParameter("numValue", data.getNumberDataValue())
+						.addParameter("id", data.getId())
+						.executeUpdate();
+					}
+				}
+			}
 //			try(Connection con = sql2o.open()){
 //				String csql="update calendar.calendar_event set START_TIME = :val1, END_TIME = :val2 where id = :val3";
 //				Query query=con.createQuery(csql);
@@ -173,6 +231,7 @@ public class ArkCalendarDao {
 		this.list.add(new ArkCalendarEvent(this.newId(), "Public event", Category.PUBLIC, LocalDateTime.now()));
 		this.list.add(new ArkCalendarEvent(this.newId(), "Private event", Category.PRIVATE, LocalDateTime.now()));
 	}
+	 
 
 	protected final int newId() {
 		return ++this.id;
@@ -269,4 +328,25 @@ public class ArkCalendarDao {
 		}	
 		return role;
 	}
+	
+	public static boolean isSubjectUIDExists(int calendarId, String subjectUID){
+		boolean exists=false;
+		String sql="select lss.ID\n" + 
+				"from study.study_calendar sc\n" + 
+				"			left outer join study.study st on st.id = sc.STUDY_ID\n" + 
+				"			left outer join study.link_subject_study lss on lss.STUDY_ID = st.ID\n" + 
+				"where lss.SUBJECT_UID = :subjectUID \n" + 
+				"				and sc.ID = :calendarId";
+		
+		try (Connection con = ArkCalendarDao.sql2o.open()) {
+			List<Long> results  =  con.createQuery(sql).addParameter("subjectUID", subjectUID).addParameter("calendarId", calendarId).executeAndFetch(Long.class);
+			
+			if(results.size() > 0){
+				exists=true;
+			}
+		}	
+		
+		return exists;
+	}
+	
 }

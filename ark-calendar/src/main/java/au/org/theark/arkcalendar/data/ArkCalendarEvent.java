@@ -1,5 +1,8 @@
 package au.org.theark.arkcalendar.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
@@ -46,6 +49,8 @@ public class ArkCalendarEvent extends CalendarEvent
 	private String demoEnd;
 	
 	private String demoCategory;
+	
+	private List<CalendarCustomFieldData> customFieldData = null;
 
 	public ArkCalendarEvent(int id, String title, Category category, LocalDateTime date)
 	{
@@ -55,7 +60,7 @@ public class ArkCalendarEvent extends CalendarEvent
 	public ArkCalendarEvent(int id, String title, Category category, LocalDateTime start, LocalDateTime end)
 	{
 		super(id, title, start, end);
-
+		this.customFieldData = new ArrayList<CalendarCustomFieldData>();
 		this.setCategory(category);
 	}
 
@@ -88,12 +93,6 @@ public class ArkCalendarEvent extends CalendarEvent
 		setStart(ls);
 		
 		this.demoStart = demoStart;
-	}
-	
-	public static void main(String[] args) {
-		String s= "2015-11-07 00:00:00.0";
-		
-		System.out.println(s.substring(0,16));
 	}
 
 	public String getDemoEnd() {
@@ -140,9 +139,14 @@ public class ArkCalendarEvent extends CalendarEvent
 	public void setCalenderId(int calenderId) {
 		this.calenderId = calenderId;
 	}
-	
-	
 
+	public List<CalendarCustomFieldData> getCustomFieldData() {
+		return customFieldData;
+	}
+
+	public void setCustomFieldData(List<CalendarCustomFieldData> customFieldData) {
+		this.customFieldData = customFieldData;
+	}
 	
 //DO NOT OVERRIDE the TOSTRING 
 //WILL break the calendar app

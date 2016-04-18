@@ -14,13 +14,11 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
 
 import au.org.theark.arkcalendar.dao.ArkCalendarDao;
-import au.org.theark.arkcalendar.pages.login.SignIn2;
 
 public class SignIn2Session extends AuthenticatedWebSession {
 
@@ -77,8 +75,6 @@ public class SignIn2Session extends AuthenticatedWebSession {
 
 			try {
 				DirContext ctx = new InitialDirContext(env);
-				System.out.println("connected");
-				System.out.println(ctx.getEnvironment());
 
 				SearchControls searchControls = new SearchControls();
 				searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -92,16 +88,13 @@ public class SignIn2Session extends AuthenticatedWebSession {
 					Attributes attrs = result.getAttributes();
 					String cn = attrs.get("cn").toString().split(":")[1].trim();
 					// String cn=namingEnum.nextElement().toString();
-					System.out.println(cn);
 
 					if (username.equalsIgnoreCase(cn)) {
-						System.out.println(username + " is exist in the system");
 						env.put(Context.SECURITY_PRINCIPAL, "cn=" + username + ",ou=" + System.getProperty("ldap.basePeopleDn") + "," + System.getProperty("ldap.base"));
 						env.put(Context.SECURITY_CREDENTIALS, new Sha256Hash(password).toHex());
 						new InitialDirContext(env);
 						user = username;
 						signIn(true);
-						System.out.println(user + "has successfully authenticated");
 						break;
 					}
 				}
