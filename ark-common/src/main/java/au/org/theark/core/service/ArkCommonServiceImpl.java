@@ -1300,8 +1300,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getUploadStatusFor(uploadStatusConstant);
 	}
 
-	public Collection<UploadType> getUploadTypesForSubject() {
-		return studyDao.getUploadTypesForSubject();
+	public Collection<UploadType> getUploadTypesForSubject(Study study) {
+		return studyDao.getUploadTypesForSubject(study);
 	}
 
 	public Collection<UploadType> getUploadTypesForLims() {
