@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail
+set -e
 
 if [ ! ${SLAPD_PASSWORD} ]; then
 	PASSWORD=password
@@ -12,13 +12,14 @@ if [ ! ${ARK_SUPERUSER_PASSWORD} ]; then
 fi
 
 DATADIR=/var/lib/ldap
+service slapd stop
 
-sudo service slapd stop
-if [ -d /etc/ldap/slapd.d ]; then
-	rm -rf /etc/ldap/slapd.d
-fi
+if [ ! -f $DATADIR/.complete ]; then
 
-if [ ! -d $DATADIR/.complete ]; then
+	if [ -d /etc/ldap/slapd.d ]; then
+		rm -rf /etc/ldap/slapd.d
+		rm -f /etc/ldap.conf
+	fi
 
 	HASH=$(slappasswd -s ${PASSWORD})
 
@@ -114,22 +115,40 @@ overlay syncprov
 syncprov-checkpoint 100 10
 syncprov-sessionlog 100
 EOF
-
-	sudo service slapd start
-
+	echo "conf file written"
+	service slapd start
+	
 	if [ -f /tmp/base.ldif ]; then
-		/usr/bin/ldapadd -x -D "cn=admin,dc=the-ark,dc=org,dc=au" -f /tmp/base.ldif -w ${PASSWORD}
+		if [ -z "$(ldapsearch -w ${PASSWORD} -D 'cn=admin,dc=the-ark,dc=org,dc=au' -b 'dc=the-ark,dc=org,dc=au' | grep 'dn: ou=arkUsers,dc=the-ark,dc=org,dc=au')" ]; then
+			/usr/bin/ldapadd -x -D "cn=admin,dc=the-ark,dc=org,dc=au" -f /tmp/base.ldif -w ${PASSWORD}
+		else
+			echo "Base already exists, skipping..."
+		fi
 	fi
 
-	while [ ! -d "/usr/src/app/ark-user-account/target/ark-user-account-1.0.0-jar-with-dependencies.jar" ]; do
-		echo "Jar doesn't exist, sleeping 10 seconds until it does"
-		sleep 10;	
+	if [ -f /tmp/group.ldif ]; then
+		if [ -z "$(ldapsearch -w ${PASSWORD} -D 'cn=admin,dc=the-ark,dc=org,dc=au' -b 'ou=arkUsers,dc=the-ark,dc=org,dc=au' | grep 'dn: ou=arkUsers,dc=the-ark,dc=org,dc=au')" ]; then
+			/usr/bin/ldapadd -x -D "cn=admin,dc=the-ark,dc=org,dc=au" -f /tmp/group.ldif -w ${PASSWORD}
+		else
+			echo "Group already exists, skipping..."
+		fi
+	fi
+
+	while ! [ -f "/usr/src/app/ark-user-account/.completed" ]; do
+		echo "Sleeping"
+		sleep 1	
 	done	
 
-	java -jar /usr/src/app/ark-user-account/target/ark-user-account-1.0.0-jar-with-dependencies.jar arksuperuser@ark.org.au ${ARK_SUPERUSER_PASSWORD} Super User
 
-	sudo service slapd stop
-	touch $DATADIR/.complete
+	java -jar /usr/src/app/ark-user-account/target/ark-user-account-1.0.0-jar-with-dependencies.jar arksuperuser@ark.org.au ${ARK_SUPERUSER_PASSWORD} Super User
+	rm /usr/src/app/ark-user-account/.completed
+	service slapd stop #for some reason this doesn't work
+	killall slapd
+	touch "$DATADIR/.complete"
 fi
 
-/usr/sbin/slapd -d 1  -f /etc/ldap/slapd.conf
+
+echo "Starting slapd"
+exec /usr/sbin/slapd -h "ldap:///" -u openldap -g openldap -d 0
+
+

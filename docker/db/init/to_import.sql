@@ -3102,6 +3102,8 @@ CREATE TABLE `user_config` (
 
 LOCK TABLES `user_config` WRITE;
 /*!40000 ALTER TABLE `user_config` DISABLE KEYS */;
+INSERT INTO `user_config` VALUES (1, 1, 1, 50);
+INSERT INTO `user_config` VALUES (2, 1, 2, 50);
 /*!40000 ALTER TABLE `user_config` ENABLE KEYS */;
 UNLOCK TABLES;
 

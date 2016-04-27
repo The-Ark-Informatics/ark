@@ -1,11 +1,12 @@
 #!/bin/bash
 
-while [ ! -d "/usr/src/app/ark-container/target/ark.war" ]; do
-	echo "ARK war not available yet, sleeping 10 s then trying again..."
-	sleep 10
+while [ ! -f "/usr/src/app/.complete" ]; do
+	echo "ARK war not available yet, sleeping 5s then trying again..."
+	sleep 5
 done
 
-cp /usr/src/app/ark-container/target/ark.war webapps/ark.war
+rm /usr/src/app/.complete
+mv /usr/src/app/ark-container/target/ark.war webapps/ark.war
 
 catalina.sh run
 

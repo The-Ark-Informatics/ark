@@ -1,0 +1,5 @@
+dn: ou=arkUsers,dc=the-ark,dc=org,dc=au
+objectClass: top
+objectClass: organizationalUnit
+ou: arkUsers
+description: All people in the directory go in this OU.
