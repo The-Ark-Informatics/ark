@@ -19,7 +19,7 @@ This configuration has four containers defined; MySQL, LDAP (Slapd), Tomcat and 
 
 Command							| Usage
 ------------------------------|------------------------------
-`docker-compose up -d` 			| Starts the containers in daemon mode meaining that no logs are printed to STDOUT
+`docker-compose up -d` 			| Starts the containers in daemon mode meaning that no logs are printed to STDOUT
 `docker-compose down -v` 		| Tears down all containers, and deletes all of the associated storage volumes.
 
 
@@ -36,7 +36,7 @@ Environment Variable 			| Usage	                     | Default Value
 
 In addition to these variables, you can also add Environment Variables listed [here](https://hub.docker.com/_/mysql/) to configure MySQL.
 
-###Explaination
+###Explanation
 When `docker-compose up` is called for the first time, all 4 containers are started. The Maven and MySQL containers begin their work, compiling the web application and importing the base database respectively, while the Tomcat and LDAP containers wait for the output of Maven. The LDAP container waits until the ark-user-account jar has been created, as it is needed to populate the LDAP database with The Ark root account, and the Tomcat waits until ark.war has been created, and deploys it once is.
 
 ###Container Specific Quirks
