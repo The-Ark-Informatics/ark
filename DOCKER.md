@@ -10,6 +10,10 @@ This configuration has four containers defined; MySQL, LDAP (Slapd), Tomcat and 
 2. `docker-compose build`
 3. `docker-compose up`
 
+###Prerequisites
+- [Docker](https://www.docker.com)
+- [Docker Compose](https://www.docker.com/products/docker-compose)
+
 
 ###Extra Commands
 
