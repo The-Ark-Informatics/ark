@@ -1,11 +1,13 @@
 FROM maven:3.3.3-jdk-8
 
-ADD docker/mvn/start.sh /start.sh
+MAINTAINER George Gooden <gecgooden@gmail.com>
 
+ADD docker/mvn/start.sh /start.sh
+ADD docker/env_file /env_file
 RUN ["chmod", "+x", "/start.sh"]
 
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
+VOLUME ["/usr/src/app"]
 
-VOLUME ["/usr/src/app", "/root/.m2"]
-
-CMD ["/start.sh"]
+CMD /start.sh

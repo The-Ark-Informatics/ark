@@ -1,32 +1,27 @@
 version: '2'
 services:
-        data:
-                image: tianon/true 
-                volumes:
-                        - /var/lib/mysql
-                        - /opt/ark-datastore
-                env_file: env_file
         mvn:
                 build: ..
                 volumes: 
                         - ../:/usr/src/app
-                        - ~/.m2:/root/.m2
+                        - ~/.m2:/root/.m2 
                 env_file: env_file
         mysql:
                 build: db
                 ports:
                         - "3306:3306"
-                volumes_from:
-                        - data
                 volumes:
                         - ./db/init:/docker-entrypoint-initdb.d
+                        - mysql_data:/var/lib/mysql
                 env_file: env_file
         slapd:
                 build: slapd
                 ports:
                         - "389:389"
-                volumes_from:
-                        - mvn
+                volumes:
+                        - ../:/usr/src/app
+                        - slapd_data:/var/lib/ldap
+                        - slapd_conf:/etc/ldap
                 env_file: env_file
         tomcat:
                 build: tomcat
@@ -37,11 +32,14 @@ services:
                 links:
                         - mysql
                         - slapd
-                volumes_from:
-                        - mvn
-                        - data
+                volumes:
+                        - ../:/usr/src/app
+                        - datastore:/opt/ark-datastore
                 ports:
                         - "8080:8080"
-
-
-
+                env_file: env_file
+volumes:
+        slapd_data:
+        slapd_conf:
+        mysql_data:
+        datastore:
