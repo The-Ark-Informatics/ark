@@ -41,6 +41,14 @@ public class Analysis implements Serializable {
 	private String parameters;
 	
 	private String result;
+	
+	private String jobId;
+	
+	private String checksum;
+	
+	private String scriptName;
+
+	private String scriptId;
 
 	@Id
 	@SequenceGenerator(name = "analysis_generator", sequenceName = "ANALYSIS_SEQUENCE")
@@ -126,6 +134,42 @@ public class Analysis implements Serializable {
 
 	public void setResult(String result) {
 		this.result = result;
+	}
+
+	@Column(name = "JOB_ID")
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+
+	@Column(name = "CHECKSUM")
+	public String getChecksum() {
+		return checksum;
+	}
+
+	public void setChecksum(String checksum) {
+		this.checksum = checksum;
+	}
+
+	@Column(name = "SCRIPT_NAME")
+	public String getScriptName() {
+		return scriptName;
+	}
+
+	public void setScriptName(String scriptName) {
+		this.scriptName = scriptName;
+	}
+
+	@Column(name = "SCRIPT_ID")
+	public String getScriptId() {
+		return scriptId;
+	}
+
+	public void setScriptId(String scriptId) {
+		this.scriptId = scriptId;
 	}
 	
 }

@@ -1,0 +1,5 @@
+dn: dc=the-ark,dc=org,dc=au
+objectClass: dcObject
+objectClass: organization
+dc: the-ark
+o: LDAP Ark

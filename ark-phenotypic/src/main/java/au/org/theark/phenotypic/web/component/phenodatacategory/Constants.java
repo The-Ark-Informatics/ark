@@ -21,8 +21,9 @@ package au.org.theark.phenotypic.web.component.phenodatacategory;
 public class Constants {
 
 	//TODO make all of these constants firstly look in common?
-	public static final String		FUNCTION_KEY_VALUE_PHENO_COLLECTION							= "PHENO_COLLECTION";
-	public static final String		FUNCTION_KEY_VALUE_DATA_DICTIONARY							= "DATA_DICTIONARY";
+	//public static final String		FUNCTION_KEY_VALUE_PHENO_COLLECTION							= "PHENO_COLLECTION";
+	//public static final String		FUNCTION_KEY_VALUE_DATA_DICTIONARY							= "DATA_DICTIONARY";
+	public static final String		FUNCTION_KEY_VALUE_DATASET_CATEGORY							= "DATASET_CATEGORY";
 	public static final String 		FIELD_TYPE_NUMBER 											= "NUMBER";
 	public static final String 		FIELD_TYPE_CHARACTER 										= "CHARACTER";
 	public static final String 		FIELD_TYPE_DATE 											= "DATE";

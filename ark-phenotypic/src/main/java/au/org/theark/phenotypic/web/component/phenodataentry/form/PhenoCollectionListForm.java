@@ -49,6 +49,8 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -99,7 +101,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	protected WebMarkupContainer							dataViewListWMC;
 	private DataView<PhenoCollection>				dataView;
 	private ArkDataProvider2<PhenoDataCollectionVO, PhenoCollection>	PhenoCollectionProvider;
-	private DropDownChoice<CustomFieldGroup>			customFieldGroupDdc;
+	private DropDownChoice<PhenoDataSetGroup>			phenoDataSetFieldGroupDdc;
 	private WebMarkupContainer								phenoDataView;
 
 	public PhenoCollectionListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
@@ -134,25 +136,25 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 	private void initCustomFieldGroupDdc() {
 		LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoCollection().getLinkSubjectStudy();
-		List<CustomFieldGroup> customFieldGroups = iPhenotypicService.getCustomFieldGroupsByLinkSubjectStudy(linkSubjectStudy);
+		List<PhenoDataSetGroup> pheDataSetGroupLst = iPhenotypicService.getPhenoDataSetGroupsByLinkSubjectStudy(linkSubjectStudy);
 		
-		ChoiceRenderer<CustomFieldGroup> renderer = new ChoiceRenderer<CustomFieldGroup>("name", "id");
-		customFieldGroupDdc = new DropDownChoice<CustomFieldGroup>("customFieldGroupSelected", customFieldGroups);
-		customFieldGroupDdc.setChoiceRenderer(renderer);
+		ChoiceRenderer<PhenoDataSetGroup> renderer = new ChoiceRenderer<PhenoDataSetGroup>("name", "id");
+		phenoDataSetFieldGroupDdc = new DropDownChoice<PhenoDataSetGroup>("customFieldGroupSelected", pheDataSetGroupLst);
+		phenoDataSetFieldGroupDdc.setChoiceRenderer(renderer);
 		
-		customFieldGroupDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+		phenoDataSetFieldGroupDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 			private static final long	serialVersionUID	= 1L;
 
 			protected void onUpdate(AjaxRequestTarget target) {
              // Enable getData button when customFieldGroup actually selected
-             getDataButton.setEnabled(customFieldGroupDdc.getValue() != null && !customFieldGroupDdc.getValue().isEmpty());
+             getDataButton.setEnabled(phenoDataSetFieldGroupDdc.getValue() != null && !phenoDataSetFieldGroupDdc.getValue().isEmpty());
              target.add(getDataButton);
              target.add(feedbackPanel);
          }
      });
 		
-		addOrReplace(customFieldGroupDdc);
+		addOrReplace(phenoDataSetFieldGroupDdc);
 	}
 
 	@Override
@@ -280,20 +282,21 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				if(customFieldGroupDdc.getValue() == null || customFieldGroupDdc.getValue().isEmpty()) {
+				if(phenoDataSetFieldGroupDdc.getValue() == null || phenoDataSetFieldGroupDdc.getValue().isEmpty()) {
 					error("Please select a Data Set");	
 				}
 				else {
 					LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoCollection().getLinkSubjectStudy();
 					
-					List<CustomFieldGroup> customFieldGroups = new ArrayList<CustomFieldGroup>(0);
-					CustomFieldGroup cfg = iPhenotypicService.getCustomFieldGroupById(new Long(customFieldGroupDdc.getValue()));
-					customFieldGroups.add(cfg);
+					List<PhenoDataSetGroup> phenoDataSetGroupList = new ArrayList<PhenoDataSetGroup>(0);
+					PhenoDataSetGroup pdsg = iPhenotypicService.getPhenoFieldGroupById(new Long(phenoDataSetFieldGroupDdc.getValue()));
+					phenoDataSetGroupList.add(pdsg);
 					
-					List<CustomField> customFields = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(cfg);
+					//List<CustomField> customFields = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(cfg);
+					List<PhenoDataSetField> phenoSetFields =iPhenotypicService.getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(pdsg);
 					List<String> subjectUids = new ArrayList<String>(0);
 					subjectUids.add(linkSubjectStudy.getSubjectUID());
-					List<List<String>> dataSet = iPhenotypicService.getPhenoDataAsMatrix(linkSubjectStudy.getStudy(), subjectUids, customFields, customFieldGroups);
+					List<List<String>> dataSet = iPhenotypicService.getPhenoDataAsMatrix(linkSubjectStudy.getStudy(), subjectUids, phenoSetFields, phenoDataSetGroupList);
 					
 					phenoDataView = new DataTablePanel("phenoDataView", dataSet);
 					PhenoCollectionListForm.this.addOrReplace(phenoDataView);
@@ -426,7 +429,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
                 public void onClose(AjaxRequestTarget target) 
                 { 
                 	initCustomFieldGroupDdc();
-                    target.add(customFieldGroupDdc); 
+                    target.add(phenoDataSetFieldGroupDdc); 
                 } 
         });
 		modalWindow.show(target);

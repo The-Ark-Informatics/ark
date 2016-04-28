@@ -1,5 +1,6 @@
 package au.org.theark.core.model.pheno.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,19 +23,22 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 
 @Entity
 @Table(name = "PHENO_DATASET_FIELD_GROUP", schema = Constants.PHENO_TABLE_SCHEMA)
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-public class PhenoDataSetGroup {
+public class PhenoDataSetGroup  implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
 	private String description;
 	private Study study;
 	private Boolean published;
 	private ArkFunction arkFunction;
+	private ArkUser arkUser;
 	private Set<PhenoCollection> phenoCollection = new HashSet<PhenoCollection>();
 
 	public PhenoDataSetGroup() {
@@ -109,8 +113,14 @@ public class PhenoDataSetGroup {
 	public void setPhenoCollection(Set<PhenoCollection> phenoCollection) {
 		this.phenoCollection = phenoCollection;
 	}
-	
-
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_USER_ID")
+	public ArkUser getArkUser() {
+		return arkUser;
+	}
+	public void setArkUser(ArkUser arkUser) {
+		this.arkUser = arkUser;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

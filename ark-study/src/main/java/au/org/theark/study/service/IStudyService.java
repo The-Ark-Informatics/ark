@@ -70,6 +70,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCalendar;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
@@ -87,6 +88,7 @@ import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.model.capsule.ArkRelativeCapsule;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.model.vo.StudyCalendarVo;
 import au.org.theark.study.util.SubjectUploadValidator;
 
 public interface IStudyService {
@@ -489,5 +491,16 @@ public interface IStudyService {
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 	
 	public void setPreferredPhoneNumberToFalse(Person person);
+
+	public void saveOrUpdate(StudyCalendar studyCalendar);
+
+	public void delete(StudyCalendar studyCalendar);
 	
+	public List<StudyCalendar> searchStudyCalenderList(StudyCalendar studyCalendar);
+	
+	public List<CustomField> getStudySubjectCustomFieldList(Long studyId);
+	
+	public void saveOrUpdate(StudyCalendarVo studyCalendarVo);
+	
+	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar);
 }

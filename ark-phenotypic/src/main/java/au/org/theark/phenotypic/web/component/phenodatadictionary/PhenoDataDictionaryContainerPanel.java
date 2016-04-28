@@ -125,7 +125,6 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Ph
 
 	protected WebMarkupContainer initialiseSearchPanel() {
 		SearchPanel searchPanel = new SearchPanel("searchPanel", cpModel, arkCrudContainerVO, feedBackPanel);
-
 		searchPanel.initialisePanel();
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
@@ -147,13 +146,12 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Ph
 			private static final long serialVersionUID = 1L;
 
 			public int size() {
-
-				if (criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
-					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
-					return (int) iPhenotypicService.getPhenoFieldCount(criteriaModel.getObject());																									
-				} else {
+				//if (criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
+					//criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
+					//return (int) iPhenotypicService.getPhenoFieldCount(criteriaModel.getObject());																									
+				//} else {
 					return (int) iPhenotypicService.getPhenoFieldCount(criteriaModel.getObject());
-				}
+				//}
 			}
 
 			public Iterator<PhenoDataSetField> iterator(int first, int count) {

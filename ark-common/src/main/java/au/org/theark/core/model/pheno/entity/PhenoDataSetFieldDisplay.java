@@ -2,6 +2,7 @@ package au.org.theark.core.model.pheno.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -34,18 +35,19 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private PhenoDataSetField phenoDataSetField;
 	private PhenoDataSetGroup phenoDataSetGroup;
+	private PhenoDataSetCategory phenoDataSetCategory;
+	private PhenoDataSetCategory parentPhenoDataSetCategory;
+	private Long phenoDataSetCategoryOrderNumber;
+	private PhenoDataSetField phenoDataSetField;
+	private Long phenoDataSetFiledOrderNumber;
 	private Boolean required;
 	private String requiredMessage;
 	private Boolean allowMultiselect = Boolean.FALSE;
-	private Long sequence;
 	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
 	protected String descriptiveNameIncludingCFGName;
 
-	public PhenoDataSetFieldDisplay() {
-
-	}
+	
 	
 	@Id
 	@SequenceGenerator(name = "pheno_dataset_field_display_seq_gen", sequenceName = "PHENO_DATASET_FIELD_DISPLAY_SEQ_GEN")
@@ -54,21 +56,9 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PHENO_DATASET_FIELD_ID", nullable = false)
-	public PhenoDataSetField getPhenoDataSetField() {
-		return phenoDataSetField;
-	}
-
-	public void setPhenoDataSetField(PhenoDataSetField phenoDataSetField) {
-		this.phenoDataSetField = phenoDataSetField;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PHENO_DATASET_FIELD_GROUP_ID")
 	public PhenoDataSetGroup getPhenoDataSetGroup() {
@@ -78,12 +68,53 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	public void setPhenoDataSetGroup(PhenoDataSetGroup phenoDataSetGroup) {
 		this.phenoDataSetGroup = phenoDataSetGroup;
 	}
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PHENO_DATASET_CATEGORY_ID", nullable = false)
+	public PhenoDataSetCategory getPhenoDataSetCategory() {
+		return phenoDataSetCategory;
+	}
+	public void setPhenoDataSetCategory(PhenoDataSetCategory phenoDataSetCategory) {
+		this.phenoDataSetCategory = phenoDataSetCategory;
+	}
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "PARENT_PHENO_DATASET_CATEGORY_ID")
+	public PhenoDataSetCategory getParentPhenoDataSetCategory() {
+		return parentPhenoDataSetCategory;
+	}
+	public void setParentPhenoDataSetCategory(
+			PhenoDataSetCategory parentPhenoDataSetCategory) {
+		this.parentPhenoDataSetCategory = parentPhenoDataSetCategory;
+	}
+	@Column(name = "PHENO_DATASET_CATEGORY_ORDER_NUMBER", nullable = false )
+	public Long getPhenoDataSetCategoryOrderNumber() {
+		return phenoDataSetCategoryOrderNumber;
+	}
+	public void setPhenoDataSetCategoryOrderNumber(
+			Long phenoDataSetCategoryOrderNumber) {
+		this.phenoDataSetCategoryOrderNumber = phenoDataSetCategoryOrderNumber;
+	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PHENO_DATASET_FIELD_ID", nullable = true)
+	public PhenoDataSetField getPhenoDataSetField() {
+		return phenoDataSetField;
+	}
+	public void setPhenoDataSetField(PhenoDataSetField phenoDataSetField) {
+		this.phenoDataSetField = phenoDataSetField;
+	}
+	@Column(name = "PHENO_DATASET_FIELD_ORDER_NUMBER", nullable = true )
+	public Long getPhenoDataSetFiledOrderNumber() {
+		return phenoDataSetFiledOrderNumber;
+	}
+	public void setPhenoDataSetFiledOrderNumber(Long phenoDataSetFiledOrderNumber) {
+		this.phenoDataSetFiledOrderNumber = phenoDataSetFiledOrderNumber;
+	}
+	
 	@Column(name = "REQUIRED")
 	public Boolean getRequired() {
 		return required;
 	}
-
+	
 	public void setRequired(Boolean required) {
 		this.required = required;
 	}
@@ -105,16 +136,6 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	public void setAllowMultiselect(Boolean allowMultiselect) {
 		this.allowMultiselect = allowMultiselect;
 	}
-
-	@Column(name = "SEQUENCE", precision = 22, scale = 0)
-	public Long getSequence() {
-		return sequence;
-	}
-
-	public void setSequence(Long sequence) {
-		this.sequence = sequence;
-	}
-
 	//TODO: Remove NotAudited when pheno auditing is done
 	@NotAudited
 	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetFieldDisplay")customFieldDisplay

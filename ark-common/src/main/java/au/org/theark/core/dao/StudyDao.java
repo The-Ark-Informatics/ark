@@ -1262,7 +1262,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	public void createUpload(Upload studyUpload) {
 		if (studyUpload.getUploadStatus() == null) {
-			studyUpload.setUploadStatus(getUploadStatusForUndefined());
+			//studyUpload.setUploadStatus(getUploadStatusForUndefined());
+			studyUpload.setUploadStatus(getUploadStatusFor(Constants.UPLOAD_STATUS_STATUS_NOT_DEFINED));
 		}
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = (String) currentUser.getPrincipal();
@@ -1587,42 +1588,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		// may be from wicket and not be attached?
 		return upload.getPayload();
 	}
-
-	// TODO Constants? for all of the next methods
-	public UploadStatus getUploadStatusForUploaded() {
-		Criteria criteria = getSession().createCriteria(UploadStatus.class);
-		criteria.add(Restrictions.eq("name", "COMPLETED"));
-		return (UploadStatus) criteria.uniqueResult();
-	}
-
-	public UploadStatus getUploadStatusForUndefined() {
-		Criteria criteria = getSession().createCriteria(UploadStatus.class);
-		criteria.add(Restrictions.eq("name", "STATUS_NOT_DEFINED"));
-		return (UploadStatus) criteria.uniqueResult();
-	}
-
-	public UploadStatus getUploadStatusForAwaitingValidation() {
-		Criteria criteria = getSession().createCriteria(UploadStatus.class);
-		criteria.add(Restrictions.eq("name", "AWAITING_VALIDATION"));
-		return (UploadStatus) criteria.uniqueResult();
-	}
-
 	public UploadStatus getUploadStatusFor(String statusFromConstant) {
 		Criteria criteria = getSession().createCriteria(UploadStatus.class);
 		criteria.add(Restrictions.eq("name", statusFromConstant));
 		return (UploadStatus) criteria.uniqueResult();
 	}
-
-	public UploadStatus getUploadStatusForValidated() {
-		Criteria criteria = getSession().createCriteria(UploadStatus.class);
-		criteria.add(Restrictions.eq("name", "VALIDATED"));
-		return (UploadStatus) criteria.uniqueResult();
-	}
-
 	@SuppressWarnings("unchecked")
-	public Collection<UploadType> getUploadTypesForSubject() {
+	public Collection<UploadType> getUploadTypesForSubject(Study study) {
 		Criteria criteria = getSession().createCriteria(UploadType.class);
 		criteria.add(Restrictions.eq("arkModule", getArkModuleForSubject()));
+		if(study != null && study.getParentStudy() != null) { //i.e. study is a child study
+			criteria.add(Restrictions.not(Restrictions.eq("name", "Subject Demographic Data")));
+		}
 		return criteria.list();
 	}
 
@@ -5194,5 +5171,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			query.setParameter("customFieldType", customFieldType);
 			return query.list();
 		}
+	}
+
+	@Override
+	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name) {
+		Criteria criteria = getSession().createCriteria(UploadType.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.add(Restrictions.eq("arkModule", arkModule));
+		return (UploadType) criteria.uniqueResult();
 	}
 }

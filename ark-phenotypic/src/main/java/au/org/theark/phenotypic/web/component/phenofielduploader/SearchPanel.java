@@ -25,9 +25,10 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
+import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.SearchForm;
+
 
 /**
  * @author cellis
@@ -49,8 +50,8 @@ public class SearchPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, 
-														(CompoundPropertyModel<PhenoFieldUploadVO>) containerForm.getModel(), arkCrudContainerVO, feedBackPanel, listView);
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<PhenoDataSetFieldUploadVO>) containerForm.getModel(), arkCrudContainerVO, feedBackPanel,
+				listView);
 
 		add(searchForm);
 	}

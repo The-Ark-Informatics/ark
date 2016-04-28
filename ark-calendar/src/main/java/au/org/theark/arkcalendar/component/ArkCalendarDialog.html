@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+	<wicket:head>
+		<style type="text/css">
+			table#dialog-table {
+				width: 100%;
+				border-spacing: 0;
+				border-collapse: collapse;
+			}
+
+			th, td {
+				padding: 3px;
+			}
+		</style>
+	</wicket:head>
+</head>
+<body>
+	<wicket:panel>
+		<form wicket:id="form">
+			<table id="dialog-table">
+				<tr>
+					<td width="15%">
+						Title:
+					</td>
+					<td width="85%">
+						<input wicket:id="title" type="text" style="width: 90%;"></input>
+					</td>
+				</tr>
+				<tr>
+					<td width="15%">
+						UID:
+					</td>
+					<td width="85%">
+						<input wicket:id="subjectUID" type="text" style="width: 50%;"></input>
+					</td>
+				</tr>
+				<!--  
+				<tr>
+					<td>
+						Category:
+					</td>
+					<td>
+						<div wicket:id="category"></div>
+					</td>
+				</tr>
+				-->
+				<tr>
+					<td>
+						<br />
+					</td>
+					<td>
+						<input wicket:id="allDay" type="checkbox" /><label wicket:id="label"></label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Starts:
+					</td>
+					<td>
+						<span wicket:id="start"></span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Ends:
+					</td>
+					<td>
+						<span wicket:id="end"></span>
+					</td>
+				</tr>
+				<tr wicket:id="repeater">
+        			<td><span wicket:id="fieldLabel">Label</span></td>
+        			<td>
+        				<!--  <input wicket:id="textDataValue" type="text" style="width: 50%;"></input> -->
+        				<div wicket:id="dataValueEntryPanel">
+        					Input Value
+        				</div>
+        			</td>
+    			</tr>
+			</table>
+			<div wicket:id="feedback"></div>
+		</form>
+	</wicket:panel>
+</body>
+</html>

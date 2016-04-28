@@ -31,6 +31,8 @@ public class Constants {
 	public static final String ARK_CSV_LOADER_SERVICE = "arkCsvLoaderService";
 	public static final String ARK_DISEASE_SERVICE = "arkDiseaseService";
 	public static final String ARK_AUDIT_SERVICE = "arkAuditService";
+	public static final String ARK_PHENO_DATA_SERVICE = "phenotypicService";
+	
 	
 	/* Global constants */
 	public static final String STUDY_CONTEXT_ID = "studyId";
@@ -116,7 +118,7 @@ public class Constants {
 	public static final String STUDY_STATUS_ARCHIVE = "Archive";
 
 	public static final String STUDY_SERVICE = "studyService";
-	public static final String PHENO_SERVICE = "phenotypicService";
+	//public static final String PHENO_SERVICE = "phenotypicService";
 	public static final String LIMS_SERVICE = "limsService";
 	public static final String STUDY_DAO = "studyDao";
 
@@ -285,6 +287,7 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_ATTACHMENT = "ATTACHMENT";
 	public static final String FUNCTION_KEY_VALUE_ADDRESS = "ADDRESS";
 	public static final String FUNCTION_KEY_VALUE_CONTACT = "CONTACT";
+	public static final String FUNCTION_KEY_VALUE_CALENDAR = "CALENDAR";
 	//public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD = "SUBJECT_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD = "STUDY_DATA_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE = "CORRESPONDENCE";
@@ -688,8 +691,8 @@ public class Constants {
 	public static final String ARK_GENO_SERVICE = "genoService";
 	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML};
 
-	public static final String			UPLOAD_TYPE_ID											= "id";
-	public static final String			UPLOAD_TYPE_NAME										= "name";
+	public static final String	UPLOAD_TYPE_ID	= "id";
+	public static final String	UPLOAD_TYPE_NAME= "name";
 	
 	public static final String CONFIG_ROWS_PER_PAGE = "ROWS_PER_PAGE";
 	public static final String CONFIG_CUSTOM_FIELDS_PER_PAGE = "CUSTOM_FIELDS_PER_PAGE";
@@ -703,5 +706,15 @@ public class Constants {
 	public static final String ENTITY_TYPE_PHENO_DATASET_FIELD = "PhenoDataSet Field";
 	
 	public static final String ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY = "PhenoDataSet Field Display";
+	
+	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY_FIELD_GROUP = "PhenoDataSet Category Field Group";
+	
+	public static final String UPLOAD_STATUS_COMPLETED = "COMPLETED";
+	
+	public static final String UPLOAD_STATUS_STATUS_NOT_DEFINED = "STATUS_NOT_DEFINED";
+	
+	public static final String UPLOAD_STATUS_VALIDATED = "VALIDATED";
+	
+	public static final String UPLOAD_STATUS_AWAITING_VALIDATION = "AWAITING_VALIDATION";
 	
 }

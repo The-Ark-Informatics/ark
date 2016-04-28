@@ -42,12 +42,11 @@ import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
-import au.org.theark.core.util.PhenoDataSetCategoryOrderingHelper;
 import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider2;
-
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.util.PhenoDataSetCategoryOrderingHelper;
 import au.org.theark.phenotypic.web.component.phenodatacategory.form.ContainerForm;
 
 
@@ -143,13 +142,13 @@ public class PhenoDataCategoryContainerPanel extends AbstractContainerPanel<Phen
 		phenoDataSetCategoryProvider = new ArkDataProvider2<PhenoDataSetCategory, PhenoDataSetCategory>() {
 			private static final long	serialVersionUID	= 1L;
 			public int size() {
-				if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
-					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
+			//if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
+			//criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
+			//return (int)iPhenotypicService.getPhenoDatasetCategoryCount(criteriaModel.getObject());//todo safe int conversion
+			//}
+			//else{
 					return (int)iPhenotypicService.getPhenoDatasetCategoryCount(criteriaModel.getObject());//todo safe int conversion
-				}
-				else{
-					return (int)iPhenotypicService.getPhenoDatasetCategoryCount(criteriaModel.getObject());//todo safe int conversion
-				}
+			//	}
 			}
 			public Iterator<PhenoDataSetCategory> iterator(int first, int count) {
 				List<PhenoDataSetCategory> listCustomFieldCategories = new ArrayList<PhenoDataSetCategory>();
@@ -163,8 +162,8 @@ public class PhenoDataCategoryContainerPanel extends AbstractContainerPanel<Phen
 					//}
 					
 				}
-				return PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(listCustomFieldCategories).iterator();
-				//return orderHierarchicalyCustomFieldCategories(listCustomFieldCategories).iterator();
+				//return PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(listCustomFieldCategories).iterator();
+				return (listCustomFieldCategories).iterator();
 			}
 		};
 		// Set the criteria for the data provider

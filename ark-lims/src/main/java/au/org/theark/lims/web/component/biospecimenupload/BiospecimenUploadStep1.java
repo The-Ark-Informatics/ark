@@ -181,7 +181,7 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD));
 		wizardForm.setFileName(fileUpload.getClientFileName());
 
-		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForAwaitingValidation());		
+		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(Constants.UPLOAD_STATUS_AWAITING_VALIDATION));		
 		
 		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 	}

@@ -530,7 +530,7 @@ public Collection<String> validateCustomDataMatrixFileFormat(InputStream inputSt
 private static  boolean validateCustomFieldType(CustomFieldCategory category,String categoryName, String fieldType, Collection<String> errorMessages) {
 	boolean isValid = false;
 	
-	if(category.getCustomFieldType().getName().equalsIgnoreCase(fieldType)){
+	if(category!=null && category.getCustomFieldType()!=null && category.getCustomFieldType().getName().equalsIgnoreCase(fieldType)){
 		isValid=true;
 	}
 	if(isValid==false){

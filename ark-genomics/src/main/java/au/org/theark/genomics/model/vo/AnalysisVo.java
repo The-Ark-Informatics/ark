@@ -16,6 +16,8 @@ public class AnalysisVo implements Serializable {
 	private Analysis analysis;
 	
 	private List<Analysis> analysisList;
+	
+	private String file;
 
 	public AnalysisVo() {
 		analysis = new Analysis();
@@ -36,6 +38,14 @@ public class AnalysisVo implements Serializable {
 
 	public void setAnalysisList(List<Analysis> analysisList) {
 		this.analysisList = analysisList;
+	}
+	
+	public String getFile() {
+		return file;
+	}
+
+	public void setFile(String file) {
+		this.file = file;
 	}
 
 }

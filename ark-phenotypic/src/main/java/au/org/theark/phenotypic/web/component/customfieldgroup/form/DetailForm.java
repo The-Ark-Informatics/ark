@@ -45,7 +45,7 @@ import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldDisplayListPanel;
+
 
 /**
  * @author nivedann
@@ -91,7 +91,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		if(!isNew()) {
-			List<CustomField> selectedCustomFieldList = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
+			List<CustomField> selectedCustomFieldList = null;//iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
 
 			// Disable Delete button if selected fields exist
 			if (!selectedCustomFieldList.isEmpty()) {
@@ -107,8 +107,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 	}
 
 	private void initCustomFieldDataListPanel() {
-		cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldGroup"));
-		List<CustomField> selectedList = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
+		/*cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldGroup"));
+		List<CustomField> selectedList = null;//iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
 		Boolean disableEditButton = false;
 		if (getModelObject().getCustomFieldGroup().getPublished()) {
 			for (CustomField customField : selectedList) {
@@ -136,7 +136,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 		};
 		cfdListPanel.addOrReplace(pageNavigator);
 		cfdListPanel.addOrReplace(dataView);
-		arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);
+		arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);*/
 	}
 
 	public void initialiseDetailForm() {
@@ -242,7 +242,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// Get a list of CustomFields for the given group
-		ArrayList<CustomField> selectedList = (ArrayList) iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
+		ArrayList<CustomField> selectedList = null;//(ArrayList) iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
 
 		Boolean allowDelete = true;
 		for (CustomField customField : selectedList) {

@@ -10,16 +10,22 @@ background-color:#EEE;
 font-size:10pt;
 font-weight:700;
 text-align:left;
-padding:10px;	
 }
 .listMultipleSize{
 height:200px;
 width:250px;
-background-color: white;	
+background-color: white;
+padding: 2.5px;	
+}
+.listMultipleSizeSub{
+height:100px;
+width:250px;
+background-color: white;
+padding: 2.5px;	
 }
 .fldListMultipleChoice {
 float: left;
-width: 15%;
+width: 13%;
 height:100%;
 }
 .fldListMultipleChoiceButton {
@@ -27,14 +33,34 @@ float: left;
 width: 4%;
 height:100%;
 }
-.buttonsPhenoCatFilter{
+.buttonsFourthPhenoCatFilter{
 text-align:center;
 padding-left:10px;
 padding-right:10px;
 padding-top: 40px;
 padding-bottom: 10px;
 }
-
+.buttonsDoublePhenoCatFilter{
+text-align:center;
+padding-left:10px;
+padding-right:10px;
+padding-top: 75px;
+padding-bottom: 10px;
+}
+.buttonsSinglePhenoCatFilter{
+text-align:center;
+padding-left:10px;
+padding-right:10px;
+padding-top: 90px;
+padding-bottom: 10px;
+}
+.bottomButtonsPhenoCatFilter{
+text-align:center;
+padding-left:10px;
+padding-right:10px;
+padding-top: 20px;
+padding-bottom: 10px;
+}
 .buttonPhenoCatFilter{
 text-align: center; 
 height: 40px;
@@ -59,5 +85,24 @@ background-image: url("../images/icons/up.gif");
 }
 .downMe{
 background-image: url("../images/icons/down.gif"); 
+}
+.sumMe{
+background-image: url("../images/icons/sumMe.png");	
+}
+.minusMe{
+background-image: url("../images/icons/minus.png");	
+}
+.stop{
+background-image: url("../images/icons/stop.png");	
+}
+.colorLink{
+color:#37927A	
+}
+.tree {
+float: left;
+width: 500px;
+height:500px;
+background-color: white;
+overflow: auto;
 }
 

@@ -66,11 +66,17 @@
 		</dependency>
 
 		<!-- JasperReport (upgraded to be compatible with Wicket 1.5.0) -->
+		<!-- Comment on 2018-03-15 -->
+		<!-- Please refer ARK-1577 where several crashes occured during the report generation stage due to jasperreport version 1.5-RC5.1 is not compatible with the
+		Java 1.8.So we have to find the best fir version of jasperreport for this.
+		But unfortunately we can not go for higher version of jasperreport with the limitation of wicket 1.5. --> 
 		<dependency>
 		    <groupId>org.wicketstuff</groupId>
-		    <artifactId>jasperreports</artifactId>
-		    <version>1.5-RC5.1</version>
-		</dependency>
+		    <!-- <artifactId>jasperreports</artifactId> -->
+		    <!-- <version>1.5-RC5.1</version> -->
+		    <artifactId>wicketstuff-jasperreports</artifactId>
+			<version>6.12.0</version> 
+		</dependency> 
 	</dependencies>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>

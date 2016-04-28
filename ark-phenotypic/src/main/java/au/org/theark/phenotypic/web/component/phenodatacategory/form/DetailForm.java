@@ -21,9 +21,7 @@ package au.org.theark.phenotypic.web.component.phenodatacategory.form;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -44,7 +42,6 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -75,12 +72,12 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 	private TextField<String>						categoryIdTxtFld;
 	private TextField<String>						categoryNameTxtFld;
 	private TextArea<String>						categoryDescriptionTxtAreaFld;
-	private DropDownChoice<PhenoDataSetCategory>	parentCategoryDdc;
-	private TextField<Long>							categoryOrderNoTxtFld;
+	//private DropDownChoice<PhenoDataSetCategory>	parentCategoryDdc;
+	//private TextField<Long>							categoryOrderNoTxtFld;
 	protected WebMarkupContainer					phenoDatasetCategoryDetailWMC;
 	private Collection<PhenoDataSetCategory> 		phenoDatasetCategoryCollection;
 	private HistoryButtonPanel 						historyButtonPanel;
-	private WebMarkupContainer						parentPanel;
+	//private WebMarkupContainer						parentPanel;
 	
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
@@ -124,9 +121,9 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 		categoryNameTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASETCATEGORY_NAME);
 		categoryNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 		categoryDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_PHENODATASETCATEGORY_DESCRIPTION);
-		categoryOrderNoTxtFld=new TextField<Long>(Constants.FIELDVO_PHENODATASETCATEGORY_ORDERNUMBER);
+		//categoryOrderNoTxtFld=new TextField<Long>(Constants.FIELDVO_PHENODATASETCATEGORY_ORDERNUMBER);
 		
-		initParentCategoryDdc();
+		//initParentCategoryDdc();
 		deleteButton.setEnabled(false);
 		
 		addDetailFormComponents();
@@ -138,7 +135,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 	/**
 	 * Initialize Custom Field Categories.
 	 */
-	private void initParentCategoryDdc() {
+	/*private void initParentCategoryDdc() {
 		parentPanel=new WebMarkupContainer("parentPanel");
 		parentPanel.setOutputMarkupId(true);
 		Collection<PhenoDataSetCategory> customFieldCategoryCollection=getAvailableCategoryCollectionFromModel();
@@ -146,7 +143,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 		parentCategoryDdc = new DropDownChoice<PhenoDataSetCategory>(Constants.FIELDVO_PHENODATASETCATEGORY_PARENTCATEGORY, (List) customFieldCategoryCollection, customfieldCategoryRenderer);
 		parentCategoryDdc.setOutputMarkupId(true);
 		parentPanel.add(parentCategoryDdc);
-	}
+	}*/
 	
 	
 	
@@ -177,7 +174,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 	protected void attachValidators() {
 		categoryNameTxtFld.setRequired(true);
 		categoryNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
-		categoryOrderNoTxtFld.setRequired(true);
+		//categoryOrderNoTxtFld.setRequired(true);
 	}
 
 	@Override
@@ -191,7 +188,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 				onSavePostProcess(target);
 			}
 			catch (ArkRunTimeException e) {
-				this.error(new StringResourceModel("error.nonCFMsg", this, null, new Object[] { getModelObject().getPhenoDataSetCategory().getOrderNumber()}).getString());
+				//this.error(new StringResourceModel("error.nonCFMsg", this, null, new Object[] { getModelObject().getPhenoDataSetCategory().getOrderNumber()}).getString());
 				e.printStackTrace();
 			}
 			catch (ArkRunTimeUniqueException e) {
@@ -285,9 +282,9 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 		phenoDatasetCategoryDetailWMC.add(categoryIdTxtFld.setEnabled(false)); // Disable ID field editing
 		phenoDatasetCategoryDetailWMC.add(categoryNameTxtFld);
 		phenoDatasetCategoryDetailWMC.add(categoryDescriptionTxtAreaFld);
-		parentPanel.add(parentCategoryDdc);
-		phenoDatasetCategoryDetailWMC.add(parentPanel);
-		phenoDatasetCategoryDetailWMC.add(categoryOrderNoTxtFld);
+		//parentPanel.add(parentCategoryDdc);
+		//phenoDatasetCategoryDetailWMC.add(parentPanel);
+		//phenoDatasetCategoryDetailWMC.add(categoryOrderNoTxtFld);
 
 		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the
 		// detailPanelFormContainer being initialised only once at the top-level container panel.
