@@ -6,6 +6,7 @@
 **/logs/
 **/velocity.log
 **/*.swp
+**/.completed
 
 # Properties.
 ark-container/src/main/resources/applicationContext.xml
