@@ -10,7 +10,7 @@ if [ "$(ls -A .)" ]; then
 
 
 	#Build ark-user-account with assembly:assembly for slapd container
-	mvn -f ark-user-account/pom.xml clean assembly:assembly 
+	mvn -f ark-user-account/pom.xml assembly:assembly 
 	
 	touch ark-user-account/.completed
 
@@ -30,9 +30,9 @@ if [ "$(ls -A .)" ]; then
 		${APP_PROP}
 	
 	if [ $SKIPTEST -eq 0 ]; then
-		mvn clean package 
+		mvn package 
 	else 
-		mvn clean package -Dmaven.test.skip=true 
+		mvn package -Dmaven.test.skip=true 
 	fi
 	touch .complete
 
