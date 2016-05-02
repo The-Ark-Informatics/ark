@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark;
+package au.org.theark.test.integration;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +30,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -40,15 +39,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import au.org.theark.core.testcategories.IntegrationTests;
 import au.org.theark.web.pages.login.LoginPage;
 
-@Category(IntegrationTests.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/test/resources/applicationContext.xml"})
-public class TestLoginPage extends TestCase {
+public class ITestLoginPage extends TestCase {
 		
-	private transient static Logger log = LoggerFactory.getLogger(TestLoginPage.class);
+	private transient static Logger log = LoggerFactory.getLogger(ITestLoginPage.class);
 
 	private WicketTester tester;
 	
@@ -65,7 +62,7 @@ public class TestLoginPage extends TestCase {
 	public void setup() {
 		tester = new WicketTester();
 		tester.startPage(LoginPage.class);
-		driver.get("http://192.168.33.11:8080/ark");	
+		driver.get("http://192.168.99.100:8080/ark");
 	}
 
 	@Test
@@ -106,6 +103,23 @@ public class TestLoginPage extends TestCase {
 		element = driver.findElement(By.className("feedbackPanelERROR"));
 		assertNotNull(element);
 		assertEquals("Invalid username and/or password.", element.getText());
+		log.info("Ending test " + new Object(){}.getClass().getEnclosingMethod().getName());
+	}
+
+	@Test
+	public void testFailingTest() {
+		log.info("Starting test " + new Object(){}.getClass().getEnclosingMethod().getName());
+		driver.findElement(By.name("userName")).sendKeys("arksupreuser@ark.org.au");
+		driver.findElement(By.name("password")).sendKeys("Password_1");
+		driver.findElement(By.name("signInButton")).click();
+
+		//If the Logout link appears, then we have successfully logged in.
+		try {
+			element = driver.findElement(WicketBy.wicketPath("ajaxLogoutLink"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		assertNotNull(element);
 		log.info("Ending test " + new Object(){}.getClass().getEnclosingMethod().getName());
 	}
 
