@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import com.google.common.net.HostAndPort;
 
 import au.org.theark.web.pages.login.LoginPage;
 
@@ -56,13 +57,26 @@ public class ITestLoginPage extends TestCase {
 	public static void openBrowser(){
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-	} 
+	}
+
+	public String getHostIP() {
+		String ipAddress = "127.0.0.1";
+		String DOCKER_HOST = System.getenv("DOCKER_HOST");
+		log.info("Docker_host env: " + DOCKER_HOST);
+		if(DOCKER_HOST != null && !DOCKER_HOST.isEmpty()) {
+			ipAddress = DOCKER_HOST.replaceAll(".*://", "");
+			log.debug("DOCKER: " + ipAddress);
+			ipAddress = HostAndPort.fromString(ipAddress).getHostText();
+			log.debug("Docker: " + ipAddress);
+		}
+		return ipAddress;
+	}
 
 	@Before
 	public void setup() {
 		tester = new WicketTester();
 		tester.startPage(LoginPage.class);
-		driver.get("http://192.168.99.100:8080/ark");
+		driver.get("http://"+getHostIP()+":8080/ark");
 	}
 
 	@Test
