@@ -120,23 +120,6 @@ public class ITestLoginPage extends TestCase {
 		log.info("Ending test " + new Object(){}.getClass().getEnclosingMethod().getName());
 	}
 
-	@Test
-	public void testFailingTest() {
-		log.info("Starting test " + new Object(){}.getClass().getEnclosingMethod().getName());
-		driver.findElement(By.name("userName")).sendKeys("arksupreuser@ark.org.au");
-		driver.findElement(By.name("password")).sendKeys("Password_1");
-		driver.findElement(By.name("signInButton")).click();
-
-		//If the Logout link appears, then we have successfully logged in.
-		try {
-			element = driver.findElement(WicketBy.wicketPath("ajaxLogoutLink"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		assertNotNull(element);
-		log.info("Ending test " + new Object(){}.getClass().getEnclosingMethod().getName());
-	}
-
 	@AfterClass
 	public static void closeBrowser(){
 		driver.quit();
