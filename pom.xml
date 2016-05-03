@@ -36,8 +36,6 @@
 		<module>ark-report</module>
 		<module>ark-study</module>
 		<module>ark-work-tracking</module>
-		<module>recaptcha4j</module>
-		<module>spark</module>
 	</modules>
 
 	<build>
