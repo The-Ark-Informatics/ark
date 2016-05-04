@@ -62,12 +62,9 @@ public class ITestLoginPage extends TestCase {
 	public String getHostIP() {
 		String ipAddress = "127.0.0.1";
 		String DOCKER_HOST = System.getenv("DOCKER_HOST");
-		log.info("Docker_host env: " + DOCKER_HOST);
 		if(DOCKER_HOST != null && !DOCKER_HOST.isEmpty()) {
 			ipAddress = DOCKER_HOST.replaceAll(".*://", "");
-			log.debug("DOCKER: " + ipAddress);
 			ipAddress = HostAndPort.fromString(ipAddress).getHostText();
-			log.debug("Docker: " + ipAddress);
 		}
 		return ipAddress;
 	}
