@@ -3,6 +3,7 @@ package au.org.theark.arkcalendar.pages.calendar;
 import java.util.Date;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.threeten.bp.LocalDateTime;
@@ -36,6 +37,10 @@ public class ArkCalendarPage extends AbstractCalendarPage
 		// Form //
 		final Form<Date> form = new Form<Date>("form");
 		this.add(form);
+		
+		String calendarLabel="Study: "+ getSession().getAttribute("study").toString()+" - "+getSession().getAttribute("calendarName").toString();
+		
+		form.add(new Label("calendarLabel",calendarLabel));
 
 		// FeedbackPanel //
 		final FeedbackPanel feedback = new JQueryFeedbackPanel("feedback");
@@ -53,6 +58,7 @@ public class ArkCalendarPage extends AbstractCalendarPage
 
 				event.setCalenderId(getCalendarId());
 				// new event //
+				
 				if (ArkCalendarDao.isNew(event))
 				{
 					ArkCalendarDao.addEvent(event);
@@ -121,8 +127,9 @@ public class ArkCalendarPage extends AbstractCalendarPage
 			{
 				ArkCalendarEvent event = ArkCalendarDao.newEvent(date);
 
-				
+				event.setCustomFieldData(ArkCalendarDao.getCustomFieldList(event.getCalenderId(),event.getSubjectUID()));
 				dialog.setModelObject(event);
+				dialog.initCalendarDialog();
 				dialog.open(target);
 			}
 
@@ -130,9 +137,12 @@ public class ArkCalendarPage extends AbstractCalendarPage
 			public void onSelect(AjaxRequestTarget target, CalendarView view, LocalDateTime start, LocalDateTime end, boolean allDay)
 			{
 				ArkCalendarEvent event = ArkCalendarDao.newEvent(start, end);
+				
+				event.setCustomFieldData(ArkCalendarDao.getCustomFieldList(event.getCalenderId(), event.getSubjectUID()));
 				event.setAllDay(allDay);
 
 				dialog.setModelObject(event);
+				dialog.initCalendarDialog();
 				dialog.open(target);
 			}
 
@@ -143,7 +153,9 @@ public class ArkCalendarPage extends AbstractCalendarPage
 
 				if (event != null)
 				{
+					event.setCustomFieldData(ArkCalendarDao.getCustomFieldList(event.getCalenderId(), event.getSubjectUID()));
 					dialog.setModelObject(event);
+					dialog.initCalendarDialog();
 					dialog.open(target);
 				}
 			}
@@ -181,6 +193,8 @@ public class ArkCalendarPage extends AbstractCalendarPage
 		};
 
 		form.add(this.calendar);
+		
+		
 	}
 	
 	public int getCalendarId() {

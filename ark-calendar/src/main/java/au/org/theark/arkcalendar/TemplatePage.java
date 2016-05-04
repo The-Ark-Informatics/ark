@@ -30,34 +30,8 @@ public abstract class TemplatePage extends WebPage
 	{
 		super();
 
-//		this.add(new Label("version", getApplication().getFrameworkSettings().getVersion()));
 	}
 	
-//	@Override
-//	protected void setHeaders(WebResponse response) {
-//		// TODO Auto-generated method stub
-//		response.setHeader( "Expires", "0" );
-//		response.setHeader( "Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, private" );
-//		response.setHeader( "Pragma", "no-cache" );
-//	}
-	
-//	 @Override
-//	   protected void onConfigure() {
-//	      super.onConfigure();
-//	      AuthenticatedWebApplication app = (AuthenticatedWebApplication)Application.get();
-	      //if user is not signed in, redirect him to sign in page
-	     
-//		 WebApplication app = (WebApplication)Application.get();
-		 
-//	      if(!AuthenticatedWebSession.get().isSignedIn()){
-//	    	 System.out.println("--------------CALL ON CONFIGURE----------------------");
-//	         app.restartResponseAtSignInPage();
-//	    	 setResponsePage(new SignIn2(null));
-//	    	 throw new RestartResponseAtInterceptPageException(new SignIn2());
-//	      }else{
-//	    	  System.out.println("----------------- Signed IN --------------------");
-//	      }
-//	   }
 
 	@Override
 	protected void onInitialize()

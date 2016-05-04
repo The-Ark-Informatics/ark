@@ -355,6 +355,11 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 					for (RelationshipVo relationshipVo : relatives) {
 						model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
 					}
+				}else{
+					 List<RelationshipVo> childRelatives= iStudyService.getSubjectChildren(subjectUID, sessionStudyId);
+					 for (RelationshipVo relationshipVo : childRelatives) {
+						model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
+					}
 				}
 				model.getObject().getLinkSubjectStudy().getPerson().setGenderType(genderType);
 				return (int) service.getStudySubjectCount(model.getObject());
@@ -370,6 +375,11 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 					Boolean inbreedAllowed = (Boolean)SecurityUtils.getSubject().getSession().getAttribute(Constants.INBREED_ALLOWED);
 					if (BooleanUtils.isNotTrue(inbreedAllowed)) {
 						for (RelationshipVo relationshipVo : relatives) {
+							model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
+						}
+					}else{
+						 List<RelationshipVo> childRelatives= iStudyService.getSubjectChildren(subjectUID, sessionStudyId);
+						 for (RelationshipVo relationshipVo : childRelatives) {
 							model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
 						}
 					}

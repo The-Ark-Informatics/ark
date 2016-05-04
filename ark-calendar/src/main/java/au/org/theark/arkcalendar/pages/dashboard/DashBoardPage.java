@@ -30,10 +30,6 @@ public class DashBoardPage extends SamplePage {
 	public DashBoardPage() {
 		
 		SignIn2Session session =(SignIn2Session)getSession();
-//		
-//		System.out.println("---------------------------------------------------");
-//		System.out.println("--------------User----------------------"+session.getUser());
-//		System.out.println("--------------User Roles---------------------------------"+session.getRoles().toString());
 		
 		String user = session.getUser();
 		this.add(new Menu("menu", DashBoardPage.newMenuItemList(user)) {
@@ -43,10 +39,10 @@ public class DashBoardPage extends SamplePage {
 			@Override
 			public void onClick(AjaxRequestTarget target, IMenuItem item) {
 				ArkMenuItem arkItem=(ArkMenuItem)item;
-				
-				System.out.println("------------------ "+arkItem.getCalendarVo().toString());
 
 				getSession().setAttribute("calendarId", arkItem.getCalendarVo().getCalId());
+				getSession().setAttribute("study", arkItem.getCalendarVo().getStudy());
+				getSession().setAttribute("calendarName", arkItem.getCalendarVo().getCalName());
 				
 				setResponsePage(new ArkCalendarPage());
 				

@@ -134,12 +134,12 @@ public class SearchResultListPanel extends Panel {
 					unsetLink.setVisible(false);
 				}
 				
-				if("Father".equalsIgnoreCase(relationshipVo.getRelationship())){
+				if(!ArkPermissionHelper.isActionPermitted(Constants.SAVE) ||"Father".equalsIgnoreCase(relationshipVo.getRelationship())){
 					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("father").setEnabled(false);
 					
 				}
 				
-				if("Mother".equalsIgnoreCase(relationshipVo.getRelationship())){
+				if(!ArkPermissionHelper.isActionPermitted(Constants.SAVE) ||"Mother".equalsIgnoreCase(relationshipVo.getRelationship())){
 					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("mother").setEnabled(false);
 				}
 				

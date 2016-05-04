@@ -20,6 +20,7 @@ package au.org.theark.study.web.component.subjectUpload;
 
 import java.util.ArrayList;
 
+import au.org.theark.core.model.study.entity.Study;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -60,6 +61,10 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 		this.arkFunction = arkFunction;
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		containerForm.getModelObject().setStudy(study);
+
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseWizardPanel());
 		containerForm.add(initialiseSearchResults());

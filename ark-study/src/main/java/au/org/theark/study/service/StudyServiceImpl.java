@@ -2100,6 +2100,37 @@ public class StudyServiceImpl implements IStudyService {
 
 		return age;
 	}
+	
+	public List<RelationshipVo> getSubjectChildren(String subjectUID, long studyId){
+		List<RelationshipVo> relativeSubjects = new ArrayList<RelationshipVo>();
+		Queue<RelationshipVo> relativeSubjectQueue = new LinkedList<RelationshipVo>();
+		RelationshipVo probandRelationship = iStudyDao.getSubjectRelative(subjectUID, studyId);
+		
+		if(probandRelationship!=null){
+			relativeSubjectQueue.add(probandRelationship);
+		}
+		RelationshipVo relativeSubject = null;
+		while ((relativeSubject = relativeSubjectQueue.poll()) != null) {
+			List<RelationshipVo> relationships = iStudyDao.getSubjectChildRelatives(relativeSubject.getIndividualId(), studyId);
+			for (RelationshipVo childRelativeVo : relationships) {
+				if (relativeSubjects.contains(childRelativeVo)) {
+					childRelativeVo = relativeSubjects.get(relativeSubjects.indexOf(childRelativeVo));
+				}
+				else {
+					relativeSubjectQueue.add(childRelativeVo);
+					relativeSubjects.add(childRelativeVo);
+				}
+
+				if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
+					childRelativeVo.setFatherId(relativeSubject.getIndividualId());
+				}
+				else {
+					childRelativeVo.setMotherId(relativeSubject.getIndividualId());
+				}
+			}
+		}
+		return relativeSubjects;
+	}
 
 	public void create(LinkSubjectPedigree pedigree) {
 		iStudyDao.create(pedigree);

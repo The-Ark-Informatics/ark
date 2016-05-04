@@ -12,7 +12,6 @@ import org.apache.wicket.util.time.Duration;
 
 import au.org.theark.arkcalendar.pages.dashboard.DashBoardPage;
 import au.org.theark.arkcalendar.pages.login.SignIn2;
-import au.org.theark.arkcalendar.pages.login.SignOut;
 import au.org.theark.arkcalendar.util.SignIn2Session;
 
 /**
@@ -65,8 +64,6 @@ public class WicketApplication extends WebApplication
 					// Is user signed in?
 					if (Session.exists() &&((SignIn2Session)Session.get()).isSignedIn())
 					{
-						// okay to proceed
-						System.out.println(" ----------- IS SESSION EXISTS -----------------");
 						return true;
 					}
 

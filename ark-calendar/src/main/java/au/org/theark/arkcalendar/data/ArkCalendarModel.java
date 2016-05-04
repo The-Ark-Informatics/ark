@@ -29,10 +29,6 @@ public class ArkCalendarModel extends CalendarModel implements ICalendarVisitor
 		 LocalDate end = this.getEnd();
 		 
 		 List<ArkCalendarEvent> events = ArkCalendarDao.getEvents(start, end, calendarId);
-//		 
-//		 for(ArkCalendarEvent event:events){
-//			 System.out.println(event.getTitle());
-//		 }
 		
 		return events;
 	}

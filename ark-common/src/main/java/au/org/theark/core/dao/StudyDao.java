@@ -1594,9 +1594,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (UploadStatus) criteria.uniqueResult();
 	}
 	@SuppressWarnings("unchecked")
-	public Collection<UploadType> getUploadTypesForSubject() {
+	public Collection<UploadType> getUploadTypesForSubject(Study study) {
 		Criteria criteria = getSession().createCriteria(UploadType.class);
 		criteria.add(Restrictions.eq("arkModule", getArkModuleForSubject()));
+		if(study != null && study.getParentStudy() != null) { //i.e. study is a child study
+			criteria.add(Restrictions.not(Restrictions.eq("name", "Subject Demographic Data")));
+		}
 		return criteria.list();
 	}
 

@@ -648,7 +648,7 @@ public interface IStudyDao {
 	
 	//public UploadStatus getUploadStatusForAwaitingValidation();
 
-	public Collection<UploadType> getUploadTypesForSubject();
+	public Collection<UploadType> getUploadTypesForSubject(Study study);
 
 	public Collection<UploadType> getUploadTypesForLims();
 

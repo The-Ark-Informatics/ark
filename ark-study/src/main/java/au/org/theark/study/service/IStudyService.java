@@ -503,4 +503,6 @@ public interface IStudyService {
 	public void saveOrUpdate(StudyCalendarVo studyCalendarVo);
 	
 	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar);
+	
+	public List<RelationshipVo> getSubjectChildren(String subjectUID, long studyId);
 }
