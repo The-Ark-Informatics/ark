@@ -72,12 +72,9 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 	private TextField<String>						categoryIdTxtFld;
 	private TextField<String>						categoryNameTxtFld;
 	private TextArea<String>						categoryDescriptionTxtAreaFld;
-	//private DropDownChoice<PhenoDataSetCategory>	parentCategoryDdc;
-	//private TextField<Long>							categoryOrderNoTxtFld;
 	protected WebMarkupContainer					phenoDatasetCategoryDetailWMC;
 	private Collection<PhenoDataSetCategory> 		phenoDatasetCategoryCollection;
 	private HistoryButtonPanel 						historyButtonPanel;
-	//private WebMarkupContainer						parentPanel;
 	
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
@@ -121,9 +118,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 		categoryNameTxtFld = new TextField<String>(Constants.FIELDVO_PHENODATASETCATEGORY_NAME);
 		categoryNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 		categoryDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_PHENODATASETCATEGORY_DESCRIPTION);
-		//categoryOrderNoTxtFld=new TextField<Long>(Constants.FIELDVO_PHENODATASETCATEGORY_ORDERNUMBER);
-		
-		//initParentCategoryDdc();
 		deleteButton.setEnabled(false);
 		
 		addDetailFormComponents();
@@ -131,21 +125,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 
 		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
 	}
-	
-	/**
-	 * Initialize Custom Field Categories.
-	 */
-	/*private void initParentCategoryDdc() {
-		parentPanel=new WebMarkupContainer("parentPanel");
-		parentPanel.setOutputMarkupId(true);
-		Collection<PhenoDataSetCategory> customFieldCategoryCollection=getAvailableCategoryCollectionFromModel();
-		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.PHENODATASETCATEGORY_NAME, Constants.PHENODATASETCATEGORY_ID);
-		parentCategoryDdc = new DropDownChoice<PhenoDataSetCategory>(Constants.FIELDVO_PHENODATASETCATEGORY_PARENTCATEGORY, (List) customFieldCategoryCollection, customfieldCategoryRenderer);
-		parentCategoryDdc.setOutputMarkupId(true);
-		parentPanel.add(parentCategoryDdc);
-	}*/
-	
-	
 	
 	/**
 	 * Get custom field category collection from model.
@@ -174,7 +153,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 	protected void attachValidators() {
 		categoryNameTxtFld.setRequired(true);
 		categoryNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
-		//categoryOrderNoTxtFld.setRequired(true);
 	}
 
 	@Override

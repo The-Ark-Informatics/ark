@@ -53,6 +53,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -627,8 +628,6 @@ public interface IArkCommonService<T> {
 	 * @param customFieldGroup
 	 * @return
 	 */
-	public long getCustomFieldGroupCount(CustomFieldGroup customFieldGroup);
-
 	public CustomField getFieldByNameAndStudyAndFunction(String fieldName, Study study, ArkFunction arkFunction) throws EntityNotFoundException;
 
 	public FieldType getFieldTypeByName(String typeName) throws EntityNotFoundException;
@@ -698,7 +697,7 @@ public interface IArkCommonService<T> {
 
 	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction);
 
-	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
+	//public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
 
 	public UnitType getUnitTypeByNameAndArkFunction(String string, ArkFunction arkFunction);
 
@@ -802,8 +801,6 @@ public interface IArkCommonService<T> {
 	public List<LinkSubjectStudy> getUniqueSubjectsWithTheseUIDs(Study study, Collection<String> subjectUIDs);
 
 	public List<String> getAllSubjectUIDs(Study study);
-
-	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
 

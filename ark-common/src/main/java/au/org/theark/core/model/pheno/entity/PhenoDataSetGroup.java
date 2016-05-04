@@ -38,8 +38,7 @@ public class PhenoDataSetGroup  implements Serializable{
 	private Study study;
 	private Boolean published;
 	private ArkFunction arkFunction;
-	private ArkUser arkUser;
-	private Set<PhenoCollection> phenoCollection = new HashSet<PhenoCollection>();
+	private Set<PhenoDataSetCollection> phenoDataSetCollections = new HashSet<PhenoDataSetCollection>();
 
 	public PhenoDataSetGroup() {
 	
@@ -104,23 +103,35 @@ public class PhenoDataSetGroup  implements Serializable{
 	}
 
 	//TODO: Remove NotAudited when I do pheno auditing
-	@NotAudited
+	/*@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "questionnaire")
-	public Set<PhenoCollection> getPhenoCollection() {
+	public Set<PhenoDataSetCollection> getPhenoCollection() {
 		return phenoCollection;
 	}
 
-	public void setPhenoCollection(Set<PhenoCollection> phenoCollection) {
+	public void setPhenoCollection(Set<PhenoDataSetCollection> phenoCollection) {
 		this.phenoCollection = phenoCollection;
+	}*/
+	@NotAudited
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "questionnaire")
+	public Set<PhenoDataSetCollection> getPhenoDataSetCollections() {
+		return phenoDataSetCollections;
 	}
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ARK_USER_ID")
-	public ArkUser getArkUser() {
-		return arkUser;
+	public void setPhenoDataSetCollections(
+			Set<PhenoDataSetCollection> phenoDataSetCollections) {
+		this.phenoDataSetCollections = phenoDataSetCollections;
 	}
-	public void setArkUser(ArkUser arkUser) {
-		this.arkUser = arkUser;
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -130,10 +141,19 @@ public class PhenoDataSetGroup  implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		PhenoDataSetGroup other = (PhenoDataSetGroup) obj;
-		if(other.getId() == this.getId())
-			return true;
-		return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
+	
 
 	
 

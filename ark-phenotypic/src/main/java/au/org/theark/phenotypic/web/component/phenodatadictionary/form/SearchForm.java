@@ -278,7 +278,7 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldVO> {
 		 */
 		newPhenoDataSet.setMinValue(phenoField.getMinValue());
 		newPhenoDataSet.setMaxValue(phenoField.getMaxValue());
-		newModel.getObject().setUsePhenoDataSetFieldDisplay(getModelObject().isUsePhenoDataSetFieldDisplay());
+		//newModel.getObject().setUsePhenoDataSetFieldDisplay(getModelObject().isUsePhenoDataSetFieldDisplay());
 
 		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
 				//this.unitTypeDropDownOn, this.subjectCustomField);

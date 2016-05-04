@@ -9,6 +9,7 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
+import au.org.theark.core.model.study.entity.ArkUser;
 
 public class PhenoDataSetFieldGroupVO implements Serializable {
 
@@ -18,7 +19,7 @@ public class PhenoDataSetFieldGroupVO implements Serializable {
 	
 	protected List<PhenoDataSetCategory>	phenoDataSetFieldCategoryLst;// Persistence object(Already)
 	private List<PhenoDataSetCategory>		selectedCategories;//Relevant selected object.
-	
+
 	private List<PickedPhenoDataSetCategory>  	pickedAvailableCategories;// Persistence object
 	private List<PickedPhenoDataSetCategory>  	pickedSelectedCategories;//Relevant selected object.
 	
@@ -31,8 +32,8 @@ public class PhenoDataSetFieldGroupVO implements Serializable {
 	
 	
 	protected boolean 						usePhenoDataSetFieldDisplay;	// Flags whether or not CustomFieldDisplay should be saved, etc
-	
 	private String 							phenoDataSetFieldFileUploadField;
+	private ArkUser 						arkUser;
 	
 	
 	public PhenoDataSetFieldGroupVO() {
@@ -147,6 +148,14 @@ public class PhenoDataSetFieldGroupVO implements Serializable {
 	public void setPhenoDataSetFieldFileUploadField(
 			String phenoDataSetFieldFileUploadField) {
 		this.phenoDataSetFieldFileUploadField = phenoDataSetFieldFileUploadField;
+	}
+
+	public ArkUser getArkUser() {
+		return arkUser;
+	}
+
+	public void setArkUser(ArkUser arkUser) {
+		this.arkUser = arkUser;
 	}
 
 	

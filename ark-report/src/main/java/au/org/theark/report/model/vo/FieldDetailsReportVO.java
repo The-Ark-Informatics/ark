@@ -18,7 +18,7 @@
  ******************************************************************************/
 package au.org.theark.report.model.vo;
 
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.study.entity.Study;
 
 public class FieldDetailsReportVO extends GenericReportViewVO {
@@ -27,7 +27,7 @@ public class FieldDetailsReportVO extends GenericReportViewVO {
 	private static final long	serialVersionUID	= 1L;
 
 	protected Study				study;
-	protected PhenoCollection	phenoCollection;
+	protected PhenoDataSetCollection	phenoCollection;
 	protected boolean				fieldDataAvailable;
 
 	public FieldDetailsReportVO() {
@@ -41,11 +41,11 @@ public class FieldDetailsReportVO extends GenericReportViewVO {
 		this.study = study;
 	}
 
-	public PhenoCollection getPhenoCollection() {
+	public PhenoDataSetCollection getPhenoCollection() {
 		return phenoCollection;
 	}
 
-	public void setPhenoCollection(PhenoCollection phenoCollection) {
+	public void setPhenoCollection(PhenoDataSetCollection phenoCollection) {
 		this.phenoCollection = phenoCollection;
 	}
 

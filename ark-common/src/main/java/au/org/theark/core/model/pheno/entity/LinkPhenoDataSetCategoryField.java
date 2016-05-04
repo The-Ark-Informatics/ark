@@ -87,7 +87,7 @@ public class LinkPhenoDataSetCategoryField implements Serializable {
 	public void setOrderNumber(Long orderNumber) {
 		this.orderNumber = orderNumber;
 	}
-	@Override
+	/*@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -105,8 +105,8 @@ public class LinkPhenoDataSetCategoryField implements Serializable {
 						.hashCode());
 		result = prime * result + ((study == null) ? 0 : study.hashCode());
 		return result;
-	}
-	@Override
+	}*/
+	/*@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -147,7 +147,33 @@ public class LinkPhenoDataSetCategoryField implements Serializable {
 			return false;
 		return true;
 	}
-	
+	*/
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((phenoDataSetField == null) ? 0 : phenoDataSetField
+						.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LinkPhenoDataSetCategoryField other = (LinkPhenoDataSetCategoryField) obj;
+		if (phenoDataSetField == null) {
+			if (other.phenoDataSetField != null)
+				return false;
+		} else if (!phenoDataSetField.equals(other.phenoDataSetField))
+			return false;
+		return true;
+	}
 	
 	
 }

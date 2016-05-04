@@ -45,8 +45,8 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
@@ -767,9 +767,9 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return result;
 	}
 
-	public List<PhenoCollection> getPhenoCollectionList(Study study) {
-		List<PhenoCollection> results = null;
-		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
+	public List<PhenoDataSetCollection> getPhenoCollectionList(Study study) {
+		List<PhenoDataSetCollection> results = null;
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCollection.class);
 		criteria.add(Restrictions.eq("study", study));
 		results = criteria.list();
 		return results;
@@ -778,7 +778,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	//TODO review
 	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(FieldDetailsReportVO fdrVO) {
 		List<FieldDetailsDataRow> results = new ArrayList<FieldDetailsDataRow>();
-		Criteria criteria = getSession().createCriteria(PhenoCollection.class, "fpc");
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCollection.class, "fpc");
 		criteria.createAlias("phenoCollection", "pc"); // Inner join to Field
 		criteria.createAlias("field", "f"); // Inner join to Field
 		criteria.createAlias("f.fieldType", "ft"); // Inner join to FieldType
@@ -787,7 +787,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			criteria.add(Restrictions.eq("phenoCollection", fdrVO.getPhenoCollection()));
 		}
 		if (fdrVO.getFieldDataAvailable()) {
-			DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoData.class, "fd");
+			DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoDataSetData.class, "fd");
 			// Join FieldPhenoCollection and FieldData on ID FK
 			fieldDataCriteria.add(Property.forName("f.id").eqProperty("fd." + "field.id"));
 			fieldDataCriteria.add(Property.forName("pc.id").eqProperty("fd." + "collection.id"));
@@ -832,7 +832,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 				criteria.add(Restrictions.eq("cfg.id", fdrVO.getCustomFieldDisplay().getCustomFieldGroup().getId()));
 			}
 			if (fdrVO.getFieldDataAvailable()) {
-				DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoData.class, "pd");
+				DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoDataSetData.class, "pd");
 				// Join CustomFieldDisplay and PhenoData on ID FK
 				fieldDataCriteria.add(Property.forName("cfd.id").eqProperty("pd." + "customFieldDisplay.id"));
 				criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("pd.customFieldDisplay"))));

@@ -16,21 +16,22 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.CustomFieldSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenofielduploader.Constants;
 
 import com.csvreader.CsvReader;
@@ -61,6 +62,7 @@ public class PhenoDataSetFieldCategoryImportValidator implements IPhenoImportVal
 	private int							row							= 1;
 	private ArkFunction					arkFunction;
 	private ArkModule 					arkModule;
+	private IPhenotypicService			iPhenotypicService			=null;
 
 
 
@@ -69,8 +71,9 @@ public class PhenoDataSetFieldCategoryImportValidator implements IPhenoImportVal
  * @param iArkCommonService
  * @param uploadVo
  */
-public PhenoDataSetFieldCategoryImportValidator(IArkCommonService<Void> iArkCommonService, UploadVO uploadVo) {
+public PhenoDataSetFieldCategoryImportValidator(IArkCommonService<Void> iArkCommonService,IPhenotypicService iPhenotypicService, UploadVO uploadVo) {
 	this.iArkCommonService = iArkCommonService;
+	this.iPhenotypicService=iPhenotypicService;
 	this.arkFunction = uploadVo.getUpload().getArkFunction();
 	// Set study in context
 	Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -303,16 +306,9 @@ private java.util.Collection<String> validateDataDictionaryFileData(InputStream 
 	InputStreamReader inputStreamReader = null;
 	CsvReader csvReader = null;
 	DecimalFormat decimalFormat = new DecimalFormat("0.00");
-
-	/*"CATEGORY_NAME","CUSTOM_FIELD_TYPE","DESCRIPTION","PARENT_CATEGORY_NAME","ORDER_NUMBER"*/
-	CustomFieldCategory category;
-	CustomFieldType customFieldType;
+	PhenoDataSetCategory category;
+	arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_CATEGORY);
 	
-	if(au.org.theark.core.Constants.ARK_MODULE_STUDY.equalsIgnoreCase(arkModule.getName())){
-		arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY);
-	}else if(au.org.theark.core.Constants.ARK_MODULE_LIMS.equalsIgnoreCase(arkModule.getName())){
-		arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY);
-	}
 
 	try {
 		inputStreamReader = new InputStreamReader(fileInputStream);
@@ -335,15 +331,14 @@ private java.util.Collection<String> validateDataDictionaryFileData(InputStream 
 
 			// First column should be Field Name
 			categoryName = csvReader.get("CATEGORY_NAME");
-
 			// Only check rows with a valid fieldName
 			if (!categoryName.isEmpty()) {
 				int cols = stringLineArray.length;
-				category = new CustomFieldCategory();
+				category = new PhenoDataSetCategory();
 				category.setStudy(study);
 				category.setName(categoryName);
 				category.setDescription(csvReader.get("DESCRIPTION"));
-				CustomFieldCategory oldcategory = iArkCommonService.getCustomFieldCategoryByNameStudyAndArkFunction(csvReader.get("CATEGORY_NAME"),study, arkFunction); 
+				PhenoDataSetCategory oldcategory = iPhenotypicService.getPhenoDataFieldCategoryByNameStudyAndArkFunction(csvReader.get("CATEGORY_NAME"),study, arkFunction); 
 				if (oldcategory == null) {
 					// This is a new record - not able to find an existing field by that name
 					insertRows.add(rowIdx);
@@ -351,7 +346,7 @@ private java.util.Collection<String> validateDataDictionaryFileData(InputStream 
 				else {
 					// Determine updates
 					if (oldcategory.getId() != null) {
-						if (iArkCommonService.isCustomFieldCategoryBeingUsed(oldcategory)) {
+						if (iPhenotypicService.isPhenoDataSetFieldCategoryBeingUsed(oldcategory)) {
 							// Block updates to field that already have data
 							for (int colIdx = 0; colIdx < cols; colIdx++) {
 								errorCells.add(new ArkGridCell(colIdx, rowIdx));

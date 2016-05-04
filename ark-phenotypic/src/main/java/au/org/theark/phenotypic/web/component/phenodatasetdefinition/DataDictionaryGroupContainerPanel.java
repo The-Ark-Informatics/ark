@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.InvalidSessionException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -16,6 +17,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -90,6 +92,11 @@ public class DataDictionaryGroupContainerPanel extends AbstractContainerPanel<Ph
 			if (study != null && arkModule != null) {
 				cpModel.getObject().getPhenoDataSetGroup().setStudy(study);
 			}
+			try {
+				cpModel.getObject().setArkUser(iArkCommonService.getArkUser((String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_USERID)));
+			} catch (InvalidSessionException | EntityNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -130,14 +137,19 @@ public class DataDictionaryGroupContainerPanel extends AbstractContainerPanel<Ph
 
 			public int size() {
 				//return (int)iArkCommonService.getCustomFieldGroupCount(criteriaModel.getObject());//TODO safe
+				//criteriaModel.getObject().setPublished(null);
 				return (int) iPhenotypicService.getPhenoDataSetFieldGroupCount(criteriaModel.getObject());
+				//return (int) iPhenotypicService.getPhenoDataSetFieldGroupCount(cpModel.getObject().getPhenoDataSetGroup());
 			}
 
 			public Iterator<PhenoDataSetGroup> iterator(int first, int count) {
 				List<PhenoDataSetGroup> listSubjects = new ArrayList<PhenoDataSetGroup>();
 				if (isActionPermitted()) {
 					//listSubjects = iArkCommonService.getCustomFieldGroups(criteriaModel.getObject(), first, count);
+					//Set the correct published value to intialise and see all the records of the resultList.
+					//criteriaModel.getObject().setPublished(null);
 					listSubjects = iPhenotypicService.getPhenoDataSetGroups(criteriaModel.getObject(), first, count);
+					//listSubjects = iPhenotypicService.getPhenoDataSetGroups(cpModel.getObject().getPhenoDataSetGroup(), first, count);
 				}
 				return listSubjects.iterator();
 			}
@@ -145,7 +157,6 @@ public class DataDictionaryGroupContainerPanel extends AbstractContainerPanel<Ph
 		
 		// Set the criteria for the data provider
 		arkDataProvider.setCriteriaModel(new PropertyModel<PhenoDataSetGroup>(cpModel, "phenoDataSetGroup"));
-
 		dataView = searchResultListPanel.buildDataView(arkDataProvider);
 		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 

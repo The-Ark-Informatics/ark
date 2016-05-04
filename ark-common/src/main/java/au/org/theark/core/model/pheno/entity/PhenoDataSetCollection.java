@@ -36,26 +36,22 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
  */
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
-@Table(name = "PHENO_COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
-public class PhenoCollection implements Serializable{
+@Table(name = "PHENO_DATASET_COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
+public class PhenoDataSetCollection implements Serializable{
 
 	private static final long	serialVersionUID	= 1L;
 
 	private Long id;
-//	private String name;
 	private String description;
 	private LinkSubjectStudy linkSubjectStudy;
 	private Date recordDate;
-	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
+	private Set<PhenoDataSetData> phenoDataSetData = new HashSet<PhenoDataSetData>();
 	private Date reviewedDate;
 	private ArkUser reviewedBy;
-	private CustomFieldGroup questionnaire;
+	private PhenoDataSetGroup questionnaire;;
 	private QuestionnaireStatus status;
 	
-
-
-	
-	public  PhenoCollection(){		
+	public  PhenoDataSetCollection(){		
 	}
 	
 	@Id																			
@@ -69,16 +65,6 @@ public class PhenoCollection implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-//
-//	@Column(name = "NAME", length = 255)
-//	public String getName() {
-//		return name;
-//	}
-//
-//	public void setName(String name) {
-//		this.name = name;
-//	}
-
 	@Column(name = "DESCRIPTION", length = 500)
 	public String getDescription() {
 		return description;
@@ -118,7 +104,7 @@ public class PhenoCollection implements Serializable{
 		this.reviewedDate = reviewedDate;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "REVIEWED_BY_ID")
 	public ArkUser getReviewedBy() {
 		return reviewedBy;
@@ -127,15 +113,15 @@ public class PhenoCollection implements Serializable{
 	public void setReviewedBy(ArkUser reviewedBy) {
 		this.reviewedBy = reviewedBy;
 	}
-
+	
 	@ArkAuditDisplay
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOM_FIELD_GROUP_ID")
-	public CustomFieldGroup getQuestionnaire() {
+	@JoinColumn(name = "PHENO_DATASET_FIELD_GROUP_ID")
+	public PhenoDataSetGroup getQuestionnaire() {
 		return questionnaire;
 	}
 
-	public void setQuestionnaire(CustomFieldGroup questionnaire) {
+	public void setQuestionnaire(PhenoDataSetGroup questionnaire) {
 		this.questionnaire = questionnaire;
 	}
 
@@ -150,12 +136,14 @@ public class PhenoCollection implements Serializable{
 	}
 
 	@NotAudited
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoCollection")
-	public Set<PhenoData> getPhenoData() {
-		return phenoData;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetCollection")
+	public Set<PhenoDataSetData> getPhenoDataSetData() {
+		return phenoDataSetData;
 	}
+	public void setPhenoDataSetData(Set<PhenoDataSetData> phenoDataSetData) {
+		this.phenoDataSetData = phenoDataSetData;
+	}
+
 	
-	public void setPhenoData(Set<PhenoData> phenoData){
-		this.phenoData = phenoData;
-	}
+	
 }

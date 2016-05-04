@@ -183,16 +183,16 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 			PhenoDataSetField cfFromBackend = iPhenotypicService.getPhenoDataSetField(getModelObject().getPhenoDataSetField().getId());
 			getModelObject().setPhenoDataSetField(cfFromBackend);
 
-			PhenoDataSetFieldDisplay pdsdFromBackend;
-			pdsdFromBackend = iPhenotypicService.getPhenoDataSetFieldDisplayByPhenoDataSet(getModelObject().getPhenoDataSetField());
-			getModelObject().setPhenoDataSetFieldDisplay(pdsdFromBackend);
+			/*PhenoDataSetFieldDisplay pdsdFromBackend;
+			pdsdFromBackend = iPhenotypicService.getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(getModelObject().getPhenoDataSetField(),null);
+			getModelObject().setPhenoDataSetFieldDisplay(pdsdFromBackend);*/
 		}
-		if (getModelObject().isUsePhenoDataSetFieldDisplay() == true) {
+		/*if (getModelObject().isUsePhenoDataSetFieldDisplay() == true) {
 			// Ensure the phenoDataSetFieldDisplay.require is never NULL
 			if (getModelObject().getPhenoDataSetFieldDisplay().getRequired() == null) {
 				getModelObject().getPhenoDataSetFieldDisplay().setRequired(false);
 			}
-		}
+		}*/
 	}
 	/**
 	 * initialise Field Types.
@@ -385,13 +385,13 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 			}
 		};
 
-		if (getModelObject().isUsePhenoDataSetFieldDisplay()) {
+		/*if (getModelObject().isUsePhenoDataSetFieldDisplay()) {
 			// TODO: Have not implemented position support right now
 			phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
-		}
-		else {
+		}*/
+	//	else {
 			phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
-		}
+		//}
 		
 		// Initialise Drop Down Choices
 		initFieldTypeDdc();
@@ -578,9 +578,9 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		
 		// phenoDataSetFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
 		// Only show these fields if necessary...
-		if (getModelObject().isUsePhenoDataSetFieldDisplay() == false) {
+		/*if (getModelObject().isUsePhenoDataSetFieldDisplay() == false) {
 			phenoDataSetDisplayDetailWMC.setVisible(false);
-		}
+		}*/
 		
 		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the
 		// detailPanelFormContainer being initialised only once at the top-level container panel.

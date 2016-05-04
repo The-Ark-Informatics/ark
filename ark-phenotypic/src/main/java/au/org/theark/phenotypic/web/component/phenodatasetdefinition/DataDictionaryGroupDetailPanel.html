@@ -12,8 +12,8 @@
 				<!--	Row 1 -->
 				<div class="fldLabel">
 					<div class="label">
-						<label for="questionnaire.name">
-							<wicket:message key="questionnaire.name">
+						<label for="phenoDataSetGroup.name">
+							<wicket:message key="phenoDataSetGroup.name">
 								Questionnaire name:
 							</wicket:message>
 						</label>
@@ -31,8 +31,8 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						<label for="questionnaire.description">
-							<wicket:message key="questionnaire.description">
+						<label for="phenoDataSetGroup.description">
+							<wicket:message key="phenoDataSetGroup.description">
 								Description:
 							</wicket:message>
 						</label>
@@ -44,12 +44,24 @@
 						</textarea>
 					</div>
 				</div>
-
-				<div class="detailPanelBreaker">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
-
-				<div class="panelContentLeft">
+					<div class="fldLabel">
+					<div class="label">
+						<label for="phenoDataSetGroup.status">
+							<wicket:message key="phenoDataSetGroup.status">
+								Questionnaire Status:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input type="checkbox" wicket:id="phenoDataSetGroup.published"/>
+					</div>
+				</div>
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 			<!-- All the categories were brought in to this place for grouping. -->		
@@ -148,65 +160,8 @@
 					</div> 
 				</div>
 			<!-- End of all the categories were brought in to this place for grouping. -->
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-				
-				<div class="fldControl">
-					&nbsp;
-				</div>
-
-				<div class="panelMargin">
-					&nbsp;
-				</div>
-
-				<div class="fldLabel">
-					<div class="label">
-						<label for="questionnaire.status">
-							<wicket:message key="questionnaire.status">
-								Questionnaire Status:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				
-				<div class="fldControl">
-					<div class="label">
-						<input type="checkbox" wicket:id="phenoDataSetGroup.published"/>
-					</div>
-				</div>
-				
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-				
-				<div class="fldLabel">
-					<wicket:message	key="phenoDataSetFieldFileUploadField">
-						File of Custom Fields:
-					</wicket:message>
-					<div class="note">
-						<wicket:message	key="phenoDataSetFieldFileUploadField.note">
-							Note: Will replace selected list
-						</wicket:message>
-					</div>
-				</div>
-				
-				<div class="fldControl">
-					<input wicket:id="phenoDataSetFieldFileUploadField" id="upload" type="file"/>
-					<input wicket:id="uploadCustomFieldField" type="submit" wicket:message="value:uploadCustomFieldField" />
-				</div>
 			</div>
-
-			<div class="detailPanelBreaker">
-				&nbsp;
-			</div>
-			
 			<!--	Row 2 Action Buttons -->
-
 			<div wicket:id="editButtonContainer">
 				<div class="actionButtons">
 					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
@@ -214,13 +169,8 @@
 					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
 				</div>
 			</div>
-
 			<div class="detailPanelBreaker">
 				&nbsp;
-			</div>
-
-			<div wicket:id="cfdListPanelContainer">
-				<div wicket:id="cfdListPanel"></div>
 			</div>
 		</div>
 	</form>

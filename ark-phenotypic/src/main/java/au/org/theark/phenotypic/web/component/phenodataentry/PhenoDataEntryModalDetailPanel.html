@@ -27,14 +27,14 @@
 
 					<div class="fldLabel">
 						<div class="label">
-							<wicket:message key="PhenoCollection.id">
+							<wicket:message key="phenoDataSetCollection.id">
 								[Id]
 							</wicket:message>
 						</div>
 					</div>
 					<div class="fldControl">
 						<div class="label">
-							<input wicket:id="PhenoCollection.id" type="text" />
+							<input wicket:id="phenoDataSetCollection.id" type="text" />
 						</div>
 					</div>
 
@@ -44,11 +44,11 @@
 
 					<div class="fldLabel">
 						<div class="label">
-							<wicket:message key="PhenoCollection.questionnaire">
+							<wicket:message key="phenoDataSetCollection.questionnaire">
 								[Questionnaire]
 							</wicket:message>
 							<div class="note">
-								<wicket:message	key="PhenoCollection.questionnaire.note">
+								<wicket:message	key="phenoDataSetCollection.questionnaire.note">
 									[Note replaced from properties]
 								</wicket:message>
 							</div>
@@ -56,7 +56,7 @@
 					</div>
 					<div class="fldControl">
 						<div class="label">
-							<select wicket:id="PhenoCollection.questionnaire">
+							<select wicket:id="phenoDataSetCollection.questionnaire">
 								<option>
 									1
 								</option>
@@ -80,7 +80,7 @@
 					</div>
 					<div class="fldLabel">
 						<div class="label">
-							<wicket:message key="PhenoCollection.recordDate">
+							<wicket:message key="phenoDataSetCollection.recordDate">
 								[Record date]
 							</wicket:message>
 						</div>
@@ -88,7 +88,7 @@
 
 					<div class="fldControl">
 						<div class="label">
-							<input wicket:id="PhenoCollection.recordDate" type="text" maxLength="10"/>
+							<input wicket:id="phenoDataSetCollection.recordDate" type="text" maxLength="10"/>
 						</div>
 					</div>
 					<!-- 
@@ -111,7 +111,7 @@
 
 					<div class="fldLabel">
 						<div class="label">
-							<wicket:message key="PhenoCollection.status">
+							<wicket:message key="phenoDataSetCollection.status">
 								[Status:]
 							</wicket:message>
 						</div>
@@ -119,7 +119,7 @@
 
 					<div class="fldControl">
 						<div class="label">
-							<select wicket:id="PhenoCollection.status">
+							<select wicket:id="phenoDataSetCollection.status">
 								<option>
 									1
 								</option>
@@ -145,7 +145,7 @@
 
 					<div class="fldLabel">
 						<div class="label">
-							<wicket:message	key="PhenoCollection.reviewedBy">
+							<wicket:message	key="phenoDataSetCollection.reviewedBy">
 								[Reviewed By]
 							</wicket:message>
 						</div>
@@ -153,7 +153,7 @@
 
 					<div class="fldControl">
 						<div class="label">
-							<select wicket:id="PhenoCollection.reviewedBy">
+							<select wicket:id="phenoDataSetCollection.reviewedBy">
 								<option>
 									1
 								</option>
@@ -170,7 +170,7 @@
 
 					<div class="fldLabel">
 						<div class="label">
-							<wicket:message key="PhenoCollection.reviewedDate">
+							<wicket:message key="phenoDataSetCollection.reviewedDate">
 								[Reviewed date:]
 							</wicket:message>
 						</div>
@@ -178,7 +178,7 @@
 
 					<div class="fldControl">
 						<div class="label">
-							<input wicket:id="PhenoCollection.reviewedDate" type="text" maxLength="10"/>
+							<input wicket:id="phenoDataSetCollection.reviewedDate" type="text" maxLength="10"/>
 						</div>
 					</div>
 
@@ -193,14 +193,14 @@
 
 					<div class="fldLabel">
 						<div class="label">
-							<wicket:message key="PhenoCollection.description">
+							<wicket:message key="phenoDataSetCollection.description">
 								[Description]
 							</wicket:message>
 						</div>
 					</div>
 					<div class="fldControl">
 						<div class="label">
-							<textarea wicket:id="PhenoCollection.description" type="text" cols="25">
+							<textarea wicket:id="phenoDataSetCollection.description" type="text" cols="25">
 							</textarea>
 						</div>
 					</div>
@@ -225,20 +225,38 @@
 						&nbsp;
 					</div>
 					<div class="detailSectionBorder">
-						<div class="customFieldDataPanel">
-							<div wicket:id="dataEntryWMC">
-								<!-- Phenotypic Collection / Subject Dataset data entry -->
-								<div wicket:id="phenoCFDataEntryPanel">
-								</div>
-								<span wicket:id="dataEntryNavigator" class="a">
-								</span>
-							</div>
-							<div class="centreLabel">
-								<wicket:message key="warnSaveLabel">
-									Please "Save"!
-								</wicket:message>
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<div class="label">
+							<wicket:message key="phenoDataSetCollection.PhenoCategories">
+								[Reviewed date:]
+							</wicket:message>
+						</div>
+					</div>
+					<div wicket:id="categoryPanel">
+						<div class="fldControl">
+							<div class="label">
+								<select wicket:id="pickedPhenoDataSetCategory">[Pheno Field Categories]</select>
 							</div>
 						</div>
+					</div>	
+					<div class="customFieldDataPanel">
+						<div wicket:id="dataEntryWMC">
+							<!-- Phenotypic Collection / Subject Dataset data entry -->
+							<div wicket:id="phenoCFDataEntryPanel">
+							</div>
+							<span wicket:id="dataEntryNavigator" class="a">
+							</span>
+						</div>
+						<div class="centreLabel">
+							<wicket:message key="warnSaveLabel">
+								Please "Save"!
+							</wicket:message>
+						</div>
+					</div>
 					</div>
 
 				</div>

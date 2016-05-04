@@ -39,6 +39,7 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.util.PhenoDataSetFieldCategoryImportValidator;
 import au.org.theark.phenotypic.util.PhenoDataSetFieldImportValidator;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm;
@@ -57,14 +58,15 @@ public class PhenoDataSetCategoryFieldUploadStep2 extends AbstractWizardStepPane
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>		iArkCommonService;
-
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
-																					private static final long	serialVersionUID	= 1L;
-																					@Override
-																					protected void onError(AjaxRequestTarget target, Form<?> form) {
-																						this.error("Unexpected Error: Download request could not be processed");
-																					}
-																				};
+		private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Download request could not be processed");
+			}};
+	@SpringBean(name = au.org.theark.core.Constants.ARK_PHENO_DATA_SERVICE)
+	private IPhenotypicService			iPhenotypicService;			
+		
 
 	public PhenoDataSetCategoryFieldUploadStep2(String id) {
 		super(id);
@@ -106,9 +108,6 @@ public class PhenoDataSetCategoryFieldUploadStep2 extends AbstractWizardStepPane
 
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
-
-		//root acording to the field and category 
-		
 		
 		File temp = containerForm.getModelObject().getTempFile();
 
@@ -125,13 +124,13 @@ public class PhenoDataSetCategoryFieldUploadStep2 extends AbstractWizardStepPane
 				}
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
 				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_FIELD)){
-					PhenoDataSetFieldImportValidator phenoDataSetFieldImportValidator=new PhenoDataSetFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+					PhenoDataSetFieldImportValidator phenoDataSetFieldImportValidator=new PhenoDataSetFieldImportValidator(iArkCommonService,iPhenotypicService, containerForm.getModelObject());
 					validationMessages = phenoDataSetFieldImportValidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
 					
 				}
 				//Categoty upload
 				else if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_CATEGORY)){
-					PhenoDataSetFieldCategoryImportValidator phenoDataSetFieldCategoryImportValidator=new PhenoDataSetFieldCategoryImportValidator(iArkCommonService, containerForm.getModelObject());
+					PhenoDataSetFieldCategoryImportValidator phenoDataSetFieldCategoryImportValidator=new PhenoDataSetFieldCategoryImportValidator(iArkCommonService,iPhenotypicService, containerForm.getModelObject());
 					validationMessages = phenoDataSetFieldCategoryImportValidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
 					
 				}

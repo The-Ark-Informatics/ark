@@ -31,8 +31,8 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
@@ -58,27 +58,27 @@ import au.org.theark.core.vo.PhenoDataSetFieldVO;
 
 public interface IPhenotypicService {
 
-	public java.util.Collection<PhenoCollection> getPhenoCollectionByStudy(Study study);
+	public java.util.Collection<PhenoDataSetCollection> getPhenoCollectionByStudy(Study study);
 
 //	public java.util.Collection<PhenoCollection> searchPhenoCollection(PhenoCollection phenoCollection);
 //
 //	public PhenoCollectionVO getPhenoCollectionAndFields(Long id);
 
-	public void createCollection(PhenoCollection col);
+	public void createCollection(PhenoDataSetCollection col);
 
 	//public void createCollection(PhenoCollectionVO colVo);
 
-	public void updateCollection(PhenoCollection col);
+	public void updateCollection(PhenoDataSetCollection col);
 
 	//public void updateCollection(PhenoCollectionVO colVo);
 
-	public void deleteCollection(PhenoCollection col);
+	public void deleteCollection(PhenoDataSetCollection col);
 
 	//public void deleteCollection(PhenoCollectionVO colVo);
 
 	//public int clearPhenoCollection(PhenoCollection phenoCollection);
 
-	public boolean phenoCollectionHasData(PhenoCollection phenoCollection);
+	public boolean phenoCollectionHasData(PhenoDataSetCollection phenoCollection);
 
 	// Upload phenotypic data file
 	//public void uploadPhenotypicDataFile(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
@@ -136,13 +136,13 @@ public interface IPhenotypicService {
 
 	public FileFormat getFileFormatByName(String name);
 
-	public List<PhenoData> createOrUpdatePhenoData(List<PhenoData> customFieldDataList);
+	public List<PhenoDataSetData> createOrUpdatePhenoData(List<PhenoDataSetData> customFieldDataList);
 
-	public long getPhenoDataCount(PhenoCollection phenoCollection);
+	public long getPhenoDataCount(PhenoDataSetCollection phenoCollection,PhenoDataSetCategory phenoDataSetCategory);
 
-	public List<PhenoData> getPhenoDataList(PhenoCollection phenoCollection, int first, int count);
+	public List<PhenoDataSetData> getPhenoDataList(PhenoDataSetCollection phenoCollection,PhenoDataSetCategory phenoDataSetCategory, int first, int count);
 
-	public PhenoCollection getPhenoCollection(Long id);
+	public PhenoDataSetCollection getPhenoCollection(Long id);
 	
 	/**
 	 * Creates a Custom Field Group and assoicates a list of Custom Fields to it.
@@ -156,15 +156,15 @@ public interface IPhenotypicService {
 	
 	public long getPhenoCollectionCount(PhenoDataCollectionVO criteria);
 
-	public List<PhenoCollection> searchPageablePhenoCollections(PhenoDataCollectionVO criteria, int first, int count);
+	public List<PhenoDataSetCollection> searchPageablePhenoCollections(PhenoDataCollectionVO criteria, int first, int count);
 
 	public List<PhenoDataSetField> getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroup);
 
-	public void createPhenoCollection(PhenoCollection phenoCollection);
+	public void createPhenoCollection(PhenoDataSetCollection phenoCollection);
 
-	public void updatePhenoCollection(PhenoCollection phenoCollection);
+	public void updatePhenoCollection(PhenoDataSetCollection phenoCollection);
 
-	public void deletePhenoCollection(PhenoCollection phenoCollection);
+	public void deletePhenoCollection(PhenoDataSetCollection phenoCollection);
 	
 	public List<QuestionnaireStatus> getPhenoCollectionStatusList();
 	
@@ -183,8 +183,7 @@ public interface IPhenotypicService {
 	public Upload getUpload(Long id);
 
 	/****TODO IMPLEMENT THIS THING AGAIN!****/
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimiter, Long studyId, List<String> uidsToUpdate, CustomFieldGroup customFieldGroup,
-			PhenoCollection phenoCollection, boolean overwriteExisting);
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimiter, Long studyId, List<String> uidsToUpdate, PhenoDataSetGroup phenoDataSetGroup,PhenoDataSetCollection phenoCollection, boolean overwriteExisting);
 
 	/****TODO IMPLEMENT THIS THING AGAIN!****/
 	public void refreshUpload(Upload upload);
@@ -192,10 +191,10 @@ public interface IPhenotypicService {
 	public Collection<CustomFieldGroup> getCustomFieldGroupList(Study study);
 
 	public void processPhenoCollectionsWithTheirDataToInsertBatch(
-			List<PhenoCollection> phenoCollectionsWithTheirDataToInsert,
+			List<PhenoDataSetCollection> phenoCollectionsWithTheirDataToInsert,
 			Study study);
 	
-	public List<List<String>> getPhenoDataAsMatrix (Study study, List<String> subjectUids, List<PhenoDataSetField> customFields, List<PhenoDataSetGroup> phenoDataSetGroups);
+	public List<List<String>> getPhenoDataAsMatrix (Study study, List<String> subjectUids, List<PhenoDataSetField> customFields, List<PhenoDataSetGroup> phenoDataSetGroups,PhenoDataSetCategory phenoDataSetCategory);
 	
 	public List<PhenoDataSetGroup> getPhenoDataSetGroupsByLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy);
 
@@ -203,7 +202,7 @@ public interface IPhenotypicService {
 	
 	public PhenoDataSetGroup getPhenoFieldGroupById(Long id);
 
-	public List<PhenoCollection> getSubjectMatchingPhenoCollections(LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,Date recordDate);
+	public List<PhenoDataSetCollection> getSubjectMatchingPhenoCollections(LinkSubjectStudy subject, PhenoDataSetGroup phenoDataSetGroup,Date recordDate);
 	
 	/**
 	 * Get pheno dataset category by id.
@@ -298,12 +297,7 @@ public interface IPhenotypicService {
 	 * @return
 	 */
 	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count);
-	/**
-	 * 
-	 * @param pheDataSetFieldCriteria
-	 * @return
-	 */
-	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSet(PhenoDataSetField pheDataSetFieldCriteria);
+	
 	/**
 	 * 
 	 * @param study
@@ -368,8 +362,6 @@ public interface IPhenotypicService {
 	public void updatePhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO) throws EntityExistsException,ArkSystemException;
 	
 	public void deletePhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO);
-	
-	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSetField(PhenoDataSetField phenoDataSetField);
 
 	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(PhenoDataSetField phenoDataSetField, PhenoDataSetGroup phenoDataSetGroup);
 	
@@ -439,5 +431,26 @@ public interface IPhenotypicService {
 	
 	public void createPhenoDataSetFieldUpload(PhenoFieldUpload phenoFieldUpload);
 	
+	public List<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroup);
+	
+	public void deletePickedCategoriesAndAllTheirChildren(Study study,ArkFunction arkFunction, ArkUser arkUser); 
+	
+	public List<PhenoDataSetFieldDisplay> getPhenoFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup);
+	
+	public long getPhenoFieldGroupCount(Study study,ArkFunction arkFunction,Boolean status);
+	
+	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String FieldName, Study study, ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup);
+	
+	public List<PhenoDataSetGroup> getPhenoDataSetFieldGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count);
+	
+	public List<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroupOrderByPhenoDataSetCategory(PhenoDataSetGroup phenoDataSetGroup);
+	
+	public List<PhenoDataSetField> getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroupAndPhenoDataSetCategory(PhenoDataSetGroup phenoDataSetGroupCriteria,PhenoDataSetCategory phenoDataSetCategory);
+	
+	public List<Boolean> getPublishedSatusLst(Study study,ArkFunction arkFunction);
+	
+	public PhenoDataSetCategory getPhenoDataSetCategoryById(Long id);
+	
+	public boolean isPhenoDataSetFieldCategoryBeingUsed(PhenoDataSetCategory phenoDataSetCategory);
 }
 

@@ -97,6 +97,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -1064,9 +1065,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao.getCustomFieldByNameStudyArkFunction(customFieldName, study, arkFunction);
 	}
 
-	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup) {
+	/*public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup) {
 		return customFieldDao.getCustomFieldByNameStudyCFG(customFieldName, study, arkFunction, customFieldGroup);
-	}
+	}*/
 
 	public UnitType getUnitTypeByNameAndArkFunction(String name, ArkFunction arkFunction) {
 		return customFieldDao.getUnitTypeByNameAndArkFunction(name, arkFunction);
@@ -1264,10 +1265,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return new ArrayList<String>();// maybe exception actually good here
 	}
 
-	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup) {
-		return studyDao.getCustomFieldDisplaysIn(fieldNameCollection, study, arkFunction, customFieldGroup);
-	}
-
+	//Used in  BioCustomFieldUploadValidator
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction) {
 		return studyDao.getCustomFieldDisplaysIn(fieldNameCollection, study, arkFunction);
 	}
@@ -2070,6 +2068,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name) {
 		return studyDao.getUploadTypeByModuleAndName(arkModule, name);
 	}
+
+	
 
 	
 	

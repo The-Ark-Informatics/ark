@@ -36,13 +36,15 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -56,10 +58,10 @@ import com.csvreader.CsvReader;
  * 
  * @author tendersby
  */
-public class CustomDataUploader {
+public class PhenoDataUploader {
 	private char						delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;
 	private Study						study;
-	static  Logger						log						= LoggerFactory.getLogger(CustomDataUploader.class);
+	static  Logger						log						= LoggerFactory.getLogger(PhenoDataUploader.class);
 	private IArkCommonService		iArkCommonService		= null;
 	private IPhenotypicService			iPhenotypicService			= null;
 	private StringBuffer				uploadReport			= null;
@@ -75,7 +77,7 @@ public class CustomDataUploader {
 	 * @param iPhenotypicService
 	 *           study service to perform select/insert/updates to the study database
 	 */
-	public CustomDataUploader(Study study, IArkCommonService iArkCommonService, IPhenotypicService iPhenotypicService) {
+	public PhenoDataUploader(Study study, IArkCommonService iArkCommonService, IPhenotypicService iPhenotypicService) {
 		this.study = study;
 		this.iArkCommonService = iArkCommonService;
 		this.iPhenotypicService = iPhenotypicService;
@@ -94,8 +96,8 @@ public class CustomDataUploader {
 		return null;
 	}
 
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate, CustomFieldGroup customFieldGroup, PhenoCollection phenoCollection, boolean overwriteExisting) throws FileFormatException, ArkSystemException {
-		List<PhenoCollection> phenoCollectionsWithTheirDataToInsert = new ArrayList<PhenoCollection>();
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate, PhenoDataSetGroup phenoDataSetGroup, PhenoDataSetCollection phenoCollection, boolean overwriteExisting) throws FileFormatException, ArkSystemException {
+		List<PhenoDataSetCollection> phenoCollectionsWithTheirDataToInsert = new ArrayList<PhenoDataSetCollection>();
 		
 		delimiterCharacter = delimChar;
 		uploadReport = new StringBuffer();
@@ -141,14 +143,16 @@ public class CustomDataUploader {
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
 			ArkFunction phenoCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);//");
 
-			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction, customFieldGroup);
-		
+			//List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction, customFieldGroup);
+			List<PhenoDataSetFieldDisplay> cfdsThatWeNeed = iPhenotypicService.getPhenoFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction, phenoDataSetGroup);
+			
+			
 			//Paul has requested - in pheno we only insert List<PhenoData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
 			//read one line which contains potentially many custom fields
 			QuestionnaireStatus uploadingStatus = iPhenotypicService.getPhenoCollectionStatusByName(Constants.PHENO_COLLECTION_STATUS_UPLOADED);
 			
 			while (csvReader.readRecord()){
-				List<PhenoData> phenoDataToInsertForThisPhenoCollection = new ArrayList<PhenoData>();
+				List<PhenoDataSetData> phenoDataToInsertForThisPhenoCollection = new ArrayList<PhenoDataSetData>();
 				log.info("reading record " + subjectCount);				
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
@@ -157,13 +161,13 @@ public class CustomDataUploader {
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
 				//log.info("get subject from list");
 				CustomField customField = null;
-				List<PhenoCollection> subjectExistingMatchingPhenoCollections = iPhenotypicService.getSubjectMatchingPhenoCollections(subject, customFieldGroup, recordDate_asDate);
-				PhenoCollection phenoCollectionIntoDB = new PhenoCollection();
+				List<PhenoDataSetCollection> subjectExistingMatchingPhenoCollections = iPhenotypicService.getSubjectMatchingPhenoCollections(subject, phenoDataSetGroup, recordDate_asDate);
+				PhenoDataSetCollection phenoCollectionIntoDB = new PhenoDataSetCollection();
 				if(subjectExistingMatchingPhenoCollections.size() == 0 || !overwriteExisting) {
 					phenoCollectionIntoDB.setDescription(phenoCollection.getDescription());
 					phenoCollectionIntoDB.setLinkSubjectStudy(subject);
 	//				phenoCollectionIntoDB.setName(phenoCollection.getName());
-					phenoCollectionIntoDB.setQuestionnaire(customFieldGroup);
+					phenoCollectionIntoDB.setQuestionnaire(phenoDataSetGroup);
 					if(recordDate.isEmpty()) {
 						phenoCollectionIntoDB.setRecordDate(new Date());
 					} else {
@@ -180,30 +184,30 @@ public class CustomDataUploader {
 					}
 				}
 				
-				for(CustomFieldDisplay cfd : cfdsThatWeNeed){	
+				for(PhenoDataSetFieldDisplay phenoFieldDisplay : cfdsThatWeNeed){	
 
 					String theDataAsString = null;
-					customField = cfd.getCustomField();
+					PhenoDataSetField  phenoDataSetField= phenoFieldDisplay.getPhenoDataSetField();
 					
-					if(csvReader.getIndex(cfd.getCustomField().getName())<0){
+					if(csvReader.getIndex(phenoFieldDisplay.getPhenoDataSetField().getName())<0){
 						for(String nameAsSeenInFile : fieldNameCollection){
-							if(nameAsSeenInFile.equalsIgnoreCase(cfd.getCustomField().getName())){
+							if(nameAsSeenInFile.equalsIgnoreCase(phenoFieldDisplay.getPhenoDataSetField().getName())){
 								theDataAsString = csvReader.get(nameAsSeenInFile);
 							}
 						}
 					}
 					else{
-						theDataAsString = csvReader.get(cfd.getCustomField().getName());
+						theDataAsString = csvReader.get(phenoFieldDisplay.getPhenoDataSetField().getName());
 					}
 
 					if(theDataAsString!=null && !theDataAsString.isEmpty()){
-						PhenoData dataToInsert = new PhenoData();
-						dataToInsert.setCustomFieldDisplay(cfd);
+						PhenoDataSetData dataToInsert = new PhenoDataSetData();
+						dataToInsert.setPhenoDataSetFieldDisplay(phenoFieldDisplay);
 						//as much as i disagree...pheno data isn't tied to subject....pheno collection is dataToInsert.setLinkSubjectStudy(subject);
-						setValue(customField, cfd,  dataToInsert, theDataAsString);
+						setValue(phenoDataSetField, phenoFieldDisplay,  dataToInsert, theDataAsString);
 						boolean flag = true;
-						for(PhenoData phenoData : phenoCollectionIntoDB.getPhenoData()) {
-							if(phenoData.getCustomFieldDisplay().getId() == cfd.getId()) {
+						for(PhenoDataSetData phenoData : phenoCollectionIntoDB.getPhenoDataSetData()) {
+							if(phenoData.getPhenoDataSetFieldDisplay().getId() == phenoFieldDisplay.getId()) {
 								phenoData.setDateDataValue(dataToInsert.getDateDataValue());
 								phenoData.setErrorDataValue(dataToInsert.getErrorDataValue());
 								phenoData.setNumberDataValue(dataToInsert.getNumberDataValue());
@@ -222,7 +226,7 @@ public class CustomDataUploader {
 						emptyDataCount++;
 					}
 				}
-				phenoCollectionIntoDB.getPhenoData().addAll(phenoDataToInsertForThisPhenoCollection);
+				phenoCollectionIntoDB.getPhenoDataSetData().addAll(phenoDataToInsertForThisPhenoCollection);
 				log.info(phenoCollectionIntoDB.toString());
 				phenoCollectionsWithTheirDataToInsert.add(phenoCollectionIntoDB);
 				subjectCount ++;
@@ -282,13 +286,13 @@ public class CustomDataUploader {
 		return uploadReport;
 	}
 
-	private PhenoData setValue(CustomField customField, CustomFieldDisplay customFieldDisplay, PhenoData data, String theDataAsString){
+	private PhenoDataSetData setValue(PhenoDataSetField phenoDataSetField, PhenoDataSetFieldDisplay phoDataSetFieldDisplay, PhenoDataSetData data, String theDataAsString){
 //		log.warn("cf=" + customField + "\ndata=" + data+ "dataAsString=" + theDataAsString);
 		
-		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+		if (phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			data.setNumberDataValue(new Double(theDataAsString));
 		}
-		else if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+		else if (phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 			DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 			Date dateFieldValue;
 			try {
@@ -299,9 +303,9 @@ public class CustomDataUploader {
 				data.setErrorDataValue(theDataAsString);
 			}
 		}
-		else if(customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-			if(customField.getEncodedValues()!=null && !customField.getEncodedValues().isEmpty() 
-					&& customFieldDisplay.getAllowMultiselect()){
+		else if(phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+			if(phenoDataSetField.getEncodedValues()!=null && !phenoDataSetField.getEncodedValues().isEmpty() 
+					&& phoDataSetFieldDisplay.getAllowMultiselect()){
 				if(theDataAsString != null){
 					theDataAsString = theDataAsString.replaceAll(" ", ";");
 				}

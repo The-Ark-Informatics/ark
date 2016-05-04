@@ -29,7 +29,8 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
@@ -39,7 +40,7 @@ import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.util.CustomDataUploadValidator;
+import au.org.theark.phenotypic.util.PhenoDataUploadValidator;
 
 /**
  * The first step of this wizard.
@@ -108,10 +109,10 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 				throw new FileFormatException();
 			}
 
-			CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService, iPhenotypicService);
+			PhenoDataUploadValidator customFieldUploadValidator = new PhenoDataUploadValidator(iArkCommonService, iPhenotypicService);
 				
-			PhenoCollection phenoCollectionCriteria =containerForm.getModelObject().getPhenoCollection();
-			CustomFieldGroup cfgSelected = containerForm.getModelObject().getCustomFieldGroup();
+			PhenoDataSetCollection phenoCollectionCriteria =containerForm.getModelObject().getPhenoCollection();
+			PhenoDataSetGroup cfgSelected = containerForm.getModelObject().getPhenoDataSetGroup();
 				
 			validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject(), phenoCollectionCriteria, cfgSelected);			
 

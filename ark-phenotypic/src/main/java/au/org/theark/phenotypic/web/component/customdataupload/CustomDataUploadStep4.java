@@ -27,7 +27,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
@@ -36,7 +37,7 @@ import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.util.*;
 import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
-import au.org.theark.phenotypic.job.CustomDataUploadExecutor;
+import au.org.theark.phenotypic.job.PhenoDataUploadExecutor;
 //import au.org.theark.phenotypic.job.StudyDataUploadExecutor;
 //import au.org.theark.phenotypic.service.IStudyService;
 //import au.org.theark.phenotypic.util.SubjectUploadReport;
@@ -95,11 +96,11 @@ public class CustomDataUploadStep4 extends AbstractWizardStepPanel {
 			Subject currentUser = SecurityUtils.getSubject();
 			Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-			PhenoCollection phenoCollectionCriteria = containerForm.getModelObject().getPhenoCollection();
-			CustomFieldGroup customFieldGroup = containerForm.getModelObject().getCustomFieldGroup();
+			PhenoDataSetCollection phenoCollectionCriteria = containerForm.getModelObject().getPhenoCollection();
+			PhenoDataSetGroup phenoDataSetGroup = containerForm.getModelObject().getPhenoDataSetGroup();
 			
-			CustomDataUploadExecutor task = new CustomDataUploadExecutor(iArkCommonService, iPhenoService, inputStream, uploadId, //null user
-						studyId, fileFormat, delimiterChar, size, report, uidsToUpload, phenoCollectionCriteria, customFieldGroup, containerForm.getModelObject().getUpdateChkBox());
+			PhenoDataUploadExecutor task = new PhenoDataUploadExecutor(iArkCommonService, iPhenoService, inputStream, uploadId, //null user
+						studyId, fileFormat, delimiterChar, size, report, uidsToUpload, phenoCollectionCriteria, phenoDataSetGroup, containerForm.getModelObject().getUpdateChkBox());
 			task.run();
 			
 		}

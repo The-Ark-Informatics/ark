@@ -85,7 +85,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -1517,7 +1517,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param study
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup) {
 
 		if (fieldNameCollection == null || fieldNameCollection.isEmpty()) {
@@ -1540,7 +1540,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			query.setParameter("customFieldGroup", customFieldGroup);
 			return query.list();
 		}
-	}
+	}*/
 
 	@SuppressWarnings("unchecked")
 	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
@@ -2965,7 +2965,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 				query2.setParameterList("customFieldsList", customFieldToGet);
 
-				List<PhenoData> phenoData = query2.list();
+				List<PhenoDataSetData> phenoData = query2.list();
 
 				HashMap<String, ExtractionVO> hashOfPhenosWithTheirPhenoCustomData = allTheData.getPhenoCustomData();
 
@@ -2973,43 +2973,43 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				HashMap<String, String> map = null;
 				Long previousPhenoId = null;
 				//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
-				for (PhenoData data : phenoData) {
+				for (PhenoDataSetData data : phenoData) {
 
 					if(previousPhenoId==null){
 						map = new HashMap<String, String>();
-						previousPhenoId = data.getPhenoCollection().getId();
-						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
-						valuesForThisPheno.setRecordDate(data.getPhenoCollection().getRecordDate());
-						valuesForThisPheno.setCollectionName(data.getPhenoCollection().getQuestionnaire().getName());
+						previousPhenoId = data.getPhenoDataSetCollection().getId();
+						valuesForThisPheno.setSubjectUid(data.getPhenoDataSetCollection().getLinkSubjectStudy().getSubjectUID());
+						valuesForThisPheno.setRecordDate(data.getPhenoDataSetCollection().getRecordDate());
+						valuesForThisPheno.setCollectionName(data.getPhenoDataSetCollection().getQuestionnaire().getName());
 					}
-					else if(data.getPhenoCollection().getId().equals(previousPhenoId)){
+					else if(data.getPhenoDataSetCollection().getId().equals(previousPhenoId)){
 						//then just put the data in
 					}
 					else{	//if its a new LSS finalize previous map, etc
 						valuesForThisPheno.setKeyValues(map);
 						hashOfPhenosWithTheirPhenoCustomData.put(("" + previousPhenoId), valuesForThisPheno);	
-						previousPhenoId = data.getPhenoCollection().getId();
+						previousPhenoId = data.getPhenoDataSetCollection().getId();
 						map = new HashMap<String, String>();//reset
 						valuesForThisPheno = new ExtractionVO();
-						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
-						valuesForThisPheno.setRecordDate(data.getPhenoCollection().getRecordDate());
-						valuesForThisPheno.setCollectionName(data.getPhenoCollection().getQuestionnaire().getName());
+						valuesForThisPheno.setSubjectUid(data.getPhenoDataSetCollection().getLinkSubjectStudy().getSubjectUID());
+						valuesForThisPheno.setRecordDate(data.getPhenoDataSetCollection().getRecordDate());
+						valuesForThisPheno.setCollectionName(data.getPhenoDataSetCollection().getQuestionnaire().getName());
 					}
 
 					//if any error value, then just use that - though, yet again I really question the acceptance of error data
 					if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+						map.put(data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getName(), data.getErrorDataValue());
 					}
 					else {
 						// Determine field type and assign key value accordingly
-						if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+						if (data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+							map.put(data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getName(), data.getDateDataValue().toString());
 						}
-						if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+						if (data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+							map.put(data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getName(), data.getNumberDataValue().toString());
 						}
-						if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+						if (data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+							map.put(data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getName(), data.getTextDataValue());
 						}
 					}			
 				}

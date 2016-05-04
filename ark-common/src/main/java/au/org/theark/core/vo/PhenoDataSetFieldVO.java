@@ -12,16 +12,16 @@ public class PhenoDataSetFieldVO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private PhenoDataSetField phenoDataSetField;
-	private PhenoDataSetFieldDisplay phenoDataSetFieldDisplay;
+	/*private PhenoDataSetFieldDisplay phenoDataSetFieldDisplay;
 	protected List<PhenoDataSetCategory>			phenoDataSetFieldCategoryLst;
-	protected boolean usePhenoDataSetFieldDisplay;	
+	protected boolean usePhenoDataSetFieldDisplay;	*/
 	
 	public PhenoDataSetFieldVO() {
 		super();
 		phenoDataSetField = new PhenoDataSetField();
-		phenoDataSetFieldDisplay = new PhenoDataSetFieldDisplay();
+		/*phenoDataSetFieldDisplay = new PhenoDataSetFieldDisplay();
 		phenoDataSetFieldCategoryLst=new ArrayList<PhenoDataSetCategory>();
-		usePhenoDataSetFieldDisplay = false;
+		usePhenoDataSetFieldDisplay = false;*/
 	}
 	
 	
@@ -31,7 +31,7 @@ public class PhenoDataSetFieldVO implements Serializable {
 	public void setPhenoDataSetField(PhenoDataSetField phenoDataSetField) {
 		this.phenoDataSetField = phenoDataSetField;
 	}
-	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplay() {
+	/*public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplay() {
 		return phenoDataSetFieldDisplay;
 	}
 	public void setPhenoDataSetFieldDisplay(
@@ -50,5 +50,5 @@ public class PhenoDataSetFieldVO implements Serializable {
 	}
 	public void setUsePhenoDataSetFieldDisplay(boolean usePhenoDataSetFieldDisplay) {
 		this.usePhenoDataSetFieldDisplay = usePhenoDataSetFieldDisplay;
-	}
+	}*/
 }

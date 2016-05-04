@@ -25,7 +25,8 @@ import java.util.List;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
@@ -48,11 +49,12 @@ public class UploadVO implements Serializable {
 	private java.util.Collection<String>		validationMessages;
 	private Boolean								updateChkBox;
 	private CustomFieldGroup					customFieldGroup;
-	private PhenoCollection						phenoCollection;
+	private PhenoDataSetGroup					phenoDataSetGroup;
+	private PhenoDataSetCollection				phenoCollection;
 
 	public UploadVO() {
 		upload = new Upload();
-		phenoCollection = new PhenoCollection();
+		phenoCollection = new PhenoDataSetCollection();
 		setUploadCollection(new ArrayList<Upload>());
 	}
 
@@ -222,11 +224,19 @@ public class UploadVO implements Serializable {
 		return customFieldGroup;
 	}
 
-	public void setPhenoCollection(PhenoCollection phenoCollection) {
+	public PhenoDataSetGroup getPhenoDataSetGroup() {
+		return phenoDataSetGroup;
+	}
+
+	public void setPhenoDataSetGroup(PhenoDataSetGroup phenoDataSetGroup) {
+		this.phenoDataSetGroup = phenoDataSetGroup;
+	}
+
+	public void setPhenoCollection(PhenoDataSetCollection phenoCollection) {
 		this.phenoCollection = phenoCollection;
 	}
 
-	public PhenoCollection getPhenoCollection() {
+	public PhenoDataSetCollection getPhenoCollection() {
 		return phenoCollection;
 	}
 }

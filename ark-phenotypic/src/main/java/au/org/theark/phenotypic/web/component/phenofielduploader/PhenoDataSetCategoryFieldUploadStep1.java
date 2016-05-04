@@ -99,18 +99,10 @@ public class PhenoDataSetCategoryFieldUploadStep1 extends AbstractWizardStepPane
 	}
 
 	public void initialiseDetailForm() {
-		// Set up field on form here
-
-		// progress bar for upload
-		// uploadProgressBar = new UploadProgressBar("progress",
-		// ajaxSimpleUploadForm);
-
 		// fileUpload for payload
 		fileUploadField = new FileUploadField(Constants.UPLOADVO_UPLOAD_FILENAME);
-
 		// Initialise Drop Down Choices
 		initialiseDropDownChoices();
-
 		attachValidators();
 		addComponents();
 	}

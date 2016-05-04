@@ -45,8 +45,11 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -65,9 +68,9 @@ import com.csvreader.CsvReader;
  * 
  * @author travis
  */
-public class CustomDataUploadValidator {
+public class PhenoDataUploadValidator {
 	private static final long		serialVersionUID			= -1933045886948087734L;
-	private static Logger			log							= LoggerFactory.getLogger(CustomDataUploadValidator.class);
+	private static Logger			log							= LoggerFactory.getLogger(PhenoDataUploadValidator.class);
 
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
@@ -86,7 +89,7 @@ public class CustomDataUploadValidator {
 	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
 	private int							row							= 1;
 
-	public CustomDataUploadValidator() {
+	public PhenoDataUploadValidator() {
 		super();
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -99,7 +102,7 @@ public class CustomDataUploadValidator {
 		simpleDateFormat.setLenient(false);
 	}
 
-	public CustomDataUploadValidator(Study study) {
+	public PhenoDataUploadValidator(Study study) {
 		super();
 		this.study = study;
 		this.existantSubjectUIDRows = new HashSet<Integer>();
@@ -111,7 +114,7 @@ public class CustomDataUploadValidator {
 	}
 
 	@SuppressWarnings("unchecked")
-	public CustomDataUploadValidator(IArkCommonService iArkCommonService, IPhenotypicService iPhenotypicService) {
+	public PhenoDataUploadValidator(IArkCommonService iArkCommonService, IPhenotypicService iPhenotypicService) {
 		super();
 		this.iArkCommonService = iArkCommonService;
 		this.iPhenotypicService = iPhenotypicService;
@@ -205,14 +208,14 @@ public class CustomDataUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo, PhenoCollection phenoCollection, CustomFieldGroup cfg) {
+	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo, PhenoDataSetCollection phenoCollection, PhenoDataSetGroup pfg) {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter, phenoCollection, cfg, uploadVo.getUpdateChkBox());
+			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter, phenoCollection, pfg, uploadVo.getUpdateChkBox());
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -232,7 +235,7 @@ public class CustomDataUploadValidator {
 	 * @param updateExisting 
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar, PhenoCollection phenoCollection, CustomFieldGroup cfg, Boolean updateExisting) {
+	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar, PhenoDataSetCollection phenoCollection, PhenoDataSetGroup pfg, Boolean updateExisting) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -253,7 +256,7 @@ public class CustomDataUploadValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar, phenoCollection, cfg, updateExisting);
+			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar, phenoCollection, pfg, updateExisting);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -271,7 +274,7 @@ public class CustomDataUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup) {
+	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference, PhenoDataSetGroup phenoDataSetGroup) {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
@@ -294,7 +297,7 @@ public class CustomDataUploadValidator {
 				}
 			}
 
-			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference, customFieldGroup, uploadVo.getUpdateChkBox());
+			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference, phenoDataSetGroup, uploadVo.getUpdateChkBox());
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -302,13 +305,13 @@ public class CustomDataUploadValidator {
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup, Boolean updateExisting) {
+	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference, PhenoDataSetGroup phenoDataSetGroup, Boolean updateExisting) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
 			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
 			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
-			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference, customFieldGroup, updateExisting);
+			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference, phenoDataSetGroup, updateExisting);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -337,7 +340,7 @@ public class CustomDataUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of file format validation messages
 	 */
-	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, PhenoCollection phenoCollection, CustomFieldGroup customFieldGroup, Boolean updateExisting) throws FileFormatException, ArkBaseException {
+	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, PhenoDataSetCollection phenoCollection, PhenoDataSetGroup phenoDataSetGroup, Boolean updateExisting) throws FileFormatException, ArkBaseException {
 		delimiterCharacter = inDelimChr;
 		
 		fileFormat = inFileFormat;
@@ -368,7 +371,8 @@ public class CustomDataUploadValidator {
 				}
 				else{
 					//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
-					if(iArkCommonService.getCustomFieldByNameStudyCFG(header, study, customFieldArkFunction, customFieldGroup) == null){
+					//if(iArkCommonService.getCustomFieldByNameStudyCFG(header, study, customFieldArkFunction, phenoDataSetGroup) == null){
+					if(iPhenotypicService.getPhenoDataSetFieldByNameStudyPFG(header, study, customFieldArkFunction, phenoDataSetGroup) == null){
 						badHeaders.add(header);
 						headerError = true;
 					}
@@ -386,7 +390,7 @@ public class CustomDataUploadValidator {
 					fileValidationMessages.add("The column name \"RECORD_DATE_TIME\" must exist as the header of the second column.\n");
 				}
 				for (String badHeader : badHeaders) {
-					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing custom field assigned to the data set: " + customFieldGroup.getName() + "\n");
+					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing custom field assigned to the data set: " + phenoDataSetGroup.getName() + "\n");
 				}
 				log.warn("failed header validation");
 			}
@@ -446,7 +450,7 @@ public class CustomDataUploadValidator {
 	 * @return a collection of data validation messages
 	 */
 	public java.util.Collection<String> validateMatrixCustomFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, 
-			List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup, Boolean updateExisting) throws FileFormatException, ArkSystemException {
+			List<String> uidsToUpdateReference, PhenoDataSetGroup phenoDataSetGroup, Boolean updateExisting) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 1;
@@ -467,7 +471,7 @@ public class CustomDataUploadValidator {
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
 			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 																							//remove if not subjectuid, enforce fetch of customField to save another query each
-			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction, customFieldGroup);
+			List<PhenoDataSetFieldDisplay> cfdsThatWeNeed = iPhenotypicService.getPhenoFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction, phenoDataSetGroup);
 			
 			/* 
 			 * other validation for pheno?
@@ -481,21 +485,21 @@ public class CustomDataUploadValidator {
 				String subjectUID = stringLineArray[0];	// First/0th column should be the SubjectUID
 				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
 					nonExistantUIDs.add(row);//TODO test and compare array.
-					for(CustomFieldDisplay cfd : cfdsThatWeNeed){
-						errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+					for(PhenoDataSetFieldDisplay pfd : cfdsThatWeNeed){
+						errorCells.add(new ArkGridCell(csvReader.getIndex(pfd.getPhenoDataSetField().getName()), row));
 					}
 					errorCells.add(new ArkGridCell(0, row));
 				}
 				else{
 					Date recordDate = (stringLineArray[1].isEmpty() ? new Date() : simpleDateFormat.parse(stringLineArray[1]));
-					List<PhenoCollection> phenos = iPhenotypicService.getSubjectMatchingPhenoCollections(iArkCommonService.getSubjectByUID(subjectUID, study), customFieldGroup, recordDate);
+					List<PhenoDataSetCollection> phenos = iPhenotypicService.getSubjectMatchingPhenoCollections(iArkCommonService.getSubjectByUID(subjectUID, study), phenoDataSetGroup, recordDate);
 					if(phenos.size() >= 2  && updateExisting) {
 						warningRows.add(row);
 						dataValidationMessages.add("WARNING:  Subject " + subjectUID + " on row " + row + " has too many Pheno Collections to automatically update."
 								+ " If you continue, no changes will be made to this subject.");
 					} else if(uidsToUpdateReference.contains(subjectUID)){
-						for(CustomFieldDisplay cfd : cfdsThatWeNeed){
-							errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+						for(PhenoDataSetFieldDisplay pfd : cfdsThatWeNeed){
+							errorCells.add(new ArkGridCell(csvReader.getIndex(pfd.getPhenoDataSetField().getName()), row));
 						}
 						errorCells.add(new ArkGridCell(0, row));
 						dataValidationMessages.add("ERROR:  Subject " + subjectUID + " on row " + row + " is listed multiple times in this file.  " +
@@ -503,31 +507,31 @@ public class CustomDataUploadValidator {
 					}
 					else{
 						uidsToUpdateReference.add(subjectUID);
-						CustomField customField = null;		
-						for(CustomFieldDisplay cfd : cfdsThatWeNeed){
-							customField = cfd.getCustomField();
-							String theDataAsString = csvReader.get(cfd.getCustomField().getName());
+						PhenoDataSetField phenoDataSetField = null;		
+						for(PhenoDataSetFieldDisplay pfd : cfdsThatWeNeed){
+							phenoDataSetField	 = pfd.getPhenoDataSetField();
+							String theDataAsString = csvReader.get(pfd.getPhenoDataSetField().getName());
 							if(theDataAsString!=null && !theDataAsString.isEmpty()){
 								//TODO : also check if the value == "missingvaluePatternThingy" , then dont validate
-								if(customField.getMissingValue()!=null && customField.getMissingValue().toString().equalsIgnoreCase(theDataAsString)){
+								if(phenoDataSetField.getMissingValue()!=null && phenoDataSetField.getMissingValue().toString().equalsIgnoreCase(theDataAsString)){
 									//then move on and don't validate it...it goes straight in
 								}
 								else
 								{
 									//log.info("customField = " + customField==null?"null":customField.getName());
-									if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages, cfd.getAllowMultiselect())){
-										errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+									if(!validateFieldData(phenoDataSetField, theDataAsString, subjectUID, dataValidationMessages, pfd.getAllowMultiselect())){
+										errorCells.add(new ArkGridCell(csvReader.getIndex(pfd.getPhenoDataSetField().getName()), row));
 									}								
 								}
 							}
 						}
 						if(phenos.size() == 1 && updateExisting) {
-							PhenoCollection existingCollection = phenos.get(0);
-							for(CustomFieldDisplay cfd : cfdsThatWeNeed) { //TODO: Optimize to not need multiple loops.
-								for(PhenoData phenoData : existingCollection.getPhenoData()) {
-									if(phenoData.getCustomFieldDisplay().getId() == cfd.getId()) {
-										int index = csvReader.getIndex(cfd.getCustomField().getName());
-										switch (phenoData.getCustomFieldDisplay().getCustomField().getFieldType().getName()) {
+							PhenoDataSetCollection existingCollection = phenos.get(0);
+							for(PhenoDataSetFieldDisplay pfd : cfdsThatWeNeed) { //TODO: Optimize to not need multiple loops.
+								for(PhenoDataSetData phenoData : existingCollection.getPhenoDataSetData()) {
+									if(phenoData.getPhenoDataSetFieldDisplay().getId() == pfd.getId()) {
+										int index = csvReader.getIndex(pfd.getPhenoDataSetField().getName());
+										switch (phenoData.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName()) {
 											case Constants.FIELD_TYPE_CHARACTER:
 												if(!phenoData.getTextDataValue().equals(stringLineArray[index])) {
 													insertCells.add(new ArkGridCell(index, row));
@@ -598,17 +602,17 @@ public class CustomDataUploadValidator {
 	 * @param customField
 	 * @return boolean
 	 */
-	public static boolean isValidFieldData(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
+	public static boolean isValidFieldData(PhenoDataSetField phenoDataSetField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
 		boolean isValidFieldData = true;
 		//TODO ASAP is null coming in acceptable? or do we just just check before call... if value null return false?
 		
 		// Number field type
-		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+		if (phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			try {
 				Double.parseDouble(value);
 			}
 			catch (NumberFormatException nfe) {
-				errorMessages.add(fieldDataNotDefinedType(customField, value, subjectUID));
+				errorMessages.add(fieldDataNotDefinedType(phenoDataSetField, value, subjectUID));
 				log.error("Field data number format exception " + nfe.getMessage());
 				isValidFieldData = false;
 			}
@@ -619,19 +623,19 @@ public class CustomDataUploadValidator {
 		}
 
 		// Character field type
-		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+		if (phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
 			//TODO previously had simple null check by way of making an exception here.... what do we need to validation?	
 		}
 
 		// Date field type
-		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+		if (phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 			try {//TODO : think about defining date format with the field, particularly after i18n and if datetime needed 
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
 				dateFormat.parse(value);
 			}
 			catch (ParseException pe) {
-				errorMessages.add(fieldDataNotValidDate(customField, value, subjectUID));
+				errorMessages.add(fieldDataNotValidDate(phenoDataSetField, value, subjectUID));
 				log.error("Field data date parse exception " + pe.getMessage());
 				isValidFieldData = false;
 			}
@@ -650,13 +654,13 @@ public class CustomDataUploadValidator {
 	 * @param customField
 	 * @return boolean
 	 */
-	public static boolean isInValidRange(CustomField customField, String valueToValidate, String subjectUID, java.util.Collection<String> errorMessages) {
+	public static boolean isInValidRange(PhenoDataSetField phenoDataSetField, String valueToValidate, String subjectUID, java.util.Collection<String> errorMessages) {
 		boolean isInValidRange = true;
 		//Field field = fieldData.getField();
-		String minValue = customField.getMinValue();
-		String maxValue = customField.getMaxValue();
+		String minValue = phenoDataSetField.getMinValue();
+		String maxValue = phenoDataSetField.getMaxValue();
 		//log.warn("about to validate customField " + customField.getName() + " against value = " + valueToValidate);
-		if(valueToValidate!=null && customField.getMissingValue()!=null && valueToValidate.trim().equalsIgnoreCase(customField.getMissingValue().trim())) {
+		if(valueToValidate!=null && phenoDataSetField.getMissingValue()!=null && valueToValidate.trim().equalsIgnoreCase(phenoDataSetField.getMissingValue().trim())) {
 			return isInValidRange;//TODO investigate 
 		}
 
@@ -664,10 +668,10 @@ public class CustomDataUploadValidator {
 			return isInValidRange;
 		}
 
-		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+		if (phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			try {
-				Double doubleMinValue = Double.parseDouble(customField.getMinValue());
-				Double doubleMaxValue = Double.parseDouble(customField.getMaxValue());
+				Double doubleMinValue = Double.parseDouble(phenoDataSetField.getMinValue());
+				Double doubleMaxValue = Double.parseDouble(phenoDataSetField.getMaxValue());
 				Double doubleFieldValue = Double.parseDouble(valueToValidate);
 
 				if ((doubleFieldValue > doubleMaxValue) || (doubleFieldValue < doubleMinValue)) {
@@ -689,14 +693,14 @@ public class CustomDataUploadValidator {
 				isInValidRange = false;
 			}
 		}
-		else if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-			if (customField.getMinValue() != null && customField.getMaxValue() != null) {
+		else if (phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+			if (phenoDataSetField.getMinValue() != null && phenoDataSetField.getMaxValue() != null) {
 				try {
 					DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 					dateFormat.setLenient(false);
 
-					Date dateMinValue = dateFormat.parse(customField.getMinValue());
-					Date dateMaxValue = dateFormat.parse(customField.getMaxValue());
+					Date dateMinValue = dateFormat.parse(phenoDataSetField.getMinValue());
+					Date dateMaxValue = dateFormat.parse(phenoDataSetField.getMaxValue());
 					Date dateFieldValue = dateFormat.parse(valueToValidate);
 
 					if (dateFieldValue.after(dateMaxValue) || dateFieldValue.before(dateMinValue)) {
@@ -725,16 +729,16 @@ public class CustomDataUploadValidator {
 	 * @param customfield
 	 * @return boolean
 	 */
-	public static boolean isInEncodedValues(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages, boolean isMultiSelect) {
+	public static boolean isInEncodedValues(PhenoDataSetField phenoDataSetField, String value, String subjectUID, java.util.Collection<String> errorMessages, boolean isMultiSelect) {
 		boolean allInEncodedValues = true;
-		if(customField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(customField.getMissingValue().trim())) {
+		if(phenoDataSetField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(phenoDataSetField.getMissingValue().trim())) {
 			return true;
 		}
 
 		// Validate if encoded values is definedisInEncodedValues, and not a DATE fieldType
-		if (customField.getEncodedValues() != null 
-				&& !customField.getEncodedValues().isEmpty() 
-				&& !customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+		if (phenoDataSetField.getEncodedValues() != null 
+				&& !phenoDataSetField.getEncodedValues().isEmpty() 
+				&& !phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 
 			List<String> allMyValues = new ArrayList<String>();
 			
@@ -752,7 +756,7 @@ public class CustomDataUploadValidator {
 				}
 				else if (!isMultiSelect 
 							&& tokenSpacestringTokenizer.countTokens()>1){
-					errorMessages.add(fieldDataDoesNotAllowMultiSelectedEncodedValue(customField, value, subjectUID));
+					errorMessages.add(fieldDataDoesNotAllowMultiSelectedEncodedValue(phenoDataSetField, value, subjectUID));
 					return false;
 				}
 				else{
@@ -762,7 +766,7 @@ public class CustomDataUploadValidator {
 				for(String currentValue : allMyValues){
 					boolean inEncodedValues = false;
 					
-					StringTokenizer stringTokenizer = new StringTokenizer(customField.getEncodedValues(), Constants.ENCODED_VALUES_TOKEN);
+					StringTokenizer stringTokenizer = new StringTokenizer(phenoDataSetField.getEncodedValues(), Constants.ENCODED_VALUES_TOKEN);
 	
 					// Iterate through all discrete defined values and compare to field data value
 					while (stringTokenizer.hasMoreTokens()) {
@@ -777,7 +781,7 @@ public class CustomDataUploadValidator {
 					}
 
 					if (!inEncodedValues) {
-						errorMessages.add(fieldDataNotInEncodedValues(customField, value, subjectUID, isMultiSelect));
+						errorMessages.add(fieldDataNotInEncodedValues(phenoDataSetField, value, subjectUID, isMultiSelect));
 						allInEncodedValues = false;
 					}
 	
@@ -801,17 +805,17 @@ public class CustomDataUploadValidator {
 	 * @param isMultiSelect 
 	 * @return boolean
 	 */
-	public static boolean validateFieldData(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages, boolean isMultiSelect) {
+	public static boolean validateFieldData(PhenoDataSetField phenoDataSetField, String value, String subjectUID, java.util.Collection<String> errorMessages, boolean isMultiSelect) {
 		boolean isValid = true;
 		boolean isValidFieldData = true;
 		boolean isValidEncodedValues = true;
 		boolean isValidRange = true;
 
-		isValidFieldData = isValidFieldData(customField, value, subjectUID, errorMessages);
+		isValidFieldData = isValidFieldData(phenoDataSetField, value, subjectUID, errorMessages);
 		//log.info("isValidFieldData " + isValidFieldData );
-		isValidEncodedValues = isInEncodedValues(customField,value, subjectUID, errorMessages, isMultiSelect);
+		isValidEncodedValues = isInEncodedValues(phenoDataSetField,value, subjectUID, errorMessages, isMultiSelect);
 		//log.info("isValidEncodedValues " + isValidEncodedValues );
-		isValidRange = isInValidRange(customField, value, subjectUID, errorMessages);
+		isValidRange = isInValidRange(phenoDataSetField, value, subjectUID, errorMessages);
 		//log.info("isInValidRange " + isValidRange );
 		isValid = (isValidFieldData && isValidEncodedValues && isValidRange);
 		//log.info("isvalidoverall " + isValid );
@@ -884,7 +888,7 @@ public class CustomDataUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataNotInEncodedValues(CustomField field, String value, String subjectUID, boolean isMultiSelect) {
+	public static String fieldDataNotInEncodedValues(PhenoDataSetField field, String value, String subjectUID, boolean isMultiSelect) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
 		stringBuffer.append(subjectUID);
@@ -905,7 +909,7 @@ public class CustomDataUploadValidator {
 	 * @param subjectUID
 	 * @return String
 	 */
-	public static String fieldDataDoesNotAllowMultiSelectedEncodedValue(CustomField field, String value, String subjectUID) {
+	public static String fieldDataDoesNotAllowMultiSelectedEncodedValue(PhenoDataSetField field, String value, String subjectUID) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
 		stringBuffer.append(subjectUID);
@@ -924,7 +928,7 @@ public class CustomDataUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataNotValidDate(CustomField field, String value, String subjectUID) {
+	public static String fieldDataNotValidDate(PhenoDataSetField field, String value, String subjectUID) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
 		stringBuffer.append("Subject UID: ");
@@ -946,7 +950,7 @@ public class CustomDataUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 **/
-	public static String fieldDataNotDefinedType(CustomField field, String value, String subjectUID) {
+	public static String fieldDataNotDefinedType(PhenoDataSetField field, String value, String subjectUID) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
 		stringBuffer.append(subjectUID);

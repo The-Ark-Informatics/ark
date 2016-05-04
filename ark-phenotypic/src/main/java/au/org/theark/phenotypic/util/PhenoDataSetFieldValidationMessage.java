@@ -1,7 +1,7 @@
 package au.org.theark.phenotypic.util;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 
 /**
  * @author nivedann
@@ -46,7 +46,7 @@ public class PhenoDataSetFieldValidationMessage {
 		return (stringBuffer.toString());
 	}
 
-	public static String fieldMinValueNotDefinedType(CustomField field) {
+	public static String fieldMinValueNotDefinedType(PhenoDataSetField field) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
@@ -58,7 +58,7 @@ public class PhenoDataSetFieldValidationMessage {
 		return (stringBuffer.toString());
 	}
 
-	public static String fieldMaxValueNotDefinedType(CustomField field) {
+	public static String fieldMaxValueNotDefinedType(PhenoDataSetField field) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
@@ -70,7 +70,7 @@ public class PhenoDataSetFieldValidationMessage {
 		return (stringBuffer.toString());
 	}
 
-	public static String fieldMissingValueNotDefinedType(CustomField field) {
+	public static String fieldMissingValueNotDefinedType(PhenoDataSetField field) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
@@ -82,7 +82,7 @@ public class PhenoDataSetFieldValidationMessage {
 		return (stringBuffer.toString());
 	}
 
-	public static String fieldDefinitionMinValueNotValidDate(CustomField field) {
+	public static String fieldDefinitionMinValueNotValidDate(PhenoDataSetField field) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
@@ -94,7 +94,7 @@ public class PhenoDataSetFieldValidationMessage {
 		return (stringBuffer.toString());
 	}
 
-	public static String fieldDefinitionMaxValueNotValidDate(CustomField field) {
+	public static String fieldDefinitionMaxValueNotValidDate(PhenoDataSetField field) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
@@ -106,7 +106,7 @@ public class PhenoDataSetFieldValidationMessage {
 		return (stringBuffer.toString());
 	}
 
-	public static String fieldDefinitionMissingValueNotValidDate(CustomField field) {
+	public static String fieldDefinitionMissingValueNotValidDate(PhenoDataSetField field) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");

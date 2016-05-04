@@ -160,7 +160,7 @@ public class SearchResultListPanel extends Panel {
 				PhenoDataSetField phenoField = (PhenoDataSetField) (getParent().getDefaultModelObject());
 				CompoundPropertyModel<PhenoDataSetFieldVO> newModel = new CompoundPropertyModel<PhenoDataSetFieldVO>(new PhenoDataSetFieldVO());
 				newModel.getObject().setPhenoDataSetField(phenoField);
-				newModel.getObject().setUsePhenoDataSetFieldDisplay(cpModel.getObject().isUsePhenoDataSetFieldDisplay());
+				//newModel.getObject().setUsePhenoDataSetFieldDisplay(cpModel.getObject().isUsePhenoDataSetFieldDisplay());
 
 				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
 						//unitTypeDropDownOn,subjectCustomField);

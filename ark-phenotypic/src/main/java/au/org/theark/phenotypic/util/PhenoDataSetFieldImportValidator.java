@@ -45,6 +45,7 @@ import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.CustomFieldSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -56,6 +57,7 @@ import au.org.theark.core.util.DataConversionAndManipulationHelper;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenofielduploader.Constants;
 
 import com.csvreader.CsvReader;
@@ -95,14 +97,16 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 	private int								row							= 1;
 	private ArkFunction					arkFunction;
 	private ArkModule 					arkModule;
+	private IPhenotypicService			iPhenotypicService			=null;
 
 	/**
 	 * CustomFieldImportValidator constructor
 	 * @param iArkCommonService
 	 * @param uploadVo
 	 */
-	public PhenoDataSetFieldImportValidator(IArkCommonService<Void> iArkCommonService, UploadVO uploadVo) {
+	public PhenoDataSetFieldImportValidator(IArkCommonService<Void> iArkCommonService,IPhenotypicService iPhenotypicService, UploadVO uploadVo) {
 		this.iArkCommonService = iArkCommonService;
+		this.iPhenotypicService=iPhenotypicService;
 		this.arkFunction = uploadVo.getUpload().getArkFunction();
 
 		// Set study in context
@@ -346,13 +350,14 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		/*
 		 * Field table requires: ID, STUDY_ID, FIELD_TYPE_ID, NAME, DESCRIPTION, UNITS, MIN_VALUE, MAX_VALUE, ENCODED_VALUES, MISSING_VALUE
 		 */
-		CustomField field = new CustomField();
+		PhenoDataSetField field = new PhenoDataSetField();
 		field.setStudy(study);
 		
 		//these fields must be available for phenocollection...therefore we are to save / update / get by that ark function...ideally this should be by ark module
-		if(arkFunction.getName().equals(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY) || arkFunction.getName().equals(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)){
+		/*if(arkFunction.getName().equals(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY) || arkFunction.getName().equals(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)){
 			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
-		}
+		}*/
+		arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
@@ -381,7 +386,7 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 				// Only check rows with a valid fieldName
 				if (!fieldName.isEmpty()) {
 					int cols = stringLineArray.length;
-					field = new CustomField();
+					field = new PhenoDataSetField();
 					field.setStudy(study);
 					field.setName(fieldName);
 					field.setDescription(csvReader.get("DESCRIPTION"));
@@ -413,7 +418,8 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 
 					//This is how the old custom field being captured by the name.
 					//It is unique field according to the db index defined.
-					CustomField oldField = iArkCommonService.getCustomFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunction);
+					PhenoDataSetField oldField=	iPhenotypicService.getPhenoDataSetFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunction);
+					//CustomField oldField = iArkCommonService.getCustomFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunction);
 					if (oldField == null) {
 						// This is a new record - not able to find an existing field by that name
 						insertRows.add(rowIdx);
@@ -421,7 +427,7 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 					else {
 						// Determine updates
 						if (oldField.getId() != null) {
-							if (oldField.getCustomFieldHasData()) {
+							if (oldField.getPhenoFieldHasData()) {
 								// Block updates to field that already have data
 								for (int colIdx = 0; colIdx < cols; colIdx++) {
 									errorCells.add(new ArkGridCell(colIdx, rowIdx));
@@ -582,7 +588,7 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 	 *           is the error messages to add to is any errors
 	 * @return true if field.fieldType is NOT a DATE
 	 */
-	private static boolean validateEncodedValues(CustomField field, Collection<String> errorMessages) {
+	private static boolean validateEncodedValues(PhenoDataSetField field, Collection<String> errorMessages) {
 		boolean isValid = false;
 		if (!field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_CHARACTER)) {
 			// At the moment, only allowed to have encodedValues for a field where fieldType == CHARACTER
@@ -732,7 +738,7 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		return validationMessages;
 	}
 
-	private static boolean validateFieldMissingDefinition(CustomField field, Collection<String> errorMessages) {
+	private static boolean validateFieldMissingDefinition(PhenoDataSetField field, Collection<String> errorMessages) {
 		boolean isValid = true;
 
 		if (!(field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_CHARACTER) || field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_NUMBER) || field.getFieldType()
@@ -775,7 +781,7 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		return isValid;
 	}
 
-	private static boolean validateFieldMaxDefinition(CustomField field, Collection<String> errorMessages) {
+	private static boolean validateFieldMaxDefinition(PhenoDataSetField field, Collection<String> errorMessages) {
 		boolean isValid = false;
 
 		if (!(field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_CHARACTER) || field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_NUMBER) || field.getFieldType()
@@ -818,7 +824,7 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		return isValid;
 	}
 
-	private static boolean validateFieldMinDefinition(CustomField field, Collection<String> errorMessages) {
+	private static boolean validateFieldMinDefinition(PhenoDataSetField field, Collection<String> errorMessages) {
 		boolean isValid = false;
 
 		if (!(field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_CHARACTER) || field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_NUMBER) || field.getFieldType()

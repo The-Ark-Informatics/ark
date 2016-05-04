@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.core.web.component.customfield.dataentry;
+package au.org.theark.phenotypic.web.component.phenodataentry;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,54 +44,60 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.ICustomFieldData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.study.entity.IPhenoDataSetFieldData;
+import au.org.theark.core.web.component.customfield.dataentry.CheckGroupDataEntryPanel;
+import au.org.theark.core.web.component.customfield.dataentry.DateDataEntryPanel;
+import au.org.theark.core.web.component.customfield.dataentry.DropDownChoiceDataEntryPanel;
+import au.org.theark.core.web.component.customfield.dataentry.EncodedValueVO;
+import au.org.theark.core.web.component.customfield.dataentry.NumberDataEntryPanel;
+import au.org.theark.core.web.component.customfield.dataentry.TextDataEntryPanel;
 
 /**
- * CustomDataEditorDataView is designed to assist in rendering a customField Data entry panel
+ * PhenoDataSetDataEditorDataView is designed to assist in rendering a phenoDataSetField Data entry panel
  * through its re-usable implementation of populateItem(..).  Make sure the super.populateItem
  * is called if you override the populateItem(..) method.
  * 
  * @author elam
  *
- * @param <T> specifies the underlying Entity/VO that stores the CustomField data 
+ * @param <T> specifies the underlying Entity/VO that stores the phenoDataSetField data 
  */
-public abstract class CustomDataEditorDataView<T extends ICustomFieldData> extends DataView<T> {
+public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFieldData> extends DataView<T> {
 
-	private static final Logger				log					= LoggerFactory.getLogger(CustomDataEditorDataView.class);
+	private static final Logger				log					= LoggerFactory.getLogger(PhenoDataSetDataEditorDataView.class);
 
 	private static final long	serialVersionUID	= 1L;
 
-	protected CustomDataEditorDataView(String id, IDataProvider<T> dataProvider) {
+	protected PhenoDataSetDataEditorDataView(String id, IDataProvider<T> dataProvider) {
 		super(id, dataProvider);
 	}
 
 	@Override
 	protected void populateItem(Item<T> item) {
-		ICustomFieldData aCustomData = item.getModelObject();
-		CustomField cf = aCustomData.getCustomFieldDisplay().getCustomField();
-		CustomFieldDisplay cfd = aCustomData.getCustomFieldDisplay();
+		IPhenoDataSetFieldData aCustomData = item.getModelObject();
+		PhenoDataSetField pf = aCustomData.getPhenoDataSetFieldDisplay().getPhenoDataSetField();
+		PhenoDataSetFieldDisplay pfd = aCustomData.getPhenoDataSetFieldDisplay();
 		
 		// Determine label of component, also used for error messages
 		String labelModel = new String();
-		if (cf.getFieldLabel() != null) {
-			labelModel = cf.getFieldLabel();
+		if (pf.getFieldLabel() != null) {
+			labelModel = pf.getFieldLabel();
 		}
 		else {
 			// Defaults to name if no fieldLabel
-			labelModel = cf.getName();
+			labelModel = pf.getName();
 		}
 		Label fieldLabelLbl = new Label("fieldLabel", labelModel);
 		
 		Panel dataValueEntryPanel;
-		String fieldTypeName = cf.getFieldType().getName();
-		String encodedValues = cf.getEncodedValues();
-		Boolean requiredField = aCustomData.getCustomFieldDisplay().getRequired();
+		String fieldTypeName = pf.getFieldType().getName();
+		String encodedValues = pf.getEncodedValues();
+		Boolean requiredField = aCustomData.getPhenoDataSetFieldDisplay().getRequired();
 		if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
-			if(cf.getDefaultValue() != null && item.getModelObject().getDateDataValue() == null) {
+			if(pf.getDefaultValue() != null && item.getModelObject().getDateDataValue() == null) {
 				try {
-					item.getModelObject().setDateDataValue(new SimpleDateFormat(Constants.DD_MM_YYYY).parse(cf.getDefaultValue()));
+					item.getModelObject().setDateDataValue(new SimpleDateFormat(Constants.DD_MM_YYYY).parse(pf.getDefaultValue()));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -101,30 +107,30 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 														new PropertyModel<Date>(item.getModel(), "dateDataValue"),
 														new Model<String>(labelModel));
 			dateDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-			dateDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+			dateDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
 
-			if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
+			if (pf.getMinValue() != null && !pf.getMinValue().isEmpty()) {
 				IConverter<Date> dateConverter = dateDataEntryPanel.getDateConverter();
 				try {
-					Date minDate = (Date) dateConverter.convertToObject(cf.getMinValue(), getLocale());
+					Date minDate = (Date) dateConverter.convertToObject(pf.getMinValue(), getLocale());
 					dateDataEntryPanel.addValidator(DateValidator.minimum(minDate, Constants.DD_MM_YYYY));
 				}
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
-					getLog().error("Unexpected error: customfield.minValue is not in the DD/MM/YYYY date format");
+					getLog().error("Unexpected error: phenoDataSetField.minValue is not in the DD/MM/YYYY date format");
 					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
 					getParentContainer().setEnabled(false);
 				}
 			}
-			if (cf.getMaxValue() != null && !cf.getMaxValue().isEmpty()) {
+			if (pf.getMaxValue() != null && !pf.getMaxValue().isEmpty()) {
 				IConverter<Date> dateConverter = dateDataEntryPanel.getDateConverter();
 				try {
-					Date maxDate = (Date) dateConverter.convertToObject(cf.getMaxValue(), getLocale());
+					Date maxDate = (Date) dateConverter.convertToObject(pf.getMaxValue(), getLocale());
 					dateDataEntryPanel.addValidator(DateValidator.maximum(maxDate, Constants.DD_MM_YYYY));
 				}
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
-					getLog().error("Unexpected error: customfield.maxValue is not in the DD/MM/YYYY date format");
+					getLog().error("Unexpected error: phenoDataSetField.maxValue is not in the DD/MM/YYYY date format");
 					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
 					getParentContainer().setEnabled(false);
 				}
@@ -151,16 +157,16 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 
 				ChoiceRenderer<EncodedValueVO> choiceRenderer = new ChoiceRenderer<EncodedValueVO>("value", "key");
 				
- 				if(cfd.getAllowMultiselect()){
+ 				if(pfd.getAllowMultiselect()){
 
  					CheckGroupDataEntryPanel cgdePanel = new CheckGroupDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
 															new Model<String>(labelModel), choiceList, choiceRenderer); 
 					
 					cgdePanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					cgdePanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+					cgdePanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
 
-					if (cf.getMissingValue() != null && !cf.getMissingValue().isEmpty()) {
-						cgdePanel.setMissingValue(cf.getMissingValue());
+					if (pf.getMissingValue() != null && !pf.getMissingValue().isEmpty()) {
+						cgdePanel.setMissingValue(pf.getMissingValue());
 					}
 					if (requiredField != null && requiredField == true) {
 						cgdePanel.setRequired(true);
@@ -170,17 +176,17 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 
 				}
 				else{
-					if(cf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
-						item.getModelObject().setTextDataValue(cf.getDefaultValue());
+					if(pf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
+						item.getModelObject().setTextDataValue(pf.getDefaultValue());
 					}
 					DropDownChoiceDataEntryPanel ddcPanel = 
 								new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																				new Model<String>(labelModel), choiceList, choiceRenderer);
 					ddcPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					ddcPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+					ddcPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
 					
-					if (cf.getMissingValue() != null && !cf.getMissingValue().isEmpty()) {
-						ddcPanel.setMissingValue(cf.getMissingValue());
+					if (pf.getMissingValue() != null && !pf.getMissingValue().isEmpty()) {
+						ddcPanel.setMissingValue(pf.getMissingValue());
 					}
 					if (requiredField != null && requiredField == true) {
 						ddcPanel.setRequired(true);
@@ -191,14 +197,14 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 			else {
 				if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.CHARACTER_FIELD_TYPE_NAME)) {
 					// Text data
-					if(cf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
-						item.getModelObject().setTextDataValue(cf.getDefaultValue());
+					if(pf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
+						item.getModelObject().setTextDataValue(pf.getDefaultValue());
 					}
 					TextDataEntryPanel textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel", 
 																										new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																										new Model<String>(labelModel));
 					textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+					textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
 					textDataEntryPanel.setTextFieldSize(60);
 					
 					if (requiredField != null && requiredField == true) {
@@ -208,37 +214,37 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				}
 				else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
 					// Number data
-					if(cf.getDefaultValue() != null && item.getModelObject().getNumberDataValue() == null) {
-						item.getModelObject().setNumberDataValue(Double.parseDouble(cf.getDefaultValue()));;
+					if(pf.getDefaultValue() != null && item.getModelObject().getNumberDataValue() == null) {
+						item.getModelObject().setNumberDataValue(Double.parseDouble(pf.getDefaultValue()));;
 					}
 					NumberDataEntryPanel numberDataEntryPanel = new NumberDataEntryPanel("dataValueEntryPanel", 
 																						new PropertyModel<Double>(item.getModel(), "numberDataValue"), 
 																						new Model<String>(labelModel));
 					numberDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					numberDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+					numberDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
 										
-					if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
+					if (pf.getMinValue() != null && !pf.getMinValue().isEmpty()) {
 						IConverter<Double> doubleConverter = numberDataEntryPanel.getNumberConverter();
 						try {
-							Double minNumber = (Double) doubleConverter.convertToObject(cf.getMinValue(), getLocale());
+							Double minNumber = (Double) doubleConverter.convertToObject(pf.getMinValue(), getLocale());
 							numberDataEntryPanel.addValidator(new MinimumValidator<Double>(minNumber));
 						}
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
-							getLog().error("Unexpected error: customfield.maxValue is not in a valid number format");
+							getLog().error("Unexpected error: phenoDataSetField.maxValue is not in a valid number format");
 							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
 							getParentContainer().setEnabled(false);
 						}
 					}
-					if (cf.getMaxValue() != null && !cf.getMaxValue().isEmpty()) {
+					if (pf.getMaxValue() != null && !pf.getMaxValue().isEmpty()) {
 						IConverter<Double> doubleConverter = numberDataEntryPanel.getNumberConverter();
 						try {
-							Double maxNumber = (Double) doubleConverter.convertToObject(cf.getMaxValue(), getLocale());
+							Double maxNumber = (Double) doubleConverter.convertToObject(pf.getMaxValue(), getLocale());
 							numberDataEntryPanel.addValidator(new MaximumValidator<Double>(maxNumber));
 						}
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
-							getLog().error("Unexpected error: customfield.maxValue is not in a valid number format");
+							getLog().error("Unexpected error: phenoDataSetField.maxValue is not in a valid number format");
 							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
 							getParentContainer().setEnabled(false);
 						}

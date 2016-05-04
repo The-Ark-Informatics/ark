@@ -230,7 +230,7 @@ public class PhenoDataSetFieldImporter implements IPhenoImporter,Serializable {
 					// Try to create the field
 					PhenoDataSetFieldVO phenoDataSetFieldVO=new PhenoDataSetFieldVO();
 					phenoDataSetFieldVO.setPhenoDataSetField(phenoDataSetField);
-					phenoDataSetFieldVO.setUsePhenoDataSetFieldDisplay(true);	// do not create the CustomFieldDisplay entity
+					/*phenoDataSetFieldVO.setUsePhenoDataSetFieldDisplay(true);	// do not create the CustomFieldDisplay entity
 					phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setRequired(csvReader.get("REQUIRED") != null && 
 							(	csvReader.get("REQUIRED").equalsIgnoreCase("yes") ||
 								csvReader.get("REQUIRED").equalsIgnoreCase("y") ||
@@ -240,7 +240,7 @@ public class PhenoDataSetFieldImporter implements IPhenoImporter,Serializable {
 							(	csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("yes") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("y") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("true") ||
-								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("1") ) );
+								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("1") ) );*/
 					iPhenotypicService.createPhenoDataSetField(phenoDataSetFieldVO);
 					insertCount++;
 					PhenoFieldUpload phenoFieldUpload=new PhenoFieldUpload();

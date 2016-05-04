@@ -1,6 +1,6 @@
 <wicket:panel>
 	&nbsp;
-	<form wicket:id="PhenoCollectionListForm">
+	<form wicket:id="PhenoDataSetCollectionListForm">
 		<div class="listPanelBorder">
 			<div wicket:id="dataViewListWMC">
 				<table width="0%" cellspacing="0">
@@ -13,12 +13,12 @@
 								&nbsp;
 							</th>
 							<th width="10%">
-								<wicket:message	key="PhenoCollection.id">
+								<wicket:message	key="phenoDataSetCollection.id">
 									[ID:]
 								</wicket:message>
 							</th>
 							<th width="15%">
-								<wicket:message	key="PhenoCollection.questionnaire">
+								<wicket:message	key="phenoDataSetCollection.questionnaire">
 									[Questionnaire:]
 								</wicket:message>
 							</th>
@@ -30,22 +30,22 @@
 							</th>
 							-->
 							<th width="22%">
-								<wicket:message	key="PhenoCollection.description">
+								<wicket:message	key="phenoDataSetCollection.description">
 									[Description:]
 								</wicket:message>
 							</th>
 							<th width="16%">
-								<wicket:message	key="PhenoCollection.status">
+								<wicket:message	key="phenoDataSetCollection.status">
 									[Status:]
 								</wicket:message>
 							</th>
 							<th width="10%">
-								<wicket:message	key="PhenoCollection.recordDate">
+								<wicket:message	key="phenoDataSetCollection.recordDate">
 									[Record Date:]
 								</wicket:message>
 							</th>
 							<th width="10%">
-								<wicket:message	key="PhenoCollection.reviewedDate">
+								<wicket:message	key="phenoDataSetCollection.reviewedDate">
 									[Reviewed Date:]
 								</wicket:message>
 							</th>
@@ -70,17 +70,17 @@
 					</tfoot>
 					<tbody>
 						<!-- Repeated item row -->
-						<tr wicket:id="PhenoCollectionList">
+						<tr wicket:id="PhenoDataSetCollectionList">
 							<td width="2%">
 								&nbsp;
 							</td>
 							<td width="10%">
-								<span wicket:id="PhenoCollection.id">
+								<span wicket:id="phenoDataSetCollection.id">
 								</span>
 							</td>
 							<td width="15%">
 								<a href="#" wicket:id="link">
-									<span wicket:id="PhenoCollection.questionnaire">
+									<span wicket:id="phenoDataSetCollection.questionnaire">
 									</span>
 								</a>
 							</td>
@@ -91,19 +91,19 @@
 							</td>
 							-->
 							<td width="22%">
-								<span wicket:id="PhenoCollection.description">
+								<span wicket:id="phenoDataSetCollection.description">
 								</span>
 							</td>
 							<td width="14%">
-								<span wicket:id="PhenoCollection.status">
+								<span wicket:id="phenoDataSetCollection.status">
 								</span>
 							</td>
 							<td width="10%">
-								<span wicket:id="PhenoCollection.recordDate">
+								<span wicket:id="phenoDataSetCollection.recordDate">
 								</span>
 							</td>
 							<td width="10%">
-								<span wicket:id="PhenoCollection.reviewedDate">
+								<span wicket:id="phenoDataSetCollection.reviewedDate">
 								</span>
 							</td>
 							<td width="2%">
@@ -124,13 +124,37 @@
 			<!--	The detailModalWindow for detail edit/add from listPanel -->
 			<div wicket:id="detailModalWindow">
 			</div>
-			
 			<div class="detailPanel">
-				<div class="buttons">
-					<select wicket:id="customFieldGroupSelected">[Custom Field Group]</select>
-					<input wicket:id="getData" type="submit" wicket:message="value:getData" />
+				<table width="100%" cellspacing="0" class="buttonview" border="0">
+					<!-- Header row -->
+					<tr>
+						<th width="2%">
+							&nbsp;
+						</th>
+						<th width="10%">
+							<select wicket:id="pheDataSetGroupSelected">[Pheno Field Group]</select>
+						</th>
+						<th width="10%">
+							<div  wicket:id="categoryPanel">
+							<select wicket:id="pickedPhenoDataSetCategory">[Pheno Field Categories]</select>
+						</div>
+						</th>
+						<th width="10%">
+							<div class="buttons">	
+								<input wicket:id="getData" type="submit" wicket:message="value:getData" />
+							</div>
+						</th>
+						<th width="10%">
+							&nbsp;
+						</th>
+					</tr>
+					<tbody>
+					</tbody>
+					<tfoot>
+					</tfoot>
+				</table>
+				<div class="detailPanelBreaker">
 				</div>
-			
 				<div wicket:id="phenoDataView" class="datatable">
 					[phenoDataView]
 				</div>

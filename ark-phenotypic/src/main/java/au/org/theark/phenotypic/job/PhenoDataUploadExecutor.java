@@ -36,12 +36,13 @@ import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
-public class CustomDataUploadExecutor {
+public class PhenoDataUploadExecutor {
 	//private static final Logger	log	= LoggerFactory.getLogger(CustomDataUploadExecutor.class);
 	
 	private IArkCommonService<Void>		iArkCommonService			= null;
@@ -55,8 +56,8 @@ public class CustomDataUploadExecutor {
 
 	private String						report;
 	private List<String>				uidsToUpload;
-	private PhenoCollection				phenoCollection;
-	private CustomFieldGroup			customFieldGroup;
+	private PhenoDataSetCollection				phenoCollection;
+	private PhenoDataSetGroup			phenoDataSetGroup;
 	private boolean						overwriteExisting;
 	
 	/**
@@ -72,7 +73,7 @@ public class CustomDataUploadExecutor {
 	 * @param report 
 	 * @param uidsToUpload 
 	 */
-	public CustomDataUploadExecutor(IArkCommonService iArkCommonService,
+	public PhenoDataUploadExecutor(IArkCommonService iArkCommonService,
 											IPhenotypicService iPhenoService,
 											InputStream inputStream,
 											Long uploadId,
@@ -80,8 +81,8 @@ public class CustomDataUploadExecutor {
 											String fileFormat,
 											char delimiter,
 											long size, String report, List<String> uidsToUpload,
-											PhenoCollection phenoCollection,
-											CustomFieldGroup customFieldGroup,
+											PhenoDataSetCollection phenoCollection,
+											PhenoDataSetGroup phenoDataSetGroup,
 											boolean overwriteExisting) {
 		this.iArkCommonService = iArkCommonService;
 		this.iPhenoService = iPhenoService;
@@ -94,7 +95,7 @@ public class CustomDataUploadExecutor {
 		this.report = report;
 		this.uidsToUpload = uidsToUpload;
 		this.phenoCollection = phenoCollection;
-		this.customFieldGroup = customFieldGroup;
+		this.phenoDataSetGroup = phenoDataSetGroup;
 		this.overwriteExisting = overwriteExisting;
 	}
 
@@ -105,22 +106,22 @@ public class CustomDataUploadExecutor {
 
 		Log.warn("executor " + uidsToUpload.size());
 		
-		JobDetail customDataUploadJob = newJob(CustomDataUploadJob.class).withIdentity("CustomDataUploadJob", "group2").build();
+		JobDetail customDataUploadJob = newJob(PhenoDataUploadJob.class).withIdentity("CustomDataUploadJob", "group2").build();
 		// pass initialization parameters into the job
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.IPHENOSERVICE, iPhenoService);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.UPLOADID, uploadId);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.STUDY_ID, studyId);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.REPORT, report);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.FILE_FORMAT, fileFormat);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.INPUT_STREAM, inputStream);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.DELIMITER, delimiter);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.SIZE, size);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.PHENO_COLLECTION, phenoCollection);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.CUSTOM_FIELD_GROUP, customFieldGroup);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.OVERWRITE_EXISTING, overwriteExisting);
-		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.USERNAME, SecurityUtils.getSubject().getPrincipal().toString());
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.IPHENOSERVICE, iPhenoService);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.UPLOADID, uploadId);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.STUDY_ID, studyId);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.REPORT, report);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.FILE_FORMAT, fileFormat);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.INPUT_STREAM, inputStream);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.DELIMITER, delimiter);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.SIZE, size);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.PHENO_COLLECTION, phenoCollection);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.PHENO_FIELD_GROUP, phenoDataSetGroup);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.OVERWRITE_EXISTING, overwriteExisting);
+		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.USERNAME, SecurityUtils.getSubject().getPrincipal().toString());
 		
 		Date startTime = nextGivenSecondDate(null, 1);
 		

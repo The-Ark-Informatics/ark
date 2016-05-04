@@ -41,7 +41,7 @@ import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.util.CustomDataUploadValidator;
+import au.org.theark.phenotypic.util.PhenoDataUploadValidator;
 //import au.org.theark.phenotypic.util.SubjectUploadValidator;
 
 public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
@@ -142,8 +142,8 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
 
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(iArkCommonService.getCustomFieldDataUploadType().getName())){//    "Custom Data Sets")){
-				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService, iPhenotypicService);
-				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate, containerForm.getModelObject().getCustomFieldGroup());
+				PhenoDataUploadValidator customFieldUploadValidator = new PhenoDataUploadValidator(iArkCommonService, iPhenotypicService);
+				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate, containerForm.getModelObject().getPhenoDataSetGroup());
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				//TODO consider if we want alternative way to do this - and maybe a superclass of uploadvalidator which draws out commonalities
 				insertRows = customFieldUploadValidator.getInsertRows();

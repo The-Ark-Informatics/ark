@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -66,7 +66,7 @@ public interface IReportService {
 
 	public List<ConsentDetailsDataRow> getStudyCompConsentDetailsList(ConsentDetailsReportVO cdrVO);
 
-	public List<PhenoCollection> getPhenoCollectionList(Study study);
+	public List<PhenoDataSetCollection> getPhenoCollectionList(Study study);
 
 	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(FieldDetailsReportVO fdrVO);
 

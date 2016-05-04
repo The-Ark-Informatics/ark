@@ -361,30 +361,6 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		CustomField result = (CustomField) criteria.uniqueResult();
 		return result;
 	}
-
-	@SuppressWarnings("unchecked")
-	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup){
-
-		Query q = getSession().createQuery("Select customField from CustomField customField " +
-											" where customField.name =:customFieldName " +
-											" and lower(customField.study) =lower(:study) " +
-											" and customField.arkFunction =:arkFunction " +
-											" and exists (" +
-											"				from CustomFieldDisplay as customFieldDisplay " +
-											"				where customFieldDisplay.customField = customField " +
-											"				and customFieldDisplay.customFieldGroup =:customFieldGroup ) ");
-		q.setParameter("customFieldName", customFieldName);
-		q.setParameter("study", study);
-		q.setParameter("arkFunction", arkFunction);
-		q.setParameter("customFieldGroup", customFieldGroup);
-		
-		List<CustomField> results = q.list();
-		if(results.size()>0){
-			return (CustomField)results.get(0);
-		}
-		return null;
-	}
-	
 	public UnitType getUnitTypeByNameAndArkFunction(String name, ArkFunction arkFunction) {
 		Criteria criteria = getSession().createCriteria(UnitType.class);
 		// UnitType name should be sufficient to return only 1 row (i.e. uniqueness at the global and arkFunction-specific levels)

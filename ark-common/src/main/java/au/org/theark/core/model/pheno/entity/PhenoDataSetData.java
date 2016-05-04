@@ -21,8 +21,7 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.model.Constants;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.ICustomFieldData;
+import au.org.theark.core.model.study.entity.IPhenoDataSetFieldData;
 
 /**
  * @author nivedann
@@ -31,25 +30,20 @@ import au.org.theark.core.model.study.entity.ICustomFieldData;
 
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
-@Table(name = "PHENO_DATA", schema = Constants.PHENO_TABLE_SCHEMA)
-public class PhenoData implements Serializable ,ICustomFieldData{
-
+@Table(name = "PHENO_DATASET_DATA", schema = Constants.PHENO_TABLE_SCHEMA)
+public class PhenoDataSetData implements Serializable, IPhenoDataSetFieldData {
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private CustomFieldDisplay customFieldDisplay;
-	//private PhenoDataSetFieldDisplay phenoDataSetFieldDisplay;
-	private PhenoCollection phenoCollection;
+	private PhenoDataSetFieldDisplay phenoDataSetFieldDisplay;
+	private PhenoDataSetCollection phenoDataSetCollection;
 	private String textDataValue;
 	private Date dateDataValue;
 	private Double numberDataValue;
 	private String errorDataValue;
-
 	
-	public PhenoData(){
+	public PhenoDataSetData(){
 		
 	}
-	
-	
 	@Id																			
 	@SequenceGenerator(name = "pheno_data_generator", sequenceName = "PHENO_DATA_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "pheno_data_generator")
@@ -57,39 +51,34 @@ public class PhenoData implements Serializable ,ICustomFieldData{
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOM_FIELD_DISPLAY_ID")
-	public CustomFieldDisplay getCustomFieldDisplay() {
-		return customFieldDisplay;
-	}
-
-
-	public void setCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) {
-		this.customFieldDisplay = customFieldDisplay;
-	}
-	/*@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOM_FIELD_DISPLAY_ID")
+	@JoinColumn(name = "PHENO_DATASET_FIELD_DISPLAY_ID")
 	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplay() {
 		return phenoDataSetFieldDisplay;
 	}
-
-
 	public void setPhenoDataSetFieldDisplay(
 			PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) {
 		this.phenoDataSetFieldDisplay = phenoDataSetFieldDisplay;
 	}
-*/
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PHENO_DATASET_COLLECTION_ID")
+	@NotAudited
+	public PhenoDataSetCollection getPhenoDataSetCollection() {
+		return phenoDataSetCollection;
+	}
+
+	public void setPhenoDataSetCollection(
+			PhenoDataSetCollection phenoDataSetCollection) {
+		this.phenoDataSetCollection = phenoDataSetCollection;
+	}
+
 	@Column(name = "TEXT_DATA_VALUE")
 	public String getTextDataValue() {
 		return textDataValue;
 	}
-
-
 	public void setTextDataValue(String textDataValue) {
 		this.textDataValue = textDataValue;
 	}
@@ -105,18 +94,6 @@ public class PhenoData implements Serializable ,ICustomFieldData{
 	public void setDateDataValue(Date dateDataValue) {
 		this.dateDataValue = dateDataValue;
 	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PHENO_COLLECTION_ID")
-	@NotAudited
-	public PhenoCollection getPhenoCollection() {
-		return phenoCollection;
-	}
-
-
-	public void setPhenoCollection(PhenoCollection phenoCollection) {
-		this.phenoCollection = phenoCollection;
-	}
 	
 	@Column(name="NUMBER_DATA_VALUE")
 	public Double getNumberDataValue() {
@@ -131,7 +108,6 @@ public class PhenoData implements Serializable ,ICustomFieldData{
 	public String getErrorDataValue() {
 		return errorDataValue;
 	}
-
 
 	public void setErrorDataValue(String errorDataValue) {
 		this.errorDataValue = errorDataValue;

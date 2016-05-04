@@ -20,10 +20,18 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.exception.ArkRunTimeException;
+import au.org.theark.core.exception.ArkRunTimeUniqueException;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
+import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
@@ -47,15 +55,17 @@ public class SearchResultListPanel extends Panel {
 	private ArkCrudContainerVO											arkCrudContainerVO;
 //	private DataView<CustomFieldDisplay>								cfdDataView;
 	private ArkDataProvider2<PhenoDataSetFieldDisplay, PhenoDataSetFieldDisplay>	cfdArkDataProvider;
-
 	/**
 	 * Service references
 	 */
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService														iArkCommonService;
-
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService														iPhenotypicService;
+	
+	private Study study;
+	private ArkFunction arkFunction;
+	private ArkUser arkUser;
 
 	/**
 	 * 
@@ -119,57 +129,47 @@ public class SearchResultListPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	public WebMarkupContainer buildLink(final Item<PhenoDataSetGroup> item) {
-
 		WebMarkupContainer linkWmc = new WebMarkupContainer("phenoDataSetGroupLinkWMC", item.getModel());
-
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("name") {
-
-
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-
 				final PhenoDataSetGroup itemSelected = item.getModelObject();
-
-				PhenoDataSetGroup phenoDataSetGroup = (PhenoDataSetGroup) (getParent().getDefaultModelObject());
+				//PhenoDataSetGroup phenoDataSetGroup = (PhenoDataSetGroup) (getParent().getDefaultModelObject());
 				CompoundPropertyModel<PhenoDataSetFieldGroupVO> newModel = new CompoundPropertyModel<PhenoDataSetFieldGroupVO>(new PhenoDataSetFieldGroupVO());
-
-				PhenoDataSetField phenoDataSetFieldCriteria = new PhenoDataSetField();
-				//ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-				ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
-				phenoDataSetFieldCriteria.setStudy(phenoDataSetGroup.getStudy());
-				phenoDataSetFieldCriteria.setArkFunction(arkFunction);
-
-				//Collection<PhenoDataSetField> availableList = iArkCommonService.getCustomFieldList(phenoDataSetFieldCriteria);
-				List<PhenoDataSetField> availableList =iPhenotypicService.getPhenoDataSetFieldList(phenoDataSetFieldCriteria);
-				
-				List<PhenoDataSetField> selectedList = (ArrayList) iPhenotypicService.getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(itemSelected);
-
-				newModel.getObject().setAvailablePhenoDataSetFields(availableList);
-				newModel.getObject().setSelectedPhenoDataSetFields(selectedList);
-				newModel.getObject().setPhenoDataSetGroup(phenoDataSetGroup);
-
+				study=itemSelected.getStudy();
+				arkFunction=itemSelected.getArkFunction();
+				arkUser=cpmModel.getObject().getArkUser();
+				//initialize the table before proceed.
+				iPhenotypicService.deletePickedCategoriesAndAllTheirChildren(study, arkFunction, arkUser);
+				newModel.getObject().setPhenoDataSetGroup(itemSelected);
+				newModel.getObject().setPhenoDataSetFieldCategoryLst(cpmModel.getObject().getPhenoDataSetFieldCategoryLst());
+				newModel.getObject().setAvailablePhenoDataSetFields(cpmModel.getObject().getAvailablePhenoDataSetFields());
+				List<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplays=iPhenotypicService.getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroup(itemSelected);
+				for (PhenoDataSetFieldDisplay phenoDataSetFieldDisplay : phenoDataSetFieldDisplays) {
+					if(phenoDataSetFieldDisplay.getPhenoDataSetField()!=null){
+						createPickedPhenoDataSetCategory(phenoDataSetFieldDisplay);
+						createLinkPhenoDataSetCategoryField(phenoDataSetFieldDisplay);
+					}else{
+						createPickedPhenoDataSetCategory(phenoDataSetFieldDisplay);
+					}
+				}
 				// Data provider to paginate a list of CustomFieldDisplays linked to the CustomFieldGroup
 				cfdArkDataProvider = new ArkDataProvider2<PhenoDataSetFieldDisplay, PhenoDataSetFieldDisplay>() {
-
 					private static final long serialVersionUID = 1L;
-
 					public int size() {
 						return (int)iPhenotypicService.getCFDLinkedToQuestionnaireCount(itemSelected);
 					}
-
 					public Iterator<PhenoDataSetFieldDisplay> iterator(int first, int count) {
 
-						Collection<PhenoDataSetFieldDisplay> customFieldDisplayList = new ArrayList<PhenoDataSetFieldDisplay>();
-						customFieldDisplayList = iPhenotypicService.getCFDLinkedToQuestionnaire(itemSelected, first, count);
-						return customFieldDisplayList.iterator();
+						Collection<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplayList = new ArrayList<PhenoDataSetFieldDisplay>();
+						phenoDataSetFieldDisplayList = iPhenotypicService.getCFDLinkedToQuestionnaire(itemSelected, first, count);
+						return phenoDataSetFieldDisplayList.iterator();
 					}
 				};
 
 				DataDictionaryGroupDetailPanel detailPanel = new DataDictionaryGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO, newModel, cfdArkDataProvider, true);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
-				
 				TextField<String> questionnaireName = (TextField<String>) arkCrudContainerVO.getDetailPanelFormContainer().get("phenoDataSetGroup.name");
 				questionnaireName.setEnabled(false);
 
@@ -177,7 +177,6 @@ public class SearchResultListPanel extends Panel {
 				// Create a CFD List Panel here and add it to the detailForm.
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 			}
-
 		};
 
 		PhenoDataSetGroup phenoDataSetGroup = item.getModelObject();
@@ -185,6 +184,49 @@ public class SearchResultListPanel extends Panel {
 		link.add(nameLinkLabel);
 		linkWmc.add(link);
 		return linkWmc;
+	}
+	private void createPickedPhenoDataSetCategory(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) {
+		PickedPhenoDataSetCategory pickedPhenoDataSetCategory=new PickedPhenoDataSetCategory();
+		pickedPhenoDataSetCategory.setStudy(study);
+		pickedPhenoDataSetCategory.setArkFunction(arkFunction);
+		pickedPhenoDataSetCategory.setArkUser(arkUser);
+		pickedPhenoDataSetCategory.setPhenoDataSetCategory(phenoDataSetFieldDisplay.getPhenoDataSetCategory()); 
+		//Set parent.
+		pickedPhenoDataSetCategory.
+		setParentPickedPhenoDataSetCategory(iPhenotypicService.
+				getPickedPhenoDataSetCategoryFromPhenoDataSetCategory(study, arkFunction, arkUser, phenoDataSetFieldDisplay.getParentPhenoDataSetCategory()));
+		pickedPhenoDataSetCategory.setSelected(false);
+		pickedPhenoDataSetCategory.setOrderNumber(phenoDataSetFieldDisplay.getPhenoDataSetCategoryOrderNumber());
+		//Check for exist before create again.
+		if(!isPickedPhenoDataSetCategoryAlreadyExsists(phenoDataSetFieldDisplay.getPhenoDataSetCategory())){
+			try {
+				iPhenotypicService.createPickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
+			} catch (ArkSystemException | ArkRunTimeUniqueException| ArkRunTimeException | EntityExistsException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void createLinkPhenoDataSetCategoryField(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) {
+		LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField=new LinkPhenoDataSetCategoryField();
+			linkPhenoDataSetCategoryField.setStudy(study);
+			linkPhenoDataSetCategoryField.setArkFunction(arkFunction);
+			linkPhenoDataSetCategoryField.setArkUser(arkUser);
+			linkPhenoDataSetCategoryField.setPhenoDataSetCategory(phenoDataSetFieldDisplay.getPhenoDataSetCategory());
+			linkPhenoDataSetCategoryField.setPhenoDataSetField(phenoDataSetFieldDisplay.getPhenoDataSetField());
+			linkPhenoDataSetCategoryField.setOrderNumber(phenoDataSetFieldDisplay.getPhenoDataSetFiledOrderNumber());
+			try {
+				iPhenotypicService.createLinkPhenoDataSetCategoryField(linkPhenoDataSetCategoryField);
+			} catch (ArkSystemException| ArkRunTimeUniqueException| ArkRunTimeException| EntityExistsException e) {
+				e.printStackTrace();
+			}
+	}
+	private boolean isPickedPhenoDataSetCategoryAlreadyExsists(PhenoDataSetCategory phenoDataSetCategory){
+		PickedPhenoDataSetCategory pickedPhenoDataSetCategory=iPhenotypicService.getPickedPhenoDataSetCategoryFromPhenoDataSetCategory(study, arkFunction, arkUser, phenoDataSetCategory);
+		if(pickedPhenoDataSetCategory!=null)
+			return true;
+		else
+			return 	false;
 	}
 
 }

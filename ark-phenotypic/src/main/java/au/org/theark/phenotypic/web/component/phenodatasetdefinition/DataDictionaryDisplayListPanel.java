@@ -22,10 +22,9 @@ import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
 /**
- * Panel for displaying the list of custom fields
  * 
- * @author cellis
- * 
+ * @author smaddumarach
+ *
  */
 public class DataDictionaryDisplayListPanel extends Panel {
 

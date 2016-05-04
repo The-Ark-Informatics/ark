@@ -48,7 +48,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -769,10 +769,10 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 	}
 	
 	private String getPhenoCollectionName(String collectionID) {
-		Criteria c = getSession().createCriteria(PhenoCollection.class, "p");
+		Criteria c = getSession().createCriteria(PhenoDataSetCollection.class, "p");
 		c.add(Restrictions.eq("p.id", Long.parseLong(collectionID)));
 
-		PhenoCollection pc = (PhenoCollection) c.uniqueResult();
+		PhenoDataSetCollection pc = (PhenoDataSetCollection) c.uniqueResult();
 		return pc.getQuestionnaire().getName();
 	}
 	

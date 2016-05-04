@@ -44,8 +44,8 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
@@ -72,7 +72,7 @@ import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
-import au.org.theark.phenotypic.util.CustomDataUploader;
+import au.org.theark.phenotypic.util.PhenoDataUploader;
 
 @Transactional
 @Service("phenotypicService")
@@ -108,7 +108,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 * @param col
 	 *            the collection object to be created
 	 */
-	public void createCollection(PhenoCollection col) {
+	public void createCollection(PhenoDataSetCollection col) {
 		// Subject currentUser = SecurityUtils.getSubject();
 		// studyId = (Long)
 		// currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -195,7 +195,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 *            ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
 	 *            iArkCommonService.createAuditHistory(ah); }
 	 */
-	public void updateCollection(PhenoCollection colEntity) {
+	public void updateCollection(PhenoDataSetCollection colEntity) {
 		phenotypicDao.updatePhenoCollection(colEntity);
 
 		AuditHistory ah = new AuditHistory();
@@ -210,11 +210,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 * public PhenoCollectionVO getPhenoCollectionAndFields(Long id) { return
 	 * phenotypicDao.getPhenoCollectionAndFields(id); }
 	 */
-	public Collection<PhenoCollection> getPhenoCollectionByStudy(Study study) {
+	public Collection<PhenoDataSetCollection> getPhenoCollectionByStudy(Study study) {
 		return phenotypicDao.getPhenoCollectionByStudy(study);
 	}
 
-	public void deleteCollection(PhenoCollection collection) {
+	public void deleteCollection(PhenoDataSetCollection collection) {
 		phenotypicDao.createPhenoCollection(collection);
 
 		AuditHistory ah = new AuditHistory();
@@ -578,7 +578,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 * public boolean fieldHasData(Field field) { return
 	 * phenotypicDao.fieldHasData(field); }
 	 */
-	public boolean phenoCollectionHasData(PhenoCollection phenoCollection) {
+	public boolean phenoCollectionHasData(PhenoDataSetCollection phenoCollection) {
 		return phenoCollectionHasData(phenoCollection);
 	}
 
@@ -595,11 +595,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getFileFormatByName(name);
 	}
 
-	public List<PhenoData> createOrUpdatePhenoData(List<PhenoData> phenoDataList) {
+	public List<PhenoDataSetData> createOrUpdatePhenoData(List<PhenoDataSetData> phenoDataList) {
 
-		List<PhenoData> listOfExceptions = new ArrayList<PhenoData>();
+		List<PhenoDataSetData> listOfExceptions = new ArrayList<PhenoDataSetData>();
 		/* Iterate the list and call DAO to persist each Item */
-		for (PhenoData phenoData : phenoDataList) {
+		for (PhenoDataSetData phenoData : phenoDataList) {
 
 			try {
 				/*
@@ -609,17 +609,13 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 				if (canInsert(phenoData)) {
 
 					phenotypicDao.createPhenoData(phenoData);
-					Long id = phenoData.getCustomFieldDisplay()
-							.getCustomField().getId();
-
-					CustomField customField = iArkCommonService
-							.getCustomField(id);
-					customField.setCustomFieldHasData(true);
-					CustomFieldVO customFieldVO = new CustomFieldVO();
-					customFieldVO.setCustomField(customField);
-
-					iArkCommonService.updateCustomField(customFieldVO);
-
+					Long id = phenoData.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getId();
+					PhenoDataSetField phenoDataSetField=phenotypicDao.getPhenoDataSetField(id);
+					phenoDataSetField.setPhenoFieldHasData(true);
+					PhenoDataSetFieldVO phenoDataSetFieldVO=new PhenoDataSetFieldVO();
+					phenoDataSetFieldVO.setPhenoDataSetField(phenoDataSetField);
+					phenotypicDao.updatePhenoDataSetField(phenoDataSetField);
+				
 				} else if (canUpdate(phenoData)) {
 
 					// If there was bad data uploaded and the user has now
@@ -637,23 +633,13 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 					phenotypicDao.deletePhenoData(phenoData);
 					if (count <= 1) {
-						// Then update the CustomField's hasDataFlag to false;
-						Long id = phenoData.getCustomFieldDisplay()
-								.getCustomField().getId();// Reload since the
-															// session was
-															// closed in the
-															// front end and the
-															// child objects
-															// won't be lazy
-															// loaded
-						CustomField customField = iArkCommonService
-								.getCustomField(id);
-						customField.setCustomFieldHasData(false);
-						CustomFieldVO customFieldVO = new CustomFieldVO();
-						customFieldVO.setCustomField(customField);
-						iArkCommonService.updateCustomField(customFieldVO); // Update
-																			// it
-
+						// Then update the CustomField's hasDataFlag to false.Reload since the session was closed in the front end and the child objects won't be loaded
+						Long id = phenoData.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getId();
+						PhenoDataSetField phenoDataSetField=phenotypicDao.getPhenoDataSetField(id);
+						phenoDataSetField.setPhenoFieldHasData(false);
+						PhenoDataSetFieldVO phenoDataSetFieldVO=new PhenoDataSetFieldVO();
+						phenoDataSetFieldVO.setPhenoDataSetField(phenoDataSetField);
+						phenotypicDao.updatePhenoDataSetField(phenoDataSetField);; 
 					}
 				}
 			} catch (Exception someException) {
@@ -676,11 +662,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 * @param phenoData
 	 * @return
 	 */
-	private Boolean canDelete(PhenoData phenoData) {
+	private Boolean canDelete(PhenoDataSetData phenoData) {
 		Boolean flag = false;
 
 		if (phenoData.getId() != null
-				&& phenoData.getPhenoCollection() != null
+				&& phenoData.getPhenoDataSetCollection() != null
 				&& (phenoData.getTextDataValue() == null
 						|| phenoData.getTextDataValue().isEmpty()
 						|| phenoData.getNumberDataValue() == null || phenoData
@@ -704,11 +690,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 * @param phenoData
 	 * @return
 	 */
-	private Boolean canUpdate(PhenoData phenoData) {
+	private Boolean canUpdate(PhenoDataSetData phenoData) {
 		Boolean flag = false;
 
 		if (phenoData.getId() != null
-				&& phenoData.getPhenoCollection() != null
+				&& phenoData.getPhenoDataSetCollection() != null
 				&& ((phenoData.getTextDataValue() != null && !phenoData
 						.getTextDataValue().isEmpty())
 						|| phenoData.getDateDataValue() != null || phenoData
@@ -732,11 +718,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 * @param phenoData
 	 * @return
 	 */
-	private Boolean canInsert(PhenoData phenoData) {
+	private Boolean canInsert(PhenoDataSetData phenoData) {
 		Boolean flag = false;
 
 		if (phenoData.getId() == null
-				&& phenoData.getPhenoCollection() != null
+				&& phenoData.getPhenoDataSetCollection() != null
 				&& (phenoData.getNumberDataValue() != null
 						|| phenoData.getTextDataValue() != null || phenoData
 						.getDateDataValue() != null)) {
@@ -747,18 +733,16 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return flag;
 	}
 
-	public long getPhenoDataCount(PhenoCollection phenoCollection) {
-		return phenotypicDao.getPhenoDataCount(phenoCollection);
+	public long getPhenoDataCount(PhenoDataSetCollection phenoCollection,PhenoDataSetCategory phenoDataSetCategory) {
+		return phenotypicDao.getPhenoDataCount(phenoCollection,phenoDataSetCategory);
 	}
 
-	public List<PhenoData> getPhenoDataList(PhenoCollection phenoCollection,
-			int first, int count) {
-		List<PhenoData> resultsList = phenotypicDao.getPhenoDataList(
-				phenoCollection, first, count);
+	public List<PhenoDataSetData> getPhenoDataList(PhenoDataSetCollection phenoCollection,PhenoDataSetCategory phenoDataSetCategory,int first, int count) {
+		List<PhenoDataSetData> resultsList = phenotypicDao.getPhenoDataList(phenoCollection,phenoDataSetCategory, first, count);
 		return resultsList;
 	}
 
-	public PhenoCollection getPhenoCollection(Long id) {
+	public PhenoDataSetCollection getPhenoCollection(Long id) {
 		return phenotypicDao.getPhenoCollection(id);
 	}
 
@@ -791,7 +775,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenoCollectionCount(criteria);
 	}
 
-	public List<PhenoCollection> searchPageablePhenoCollections(
+	public List<PhenoDataSetCollection> searchPageablePhenoCollections(
 			PhenoDataCollectionVO criteria, int first, int count) {
 		return phenotypicDao.searchPageablePhenoCollection(criteria, first,
 				count);
@@ -840,7 +824,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenoCollectionStatusList();
 	}
 
-	public void createPhenoCollection(PhenoCollection phenoCollection) {
+	public void createPhenoCollection(PhenoDataSetCollection phenoCollection) {
 		phenotypicDao.createPhenoCollection(phenoCollection);
 
 		AuditHistory ah = new AuditHistory();
@@ -852,7 +836,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void updatePhenoCollection(PhenoCollection phenoCollection) {
+	public void updatePhenoCollection(PhenoDataSetCollection phenoCollection) {
 		phenotypicDao.updatePhenoCollection(phenoCollection);
 
 		AuditHistory ah = new AuditHistory();
@@ -864,7 +848,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void deletePhenoCollection(PhenoCollection phenoCollection) {
+	public void deletePhenoCollection(PhenoDataSetCollection phenoCollection) {
 		phenotypicDao.deletePhenoCollection(phenoCollection);
 
 		AuditHistory ah = new AuditHistory();
@@ -924,22 +908,16 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 
 	/**** TODO IMPLEMENT THIS THING AGAIN! ****/
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream,
-			long size, String fileFormat, char delimChar, Long studyId,
-			List<String> listOfUIDsToUpdate, CustomFieldGroup customFieldGroup,
-			PhenoCollection phenoCollection, boolean overwriteExisting) {
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream,long size, String fileFormat, char delimChar, Long studyId,List<String> listOfUIDsToUpdate, PhenoDataSetGroup phenoDataSetGroup,PhenoDataSetCollection phenoCollection, boolean overwriteExisting) {
 
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
-		CustomDataUploader dataUploader = new CustomDataUploader(study,
+		PhenoDataUploader dataUploader = new PhenoDataUploader(study,
 				iArkCommonService, this);
 		try {
 			// log.warn("uploadAndReportCustomDataFile list=" +
 			// listOfUIDsToUpdate);
-			uploadReport = dataUploader.uploadAndReportCustomDataFile(
-					inputStream, size, fileFormat, delimChar,
-					listOfUIDsToUpdate, customFieldGroup, phenoCollection,
-					overwriteExisting);
+			uploadReport = dataUploader.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimChar,listOfUIDsToUpdate, phenoDataSetGroup, phenoCollection,overwriteExisting);
 		} catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
 		} catch (ArkSystemException ae) {
@@ -958,22 +936,21 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 
 	public void processPhenoCollectionsWithTheirDataToInsertBatch(
-			List<PhenoCollection> phenoCollectionsWithTheirDataToInsert,
+			List<PhenoDataSetCollection> phenoCollectionsWithTheirDataToInsert,
 			Study study) {
 		phenotypicDao.processPhenoCollectionsWithTheirDataToInsertBatch(
 				phenoCollectionsWithTheirDataToInsert, study);
 	}
 
-	public List<List<String>> getPhenoDataAsMatrix(Study study,List<String> subjectUids, List<PhenoDataSetField> phenoDataSetFields,List<PhenoDataSetGroup> phenoDataSetGroups) {
-		return phenotypicDao.getPhenoDataAsMatrix(study, subjectUids,phenoDataSetFields, phenoDataSetGroups);
+	public List<List<String>> getPhenoDataAsMatrix(Study study,List<String> subjectUids, List<PhenoDataSetField> phenoDataSetFields,List<PhenoDataSetGroup> phenoDataSetGroups,PhenoDataSetCategory phenoDataSetCategory) {
+		return phenotypicDao.getPhenoDataAsMatrix(study, subjectUids,phenoDataSetFields, phenoDataSetGroups,phenoDataSetCategory);
 	}
 
 	public List<PhenoDataSetGroup> getPhenoDataSetGroupsByLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		return phenotypicDao.getPhenoDataSetGroupsByLinkSubjectStudy(linkSubjectStudy);
 	}
 
-	public CustomFieldGroup getCustomFieldGroupByNameAndStudy(String name,
-			Study study) {
+	public CustomFieldGroup getCustomFieldGroupByNameAndStudy(String name,Study study) {
 		return phenotypicDao.getCustomFieldGroupByNameAndStudy(name, study);
 	}
 
@@ -981,8 +958,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenoFieldGroupById(id);
 	}
 
-	public List<PhenoCollection> getSubjectMatchingPhenoCollections(LinkSubjectStudy subject, CustomFieldGroup customFieldGroup,Date recordDate) {
-		return phenotypicDao.getSubjectMatchingPhenoCollections(subject,customFieldGroup, recordDate);
+	public List<PhenoDataSetCollection> getSubjectMatchingPhenoCollections(LinkSubjectStudy subject, PhenoDataSetGroup phenoDataSetGroup,Date recordDate) {
+		return phenotypicDao.getSubjectMatchingPhenoCollections(subject,phenoDataSetGroup, recordDate);
 	}
 
 	@Override
@@ -1104,16 +1081,6 @@ try {
 	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count){
 		return phenotypicDao.searchPageablePhenoFields(phenoDataSetCriteria,first,count);
 	}
-	/**
-	 * 		
-	 * @param pheDataSetFieldCriteria
-	 * @return
-	 */
-	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSet(PhenoDataSetField pheDataSetFieldCriteria){
-		
-		return phenotypicDao.getPhenoDataSetFieldDisplayByPhenoDataSetField(pheDataSetFieldCriteria);
-	}
-	
 	public List<PhenoDataSetCategory> getAvailableAllCategoryListInStudy(Study study, ArkFunction arkFunction)throws ArkSystemException{
 		return phenotypicDao.getAvailableAllCategoryListInStudy(study,arkFunction);
 	}
@@ -1146,7 +1113,7 @@ try {
 			createAuditHistory(ah);
 
 			// Only Update PhenoDataSetFieldDisplay when it is allowed
-			if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
+			/*if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
 				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
 				phenotypicDao.updatePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
 				// PhenoDataSet Field Display History
@@ -1156,7 +1123,7 @@ try {
 				ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD);
 				createAuditHistory(ah);
-			}
+			}*/
 
 		} catch (ConstraintViolationException cvex) {
 			log.error("PhenoDataSet Field Already Exists.: " + cvex);
@@ -1215,7 +1182,7 @@ try {
 
 			createAuditHistory(ah);
 			// Create PhenoDataSetFieldDisplay only if allowed
-			if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
+			/*if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
 				// Set the PhenoDataSetField this PhenoDataSetFieldDisplay entity is linked
 				// to
 				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
@@ -1233,7 +1200,7 @@ try {
 				ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY);
 				createAuditHistory(ah);
-			}
+			}*/
 		} catch (ConstraintViolationException cvex) {
 			log.error("PhenoDataSet Field Already Exists.: " + cvex);
 			throw new ArkUniqueException("A PhenoDataSet Field already exits.");
@@ -1249,7 +1216,7 @@ try {
 			if (!phenoDataSetFieldVO.getPhenoDataSetField().getPhenoFieldHasData()) {
 				String fieldName = phenoDataSetFieldVO.getPhenoDataSetField().getName();
 
-				if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
+				/*if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
 					phenotypicDao.deletePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
 
 					// History for PhenoDataSet Field Display
@@ -1259,7 +1226,7 @@ try {
 					ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());
 					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY);
 					createAuditHistory(ah);
-				}
+				}*/
 				phenotypicDao.deletePhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
 
 				// History for PhenoDataSet Field
@@ -1304,6 +1271,7 @@ try {
 
 	@Override
 	public void updatePhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO)throws EntityExistsException, ArkSystemException {
+			
 		try {
 			phenotypicDao.updatePhenoDataSetFieldGroup(phenoDataSetFieldGroupVO);
 			AuditHistory ah = new AuditHistory();
@@ -1319,21 +1287,16 @@ try {
 			throw new EntityExistsException(
 					"A Questionnaire with that name already exits.");
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			log.error("Problem creating Questionnaire: " + ex);
 			throw new ArkSystemException("Problem creating Questionnaire: "
 					+ ex.getMessage());
 		}
-		
 	}
 
 	@Override
 	public void deletePhenoFieldDataSetGroup(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO) {
 		phenotypicDao.deletePhenoDataSetFieldGroup(phenoDataSetFieldGroupVO);
-	}
-
-	@Override
-	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSetField(PhenoDataSetField phenoDataSetField) {
-		return phenotypicDao.getPhenoDataSetFieldDisplayByPhenoDataSetField(phenoDataSetField);
 	}
 
 	@Override
@@ -1501,6 +1464,61 @@ try {
 	
 	public void createPhenoDataSetFieldUpload(PhenoFieldUpload phenoFieldUpload){
 		phenotypicDao.createPhenoDataSetFieldUpload(phenoFieldUpload);
+	}
+
+	@Override
+	public List<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroup) {
+		return phenotypicDao.getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroup(phenoDataSetGroup);
+	}
+
+	@Override
+	public void deletePickedCategoriesAndAllTheirChildren(Study study,ArkFunction arkFunction, ArkUser arkUser) {
+		phenotypicDao.deletePickedCategoriesAndAllTheirChildren(study, arkFunction, arkUser);
+		
+	}
+
+	@Override
+	public List<PhenoDataSetFieldDisplay> getPhenoFieldDisplaysIn(List<String> fieldNameCollection, Study study,ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup) {
+		return phenotypicDao.getPhenoFieldDisplaysIn(fieldNameCollection, study, arkFunction, phenoDataSetGroup);
+	}
+	@Override
+	public long getPhenoFieldGroupCount(Study study,ArkFunction arkFunction,Boolean status){
+		return phenotypicDao.getPhenoFieldGroupCount(study,arkFunction,status);
+	}
+
+	@Override
+	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String FieldName, Study study, ArkFunction arkFunction,PhenoDataSetGroup phenoDataSetGroup) {
+		return phenotypicDao.getPhenoDataSetFieldByNameStudyPFG(FieldName, study, arkFunction, phenoDataSetGroup);
+	}
+
+	@Override
+	public List<PhenoDataSetGroup> getPhenoDataSetFieldGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count) {
+		return phenotypicDao.getPhenoDataSetFieldGroups(phenoDataSetGroup, first, count);
+	}
+
+	@Override
+	public List<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroupOrderByPhenoDataSetCategory(PhenoDataSetGroup phenoDataSetGroup) {
+		return phenotypicDao.getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroupOrderByPhenoDataSetCategory(phenoDataSetGroup);
+	}
+
+	@Override
+	public List<PhenoDataSetField> getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroupAndPhenoDataSetCategory(PhenoDataSetGroup phenoDataSetGroupCriteria,PhenoDataSetCategory phenoDataSetCategory) {
+		return phenotypicDao.getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroupAndPhenoDataSetCategory(phenoDataSetGroupCriteria, phenoDataSetCategory);
+	}
+
+	@Override
+	public List<Boolean> getPublishedSatusLst(Study study,ArkFunction arkFunction) {
+		return phenotypicDao.getPublishedSatusLst(study, arkFunction); 
+	}
+
+	@Override
+	public PhenoDataSetCategory getPhenoDataSetCategoryById(Long id) {
+		return phenotypicDao.getPhenoDataSetCategoryById(id);
+	}
+
+	@Override
+	public boolean isPhenoDataSetFieldCategoryBeingUsed(PhenoDataSetCategory phenoDataSetCategory) {
+		return phenotypicDao.isPhenoDataSetCategoryAlreadyUsed(phenoDataSetCategory);
 	}
 	
 

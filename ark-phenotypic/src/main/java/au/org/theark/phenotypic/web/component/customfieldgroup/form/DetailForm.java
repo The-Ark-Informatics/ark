@@ -173,10 +173,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 		fileUploadButton.setDefaultFormProcessing(false);
 		
 		if (addCustomFieldDisplayList) {
-			initCustomFieldDataListPanel();
+			//initCustomFieldDataListPanel();
 		}
 		else {
-			arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(new EmptyPanel("cfdListPanel"));
+			//arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(new EmptyPanel("cfdListPanel"));
 		}
 
 		initCustomFieldPalette();
@@ -279,7 +279,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 
 			try {
 				iPhenotypicService.createCustomFieldGroup(getModelObject());
-				initCustomFieldDataListPanel();
+				//initCustomFieldDataListPanel();
 				this.info("Data Set has been created successfully.");
 			}
 			catch (EntityExistsException e) {
@@ -293,7 +293,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 
 			try {
 				iPhenotypicService.updateCustomFieldGroup(getModelObject());
-				initCustomFieldDataListPanel();
+				//initCustomFieldDataListPanel();
 				this.info("Data Set has been updated successfully.");
 
 			}

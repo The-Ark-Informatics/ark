@@ -85,7 +85,7 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Ph
 		
 		cpModel = new CompoundPropertyModel<PhenoDataSetFieldVO>(new PhenoDataSetFieldVO());
 		cpModel.getObject().getPhenoDataSetField().setArkFunction(associatedPrimaryFn);
-		cpModel.getObject().setUsePhenoDataSetFieldDisplay(useCustomFieldDisplay);
+	//	cpModel.getObject().setUsePhenoDataSetFieldDisplay(useCustomFieldDisplay);
 
 		prerenderContextCheck();
 

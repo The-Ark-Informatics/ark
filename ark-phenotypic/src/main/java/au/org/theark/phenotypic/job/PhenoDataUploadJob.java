@@ -31,7 +31,8 @@ import org.quartz.PersistJobDataAfterExecution;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.audit.AuditThreadLocalHelper;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
@@ -42,7 +43,7 @@ import au.org.theark.phenotypic.service.IPhenotypicService;
  */
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
-public class CustomDataUploadJob implements Job {
+public class PhenoDataUploadJob implements Job {
 	//private static final Logger	log					= LoggerFactory.getLogger(CustomDataUploadJob.class);
 
 	public static final String		IARKCOMMONSERVICE	= "iArkCommonService";
@@ -58,7 +59,7 @@ public class CustomDataUploadJob implements Job {
 	public static final String		SIZE				= "size";
 	public static final String		REPORT				= "report";
 	public static final String		LIST_OF_UIDS_TO_UPDATE	= "listOfUidsToUpdate";
-	public static final String		CUSTOM_FIELD_GROUP = "customFieldGroup";
+	public static final String		PHENO_FIELD_GROUP = "phenoFieldGroup";
 	public static final String		OVERWRITE_EXISTING = "overwriteExisting";
 	public static final String		USERNAME 			= "username";
 	
@@ -68,7 +69,7 @@ public class CustomDataUploadJob implements Job {
 	/**
 	 * Empty constructor for job initialization- Quartz requires a public empty constructor so that the scheduler can instantiate the class whenever it needs.
 	 */
-	public CustomDataUploadJob() {
+	public PhenoDataUploadJob() {
 	}
 
 	/**
@@ -90,8 +91,8 @@ public class CustomDataUploadJob implements Job {
 		String originalReport 		= data.getString(REPORT);
 		Long studyId 				= data.getLongValue(STUDY_ID);
 		List<String> uidsToUpdate=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
-		CustomFieldGroup customFieldGroup = (CustomFieldGroup) data.get(CUSTOM_FIELD_GROUP);
-		PhenoCollection phenoCollection = (PhenoCollection) data.get(PHENO_COLLECTION);
+		PhenoDataSetGroup phenoDataSetGroup = (PhenoDataSetGroup) data.get(PHENO_FIELD_GROUP);
+		PhenoDataSetCollection phenoCollection = (PhenoDataSetCollection) data.get(PHENO_COLLECTION);
 		boolean overwriteExisting = data.getBoolean(OVERWRITE_EXISTING);
 		String username 			= data.getString(USERNAME);
 		
@@ -99,7 +100,7 @@ public class CustomDataUploadJob implements Job {
 		
 		try {
 			Date startTime = new Date(System.currentTimeMillis());
-			StringBuffer uploadReport = iPhenoService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate, customFieldGroup, phenoCollection, overwriteExisting);
+			StringBuffer uploadReport = iPhenoService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate, phenoDataSetGroup, phenoCollection, overwriteExisting);
 			Upload upload = iPhenoService.getUpload(uploadId);
 			save(upload, uploadReport.toString(), originalReport, startTime);
 		}

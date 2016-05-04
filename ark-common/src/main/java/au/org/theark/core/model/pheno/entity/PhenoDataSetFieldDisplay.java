@@ -44,7 +44,7 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	private Boolean required;
 	private String requiredMessage;
 	private Boolean allowMultiselect = Boolean.FALSE;
-	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
+	private Set<PhenoDataSetData> phenoDataSetData = new HashSet<PhenoDataSetData>();
 	protected String descriptiveNameIncludingCFGName;
 
 	
@@ -59,7 +59,7 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PHENO_DATASET_FIELD_GROUP_ID")
 	public PhenoDataSetGroup getPhenoDataSetGroup() {
 		return phenoDataSetGroup;
@@ -69,7 +69,7 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 		this.phenoDataSetGroup = phenoDataSetGroup;
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PHENO_DATASET_CATEGORY_ID", nullable = false)
 	public PhenoDataSetCategory getPhenoDataSetCategory() {
 		return phenoDataSetCategory;
@@ -137,15 +137,24 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 		this.allowMultiselect = allowMultiselect;
 	}
 	//TODO: Remove NotAudited when pheno auditing is done
-	@NotAudited
+	//@NotAudited
 	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetFieldDisplay")customFieldDisplay
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
-	public Set<PhenoData> getPhenoData() {
+	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
+	/*public Set<PhenoDataSetData> getPhenoData() {
 		return phenoData;
 	}
 
-	public void setPhenoData(Set<PhenoData> phenoData) {
+	public void setPhenoData(Set<PhenoDataSetData> phenoData) {
 		this.phenoData = phenoData;
+	}*/
+	
+	@NotAudited
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetFieldDisplay")
+	public Set<PhenoDataSetData> getPhenoDataSetData() {
+		return phenoDataSetData;
+	}
+	public void setPhenoDataSetData(Set<PhenoDataSetData> phenoDataSetData) {
+		this.phenoDataSetData = phenoDataSetData;
 	}
 
 	@ArkAuditDisplay
@@ -153,7 +162,7 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	public String getDescriptiveNameIncludingCFGName() {
 		return descriptiveNameIncludingCFGName;
 	}
-
+	
 	public void setDescriptiveNameIncludingCFGName(
 			String descriptiveNameIncludingCFGName) {
 		this.descriptiveNameIncludingCFGName = descriptiveNameIncludingCFGName;

@@ -5,7 +5,6 @@ package au.org.theark.phenotypic.web.component.phenodatasetdefinition.form;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +25,6 @@ import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -93,8 +91,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 	private TextArea<String>														description;
 	private CheckBox																publishedStatusCb;
 	private Boolean																	addCustomFieldDisplayList;
-	private FileUploadField															fileUploadField;
-	private Button																	fileUploadButton;
+	//private FileUploadField															fileUploadField;
+	//private Button																	fileUploadButton;
 	protected  WebMarkupContainer 													phenoDataSetListchoiceCategoryDetailWMC;
 	//Available list
 	private ListMultipleChoice<PhenoDataSetCategory> 								phenoDataSetCategoryAvailableListChoice; 
@@ -147,37 +145,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			}
 		}
 	}
-
-	private void initCustomFieldDataListPanel() {
-		cfdProvider.setCriteriaModel(new PropertyModel<PhenoDataSetFieldDisplay>(cpModel, "phenoDataSetGroup"));
-		List<PhenoDataSetField> selectedList = iPhenotypicService.getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(getModelObject().getPhenoDataSetGroup());
-		Boolean disableEditButton = false;
-		if (getModelObject().getPhenoDataSetGroup().getPublished()) {
-			for (PhenoDataSetField phenoDataSetField : selectedList) {
-				if (phenoDataSetField.getPhenoFieldHasData()) {
-					disableEditButton = true;
-					break;
-				}
-			}
-		}
-		DataDictionaryDisplayListPanel cfdListPanel = new DataDictionaryDisplayListPanel("cfdListPanel", feedBackPanel, arkCrudContainerVO, disableEditButton);
-		cfdListPanel.setOutputMarkupId(true);
-		cfdListPanel.initialisePanel();
-		dataView = cfdListPanel.buildDataView(cfdProvider);
-		//dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
-		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("cfDisplayNavigator", dataView) {
-			private static final long	serialVersionUID	= 1L;
-			@Override
-			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
-			}
-		};
-		cfdListPanel.addOrReplace(pageNavigator);
-		cfdListPanel.addOrReplace(dataView);
-		arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);
-	}
-
 	public void initialiseDetailForm() {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		study = iArkCommonService.getStudy(studyId);
@@ -195,7 +162,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				// Check what was selected and then toggle
 				if (publishedStatusCb.getModelObject().booleanValue()) {
-					error("Custom Fields may not be added or removed once the Data Set is published.");
+					error("Pheno DataSet Category/Fields may not be added or removed once the Data Set is published.");
 					target.add(feedBackPanel);
 				}
 				else {
@@ -204,7 +171,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			}
 		});
 		
-		fileUploadField = new FileUploadField("phenoDataSetFieldFileUploadField");
+		/*fileUploadField = new FileUploadField("phenoDataSetFieldFileUploadField");
 		fileUploadButton = new Button("uploadCustomFieldField"){
 
 			private static final long	serialVersionUID	= 1L;
@@ -215,18 +182,11 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			
 		};
 		fileUploadButton.setDefaultFormProcessing(false);
-		
-		if (addCustomFieldDisplayList) {
-			initCustomFieldDataListPanel();
-		}
-		else {
-			arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(new EmptyPanel("cfdListPanel"));
-		}
+*/		
 		initCategoryListChoiceContainer();
 		initPhenoDataSetList();
 		initTreeCategoryFieldSummaryPanel();
 		addDetailFormComponents();
-		//arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(categoryFieldSummarypanel);
 		attachValidators();
 	}
 	private void initTreeCategoryFieldSummaryPanel(){
@@ -333,14 +293,15 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
-		setModelObject(new PhenoDataSetFieldGroupVO());
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+		iPhenotypicService.deletePickedCategoriesAndAllTheirChildren(study, arkFunction, arkUser);
+		//setModelObject(new PhenoDataSetFieldGroupVO());
 	}
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// Get a list of CustomFields for the given group
 		ArrayList<PhenoDataSetField> selectedList = (ArrayList) iPhenotypicService.getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(getModelObject().getPhenoDataSetGroup());
-
 		Boolean allowDelete = true;
 		for (PhenoDataSetField phenoDataSetField : selectedList) {
 			if (phenoDataSetField.getPhenoFieldHasData()) {
@@ -349,10 +310,10 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			}
 		}
 		if (allowDelete) {
-			iPhenotypicService.deletePhenoFieldDataSetGroup(getModelObject());
+			cpModel.getObject().setArkUser(arkUser);
+			iPhenotypicService.deletePhenoFieldDataSetGroup(cpModel.getObject());
 			this.info("Data Set has been deleted successfully.");
 			editCancelProcess(target);
-
 		}
 		else {
 			this.error("This Data Set cannot be deleted.");
@@ -371,50 +332,46 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 			getModelObject().getPhenoDataSetGroup().setArkFunction(arkFunction);
 			getModelObject().getPhenoDataSetGroup().setStudy(study);
-			getModelObject().getPhenoDataSetGroup().setArkUser(arkUser);
-
+		
 			try {
 				iPhenotypicService.createPhenoFieldDataSetGroup(getModelObject());
 				//initCustomFieldDataListPanel();
-				this.info("Data Set has been created successfully.");
+				info("Data Set has been created successfully.");
 			}
 			catch (EntityExistsException e) {
-				this.error("A Data Set with the same name already exisits. Please choose a unique one.");
+				error("A Data Set with the same name already exisits. Please choose a unique one.");
 			}
 			catch (ArkSystemException e) {
-				this.error("A System error occured. Please contact Administrator.");
+				error("A System error occured. Please contact Administrator.");
 			}
 		}
 		else {
-
+			
 			try {
-				iPhenotypicService.updatePhenoFieldDataSetGroup(getModelObject());
-				//initCustomFieldDataListPanel();
-				this.info("Data Set has been updated successfully.");
+				 iPhenotypicService.updatePhenoFieldDataSetGroup(getModelObject());
+				 info("Data Set has been updated successfully.");
 			}
 			catch (EntityExistsException e) {
-				this.error("A Data Set with the same name already exisits. Please choose a unique one.");
+				error("A Data Set with the same name already exisits. Please choose a unique one.");
 				e.printStackTrace();
 			}
 			catch (ArkSystemException e) {
-				this.error("A System error occured. Please contact Administrator.");
+				error("A System error occured. Please contact Administrator.");
 				e.printStackTrace();
 			}
 
 		}
-		//target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());// Repaint this List of Custom Field Displays
-		//onSavePostProcess(target);// Post process
-
+		onSavePostProcess(target);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setSelectedCustomFieldsFromFile() {
+	/*private void setSelectedCustomFieldsFromFile() {
 		if(fileUploadField.getFileUpload() != null) {
 			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 			ArrayList<PhenoDataSetField> selectedPhenoDataSetField = (ArrayList<PhenoDataSetField>) iArkCommonService.matchCustomFieldsFromInputFile(fileUploadField.getFileUpload(), study, arkFunction); 
 			cpModel.getObject().setSelectedPhenoDataSetFields(selectedPhenoDataSetField);
 		}
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)
@@ -436,8 +393,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(phenoDataSetFieldGroupTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(description);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(publishedStatusCb);
-		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(fileUploadField);
-		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(fileUploadButton);
+		//arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(fileUploadField);
+		//arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(fileUploadButton);
 		phenoDataSetListchoiceCategoryDetailWMC=new WebMarkupContainer("phenoDataSetListchoiceCategoryDetailWMC");
 		phenoDataSetListchoiceCategoryDetailWMC.setOutputMarkupPlaceholderTag(true);
 		phenoDataSetListchoiceCategoryDetailWMC.setOutputMarkupId(true);
@@ -457,7 +414,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 		phenoDataSetListchoiceCategoryDetailWMC.add(linkedFieldsOfACategoryChoice);
 		phenoDataSetListchoiceCategoryDetailWMC.add(treeCategoryFieldSummarypanel);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(phenoDataSetListchoiceCategoryDetailWMC);
-		addOrReplace(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 	private void initCategoryListChoiceContainer(){
@@ -1094,7 +1050,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			addButtonCategory.setEnabled(true);
 		}
 		target.add(addButtonCategory);
-		
 	}
 	/**
 	 * 
@@ -1124,7 +1079,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			removeButtonCategory.setEnabled(true);
 		}
 		target.add(removeButtonCategory);
-		
 	}
 	/**
 	 * 
@@ -1161,7 +1115,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			addButtonFieldsToCategory.setEnabled(true);
 		}
 		target.add(addButtonFieldsToCategory);
-
 	}
 
 	/**

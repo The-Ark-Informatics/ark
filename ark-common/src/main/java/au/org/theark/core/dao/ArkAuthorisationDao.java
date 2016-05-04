@@ -1128,8 +1128,15 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			ProjectionList projectionList = Projections.projectionList();
 			projectionList.add(Projections.groupProperty("arkUser"), "arkUser");
 			criteria.setProjection(projectionList);
+			criteria.setResultTransformer(Transformers.aliasToBean(ArkUserRole.class));
+			List<ArkUserRole> arkUserRoles=(List<ArkUserRole>)criteria.list();
+			List<ArkUser> arkUserLst= new ArrayList<ArkUser>();
+			for (ArkUserRole arkRolePol : arkUserRoles) {
+				arkUserLst.add(arkRolePol.getArkUser());
+			}
 			//Added on 2015-12-10 filter study wise users.
-		return	(List<ArkUser>)criteria.list();
+			//changed on 2016-04-28.
+		return	arkUserLst;
 	}
 
 	@SuppressWarnings("unchecked")

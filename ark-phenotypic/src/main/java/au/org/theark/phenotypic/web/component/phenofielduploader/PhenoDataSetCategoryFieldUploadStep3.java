@@ -42,6 +42,7 @@ import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.util.IPhenoImportValidator;
 import au.org.theark.phenotypic.util.PhenoDataSetFieldCategoryImportValidator;
 import au.org.theark.phenotypic.util.PhenoDataSetFieldImportValidator;
@@ -70,6 +71,9 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 			this.error("Unexpected Error: Download request could not be processed");
 		}
 	};
+	@SpringBean(name = au.org.theark.core.Constants.ARK_PHENO_DATA_SERVICE)
+	private IPhenotypicService			iPhenotypicService;			
+
 
 	/**
 	 * Construct.
@@ -140,11 +144,11 @@ public class PhenoDataSetCategoryFieldUploadStep3 extends AbstractWizardStepPane
 			try {
 				// Field upload
 				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_FIELD)){
-					iPhenoImportValidator=new PhenoDataSetFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+					iPhenoImportValidator=new PhenoDataSetFieldImportValidator(iArkCommonService,iPhenotypicService, containerForm.getModelObject());
 				//Category upload	
 				}
 				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_CATEGORY)){
-					iPhenoImportValidator=new PhenoDataSetFieldCategoryImportValidator(iArkCommonService, containerForm.getModelObject());
+					iPhenoImportValidator=new PhenoDataSetFieldCategoryImportValidator(iArkCommonService,iPhenotypicService, containerForm.getModelObject());
 				}
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
 				validationMessages=iPhenoImportValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
