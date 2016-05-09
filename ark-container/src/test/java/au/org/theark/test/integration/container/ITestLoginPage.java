@@ -16,65 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.test.integration;
-
-import java.util.concurrent.TimeUnit;
+package au.org.theark.test.integration.container;
 
 import au.org.theark.core.selenium.utilities.WicketBy;
+import au.org.theark.test.integration.BaseIntegrationTest;
 import junit.framework.TestCase;
 
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.util.tester.WicketTester;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import com.google.common.net.HostAndPort;
 
 import au.org.theark.web.pages.login.LoginPage;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/test/resources/applicationContext.xml"})
-public class ITestLoginPage extends TestCase {
+public class ITestLoginPage extends BaseIntegrationTest {
 		
 	private transient static Logger log = LoggerFactory.getLogger(ITestLoginPage.class);
-
-	private WicketTester tester;
-	
-	private static FirefoxDriver driver;
-	private WebElement element;
-
-	@BeforeClass
-	public static void openBrowser(){
-		driver = new FirefoxDriver();
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-	}
-
-	public String getHostIP() {
-		String ipAddress = "127.0.0.1";
-		String DOCKER_HOST = System.getenv("DOCKER_HOST");
-		if(DOCKER_HOST != null && !DOCKER_HOST.isEmpty()) {
-			ipAddress = DOCKER_HOST.replaceAll(".*://", "");
-			ipAddress = HostAndPort.fromString(ipAddress).getHostText();
-		}
-		return ipAddress;
-	}
-
-	@Before
-	public void setup() {
-		tester = new WicketTester();
-		tester.startPage(LoginPage.class);
-		driver.get("http://"+getHostIP()+":8080/ark");
-	}
 
 	@Test
 	public void testRenderLoginPage() {		
@@ -99,7 +58,7 @@ public class ITestLoginPage extends TestCase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		assertNotNull(element);
+		TestCase.assertNotNull(element);
 		log.info("Ending test " + new Object(){}.getClass().getEnclosingMethod().getName());
 	}
 	
@@ -112,13 +71,8 @@ public class ITestLoginPage extends TestCase {
 		
 		//If the "Invalid username and password" warning comes up, then we didn't log in.
 		element = driver.findElement(By.className("feedbackPanelERROR"));
-		assertNotNull(element);
-		assertEquals("Invalid username and/or password.", element.getText());
+		TestCase.assertNotNull(element);
+		TestCase.assertEquals("Invalid username and/or password.", element.getText());
 		log.info("Ending test " + new Object(){}.getClass().getEnclosingMethod().getName());
-	}
-
-	@AfterClass
-	public static void closeBrowser(){
-		driver.quit();
 	}
 }
