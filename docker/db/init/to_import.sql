@@ -3092,7 +3092,7 @@ CREATE TABLE `user_config` (
   KEY `USER_ID` (`USER_ID`,`FIELD_ID`),
   KEY `FK_CONFIG_FIELD_ID` (`FIELD_ID`),
   CONSTRAINT `user_config_ibfk_1` FOREIGN KEY (`FIELD_ID`) REFERENCES `config_fields` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `user_config_ibfk_3` FOREIGN KEY (`USER_ID`) REFERENCES `study`.`ark_user` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `user_config_ibfk_3` FOREIGN KEY (`USER_ID`) REFERENCES `study`.`ark_user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE 
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
