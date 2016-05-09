@@ -13594,7 +13594,7 @@ CREATE TABLE `study_comp` (
   UNIQUE KEY `NAME` (`NAME`,`STUDY_ID`),
   KEY `STUDY_COMP_STUDY_FK` (`STUDY_ID`) USING BTREE,
   CONSTRAINT `study_comp_ibfk_1` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`STUDY_ID`) REFER `study/study`(`ID`)';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`STUDY_ID`) REFER `study/study`(`ID`)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -13603,13 +13603,6 @@ CREATE TABLE `study_comp` (
 
 LOCK TABLES `study_comp` WRITE;
 /*!40000 ALTER TABLE `study_comp` DISABLE KEYS */;
-INSERT INTO `study_comp` VALUES (1,'Clinical Examination',NULL,1,NULL);
-INSERT INTO `study_comp` VALUES (2,'Biospecimen Collection',NULL,1,NULL);
-INSERT INTO `study_comp` VALUES (3,'Questionnaire',NULL,1,NULL);
-INSERT INTO `study_comp` VALUES (4,'Clinical Examination',NULL,15,NULL);
-INSERT INTO `study_comp` VALUES (5,'Consent',NULL,15,NULL);
-INSERT INTO `study_comp` VALUES (6,'SKINBIOPSY',NULL,29,NULL);
-INSERT INTO `study_comp` VALUES (7,'Clinical Examination',NULL,24,NULL);
 /*!40000 ALTER TABLE `study_comp` ENABLE KEYS */;
 UNLOCK TABLES;
 
