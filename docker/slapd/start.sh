@@ -148,7 +148,11 @@ EOF
 fi
 
 
+if [ -f /var/lib/ldap/alock ]; then
+	rm /var/lib/ldap/alock
+fi
+
 echo "Starting slapd"
-exec /usr/sbin/slapd -h "ldap:///" -u openldap -g openldap -d 0
+exec /usr/sbin/slapd -h "ldap:///" -u openldap -g openldap -d 5
 
 
