@@ -12,10 +12,8 @@ import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -181,24 +179,32 @@ public class ITestStudy extends BaseIntegrationTest {
         select.selectByVisibleText("Subject Administrator");
 
         driver.findElement(By.name("detailContainer:detailPanel:detailForm:editButtonContainer:save")).click();
-        driver.findElement(By.name("detailContainer:detailPanel:detailForm:editButtonContainer:cancel")).click();
+        waitForElement(By.partialLinkText("Manage Users")).click();
 
         driver.findElement(By.partialLinkText("test2@email.com")).click();
 
         driver.findElement(By.name("detailContainer:detailPanel:detailForm:editButtonContainer:remove")).click();
 
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, 2);
+            wait.until(ExpectedConditions.alertIsPresent());
+            Alert alert = driver.switchTo().alert();
+            alert.accept();
+        } catch (Exception e) {
+            //exception handling
+            e.printStackTrace();
+        }
 
         try {
-            ArkUser newUser = iArkCommonService.getArkUser("test2@email.com");
-            ArkUserVO arkUserVO = new ArkUserVO();
-            arkUserVO.setArkUserEntity(newUser);
-
-            List<Study> studies = iArkCommonService.getStudyListForUser(arkUserVO);
-
-            assertEquals(studies.size(), 0);
-        } catch (EntityNotFoundException e) {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
             e.printStackTrace();
-            fail(e.getMessage());
+        }
+
+        try{
+            iArkCommonService.getArkUser("test2@email.com");
+            fail("EntityNotFoundException should be thrown");
+        } catch (EntityNotFoundException e) {
         }
 
         log.info("Ending test " + new Object() {}.getClass().getEnclosingMethod().getName());
