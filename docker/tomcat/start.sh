@@ -8,5 +8,5 @@ done
 rm /usr/src/app/.complete
 mv /usr/src/app/ark-container/target/ark.war webapps/ark.war
 
-catalina.sh run
+catalina.sh jpda run 
 
