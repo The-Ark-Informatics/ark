@@ -1764,7 +1764,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			Set<PhenoDataSetData> dataToSave = collectionToInsert.getPhenoDataSetData();
 			collectionToInsert.setPhenoDataSetData(new HashSet<PhenoDataSetData>());
 			
-			//session.save(collectionToInsert);
+			session.save(collectionToInsert);
 			session.refresh(collectionToInsert);
 			for(PhenoDataSetData data : dataToSave){
 				data.setPhenoDataSetCollection(collectionToInsert);
