@@ -38,7 +38,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
@@ -53,10 +52,9 @@ public class PhenoDataUploadExecutor {
 	private InputStream					inputStream;
 	private char						delimiter		= Constants.IMPORT_DELIM_CHAR_COMMA;
 	private long						size;
-
 	private String						report;
 	private List<String>				uidsToUpload;
-	private PhenoDataSetCollection				phenoCollection;
+	private PhenoDataSetCollection		phenoCollection;
 	private PhenoDataSetGroup			phenoDataSetGroup;
 	private boolean						overwriteExisting;
 	
@@ -103,34 +101,30 @@ public class PhenoDataUploadExecutor {
 
 		SchedulerFactory sf = new StdSchedulerFactory();
 		Scheduler sched = sf.getScheduler();
-
 		Log.warn("executor " + uidsToUpload.size());
-		
-		JobDetail customDataUploadJob = newJob(PhenoDataUploadJob.class).withIdentity("CustomDataUploadJob", "group2").build();
+		JobDetail phenoDataUploadJob = newJob(PhenoDataUploadJob.class).withIdentity("PhenoDataUploadJob", "group2").build();
 		// pass initialization parameters into the job
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.IPHENOSERVICE, iPhenoService);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.UPLOADID, uploadId);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.STUDY_ID, studyId);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.REPORT, report);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.FILE_FORMAT, fileFormat);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.INPUT_STREAM, inputStream);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.DELIMITER, delimiter);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.SIZE, size);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.PHENO_COLLECTION, phenoCollection);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.PHENO_FIELD_GROUP, phenoDataSetGroup);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.OVERWRITE_EXISTING, overwriteExisting);
-		customDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.USERNAME, SecurityUtils.getSubject().getPrincipal().toString());
-		
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.IPHENOSERVICE, iPhenoService);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.UPLOADID, uploadId);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.STUDY_ID, studyId);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.REPORT, report);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.FILE_FORMAT, fileFormat);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.INPUT_STREAM, inputStream);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.DELIMITER, delimiter);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.SIZE, size);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.PHENO_COLLECTION, phenoCollection);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.PHENO_FIELD_GROUP, phenoDataSetGroup);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.OVERWRITE_EXISTING, overwriteExisting);
+		phenoDataUploadJob.getJobDataMap().put(PhenoDataUploadJob.USERNAME, SecurityUtils.getSubject().getPrincipal().toString());
 		Date startTime = nextGivenSecondDate(null, 1);
-		
-		SimpleTrigger trigger1 = newTrigger().withIdentity("CustomDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
-		
-		sched.scheduleJob(customDataUploadJob, trigger1);
+		SimpleTrigger trigger1 = newTrigger().withIdentity("PhenoDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
+		sched.scheduleJob(phenoDataUploadJob, trigger1);
 		//		log.warn(studyUploadJob.getKey() + " will run at: " + scheduleTime1 + " and repeat: " + trigger1.getRepeatCount() + " times, every " + trigger1.getRepeatInterval() / 1000 + " seconds");
 		// All of the jobs have been added to the scheduler, but none of the jobs will run until the scheduler has been started
 		sched.start();
+		//sched.triggerJob(phenoDataUploadJob.getKey());
 	}
 	
 }

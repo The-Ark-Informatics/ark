@@ -53,12 +53,10 @@ public abstract class AbstractContainerPanel<T> extends Panel {
 
 	@SpringBean(name = "aafRealm")
 	protected AAFRealm						aafRealm;
-
 	protected FeedbackPanel					feedBackPanel;
 	protected ArkCrudContainerVO			arkCrudContainerVO;
 	protected IModel<Object>				iModel;
-	protected CompoundPropertyModel<T>	cpModel;
-
+	protected CompoundPropertyModel<T>		cpModel;
 	protected PageableListView<T>			myListView;
 
 	/**

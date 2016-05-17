@@ -1260,7 +1260,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return resultsList;
 	}
 
-	public void createUpload(Upload studyUpload) {
+	public void createUpload(Upload studyUpload) throws Exception {
 		if (studyUpload.getUploadStatus() == null) {
 			//studyUpload.setUploadStatus(getUploadStatusForUndefined());
 			studyUpload.setUploadStatus(getUploadStatusFor(Constants.UPLOAD_STATUS_STATUS_NOT_DEFINED));

@@ -44,7 +44,7 @@ public class PickedPhenoDataSetCategory implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return study;
@@ -52,7 +52,7 @@ public class PickedPhenoDataSetCategory implements Serializable {
 	public void setStudy(Study study) {
 		this.study = study;
 	}
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ARK_FUNCTION_ID")
 	public ArkFunction getArkFunction() {
 		return arkFunction;
@@ -60,7 +60,7 @@ public class PickedPhenoDataSetCategory implements Serializable {
 	public void setArkFunction(ArkFunction arkFunction) {
 		this.arkFunction = arkFunction;
 	}
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ARK_USER_ID")
 	public ArkUser getArkUser() {
 		return arkUser;

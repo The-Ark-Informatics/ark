@@ -241,7 +241,7 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 				}
 			}
 		}
-		catch (IOException ioe) {
+		catch ( Exception ioe) {
 			log.error("Failed to save the uploaded file: " + ioe);
 		}
 		finally {

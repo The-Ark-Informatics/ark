@@ -170,19 +170,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 				}
 			}
 		});
-		
-		/*fileUploadField = new FileUploadField("phenoDataSetFieldFileUploadField");
-		fileUploadButton = new Button("uploadCustomFieldField"){
-
-			private static final long	serialVersionUID	= 1L;
-			@Override
-			public void onSubmit() {
-				setSelectedCustomFieldsFromFile();
-			}
-			
-		};
-		fileUploadButton.setDefaultFormProcessing(false);
-*/		
 		initCategoryListChoiceContainer();
 		initPhenoDataSetList();
 		initTreeCategoryFieldSummaryPanel();

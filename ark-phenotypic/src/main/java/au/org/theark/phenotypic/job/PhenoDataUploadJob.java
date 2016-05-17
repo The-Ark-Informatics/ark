@@ -41,7 +41,7 @@ import au.org.theark.phenotypic.service.IPhenotypicService;
 /**
  * @author tendersby
  */
-@PersistJobDataAfterExecution
+//@PersistJobDataAfterExecution
 @DisallowConcurrentExecution
 public class PhenoDataUploadJob implements Job {
 	//private static final Logger	log					= LoggerFactory.getLogger(CustomDataUploadJob.class);
@@ -80,25 +80,24 @@ public class PhenoDataUploadJob implements Job {
 	@SuppressWarnings("unchecked")
 	public void execute(JobExecutionContext context) throws JobExecutionException {		
 		JobDataMap data = context.getJobDetail().getJobDataMap();
-		
-		iArkCommonService			= (IArkCommonService<Void>) data.get(IARKCOMMONSERVICE);
-		iPhenoService				= (IPhenotypicService) data.get(IPHENOSERVICE);
-		Long uploadId 				= (Long) data.get(UPLOADID);
-		char delimiter 				= (Character) data.get(DELIMITER);
-		String fileFormat 			= (String) data.get(FILE_FORMAT);
-		InputStream inputStream 	= (InputStream) data.get(INPUT_STREAM);
-		long size 					= data.getLongValue(SIZE);
-		String originalReport 		= data.getString(REPORT);
-		Long studyId 				= data.getLongValue(STUDY_ID);
-		List<String> uidsToUpdate=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
-		PhenoDataSetGroup phenoDataSetGroup = (PhenoDataSetGroup) data.get(PHENO_FIELD_GROUP);
-		PhenoDataSetCollection phenoCollection = (PhenoDataSetCollection) data.get(PHENO_COLLECTION);
-		boolean overwriteExisting = data.getBoolean(OVERWRITE_EXISTING);
-		String username 			= data.getString(USERNAME);
-		
-		AuditThreadLocalHelper.USERNAME.set(username);
+		Long uploadId=null; 			
 		
 		try {
+			iArkCommonService			= (IArkCommonService<Void>) data.get(IARKCOMMONSERVICE);
+			iPhenoService				= (IPhenotypicService) data.get(IPHENOSERVICE);
+			uploadId	 				= (Long) data.get(UPLOADID);
+			char delimiter 				= (Character) data.get(DELIMITER);
+			String fileFormat 			= (String) data.get(FILE_FORMAT);
+			InputStream inputStream 	= (InputStream) data.get(INPUT_STREAM);
+			long size 					= data.getLongValue(SIZE);
+			String originalReport 		= data.getString(REPORT);
+			Long studyId 				= data.getLongValue(STUDY_ID);
+			List<String> uidsToUpdate=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
+			PhenoDataSetGroup phenoDataSetGroup = (PhenoDataSetGroup) data.get(PHENO_FIELD_GROUP);
+			PhenoDataSetCollection phenoCollection = (PhenoDataSetCollection) data.get(PHENO_COLLECTION);
+			boolean overwriteExisting = data.getBoolean(OVERWRITE_EXISTING);
+			String username 			= data.getString(USERNAME);
+			AuditThreadLocalHelper.USERNAME.set(username);
 			Date startTime = new Date(System.currentTimeMillis());
 			StringBuffer uploadReport = iPhenoService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate, phenoDataSetGroup, phenoCollection, overwriteExisting);
 			Upload upload = iPhenoService.getUpload(uploadId);
@@ -110,7 +109,9 @@ public class PhenoDataUploadJob implements Job {
 			Upload upload = iPhenoService.getUpload(uploadId);
 			upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.phenotypic.web.Constants.UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT));
 			upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.phenotypic.web.Constants.UPLOAD_STATUS_OF_COMPLETED));
-			e.printStackTrace();
+			JobExecutionException e2 =new JobExecutionException(e);
+	        	// this job will refire immediately
+	        	throw e2;
 		}
 	}
 

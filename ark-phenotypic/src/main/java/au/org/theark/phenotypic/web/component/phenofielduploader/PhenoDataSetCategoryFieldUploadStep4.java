@@ -209,7 +209,7 @@ public class PhenoDataSetCategoryFieldUploadStep4 extends AbstractWizardStepPane
 				}
 			}
 		}
-		catch (IOException ioe) {
+		catch ( Exception ioe) {
 			log.error("Failed to save the uploaded file: " + ioe);
 		}
 		finally {

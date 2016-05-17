@@ -25,18 +25,18 @@ public class Constants {
 	public static final String			UPLOAD_STATUS_OF_ERROR_IN_FILE_VALIDATION			= "ERROR_IN_FILE_VALIDATION";
 	public static final String			UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT				= "ERROR_ON_DATA_IMPORT";
 	public static final String			UPLOAD_STATUS_OF_STATUS_NOT_DEFINED					= "STATUS_NOT_DEFINED";
-	public static final String			UPLOAD_STATUS_OF_VALIDATED								= "VALIDATED";
+	public static final String			UPLOAD_STATUS_OF_VALIDATED							= "VALIDATED";
 	// DAO
-	public static final String		PHENOTYPIC_DAO													= "phenotypicDao";
+	public static final String		PHENOTYPIC_DAO											= "phenotypicDao";
 
 	// Tabs/menus
-	public static final String		PHENOTYPIC_MAIN_TAB											= "Datasets";
+	public static final String		PHENOTYPIC_MAIN_TAB										= "Datasets";
 
 	// Exception messages
-	public static final String			IO_EXCEPTION													= "IOException: Input error. ";
-	public static final String			FILE_FORMAT_EXCEPTION										= "File Format Exception: Input error. ";
-	public static final String			ARK_SYSTEM_EXCEPTION											= "General ARK System Exception: ";
-	public static final String			ARK_BASE_EXCEPTION											= "Base ARK System Exception: ";
+	public static final String			IO_EXCEPTION										= "IOException: Input error. ";
+	public static final String			FILE_FORMAT_EXCEPTION								= "File Format Exception: Input error. ";
+	public static final String			ARK_SYSTEM_EXCEPTION								= "General ARK System Exception: ";
+	public static final String			ARK_BASE_EXCEPTION									= "Base ARK System Exception: ";
 	
 	// Sub tabs/menus
 	public static final String		PHENOTYPIC_SUBMENU											= "phenotypicSubMenus";
@@ -273,13 +273,7 @@ public class Constants {
 	
 	public static final String		QUESTIONNAIRE_ID											= "id";
 	public static final String		QUESTIONNAIRE_NAME										= "name";
-
-//	public static final String[]	PHENO_TEMPLATE_CELLS	= {"SUBJECT_UID","REQUIRED_FIELD_1","ETC"};
-	public static final String[][]	PHENO_TEMPLATE_CELLS = {
-			{ "", "SUBJECTUID", "RECORD_DATE_TIME", "YOUR_FIRST_DATASET_FIELD_NAME_HERE", "YOUR_SECOND_DATASET_FIELD_NAME_HERE", "AND SO ON"},
-			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "The date this record was taken DD/MM/YYYY format", "Value for first dataset field","Value for second field", "AND SO ON" },
-			{ "NOTE: Removed this first column, and replace row 1, (after SUBJECTUID field) with your actual dataset field names (the headers only appear once, row 2 will have your first subject and his/her values, row 2 your second subject, etc.", "", "" , "", "" , "" } 
-			};
+	
 
 	public static final String		PHENOCOLLECTION_STATUS_IN_PROGRESS						= "In Progress";//TODO check
 

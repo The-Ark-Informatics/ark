@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.customdataupload.form;
+package au.org.theark.phenotypic.web.component.phenodataupload.form;
 
 import org.apache.wicket.model.CompoundPropertyModel;
 

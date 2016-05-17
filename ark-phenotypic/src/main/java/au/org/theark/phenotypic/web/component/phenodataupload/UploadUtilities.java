@@ -1,4 +1,4 @@
-package au.org.theark.phenotypic.web.component.customdataupload;
+package au.org.theark.phenotypic.web.component.phenodataupload;
 
 public class UploadUtilities {
 

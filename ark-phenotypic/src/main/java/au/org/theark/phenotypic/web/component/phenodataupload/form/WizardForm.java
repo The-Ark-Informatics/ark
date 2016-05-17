@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.customdataupload.form;
+package au.org.theark.phenotypic.web.component.phenodataupload.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
@@ -26,11 +26,11 @@ import org.apache.wicket.util.file.File;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
-import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep1;
-import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep2;
-import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep3;
-import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep4;
-import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep5;
+import au.org.theark.phenotypic.web.component.phenodataupload.PhenoDataUploadStep1;
+import au.org.theark.phenotypic.web.component.phenodataupload.PhenoDataUploadStep2;
+import au.org.theark.phenotypic.web.component.phenodataupload.PhenoDataUploadStep3;
+import au.org.theark.phenotypic.web.component.phenodataupload.PhenoDataUploadStep4;
+import au.org.theark.phenotypic.web.component.phenodataupload.PhenoDataUploadStep5;
 
 /**
  * @author cellis
@@ -55,12 +55,13 @@ public class WizardForm extends AbstractWizardForm<UploadVO> {
 	}
 
 	public void initialiseSteps() {
-		CustomDataUploadStep1 step1 = new CustomDataUploadStep1("step", containerForm, this);
-		CustomDataUploadStep2 step2 = new CustomDataUploadStep2("step", containerForm, this);
-		CustomDataUploadStep3 step3 = new CustomDataUploadStep3("step", containerForm, this);
-		CustomDataUploadStep4 step4 = new CustomDataUploadStep4("step", containerForm, this);
-		CustomDataUploadStep5 step5 = new CustomDataUploadStep5("step", containerForm);
-
+		PhenoDataUploadStep1 step1 = new PhenoDataUploadStep1("step", containerForm, this);
+		PhenoDataUploadStep2 step2 = new PhenoDataUploadStep2("step", containerForm, this);
+		PhenoDataUploadStep3 step3 = new PhenoDataUploadStep3("step", containerForm, this);
+		PhenoDataUploadStep4 step4 = new PhenoDataUploadStep4("step", containerForm, this);
+		PhenoDataUploadStep5 step5 = new PhenoDataUploadStep5("step", containerForm);
+		
+		
 		step1.setNextStep(step2);
 		step2.setNextStep(step3);
 		step3.setPreviousStep(step2);

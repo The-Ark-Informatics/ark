@@ -108,7 +108,7 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		updateUploadReport(uploadReport.toString());
 
 		// Save all objects to the database
-		save();
+		save(target);
 	}
 
 	public void updateUploadReport(String importReport) {
@@ -120,10 +120,15 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setUploadReport(bytes);
 	}
 
-	private void save() {
+	private void save(AjaxRequestTarget target) {
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD));
 		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(Constants.UPLOAD_STATUS_COMPLETED));		
-		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		try {
+			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		} catch (Exception e) {
+			error("There is a problem during the upload process.");
+			wizardForm.onError(target, null);
+		}
 	}
 }

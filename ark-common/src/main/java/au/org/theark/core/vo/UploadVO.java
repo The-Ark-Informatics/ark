@@ -51,6 +51,7 @@ public class UploadVO implements Serializable {
 	private CustomFieldGroup					customFieldGroup;
 	private PhenoDataSetGroup					phenoDataSetGroup;
 	private PhenoDataSetCollection				phenoCollection;
+	private Boolean 							previousStepOutCompleted; 
 
 	public UploadVO() {
 		upload = new Upload();
@@ -64,7 +65,6 @@ public class UploadVO implements Serializable {
 	public Upload getUpload() {
 		return upload;
 	}
-
 	/**
 	 * @param field
 	 *           the field to set
@@ -238,5 +238,12 @@ public class UploadVO implements Serializable {
 
 	public PhenoDataSetCollection getPhenoCollection() {
 		return phenoCollection;
+	}
+	public Boolean getPreviousStepOutCompleted() {
+		return previousStepOutCompleted;
+	}
+
+	public void setPreviousStepOutCompleted(Boolean previousStepOutCompleted) {
+		this.previousStepOutCompleted = previousStepOutCompleted;
 	}
 }

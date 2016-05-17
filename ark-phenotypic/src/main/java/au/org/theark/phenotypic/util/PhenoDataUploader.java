@@ -141,7 +141,7 @@ public class PhenoDataUploader {
 			csvReader.readHeaders();
 
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
-			ArkFunction phenoCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);//");
+			ArkFunction phenoCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 
 			//List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction, customFieldGroup);
 			List<PhenoDataSetFieldDisplay> cfdsThatWeNeed = iPhenotypicService.getPhenoFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction, phenoDataSetGroup);
@@ -160,7 +160,6 @@ public class PhenoDataUploader {
 				Date recordDate_asDate = (recordDate.isEmpty() ? new Date() : simpleDateFormat.parse(recordDate));
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
 				//log.info("get subject from list");
-				CustomField customField = null;
 				List<PhenoDataSetCollection> subjectExistingMatchingPhenoCollections = iPhenotypicService.getSubjectMatchingPhenoCollections(subject, phenoDataSetGroup, recordDate_asDate);
 				PhenoDataSetCollection phenoCollectionIntoDB = new PhenoDataSetCollection();
 				if(subjectExistingMatchingPhenoCollections.size() == 0 || !overwriteExisting) {

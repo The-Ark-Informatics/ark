@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.customdataupload;
+package au.org.theark.phenotypic.web.component.phenodataupload;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
@@ -28,14 +28,13 @@ import au.org.theark.core.web.form.AbstractWizardStepPanel;
 /**
  * The final step of this wizard.
  */
-public class CustomDataUploadStep5 extends AbstractWizardStepPanel {
+public class PhenoDataUploadStep5 extends AbstractWizardStepPanel {
 
 	private static final long	serialVersionUID	= -6803600838428204753L;
 	private Form<UploadVO>		containerForm;
 
-	public CustomDataUploadStep5(String id, Form<UploadVO> containerForm) {
-		super(id, "Step 5/5: Data Upload Finished", 
-				"The data has been successfully submitted, When the actual upload is finished it will have a status of \"Successfully Completed\".");
+	public PhenoDataUploadStep5(String id, Form<UploadVO> containerForm) {
+		super(id, "Step 5/5: Data Upload","The data has been successfully submitted, When the actual upload is finished it will have a status of \"Successfully Completed\".");
 		this.containerForm = containerForm;
 		initialiseDetailForm();
 	}
@@ -45,7 +44,7 @@ public class CustomDataUploadStep5 extends AbstractWizardStepPanel {
 
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
-		if (this.containerForm.getModelObject().getValidationMessages() != null) {
+		if (this.containerForm.getModelObject().getValidationMessages() != null && containerForm.getModelObject().getPreviousStepOutCompleted()) {
 			form.getNextButton().setEnabled(false);
 			target.add(form.getWizardButtonContainer());
 		}

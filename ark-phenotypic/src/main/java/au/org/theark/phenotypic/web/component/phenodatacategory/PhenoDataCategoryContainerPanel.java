@@ -142,27 +142,15 @@ public class PhenoDataCategoryContainerPanel extends AbstractContainerPanel<Phen
 		phenoDataSetCategoryProvider = new ArkDataProvider2<PhenoDataSetCategory, PhenoDataSetCategory>() {
 			private static final long	serialVersionUID	= 1L;
 			public int size() {
-			//if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
-			//criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
-			//return (int)iPhenotypicService.getPhenoDatasetCategoryCount(criteriaModel.getObject());//todo safe int conversion
-			//}
-			//else{
 					return (int)iPhenotypicService.getPhenoDatasetCategoryCount(criteriaModel.getObject());//todo safe int conversion
-			//	}
 			}
 			public Iterator<PhenoDataSetCategory> iterator(int first, int count) {
 				List<PhenoDataSetCategory> listCustomFieldCategories = new ArrayList<PhenoDataSetCategory>();
 				
 				if (isActionPermitted()) {
-					//if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
-						//listCustomFields = iArkCommonService.searchPageableCustomFieldsForPheno(criteriaModel.getObject(), first, count);
-					//}
-					//else{
 					listCustomFieldCategories = iPhenotypicService.searchPageablePhenoDataSetCategories(criteriaModel.getObject(), first, count);
-					//}
 					
 				}
-				//return PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(listCustomFieldCategories).iterator();
 				return (listCustomFieldCategories).iterator();
 			}
 		};

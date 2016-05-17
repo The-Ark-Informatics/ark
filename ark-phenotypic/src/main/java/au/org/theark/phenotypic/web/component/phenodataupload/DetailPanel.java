@@ -16,42 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.customdataupload;
+package au.org.theark.phenotypic.web.component.phenodataupload;
 
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.UploadVO;
-import au.org.theark.phenotypic.web.component.customdataupload.form.ContainerForm;
-import au.org.theark.phenotypic.web.component.customdataupload.form.SearchForm;
+import au.org.theark.phenotypic.web.component.phenodataupload.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenodataupload.form.DetailForm;
 
-/**
- * @author cellis
- * 
- */
 @SuppressWarnings("serial")
-public class SearchPanel extends Panel {
+public class DetailPanel extends Panel {
 
-	private ArkCrudContainerVO					arkCrudContainerVO;
-	private FeedbackPanel						feedBackPanel;
-	private PageableListView<Upload>	listView;
-	private ContainerForm						containerForm;
+	private ArkCrudContainerVO	arkCrudContainerVO;
+	private DetailForm			detailForm;
+	private FeedbackPanel		feedBackPanel;
+	private ContainerForm		containerForm;
+	private ArkFunction			arkFunction;
 
-	/* Constructor */
-	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<Upload> listView, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, ArkFunction arkFunction) {
 		super(id);
-		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
 		this.containerForm = containerForm;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
 	public void initialisePanel() {
-		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<UploadVO>) containerForm.getModel(), listView, feedBackPanel, arkCrudContainerVO);
-		add(searchForm);
+		detailForm = new DetailForm("detailForm", feedBackPanel, containerForm, arkCrudContainerVO, arkFunction);
+
+		detailForm.initialiseDetailForm();
+		add(detailForm);
 	}
 }

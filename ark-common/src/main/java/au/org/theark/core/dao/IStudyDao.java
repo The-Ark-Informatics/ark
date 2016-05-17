@@ -552,7 +552,7 @@ public interface IStudyDao {
 	 * Create a new Upload 
 	 * @param studyUpload
 	 */
-	public void createUpload(Upload studyUpload);
+	public void createUpload(Upload studyUpload) throws Exception;
 
 	/**
 	 * Update a new Upload 

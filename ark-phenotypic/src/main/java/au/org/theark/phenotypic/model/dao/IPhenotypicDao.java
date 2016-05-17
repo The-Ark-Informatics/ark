@@ -594,7 +594,7 @@ public interface IPhenotypicDao {
 		
 	public long getPhenoFieldGroupCount(Study study,ArkFunction arkFunction,Boolean status);
 	
-	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String FieldName, Study study, ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup);
+	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String FieldName, Study study, ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup)throws ArkRunTimeException,ArkSystemException;
 	
 	public List<PhenoDataSetGroup> getPhenoDataSetFieldGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count);
 	
@@ -609,5 +609,7 @@ public interface IPhenotypicDao {
 	public PhenoDataSetCategory getPhenoDataSetCategoryById(Long id);
 	
 	public boolean isPhenoDataSetFieldCategoryBeingUsed(PhenoDataSetCategory phenoDataSetCategory);
+	
+	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria);
 
 }

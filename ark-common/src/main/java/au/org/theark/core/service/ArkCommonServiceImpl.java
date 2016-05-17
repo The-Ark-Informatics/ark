@@ -1081,7 +1081,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.searchUploadsForBio(uploadCriteria);
 	}
 
-	public void createUpload(Upload studyUpload) {
+	public void createUpload(Upload studyUpload) throws Exception {
 		// log.debug("about to studydao.createupload");
 		studyDao.createUpload(studyUpload);
 

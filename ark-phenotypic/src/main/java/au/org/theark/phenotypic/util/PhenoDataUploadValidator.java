@@ -51,9 +51,6 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.XLStoCSV;
@@ -208,7 +205,7 @@ public class PhenoDataUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo, PhenoDataSetCollection phenoCollection, PhenoDataSetGroup pfg) {
+	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo, PhenoDataSetCollection phenoCollection, PhenoDataSetGroup pfg)throws FileFormatException,ArkBaseException {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
@@ -235,10 +232,10 @@ public class PhenoDataUploadValidator {
 	 * @param updateExisting 
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar, PhenoDataSetCollection phenoCollection, PhenoDataSetGroup pfg, Boolean updateExisting) {
+	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar, PhenoDataSetCollection phenoCollection, PhenoDataSetGroup pfg, Boolean updateExisting) throws FileFormatException,ArkBaseException{
 		java.util.Collection<String> validationMessages = null;
 
-		try {
+		
 			// If Excel, convert to CSV for validation
 			if (fileFormat.equalsIgnoreCase("XLS")) {
 				Workbook w;
@@ -257,13 +254,7 @@ public class PhenoDataUploadValidator {
 				}
 			}
 			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar, phenoCollection, pfg, updateExisting);
-		}
-		catch (FileFormatException ffe) {
-			log.error(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
-		}
-		catch (ArkBaseException abe) {
-			log.error(au.org.theark.phenotypic.web.Constants.ARK_BASE_EXCEPTION + abe);
-		}
+		
 		return validationMessages;
 	}
 
@@ -274,8 +265,8 @@ public class PhenoDataUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference, PhenoDataSetGroup phenoDataSetGroup) {
-		java.util.Collection<String> validationMessages = null;
+	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference, PhenoDataSetGroup phenoDataSetGroup)throws FileFormatException,ArkBaseException {
+		java.util.Collection<String> validationMessages = new ArrayList<String>();
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
 			String filename = uploadVo.getFileUpload().getClientFileName();
@@ -301,11 +292,13 @@ public class PhenoDataUploadValidator {
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
+			validationMessages.add(e.getMessage());
+			return validationMessages;
 		}
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference, PhenoDataSetGroup phenoDataSetGroup, Boolean updateExisting) {
+	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference, PhenoDataSetGroup phenoDataSetGroup, Boolean updateExisting)throws FileFormatException,ArkBaseException {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -315,9 +308,11 @@ public class PhenoDataUploadValidator {
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
+			throw new FileFormatException();
 		}
 		catch (ArkBaseException abe) {
 			log.error(au.org.theark.phenotypic.web.Constants.ARK_BASE_EXCEPTION + abe);
+			throw new ArkBaseException();
 		}
 		return validationMessages;
 	}
@@ -358,10 +353,9 @@ public class PhenoDataUploadValidator {
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
 			boolean hasSubjectUIDHeader = false;
-			boolean hasDateHeader = false;																//TODO check this
-			ArkFunction customFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);//Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			boolean hasDateHeader = false;																
+			ArkFunction customFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 			List<String> badHeaders = new ArrayList<String>();
-			
 			for(String header : headerColumnArray){																						
 				if(header.equalsIgnoreCase("SUBJECTUID")) {
 					hasSubjectUIDHeader = true;
@@ -369,9 +363,8 @@ public class PhenoDataUploadValidator {
 				else if(header.equalsIgnoreCase("RECORD_DATE_TIME")) {
 					hasDateHeader = true;
 				}
-				else{
+				else if(!header.isEmpty()){
 					//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
-					//if(iArkCommonService.getCustomFieldByNameStudyCFG(header, study, customFieldArkFunction, phenoDataSetGroup) == null){
 					if(iPhenotypicService.getPhenoDataSetFieldByNameStudyPFG(header, study, customFieldArkFunction, phenoDataSetGroup) == null){
 						badHeaders.add(header);
 						headerError = true;
@@ -469,9 +462,9 @@ public class PhenoDataUploadValidator {
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+			ArkFunction phenoDataDictionaryFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 																							//remove if not subjectuid, enforce fetch of customField to save another query each
-			List<PhenoDataSetFieldDisplay> cfdsThatWeNeed = iPhenotypicService.getPhenoFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction, phenoDataSetGroup);
+			List<PhenoDataSetFieldDisplay> cfdsThatWeNeed = iPhenotypicService.getPhenoFieldDisplaysIn(fieldNameCollection, study, phenoDataDictionaryFunction, phenoDataSetGroup);
 			
 			/* 
 			 * other validation for pheno?
@@ -845,7 +838,7 @@ public class PhenoDataUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataGreaterThanMaxValue(CustomField field, String value, String subjectUID) {
+	public static String fieldDataGreaterThanMaxValue(PhenoDataSetField field, String value, String subjectUID) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
 		stringBuffer.append(subjectUID);
@@ -866,7 +859,7 @@ public class PhenoDataUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataLessThanMinValue(CustomField field, String value, String subjectUID) {
+	public static String fieldDataLessThanMinValue(PhenoDataSetField field, String value, String subjectUID) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
 		stringBuffer.append(subjectUID);

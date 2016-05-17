@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.customdataupload;
+package au.org.theark.phenotypic.web.component.phenodataupload;
 
 import java.util.ArrayList;
 
@@ -33,10 +33,10 @@ import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.phenotypic.web.component.customdataupload.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenodataupload.form.ContainerForm;
 
 
-public class CustomDataUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
+public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
@@ -48,11 +48,11 @@ public class CustomDataUploadContainerPanel extends AbstractContainerPanel<Uploa
 	private SearchResultListPanel				searchResultPanel;
 	private DetailPanel							detailPanel;
 	private WizardPanel							wizardPanel;
-	private PageableListView<Upload>	listView;
+	private PageableListView<Upload>			listView;
 	private ContainerForm						containerForm;
 	private ArkFunction							arkFunction;
 
-	public CustomDataUploadContainerPanel(String id, ArkFunction arkFunction) {
+	public PhenoDataUploadContainerPanel(String id, ArkFunction arkFunction) {
 		super(id);
 
 		/* Initialise the CPM */

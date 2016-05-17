@@ -19,6 +19,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.hibernate.LazyInitializationException;
 
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
@@ -137,8 +138,8 @@ public class SearchResultListPanel extends Panel {
 				final PhenoDataSetGroup itemSelected = item.getModelObject();
 				//PhenoDataSetGroup phenoDataSetGroup = (PhenoDataSetGroup) (getParent().getDefaultModelObject());
 				CompoundPropertyModel<PhenoDataSetFieldGroupVO> newModel = new CompoundPropertyModel<PhenoDataSetFieldGroupVO>(new PhenoDataSetFieldGroupVO());
-				study=itemSelected.getStudy();
-				arkFunction=itemSelected.getArkFunction();
+				study=cpmModel.getObject().getPhenoDataSetGroup().getStudy();
+				arkFunction=cpmModel.getObject().getPhenoDataSetGroup().getArkFunction();
 				arkUser=cpmModel.getObject().getArkUser();
 				//initialize the table before proceed.
 				iPhenotypicService.deletePickedCategoriesAndAllTheirChildren(study, arkFunction, arkUser);
@@ -148,10 +149,10 @@ public class SearchResultListPanel extends Panel {
 				List<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplays=iPhenotypicService.getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroup(itemSelected);
 				for (PhenoDataSetFieldDisplay phenoDataSetFieldDisplay : phenoDataSetFieldDisplays) {
 					if(phenoDataSetFieldDisplay.getPhenoDataSetField()!=null){
-						createPickedPhenoDataSetCategory(phenoDataSetFieldDisplay);
-						createLinkPhenoDataSetCategoryField(phenoDataSetFieldDisplay);
+						createPickedPhenoDataSetCategory(phenoDataSetFieldDisplay,target);
+						createLinkPhenoDataSetCategoryField(phenoDataSetFieldDisplay,target);
 					}else{
-						createPickedPhenoDataSetCategory(phenoDataSetFieldDisplay);
+						createPickedPhenoDataSetCategory(phenoDataSetFieldDisplay,target);
 					}
 				}
 				// Data provider to paginate a list of CustomFieldDisplays linked to the CustomFieldGroup
@@ -185,7 +186,7 @@ public class SearchResultListPanel extends Panel {
 		linkWmc.add(link);
 		return linkWmc;
 	}
-	private void createPickedPhenoDataSetCategory(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) {
+	private void createPickedPhenoDataSetCategory(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay,AjaxRequestTarget target) {
 		PickedPhenoDataSetCategory pickedPhenoDataSetCategory=new PickedPhenoDataSetCategory();
 		pickedPhenoDataSetCategory.setStudy(study);
 		pickedPhenoDataSetCategory.setArkFunction(arkFunction);
@@ -201,13 +202,14 @@ public class SearchResultListPanel extends Panel {
 		if(!isPickedPhenoDataSetCategoryAlreadyExsists(phenoDataSetFieldDisplay.getPhenoDataSetCategory())){
 			try {
 				iPhenotypicService.createPickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
-			} catch (ArkSystemException | ArkRunTimeUniqueException| ArkRunTimeException | EntityExistsException e) {
-				e.printStackTrace();
+			} catch (ArkSystemException | ArkRunTimeUniqueException| ArkRunTimeException | EntityExistsException |LazyInitializationException e) {
+				error("Problem occurs during the data set initialisation(save category)please try again.");
+				target.add(feedbackPanel);
 			}
 		}
 	}
 
-	private void createLinkPhenoDataSetCategoryField(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) {
+	private void createLinkPhenoDataSetCategoryField(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay,AjaxRequestTarget target) {
 		LinkPhenoDataSetCategoryField linkPhenoDataSetCategoryField=new LinkPhenoDataSetCategoryField();
 			linkPhenoDataSetCategoryField.setStudy(study);
 			linkPhenoDataSetCategoryField.setArkFunction(arkFunction);
@@ -217,8 +219,9 @@ public class SearchResultListPanel extends Panel {
 			linkPhenoDataSetCategoryField.setOrderNumber(phenoDataSetFieldDisplay.getPhenoDataSetFiledOrderNumber());
 			try {
 				iPhenotypicService.createLinkPhenoDataSetCategoryField(linkPhenoDataSetCategoryField);
-			} catch (ArkSystemException| ArkRunTimeUniqueException| ArkRunTimeException| EntityExistsException e) {
-				e.printStackTrace();
+			} catch (ArkSystemException| ArkRunTimeUniqueException| ArkRunTimeException| EntityExistsException |LazyInitializationException e ) {
+				error("Problem occurs during the data set initialisation(save field)please try again.");
+				target.add(feedbackPanel);
 			}
 	}
 	private boolean isPickedPhenoDataSetCategoryAlreadyExsists(PhenoDataSetCategory phenoDataSetCategory){

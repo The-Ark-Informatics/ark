@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
@@ -1763,7 +1764,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			Set<PhenoDataSetData> dataToSave = collectionToInsert.getPhenoDataSetData();
 			collectionToInsert.setPhenoDataSetData(new HashSet<PhenoDataSetData>());
 			
-			session.save(collectionToInsert);
+			//session.save(collectionToInsert);
 			session.refresh(collectionToInsert);
 			for(PhenoDataSetData data : dataToSave){
 				data.setPhenoDataSetCollection(collectionToInsert);
@@ -2586,12 +2587,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	}
 
 	@Override
-	public void createPickedPhenoDataSetCategory(PickedPhenoDataSetCategory secondLevelPhenoDataSetCategory)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException, EntityExistsException {
-		getSession().save(secondLevelPhenoDataSetCategory);
+	public void createPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException, EntityExistsException {
+		getSession().save(pickedPhenoDataSetCategory);
 	}
 	@Override
-	public void deletePickedPhenoDataSetCategory(PickedPhenoDataSetCategory secondLevelPhenoDataSetCategory)throws ArkSystemException, EntityCannotBeRemoved {
-		getSession().delete(secondLevelPhenoDataSetCategory);
+	public void deletePickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory)throws ArkSystemException, EntityCannotBeRemoved {
+		getSession().delete(pickedPhenoDataSetCategory);
 		
 	}
 	@Override
@@ -2922,6 +2923,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		for (PickedPhenoDataSetCategory pickedPhenoDataSetCategory : pickedPhenoDataSetCategories) {
 			getSession().delete(pickedPhenoDataSetCategory);
 		}
+		getSession().flush();
 	}
 
 	@Override
@@ -2934,10 +2936,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				for (String name : fieldNameCollection) {
 					lowerCaseNames.add(name.toLowerCase());
 				}
-				String queryString = "select cfd from PhenoDataSetFieldDisplay cfd " + 
+				/*String queryString = "select cfd from PhenoDataSetFieldDisplay cfd " + 
 						" where cfd.customFieldGroup =:customFieldGroup and customField.id in ( " + 
 						" SELECT id from CustomField cf " + 
 						" where cf.study =:study " + " and lower(cf.name) in (:names) " + " and cf.arkFunction =:arkFunction )";
+				*/String queryString = "select pdsfd from PhenoDataSetFieldDisplay pdsfd " + 
+						" where pdsfd.phenoDataSetGroup =:phenoDataSetGroup and phenoDataSetField.id in ( " + 
+						" SELECT id from PhenoDataSetField pdsf " + 
+						" where pdsf.study =:study " + " and lower(pdsf.name) in (:names) " + " and pdsf.arkFunction =:arkFunction )";
 				Query query = getSession().createQuery(queryString); 
 				query.setParameter("study", study);
 				// query.setParameterList("names", fieldNameCollection);
@@ -2979,9 +2985,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return criteria;
 		
 	}
-	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String phenoFieldName, Study study, ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup){
+	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String phenoFieldName, Study study, ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup)throws ArkRunTimeException,ArkSystemException{
 
-		Query q = getSession().createQuery("Select customField from CustomField customField " +
+		/*Query q = getSession().createQuery("Select customField from CustomField customField " +
 											" where customField.name =:customFieldName " +
 											" and lower(customField.study) =lower(:study) " +
 											" and customField.arkFunction =:arkFunction " +
@@ -2992,9 +2998,26 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		q.setParameter("customFieldName", phenoFieldName);
 		q.setParameter("study", study);
 		q.setParameter("arkFunction", arkFunction);
-		q.setParameter("customFieldGroup", phenoDataSetGroup);
+		q.setParameter("customFieldGroup", phenoDataSetGroup);*/
 		
-		List<PhenoDataSetField> results = q.list();
+		Query q = getSession().createQuery("Select phenoDataSetField from PhenoDataSetField phenoDataSetField " +
+		" where phenoDataSetField.name =:phenoDataSetField " +
+		" and lower(phenoDataSetField.study) =lower(:study) " +
+		" and phenoDataSetField.arkFunction =:arkFunction " +
+		" and exists (" +
+		"				from PhenoDataSetFieldDisplay as phenoDataSetFieldDisplay " +
+		"				where phenoDataSetFieldDisplay.phenoDataSetField = phenoDataSetField " +
+		"				and phenoDataSetFieldDisplay.phenoDataSetGroup =:phenoDataSetGroup ) ");
+		q.setParameter("phenoDataSetField", phenoFieldName);
+		q.setParameter("study", study);
+		q.setParameter("arkFunction", arkFunction);
+		q.setParameter("phenoDataSetGroup", phenoDataSetGroup);
+		List<PhenoDataSetField> results =null;
+		try{
+			 results = q.list();
+		}catch(HibernateException hiberEx){ 
+			throw new ArkRunTimeException("Problem finding the phono data set fields.");
+		}
 		if(results.size()>0){
 			return (PhenoDataSetField)results.get(0);
 		}
@@ -3008,16 +3031,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		List<PhenoDataSetGroup> list = (List<PhenoDataSetGroup>)criteria.list();
 		return list;
 	}
-
-	/*@Override
-	public boolean isPhenoDataSetGroupAlreadyPublished(PhenoDataSetGroup phenoDataSetGroup) {
-		Criteria criteria = getSession().createCriteria(PhenoDataSetGroup.class);
-		criteria.add(Restrictions.eq("study", phenoDataSetGroup.getStudy()));
-		criteria.add(Restrictions.eq("arkFunction", phenoDataSetGroup.getArkFunction()));
-		criteria.add(Restrictions.eq("id", phenoDataSetGroup.getId()));
-		criteria.add(Restrictions.eq("name", phenoDataSetGroup.getName()));
-		return false;
-	}*/
 	
 	@Override
 	public List<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroupOrderByPhenoDataSetCategory(PhenoDataSetGroup phenoDataSetGroup) {
@@ -3074,6 +3087,20 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Criteria criteria = getSession().createCriteria(PhenoDataSetFieldDisplay.class);
 		criteria.add(Restrictions.eq("phenoDataSetCategory",phenoDataSetCategory));
 		return ((List<PhenoDataSetFieldDisplay>)criteria.list()).size()>0;
+	}
+
+	@Override
+	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria) {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetFieldDisplay.class);
+		criteria.add(Restrictions.eq("phenoDataSetGroup",phenoDataSetGroupCriteria));
+		criteria.add(Restrictions.isNotNull("phenoDataSetField"));
+		criteria.addOrder(Order.asc("phenoDataSetCategoryOrderNumber")).addOrder(Order.asc("phenoDataSetFiledOrderNumber"));
+		List<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplays = (List<PhenoDataSetFieldDisplay>)criteria.list();
+		List<PhenoDataSetField>  phenoDataSetFields=new ArrayList<PhenoDataSetField>();
+		for (PhenoDataSetFieldDisplay phenoDataSetFieldDisplay : phenoDataSetFieldDisplays) {
+			phenoDataSetFields.add(phenoDataSetFieldDisplay.getPhenoDataSetField());
+		}
+		return phenoDataSetFields;
 	}
 
 }

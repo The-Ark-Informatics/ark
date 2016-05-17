@@ -935,11 +935,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getCustomFieldGroupList(study);
 	}
 
-	public void processPhenoCollectionsWithTheirDataToInsertBatch(
-			List<PhenoDataSetCollection> phenoCollectionsWithTheirDataToInsert,
-			Study study) {
-		phenotypicDao.processPhenoCollectionsWithTheirDataToInsertBatch(
-				phenoCollectionsWithTheirDataToInsert, study);
+	public void processPhenoCollectionsWithTheirDataToInsertBatch(List<PhenoDataSetCollection> phenoCollectionsWithTheirDataToInsert,Study study) {
+		phenotypicDao.processPhenoCollectionsWithTheirDataToInsertBatch(phenoCollectionsWithTheirDataToInsert, study);
 	}
 
 	public List<List<String>> getPhenoDataAsMatrix(Study study,List<String> subjectUids, List<PhenoDataSetField> phenoDataSetFields,List<PhenoDataSetGroup> phenoDataSetGroups,PhenoDataSetCategory phenoDataSetCategory) {
@@ -1487,7 +1484,7 @@ try {
 	}
 
 	@Override
-	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String FieldName, Study study, ArkFunction arkFunction,PhenoDataSetGroup phenoDataSetGroup) {
+	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String FieldName, Study study, ArkFunction arkFunction,PhenoDataSetGroup phenoDataSetGroup)throws ArkRunTimeException,ArkSystemException {
 		return phenotypicDao.getPhenoDataSetFieldByNameStudyPFG(FieldName, study, arkFunction, phenoDataSetGroup);
 	}
 
@@ -1519,6 +1516,11 @@ try {
 	@Override
 	public boolean isPhenoDataSetFieldCategoryBeingUsed(PhenoDataSetCategory phenoDataSetCategory) {
 		return phenotypicDao.isPhenoDataSetCategoryAlreadyUsed(phenoDataSetCategory);
+	}
+
+	@Override
+	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria) {
+		return phenotypicDao.getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(phenoDataSetGroupCriteria);
 	}
 	
 

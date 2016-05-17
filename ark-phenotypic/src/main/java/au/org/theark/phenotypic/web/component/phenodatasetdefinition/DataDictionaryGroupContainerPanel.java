@@ -49,7 +49,7 @@ public class DataDictionaryGroupContainerPanel extends AbstractContainerPanel<Ph
 	
 	private ContainerForm containerForm;
 	
-	private ArkDataProvider2 arkDataProvider;
+	private ArkDataProvider2<PhenoDataSetGroup, PhenoDataSetGroup> arkDataProvider;
 	private DataView<PhenoDataSetGroup> dataView;
 	
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
@@ -136,20 +136,13 @@ public class DataDictionaryGroupContainerPanel extends AbstractContainerPanel<Ph
 			private static final long serialVersionUID = 1L;
 
 			public int size() {
-				//return (int)iArkCommonService.getCustomFieldGroupCount(criteriaModel.getObject());//TODO safe
-				//criteriaModel.getObject().setPublished(null);
 				return (int) iPhenotypicService.getPhenoDataSetFieldGroupCount(criteriaModel.getObject());
-				//return (int) iPhenotypicService.getPhenoDataSetFieldGroupCount(cpModel.getObject().getPhenoDataSetGroup());
 			}
 
 			public Iterator<PhenoDataSetGroup> iterator(int first, int count) {
 				List<PhenoDataSetGroup> listSubjects = new ArrayList<PhenoDataSetGroup>();
 				if (isActionPermitted()) {
-					//listSubjects = iArkCommonService.getCustomFieldGroups(criteriaModel.getObject(), first, count);
-					//Set the correct published value to intialise and see all the records of the resultList.
-					//criteriaModel.getObject().setPublished(null);
 					listSubjects = iPhenotypicService.getPhenoDataSetGroups(criteriaModel.getObject(), first, count);
-					//listSubjects = iPhenotypicService.getPhenoDataSetGroups(cpModel.getObject().getPhenoDataSetGroup(), first, count);
 				}
 				return listSubjects.iterator();
 			}

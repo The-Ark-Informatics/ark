@@ -190,9 +190,7 @@ public interface IPhenotypicService {
 
 	public Collection<CustomFieldGroup> getCustomFieldGroupList(Study study);
 
-	public void processPhenoCollectionsWithTheirDataToInsertBatch(
-			List<PhenoDataSetCollection> phenoCollectionsWithTheirDataToInsert,
-			Study study);
+	public void processPhenoCollectionsWithTheirDataToInsertBatch(List<PhenoDataSetCollection> phenoCollectionsWithTheirDataToInsert,Study study);
 	
 	public List<List<String>> getPhenoDataAsMatrix (Study study, List<String> subjectUids, List<PhenoDataSetField> customFields, List<PhenoDataSetGroup> phenoDataSetGroups,PhenoDataSetCategory phenoDataSetCategory);
 	
@@ -439,7 +437,7 @@ public interface IPhenotypicService {
 	
 	public long getPhenoFieldGroupCount(Study study,ArkFunction arkFunction,Boolean status);
 	
-	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String FieldName, Study study, ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup);
+	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String FieldName, Study study, ArkFunction arkFunction,PhenoDataSetGroup phenoDataSetGroup)throws ArkRunTimeException,ArkSystemException;
 	
 	public List<PhenoDataSetGroup> getPhenoDataSetFieldGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count);
 	
@@ -452,5 +450,7 @@ public interface IPhenotypicService {
 	public PhenoDataSetCategory getPhenoDataSetCategoryById(Long id);
 	
 	public boolean isPhenoDataSetFieldCategoryBeingUsed(PhenoDataSetCategory phenoDataSetCategory);
+	
+	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria);
 }
 

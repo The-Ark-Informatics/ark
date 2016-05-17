@@ -94,7 +94,7 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 			Long phenoDataSetCategoryOrderNumber) {
 		this.phenoDataSetCategoryOrderNumber = phenoDataSetCategoryOrderNumber;
 	}
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PHENO_DATASET_FIELD_ID", nullable = true)
 	public PhenoDataSetField getPhenoDataSetField() {
 		return phenoDataSetField;

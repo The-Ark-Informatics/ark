@@ -11,7 +11,35 @@
 		<div class="wizardPanelContentLeft">
 			&nbsp;
 		</div>
+		
+		<div class="fldLabel">
+			<div class="label">
+				<label for="customFieldGroup">
+					<wicket:message key="phenoDataSetGroup">
+						Questionnaire (phenoDataSetGroup)
+					</wicket:message>
+				</label>
+			</div>
+		</div>
 
+		<div class="fldControl">
+			<div class="label" style="display: inline-block;">
+				<select wicket:id="phenoDataSetGroup">
+					<option>
+						1
+					</option>
+				</select>
+				<div wicket:id="templatePanel" style="display: inline-block;">
+					<input wicket:id="downloadTemplate" type="button" value="Download Template" />
+				</div>
+			</div>
+		</div>
+		<div class="wizardPanelBreaker">
+			&nbsp;
+		</div>
+		<div class="wizardPanelContentLeft">
+			&nbsp;
+		</div>
 		<div class="fldLabel">
 			<div class="label">
 				<label for="filename">
@@ -25,58 +53,13 @@
 			<div class="label">
 				<input wicket:id="upload.filename" id="upload" type="file"/>
 			</div>
-		</div>
-<!-- 
-		<div class="fldLabel">
+		</div> 
+		<!-- Add download button to here. -->
+		<!-- <div class="fldControl">
 			<div class="label">
-				<label for="uploadType">
-					<wicket:message key="upload.uploadType">
-						Upload Type:
-					</wicket:message>
-				</label>
+				
 			</div>
-		</div>
-		<div class="fldControl">
-			<div class="label">
-				<select wicket:id="upload.uploadType">
-					<option>
-						Demographic
-					</option>
-					<option>
-						Study-specific
-					</option>
-				</select>
-			</div>
-		</div>
--->
-
-		<div class="wizardPanelBreaker">
-			&nbsp;
-		</div>
-		<div class="wizardPanelContentLeft">
-			&nbsp;
-		</div>
-		
-		<div class="fldLabel">
-			<div class="label">
-				<label for="customFieldGroup">
-					<wicket:message key="customFieldGroup">
-						Questionnaire (custom field group)
-					</wicket:message>
-				</label>
-			</div>
-		</div>
-
-		<div class="fldControl">
-			<div class="label">
-				<select wicket:id="customFieldGroup">
-					<option>
-						1
-					</option>
-				</select>
-			</div>
-		</div>
-
+		</div> -->
 <!-- margin here -->
 
 		<div class="fldLabel">
@@ -88,18 +71,6 @@
 		<div class="fldControl">
 			<input wicket:id="updateChkBox" type="checkbox" />
 		</div>
-
-		<!--  
-		<div class="fldLabel">
-			<wicket:message key="phenoCollection.name">
-				Name:
-			</wicket:message>
-		</div>
-
-		<div class="fldControl">
-			<input wicket:id="phenoCollection.name"	type="text" />
-		</div>
-		-->
 
 		<div class="wizardPanelBreaker">
 			&nbsp;

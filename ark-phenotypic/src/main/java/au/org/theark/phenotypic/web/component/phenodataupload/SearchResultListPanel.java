@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.customdataupload;
+package au.org.theark.phenotypic.web.component.phenodataupload;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -41,7 +41,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
-import au.org.theark.phenotypic.web.component.customdataupload.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenodataupload.form.ContainerForm;
 
 /**
  * 
@@ -60,16 +60,6 @@ public class SearchResultListPanel extends Panel {
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "DatasetDataUpload", au.org.theark.phenotypic.web.Constants.PHENO_TEMPLATE_CELLS) {
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download of the template.");
-			}
-
-		};
-		add(downloadTemplateButton);
 	}
 
 	/**

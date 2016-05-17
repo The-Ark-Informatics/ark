@@ -142,7 +142,12 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			// Save
 			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
 			containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(Constants.UPLOAD_STATUS_COMPLETED));		
-			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+			try {
+				iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+			} catch (Exception e) {
+				error("There is a problem during the upload process.");
+				processErrors(target);
+			}
 
 			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
 			processErrors(target);

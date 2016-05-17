@@ -701,7 +701,7 @@ public interface IArkCommonService<T> {
 
 	public UnitType getUnitTypeByNameAndArkFunction(String string, ArkFunction arkFunction);
 
-	public void createUpload(Upload studyUpload);
+	public void createUpload(Upload studyUpload) throws Exception;
 
 	public void updateUpload(Upload studyUpload);
 

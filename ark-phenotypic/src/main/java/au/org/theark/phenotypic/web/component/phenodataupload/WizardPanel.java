@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.customdataupload;
+package au.org.theark.phenotypic.web.component.phenodataupload;
 
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
-import au.org.theark.phenotypic.web.component.customdataupload.form.ContainerForm;
-import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
+import au.org.theark.phenotypic.web.component.phenodataupload.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenodataupload.form.WizardForm;
 
 public class WizardPanel extends Panel {
 
