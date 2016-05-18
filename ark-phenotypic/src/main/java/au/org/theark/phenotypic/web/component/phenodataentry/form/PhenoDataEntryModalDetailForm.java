@@ -299,7 +299,6 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		questionnaireDdc.setRequired(true);
 		recordDateTxtFld.setRequired(true);
 		statusDdc.setRequired(true);
-		reviewedByDdc.setRequired(true);
 	}
 
 	private void addComponents() {
