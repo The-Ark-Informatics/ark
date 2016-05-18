@@ -388,11 +388,6 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	 */
 	@Override
 	protected boolean isNew() {
-		if (cpModel.getObject().getPhenoDataSetCollection().getId() == null) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return cpModel.getObject().getPhenoDataSetCollection().getId() == null;
 	}
 }
