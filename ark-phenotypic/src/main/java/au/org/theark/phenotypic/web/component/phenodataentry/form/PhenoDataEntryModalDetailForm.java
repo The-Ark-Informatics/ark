@@ -37,6 +37,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +130,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 				return PhenoDataSetCategoryOrderingHelper.getInstance().preTextDecider(pickedCat)+ super.getDisplayValue(object);
 			}
 		};
-		pickedPhenoDataSetCategoryDdc = new DropDownChoice<PickedPhenoDataSetCategory>("pickedPhenoDataSetCategory", pickedPhenoDataSetCategoriesHierachical,renderer);
+		pickedPhenoDataSetCategoryDdc = new DropDownChoice<PickedPhenoDataSetCategory>("pickedPhenoDataSetCategory", new PropertyModel<PickedPhenoDataSetCategory>(cpModel, "pickedPhenoDataSetCategory"), pickedPhenoDataSetCategoriesHierachical,renderer);
 		pickedPhenoDataSetCategoryDdc.setOutputMarkupId(true);
 		pickedPhenoDataSetCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
@@ -235,7 +236,16 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		dataEntryWMC = new WebMarkupContainer("dataEntryWMC");
 		dataEntryWMC.setOutputMarkupId(true);
 		initPhenoDataSetFieldCategoryDdc(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire());
-		initialisePhenoCollectionDataEntry(null);
+
+		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire());
+		PhenoDataSetCategory phenoDataSetCategory = null;
+		if(pickedPhenoDataSetCategories.size() == 1) {
+			PickedPhenoDataSetCategory pickedPhenoDataSetCategory = pickedPhenoDataSetCategories.get(0);
+			phenoDataSetCategory = pickedPhenoDataSetCategory.getPhenoDataSetCategory();
+			pickedPhenoDataSetCategoryDdc.setModelObject(pickedPhenoDataSetCategory);
+		}
+
+		initialisePhenoCollectionDataEntry(phenoDataSetCategory);
 		attachValidators();
 		addComponents();
 
