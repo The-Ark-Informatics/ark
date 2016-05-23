@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>wicket-tree</groupId>
 			<artifactId>wicket-tree</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.5.0</version>
 		</dependency>
 
 		<dependency>
@@ -407,30 +407,13 @@
 		-->
 		<repository>
 			<id>wicket-tree</id>
-			<name>Wicket-tree Repository</name>
-			<url>http://wicket-tree.googlecode.com/svn/repo</url>
+			<name>Local wicket-tree Repository</name>
+			<url>file://${basedir}/../3rdParty/wicket-tree/</url>
 		</repository>
-		<!--
 		<repository>
-			<id>org.wicketstuff</id>
-			<name>Wicket Stuff Repo</name>
-			<url>http://wicketstuff.org/maven/repository</url>
-		</repository>
-		
-			<repository> <id>thirdparty-releases</id> <name>JBoss Thirdparty
-			Releases</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-			</repository>
-		-->
-		<repository>
-			<id>wiquery-maven-repo</id>
-			<name>WiQuery repository</name>
-			<url>https://wiquery.googlecode.com/svn/repo/</url>
-		</repository>
-
-		<repository>
-			<id>googlecode</id>
-			<url>http://jqwicket.googlecode.com/svn/m2-repo/releases/</url>
+			<id>jqwicket</id>
+			<name>Local jqwicket Repository</name>
+			<url>file://${basedir}/../3rdParty/jqwicket</url>
 		</repository>
 		<repository>
 			<id>wicketstuff-core-releases</id>
@@ -441,3 +424,4 @@
 		</repository>
 	</repositories>
 </project>
+
