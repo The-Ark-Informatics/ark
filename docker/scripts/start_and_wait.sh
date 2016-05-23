@@ -17,3 +17,6 @@ while [ $(curl --write-out %{http_code} --silent --output /dev/null ${IP}:8080/a
 	echo "Not ready, sleeping"
 	sleep 5;
 done
+
+kill %1
+
