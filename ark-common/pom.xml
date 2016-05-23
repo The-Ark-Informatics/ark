@@ -277,12 +277,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.code.jqwicket</groupId>
-			<artifactId>jqwicket</artifactId>
-			<version>0.8</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.wicketstuff</groupId>
 			<artifactId>wicketstuff-datatables</artifactId>
 			<version>1.5.7</version>
@@ -409,11 +403,6 @@
 			<id>wicket-tree</id>
 			<name>Local wicket-tree Repository</name>
 			<url>file://${basedir}/../3rdParty/wicket-tree/</url>
-		</repository>
-		<repository>
-			<id>jqwicket</id>
-			<name>Local jqwicket Repository</name>
-			<url>file://${basedir}/../3rdParty/jqwicket</url>
 		</repository>
 		<repository>
 			<id>wicketstuff-core-releases</id>
