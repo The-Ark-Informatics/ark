@@ -83,14 +83,14 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 	private AbstractListEditor<Biospecimen>	listEditor;
 	
 	private Label												parentQtyLbl;
-	private TextField<String>								biospecimenUidTxtFld;
-	private TextField<Number>								numberToCreateTxtFld;
-	private TextField<Double>								quantityTxtFld;
-	private DropDownChoice<TreatmentType>				treatmentTypeDdc;
-	private TextField<Number>								concentrationTxtFld;
-	protected ModalWindow 									modalWindow;
-	private boolean											copyBiospecimen = false;
-	protected Biospecimen									biospecimenToCopy = new Biospecimen();
+	private TextField<String>									biospecimenUidTxtFld;
+	private TextField<Number>									numberToCreateTxtFld;
+	private TextField<Double>									quantityTxtFld;
+	private DropDownChoice<TreatmentType>						treatmentTypeDdc;
+	private TextField<Number>									concentrationTxtFld;
+	protected ModalWindow 										modalWindow;
+	private boolean												copyBiospecimen = false;
+	protected Biospecimen										biospecimenToCopy = new Biospecimen();
 
 	public BatchAliquotBiospecimenForm(String id, IModel<BatchBiospecimenAliquotsVO> model, ModalWindow modalWindow) {
 		super(id, model);
@@ -121,15 +121,19 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				int numberToCreate = ((Integer) numberToCreateTxtFld.getDefaultModelObject());
-				for (int i = 0; i < numberToCreate; i++) {
-					Biospecimen biospecimen= new Biospecimen();
-					listEditor.addItem(biospecimen);
-					listEditor.updateModel();
-					target.add(form);	
-				}	
+				if(numberToCreateTxtFld.getDefaultModelObject()!=null){
+					int numberToCreate = ((Integer) numberToCreateTxtFld.getDefaultModelObject());
+					for (int i = 0; i < numberToCreate; i++) {
+						Biospecimen biospecimen= new Biospecimen();
+						listEditor.addItem(biospecimen);
+						listEditor.updateModel();
+						target.add(form);	
+					}
+				}else{
+					error("Please enter a valid number.");
+					onError(target, form);
+				}
 			}
-
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				target.add(feedbackPanel);

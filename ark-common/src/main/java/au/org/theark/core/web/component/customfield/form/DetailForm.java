@@ -62,11 +62,11 @@ import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.CharactorMissingAndEncodedValueValidator;
+import au.org.theark.core.util.CharactorDefaultMissingAndEncodedValueValidator;
 import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
-import au.org.theark.core.util.MissingValueDateRangeValidator;
-import au.org.theark.core.util.MissingValueDoubleRangeValidator;
+import au.org.theark.core.util.DefaultMissingValueDateRangeValidator;
+import au.org.theark.core.util.DefaultMissingValueDoubleRangeValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -119,14 +119,16 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	protected WebMarkupContainer					customFieldDetailWMC;
 	protected WebMarkupContainer					minMaxValueEntryWMC;
 	protected WebMarkupContainer					missingValueEntryWMC;
+	protected WebMarkupContainer					defaultValueEntryWMC;
 	
 	protected WebMarkupContainer					customFieldDisplayDetailWMC;
 	protected Panel									customFieldDisplayPositionPanel;
 	protected Panel									minValueEntryPnl;
 	protected Panel									maxValueEntryPnl;
 	protected Panel									missingValueEntryPnl;
+	protected Panel 								defaultValueEntryPnl;
 
-	private TextArea<String>						defaultValueTextArea;
+	//private TextArea<String>						defaultValueTextArea;
 	
 	protected IModel<List<CustomFieldGroup>>		cfGroupDdcListModel;
 	
@@ -200,6 +202,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				super.onBeforeRender();
 			}
 		};
+		fieldTypeDdc.setOutputMarkupId(true);
 		fieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			protected void onUpdate(AjaxRequestTarget target) {
 				updateEncodedValueFld();
@@ -207,10 +210,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				initMinMaxValuePnls();
 				target.add(minMaxValueEntryWMC);
 				target.add(missingValueEntryWMC);
+				target.add(defaultValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
-				target.add(fieldUnitTypeDdc);
+				if(panelCustomUnitTypeDropDown.isVisible())target.add(fieldUnitTypeDdc);
 				//Add field unite type as text
-				target.add(fieldUnitTypeTxtFld);
+				if(panelCustomUnitTypeText.isVisible())target.add(fieldUnitTypeTxtFld);
 				target.add(fieldAllowMultiselectChkBox);
 			}
 		});
@@ -294,17 +298,23 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		}
 	}
 
+	/**
+	 * study	fieldType(Date)		UnitTypecombo	UnitTypeText
+		yes 		yes					no				no
+		yes			no					no				yes
+		no			yes					no				no
+		no			no					yes				no
+	 */
 	private void updateUnitTypeDdc() {
-		FieldType fieldType = getModelObject().getCustomField().getFieldType();
-		if (fieldType != null && !fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
+		//FieldType fieldType = getModelObject().getCustomField().getFieldType();
+		//if (fieldType != null && fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
 			// Only allowed to use unitType when fieldType != DATE
-			fieldUnitTypeDdc.setEnabled(true);
-			fieldUnitTypeTxtFld.setEnabled(true);
-		}
-		else {
-			fieldUnitTypeDdc.setEnabled(false);
-			fieldUnitTypeTxtFld.setEnabled(false);
-		}
+			fieldUnitTypeDdc.setEnabled(!isFieldTypeDate()&& !isModuleStudy());
+			fieldUnitTypeTxtFld.setEnabled(isModuleStudy()&&!isFieldTypeDate());
+		//}else{
+			//fieldUnitTypeDdc.setEnabled(true);
+			//fieldUnitTypeTxtFld.setEnabled(true);
+		//}
 	}
 	
 	/**
@@ -312,6 +322,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 */
 	private void initMinMaxValuePnls() {
 		FieldType fieldType = getModelObject().getCustomField().getFieldType();
+		IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
+		IModel<String> defaultValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_DEFAULT_VALUE);
 		
 			if (fieldType == null || fieldType.getName().equals(Constants.CHARACTER_FIELD_TYPE_NAME) 
 					|| fieldType.getName().equals(Constants.LOOKUP_FIELD_TYPE_NAME)) {
@@ -326,7 +338,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 					public void detach() {
 					}
 				};
-				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
 				minValueEntryPnl = new TextDataEntryPanel("minValueEntryPanel", dummyModel, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				minValueEntryPnl.setEnabled(false);
@@ -336,8 +347,14 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				missingValueEntryPnl.setEnabled(true);
+				
+				defaultValueEntryPnl = new TextDataEntryPanel("defaultValueEntryPnl", defaultValueMdl, new Model<String>("DefaultValue"));
+				defaultValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				defaultValueEntryPnl.setEnabled(true);
+							
 				TextField<?> missing= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
-				this.add(new CharactorMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing, "Encoded Values","Missing Value"));
+				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
+				this.add(new CharactorDefaultMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing,defaultVal, "Encoded Values","Missing Value","Default Value"));
 				
 			}
 			// Not supporting min and max value for CHARACTER fieldTypes
@@ -345,30 +362,30 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				// NUMBER fieldType
 				IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
 				IModel<Double> maxValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
-				//IModel<Double> missingValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
-				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
 				minValueEntryPnl = new NumberDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				maxValueEntryPnl = new NumberDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
 				maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
-				//missingValueEntryPnl = new NumberDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				
+				defaultValueEntryPnl = new TextDataEntryPanel("defaultValueEntryPnl", defaultValueMdl, new Model<String>("DefaultValue"));
+				defaultValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
 				TextField<?> min= ((NumberDataEntryPanel)minValueEntryPnl).getDataValueTxtFld();
 				TextField<?> max= ((NumberDataEntryPanel)maxValueEntryPnl).getDataValueTxtFld();
 				TextField<?> missingText= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
+				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
+				
 				this.add(new DoubleMinimumToMaximumValidator(min, max, "Minimum Value", "Maximum Value"));
-				this.add(new MissingValueDoubleRangeValidator(min,max,missingText,"Minimum Value","Maximum Value","Missing Value"));
+				this.add(new DefaultMissingValueDoubleRangeValidator(min,max,missingText,defaultVal,"Minimum Value","Maximum Value","Missing Value","Default Value"));
 				
 			}
 			else if (fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
 				// DATE fieldType
 				IModel<Date> minValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
 				IModel<Date> maxValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				//IModel<Date> missingValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
 				minValueEntryPnl = new DateDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				maxValueEntryPnl = new DateDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
@@ -377,18 +394,23 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
+				defaultValueEntryPnl = new TextDataEntryPanel("defaultValueEntryPnl", defaultValueMdl, new Model<String>("DefaultValue"));
+				defaultValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				
 				DateTextField fromDate= ((DateDataEntryPanel)minValueEntryPnl).getDataValueDateFld();
 				DateTextField toDate= ((DateDataEntryPanel)maxValueEntryPnl).getDataValueDateFld();
 				//DateTextField missingDate= ((DateDataEntryPanel)missingValueEntryPnl).getDataValueDateFld();
 				TextField<?> missingDate= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
+				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
+				
 				
 				this.add(new DateFromToValidator(fromDate,toDate,"Minimum Date","Maximum Date"));
-				this.add(new MissingValueDateRangeValidator(fromDate,toDate,missingDate,"Minimum Date","Maximum Date","Missing Date"));
+				this.add(new DefaultMissingValueDateRangeValidator(fromDate,toDate,missingDate,defaultVal,"Minimum Date","Maximum Date","Missing Date","Default Date"));
 			}
 			minMaxValueEntryWMC.addOrReplace(minValueEntryPnl);
 			minMaxValueEntryWMC.addOrReplace(maxValueEntryPnl);
 			missingValueEntryWMC.addOrReplace(missingValueEntryPnl);
-		
+			defaultValueEntryWMC.addOrReplace(defaultValueEntryPnl);
 	}
 	/**
 	 * initialise unit types.
@@ -398,12 +420,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		unitTypeCriteria.setArkFunction(cpModel.getObject().getCustomField().getArkFunction());
 		List<UnitType> unitTypeList = iArkCommonService.getUnitTypes(unitTypeCriteria);
 		// assumes that if the unit.name will appear within the unit.description
-
 		ChoiceRenderer unitTypeRenderer = new ChoiceRenderer(Constants.UNITTYPE_NAME, Constants.UNITTYPE_ID);
 		fieldUnitTypeDdc = new DropDownChoice<UnitType>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE, unitTypeList, unitTypeRenderer);
-		fieldUnitTypeDdc.setNullValid(true); // null is ok for units
 		fieldUnitTypeDdc.setOutputMarkupId(true); // unitTypeDdc can be enabled/disabled
-		
+		fieldUnitTypeDdc.setNullValid(true); // null is ok for units
 		//Add the Unit type text.
 		fieldUnitTypeTxtFld=new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE_TXT);
 		fieldUnitTypeTxtFld.setOutputMarkupId(true);
@@ -453,6 +473,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		minMaxValueEntryWMC.setOutputMarkupPlaceholderTag(true);
 		missingValueEntryWMC= new WebMarkupContainer("missingValueEntryWMC");
 		missingValueEntryWMC.setOutputMarkupPlaceholderTag(true);
+		
+		defaultValueEntryWMC= new WebMarkupContainer("defaultValueEntryWMC");
+		defaultValueEntryWMC.setOutputMarkupPlaceholderTag(true);
+		
 
 		// unitType and encodedValues rely on fieldTypeDdc being already established
 		fieldEncodedValuesTxtFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_ENCODED_VALUES);
@@ -470,7 +494,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		// Have to Edit, before allowing delete
 		deleteButton.setEnabled(false);
 
-		defaultValueTextArea = new TextArea<String>("customField.defaultValue");
+		//defaultValueTextArea = new TextArea<String>("customField.defaultValue");
 		
 		addDetailFormComponents();
 		attachValidators();
@@ -512,12 +536,19 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		fieldNameTxtFld.setRequired(true).setLabel((new StringResourceModel("customField.name.required", this, new Model<String>("Custom Field Name"))));
 		// Enforce particular characters for fieldName
 		fieldNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
-		fieldTypeDdc.setRequired(true).setLabel((new StringResourceModel("customField.fieldType.required", this, new Model<String>("Custom Field Type"))));
-		fieldLabelTxtAreaFld.add(StringValidator.maximumLength(255));
-
+		//Ark-1591 error fixing .
+		fieldNameTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
+		fieldDescriptionTxtAreaFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
+		
+		fieldTypeDdc.setRequired(true).setLabel((new StringResourceModel("customField.fieldType.required", this, new Model<String>("Field Type"))));
+		fieldLabelTxtAreaFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
+		fieldUnitTypeTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
+		//defaultValueTextArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
 		// TODO: Add correct validator, possibly custom with better validation message
 		fieldEncodedValuesTxtFld.add(new PatternValidator(au.org.theark.core.Constants.ENCODED_VALUES_PATTERN)).setLabel(
 				new StringResourceModel("customField.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
+		
+		customFieldTypeDdc.setRequired(true).setLabel((new StringResourceModel("customField.customtfieldType.required", this, new Model<String>("Custom Field Type"))));
 	}
 
 	@Override
@@ -627,14 +658,13 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		panelCustomUnitTypeText.setOutputMarkupId(true);
 		panelCustomFieldTypeDropDown = new WebMarkupContainer("paenlCustomFieldTypeDropDown");
 		panelCustomFieldTypeDropDown.setOutputMarkupId(true);
-		
-		if(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY)){
-			panelCustomUnitTypeDropDown.setVisible(false);
-			panelCustomUnitTypeText.setVisible(true);
-		}else{
-			panelCustomUnitTypeDropDown.setVisible(true);
-			panelCustomUnitTypeText.setVisible(false);
-		}
+		//if(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY)){
+		panelCustomUnitTypeDropDown.setVisible(!isModuleStudy());
+		panelCustomUnitTypeText.setVisible(isModuleStudy());
+	//	}else{
+		//panelCustomUnitTypeDropDown.setVisible(true);
+		//panelCustomUnitTypeText.setVisible(false);
+	//	}
 		customFieldDetailWMC.setOutputMarkupPlaceholderTag(true);
 		customFieldDetailWMC.add(fieldIdTxtFld.setEnabled(false)); // Disable ID field editing
 		customFieldDetailWMC.add(fieldNameTxtFld);
@@ -658,8 +688,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		customFieldDetailWMC.add(fieldEncodedValuesTxtFld);
 		//customFieldDetailWMC.add(fieldMissingValueTxtFld);
 		customFieldDetailWMC.add(missingValueEntryWMC);
+		customFieldDetailWMC.add(defaultValueEntryWMC);
+		
 		customFieldDetailWMC.add(fieldLabelTxtAreaFld);
-		customFieldDetailWMC.add(defaultValueTextArea);
+		//customFieldDetailWMC.add(defaultValueTextArea);
 		customFieldDisplayDetailWMC = new WebMarkupContainer("customFieldDisplayDetailWMC");
 		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
 		customFieldDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
@@ -677,6 +709,15 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldDisplayDetailWMC);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 
+	}
+	
+	private boolean isModuleStudy(){
+		return arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY);
+	}
+	
+	private boolean isFieldTypeDate(){
+		FieldType fieldType = getModelObject().getCustomField().getFieldType();
+		return (fieldType != null && fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME));
 	}
 
 }

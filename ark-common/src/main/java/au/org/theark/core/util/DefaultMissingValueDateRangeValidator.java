@@ -13,7 +13,7 @@ import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
 
-public class MissingValueDateRangeValidator extends AbstractFormValidator {
+public class DefaultMissingValueDateRangeValidator extends AbstractFormValidator {
 
 	private static final long serialVersionUID = 1L;
 	/** form components to be checked. */
@@ -26,15 +26,19 @@ public class MissingValueDateRangeValidator extends AbstractFormValidator {
 	private String labComp2;
 
 	private String labComp3;
+	
+	private String labComp4;
 
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-	public MissingValueDateRangeValidator(DateTextField dateValidFrom,DateTextField dateValidTo, TextField missingvValueDate,String lableComponent1, String lableComponent2,String lableComponent3) {
+	public DefaultMissingValueDateRangeValidator(DateTextField dateValidFrom,DateTextField dateValidTo, TextField missingvValueDate,TextField defaultValueDate,
+			String lableComponent1, String lableComponent2,String lableComponent3,String lableComponent4) {
 		componentDates = new DateTextField[] { dateValidFrom, dateValidTo };
-		componentTexts = new TextField[] { missingvValueDate };
+		componentTexts = new TextField[] { missingvValueDate,defaultValueDate };
 		labComp1 = lableComponent1;
 		labComp2 = lableComponent2;
 		labComp3 = lableComponent3;
+		labComp4= lableComponent4;
 	}
 
 	@Override
@@ -47,24 +51,51 @@ public class MissingValueDateRangeValidator extends AbstractFormValidator {
 		Date startDate = (Date) componentDates[0].getConvertedInput();
 		Date endDate = (Date) componentDates[1].getConvertedInput();
 		String missingValueString = (String) componentTexts[0].getConvertedInput();
+		String defaultValueString = (String) componentTexts[1].getConvertedInput();
+		//Missing date validation
 		if (missingValueString!=null && !missingValueString.isEmpty() && isValidDate(missingValueString)) {
 			if (endDate != null && startDate != null) {
 				Date convertDateMissing;
 				try {
 					convertDateMissing = dateFormat.parse(missingValueString);
 					if (convertDateMissing.after(startDate)&& convertDateMissing.before(endDate)) {
-						ValidationError ve = new ValidationError();
-						ve.setVariable("startDate", labComp1);
-						ve.setVariable("endDate", labComp2);
-						ve.setVariable("missingvValueDate", labComp3);
-						ve.addMessageKey("missingValueDateValidate.range");
-						componentTexts[0].error((IValidationError) ve);
+						ValidationError ve1 = new ValidationError();
+						ve1.setVariable("startDate", labComp1);
+						ve1.setVariable("endDate", labComp2);
+						ve1.setVariable("missingvValueDate", labComp3);
+						ve1.addMessageKey("missingValueDateValidate.range");
+						componentTexts[0].error((IValidationError) ve1);
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 			}
 		}
+		//Default Date Validation
+		if (defaultValueString!=null && !defaultValueString.isEmpty() && isValidDate(defaultValueString)) {
+			if (endDate != null && startDate != null) {
+				Date convertDateDefault;
+				try {
+					convertDateDefault = dateFormat.parse(defaultValueString);
+					if (convertDateDefault.before(startDate) || convertDateDefault.after(endDate)) {
+						ValidationError ve2 = new ValidationError();
+						ve2.setVariable("startDate", labComp1);
+						ve2.setVariable("endDate", labComp2);
+						ve2.setVariable("defaultValueDate", labComp4);
+						ve2.addMessageKey("defaultValueDateValidate.range");
+						componentTexts[0].error((IValidationError) ve2);
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+		}else{
+			ValidationError ve3 = new ValidationError();
+			ve3.setVariable("defaultValueDate", labComp4);
+			ve3.addMessageKey("defaultValueDateValidate.NotValidDate");
+			componentTexts[0].error((IValidationError) ve3);
+		}
+		
 	}
 
 	private boolean isValidDate(String inDate) {

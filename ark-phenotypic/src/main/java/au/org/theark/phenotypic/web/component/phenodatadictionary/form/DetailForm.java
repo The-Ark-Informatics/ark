@@ -73,11 +73,11 @@ import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.CharactorMissingAndEncodedValueValidator;
+import au.org.theark.core.util.CharactorDefaultMissingAndEncodedValueValidator;
 import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
-import au.org.theark.core.util.MissingValueDateRangeValidator;
-import au.org.theark.core.util.MissingValueDoubleRangeValidator;
+import au.org.theark.core.util.DefaultMissingValueDateRangeValidator;
+import au.org.theark.core.util.DefaultMissingValueDoubleRangeValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 import au.org.theark.core.vo.PhenoDataSetFieldVO;
@@ -133,14 +133,16 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 	protected WebMarkupContainer					phenoDataSetDetailWMC;
 	protected WebMarkupContainer					minMaxValueEntryWMC;
 	protected WebMarkupContainer					missingValueEntryWMC;
+	protected WebMarkupContainer					defaultValueEntryWMC;
 	
 	protected WebMarkupContainer					phenoDataSetDisplayDetailWMC;
 	protected Panel									phenoDataSetDisplayPositionPanel;
 	protected Panel									minValueEntryPnl;
 	protected Panel									maxValueEntryPnl;
 	protected Panel									missingValueEntryPnl;
+	protected Panel 								defaultValueEntryPnl;
 
-	private TextArea<String>						defaultValueTextArea;
+	//private TextArea<String>						defaultValueTextArea;
 	
 	protected IModel<List<PhenoDataSetGroup>>		cfGroupDdcListModel;
 	
@@ -217,6 +219,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				initMinMaxValuePnls();
 				target.add(minMaxValueEntryWMC);
 				target.add(missingValueEntryWMC);
+				target.add(defaultValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
 				target.add(fieldUnitTypeDdc);
 				target.add(fieldUnitTypeTxtFld);
@@ -266,6 +269,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 	 */
 	private void initMinMaxValuePnls() {
 		FieldType fieldType = getModelObject().getPhenoDataSetField().getFieldType();
+		IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
+		IModel<String> defaultValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_DEFAULT_VALUE);
 		
 			if (fieldType == null || fieldType.getName().equals(Constants.FIELD_TYPE_CHARACTER) 
 					|| fieldType.getName().equals(Constants.LOOKUP_FIELD_TYPE_NAME)) {
@@ -280,7 +285,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 					public void detach() {
 					}
 				};
-				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
 				minValueEntryPnl = new TextDataEntryPanel("minValueEntryPanel", dummyModel, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				minValueEntryPnl.setEnabled(false);
@@ -290,8 +294,14 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				missingValueEntryPnl.setEnabled(true);
+				
+				defaultValueEntryPnl = new TextDataEntryPanel("defaultValueEntryPnl", defaultValueMdl, new Model<String>("DefaultValue"));
+				defaultValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				defaultValueEntryPnl.setEnabled(true);
+				
 				TextField<?> missing= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
-				this.add(new CharactorMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing, "Encoded Values","Missing Value"));
+				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
+				this.add(new CharactorDefaultMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing,defaultVal, "Encoded Values","Missing Value","Default Value"));
 				
 			}
 			// Not supporting min and max value for CHARACTER fieldTypes
@@ -299,8 +309,6 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				// NUMBER fieldType
 				IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MIN_VALUE);
 				IModel<Double> maxValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MAX_VALUE);
-				//IModel<Double> missingValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
-				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
 				minValueEntryPnl = new NumberDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				maxValueEntryPnl = new NumberDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
@@ -309,19 +317,21 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
+				defaultValueEntryPnl = new TextDataEntryPanel("defaultValueEntryPnl", defaultValueMdl, new Model<String>("DefaultValue"));
+				defaultValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				
 				TextField<?> min= ((NumberDataEntryPanel)minValueEntryPnl).getDataValueTxtFld();
 				TextField<?> max= ((NumberDataEntryPanel)maxValueEntryPnl).getDataValueTxtFld();
 				TextField<?> missingText= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
+				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
 				this.add(new DoubleMinimumToMaximumValidator(min, max, "Minimum Value", "Maximum Value"));
-				this.add(new MissingValueDoubleRangeValidator(min,max,missingText,"Minimum Value","Maximum Value","Missing Value"));
+				this.add(new DefaultMissingValueDoubleRangeValidator(min,max,missingText,defaultVal,"Minimum Value","Maximum Value","Missing Value","Default Value"));
 				
 			}
 			else if (fieldType.getName().equals(Constants.FIELD_TYPE_DATE)) {
 				// DATE fieldType
 				IModel<Date> minValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MIN_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
 				IModel<Date> maxValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MAX_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				//IModel<Date> missingValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
-				IModel<String> missingValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_PHENODATASET_MISSING_VALUE);
 				minValueEntryPnl = new DateDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 				minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				maxValueEntryPnl = new DateDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
@@ -330,17 +340,22 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				missingValueEntryPnl = new TextDataEntryPanel("missingValueEntryPanel", missingValueMdl, new Model<String>("MissingValue"));
 				missingValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
+				defaultValueEntryPnl = new TextDataEntryPanel("defaultValueEntryPnl", defaultValueMdl, new Model<String>("DefaultValue"));
+				defaultValueEntryPnl.setOutputMarkupPlaceholderTag(true);
+				
 				DateTextField fromDate= ((DateDataEntryPanel)minValueEntryPnl).getDataValueDateFld();
 				DateTextField toDate= ((DateDataEntryPanel)maxValueEntryPnl).getDataValueDateFld();
 				//DateTextField missingDate= ((DateDataEntryPanel)missingValueEntryPnl).getDataValueDateFld();
 				TextField<?> missingDate= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
+				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
 				
 				this.add(new DateFromToValidator(fromDate,toDate,"Minimum Date","Maximum Date"));
-				this.add(new MissingValueDateRangeValidator(fromDate,toDate,missingDate,"Minimum Date","Maximum Date","Missing Date"));
+				this.add(new DefaultMissingValueDateRangeValidator(fromDate,toDate,missingDate,defaultVal,"Minimum Date","Maximum Date","Missing Date","Default Date"));
 			}
 			minMaxValueEntryWMC.addOrReplace(minValueEntryPnl);
 			minMaxValueEntryWMC.addOrReplace(maxValueEntryPnl);
 			missingValueEntryWMC.addOrReplace(missingValueEntryPnl);
+			defaultValueEntryWMC.addOrReplace(defaultValueEntryPnl);
 		
 	}
 	/**
@@ -402,6 +417,9 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		minMaxValueEntryWMC.setOutputMarkupPlaceholderTag(true);
 		missingValueEntryWMC= new WebMarkupContainer("missingValueEntryWMC");
 		missingValueEntryWMC.setOutputMarkupPlaceholderTag(true);
+		
+		defaultValueEntryWMC= new WebMarkupContainer("defaultValueEntryWMC");
+		defaultValueEntryWMC.setOutputMarkupPlaceholderTag(true);
 
 		// unitType and encodedValues rely on fieldTypeDdc being already established
 		fieldEncodedValuesTxtFld = new TextArea<String>(Constants.FIELDVO_PHENODATASET_ENCODED_VALUES);
@@ -419,7 +437,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		// Have to Edit, before allowing delete
 		deleteButton.setEnabled(false);
 
-		defaultValueTextArea = new TextArea<String>(Constants.FIELDVO_PHENODATASET_DEFAULT_VALUE);
+		//defaultValueTextArea = new TextArea<String>(Constants.FIELDVO_PHENODATASET_DEFAULT_VALUE);
 		
 		addDetailFormComponents();
 		attachValidators();
@@ -433,12 +451,16 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		fieldNameTxtFld.setRequired(true).setLabel((new StringResourceModel("phenoDataSetField.name.required", this, new Model<String>("Custom Field Name"))));
 		// Enforce particular characters for fieldName
 		fieldNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
+		fieldNameTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
+		fieldDescriptionTxtAreaFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
 		fieldTypeDdc.setRequired(true).setLabel((new StringResourceModel("phenoDataSetField.fieldType.required", this, new Model<String>("Custom Field Type"))));
 		fieldLabelTxtAreaFld.add(StringValidator.maximumLength(255));
-
+		fieldUnitTypeTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
+		//defaultValueTextArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
 		// TODO: Add correct validator, possibly phenoDataSet with better validation message
 		fieldEncodedValuesTxtFld.add(new PatternValidator(au.org.theark.core.Constants.ENCODED_VALUES_PATTERN)).setLabel(
 				new StringResourceModel("phenoDataSetField.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
+		
 	}
 
 	@Override
@@ -570,7 +592,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		//phenoDataSetFieldDetailWMC.add(fieldMissingValueTxtFld);
 		phenoDataSetDetailWMC.add(missingValueEntryWMC);
 		phenoDataSetDetailWMC.add(fieldLabelTxtAreaFld);
-		phenoDataSetDetailWMC.add(defaultValueTextArea);
+		//phenoDataSetDetailWMC.add(defaultValueTextArea);
+		phenoDataSetDetailWMC.add(defaultValueEntryWMC);
 		phenoDataSetDisplayDetailWMC = new WebMarkupContainer("phenoDataSetFieldDisplayDetailWMC");
 		phenoDataSetDisplayDetailWMC.add(phenoDataSetDisplayPositionPanel);
 		phenoDataSetDisplayDetailWMC.add(fieldDisplayRequiredChkBox);

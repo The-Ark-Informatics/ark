@@ -33,6 +33,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
@@ -153,6 +154,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 	protected void attachValidators() {
 		categoryNameTxtFld.setRequired(true);
 		categoryNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
+		categoryNameTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
+		categoryDescriptionTxtAreaFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
 	}
 
 	@Override

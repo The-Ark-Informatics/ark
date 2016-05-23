@@ -297,26 +297,22 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	protected void attachValidators() {
 
 		addressLineOneTxtFld.add(StringValidator.maximumLength(255));
-
 		sourceTxtFld.add(StringValidator.maximumLength(255));
-
 		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("address.streetAddress.RequiredValidator", this, new Model<String>("Street Address")));
-
 		streetAddressTxtFld.add(LengthBetweenValidator.maximumLength(255));
-
 		cityTxtFld.setRequired(true).setLabel(new StringResourceModel("address.city.RequiredValidator", this, new Model<String>("City")));
-
 		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("address.postCode.RequiredValidator", this, new Model<String>("Post Code")));
 		// TODO User Centric ones for Max and Min
 		postCodeTxtFld.add(LengthBetweenValidator.maximumLength(10));
 		postCodeTxtFld.add(LengthBetweenValidator.minimumLength(4));
-
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("address.dateReceived.DateValidator.maximum", this, null));
-
 		addressTypeChoice.setRequired(true).setLabel(new StringResourceModel("address.addressType.RequiredValidator", this, new Model<String>("Address Type")));
 		addressStatusChoice.setRequired(true).setLabel(new StringResourceModel("address.addressStatus.RequiredValidator", this, new Model<String>("Address Status")));
 		stateChoice.setRequired(true).setLabel(new StringResourceModel("address.state.RequiredValidator", this, new Model<String>("State")));
-		
+		//Bug fix Ark-1611
+		sourceTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
+		cityTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
+		commentsTxtArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_COMMENTS_MAX_LENGTH_500));
 	}
 
 	/*

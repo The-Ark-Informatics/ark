@@ -47,7 +47,6 @@ import javax.naming.ldap.Rdn;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -77,6 +76,8 @@ import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.dao.IGenoDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.dao.ReCaptchaContextSource;
+import au.org.theark.core.exception.ArkAlreadyBeingUsedException;
+import au.org.theark.core.exception.ArkNotAllowedToUpdateException;
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -95,9 +96,6 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -1869,19 +1867,24 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public void updateCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO)throws ArkSystemException, ArkUniqueException {
-		boolean isUnique = customFieldDao.isCustomFieldCategoryUnqiue(CustomFieldCategoryVO.getCustomFieldCategory().getName(), CustomFieldCategoryVO.getCustomFieldCategory().getStudy(), CustomFieldCategoryVO.getCustomFieldCategory());
+	public void updateCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO)throws ArkSystemException, ArkUniqueException,ArkAlreadyBeingUsedException,ArkNotAllowedToUpdateException {
+		CustomFieldCategory customFieldCategory=CustomFieldCategoryVO.getCustomFieldCategory();
+		boolean isUnique = customFieldDao.isCustomFieldCategoryUnqiue(customFieldCategory.getName(), customFieldCategory.getStudy(), customFieldCategory);
 		if (!isUnique) {
-			log.error("Custom Field Category of this name Already Exists.: ");
+			log.error("Custom Field Category of this name already Exists.: ");
 			throw new ArkUniqueException("A Custom Field Category of this name already exists.");
 		}
+		/*boolean isUsedWithCustomFields=customFieldDao.isCustomFieldCategoryBeingUsed(customFieldCategory);
+		if (isUsedWithCustomFields) {
+			log.error(customFieldCategory.getName()+" is already used with one of a customfield not allow to change.");
+			throw new ArkAlreadyBeingUsedException(customFieldCategory.getName()+" is already used with customfields not allow to change.");
+		}
+		if(customFieldDao.isThisCustomCategoryWasAParentCategoryOfAnother(customFieldCategory)){
+			StringBuffer subCategoryNames=getAllChildrenCategoriedBelongToThisParentAsStringArray(customFieldCategory.getStudy(), customFieldCategory.getArkFunction(), customFieldCategory.getCustomFieldType(), customFieldCategory);
+			throw new ArkNotAllowedToUpdateException("is already assiged as a parent category of "+ subCategoryNames.toString());
+		}*/
 		try {
-			// Remove any encoded values if DATE or NUMBER
-			//if (CustomFieldCategoryVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) || customFieldVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-			//	CustomFieldCategoryVO.getCustomField().setEncodedValues(null);
-			//}
-
-			customFieldDao.updateCustomFieldCategory(CustomFieldCategoryVO.getCustomFieldCategory());
+				customFieldDao.updateCustomFieldCategory(CustomFieldCategoryVO.getCustomFieldCategory());
 			// Custom Field History
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
@@ -1916,18 +1919,24 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public void deleteCustomFieldCategory(CustomFieldCategoryVO customFieldCategoryVO)throws EntityCannotBeRemoved, ArkSystemException {
 		String fieldName = customFieldCategoryVO.getCustomFieldCategory().getName();
-		if(customFieldDao.isThisCustomCategoryWasAParentCategoryOfAnother(customFieldCategoryVO.getCustomFieldCategory())){
-					throw new EntityCannotBeRemoved("Can not delete Custom field Category which already assiged as parent category.");
-		}else{
-					customFieldDao.deleteCustomFieldCategory(customFieldCategoryVO.getCustomFieldCategory());
-					// History for Custom Field Category
-					AuditHistory ah = new AuditHistory();
-					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-					ah.setComment("Deleted Custom Field Category " + fieldName);
-					ah.setEntityId(customFieldCategoryVO.getCustomFieldCategory().getId());
-					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_CATEGORY);
-					createAuditHistory(ah);
-				}
+		boolean isParent=customFieldDao.isThisCustomCategoryWasAParentCategoryOfAnother(customFieldCategoryVO.getCustomFieldCategory());
+		boolean hasCustomfields=customFieldDao.isCustomFieldCategoryBeingUsed(customFieldCategoryVO.getCustomFieldCategory());
+		if(isParent){
+			throw new EntityCannotBeRemoved("Can not delete Custom field Category \""+fieldName+"\" which already assiged as parent category.");
+		}
+		if(hasCustomfields){
+			throw new EntityCannotBeRemoved("Can not delete Custom field Category \""+fieldName+"\" which already assiged custom fields.");	
+		}
+		if(!(isParent&& hasCustomfields)){
+				customFieldDao.deleteCustomFieldCategory(customFieldCategoryVO.getCustomFieldCategory());
+				// History for Custom Field Category
+				AuditHistory ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+				ah.setComment("Deleted Custom Field Category " + fieldName);
+				ah.setEntityId(customFieldCategoryVO.getCustomFieldCategory().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_CATEGORY);
+				createAuditHistory(ah);
+		}
 	}
 
 	@Override
@@ -2067,6 +2076,21 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name) {
 		return studyDao.getUploadTypeByModuleAndName(arkModule, name);
+		
+	}
+	
+	private StringBuffer getAllChildrenCategoriedBelongToThisParentAsStringArray(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory parentCategory){
+		StringBuffer subCategoryNames=new StringBuffer();
+		List<CustomFieldCategory> customFieldCategories= customFieldDao.getAllSubCategoriesOfThisCategory(study, arkFunction, customFieldType, parentCategory);
+		for (CustomFieldCategory customFieldCategory : customFieldCategories) {
+			subCategoryNames.append(customFieldCategory.getName());
+		}
+		return subCategoryNames;
+	}
+
+	@Override
+	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory){
+		return customFieldDao.isThisCustomCategoryWasAParentCategoryOfAnother(customFieldCategory);
 	}
 
 	

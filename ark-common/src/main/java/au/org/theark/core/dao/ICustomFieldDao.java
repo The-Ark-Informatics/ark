@@ -267,7 +267,7 @@ public interface ICustomFieldDao {
 	 * @param customFieldType
 	 * @return
 	 */
-	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory)throws ArkSystemException;
+	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory);
 	
 	/**
 	 * List of all available category list for update.

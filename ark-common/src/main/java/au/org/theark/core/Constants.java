@@ -413,9 +413,9 @@ public class Constants {
 		},
 		{ 		"MANDATORY", 
 				"Yes", 
-				"No", 
+				"Yes", 
 				"No",
-				"No",
+				"Yes",
 				"No",
 				"No",
 				"No",
@@ -717,4 +717,17 @@ public class Constants {
 	
 	public static final String UPLOAD_STATUS_AWAITING_VALIDATION = "AWAITING_VALIDATION";
 	
+	//General Form text field maximum field length validation
+	public static final Integer GENERAL_FIELD_NAME_MAX_LENGTH_50 = 50;
+	
+	public static final Integer GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255 = 255;
+	
+	public static final Integer GENERAL_FIELD_WHOLE_NUMBER_MIN_QUANTITY_1 = 1;
+	
+	public static final Integer GENERAL_FIELD_WHOLE_NUMBER_MAX_QUANTITY_100 = 100;
+	
+	public static final Integer GENERAL_FIELD_COMMENTS_MAX_LENGTH_500 = 500;
+	
+	public static final Integer GENERAL_FIELD_MAX_LENGTH_100 = 100;
+			
 }

@@ -181,6 +181,8 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		phoneStatusChoice.setRequired(true).setLabel((new StringResourceModel("phone.phoneStatus.required", this, new Model<String>("Phone Status"))));
 		phoneNumberTxtFld.add(StringValidator.maximumLength(20));
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("phone.dateReceived.DateValidator.maximum", this, null));
+		source.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_COMMENTS_MAX_LENGTH_500));
+		commentsTxtArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_COMMENTS_MAX_LENGTH_500));
 		
 	}
 

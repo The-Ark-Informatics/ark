@@ -32,6 +32,8 @@ import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
 import au.org.theark.core.dao.ReCaptchaContextSource;
+import au.org.theark.core.exception.ArkAlreadyBeingUsedException;
+import au.org.theark.core.exception.ArkNotAllowedToUpdateException;
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -52,8 +54,6 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -1038,7 +1038,7 @@ public interface IArkCommonService<T> {
 	 * @throws ArkSystemException
 	 * @throws ArkUniqueException
 	 */
-	public void updateCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO) throws ArkSystemException, ArkUniqueException;
+	public void updateCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO) throws ArkSystemException, ArkUniqueException, ArkAlreadyBeingUsedException,ArkNotAllowedToUpdateException;
 
 	/**
 	 * Delete custom fied category.
@@ -1231,5 +1231,7 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
+	
+	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory);
 
 }

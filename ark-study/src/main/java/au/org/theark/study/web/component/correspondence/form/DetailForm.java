@@ -43,6 +43,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.validation.validator.DateValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -299,6 +300,9 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		//dateFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("correspondence.date", this, null));
 		dateFld.setLabel(new StringResourceModel("correspondence.date", this, null));
 		dateFld.setRequired(true);
+		reasonTxtArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
+		detailsTxtArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));  
+		commentsTxtArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_COMMENTS_MAX_LENGTH_500)); 
 	}
 
 	@Override

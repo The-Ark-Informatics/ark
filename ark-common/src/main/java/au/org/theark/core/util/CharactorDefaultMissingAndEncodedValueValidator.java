@@ -15,23 +15,26 @@ import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
 
-public class CharactorMissingAndEncodedValueValidator  extends AbstractFormValidator{
+public class CharactorDefaultMissingAndEncodedValueValidator  extends AbstractFormValidator{
 
 	private static final long serialVersionUID = 1L;
 	/** form components to be checked. */
     private final AbstractTextComponent<?>[] components;
     private String labComp1;
     private String labComp2;
+    private String labComp3;
     
 	/**
 	 * 
 	 * @param dateValidFrom
 	 * @param dateValidTo
 	 */
-    public CharactorMissingAndEncodedValueValidator(TextArea<?> encoded, TextField<?> missingValue,String lableComponent1,String  lableComponent2) {
-        components = new AbstractTextComponent<?>[] { encoded, missingValue};
+    public CharactorDefaultMissingAndEncodedValueValidator(TextArea<?> encoded, TextField<?> missingValue,TextField<?> defaultValue,
+    		String lableComponent1,String  lableComponent2,String  lableComponent3) {
+        components = new AbstractTextComponent<?>[] { encoded, missingValue,defaultValue};
         labComp1=lableComponent1;
         labComp2=lableComponent2;
+        labComp3=lableComponent3;
     }
 	@Override
 	public FormComponent<?>[] getDependentFormComponents() {
@@ -43,12 +46,20 @@ public class CharactorMissingAndEncodedValueValidator  extends AbstractFormValid
 		String  encoded= (String) components[0].getConvertedInput();
 		List<String> encodedValuLst=filterValuesOfEncoded(encoded);
 		String missingValue = (String) components[1].getConvertedInput();
-        if(encoded!=null && missingValue!=null){
+		String defaultValue=(String) components[2].getConvertedInput();
+        if(encoded!=null && missingValue!=null && defaultValue!=null){
 	        if (encodedLstContainMissingValue(encodedValuLst, missingValue)){
 	        	ValidationError ve = new ValidationError();
 	        	ve.setVariable("encoded",labComp1);
 	        	ve.setVariable("missingCharactorValue",labComp2);
 	        	ve.addMessageKey("charactorMissingValueInEncodedValue.validate.error");
+	        	components[0].error((IValidationError) ve);
+	        }
+	        if(!encodedLstContaindefaultValue(encodedValuLst, defaultValue)){
+	        	ValidationError ve = new ValidationError();
+	        	ve.setVariable("encoded",labComp1);
+	        	ve.setVariable("defaultCharactorValue",labComp3);
+	        	ve.addMessageKey("charactorDefaultValueInEncodedValue.validate.error");
 	        	components[0].error((IValidationError) ve);
 	        }
        }
@@ -81,5 +92,13 @@ public class CharactorMissingAndEncodedValueValidator  extends AbstractFormValid
 		       return true;
 		}
 		return false;
+	}
+	private boolean encodedLstContaindefaultValue(List<String> encodedValuLst,String defaultValue){
+		for(String encodeVal: encodedValuLst) {
+		    if(encodeVal.trim().equalsIgnoreCase(defaultValue))
+		       return true;
+		}
+		return false;
+		
 	}
 }

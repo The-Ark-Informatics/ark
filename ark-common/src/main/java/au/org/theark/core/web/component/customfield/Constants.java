@@ -94,6 +94,7 @@ public class Constants {
 	public static final String		FIELDVO_CUSTOMFIELD_MAX_VALUE							= "customField.maxValue";
 	public static final String		FIELDVO_CUSTOMFIELD_ENCODED_VALUES						= "customField.encodedValues";
 	public static final String		FIELDVO_CUSTOMFIELD_MISSING_VALUE						= "customField.missingValue";
+	public static final String		FIELDVO_CUSTOMFIELD_DEFAULT_VALUE						= "customField.defaultValue";
 	public static final String		FIELDVO_CUSTOMFIELD_ALLOW_MULTISELECT					= "customFieldDisplay.allowMultiselect";
 	
 	public static final String		FIELDVO_CUSTOMFIELDDISPLAY_ID								= "customFieldDisplay.id";

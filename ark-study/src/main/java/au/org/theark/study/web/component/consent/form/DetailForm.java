@@ -315,8 +315,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 */
 	@Override
 	protected void attachValidators() {
-		commentTxtArea.add(StringValidator.maximumLength(100)).setLabel(new StringResourceModel("comments.max.length", this, null));
-		consentedBy.add(StringValidator.maximumLength(100)).setLabel(new StringResourceModel("consentedBy.max.length", this, null));
+		commentTxtArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_COMMENTS_MAX_LENGTH_500)).setLabel(new StringResourceModel("comments.max.length", this, null));
+		consentedBy.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_MAX_LENGTH_100)).setLabel(new StringResourceModel("consentedBy.max.length", this, null));
 		studyComponentChoice.setRequired(true).setLabel(new StringResourceModel("study.component.choice.required", this, null));
 		consentStatusChoice.setRequired(true).setLabel(new StringResourceModel("consent.status.required", this, null));
 		consentTypeChoice.setRequired(true).setLabel(new StringResourceModel("consent.type.required", this, null));

@@ -333,7 +333,6 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		if(bioCollectionCriteria.getStudy().getParentStudy() != null && bioCollectionCriteria.getStudy().getParentStudy() != bioCollectionCriteria.getStudy()) {
 			studyList.add(bioCollectionCriteria.getStudy().getParentStudy());
 		}
-		
 		criteria.add(Restrictions.in("cfield.study", studyList));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
@@ -445,7 +444,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		try {
 			Long id  = bioCollectionCFData.getBioCollection().getId();
 			BioCollection bioCollection = getBioCollection(id);
-			Study subjectStudy = bioCollection.getStudy();
+			//Study subjectStudy = bioCollection.getStudy();
 			ArkFunction arkFunction = customField.getArkFunction();
 
 			StringBuffer stringBuffer = new StringBuffer();
@@ -533,6 +532,12 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 			getSession().update(biocollection);
 		}
 		
+	}
+	public boolean hasBiocllectionGotCustomFieldData(BioCollection bioCollection) {
+		Criteria criteria = getSession().createCriteria(BioCollectionCustomFieldData.class);
+		criteria.add(Restrictions.eq("bioCollection", bioCollection));
+		List<BioCollectionCustomFieldData> list=(List<BioCollectionCustomFieldData>) criteria.list();
+		return (list.size()>0);
 	}
     
 	

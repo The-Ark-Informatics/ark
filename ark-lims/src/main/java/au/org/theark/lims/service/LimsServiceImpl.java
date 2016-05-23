@@ -886,5 +886,8 @@ public class LimsServiceImpl implements ILimsService {
 	public void batchUpdateBiocollections(Collection<BioCollection> updateBioCollections) {
 		iBioCollectionDao.batchUpdateBiocollections(updateBioCollections);
 	}
+	public boolean hasBiocllectionGotCustomFieldData(BioCollection bioCollection) {
+		return iBioCollectionDao.hasBiocllectionGotCustomFieldData(bioCollection);
+	}
 	
 }

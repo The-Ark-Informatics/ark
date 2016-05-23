@@ -381,5 +381,7 @@ public interface ILimsService {
 	public void batchInsertBiocollections(Collection<BioCollection> insertBioCollections);
 
 	public void batchUpdateBiocollections(Collection<BioCollection> updateBioCollections);
+	
+	public boolean hasBiocllectionGotCustomFieldData(BioCollection bioCollection);
 
 }
