@@ -10,6 +10,8 @@ IP="127.0.0.1"
 if [ -n "$DOCKER_HOST" ]; then
 	IP=$(echo $DOCKER_HOST | cut -f2 -d: | cut -f3 -d/)
 fi
+echo "IP is: ${IP}"
+echo "${IP} mysql" >> /etc/hosts
 
 docker-compose -f $YAML logs -f &
 
