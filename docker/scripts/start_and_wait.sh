@@ -11,12 +11,7 @@ if [ -n "$DOCKER_HOST" ]; then
 	IP=$(echo $DOCKER_HOST | cut -f2 -d: | cut -f3 -d/)
 fi
 
-docker-compose -f $YAML logs -f &
-
 while [ $(curl --write-out %{http_code} --silent --output /dev/null ${IP}:8080/ark) -eq "000" ]; do
 	echo "Not ready, sleeping"
 	sleep 5;
 done
-
-kill $! 
-
