@@ -22,3 +22,7 @@ before_script:
 addons:
         hosts:
                 - mysql
+
+notifications:
+        email:
+                - gecgooden@gmail.com 
