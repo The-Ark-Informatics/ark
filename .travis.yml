@@ -25,4 +25,7 @@ addons:
 
 notifications:
         email:
-                - gecgooden@gmail.com 
+                recipients:
+                        - gecgooden@gmail.com 
+                on_success: always
+                on_failure: always
