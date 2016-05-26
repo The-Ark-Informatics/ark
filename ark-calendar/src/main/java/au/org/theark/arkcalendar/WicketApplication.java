@@ -44,6 +44,8 @@ public class WicketApplication extends WebApplication
 		
 		getApplicationSettings().setPageExpiredErrorPage(SignIn2.class);
 		
+		getMarkupSettings().setStripWicketTags(true);
+		
 		getResourceSettings().setDefaultCacheDuration(Duration.NONE);
 
 		// add your configuration here
