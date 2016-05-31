@@ -71,7 +71,7 @@ public class DefaultMissingValueDateRangeValidator extends AbstractFormValidator
 				}
 			}
 		}
-		//Default Date Validation
+		//Default Date(valid date) but range validation
 		if (defaultValueString!=null && !defaultValueString.isEmpty() && isValidDate(defaultValueString)) {
 			if (endDate != null && startDate != null) {
 				Date convertDateDefault;
@@ -89,7 +89,9 @@ public class DefaultMissingValueDateRangeValidator extends AbstractFormValidator
 					e.printStackTrace();
 				}
 			}
-		}else{
+		}
+		// Default valid data validation 
+		if(defaultValueString!=null && !defaultValueString.isEmpty() && !isValidDate(defaultValueString)){
 			ValidationError ve3 = new ValidationError();
 			ve3.setVariable("defaultValueDate", labComp4);
 			ve3.addMessageKey("defaultValueDateValidate.NotValidDate");

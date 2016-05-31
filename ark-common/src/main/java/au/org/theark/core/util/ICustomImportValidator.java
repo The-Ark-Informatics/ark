@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 
+import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.CustomFieldSystemException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
@@ -26,8 +27,10 @@ public interface ICustomImportValidator {
 	 * @param fileFormat
 	 * @param delimChar
 	 * @return
+	 * @throws FileFormatException 
+	 * @throws ArkBaseException 
 	 */
-	public Collection<String> validateDataDictionaryFileData(InputStream inputStream, String fileFormat, char delimChar);
+	public Collection<String> validateDataDictionaryFileData(InputStream inputStream, String fileFormat, char delimChar) throws FileFormatException, ArkBaseException;
 	/**
 	 * 
 	 * @param inputStream

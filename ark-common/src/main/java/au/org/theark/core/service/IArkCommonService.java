@@ -597,7 +597,7 @@ public interface IArkCommonService<T> {
 	 */
 	public void createCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException;
 
-	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException;
+	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException,ArkNotAllowedToUpdateException;
 
 	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, EntityCannotBeRemoved;
 

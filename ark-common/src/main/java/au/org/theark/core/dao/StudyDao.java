@@ -2183,15 +2183,30 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	/*allthedata might not b as good as just the bit we want */
+	/**This method modified on 2016-05-25.                                                                                                                                                                                                                                                                    
+	Due to "java.util.ConcurrentModificationException".                                                                                                                                                                                                                                                    
+	The rule is "You may not modify (add or remove elements from the list) while iterating over it using an Iterator (which happens when you use a for-each loop)".                                                                                                                                       
+	JavaDocs:                                                                                                                                                                                                                                                                                             
+	The iterators returned by this class's iterator and listIterator methods are fail-fast: if the list is structurally modified at any time after the iterator is created, in any way except through the iterator's own remove or add methods, the iterator will throw a ConcurrentModificationException.
+	Hence if you want to modify the list (or any collection in general), use iterator, because then it is aware of the modifications and hence those will be handled properly.                                                                                                                            
+	@param study                                                                                                                                                                                                                                                                                           
+	@param allTheData                                                                                                                                                                                                                                                                                      
+	@param biospecimenIdsAfterFiltering                                                                                                                                                                                                                                                                    
+	@param biocollectionIds                                                                                                                                                                                                                                                                                
+	@param idsAfterFiltering                                                                                                                                                                                                                                                                               
+	 */
 	private void wipeBiospecimenDataNotMatchingThisList(Study study, DataExtractionVO allTheData, List<Long> biospecimenIdsAfterFiltering, List<Long> biocollectionIds,
 			List<Long> idsAfterFiltering) {
 		HashMap<String, ExtractionVO> data = allTheData.getBiospecimenData();
 		Collection<String> uidsInData = data.keySet();
 		Collection<String> uidsToDelete = getBiospecimenUIDsNotMatchingTheseBiospecimenIdsOrSubjectIds(study, uidsInData, biospecimenIdsAfterFiltering, biocollectionIds, idsAfterFiltering);
-		for(String uid : uidsToDelete){
+		Collection<String> uidsToDeleteCopy =new ArrayList<String>(uidsToDelete);
+		//This is an exact copy of the array so  ConcurrentModificationException can not be thrown.
+		for(String uid : uidsToDeleteCopy){
 			log.info("wipeBiospecimenDataNotMatchingThisList:    removed biospecimen uid = " + uid);
 			data.remove(uid);
 		}
+		
 	}
 
 	private void wipeBiocollectionDataNotMatchThisList(Study study, DataExtractionVO allTheData, List<Long> bioCollectionIdsAfterFiltering, List<Long> subjectIds, List<Long> biospecimenIds,
@@ -2226,6 +2241,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return bioCollectionUIDs;
 		}
 		else{
+			List<Long> subjectIdsNew=new ArrayList<Long>();
+			//add a dummy value=0 to get rid of ".QuerySyntaxException: unexpected end of subtree" due to empty list.
+			subjectIds.add(new Long(0));
 			String queryString = 	" select distinct bioCollection.biocollectionUid " +
 									" from BioCollection bioCollection " +
 									" where (" +
@@ -2238,8 +2256,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				query.setParameterList("idList", bioCollectionIds);
 			if(!subjectIds.isEmpty())
 				query.setParameterList("subjectIdList", subjectIds);
+			else{
+				query.setParameterList("subjectIdList", subjectIdsNew);
+			}
 			query.setParameter("study", study);
 			query.setParameterList("uidList", bioCollectionUIDs);
+			log.info("Query String: "+query.getQueryString());
 			List<String> collectionsToDelete = query.list();
 
 
@@ -2496,7 +2518,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
 	private List<Long> applySubjectCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude){
-
+		
+		 
 		if(idsToInclude!=null && !idsToInclude.isEmpty()){
 			String queryToFilterSubjectIDs = getSubjectCustomFieldQuery(search);
 			Collection<CustomFieldDisplay> cfdsToReturn = getSelectedSubjectCustomFieldDisplaysForSearch(search);
@@ -4010,7 +4033,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					// Determine field type and assign key value accordingly    //( data.customFieldDisplay.id=99 AND data.numberDataValue  >  0  )  and ( ( data.customFieldDisplay.id=112 AND data.numberDataValue  >=  0 ) ) 
 
 					//TODO evaluate date entry/validation
-					if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+					/*if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
 								" AND " + tablePrefix + ".dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + parseFilterValue(customFieldDisplay.getCustomField().getFieldType(),filter.getValue()) + "' ");
 					}
@@ -4021,13 +4044,27 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
 						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
 								" AND " + tablePrefix + ".textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+					}*/
+					//TODO evaluate date entry/validation
+					if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+								" AND " + tablePrefix + ".dateDataValue " + createCorrectOpreratorClauseWithOnePassingParameter(filter.getOperator(),parseFilterValue(customFieldDisplay.getCustomField().getFieldType(),filter.getValue())));
 					}
+					else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".numberDataValue " + createCorrectOpreratorClauseWithOnePassingParameter(filter.getOperator(),filter.getValue()));
+					}
+					else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".textDataValue " + createCorrectOpreratorClauseWithOnePassingParameter(filter.getOperator() ,filter.getValue()));
+					}
+					
 					else{
 						count--;
 					}
 					//TODO ASAP i think all of these might need to start thinking about is null or is not null?
 					if (filter.getOperator().equals(Operator.BETWEEN)) {
-						nextFilterLine += (" AND " + filter.getSecondValue());
+						nextFilterLine += (" AND '"+ filter.getSecondValue()+"'");
 					}
 
 					if(whereClause.isEmpty()){
@@ -5179,5 +5216,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("name", name));
 		criteria.add(Restrictions.eq("arkModule", arkModule));
 		return (UploadType) criteria.uniqueResult();
+	}
+	private String createCorrectOpreratorClauseWithOnePassingParameter(Operator operator,String value){
+		if(operator.equals(Operator.IS_EMPTY)|| operator.equals(Operator.IS_NOT_EMPTY)){
+			return getHQLForOperator(operator);
+		}else{
+			return getHQLForOperator(operator)+" '"+value+"' ";
+		}
 	}
 }

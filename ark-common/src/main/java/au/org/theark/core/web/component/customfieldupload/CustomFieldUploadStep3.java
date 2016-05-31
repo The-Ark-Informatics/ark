@@ -21,8 +21,10 @@ package au.org.theark.core.web.component.customfieldupload;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -35,6 +37,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryImportValidator;
 import au.org.theark.core.util.CustomFieldImportValidator;
@@ -59,19 +62,14 @@ public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
 	private IArkCommonService				iArkCommonService;
 
 	private Form<CustomFieldUploadVO>	containerForm;
-	private String								validationMessage;
-	public java.util.Collection<String>	validationMessages	= null;
+	private String						validationMessage;
+	public java.util.Collection<String>	validationMessages	= new ArrayList<String>();
 	private WizardForm						wizardForm;
 	private WebMarkupContainer				updateExistingDataContainer;
-	private CheckBox							updateChkBox;
+	private CheckBox						updateChkBox;
 	private ICustomImportValidator 			iCustomFieldValidator;
-
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
-		/**
-		 * 
-		 */
 		private static final long	serialVersionUID	= 1L;
-
 		@Override
 		protected void onError(AjaxRequestTarget target, Form<?> form) {
 			this.error("Unexpected Error: Download request could not be processed");
@@ -151,7 +149,6 @@ public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
-
 		File temp = containerForm.getModelObject().getTempFile();
 		if (temp != null && temp.exists()) {
 			InputStream inputStream = null;
@@ -168,57 +165,18 @@ public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
 				validationMessages = iCustomFieldValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
 				inputStream.close();
 				inputStream = null;
-
-				HashSet<Integer> insertRows = new HashSet<Integer>();
-				HashSet<Integer> updateRows = new HashSet<Integer>();
-				HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
-				HashSet<ArkGridCell> updateCells = new HashSet<ArkGridCell>();
-				HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
-				HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
-
-				insertRows = iCustomFieldValidator.getInsertRows();
-				updateRows = iCustomFieldValidator.getUpdateRows();
-				insertCells = iCustomFieldValidator.getInsertCells();
-				updateCells = iCustomFieldValidator.getUpdateCells();
-				warningCells = iCustomFieldValidator.getWarningCells();
-				errorCells = iCustomFieldValidator.getErrorCells();
-
-				// Show file data (and key reference)
-				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, containerForm.getModelObject().getFileUpload(), insertRows,
-						updateRows, insertCells, updateCells, warningCells, errorCells);
-				inputStream.close();
-				inputStream = null;
-				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
-				arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
-				form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
-				form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
-
-				// Repaint
-				target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
-				target.add(form.getWizardPanelFormContainer());
-
-				if (updateCells.isEmpty()) {
-					containerForm.getModelObject().setUpdateChkBox(true);
-					updateExistingDataContainer.setVisible(false);
-				}
-				else {
-					containerForm.getModelObject().setUpdateChkBox(false);
-					updateExistingDataContainer.setVisible(true);
-				}
-				target.add(updateExistingDataContainer);
-
-				if (!errorCells.isEmpty()) {
-					updateExistingDataContainer.setVisible(false);
-					target.add(updateExistingDataContainer);
-					form.getNextButton().setEnabled(false);
-					target.add(form.getWizardButtonContainer());
-				}
+				inputStream = setupExcellDisplayFormat(form, target,fileFormat, delimChar, temp);
 
 			}
 			catch (IOException ioe) {
 				log.error("IOException " + ioe.getMessage());
 				validationMessage = "Error attempting to display the file. Please check the file and try again.";
+				validationMessages.add(validationMessage);
+			}
+			catch(ArkBaseException ark){
+				log.error("ARK_BASE_EXCEPTION: " + ark.getMessage());
+				validationMessage = ark.getMessage();
+				validationMessages.add(validationMessage);
 			}
 			finally {
 				if (inputStream != null) {
@@ -230,35 +188,96 @@ public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
 					}
 				}
 			}
-
-			containerForm.getModelObject().setValidationMessages(validationMessages);
-			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-
-			if (validationMessage != null && validationMessage.length() > 0) {
-				form.getNextButton().setEnabled(false);
-				target.add(form.getWizardButtonContainer());
-				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
-
-					private static final long	serialVersionUID	= 1L;
-
-					@Override
-					protected void onError(AjaxRequestTarget target, Form<?> form) {
-						this.error("Unexpected Error: Download request could not be processed");
-					}
-
-				};
-				addOrReplace(downloadValMsgButton);
-				target.add(downloadValMsgButton);
-			}
-		}
-		else {
+			displayValidationMessagesAndButtons(form, target);
+		}else {
 			// Stop progress because of missing temp file
 			error("Unexpected error: Can not proceed due to missing temporary file.");
 			form.getNextButton().setEnabled(false);
 		}
 	}
+	/**
+	 * 
+	 * @param form
+	 * @param target
+	 */
+	private void displayValidationMessagesAndButtons(AbstractWizardForm<?> form, AjaxRequestTarget target) {
+		containerForm.getModelObject().setValidationMessages(validationMessages);
+		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 
+		if (validationMessage != null && validationMessage.length() > 0) {
+			form.getNextButton().setEnabled(false);
+			target.add(form.getWizardButtonContainer());
+			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
+
+				private static final long	serialVersionUID	= 1L;
+
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form) {
+					this.error("Unexpected Error: Download request could not be processed");
+				}
+			};
+			addOrReplace(downloadValMsgButton);
+			target.add(downloadValMsgButton);
+		}
+	}
+	/**
+	 * 
+	 * @param form
+	 * @param target
+	 * @param fileFormat
+	 * @param delimChar
+	 * @param temp
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private InputStream setupExcellDisplayFormat(AbstractWizardForm<?> form,AjaxRequestTarget target, String fileFormat, char delimChar,File temp) throws FileNotFoundException, IOException {
+		InputStream inputStream;
+		HashSet<Integer> insertRows = new HashSet<Integer>();
+		HashSet<Integer> updateRows = new HashSet<Integer>();
+		HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
+		HashSet<ArkGridCell> updateCells = new HashSet<ArkGridCell>();
+		HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
+		HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
+
+		insertRows = iCustomFieldValidator.getInsertRows();
+		updateRows = iCustomFieldValidator.getUpdateRows();
+		insertCells = iCustomFieldValidator.getInsertCells();
+		updateCells = iCustomFieldValidator.getUpdateCells();
+		warningCells = iCustomFieldValidator.getWarningCells();
+		errorCells = iCustomFieldValidator.getErrorCells();
+
+		// Show file data (and key reference)
+		inputStream = new BufferedInputStream(new FileInputStream(temp));
+		ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, containerForm.getModelObject().getFileUpload(), insertRows,
+				updateRows, insertCells, updateCells, warningCells, errorCells);
+		inputStream.close();
+		inputStream = null;
+		arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
+		arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
+		form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
+		form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
+
+		// Repaint
+		target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
+		target.add(form.getWizardPanelFormContainer());
+		if (updateCells.isEmpty()) {
+			containerForm.getModelObject().setUpdateChkBox(true);
+			updateExistingDataContainer.setVisible(false);
+		}else {
+			containerForm.getModelObject().setUpdateChkBox(false);
+			updateExistingDataContainer.setVisible(true);
+		}
+		target.add(updateExistingDataContainer);
+		if (!errorCells.isEmpty()) {
+			updateExistingDataContainer.setVisible(false);
+			target.add(updateExistingDataContainer);
+			form.getNextButton().setEnabled(false);
+			target.add(form.getWizardButtonContainer());
+		}
+		return inputStream;
+	}
 	/**
 	 * @param updateChkBox
 	 *           the updateChkBox to set

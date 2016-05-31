@@ -68,6 +68,7 @@ public class DefaultMissingValueDoubleRangeValidator  extends AbstractFormValida
 		        }
 	       }	
 		}
+		//Default valid Double but range validation 
 		if(defaultValueString!=null && !defaultValueString.isEmpty() && isDouble(defaultValueString)){
 			Double defaultValueDouble=Double.valueOf(defaultValueString);
 	        if(min!=null && max!=null && defaultValueDouble !=null){
@@ -79,8 +80,10 @@ public class DefaultMissingValueDoubleRangeValidator  extends AbstractFormValida
 		        	ve1.addMessageKey("defaultValueDoubleValidate.range");
 		        	components[2].error((IValidationError) ve1);
 		        }
-	       }	
-		}else{
+	       }
+	 	}
+		//Default valid double value validation
+		if(defaultValueString!=null && !defaultValueString.isEmpty() && !isDouble(defaultValueString)){
 			ValidationError ve2 = new ValidationError();
         	ve2.setVariable("defaultValueDouble",labComp4);
         	ve2.addMessageKey("defaultValueDoubleValidate.notDouble");
