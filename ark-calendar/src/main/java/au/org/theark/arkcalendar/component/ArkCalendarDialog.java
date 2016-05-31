@@ -438,7 +438,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 	}
 
 	@Override
-	protected DialogButton getSubmitButton()
+	public DialogButton getSubmitButton()
 	{
 		return this.btnSubmit;
 	}

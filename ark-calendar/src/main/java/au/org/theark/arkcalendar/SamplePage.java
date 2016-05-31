@@ -17,6 +17,7 @@ import org.apache.wicket.util.template.PackageTextTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.googlecode.wicket.jquery.ui.JQueryUIBehavior;
 import com.googlecode.wicket.jquery.ui.markup.html.link.AjaxLink;
 
 import au.org.theark.arkcalendar.pages.dashboard.DashBoardPage;
@@ -62,6 +63,7 @@ public abstract class SamplePage extends TemplatePage
 //		this.add(new Label("source-java", this.getSource(Source.JAVA)));
 //		this.add(new Label("source-html", this.getSource(Source.HTML)));
 //		this.add(new JQueryUIBehavior("#wrapper-panel-source", "tabs"));
+		
 	}
 	
 

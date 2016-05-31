@@ -1204,7 +1204,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	@SuppressWarnings("unchecked")
 	public List<ArkRolePolicyTemplate> getArkRolePolicytemplateList(ArkUserRole arkUserRole){
 		String queryString = "SELECT  arpt FROM ArkRolePolicyTemplate arpt where arpt.arkRole=(:arkRole) and "
-							 + "arpt.arkModule=(:arkModule) group by arpt.arkFunction";
+							 + "arpt.arkModule=(:arkModule) group by arpt.arkFunction, arpt.id";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("arkRole",arkUserRole.getArkRole() );
 		query.setParameter("arkModule",arkUserRole.getArkModule() );
