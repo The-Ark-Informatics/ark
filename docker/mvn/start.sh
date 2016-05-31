@@ -28,9 +28,11 @@ if [ "$(ls -A .)" ]; then
 	cat ${APP_PROP}.example |\
 		sed "s/\~\/arkFileData/\/opt\/ark-datastore/g" >\
 		${APP_PROP}
-	
-	
+
 	MYSQL_HOST="127.0.0.1"
+	if [ -n ${DOCKER_HOST} ]; then
+		MYSQL_HOST=$(echo $DOCKER_HOST | cut -f2 -d: | cut -f3 -d/)
+	fi
 
 	APP_CONTEXT=ark-container/src/test/resources/applicationContext.xml
 	cat ${APP_CONTEXT}.example |\

@@ -6,6 +6,8 @@ services:
                         - ../:/usr/src/app
                         - ~/.m2:/root/.m2 
                 env_file: env_file
+                environment:
+                        - DOCKER_HOST
         mysql:
                 build: db
                 ports:
