@@ -209,4 +209,46 @@ public class ITestStudy extends BaseIntegrationTest {
 
         log.info("Ending test " + new Object() {}.getClass().getEnclosingMethod().getName());
     }
+
+    @Test
+    public void testOpenManageUserModal() {
+
+        log.info("Starting test " + new Object() {
+        }.getClass().getEnclosingMethod().getName());
+
+        loginAsSuperUser();
+
+        String studyName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
+        String chiefInvestigator = "John Doe";
+        String studyStatus = "Active";
+
+        driver.findElement(By.name("searchContainer:searchStudyPanel:searchForm:new")).click();
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:study.name")).sendKeys(studyName);
+        Select select = new Select(driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:study.studyStatus")));
+        select.selectByVisibleText(studyStatus);
+        driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:study.chiefInvestigator")).sendKeys(chiefInvestigator);
+
+        driver.findElement(By.name("detailContainer:detailPanel:detailForm:editButtonContainer:save")).click();
+
+        driver.findElement(WicketBy.wicketPath("myDetailLink")).click();
+
+        WebElement modal = driver.findElement(WicketBy.wicketPath("modalWindow_content_myDetailsPanel"));
+
+        assertNotNull(modal);
+
+        if(modal != null) {
+            driver.findElement(WicketBy.wicketPath("modalWindow_content_myDetailsPanel_userDetailsForm_close")).click();
+        }
+
+        log.info("Ending test " + new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
 }
