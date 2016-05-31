@@ -48,11 +48,7 @@ if [ "$(ls -A .)" ]; then
 		sed "s/\~\/arkFileData/\/opt\/ark-datastore/g" >\
 		${APP_PROP}
 
-	if [ $SKIPTEST -eq 0 ]; then
-		mvn package 
-	else 
-		mvn package -Dmaven.test.skip=true 
-	fi
+	mvn package 
 	touch .complete
 
 fi
