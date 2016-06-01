@@ -226,7 +226,7 @@ public class ITestStudy extends BaseIntegrationTest {
         driver.findElement(By.name("searchContainer:searchStudyPanel:searchForm:new")).click();
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
