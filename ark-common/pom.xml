@@ -4,7 +4,7 @@
 	<groupId>au.org.theark.core</groupId>
 	<artifactId>ark-common</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>1.2b.3</version>
 	<name>Ark Common</name>
 	<description>The common ARK module/project that holds all core/common classes that other modules/projects may reference, via a Maven dependency  </description>
 	<organization>
@@ -23,6 +23,12 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	<parent>
+		<groupId>au.org.theark</groupId>
+		<artifactId>ark</artifactId>
+		<version>1.2b.3</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 	<dependencies>
 		<!--  WICKET DEPENDENCIES -->
 		<dependency>
@@ -256,11 +262,7 @@
 		</dependency>
 
 		<!-- For Datasource connections -->
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.2.2</version>
-		</dependency>
+
 
 		<dependency>
 			<groupId>com.itextpdf</groupId>
@@ -318,9 +320,28 @@
 			<version>1.1.1</version>
 		</dependency>
 		<dependency>
-    		<groupId>com.googlecode.wicket-jquery-ui</groupId>
-    		<artifactId>wicket-jquery-ui</artifactId>
-    		<version>1.5.11</version> 
+			<groupId>com.googlecode.wicket-jquery-ui</groupId>
+			<artifactId>wicket-jquery-ui</artifactId>
+			<version>1.5.11</version> 
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>4.2.0.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>2.52.0</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -364,6 +385,18 @@
 					<optimize>true</optimize>
 					<debug>true</debug>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>

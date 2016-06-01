@@ -1,0 +1,3 @@
+MYSQL_ROOT_PASSWORD=mysql-password
+SLAPD_PASSWORD=slapd-password
+ARK_SUPERUSER_PASSWORD=Password_1

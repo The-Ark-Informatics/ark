@@ -1,0 +1,48 @@
+version: '2'
+services:
+        mvn:
+                build: ..
+                volumes: 
+                        - ../:/usr/src/app
+                        - ~/.m2:/root/.m2 
+                env_file: env_file
+                environment:
+                        - DOCKER_HOST
+        mysql:
+                build: db
+                ports:
+                        - "3306:3306"
+                volumes:
+                        - ./db/init:/docker-entrypoint-initdb.d
+                        - mysql_data:/var/lib/mysql
+                env_file: env_file
+        slapd:
+                build: slapd
+                ports:
+                        - "389:389"
+                volumes:
+                        - ../:/usr/src/app
+                        - slapd_data:/var/lib/ldap
+                        - slapd_conf:/etc/ldap
+                env_file: env_file
+        tomcat:
+                build: tomcat
+                depends_on:
+                        - mysql
+                        - slapd
+                        - mvn
+                links:
+                        - mysql
+                        - slapd
+                volumes:
+                        - ../:/usr/src/app
+                        - datastore:/opt/ark-datastore
+                ports:
+                        - "8080:8080"
+                        - "8000:8000"
+                env_file: env_file
+volumes:
+        slapd_data:
+        slapd_conf:
+        mysql_data:
+        datastore:

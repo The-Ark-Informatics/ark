@@ -94,11 +94,7 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 								e1.printStackTrace();
 							}
 							List<ArkUser> arkUserList= iArkCommonService.getArkUserListByStudy(arkUser,iArkCommonService.getStudy(sessionStudyId));
-							try {
-								userResultListFilterd = filterOnlyStudySpecificUsers(userResultList,arkUserList);
-							} catch (EntityNotFoundException e) {
-								e.printStackTrace();
-							}
+							userResultListFilterd = filterOnlyStudySpecificUsers(userResultList,arkUserList);
 							//*************** End of work on  2015-12-10 ********************************************************
 							containerForm.getModelObject().setUserList(userResultListFilterd);
 						}
@@ -159,9 +155,8 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 	 * @param arkVoLst
 	 * @param arkLst
 	 * @return
-	 * @throws EntityNotFoundException 
 	 */
-	private List<ArkUserVO> filterOnlyStudySpecificUsers(List<ArkUserVO> arkVoLst,List<ArkUser> arkLst) throws EntityNotFoundException{
+	private List<ArkUserVO> filterOnlyStudySpecificUsers(List<ArkUserVO> arkVoLst,List<ArkUser> arkLst) {
 		
 		List<ArkUserVO> filteredArkUserVoLst=new ArrayList<ArkUserVO>();
 		for (ArkUserVO arkUserVO : arkVoLst) {
@@ -179,16 +174,19 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 	 * @param arkUserVO
 	 * @param arkUser
 	 * @return
-	 * @throws EntityNotFoundException 
 	 */
-	private boolean isArkUserVOEqualArkUser(ArkUserVO arkUserVO,ArkUser arkUser ) throws EntityNotFoundException{
+	private boolean isArkUserVOEqualArkUser(ArkUserVO arkUserVO,ArkUser arkUser ) {
 		
 		Boolean flag=false;
-		if(arkUserVO!=null && arkUser!=null && 
-				(iUserService.getArkUser(arkUserVO.getUserName()).equals(arkUser))){
-				flag=true;
-		}else{
-				flag=false;
+		try {
+			if (arkUserVO != null && arkUser != null &&
+					(iUserService.getArkUser(arkUserVO.getUserName()).equals(arkUser))) {
+				flag = true;
+			} else {
+				flag = false;
+			}
+		} catch (EntityNotFoundException e) {
+			flag = false;
 		}
 		return flag;
 	}
