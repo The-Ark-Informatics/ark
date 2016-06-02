@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -78,12 +79,13 @@ public class LimsServiceImpl implements ILimsService {
 
 	@SuppressWarnings("unchecked")
 	private IArkCommonService	arkCommonService;
-	private IStudyDao				iStudyDao;
+	private IStudyDao			iStudyDao;
 	private IBioCollectionDao	iBioCollectionDao;
 	private IBiospecimenDao		iBiospecimenDao;
 	private IBioTransactionDao	iBioTransactionDao;
 	private IInventoryDao 		iInventoryDao;
-	private IInventoryService  iInventoryService;
+	private IInventoryService   iInventoryService;
+	private ICustomFieldDao     iCustomFieldDao;
 
 	/**
 	 * @param arkCommonService
@@ -94,8 +96,6 @@ public class LimsServiceImpl implements ILimsService {
 	public void setArkCommonService(IArkCommonService arkCommonService) {
 		this.arkCommonService = arkCommonService;
 	}
-
-
 
 	/**
 	 * @param iStudyDao
@@ -148,6 +148,11 @@ public class LimsServiceImpl implements ILimsService {
 	@Autowired
 	public void setiInventoryService(IInventoryService iInventoryService) {
 		this.iInventoryService = iInventoryService;
+	}
+	
+	@Autowired
+	public void setiCustomFieldDao(ICustomFieldDao iCustomFieldDao) {
+		this.iCustomFieldDao = iCustomFieldDao;
 	}
 
 	/*
@@ -451,11 +456,10 @@ public class LimsServiceImpl implements ILimsService {
 					
 					CustomField customField = arkCommonService.getCustomField(id);
 					customField.setCustomFieldHasData(true);
-					CustomFieldVO customFieldVO = new CustomFieldVO();
-					customFieldVO.setCustomField(customField);
-					
-					arkCommonService.updateCustomField(customFieldVO);
-
+					//CustomFieldVO customFieldVO = new CustomFieldVO();
+					//customFieldVO.setCustomField(customField);
+					//arkCommonService.updateCustomField(customFieldVO);
+					iCustomFieldDao.updateCustomField(customField);
 				}
 				else if (canUpdate(bioCollectionCFData)) {
 					
@@ -476,9 +480,10 @@ public class LimsServiceImpl implements ILimsService {
 						Long id = bioCollectionCFData.getCustomFieldDisplay().getCustomField().getId();//Reload since the session was closed in the front end and the child objects won't be lazy loaded
 						CustomField customField = arkCommonService.getCustomField(id);
 						customField.setCustomFieldHasData(false);
-						CustomFieldVO customFieldVO = new CustomFieldVO();
-						customFieldVO.setCustomField(customField);
-						arkCommonService.updateCustomField(customFieldVO); //Update it
+						//CustomFieldVO customFieldVO = new CustomFieldVO();
+						//customFieldVO.setCustomField(customField);
+						//arkCommonService.updateCustomField(customFieldVO); //Update it
+						iCustomFieldDao.updateCustomField(customField);
 					}
 				}
 			}

@@ -322,7 +322,7 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The category ");
 		stringBuffer.append(categoryName);
-		stringBuffer.append(" has an invalid parent Category for the column ");
+		stringBuffer.append(" has an invalid parent category or you entered custom field Type not valid for the column ");
 		stringBuffer.append(columnName);
 		return (stringBuffer.toString());
 	}

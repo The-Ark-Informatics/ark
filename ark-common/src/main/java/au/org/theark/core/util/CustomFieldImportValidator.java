@@ -356,7 +356,11 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 		 */
 		CustomField field = new CustomField();
 		field.setStudy(study);
-		arkFunction=iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+		if(Constants.ARK_MODULE_STUDY.equalsIgnoreCase(arkModule.getName())){
+			arkFunction=iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+		}else if(Constants.ARK_MODULE_LIMS.equalsIgnoreCase(arkModule.getName())){
+			arkFunction=iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
+		}
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimChr);

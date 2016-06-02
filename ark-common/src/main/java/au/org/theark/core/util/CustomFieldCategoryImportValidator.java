@@ -64,6 +64,9 @@ public class CustomFieldCategoryImportValidator implements ICustomImportValidato
 	private int							row							= 1;
 	private ArkFunction					arkFunction;
 	private ArkModule 					arkModule;
+	private List<CustomFieldType>       customFieldTypeLstForModule;
+	private static CustomFieldType  selectedCustomFieldType;
+	private List<CustomFieldCategory>  customFieldCategoryLstForCustomFieldType;
 
 
 
@@ -84,6 +87,7 @@ public CustomFieldCategoryImportValidator(IArkCommonService<Void> iArkCommonServ
 	}
 	Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
 	arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
+	customFieldTypeLstForModule=iArkCommonService.getCustomFieldTypes(arkModule);
 	
 	this.fileValidationMessages = new ArrayList<String>();
 	this.dataValidationMessages = new ArrayList<String>();
@@ -269,8 +273,7 @@ public java.util.Collection<String> validateMatrixFileFormat(InputStream fileInp
  */
 @Override
 public Collection<String> validateDataDictionaryFileData(InputStream inputStream, String fileFormat, char delimChar) {
-	java.util.Collection<String> validationMessages = null;
-
+	java.util.Collection<String> validationMessages = new ArrayList<String>();
 	try {
 		// If Excel, convert to CSV for validation
 		if (fileFormat.equalsIgnoreCase("XLS")) {
@@ -292,9 +295,11 @@ public Collection<String> validateDataDictionaryFileData(InputStream inputStream
 		validationMessages = validateDataDictionaryFileData(inputStream, inputStream.toString().length());
 	}
 	catch (FileFormatException ffe) {
+		validationMessages.add(ffe.getMessage());
 		log.error("FILE_FORMAT_EXCPEPTION: " + ffe);
 	}
 	catch (ArkBaseException abe) {
+		validationMessages.add(abe.getMessage());
 		log.error("ARK_BASE_EXCEPTION: " + abe);
 	}
 	return validationMessages;
@@ -354,11 +359,11 @@ private java.util.Collection<String> validateDataDictionaryFileData(InputStream 
 					category.setCustomFieldType(customFieldType);
 				}
 				if(csvReader.get("PARENT_CATEGORY_NAME")!=null && !csvReader.get("PARENT_CATEGORY_NAME").isEmpty()){
-					CustomFieldCategory parentCategory=iArkCommonService.getCustomFieldCategotyByName(csvReader.get("PARENT_CATEGORY_NAME"));
+					CustomFieldCategory parentCategory=iArkCommonService.getCustomFieldCategotyByNameAndCustomFieldType(csvReader.get("PARENT_CATEGORY_NAME"),category.getCustomFieldType());
 					category.setParentCategory(parentCategory);
 				}
 				
-				if(csvReader.get("ORDER_NUMBER")!=null && !csvReader.get("ORDER_NUMBER").isEmpty()){
+				if(csvReader.get("ORDER_NUMBER")!=null && !csvReader.get("ORDER_NUMBER").isEmpty() && isNumeric(csvReader.get("ORDER_NUMBER"))){
 					category.setOrderNumber(Long.valueOf(csvReader.get("ORDER_NUMBER")));
 				}
 				CustomFieldCategory oldcategory = iArkCommonService.getCustomFieldCategoryByNameStudyAndArkFunction(csvReader.get("CATEGORY_NAME"),study, arkFunction); 
@@ -390,18 +395,27 @@ private java.util.Collection<String> validateDataDictionaryFileData(InputStream 
 						}
 					}
 				}
-				//Validate Custom field type.
+				/*//Validate Custom field type.
 				if (csvReader.get("CUSTOM_FIELD_TYPE") != null) {
 					gridCell = new ArkGridCell(csvReader.getIndex("CUSTOM_FIELD_TYPE"), rowIdx);
 					if (!CustomFieldCategoryImportValidator.validateCustomFieldType(category,categoryName,csvReader.get("CUSTOM_FIELD_TYPE"), dataValidationMessages)) {
 						errorCells.add(gridCell);
 					}
+				}*/
+				//Validate Custom field type.
+				if (csvReader.get("CUSTOM_FIELD_TYPE") != null) {
+					gridCell = new ArkGridCell(csvReader.getIndex("CUSTOM_FIELD_TYPE"), rowIdx);
+					if (!CustomFieldCategoryImportValidator.validateCustomFieldType(customFieldTypeLstForModule,this.categoryName, csvReader.get("CUSTOM_FIELD_TYPE"), dataValidationMessages)) {
+						errorCells.add(gridCell);
+					}
 				}
+				//We validate the categories just only for that custom field types.
+				customFieldCategoryLstForCustomFieldType=iArkCommonService.getCustomFieldCategoryByCustomFieldTypeAndStudy(study, selectedCustomFieldType);
 				
 				//Validate parent category
 				//if (csvReader.get("PARENT_CATEGORY_NAME") != null) {
 					gridCell = new ArkGridCell(csvReader.getIndex("PARENT_CATEGORY_NAME"), rowIdx);
-					if (!CustomFieldCategoryImportValidator.validateParentCategory(category,categoryName, csvReader.get("PARENT_CATEGORY_NAME"), dataValidationMessages)) {
+					if (!CustomFieldCategoryImportValidator.validateParentCategory(customFieldCategoryLstForCustomFieldType,category,categoryName, csvReader.get("PARENT_CATEGORY_NAME"), dataValidationMessages)) {
 						errorCells.add(gridCell);
 					}
 				//}
@@ -526,16 +540,42 @@ public Collection<String> validateCustomDataMatrixFileFormat(InputStream inputSt
  * @param fieldType
  * @param errorMessages
  * @return
- */
+ *//*
 private static  boolean validateCustomFieldType(CustomFieldCategory category,String categoryName, String fieldType, Collection<String> errorMessages) {
 	boolean isValid = false;
 	
 	if(category!=null && category.getCustomFieldType()!=null && category.getCustomFieldType().getName().equalsIgnoreCase(fieldType)){
+		selectedCustomFieldType=cusFieldType;
 		isValid=true;
 	}
 	if(isValid==false){
 		errorMessages.add(CustomFieldValidationMessage.invalidCustomFieldTypeForCategory(categoryName, fieldType));
 	}
+	return isValid;
+}*/
+/**
+ * Validate (module or custom field type) 
+ * Here we checked the entered module(Subject or Family already exsist in the list)
+ * @param fieldName
+ * @param fieldType
+ * @param errorMessages
+ * @return
+ */
+private static  boolean validateCustomFieldType(List<CustomFieldType> customFieldTypesLst,String fieldName, String fieldType, Collection<String> errorMessages) {
+	boolean isValid = false;
+	
+	if(!customFieldTypesLst.isEmpty()){
+		for (CustomFieldType cusFieldType : customFieldTypesLst) {
+			if(cusFieldType.getName().equalsIgnoreCase(fieldType)){
+				selectedCustomFieldType=cusFieldType;
+				isValid=true;
+				break;
+			}
+		}
+	}
+		if(isValid==false){
+			errorMessages.add(CustomFieldValidationMessage.invalidCustomFieldType(fieldName, fieldType));
+		}
 	return isValid;
 }
 /**
@@ -547,21 +587,22 @@ private static  boolean validateCustomFieldType(CustomFieldCategory category,Str
  * @param errorMessages
  * @return
  */
-private static  boolean validateParentCategory(CustomFieldCategory category,String categoryName, String fieldType, Collection<String> errorMessages) {
-	boolean isValid = false;
-	
-	if(category.getParentCategory()!=null){
-		if(category.getParentCategory().getName().equalsIgnoreCase(fieldType)){
-			isValid=true;
+private static  boolean validateParentCategory(List<CustomFieldCategory> customFieldCategoryLstForCustomFieldType,CustomFieldCategory category,String categoryName, String fieldType, Collection<String> errorMessages) {
+	//Check with customfieldType to agree.
+	if(!customFieldCategoryLstForCustomFieldType.isEmpty()){
+		for (CustomFieldCategory categoryForthisCustomfieldType : customFieldCategoryLstForCustomFieldType) {
+			if(categoryForthisCustomfieldType.getName().equalsIgnoreCase(fieldType)){
+				return true;
+			}
 		}
-	}else if(fieldType.isEmpty() || fieldType.length()<=0){
-		isValid=true;
+	}	
+	if(category.getParentCategory()==null && (fieldType.isEmpty() || fieldType.length()<=0)){
+		return true;
 	}else{
-		if(isValid==false){
-			errorMessages.add(CustomFieldValidationMessage.invalidParentCategryForCategory(categoryName, fieldType));
-		}
+		errorMessages.add(CustomFieldValidationMessage.invalidParentCategryForCategory(categoryName, fieldType));
+		return false;
 	}
-	return isValid;
+	
 }
 /**
  * Validate Parent category order number.
@@ -574,12 +615,9 @@ private static  boolean validateParentCategory(CustomFieldCategory category,Stri
  */
 private static  boolean validateOrderNumber(CustomFieldCategory category,String categoryName, String fieldType, Collection<String> errorMessages) {
 	boolean isValid = false;
-	
-	if(category.getOrderNumber().equals(Long.valueOf(fieldType))){
-		isValid=true;
-	}
+	isValid=isNumeric(fieldType);
 	if(isValid==false){
-			errorMessages.add(CustomFieldValidationMessage.invalidOrderNumberForCategory(categoryName, fieldType));
+		errorMessages.add(CustomFieldValidationMessage.invalidOrderNumberForCategory(categoryName, fieldType));
 	}
 	return isValid;
 }
@@ -629,6 +667,14 @@ public HashSet<ArkGridCell> getWarningCells() {
 
 public void setWarningCells(HashSet<ArkGridCell> warningCells) {
 	this.warningCells = warningCells;
+}
+private static boolean isNumeric(String str) {  
+	try {  
+		Long d = Long.parseLong(str);  
+	} catch(NumberFormatException nfe) {  
+		return false;  
+	}  
+	return true;  
 }
 
 }

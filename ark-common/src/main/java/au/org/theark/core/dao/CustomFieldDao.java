@@ -826,6 +826,15 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return null;
 	}
 
+	@Override
+	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name, CustomFieldType customFieldType) {
+		Criteria criteria = getSession().createCriteria(CustomFieldCategory.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.add(Restrictions.eq("customFieldType", customFieldType));
+		criteria.setMaxResults(1);
+		return (CustomFieldCategory) criteria.uniqueResult();
+	}
+
 	
 	
 }

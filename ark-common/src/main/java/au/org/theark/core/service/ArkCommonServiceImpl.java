@@ -2086,6 +2086,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao.isThisCustomCategoryWasAParentCategoryOfAnother(customFieldCategory);
 	}
 
+	@Override
+	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name, CustomFieldType customFieldType) {
+		return customFieldDao.getCustomFieldCategotyByNameAndCustomFieldType(name, customFieldType);
+	}
+
 	
 
 	

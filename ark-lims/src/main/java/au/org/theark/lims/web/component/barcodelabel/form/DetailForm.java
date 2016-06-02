@@ -311,7 +311,6 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		}
 		else {
 			containerForm.getModelObject().setBarcodePrinterName(barcodePrinterName.toString());
-		
 			if (isNew()) {
 				if (barcodeLabelTemplateDdc.getModelObject() != null) {
 					List<BarcodeLabelData> cloneBarcodeLabelDataList = iLimsAdminService.getBarcodeLabelDataByBarcodeLabel(barcodeLabelTemplateDdc.getModelObject());

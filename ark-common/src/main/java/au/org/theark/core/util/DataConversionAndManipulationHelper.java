@@ -59,6 +59,8 @@ public class DataConversionAndManipulationHelper {
 				stringLooselyResemblingBoolean.equalsIgnoreCase("n") ){
 				return true;
 			}
+		}else{
+			return true;
 		}
 		return false;
 	}

@@ -474,7 +474,7 @@ public class Constants {
 				"", "", "", "",""
 		},
 		{
-			"Please maintain the order which parent category must be on top of it's sub category.",
+			"Please make sure to upload all the parent categories to the system first before assign them to sub categories. ",
 				 "", "", "", "",""
 		}
 	};

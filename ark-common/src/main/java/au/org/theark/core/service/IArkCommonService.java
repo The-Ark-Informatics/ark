@@ -1233,5 +1233,7 @@ public interface IArkCommonService<T> {
 	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
 	
 	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory);
+	
+	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name, CustomFieldType customFieldType);
 
 }
