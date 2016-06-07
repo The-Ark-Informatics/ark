@@ -1,7 +1,9 @@
 language: java
 sudo: required
 install: /bin/true
-script: mvn -e verify
+script: 
+        - mvn initialize
+        - mvn -e verify
 services:
         - docker
 env:
