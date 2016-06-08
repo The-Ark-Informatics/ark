@@ -74,6 +74,7 @@ public class ResearcherContainerPanel extends AbstractContainerPanel {
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
+		searchResultPanel.setOutputMarkupId(true);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
