@@ -2380,5 +2380,8 @@ public class StudyServiceImpl implements IStudyService {
 	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar){
 		return iStudyDao.getSelectedCalendarCustomFieldList(studyCalendar);
 	}
-	
+
+	public void delete(OtherID otherID) {
+		iStudyDao.delete(otherID);
+	}
 }

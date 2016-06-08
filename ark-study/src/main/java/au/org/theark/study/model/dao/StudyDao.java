@@ -2771,5 +2771,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		list=criteria.list();
 		return list;
 	}
-		
+
+	public void delete(OtherID otherID) {
+		getSession().delete(otherID);
+	}
 }
