@@ -252,12 +252,27 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				otherIdSourceTxtFld.setRequired(true);
 				item.add(otherIdTxtFld);
 				item.add(otherIdSourceTxtFld);
+				item.add(new AjaxButton("delete") {
+					@Override
+					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+						studyService.delete(item.getModelObject());
+						otherIdListView.getModelObject().remove(item.getIndex());
+
+						target.add(otherIdWebMarkupContainer);
+					}
+
+					@Override
+					protected void onError(AjaxRequestTarget target, Form<?> form) {
+						onSubmit(target, form);
+					}
+				});
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
 					}
 				}));
+
 			}
 		};
 		otherIdWebMarkupContainer.setOutputMarkupId(true);

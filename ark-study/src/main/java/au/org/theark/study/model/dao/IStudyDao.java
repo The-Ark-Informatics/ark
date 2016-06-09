@@ -512,4 +512,5 @@ public interface IStudyDao {
 	
 	public void saveOrUpdate(StudyCalendarVo studyCalendar);
 
+	public void delete(OtherID otherID);
 }
