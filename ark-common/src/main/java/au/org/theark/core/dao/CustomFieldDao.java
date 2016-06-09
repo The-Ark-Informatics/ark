@@ -105,7 +105,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		if (customField.getDescription() != null) {
 			criteria.add(Restrictions.ilike("description", customField.getDescription(), MatchMode.ANYWHERE));
 		}
-		if (customField.getUnitType() != null && customField.getUnitType().getName() != null && customField.getUnitTypeInText() !=null) {
+		if (customField.getUnitType() != null && customField.getUnitType().getName() != null ) {
 			criteria.createAlias("unitType", "ut");
 			criteria.add(Restrictions.ilike("ut.name", customField.getUnitType().getName(), MatchMode.ANYWHERE));
 		}

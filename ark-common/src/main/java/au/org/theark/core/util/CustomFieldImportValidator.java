@@ -130,6 +130,53 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 		this.delimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
 
 	}
+	public HashSet<Integer> getInsertRows() {
+		return insertRows;
+	}
+
+	public void setInsertRows(HashSet<Integer> insertRows) {
+		this.insertRows = insertRows;
+	}
+
+	public HashSet<Integer> getUpdateRows() {
+		return updateRows;
+	}
+
+	public void setUpdateRows(HashSet<Integer> updateRows) {
+		this.updateRows = updateRows;
+	}
+
+	public HashSet<ArkGridCell> getInsertCells() {
+		return insertCells;
+	}
+
+	public void setInsertCells(HashSet<ArkGridCell> insertCells) {
+		this.insertCells = insertCells;
+	}
+
+	public HashSet<ArkGridCell> getUpdateCells() {
+		return updateCells;
+	}
+
+	public void setUpdateCells(HashSet<ArkGridCell> updateCells) {
+		this.updateCells = updateCells;
+	}
+
+	public HashSet<ArkGridCell> getErrorCells() {
+		return errorCells;
+	}
+
+	public void setErrorCells(HashSet<ArkGridCell> errorCells) {
+		this.errorCells = errorCells;
+	}
+
+	public HashSet<ArkGridCell> getWarningCells() {
+		return warningCells;
+	}
+
+	public void setWarningCells(HashSet<ArkGridCell> warningCells) {
+		this.warningCells = warningCells;
+	}
 
 	public boolean isQualityControl() {
 		return qualityControl;
@@ -468,6 +515,35 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 									updateCells.add(new ArkGridCell(colIdx, rowIdx));
 								}
 							}
+						}
+					}
+					//Added following validation methods for name,description,labelTxt and UnitTypeText
+					//Name
+					if (fieldName != null && !fieldName.isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("FIELD_NAME"), rowIdx);
+						if (!CustomFieldImportValidator.validateFieldName(fieldName, dataValidationMessages)) {
+							errorCells.add(gridCell);
+						}
+					}
+					//Description
+					if (csvReader.get("DESCRIPTION") != null && !csvReader.get("DESCRIPTION").isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("DESCRIPTION"), rowIdx);
+						if (!CustomFieldImportValidator.validateFieldDescription(fieldName, csvReader.get("DESCRIPTION"), dataValidationMessages)){
+							errorCells.add(gridCell);
+						}
+					}
+					//Question label
+					if(csvReader.get("QUESTION") != null && !csvReader.get("QUESTION").isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("QUESTION"), rowIdx);
+						if (!CustomFieldImportValidator.validateQuestionLabel(fieldName, csvReader.get("QUESTION"), dataValidationMessages)){
+							errorCells.add(gridCell);
+						}
+					}
+					//UniteTypeText
+					if(csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("UNITS"), rowIdx);
+						if (!CustomFieldImportValidator.validateUnitTypeTxt(fieldName, csvReader.get("UNITS"), dataValidationMessages)){
+							errorCells.add(gridCell);
 						}
 					}
 					//Validate Custom field type.
@@ -978,63 +1054,75 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 
 		return progress;
 	}
-
 	/**
-	public double getSpeed() {
-		double speed = -1;
-
-		if (srcLength > 0)
-			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
-
-		return speed;
+	 * 
+	 * @param fieldName
+	 * @param errorMessages
+	 * @return
+	 */
+	private static boolean validateFieldName(String fieldName, Collection<String> errorMessages) {
+		boolean isValid = false;
+		if (fieldName.length() > Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50 ) {
+			errorMessages.add(CustomFieldValidationMessage.invalidFieldName(fieldName));
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+		return isValid;
 	}
-*/
-
-	public HashSet<Integer> getInsertRows() {
-		return insertRows;
+	/**
+	 * 
+	 * @param fieldName
+	 * @param fieldDescription
+	 * @param errorMessages
+	 * @return
+	 */
+	private static boolean validateFieldDescription(String fieldName,String fieldDescription, Collection<String> errorMessages) {
+		boolean isValid = false;
+		if (fieldDescription.length() > Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255) {
+			errorMessages.add(CustomFieldValidationMessage.invalidFieldDescription(fieldDescription, fieldName));
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+		return isValid;
 	}
-
-	public void setInsertRows(HashSet<Integer> insertRows) {
-		this.insertRows = insertRows;
+	/**
+	 * 
+	 * @param fieldName
+	 * @param questionLabel
+	 * @param errorMessages
+	 * @return
+	 */
+	private static boolean validateQuestionLabel(String fieldName,String questionLabel, Collection<String> errorMessages) {
+		boolean isValid = false;
+		if (questionLabel.length() > Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255) {
+			errorMessages.add(CustomFieldValidationMessage.invalidFieldQuestionLabel(questionLabel, fieldName));
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+		return isValid;
 	}
-
-	public HashSet<Integer> getUpdateRows() {
-		return updateRows;
-	}
-
-	public void setUpdateRows(HashSet<Integer> updateRows) {
-		this.updateRows = updateRows;
-	}
-
-	public HashSet<ArkGridCell> getInsertCells() {
-		return insertCells;
-	}
-
-	public void setInsertCells(HashSet<ArkGridCell> insertCells) {
-		this.insertCells = insertCells;
-	}
-
-	public HashSet<ArkGridCell> getUpdateCells() {
-		return updateCells;
-	}
-
-	public void setUpdateCells(HashSet<ArkGridCell> updateCells) {
-		this.updateCells = updateCells;
-	}
-
-	public HashSet<ArkGridCell> getErrorCells() {
-		return errorCells;
-	}
-
-	public void setErrorCells(HashSet<ArkGridCell> errorCells) {
-		this.errorCells = errorCells;
-	}
-
-	public HashSet<ArkGridCell> getWarningCells() {
-		return warningCells;
-	}
-
-	public void setWarningCells(HashSet<ArkGridCell> warningCells) {
-		this.warningCells = warningCells;
+	/**
+	 * 
+	 * @param fieldName
+	 * @param unitType
+	 * @param errorMessages
+	 * @return
+	 */
+	private static boolean validateUnitTypeTxt(String fieldName,String unitType, Collection<String> errorMessages) {
+		boolean isValid = false;
+		if (unitType.length() > Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50) {
+			errorMessages.add(CustomFieldValidationMessage.invalidFieldUnitTypeTxt(unitType, fieldName));
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+		return isValid;
 	}
 }

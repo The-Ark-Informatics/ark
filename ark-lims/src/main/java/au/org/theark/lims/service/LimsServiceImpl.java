@@ -283,7 +283,6 @@ public class LimsServiceImpl implements ILimsService {
 	 */
 	public void deleteBiospecimen(LimsVO modelObject) {
 		log.debug("Deleting Biospecimen");
-		
 		// Need to set the InvCell reference to null (if it had one)
 		Biospecimen biospecimen = modelObject.getBiospecimen();
 		InvCell invCell = iInventoryDao.getInvCellByBiospecimen(biospecimen);
@@ -893,6 +892,10 @@ public class LimsServiceImpl implements ILimsService {
 	}
 	public boolean hasBiocllectionGotCustomFieldData(BioCollection bioCollection) {
 		return iBioCollectionDao.hasBiocllectionGotCustomFieldData(bioCollection);
+	}
+
+	public List<BioTransaction> getAllBiotransactionForBiospecimen(Biospecimen biospecimen) {
+		return iBioTransactionDao.getAllBiotransactionForBiospecimen(biospecimen);
 	}
 	
 }

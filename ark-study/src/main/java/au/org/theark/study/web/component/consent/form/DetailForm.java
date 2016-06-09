@@ -41,6 +41,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IOUtils;
@@ -91,7 +92,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	/**
 	 * Form Components
 	 */
-	protected TextField<String>					consentedBy;
+	protected TextField<String>						consentedBy;
 	protected DateTextField							consentedDatePicker;
 	protected DateTextField							consentRequestedDtf;
 	protected DateTextField							consentReceivedDtf;
@@ -315,27 +316,25 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 */
 	@Override
 	protected void attachValidators() {
-		commentTxtArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_COMMENTS_MAX_LENGTH_500)).setLabel(new StringResourceModel("comments.max.length", this, null));
-		consentedBy.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_MAX_LENGTH_100)).setLabel(new StringResourceModel("consentedBy.max.length", this, null));
+		commentTxtArea.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_COMMENTS_MAX_LENGTH_500)).setLabel(new StringResourceModel("consent.comments.StringValidator.maximum", this, null));
+		consentedBy.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_MAX_LENGTH_100)).setLabel(new StringResourceModel("consent.consentedBy.StringValidator.maximum",this,null));
 		studyComponentChoice.setRequired(true).setLabel(new StringResourceModel("study.component.choice.required", this, null));
 		consentStatusChoice.setRequired(true).setLabel(new StringResourceModel("consent.status.required", this, null));
 		consentTypeChoice.setRequired(true).setLabel(new StringResourceModel("consent.type.required", this, null));
 		studyComponentStatusChoice.setRequired(true).setLabel(new StringResourceModel("studyComponent.status.required", this, null));
-		consentedDatePicker.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("consent.consentdate", this, null));
-		consentCompletedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("completed.date.DateValidator.maximum", this, null));
-		consentRequestedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("requested.date.DateValidator.maximum", this, null));
-		consentReceivedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("received.date.DateValidator.maximum", this, null));
+		consentedDatePicker.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("consent.consentDate.DateValidator.maximum", this, null));
+		consentCompletedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("consent.completedDate.DateValidator.maximum", this, null));
+		consentRequestedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("consent.requestedDate.DateValidator.maximum", this, null));
+		consentReceivedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("consent.receivedDate.DateValidator.maximum", this, null));
 	}
 
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentedBy);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentedDatePicker);
-
 		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcPlain);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcRecieved);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcRequested);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcCompleted);
-
 		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentStatusChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentStatusChoice);
@@ -394,7 +393,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		boolean isOkToSave = true;
 
 		String status = containerForm.getModelObject().getConsent().getStudyComponentStatus().getName();
-
+	
 		if (status.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED) && containerForm.getModelObject().getConsent().getCompletedDate() == null) {
 			isOkToSave = false;
 			this.error("Field 'Completed Date' is required.");
@@ -417,22 +416,17 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Study study = iArkCommonService.getStudy(studyId);
 				containerForm.getModelObject().getConsent().setStudy(study);
-
 				if (containerForm.getModelObject().getConsent().getId() == null) {
 					iStudyService.create(containerForm.getModelObject().getConsent());
 					this.info("Consent was successfuly created for the Subject ");
-					
 					createConsentFile();
-					
 					processErrors(target);
 					// Store session object (used for history)
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, containerForm.getModelObject().getConsent().getId());
 				}
 				else {
-					
 					boolean consentFile=fileUploadField.getFileUpload()!=null;
 					iStudyService.update(containerForm.getModelObject().getConsent(),consentFile);
-					
 					createConsentFile();
 					//Check for consent file upload	
 				

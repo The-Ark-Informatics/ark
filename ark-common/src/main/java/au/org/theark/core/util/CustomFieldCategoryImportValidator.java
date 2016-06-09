@@ -96,6 +96,53 @@ public CustomFieldCategoryImportValidator(IArkCommonService<Void> iArkCommonServ
 	this.delimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
 
 }
+public HashSet<Integer> getInsertRows() {
+	return insertRows;
+}
+
+public void setInsertRows(HashSet<Integer> insertRows) {
+	this.insertRows = insertRows;
+}
+
+public HashSet<Integer> getUpdateRows() {
+	return updateRows;
+}
+
+public void setUpdateRows(HashSet<Integer> updateRows) {
+	this.updateRows = updateRows;
+}
+
+public HashSet<ArkGridCell> getInsertCells() {
+	return insertCells;
+}
+
+public void setInsertCells(HashSet<ArkGridCell> insertCells) {
+	this.insertCells = insertCells;
+}
+
+public HashSet<ArkGridCell> getUpdateCells() {
+	return updateCells;
+}
+
+public void setUpdateCells(HashSet<ArkGridCell> updateCells) {
+	this.updateCells = updateCells;
+}
+
+public HashSet<ArkGridCell> getErrorCells() {
+	return errorCells;
+}
+
+public void setErrorCells(HashSet<ArkGridCell> errorCells) {
+	this.errorCells = errorCells;
+}
+
+public HashSet<ArkGridCell> getWarningCells() {
+	return warningCells;
+}
+
+public void setWarningCells(HashSet<ArkGridCell> warningCells) {
+	this.warningCells = warningCells;
+}
 /**
  * Validate the Data dictionary general structure format.
  * "CATEGORY_NAME","CUSTOM_FIELD_TYPE","DESCRIPTION","PARENT_CATEGORY_NAME","ORDER_NUMBER"
@@ -395,6 +442,21 @@ private java.util.Collection<String> validateDataDictionaryFileData(InputStream 
 						}
 					}
 				}
+				//Added following validation methods for name,description,labelTxt and UnitTypeText
+				//Name
+				if (categoryName != null && !categoryName.isEmpty()) {
+					gridCell = new ArkGridCell(csvReader.getIndex("CATEGORY_NAME"), rowIdx);
+					if (!CustomFieldCategoryImportValidator.validateFieldName(categoryName, dataValidationMessages)) {
+						errorCells.add(gridCell);
+					}
+				}
+				//Description
+				if (csvReader.get("DESCRIPTION") != null && !csvReader.get("DESCRIPTION").isEmpty()) {
+					gridCell = new ArkGridCell(csvReader.getIndex("DESCRIPTION"), rowIdx);
+					if (!CustomFieldCategoryImportValidator.validateFieldDescription(categoryName, csvReader.get("DESCRIPTION"), dataValidationMessages)){
+						errorCells.add(gridCell);
+					}
+				}
 				/*//Validate Custom field type.
 				if (csvReader.get("CUSTOM_FIELD_TYPE") != null) {
 					gridCell = new ArkGridCell(csvReader.getIndex("CUSTOM_FIELD_TYPE"), rowIdx);
@@ -621,53 +683,42 @@ private static  boolean validateOrderNumber(CustomFieldCategory category,String 
 	}
 	return isValid;
 }
-public HashSet<Integer> getInsertRows() {
-	return insertRows;
+/**
+ * 
+ * @param fieldName
+ * @param errorMessages
+ * @return
+ */
+private static boolean validateFieldName(String fieldName, Collection<String> errorMessages) {
+	boolean isValid = false;
+	if (fieldName.length() > Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50 ) {
+		errorMessages.add(CustomFieldValidationMessage.invalidFieldName(fieldName));
+		isValid = false;
+	}
+	else {
+		isValid = true;
+	}
+	return isValid;
+}
+/**
+ * 
+ * @param fieldName
+ * @param fieldDescription
+ * @param errorMessages
+ * @return
+ */
+private static boolean validateFieldDescription(String fieldName,String fieldDescription, Collection<String> errorMessages) {
+	boolean isValid = false;
+	if (fieldDescription.length() > Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255) {
+		errorMessages.add(CustomFieldValidationMessage.invalidFieldDescription(fieldDescription, fieldName));
+		isValid = false;
+	}
+	else {
+		isValid = true;
+	}
+	return isValid;
 }
 
-public void setInsertRows(HashSet<Integer> insertRows) {
-	this.insertRows = insertRows;
-}
-
-public HashSet<Integer> getUpdateRows() {
-	return updateRows;
-}
-
-public void setUpdateRows(HashSet<Integer> updateRows) {
-	this.updateRows = updateRows;
-}
-
-public HashSet<ArkGridCell> getInsertCells() {
-	return insertCells;
-}
-
-public void setInsertCells(HashSet<ArkGridCell> insertCells) {
-	this.insertCells = insertCells;
-}
-
-public HashSet<ArkGridCell> getUpdateCells() {
-	return updateCells;
-}
-
-public void setUpdateCells(HashSet<ArkGridCell> updateCells) {
-	this.updateCells = updateCells;
-}
-
-public HashSet<ArkGridCell> getErrorCells() {
-	return errorCells;
-}
-
-public void setErrorCells(HashSet<ArkGridCell> errorCells) {
-	this.errorCells = errorCells;
-}
-
-public HashSet<ArkGridCell> getWarningCells() {
-	return warningCells;
-}
-
-public void setWarningCells(HashSet<ArkGridCell> warningCells) {
-	this.warningCells = warningCells;
-}
 private static boolean isNumeric(String str) {  
 	try {  
 		Long d = Long.parseLong(str);  

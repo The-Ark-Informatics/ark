@@ -58,6 +58,7 @@ public class BillableItemTypeContainerPanel extends AbstractContainerPanel {
 	protected WebMarkupContainer initialiseSearchResults() {
 
 		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
+		searchResultPanel.setOutputMarkupId(true);
 		final List<BillableItemTypeStatus> billableItemTypeStatusses=iWorkTrackingService.getBillableItemTypeStatuses();
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
