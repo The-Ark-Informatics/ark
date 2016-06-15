@@ -402,7 +402,12 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					 * 
 					 */
 					private static final long	serialVersionUID	= 1L;
-					
+
+					@Override
+					public boolean isEnabled() {
+						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW);
+					}
+
 					protected void onSubmit(AjaxRequestTarget target, org.apache.wicket.markup.html.form.Form<?> form) {
 						onBatchAliquot(target, item.getModel());
 						target.add(feedbackPanel);
@@ -420,6 +425,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 				item.add(new AjaxButton("allocateUnallocate"){
 					private static final long	serialVersionUID	= 1L;
+
+					@Override
+					public boolean isEnabled() {
+						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.EDIT);
+					}
 
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
