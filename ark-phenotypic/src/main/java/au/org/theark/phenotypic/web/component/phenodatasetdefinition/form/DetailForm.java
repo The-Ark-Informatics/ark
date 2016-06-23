@@ -1185,7 +1185,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 		
 	}
 	/**
-	 * Filter PhenoDataSetCategory from PickedPhenoDatasetCategory.
+	 * Filter PhenoDataSetCategory from PickedPhenoDataSetCategory.
 	 * @param pickedPhenoDataSetCategories
 	 * @return
 	 */

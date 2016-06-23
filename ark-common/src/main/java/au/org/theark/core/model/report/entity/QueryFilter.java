@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import org.hibernate.annotations.Cascade;
 
 import au.org.theark.core.model.Constants;
@@ -46,6 +47,7 @@ public class QueryFilter  implements Serializable {
 	private BiocollectionField biocollectionField;	
 	private DemographicField demographicField;	
 	private CustomFieldDisplay customFieldDisplay;
+	private PhenoDataSetFieldDisplay phenoDataSetFieldDisplay;
 	private ConsentStatusField consentStatusField;
 	private String value;
 	private String secondValue; // for between and similar operators
@@ -86,6 +88,16 @@ public class QueryFilter  implements Serializable {
 
 	public void setCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) {
 		this.customFieldDisplay = customFieldDisplay;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PHENO_DATASET_FIELD_DISPLAY_ID")
+	public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplay() {
+		return phenoDataSetFieldDisplay;
+	}
+
+	public void setPhenoDataSetFieldDisplay(PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) {
+		this.phenoDataSetFieldDisplay = phenoDataSetFieldDisplay;
 	}
 
 	@Column(name ="VALUE")
@@ -159,7 +171,7 @@ public class QueryFilter  implements Serializable {
 
 //TODO ASAP : Travis Investigate what we might be forcing cascade all here...does it corelate with our DB?  
 //What are the effects on updates, deletes, etc
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SEARCH_ID")
 	public Search getSearch() {
 		return search;

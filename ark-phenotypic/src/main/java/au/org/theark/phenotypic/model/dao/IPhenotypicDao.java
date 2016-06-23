@@ -320,12 +320,12 @@ public interface IPhenotypicDao {
 	
 	
 	/**
-	 * Count all the PhenoDataset categories.
+	 * Count all the PhenoDataSet categories.
 	 * 
 	 * @param phenoDataSetCategoryCriteria
 	 * @return
 	 */
-	public long getPhenoDatasetCategoryCount(PhenoDataSetCategory phenoDataSetCategoryCriteria);
+	public long getPhenoDataSetCategoryCount(PhenoDataSetCategory phenoDataSetCategoryCriteria);
 	
 	
 	/**
@@ -591,7 +591,9 @@ public interface IPhenotypicDao {
 	public void deletePickedCategoriesAndAllTheirChildren(Study study, ArkFunction arkFunction,ArkUser arkUser);
 
 	public List<PhenoDataSetFieldDisplay> getPhenoFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup);
-		
+
+	public List<PhenoDataSetFieldDisplay> getPhenoFieldDisplaysIn(Study study, ArkFunction arkFunction);
+
 	public long getPhenoFieldGroupCount(Study study,ArkFunction arkFunction,Boolean status);
 	
 	public PhenoDataSetField getPhenoDataSetFieldByNameStudyPFG(String FieldName, Study study, ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup)throws ArkRunTimeException,ArkSystemException;

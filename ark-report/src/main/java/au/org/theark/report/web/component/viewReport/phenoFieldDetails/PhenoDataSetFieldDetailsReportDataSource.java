@@ -21,6 +21,8 @@ package au.org.theark.report.web.component.viewReport.phenoFieldDetails;
 import java.io.Serializable;
 import java.util.List;
 
+import au.org.theark.report.model.vo.PhenoDataSetFieldDetailsReportVO;
+import au.org.theark.report.model.vo.report.PhenoDataSetFieldDetailsDataRow;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
@@ -31,21 +33,21 @@ import au.org.theark.report.service.IReportService;
 /**
  * @author elam
  */
-public class CustomFieldDetailsReportDataSource implements Serializable, JRDataSource {
+public class PhenoDataSetFieldDetailsReportDataSource implements Serializable, JRDataSource {
 	/**
 	 *
 	 */
 	private static final long				serialVersionUID	= 1L;
 
-	private List<CustomFieldDetailsDataRow>	data					= null;
+	private List<PhenoDataSetFieldDetailsDataRow>	data					= null;
 
 	private int									index					= -1;
 
 	/**
 	 *
 	 */
-	public CustomFieldDetailsReportDataSource(IReportService reportService, CustomFieldDetailsReportVO fdVO) {
-		data = reportService.getPhenoCustomFieldDetailsList(fdVO);
+	public PhenoDataSetFieldDetailsReportDataSource(IReportService reportService, PhenoDataSetFieldDetailsReportVO reportVO) {
+		data = reportService.getPhenoDataSetFieldDetailsList(reportVO);
 	}
 
 	/**

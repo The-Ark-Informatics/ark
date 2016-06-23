@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -80,8 +81,8 @@ public class DetailPanel extends Panel {
 		for(DemographicField field : containerForm.getModelObject().getSelectedDemographicFields()) {
 			log.info(field.getPublicFieldName());
 		}
-		
-		
+
+
 		detailForm = new DetailForm("detailsForm", feedBackPanel, arkCrudContainerVO, containerForm, modalWindow);
 		detailForm.initialiseDetailForm();
 		add(detailForm);

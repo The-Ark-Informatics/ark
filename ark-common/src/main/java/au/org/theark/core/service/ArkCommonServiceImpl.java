@@ -44,6 +44,7 @@ import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
@@ -1393,8 +1394,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * }
 	 */
 
+	@Deprecated
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search) {
 		return studyDao.getSelectedPhenoCustomFieldDisplaysForSearch(search);
+	}
+
+	public Collection<PhenoDataSetFieldDisplay> getSelectedPhenoDataSetFieldDisplaysForSearch(Search search) {
+		return studyDao.getSelectedPhenoDataSetFieldDisplaysForSearch(search);
 	}
 
 	public Collection<CustomFieldDisplay> getSelectedSubjectCustomFieldDisplaysForSearch(Search search) {
@@ -1481,6 +1487,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SEARCH);
 		this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), search.getStudy());
 		studyDao.delete(search);
+	}
+
+	public void delete(SearchResult result) {
+		studyDao.delete(result);
 	}
 
 	public List<OtherID> getOtherIDs(Person person) {
