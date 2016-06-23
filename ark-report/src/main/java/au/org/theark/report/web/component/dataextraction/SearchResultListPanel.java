@@ -21,6 +21,8 @@ package au.org.theark.report.web.component.dataextraction;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -66,6 +68,8 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
+	@SpringBean(name = Constants.ARK_PHENO_DATA_SERVICE)
+	private IPhenotypicService 				iPhenoService;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
 	
 	/**
@@ -236,15 +240,15 @@ public class SearchResultListPanel extends Panel {
 
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Study study = iArkCommonService.getStudy(studyId); 
-				ArkFunction arkFunctionPheno = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+				ArkFunction arkFunctionPheno = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 				ArkFunction arkFunctionBiocollection = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 				ArkFunction arkFunctionBiospecimen = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN);
 				ArkFunction arkFunctionSubject = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 
-				Collection<CustomFieldDisplay> availablePhenoCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunctionPheno);
-				containerForm.getModelObject().setAvailablePhenoCustomFieldDisplays(availablePhenoCustomFieldDisplays);
-				Collection<CustomFieldDisplay> selectedPhenoCustomFieldDisplays =iArkCommonService.getSelectedPhenoCustomFieldDisplaysForSearch(search);//, true);
-				containerForm.getModelObject().setSelectedPhenoCustomFieldDisplays(selectedPhenoCustomFieldDisplays);
+				Collection<PhenoDataSetFieldDisplay> availablePhenoDataSetFieldDisplays = iPhenoService.getPhenoFieldDisplaysIn(study, arkFunctionPheno);
+				containerForm.getModelObject().setAvailablePhenoDataSetFieldDisplays(availablePhenoDataSetFieldDisplays);
+				Collection<PhenoDataSetFieldDisplay> selectedPhenoDataSetFieldDisplays =iArkCommonService.getSelectedPhenoDataSetFieldDisplaysForSearch(search);//, true);
+				containerForm.getModelObject().setSelectedPhenoDataSetFieldDisplays(selectedPhenoDataSetFieldDisplays);
 
 
 				Collection<CustomFieldDisplay> availableSubjectCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunctionSubject);

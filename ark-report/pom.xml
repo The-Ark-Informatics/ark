@@ -38,6 +38,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>au.org.theark.phenotypic</groupId>
+			<artifactId>ark-phenotypic</artifactId>
+			<version>${ark-common.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>au.org.theark.core</groupId>
 			<artifactId>ark-common</artifactId>
 			<version>${ark-common.version}</version>

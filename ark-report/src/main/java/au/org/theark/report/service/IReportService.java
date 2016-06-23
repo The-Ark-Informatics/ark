@@ -23,6 +23,7 @@ import java.util.Map;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -30,20 +31,8 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.worktracking.entity.Researcher;
-import au.org.theark.report.model.vo.BiospecimenDetailsReportVO;
-import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
-import au.org.theark.report.model.vo.ConsentDetailsReportVO;
-import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
-import au.org.theark.report.model.vo.FieldDetailsReportVO;
-import au.org.theark.report.model.vo.ResearcherCostResportVO;
-import au.org.theark.report.model.vo.report.BiospecimenDetailsDataRow;
-import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
-import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
-import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
-import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
-import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
-import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
-import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
+import au.org.theark.report.model.vo.*;
+import au.org.theark.report.model.vo.report.*;
 
 public interface IReportService {
 
@@ -70,11 +59,11 @@ public interface IReportService {
 
 	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(FieldDetailsReportVO fdrVO);
 
-	public List<CustomFieldDetailsDataRow> getPhenoCustomFieldDetailsList(CustomFieldDetailsReportVO fdrVO);
+	public List<PhenoDataSetFieldDetailsDataRow> getPhenoDataSetFieldDetailsList(PhenoDataSetFieldDetailsReportVO pdfdrVO);
 
 	public List<StudyUserRolePermissionsDataRow> getStudyUserRolePermissions(Study study);
 
-	public List<CustomFieldGroup> getQuestionnaireList(Study study);
+	public List<PhenoDataSetGroup> getQuestionnaireList(Study study);
 
 	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO);
 	

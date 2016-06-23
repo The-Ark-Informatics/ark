@@ -37,6 +37,7 @@ public class Search  implements java.io.Serializable {
 	private String name;
 	private Set<QueryFilter>  				queryFilters = new HashSet<QueryFilter>();
 	private Set<CustomFieldDisplaySearch>  	customFieldsToReturn = new HashSet<CustomFieldDisplaySearch>();
+	private Set<PhenoDataSetFieldDisplaySearch> phenoDataSetFieldsToReturn = new HashSet<PhenoDataSetFieldDisplaySearch>();
 	private Set<BiospecimenFieldSearch>  	biospecimenFieldsToReturn = new HashSet<BiospecimenFieldSearch>();
 	private Set<BiocollectionFieldSearch>  	biocollectionFieldsToReturn = new HashSet<BiocollectionFieldSearch>();
 	private Set<DemographicFieldSearch>  	demographicFieldsToReturn = new HashSet<DemographicFieldSearch>();
@@ -110,7 +111,14 @@ public class Search  implements java.io.Serializable {
 	public void setCustomFieldsToReturn(Set<CustomFieldDisplaySearch> customFieldsToReturn) {
 		this.customFieldsToReturn = customFieldsToReturn;
 	}
-	
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search")
+	public Set<PhenoDataSetFieldDisplaySearch> getPhenoDataSetFieldsToReturn() {
+		return phenoDataSetFieldsToReturn;
+	}
+	public void setPhenoDataSetFieldsToReturn(Set<PhenoDataSetFieldDisplaySearch> phenoDataSetFieldsToReturn) {
+		this.phenoDataSetFieldsToReturn = phenoDataSetFieldsToReturn;
+	}
 
 	@Column(name = "NAME", length = 255)
 	public String getName() {
