@@ -11,7 +11,7 @@
 					</wicket:message>
 				</label>
 			</th>
-			<th width="15%">
+			<th width="10%">
 				<label for="commenceDate">
 					<wicket:message key="work.billableitem.commencedate">
 						Commence Date:
@@ -25,13 +25,20 @@
 					</wicket:message>
 				</label>
 			</th>
-			<th width="25%">
+			<th width="20%">
 				<label for="workRequest">
 					<wicket:message key="work.billableitem.workrequest">
 						Work Request:
 					</wicket:message>
 				</label>
 			</th>
+			<th width="10%">
+				<label for="billableitemtype">
+					<wicket:message key="work.billableitem.billableitemtype">
+						Billable Item Type
+					</wicket:message>
+				</label>
+			</th> 
 			<!-- Remove due to JIRA - ARK-1392  
 			<th width="25%">
 				<label for="description">
@@ -41,14 +48,14 @@
 				</label>
 			</th>
 			-->
-			<th width="15%">
-				<label for="quantity">
+			<th width="5%" class="table_header_rule">
+				<label for="quantity" >
 					<wicket:message key="work.billableitem.quantity">
 						Quantity:
 					</wicket:message>
 				</label>
 			</th>
-			<th width="15%">
+			<th width="5%" class="table_header_rule">
 				<label for="itemCost">
 					<wicket:message key="work.billableitem.itemcost">
 						item cost:
@@ -64,7 +71,7 @@
 				</label>
 			</th>
 			-->
-			<th width="15%">
+			<th width="5%" class="table_header_rule">
 				<label for="gst">
 					<wicket:message key="work.billableitem.gst">
 						GST:
@@ -78,39 +85,35 @@
 				</div>
 				-->
 			</th>
-			<th width="15%">
+			<th width="5%" class="table_header_rule">
 				<label for="totalCost">
 					<wicket:message key="work.billableitem.totalcost">
 						total cost:
 					</wicket:message>
 				</label>
 			</th>
-			<th width="20%">
+			<th width="5%" class="table_header_rule">
 				<label for="invoiced">
 					<wicket:message key="work.billableitem.invoice">
 						Invoiced:
 					</wicket:message>
 				</label>
 			</th>
-			<th width="20%">
-				<label for="invoiced">
+			<th width="5%" class="table_header_rule">
+				<label for="type">
 					<wicket:message key="work.billableitem.type">
-						System Generated:
+						type:
 					</wicket:message>
 				</label>
 			</th>
-			<th width="20%">
+			<th width="25%" class="table_header_rule">
 				<label for="attachemntName">
 					<wicket:message key="work.billableitem.attachmentfilename">
 						Attachment:
 					</wicket:message>
 				</label>
 			</th>
-			<th width="10%">
-				<label for="attachemntName">
-					&nbsp;
-				</label>
-			</th>
+			<th width="10%">&nbsp;</th>	
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -124,15 +127,18 @@
 				<span wicket:id="billableItem.id">100</span>
 				 -->
 			</td>
-			<td width="15%">
+			<td width="10%">
 				<span wicket:id="billableItem.commenceDate">Commence Date</span>
 			</td>
 			<td width="15%">
 				<span wicket:id="researcherFullName">Researcher Full Name</span>
 			</td>
-			<td width="25%">
+			<td width="20%">
 			  <span wicket:id="billableItem.workRequest">Work request name</span>
 			</td>
+			 <td width="10%">
+			  <span wicket:id="billableItem.billableItemType">Billable Item Type</span>
+			</td> 
 			<!-- Remove due to JIRA - ARK-1392  
 			<td width="25%">
 				<a href="#"wicket:id="billableItem.description">
@@ -140,10 +146,10 @@
 			  </a>
 			</td>
 			-->
-			<td width="15%">
+			<td width="5%" align="right">
 				<span wicket:id="billableItem.quantity">quantity</span>
 			</td>
-			<td width="15%">
+			<td width="5%" align="right">
 				<span wicket:id="billableItem.itemCost">item cost</span>
 			</td>
 			<!-- Remove due to JIRA - ARK-1392  
@@ -151,19 +157,19 @@
 				<span wicket:id="billableItem.workRequest.gstAllow">GST Allowed</span>
 			</td>
 			-->
-			<td width="15%">
+			<td width="5%"align="right">
 				<span wicket:id="billableItem.workRequest.gst">GST</span>
 			</td>
-			<td width="15%">
+			<td width="5%" align="right">
 				<span wicket:id="totalCost">total cost</span>
 			</td>
-			<td width="20%">
+			<td width="5%" align="right">
 				<span wicket:id="billableItem.invoice">invoiced</span>
 			</td>
-			<td width="20%">
+			<td width="5%" align="right">
 				<span wicket:id="billableItem.type">yes</span>
 			</td>
-			<td width="20%">
+			<td width="25%" align="right">
 				<span wicket:id="billableItem.attachmentFileName">sample file</span>
 			</td>
 			<!--  <td width="10%" valign="middle">-->
@@ -179,6 +185,7 @@
 				<td colspan="14"><span wicket:id="navigator" class="a"></span></td>
 				 -->
 				<td colspan="12"><span wicket:id="navigator" class="a"></span></td>
+				<td width="10%">&nbsp;</td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>

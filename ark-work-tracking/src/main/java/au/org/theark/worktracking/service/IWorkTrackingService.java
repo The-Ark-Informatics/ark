@@ -2,6 +2,7 @@ package au.org.theark.worktracking.service;
 
 import java.util.List;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
@@ -143,7 +144,7 @@ public interface IWorkTrackingService {
 	 * @param billableItem
 	 * @return Selected Researcher List.
 	 */
-	public List<BillableItem> searchBillableItem(BillableItem billableItem);
+	//public List<BillableItem> searchBillableItem(BillableItem billableItem);
 	
 	/**
 	 * Search Billable Item's for the given Value object criteria
@@ -190,5 +191,20 @@ public interface IWorkTrackingService {
 	 * @return WorkRequestBillableItemVo object
 	 */
 	public WorkRequestBillableItemVo getWorkRequestBillableItem(WorkRequest workRequest);
+	
+	/**
+	 * 
+	 * @param study
+	 * @param billableItemType
+	 * @return
+	 */
+	public boolean isBillableItemTypeExsistForStudy(Long studyId,BillableItemType billableItemType);
+	/**
+	 * 
+	 * @param studyId
+	 * @param billableItemType
+	 * @return
+	 */
+	public boolean isWorkRequestExsistForStudy(Long studyId,WorkRequest workRequest);
 	
 }

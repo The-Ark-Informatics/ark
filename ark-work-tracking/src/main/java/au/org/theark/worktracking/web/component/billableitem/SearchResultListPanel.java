@@ -67,7 +67,7 @@ public class SearchResultListPanel extends Panel {
 				String commenceDate = "";
 				if (billableItem.getCommenceDate() != null) {
 					commenceDate = simpleDateFormat.format(billableItem.getCommenceDate());
-					item.add(new Label(Constants.BILLABLE_ITEM_COMMENCE_DATE	, commenceDate));
+					item.add(new Label(Constants.BILLABLE_ITEM_COMMENCE_DATE, commenceDate));
 				}
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_COMMENCE_DATE, commenceDate));
@@ -87,7 +87,13 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST, ""));
 				}
-				
+				//ARK-1653
+				if (billableItem.getBillableItemType() != null) {
+					item.add(new Label(Constants.BILLABLE_ITEM_BILLABLE_ITEM_TYPE, billableItem.getBillableItemType().getItemName()));
+				}
+				else {
+					item.add(new Label(Constants.BILLABLE_ITEM_BILLABLE_ITEM_TYPE, ""));
+				}
 				//ARK-1392
 				//item.add(buildLink(billableItem));
 				

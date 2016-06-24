@@ -151,7 +151,6 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		printerList = new PrinterListPanel("printerList", selected, isNew());
 		printerList.add(new AbstractDefaultAjaxBehavior() {
 			private static final long	serialVersionUID	= 1L;
-
 			@Override
 			public void renderHead(Component component, IHeaderResponse response) {
 				super.renderHead(component, response);
@@ -160,7 +159,6 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 				    + getCallbackUrl() + "&selectedPrinter='+selectedPrinter, function() { }, function() { } ) }";
 				response.renderJavaScript(js, "selectPrinter");
 			}
-
 			@Override
 			protected void respond(AjaxRequestTarget arg0) {
 				barcodePrinterName = RequestCycle.get().getRequest().getQueryParameters().getParameterValue("selectedPrinter");

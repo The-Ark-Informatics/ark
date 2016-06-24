@@ -28,10 +28,7 @@ public class SessionAttributeListener implements HttpSessionAttributeListener, S
 	protected transient Logger						log					= LoggerFactory.getLogger(SessionAttributeListener.class);
 	// NOTE: listener is being called from multiple threads and ArrayList is unsynchronized
 	private static List<ArkSubjectSessionVO>	activeUsers			= Collections.synchronizedList(new ArrayList<ArkSubjectSessionVO>());
-
-	public static List<ArkSubjectSessionVO> getActiveUsers() {
-		return activeUsers;
-	}
+	public static List<ArkSubjectSessionVO> getActiveUsers() {return activeUsers;}
 
 	public void attributeAdded(HttpSessionBindingEvent event) {
 		if (event.getName().equals(au.org.theark.core.Constants.ARK_USERID)) {

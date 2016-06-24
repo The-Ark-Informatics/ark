@@ -173,6 +173,9 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 		if (ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
 			if (sessionId == null) {
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+				//Add this line to avoid showing more than one error message. Now user knows exactly the functional error message.
+				//earlier there is message shows below the details form error message.
+				getSession().cleanupFeedbackMessages();
 				this.error(errorMessage);
 			}
 			else {

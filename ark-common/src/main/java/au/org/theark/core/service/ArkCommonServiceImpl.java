@@ -2091,6 +2091,21 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao.getCustomFieldCategotyByNameAndCustomFieldType(name, customFieldType);
 	}
 
+	@Override
+	public List getSearchesForSearch(Search search) {
+		return studyDao.getSearchesForSearch(search);
+	}
+
+	@Override
+	public List getStudyComponentsNotInThisSubject(Study study,LinkSubjectStudy linkSubjectStudy) {
+		return studyDao.getStudyComponentsNeverUsedInThisSubject(study, linkSubjectStudy);
+	}
+
+	@Override
+	public List getDifferentStudyComponentsInConsentForSubject(Study study,LinkSubjectStudy linkSubjectStudy) {
+		return studyDao.getDifferentStudyComponentsInConsentForSubject(study, linkSubjectStudy);
+	}
+
 	
 
 	

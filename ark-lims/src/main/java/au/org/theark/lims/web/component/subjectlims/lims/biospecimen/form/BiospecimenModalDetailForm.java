@@ -74,6 +74,7 @@ import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -693,6 +694,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioTransactionQuantityTxtFld.add(minQuantityValidator);
 		unitDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.unit.required", this, new Model<String>("Name")));
 		treatmentTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.treatmentType.required", this, new Model<String>("Name")));
+		this.add(new DateFromToValidator(sampleDateTxtFld,processedDateTxtFld,"Sample Date","Process Date"));
 	}
 
 	private void addComponents() {
@@ -1162,29 +1164,31 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		answer = new ConfirmationAnswer(false);
 		confirmModal =  new ModalWindow("modal");
 		confirmModal.setCookieName("yesNoPanel");
-		List<BioTransaction> bioTransactions=iLimsService.getAllBiotransactionForBiospecimen(cpModel.getObject().getBiospecimen());
-		StringBuffer bioTxID=new StringBuffer();
-		for (BioTransaction bioTransaction : bioTransactions) {
-			bioTxID.append(bioTransaction.getId()).append(",");
-		}
-		bioTxID.deleteCharAt(bioTxID.length()-1);
-		String modelTextReplce1=modalText.replaceAll("number", Integer.toString(bioTransactions.size()));
-		String modeltextReplace2=modelTextReplce1.replaceAll("txs", bioTxID.toString());
-		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modeltextReplace2,confirmModal, answer));
-		confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
-			private static final long serialVersionUID = 1L;
+		if(!isNew()){
+			List<BioTransaction> bioTransactions=iLimsService.getAllBiotransactionForBiospecimen(cpModel.getObject().getBiospecimen());
+			StringBuffer bioTxID=new StringBuffer();
+			for (BioTransaction bioTransaction : bioTransactions) {
+				bioTxID.append(bioTransaction.getId()).append(",");
+			}
+			bioTxID.deleteCharAt(bioTxID.length()-1);
+			String modelTextReplce1=modalText.replaceAll("number", Integer.toString(bioTransactions.size()));
+			String modeltextReplace2=modelTextReplce1.replaceAll("txs", bioTxID.toString());
+			confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modeltextReplace2,confirmModal, answer));
+			confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+				private static final long serialVersionUID = 1L;
 				public void onClose(AjaxRequestTarget target) {
-	                if (answer.isAnswer()) {
-	               	iLimsService.deleteBiospecimen(cpModel.getObject());
-	            		getSession().getFeedbackMessages().info(me, "Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
-	                } else {
-	                		EditModeButtonsPanel editModeButtonsPanel=((EditModeButtonsPanel)buttonsPanelWMC.get("buttonsPanel"));
-	                		editModeButtonsPanel.setDeleteButtonEnabled(true);
-	                		target.add(editModeButtonsPanel);
-	                }
-	        		target.add(feedbackPanel);
-	            }
-	        });
+		            if (answer.isAnswer()) {
+		           	 	iLimsService.deleteBiospecimen(cpModel.getObject());
+		           		getSession().getFeedbackMessages().info(me, "Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
+		               } else {
+		               		EditModeButtonsPanel editModeButtonsPanel=((EditModeButtonsPanel)buttonsPanelWMC.get("buttonsPanel"));
+		               		editModeButtonsPanel.setDeleteButtonEnabled(true);
+		               		target.add(editModeButtonsPanel);
+		              }
+		        target.add(feedbackPanel);
+		     }
+		     });
+		}
 	}
 
 	public CheckBox getBarcodedChkBox() {

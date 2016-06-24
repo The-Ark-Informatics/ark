@@ -84,12 +84,17 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 		super.onBeforeRender();
 		StudyCompVo studyComponent = containerForm.getModelObject();
 		StudyComp component = studyComponent.getStudyComponent();
-		;
-		if (component != null && component.getId() != null && iStudyService.isStudyComponentHasAttachments(component)) {
-			deleteButton.setEnabled(false);
-		}
+		//Resolve the problem in ARK-1559
 		// If the given component is attached to a file/consents then disable the delete button
-
+		if (!isNew()){
+			if(iStudyService.isStudyComponentHasAttachments(component)|| iStudyService.isStudyComponentBeingUsedInConsent(component)){
+				deleteButton.setEnabled(false);
+			}else{
+				deleteButton.setEnabled(true);
+			}
+		}else{
+			deleteButton.setEnabled(true);
+		}	
 	}
 
 	public void initialiseDetailForm() {

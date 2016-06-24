@@ -2,6 +2,7 @@ package au.org.theark.worktracking.model.dao;
 
 import java.util.List;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
@@ -191,5 +192,20 @@ public interface IWorkTrackingDao {
 	 * @return WorkRequestBillableItemVo object
 	 */
 	public WorkRequestBillableItemVo getWorkRequestBillableItem(WorkRequest workRequest);
+	
+	/**if it's exsists for a study.
+	 * 
+	 * @param study
+	 * @param billableItemType
+	 * @return
+	 */
+	public boolean isBillableItemTypeExsistForStudy(Long studyId,BillableItemType billableItemType);
+	/**
+	 * 
+	 * @param studyId
+	 * @param workRequest
+	 * @return
+	 */
+	public boolean isWorkRequestExsistForStudy(Long studyId,WorkRequest workRequest);
 	
 }

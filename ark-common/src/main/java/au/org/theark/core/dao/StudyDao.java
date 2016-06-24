@@ -86,6 +86,8 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -5224,4 +5226,41 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return getHQLForOperator(operator)+" '"+value+"' ";
 		}
 	}
+	@Override
+	public List<Search> getSearchesForSearch(Search search) {
+		Criteria criteria = getSession().createCriteria(Search.class);
+		criteria.add(Restrictions.eq("study", search.getStudy()));
+		if(search.getId()!=null){criteria.add(Restrictions.eq("id", search.getId()));}
+		if(search.getName()!=null){criteria.add(Restrictions.like("name", search.getName(),MatchMode.ANYWHERE));}
+		List<Search> searchList = criteria.list();
+		return searchList;
+	}
+	@Override
+	public List<StudyComp> getStudyComponentsNeverUsedInThisSubject(Study study, LinkSubjectStudy linkSubjectStudy) {
+		List<StudyComp> consentStudyCompLst=getDifferentStudyComponentsInConsentForSubject(study, linkSubjectStudy);
+		List<Long> consentStudyCompIdLst=new ArrayList<Long>();
+		for (StudyComp studyComp : consentStudyCompLst) {
+			consentStudyCompIdLst.add(studyComp.getId());
+		}
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		criteria.add(Restrictions.eq("study", study));
+		if(!consentStudyCompIdLst.isEmpty()) {
+			criteria.add(Restrictions.not(Restrictions.in("id", consentStudyCompIdLst)));
+		}
+		return criteria.list();
+	}
+
+	@Override
+	public List<StudyComp> getDifferentStudyComponentsInConsentForSubject(Study study, LinkSubjectStudy linkSubjectStudy) {
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study",study));
+		criteria.add(Restrictions.eq("linkSubjectStudy",linkSubjectStudy));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("studyComp"));
+		criteria.setProjection(projectionList);
+		criteria.addOrder(Order.asc("id"));
+		List<StudyComp> fieldsList = criteria.list();
+		return fieldsList;
+	}
+
 }

@@ -505,4 +505,6 @@ public interface IStudyService {
 	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar);
 	
 	public List<RelationshipVo> getSubjectChildren(String subjectUID, long studyId);
+	
+	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp);
 }

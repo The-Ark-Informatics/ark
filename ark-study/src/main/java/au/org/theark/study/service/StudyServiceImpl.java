@@ -2392,5 +2392,11 @@ public class StudyServiceImpl implements IStudyService {
 	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar){
 		return iStudyDao.getSelectedCalendarCustomFieldList(studyCalendar);
 	}
+
+	@Override
+	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp) {
+		
+		return iStudyDao.isStudyComponentBeingUsedInConsent(studyComp);
+	}
 	
 }

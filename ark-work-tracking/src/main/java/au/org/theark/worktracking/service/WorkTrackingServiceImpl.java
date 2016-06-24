@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
@@ -36,7 +37,6 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	public List<ResearcherStatus> getResearcherStatuses() {
-		// TODO Auto-generated method stub
 		return workTrackingDao.getResearcherStatuses();
 	}
 
@@ -44,7 +44,6 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	public List<ResearcherRole> getResearcherRoles() {
-		// TODO Auto-generated method stub
 		return workTrackingDao.getResearcherRoles();
 	}
 
@@ -52,7 +51,6 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	public List<BillingType> getResearcherBillingTypes() {
-		// TODO Auto-generated method stub
 		return workTrackingDao.getResearcherBillingTypes();
 	}
 
@@ -197,10 +195,10 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 
 	/**
 	 * {@inheritDoc}
-	 */
+	 *//*
 	public List<BillableItem> searchBillableItem(BillableItem billableItem) {
 		return workTrackingDao.searchBillableItem(billableItem);
-	}
+	}*/
 	
 	
 	
@@ -229,7 +227,6 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	public List<BillableItem> searchBillableItem(BillableItemVo billableItemVo) {
-		// TODO Auto-generated method stub
 		return workTrackingDao.searchBillableItem(billableItemVo);
 	}
 
@@ -237,7 +234,6 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	public Long getBillableItemCount(BillableItem billableItem) {
-		// TODO Auto-generated method stub
 		return workTrackingDao.getBillableItemCount(billableItem);
 	}
 
@@ -246,8 +242,16 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 */
 	public WorkRequestBillableItemVo getWorkRequestBillableItem(
 			WorkRequest workRequest) {
-		// TODO Auto-generated method stub
 		return workTrackingDao.getWorkRequestBillableItem(workRequest);
+	}
+
+	public boolean isBillableItemTypeExsistForStudy(Long studyId,BillableItemType billableItemType) {
+		
+		return workTrackingDao.isBillableItemTypeExsistForStudy(studyId, billableItemType);
+	}
+
+	public boolean isWorkRequestExsistForStudy(Long studyId,WorkRequest workRequest) {
+		return workTrackingDao.isWorkRequestExsistForStudy(studyId, workRequest);
 	}
 	
 	

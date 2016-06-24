@@ -69,13 +69,22 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		billableItemTypeStatusses= iWorkTrackingService.getBillableItemTypeStatuses();	
 		billableItemTypeIdTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_ID); 
 		billableItemTypeIdTxtField.setEnabled(false);
-		billableItemTypeItemNameTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME);       
-		billableItemTypeQuantityPerUnitTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_QUANTITY_PER_UNIT);
+		billableItemTypeItemNameTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME);  
+		billableItemTypeQuantityPerUnitTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_QUANTITY_PER_UNIT){
+		private static final long serialVersionUID = 1L;
+		@Override
+		public <C> IConverter<C> getConverter(Class<C> type) {
+					  	DoubleConverter converter = (DoubleConverter)DoubleConverter.INSTANCE;
+						NumberFormat format = converter.getNumberFormat(getLocale());
+						format.setMinimumFractionDigits(2);
+						converter.setNumberFormat(getLocale(), format);
+						return (IConverter<C>) converter; 
+			}	
+		};
 		billableItemTypeUnitPriceTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE){
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public <C> IConverter<C> getConverter(Class<C> type) {
+		private static final long serialVersionUID = 1L;
+		@Override
+		public <C> IConverter<C> getConverter(Class<C> type) {
 				  	DoubleConverter converter = (DoubleConverter)DoubleConverter.INSTANCE;
 					NumberFormat format = converter.getNumberFormat(getLocale());
 					format.setMinimumFractionDigits(2);
@@ -130,27 +139,24 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 				new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_LENGTH, billableItemTypeItemNameTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME_TAG)));
 		billableItemTypeDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(
 				new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_DESCRIPTION_LENGTH, billableItemTypeDescriptionTxtArea, new Model<String>(Constants.BILLABLE_ITEM_TYPE_DESCRIPTION_TAG)));
-		
 		billableItemTypeUnitPriceTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_UNIT_PRICE_REQUIRED, billableItemTypeUnitPriceTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE_TAG)));
-		
 		billableItemTypeQuantityPerUnitTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_QUNATITY_PER_UNIT_REQUIRED, billableItemTypeUnitPriceTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_QUNATITY_PER_UNIT_TAG)));
-		
 //		billableItemTypeGstTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_GST_REQUIRED,billableItemTypeGstTxtField,new Model<String>(Constants.BILLABLE_ITEM_TYPE_GST_TAG)));
-		
 		billableItemTypeUnitPriceTxtField.add(new PatternValidator(Constants.TWO_DECIMAL_PATTERN){
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			protected void onValidate(IValidatable<String> validatable) {
 				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.UNIT_PRICE));
 			}
 		});
-		
 		billableItemTypeQuantityTypeTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_QUNATITY_TYPE_REQUIRED, billableItemTypeQuantityTypeTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_QUNATITY_TYPE_TAG)));
-		
+		billableItemTypeQuantityPerUnitTxtField.add(new PatternValidator(Constants.NON_NEGATIVE_PATTERN){
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void onValidate(IValidatable<String> validatable) {
+				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.QUANTITY_PER_UNIT));
+			}
+		});
 //		billableItemTypeGstTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_TWO_DECIMAL_PATTERN){
 //			/**
 //			 * 
@@ -231,40 +237,39 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 	 */
 	@Override
 	protected void onSave(Form<BillableItemTypeVo> containerForm, AjaxRequestTarget target) {
-
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
-		try {
-			
-			if (containerForm.getModelObject().getBillableItemType().getId() == null) {
-				
-				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				containerForm.getModelObject().getBillableItemType().setStudyId(studyId);
-				containerForm.getModelObject().getBillableItemType().setType(Constants.BILLABLE_ITEM_TYPE_CUSTOM);
-				for(BillableItemTypeStatus status:billableItemTypeStatusses){
-					if(Constants.BILLABLE_ITEM_TYPE_ACTIVE.equalsIgnoreCase(status.getName())){
-						containerForm.getModelObject().getBillableItemType().setBillableItemTypeStatus(status);
-						break;
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			try {
+				if (containerForm.getModelObject().getBillableItemType().getId() == null) {
+					containerForm.getModelObject().getBillableItemType().setStudyId(studyId);
+					containerForm.getModelObject().getBillableItemType().setType(Constants.BILLABLE_ITEM_TYPE_CUSTOM);
+					for(BillableItemTypeStatus status:billableItemTypeStatusses){
+						if(Constants.BILLABLE_ITEM_TYPE_ACTIVE.equalsIgnoreCase(status.getName())){
+							containerForm.getModelObject().getBillableItemType().setBillableItemTypeStatus(status);
+							break;
+						}
 					}
+					//Check for billable item type for exsistance.
+					if(iWorkTrackingService.isBillableItemTypeExsistForStudy(studyId, containerForm.getModelObject().getBillableItemType())){
+						this.error("Billable Item Type Name " + containerForm.getModelObject().getBillableItemType().getItemName()  + " is already exsist with this study.");
+					}else{	
+						iWorkTrackingService.createBillableItemType(containerForm.getModelObject().getBillableItemType());
+						this.info("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName()  + " was created successfully");
+					}
+				}else {
+					iWorkTrackingService.updateBillableItemType(containerForm.getModelObject().getBillableItemType());
+					this.info("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName() + " was updated successfully");
 				}
-				
-				iWorkTrackingService.createBillableItemType(containerForm.getModelObject().getBillableItemType());
-				this.info("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName()  + " was created successfully");
-				processErrors(target);
+				onSavePostProcess(target);
 			}
-			else {
-				iWorkTrackingService.updateBillableItemType(containerForm.getModelObject().getBillableItemType());
-				this.info("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName() + " was updated successfully");
-				processErrors(target);
+			catch (Exception e) {
+				if(e.getMessage().contains("Duplicate entry")){
+					this.error("Billable Item Type Name " + containerForm.getModelObject().getBillableItemType().getItemName()  + " is already exsist with this study.");
+				}else{
+					this.error("A System error occured, we will have someone contact you.");
+				}
 			}
-
-			onSavePostProcess(target);
-
-		}
-		catch (Exception e) {
-			this.error("A System error occured, we will have someone contact you.");
-			processErrors(target);
-		}
-
+		processErrors(target);
 	}
 
 	/*
