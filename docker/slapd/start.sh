@@ -140,7 +140,7 @@ EOF
 	done	
 
 
-	java -jar /usr/src/app/ark-user-account/target/ark-user-account-1.0.0-jar-with-dependencies.jar arksuperuser@ark.org.au ${ARK_SUPERUSER_PASSWORD} Super User
+	java -jar /usr/src/app/ark-user-account/target/ark-user-account-1.0.0-jar-with-dependencies.jar ${ARK_USERNAME} ${ARK_SUPERUSER_PASSWORD} Super User
 	rm /usr/src/app/ark-user-account/.completed
 	service slapd stop #for some reason this doesn't work
 	killall slapd
