@@ -125,29 +125,43 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		
 		// Disable editing of Subject details in LIMS
 		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT) {
-
-
 			private static final long	serialVersionUID	= 1L;
-
 			@Override
 			public boolean isVisible() {
 				return false;
 			}
-
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Should never get here since Edit button should never be enabled for Subject Details via LIMS
 				log.error("Incorrect application workflow - tried to edit Subject Details via LIMS");
 			}
-
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				// Should never get here since Edit button should never be enabled for Subject Details via LIMS
 				log.error("Incorrect application workflow - tried to edit Subject Details via LIMS and error occurred");
 			}
 		};
+		cancelButton=new AjaxButton(au.org.theark.core.Constants.CANCEL){
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			public boolean isVisible() {
+				return false;
+			}
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// Should never get here since Edit button should never be enabled for Subject Details via LIMS
+				log.error("Incorrect application workflow - tried to edit Subject Details via LIMS");
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// Should never get here since Edit button should never be enabled for Subject Details via LIMS
+				log.error("Incorrect application workflow - tried to edit Subject Details via LIMS and error occurred");
+			}
+			};
+			arkCrudContainerVO.getEditButtonContainer().addOrReplace(cancelButton);
+		}
 		//arkCrudContainerVO.getViewButtonContainer().addOrReplace(editButton);
-	}
+	
 
 	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {

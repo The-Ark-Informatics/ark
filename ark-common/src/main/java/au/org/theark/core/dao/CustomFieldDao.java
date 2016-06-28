@@ -105,7 +105,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		if (customField.getDescription() != null) {
 			criteria.add(Restrictions.ilike("description", customField.getDescription(), MatchMode.ANYWHERE));
 		}
-		if (customField.getUnitType() != null && customField.getUnitType().getName() != null && customField.getUnitTypeInText() !=null) {
+		if (customField.getUnitType() != null && customField.getUnitType().getName() != null ) {
 			criteria.createAlias("unitType", "ut");
 			criteria.add(Restrictions.ilike("ut.name", customField.getUnitType().getName(), MatchMode.ANYWHERE));
 		}
@@ -824,6 +824,15 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 			return (List<CustomFieldCategory>) criteria.list();
 		}
 		return null;
+	}
+
+	@Override
+	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name, CustomFieldType customFieldType) {
+		Criteria criteria = getSession().createCriteria(CustomFieldCategory.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.add(Restrictions.eq("customFieldType", customFieldType));
+		criteria.setMaxResults(1);
+		return (CustomFieldCategory) criteria.uniqueResult();
 	}
 
 	

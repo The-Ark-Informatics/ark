@@ -141,27 +141,14 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 
 		// Data providor to paginate resultList
 		customFieldProvider = new ArkDataProvider2<CustomField, CustomField>() {
-
 			private static final long serialVersionUID = 1L;
-
 			public int size() {
-
-				if (criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
-					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
-					return (int) iArkCommonService.getCustomFieldCount(criteriaModel.getObject());																									
-				} else {
 					return (int) iArkCommonService.getCustomFieldCount(criteriaModel.getObject());
-				}
 			}
-
 			public Iterator<CustomField> iterator(int first, int count) {
 				List<CustomField> listCustomFields = new ArrayList<CustomField>();
 				if (isActionPermitted()) {
-					if (criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
-						listCustomFields = iArkCommonService.searchPageableCustomFieldsForPheno(criteriaModel.getObject(), first, count);
-					} else {
-						listCustomFields = iArkCommonService.searchPageableCustomFields(criteriaModel.getObject(), first, count);
-					}
+					listCustomFields = iArkCommonService.searchPageableCustomFields(criteriaModel.getObject(), first, count);
 				}
 				return listCustomFields.iterator();
 			}

@@ -27,6 +27,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.worktracking.entity.BillableItem;
+import au.org.theark.core.model.worktracking.entity.BillableItemType;
+import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -35,6 +37,7 @@ import au.org.theark.core.web.component.button.AjaxInvoiceButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
+import au.org.theark.worktracking.util.BillableItemCostCalculator;
 import au.org.theark.worktracking.util.Constants;
 
 
@@ -64,6 +67,8 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 	private AjaxButton										invoiceButton;
 	
 	private DropDownChoice<Researcher>		 		 		workRequestResearchers;
+	
+	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
 
 	/**
 	 * 
@@ -97,6 +102,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		add(invoiceButton);
 		add(billableItemCommenceDateDp);
 		add(workRequestResearchers);
+		add(billableItemItemTypes);
 	}
 
 	protected void initialiseSearchForm() {
@@ -118,6 +124,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		
 		PropertyModel<WorkRequest> pmWorkRequest = new PropertyModel<WorkRequest>(pm, "workRequest");
 		initWorkRequestDropDown(pmWorkRequest);
+		initBillableItemTypeDropDown();
 		initInvoiceDropDown();
 		
 		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
@@ -140,29 +147,23 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 							updateBillableItemList.add(item);
 						}
 					}
-				
 					iWorkTrackingService.updateAllBillableItems(updateBillableItemList);
-				
 					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 					getFormModelObject().getBillableItem().setStudyId(studyId);
-				
 					List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getFormModelObject());
 					getFormModelObject().setBillableItemList(resultList);
 					listView.removeAll();
 					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				
 				}catch(Exception ex){
 					this.error("A System error occured in invoice update");
 				}
 			}
-			
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				
 			}
 		};
-		
 		Subject currentUser = SecurityUtils.getSubject();
 		if(currentUser!=null && currentUser.isPermitted(au.org.theark.core.Constants.PERMISSION_UPDATE)){
 			invoiceButton.setVisible(true);
@@ -227,7 +228,6 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		};
 		workRequestResearchers = new DropDownChoice(Constants.BILLABLE_ITEM_RESEARCHER, researcherList, customChoiceRenderer);
 		workRequestResearchers.setModel(workRequestResearcher);
-		
 		workRequestResearchers.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
 			private static final long	serialVersionUID	= 1L;
@@ -271,6 +271,22 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 				target.add(workRequestResearchers);
 			}
 		});
+	}
+	
+private void initBillableItemTypeDropDown() {
+		BillableItemType billableItemType=new BillableItemType();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		billableItemType.setStudyId(studyId);
+		List<BillableItemTypeStatus> billableItemTypeStatusses = iWorkTrackingService.getBillableItemTypeStatuses();
+		for(BillableItemTypeStatus status:billableItemTypeStatusses){
+			if(Constants.BILLABLE_ITEM_TYPE_ACTIVE.equalsIgnoreCase(status.getName())){
+				billableItemType.setBillableItemTypeStatus(status);
+				break;
+			}
+		}
+		List<BillableItemType> billableItemTypeList = iWorkTrackingService.searchBillableItemType(billableItemType);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.BIT_ITEM_NAME, Constants.ID);
+		billableItemItemTypes = new DropDownChoice(Constants.BILLABLE_ITEM_BILLABLE_ITEM_TYPE,  billableItemTypeList, defaultChoiceRenderer);
 	}
 
 	/*

@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.admin.web.component.activitymonitor;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -90,6 +92,21 @@ public class ActivityMonitorContainerPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer initialiseSearchResults() {
 		List<ArkSubjectSessionVO> activeUsers = SessionAttributeListener.getActiveUsers();
+		// fixed for the ARK-1557 improvement.
+		//Logged in sort second
+		Collections.sort(activeUsers, new Comparator<ArkSubjectSessionVO>() {
+		@Override
+		public int compare(ArkSubjectSessionVO o1, ArkSubjectSessionVO o2) {
+				return o2.getStartTimestamp().compareTo(o1.getStartTimestamp());
+		}
+		});
+		//Last Access sort first
+		Collections.sort(activeUsers, new Comparator<ArkSubjectSessionVO>() {
+		@Override
+		public int compare(ArkSubjectSessionVO o1, ArkSubjectSessionVO o2) {
+			return o2.getLastAccessTime().compareTo(o1.getLastAccessTime());
+		}
+		});
 		form.getModelObject().setActiveUsers(activeUsers);
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", feedBackPanel);
 		listView = searchResultsPanel.buildPageableListView(new PropertyModel(form.getModelObject(), "activeUsers"));

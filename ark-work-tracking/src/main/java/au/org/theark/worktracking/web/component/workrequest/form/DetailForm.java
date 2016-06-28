@@ -25,6 +25,7 @@ import org.apache.wicket.util.convert.converter.DoubleConverter;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.hibernate.exception.ConstraintViolationException;
 
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
@@ -226,42 +227,40 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	protected void onSave(Form<WorkRequestVo> containerForm, AjaxRequestTarget target) {
 
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
-
 		if (isWorkRequestHasvalidDateValues(target)) {
-
 			WorkRequest workRequest = containerForm.getModelObject().getWorkRequest();
-
 			try {
-
 				if (workRequest.getId() == null) {
 					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 					workRequest.setStudyId(studyId);
-
-					iWorkTrackingService.createWorkRequest(workRequest);
-					this.info("Work Request " + workRequest.getName() + " was created successfully");
+					//Check for work request for exsistance.
+					if(iWorkTrackingService.isWorkRequestExsistForStudy(studyId,workRequest )){
+						this.error("Work request " + workRequest.getName()  + " is already exsist with this study.");
+					}else{	
+						iWorkTrackingService.createWorkRequest(workRequest);
+						this.info("Work Request " + workRequest.getName() + " was created successfully");
+					}
 					processErrors(target);
 				} else {
 					WorkRequestBillableItemVo workBillableItemVo = iWorkTrackingService.getWorkRequestBillableItem(workRequest);
 					if (workBillableItemVo != null && workBillableItemVo.getBillableItemCount() > 0 && (!ObjectUtils.equals(workBillableItemVo.getGstAllow(), workRequest.getGstAllow()) || !ObjectUtils.equals(workBillableItemVo.getGst(), workRequest.getGst()))) {
 						this.error("Cannot change GST value since a billable item has been recorded for this work request.");
 						processErrors(target);
-						return;
 					}
-
 					iWorkTrackingService.updateWorkRequest(containerForm.getModelObject().getWorkRequest());
 					this.info("Work Request " + containerForm.getModelObject().getWorkRequest().getName() + " was updated successfully");
 					processErrors(target);
 				}
-
 				onSavePostProcess(target);
-
 			} catch (Exception e) {
-				this.error("A System error occured, we will have someone contact you.");
+				if(e.getMessage().contains("Duplicate entry")){
+					this.error("Work request " + workRequest.getName()  + " is already exsist with this study.");
+				}else{
+					this.error("A System error occured, we will have someone contact you.");
+				}
 				processErrors(target);
 			}
-
 		}
-
 	}
 
 	/*

@@ -598,7 +598,7 @@ public interface IArkCommonService<T> {
 	 */
 	public void createCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException;
 
-	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException;
+	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException,ArkNotAllowedToUpdateException;
 
 	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, EntityCannotBeRemoved;
 
@@ -1235,6 +1235,39 @@ public interface IArkCommonService<T> {
 	 */
 	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
 	
+	/**
+	 * 
+	 * @param customFieldCategory
+	 * @return
+	 */
 	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory);
+	/**
+	 * 
+	 * @param name
+	 * @param customFieldType
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name, CustomFieldType customFieldType);
+	/**
+	 * 
+	 * @param search
+	 * @return
+	 */
+	public List<Search> getSearchesForSearch(Search search);
+	/**
+	 * Get study component never used in the subject.
+	 * 
+	 * @param study
+	 * @param linkSubjectStudy
+	 * @return
+	 */
+	public List<StudyComp> getStudyComponentsNotInThisSubject(Study study,LinkSubjectStudy linkSubjectStudy);
+	/**
+	 * 
+	 * @param study
+	 * @param linkSubjectStudy
+	 * @return
+	 */
+	public List<StudyComp> getDifferentStudyComponentsInConsentForSubject(Study study, LinkSubjectStudy linkSubjectStudy);
 
 }

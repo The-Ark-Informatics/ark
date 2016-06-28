@@ -1,0 +1,32 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+<!-- Page Left Zone -->
+	<div class="leftZone">
+		&nbsp;
+	</div>
+	<!-- Page right Zone -->
+	<div class="rightZone">
+		&nbsp;
+	</div>
+	<!-- Content Zone -->
+	<form wicket:id="yesNoForm" action="">
+		<div class="contentZoneCenter" >
+			<span wicket:id="message">Are you sure?</span>
+			<br/>
+			<br/>
+			<table style="width: 100%;" align="center">
+					<tr align="center">
+		    			<td align="center">
+		    			<div class="buttons">
+	            			<input type="submit" wicket:id="noButton" value="No" />
+	            		</div>
+						</td>
+						<td align="center">
+						<div class="buttons">
+							<input type="submit" wicket:id="yesButton" value="Yes" />
+						</div>	
+						</td>
+					</tr>
+			</table>
+		</div>
+	</form>
+</wicket:panel>

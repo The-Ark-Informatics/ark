@@ -92,3 +92,6 @@ background-position:right;
 background-repeat:no-repeat;
 padding:5px 10px 5px 5px;
 }
+table.dataview tr th.table_header_rule{
+text-align:right;	
+} 

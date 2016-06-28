@@ -373,5 +373,12 @@ public interface ICustomFieldDao {
 	 * @return
 	 */
 	public List<CustomFieldCategory> getSiblingList(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory customFieldCategory);
+	/**
+	 * 
+	 * @param name
+	 * @param customFieldType
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name,CustomFieldType customFieldType);
 	
 }

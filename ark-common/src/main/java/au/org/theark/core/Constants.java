@@ -428,13 +428,13 @@ public class Constants {
 		 },
 		{
 				"VALID VALUES",
-				"", 
+				"Maximum 50 characters", 
 				"", 
 				"", 
 				"",
 				"Maximum 255 characters", 
-				"", 
-				"",
+				"Maximum 255 characters", 
+				"Maximum 50 characters",
 				"0=Yes;1=No;",
 				"",
 				"",
@@ -464,17 +464,17 @@ public class Constants {
 		},
 		{
 			"VALID VALUES",
-			"", 
-			"", 
-			"",
-			"",
+			"Maximum 50 characters", 
+			"Maximum 50 characters", 
+			"Maximum 255 characters",
+			"Maximum 50 characters",
 			"Any Integer value starting from 1"
 		},
 		{ "NOTE: Removed this first column, and replace rows 2 to 5.",
 				"", "", "", "",""
 		},
 		{
-			"Please maintain the order which parent category must be on top of it's sub category.",
+			"Please make sure to upload all the parent categories to the system first before assign them to sub categories. ",
 				 "", "", "", "",""
 		}
 	};
