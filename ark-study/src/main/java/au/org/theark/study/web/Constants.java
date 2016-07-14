@@ -472,4 +472,6 @@ public class Constants {
 	public static final String STUDY_CALENDAR_DESCRIPTION = "studyCalendar.description";
 	public static final String STUDY_CALENDAR_STUDY_COMP = "studyCalendar.studyComp";
 	
+	public static final Integer MAXIMUM_ACCEPTABLE_AGE = 150;
+	
 }

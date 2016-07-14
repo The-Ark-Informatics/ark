@@ -2397,7 +2397,11 @@ public class StudyServiceImpl implements IStudyService {
 	}
 	@Override
 	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp) {
-		
 		return iStudyDao.isStudyComponentBeingUsedInConsent(studyComp);
+	}
+
+	@Override
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType) {
+		return iStudyDao.getCorrespondenceOutcomeTypesForModeAndDirection(correspondenceModeType, correspondenceDirectionType);
 	}
 }

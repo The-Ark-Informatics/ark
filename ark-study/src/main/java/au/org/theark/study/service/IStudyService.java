@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import au.org.theark.core.model.study.entity.*;
+
 import org.apache.wicket.util.file.File;
 
 import com.csvreader.CsvReader;
@@ -466,4 +467,5 @@ public interface IStudyService {
 	public List<RelationshipVo> getSubjectChildren(String subjectUID, long studyId);
 	public void delete(OtherID otherID);
 	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp);
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType);
 }

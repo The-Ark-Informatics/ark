@@ -491,6 +491,7 @@ public class Constants {
 	public static final String ARK_SESSION_ID = "ARK_SESSION_ID";
 	public static final String ARK_USERID = "ARK_USERID";
 	public static final String ARK_HOST = "ARK_HOST";
+	public static final String ARK_USER_NAME = "ARK_USER_NAME";
 	public static final String ARK_SESSION_START_TIMESTAMP = "ARK_SESSION_START_TIMESTAMP";
 	public static final String ARK_SESSION_LAST_ACCESS_TIME = "ARK_SESSION_LAST_ACCESS_TIME";
 	public static final String ARK_SESSION_ACTION = "ARK_SESSION_ACTION";

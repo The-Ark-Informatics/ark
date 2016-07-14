@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,15 +36,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
@@ -958,10 +963,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			criteria.add(Restrictions.not(Restrictions.in("subjectUID",
 					subjectVO.getRelativeUIDs().toArray())));
 		}
+		//criteria.addOrder(OrderByBorder"{alias}.STUDY_ID, length({alias}.SUBJECT_UID), {alias}.SUBJECT_UID");
 
 		criteria.setProjection(Projections.distinct(Projections.projectionList().add(Projections.id())));
-
-		criteria.addOrder(Order.asc("subjectUID"));
+		//criteria.addOrder(Order.asc("subjectUID"));
 		return criteria;
 	}
 
@@ -997,6 +1002,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			subjectVOList.add(subject);
 		}
 		return subjectVOList;
+		/*Try to sort in this position but unable to sort because data will be comming as a chunk of 20,40 
+		Comparator<SubjectVO> comparator=Comparator.comparing((SubjectVO svo)->svo.getLinkSubjectStudy().getStudy().getName()).thenComparingInt(svo->svo.getSubjectUID().length())
+				.thenComparing((SubjectVO svo)->svo.getSubjectUID());
+		Stream<SubjectVO> subjectVOStream = subjectVOList.stream().sorted(comparator);
+		return subjectVOStream.collect(Collectors.toList());*/
 	}
 
 	public List<ConsentStatus> getRecordableConsentStatus() {
@@ -4634,7 +4644,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public void deleteQueryFilter(QueryFilter queryFilter) {
-		if(queryFilter != null) {
+		if(queryFilter != null && queryFilter.getSearch()!=null) {
 			for(SearchResult result : getSearchResultList(queryFilter.getSearch().getId())) {
 				getSession().delete(result);
 			}

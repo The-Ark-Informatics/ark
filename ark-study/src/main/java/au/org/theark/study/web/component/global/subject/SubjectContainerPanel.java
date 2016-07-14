@@ -320,7 +320,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("SubjectUID"), "subjectUID"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Study"), "linkSubjectStudy.study.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Full Name"), "subjectFullName"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Last Name History"), "linkSubjectStudy.person.descriptiveLastNameHistory"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Previous Last Names"), "linkSubjectStudy.person.descriptiveLastNameHistory"));
 		columns.add(new ExportableDateColumn<SubjectVO>(Model.of("Date Of Birth"), "linkSubjectStudy.person.dateOfBirth", au.org.theark.core.Constants.DD_MM_YYYY));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Vital Status"), "linkSubjectStudy.person.vitalStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Gender"), "linkSubjectStudy.person.genderType.name"));
@@ -333,7 +333,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		headers.add("SubjectUID");
 		headers.add("Study");
 		headers.add("Full Name");
-		headers.add("Last Name History");
+		headers.add("Previous Last Names");
 		headers.add("Date of Birth");
 		headers.add("Vital Status");
 		headers.add("Gender");
@@ -428,7 +428,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("SubjectUID"), "subjectUID"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Study"), "linkSubjectStudy.study.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Full Name"), "subjectFullName"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Last Name History"), "linkSubjectStudy.person.descriptiveLastNameHistory"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Previous Last Names"), "linkSubjectStudy.person.descriptiveLastNameHistory"));
 		columns.add(new ExportableDateColumn<SubjectVO>(Model.of("Date Of Birth"), "linkSubjectStudy.person.dateOfBirth", au.org.theark.core.Constants.DD_MM_YYYY));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Vital Status"), "linkSubjectStudy.person.vitalStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Gender"), "linkSubjectStudy.person.genderType.name"));
@@ -441,7 +441,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		headers.add("SubjectUID");
 		headers.add("Study");
 		headers.add("Full Name");
-		headers.add("Last Name History");
+		headers.add("Previous Last Names");
 		headers.add("Date of Birth");
 		headers.add("Vital Status");
 		headers.add("Gender");

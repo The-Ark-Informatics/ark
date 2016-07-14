@@ -304,6 +304,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 						iArkCommonService.deleteQueryFilter(item.getModelObject().getQueryFilter());
 						listEditor.removeItem(item);
+						listEditor.updateModel();
 						target.add(form);
 					}
 				}.setDefaultFormProcessing(false).setVisible(item.getIndex()>=0));
