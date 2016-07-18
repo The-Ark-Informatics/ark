@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import au.org.theark.core.util.OrderByNatural;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -430,7 +431,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 
-		criteria.addOrder(Order.asc("subjectUID"));
+		criteria.addOrder(OrderByNatural.asc("subjectUID"));
 		List<LinkSubjectStudy> list = criteria.list();
 
 		Collection<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
@@ -961,7 +962,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		criteria.setProjection(Projections.distinct(Projections.projectionList().add(Projections.id())));
 
-		criteria.addOrder(Order.asc("subjectUID"));
+		criteria.addOrder(OrderByNatural.asc("subjectUID"));
 		return criteria;
 	}
 
