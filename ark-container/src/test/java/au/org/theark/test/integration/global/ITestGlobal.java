@@ -104,8 +104,6 @@ public class ITestGlobal extends BaseIntegrationTest {
         driver.findElement(By.name("detailContainer:detailPanel:detailForm:editButtonContainer:save")).click();
 
         waitForElement(By.className("feedbackPanelINFO"));
-        driver.findElement(By.name("detailContainer:detailPanel:detailForm:editButtonContainer:cancel")).click();
-        waitForElement(By.partialLinkText(studyName)).click();
         waitForElement(By.partialLinkText("Subject")).click();
 
         String[] subjectUIDsToAdd2 = {"C-1358921", "C-133494", "C-501", "C-15921", "C-00001", "C-500"};
@@ -125,22 +123,10 @@ public class ITestGlobal extends BaseIntegrationTest {
         }
 
         waitForElement(By.name("searchContainer:searchComponentPanel:searchForm:new"));
-        WebElement we = driver.findElement(WicketBy.wicketPath("moduleTabsList_tabs-container_tabs_5_link"));
-        log.info(we.getText());
-        log.info(we.toString());
-        log.info(we.getTagName());
-        we.click();
+        waitForElement(WicketBy.wicketPath("moduleTabsList_tabs-container_tabs_5_link")).click();
 
         String[] sortedSubjectUIDs2 = {"C-00001", "C-500", "C-5001", "C-15921", "C-132494", "C-1358920",
                                         "C-00001", "C-500", "C-501", "C-15921", "C-133494", "C-1358921" };
-
-        File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        // Now you can do whatever you need to do with it, for example copy somewhere
-        try {
-            FileUtils.copyFile(scrFile, new File("/tmp/screenshot.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         table_element = waitForElement(By.className("dataview"));
         tr_collection = table_element.findElement(By.tagName("tbody")).findElements(By.tagName("tr"));
