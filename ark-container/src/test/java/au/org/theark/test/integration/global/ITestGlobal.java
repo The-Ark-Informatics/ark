@@ -108,7 +108,9 @@ public class ITestGlobal extends BaseIntegrationTest {
 
         String[] subjectUIDsToAdd2 = {"C-1358921", "C-133494", "C-501", "C-15921", "C-00001", "C-500"};
 
-        for(String subjectUID : subjectUIDsToAdd) {
+        log.info("Creating subjects for " + studyName + " study");
+
+        for(String subjectUID : subjectUIDsToAdd2) {
             log.info("Creating Subject: " + subjectUID);
 
             waitForElement(By.name("searchContainer:searchComponentPanel:searchForm:new")).click();
@@ -122,8 +124,13 @@ public class ITestGlobal extends BaseIntegrationTest {
             waitForElement(By.name("detailContainer:detailPanel:detailsForm:editButtonContainer:cancel")).click();
         }
 
-        waitForElement(By.name("searchContainer:searchComponentPanel:searchForm:new"));
-        waitForElement(WicketBy.wicketPath("moduleTabsList_tabs-container_tabs_5_link")).click();
+        waitForElement(By.name("searchContainer:searchComponentPanel:searchForm:new")).getText();
+        if(waitForElement(WicketBy.wicketPath("moduleTabsList_tabs-container_tabs_5_link")).getText().equalsIgnoreCase("Global Search")) {
+            waitForElement(By.partialLinkText("Global")).click();
+        }
+
+        //Wait for Biospecimen Data tab to be available. This means that the Demographic data tab must have loaded
+        waitForElement(WicketBy.wicketPath("moduleTabsList_panel_globalSearchSubMenu_tabs-container_tabs_1_link_title"));
 
         String[] sortedSubjectUIDs2 = {"C-00001", "C-500", "C-5001", "C-15921", "C-132494", "C-1358920",
                                         "C-00001", "C-500", "C-501", "C-15921", "C-133494", "C-1358921" };
