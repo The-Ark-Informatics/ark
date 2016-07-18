@@ -74,11 +74,10 @@ public class ITestStudy extends BaseIntegrationTest {
         String chiefInvestigator = "John Doe";
         String studyStatus = "Active";
 
-        driver.findElement(By.name("searchContainer:searchStudyPanel:searchForm:new")).click();
+        waitForElement(By.name("searchContainer:searchStudyPanel:searchForm:new")).click();
 
-        waitForElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:study.name"));
 
-        driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:study.name")).sendKeys(studyName);
+        waitForElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:study.name")).sendKeys(studyName);
         Select select = new Select(driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:study.studyStatus")));
         select.selectByVisibleText(studyStatus);
         driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:study.chiefInvestigator")).sendKeys(chiefInvestigator);
