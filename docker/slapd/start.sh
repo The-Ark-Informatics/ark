@@ -139,7 +139,7 @@ EOF
 		sleep 1	
 	done	
 
-
+	echo "Creating ${ARK_USERNAME} in LDAP..."
 	java -jar /usr/src/app/ark-user-account/target/ark-user-account-1.0.0-jar-with-dependencies.jar ${ARK_USERNAME} ${ARK_SUPERUSER_PASSWORD} Super User
 	rm /usr/src/app/ark-user-account/.completed
 	service slapd stop #for some reason this doesn't work

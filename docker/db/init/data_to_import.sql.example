@@ -6891,7 +6891,7 @@ CREATE TABLE `ark_user` (
 
 LOCK TABLES `ark_user` WRITE;
 /*!40000 ALTER TABLE `ark_user` DISABLE KEYS */;
-INSERT INTO `ark_user` VALUES (1,'arksuperuser@ark.org.au');
+INSERT INTO `ark_user` VALUES (1,'##ARK_USERNAME##');
 /*!40000 ALTER TABLE `ark_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
