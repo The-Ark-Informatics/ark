@@ -29,6 +29,7 @@ import au.org.theark.genomics.web.component.datacenter.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel {
 
+	
 	/**
 	 * 
 	 */
@@ -38,9 +39,13 @@ public class SearchResultListPanel extends Panel {
 
 	private ArkCrudContainerVO arkCrudContainerVO;
 
-	private AbstractDetailModalWindow modalWindow;
+	private AbstractDetailModalWindow detailModalWindow;
+	
+	private AbstractDetailModalWindow queryModalWindow;
 
 	private DataSourceContainerPanel dataSourceContainerPanel;
+
+	private QueryBuilderContainerPanel queryBuilderContainerPanel;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -51,6 +56,8 @@ public class SearchResultListPanel extends Panel {
 	private AjaxButton plinkUploadBtn;
 
 	private AjaxButton plinkDeleteBtn;
+
+	private AjaxButton queryBtn;
 
 	private Label statusLabel;
 
@@ -65,11 +72,19 @@ public class SearchResultListPanel extends Panel {
 
 	protected void initializeComponents() {
 
-		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
+		detailModalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
 
+			}
+		};
+
+		queryModalWindow = new AbstractDetailModalWindow("queryModalWindow") {
+			
+			@Override
+			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				
 			}
 		};
 
@@ -112,6 +127,7 @@ public class SearchResultListPanel extends Panel {
 					
 					this.setEnabled(false);
 					plinkDeleteBtn.setEnabled(false);
+					queryBtn.setEnabled(false);
 
 					target.add(SearchResultListPanel.this);
 				} catch (Exception e) {
@@ -172,15 +188,39 @@ public class SearchResultListPanel extends Panel {
 		};
 
 		plinkDeleteBtn.setEnabled(false);
+		
+		queryBtn = new AjaxButton("queryBtn") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {				
+//				DataSource dataSource = new DataSource();
+				queryBuilderContainerPanel = new QueryBuilderContainerPanel("content", queryModalWindow);
+//				if (dataSource.getId() != null) {
+//					queryBuilderContainerPanel.enableDeleteButton(true);
+//				} else {
+//					queryBuilderContainerPanel.enableDeleteButton(false);
+//				}
+				
+				queryBuilderContainerPanel.enableDeleteButton(false);
+				queryModalWindow.setTitle("Query Builder");
+				queryModalWindow.setInitialWidth(90);
+				queryModalWindow.setInitialHeight(100);
+				queryBuilderContainerPanel.setPropertyModelObject(containerForm.getModelObject());
+				queryModalWindow.setContent(queryBuilderContainerPanel);
+				queryModalWindow.show(target);
+			}
+		};
+		queryBtn.setEnabled(false);
 
 		statusLabel = new Label("status");
 
 	}
 
 	protected void addComponents() {
-		add(modalWindow);
+		add(detailModalWindow);
+		add(queryModalWindow);
 		add(plinkUploadBtn);
 		add(plinkDeleteBtn);
+		add(queryBtn);
 		add(statusLabel);
 	}
 
@@ -240,7 +280,7 @@ public class SearchResultListPanel extends Panel {
 				super.onSubmit(target, form);
 				DataSource dataSource = dataSourceVo.getDataSource();
 
-				dataSourceContainerPanel = new DataSourceContainerPanel("content", modalWindow);
+				dataSourceContainerPanel = new DataSourceContainerPanel("content", detailModalWindow);
 
 				if (dataSource.getId() != null) {
 					dataSourceContainerPanel.enableDeleteButton(true);
@@ -248,12 +288,12 @@ public class SearchResultListPanel extends Panel {
 					dataSourceContainerPanel.enableDeleteButton(false);
 				}
 
-				modalWindow.setTitle("Details");
-				modalWindow.setInitialWidth(90);
-				modalWindow.setInitialHeight(100);
+				detailModalWindow.setTitle("Details");
+				detailModalWindow.setInitialWidth(90);
+				detailModalWindow.setInitialHeight(100);
 				dataSourceContainerPanel.setPropertyModelObject(dataSourceVo);
-				modalWindow.setContent(dataSourceContainerPanel);
-				modalWindow.show(target);
+				detailModalWindow.setContent(dataSourceContainerPanel);
+				detailModalWindow.show(target);
 
 			}
 		};

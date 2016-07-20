@@ -16,6 +16,8 @@ public class DataCenterVo implements Serializable {
 	private String fileName;
 	
 	private String status;
+	
+	private String individualId;
 
 	public String getName() {
 		return name;
@@ -47,6 +49,14 @@ public class DataCenterVo implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getIndividualId() {
+		return individualId;
+	}
+
+	public void setIndividualId(String individualId) {
+		this.individualId = individualId;
 	}
 	
 }

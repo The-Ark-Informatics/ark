@@ -546,6 +546,37 @@ public class SparkRestController {
 		}
 		return jobId;
 	}
-
+	
+	@RequestMapping(value = "/queryResult", method = RequestMethod.POST)
+	public @ResponseBody String queryResult(@RequestBody DataCenterVo dataCenter) {
+		String result = "ABC"; 
+		try {
+			
+			System.out.println("--------Query Result Execution-----------"+dataCenter.getIndividualId());
+			
+			result=sshService.queryResult(dataCenter);
+						
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("-------------Result----------------"+ result);
+		return result;
+	}
+	
+	@RequestMapping(value = "/queryOutput", method = RequestMethod.POST)
+	public @ResponseBody String queryOutput(@RequestBody DataCenterVo dataCenter) {
+		String result = "ABC"; 
+		try {
+			
+			System.out.println("--------Query Result Execution-----------"+dataCenter.getIndividualId());
+			
+			result=sshService.getQueryResults(dataCenter);
+						
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("-------------Result----------------"+ result);
+		return result;
+	}
 
 }

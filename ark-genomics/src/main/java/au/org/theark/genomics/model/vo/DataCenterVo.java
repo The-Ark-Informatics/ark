@@ -23,6 +23,10 @@ public class DataCenterVo implements Serializable {
 	
 	private String status;
 	
+	private String individualId;
+	
+	private String outputType;
+	
 	private List<DataSourceVo> dataSourceList;	
 
 	public DataCenterVo() {
@@ -77,4 +81,20 @@ public class DataCenterVo implements Serializable {
 		this.status = status;
 	}
 
+	public String getIndividualId() {
+		return individualId;
+	}
+
+	public void setIndividualId(String individualId) {
+		this.individualId = individualId;
+	}
+
+	public String getOutputType() {
+		return outputType;
+	}
+
+	public void setOutputType(String outputType) {
+		this.outputType = outputType;
+	}
+	
 }

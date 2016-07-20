@@ -20,9 +20,9 @@ public interface SshService {
 	
 	public void processPlinkDataSource(DataCenterVo dataSource) throws Exception;
 	
-	public void uploadProgram(String destinationDir, String name);
+	public void onlinePlinkDataSource(DataCenterVo dataCenter) throws Exception;
 	
-//	public String compileProgram(String name);
+	public void uploadProgram(String destinationDir, String name);
 	
 	public String compileProgram(ComputationVo computationVo);
 	
@@ -35,5 +35,9 @@ public interface SshService {
 	public void uploadJobScript(AnalysisJobVo job, String srcPath);
 	
 	public String getJobStatus(String jobId);
+	
+	public String queryResult(DataCenterVo dataCenterVo);
+	
+	public String getQueryResults(DataCenterVo dataCenterVo);
 	
 }

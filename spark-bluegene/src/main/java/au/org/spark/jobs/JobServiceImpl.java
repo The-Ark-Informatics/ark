@@ -57,9 +57,12 @@ public class JobServiceImpl implements JobService {
 
 	@Async
 	public Future<Report> uploadPlinkDataSource(DataCenterVo dataCenter) throws Exception {
-		cassandraService.createPlinkDataCenterTables(dataCenter);
-		sshService.processPlinkDataSource(dataCenter);
+		//TODO need to remove these lines after the new implementation 
+//		cassandraService.createPlinkDataCenterTables(dataCenter);
+//		sshService.processPlinkDataSource(dataCenter);
 
+		sshService.onlinePlinkDataSource(dataCenter);
+		
 		Report report = new Report();
 		report.setName("New Report");
 		report.setDescription("New Report Description");
