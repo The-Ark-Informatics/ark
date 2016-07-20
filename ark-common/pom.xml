@@ -437,7 +437,7 @@
 		<wicket.version>1.5.11</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
 		<shiro.version>1.2.3</shiro.version>
-		<hibernate.version>4.1.2.Final</hibernate.version>
+		<hibernate.version>4.2.21.Final</hibernate.version>
 	</properties>
 	<repositories>
 		<!--

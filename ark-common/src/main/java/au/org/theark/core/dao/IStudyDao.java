@@ -765,4 +765,10 @@ public interface IStudyDao {
 	public ConfigField getConfigFieldByName(String configName);
 	
 	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
+	
+	public List<Search> getSearchesForSearch(Search search);
+	
+	public List<StudyComp> getStudyComponentsNeverUsedInThisSubject(Study study,LinkSubjectStudy linkSubjectStudy);
+	
+	public List<StudyComp> getDifferentStudyComponentsInConsentForSubject(Study study,LinkSubjectStudy linkSubjectStudy);
 }

@@ -54,6 +54,9 @@ public class NumberValidatable implements IValidatable<String> {
 				break;
 			case FAX_NUMBER:
 				this.validatable.error(validationError.addMessageKey(Constants.ERROR_WORK_RESEARCHER_FAX_FORMAT));
+				break;
+			case QUANTITY_PER_UNIT:
+				this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_QUANTITY_PER_UNIT));
 				break;	
 		}
 	}

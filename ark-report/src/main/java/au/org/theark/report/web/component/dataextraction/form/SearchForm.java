@@ -81,6 +81,8 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		//Add the study for model object not sure why ignores.................
+		getModelObject().getSearch().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
 	}
 
@@ -176,16 +178,14 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 		target.add(feedbackPanel);
 	//	try {
 
-			List<Search> resultList = iArkCommonService.getSearchesForThisStudy(getModelObject().getSearch().getStudy());
-
+			//List<Search> resultList = iArkCommonService.getSearchesForThisStudy(getModelObject().getSearch().getStudy());
+		List<Search> resultList = iArkCommonService.getSearchesForSearch(getModelObject().getSearch());
 			if (resultList != null && resultList.size() == 0) {
 				this.info("Searches with the specified criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
-
 			getModelObject().setListOfSearchesForResultList(resultList);
 			listView.removeAll();
-
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	//	}

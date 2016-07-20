@@ -74,9 +74,11 @@ import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.button.EditModeButtonsPanel;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
@@ -115,48 +117,45 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private DropDownChoice<BioSampletype>					sampleTypeDdc;
 	private DropDownChoice<BioCollection>					bioCollectionDdc;
 
-	private DateTextField										sampleDateTxtFld;
-	private TimeField												sampleTimeTxtFld;
-	private DateTextField										processedDateTxtFld;
-	private TimeField												processedTimeTxtFld;
-
-	private TextArea<String>									commentsTxtAreaFld;
-
-	private CheckBox												barcodedChkBox;
-	private NonCachingImage										barcodeImage;
+	private DateTextField									sampleDateTxtFld;
+	private TimeField										sampleTimeTxtFld;
+	private DateTextField									processedDateTxtFld;
+	private TimeField										processedTimeTxtFld;
+	private TextArea<String>								commentsTxtAreaFld;
+	private CheckBox										barcodedChkBox;
+	private NonCachingImage									barcodeImage;
 
 	private DropDownChoice<BiospecimenGrade>				gradeDdc;
-	private DropDownChoice<BiospecimenStorage>			storedInDdc;
-	private DropDownChoice<BiospecimenAnticoagulant>	anticoagDdc;
+	private DropDownChoice<BiospecimenStorage>				storedInDdc;
+	private DropDownChoice<BiospecimenAnticoagulant>		anticoagDdc;
 	private DropDownChoice<BiospecimenStatus>				statusDdc;
-	private DropDownChoice<BiospecimenQuality>			qualityDdc;
-	private DropDownChoice<BiospecimenProtocol>			biospecimenProtocol;
-	private TextField<Number>									purity;
-
-	private Label													parentQuantityLbl;
-	private Label													parentQuantityMaxLbl;
-	private Label													quantityLbl;
-	private Label													quantityNoteLbl;
-	private TextField<Double>									quantityTxtFld;
-	private TextField<Double>									parentQuantityTxtFld;
-	private TextField<Double>									bioTransactionQuantityTxtFld;
-	private DropDownChoice<Unit>								unitDdc;
+	private DropDownChoice<BiospecimenQuality>				qualityDdc;
+	private DropDownChoice<BiospecimenProtocol>				biospecimenProtocol;
+	private TextField<Number>								purity;
+	private Label											parentQuantityLbl;
+	private Label											parentQuantityMaxLbl;
+	private Label											quantityLbl;
+	private Label											quantityNoteLbl;
+	private TextField<Double>								quantityTxtFld;
+	private TextField<Double>								parentQuantityTxtFld;
+	private TextField<Double>								bioTransactionQuantityTxtFld;
+	private DropDownChoice<Unit>							unitDdc;
 	private DropDownChoice<TreatmentType>					treatmentTypeDdc;
-
-	private TextField<Number>									concentrationTxtFld;
-	private Label													amountLbl;
-
-	private Panel													biospecimenLocationPanel;
-	private WebMarkupContainer									bioTransactionDetailWmc;
-	private Panel													bioTransactionListPanel;
-
-	private Panel													biospecimenCFDataEntryPanel;
-
+	private TextField<Number>								concentrationTxtFld;
+	private Label											amountLbl;
+	private Panel											biospecimenLocationPanel;
+	private WebMarkupContainer								bioTransactionDetailWmc;
+	private Panel											bioTransactionListPanel;
+	private Panel											biospecimenCFDataEntryPanel;
 	private BiospecimenButtonsPanel							biospecimenbuttonsPanel;
-	private ModalWindow											modalWindow;
-
-	private AjaxLink<Date>										useCollectionDate;
-
+	private ModalWindow										modalWindow;
+	private AjaxLink<Date>									useCollectionDate;
+	private ModalWindow										confirmModal;
+	private ConfirmationAnswer 								answer;
+	private String 								    		modalText ="<p><font color=\"blue\">Deleting this biospecimen will also delete number biospecimen linked as transaction(s).</font></p>"
+															+ "<p></p>"
+															+ "<p><font color=\"red\">[Txid(s)(txs).]</font></p>";
+	private BiospecimenModalDetailForm 						me;
 	/**
 	 * Constructor
 	 * 
@@ -168,9 +167,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 */
 	public BiospecimenModalDetailForm(String id, FeedbackPanel feedBackPanel, final ArkCrudContainerVO arkCrudContainerVo, final ModalWindow modalWindow, final CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
+		me=this;
 		this.modalWindow = modalWindow;
 		refreshEntityFromBackend();
-
 		bioTransactionDetailWmc = new WebMarkupContainer("bioTransactionDetailWmc");
 		bioTransactionDetailWmc.setOutputMarkupPlaceholderTag(true);
 		bioTransactionDetailWmc.setEnabled(cpModel.getObject().getBiospecimen().getId() == null);
@@ -196,17 +195,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 */
 	private void enableQuantityTreatment(AjaxRequestTarget target) {
 		setQuantityLabel();
-		
 		if(cpModel.getObject().getParentBiospecimen().getQuantity() != null && cpModel.getObject().getParentBiospecimen().getUnit() != null) {
 			String parentQuantityMax = cpModel.getObject().getParentBiospecimen().getQuantity() + cpModel.getObject().getParentBiospecimen().getUnit().getName();
 			parentQuantityMaxLbl = new Label("parentBiospecimen.quantity.max", "(" + parentQuantityMax + ")");
 			bioTransactionDetailWmc.addOrReplace(parentQuantityMaxLbl);
 		}
-
 		parentQuantityTxtFld.setVisible(cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING));
 		treatmentTypeDdc.setEnabled(true);
 		bioTransactionDetailWmc.setEnabled(true);
-
 		target.add(parentQuantityTxtFld);
 		target.add(treatmentTypeDdc);
 		target.add(bioTransactionDetailWmc);
@@ -215,13 +211,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	protected void refreshEntityFromBackend() {
 		// Get the Biospecimen entity fresh from backend
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-
 		if (biospecimen.getId() != null) {
 			try {
 				final Biospecimen biospecimenFromDB = iLimsService.getBiospecimen(biospecimen.getId());
 				biospecimenFromDB.setQuantity(iLimsService.getQuantityAvailable(biospecimenFromDB));
 				cpModel.getObject().setBiospecimen(biospecimenFromDB);
-
 				// Get/set location details
 				cpModel.getObject().setBiospecimenLocationVO(iInventoryService.getBiospecimenLocation(biospecimenFromDB));
 				cpModel.getObject().setStudy(biospecimenFromDB.getStudy());
@@ -553,6 +547,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		initialiseBioTransactionListPanel();
 		initialiseBiospecimenLocationPanel();
 		initialiseBiospecimenButtonsPanel();
+		initDeleteModelWindow();
 
 		attachValidators();
 		addComponents();
@@ -699,6 +694,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioTransactionQuantityTxtFld.add(minQuantityValidator);
 		unitDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.unit.required", this, new Model<String>("Name")));
 		treatmentTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.treatmentType.required", this, new Model<String>("Name")));
+		this.add(new DateFromToValidator(sampleDateTxtFld,processedDateTxtFld,"Sample Date","Process Date"));
 	}
 
 	private void addComponents() {
@@ -745,7 +741,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenCFDataEntryPanel);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionListPanel);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenLocationPanel);
-
+		buttonsPanelWMC.add(confirmModal);
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
@@ -948,10 +944,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
-		iLimsService.deleteBiospecimen(cpModel.getObject());
-		this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
-
-		onClose(target);
+		confirmModal.show(target);
+		//onClose(target);
 	}
 
 	@Override
@@ -1125,30 +1119,25 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				// Reset the biospecimen detail
 				cpModel.getObject().setBiospecimen(biospecimen);
 				cpModel.getObject().setBiospecimenProcessing(processOrAliquot);
-
 				// Set the bioTransaction detail
 				org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 				cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 				cpModel.getObject().getBioTransaction().setQuantity(null);
 				cpModel.getObject().getBioTransaction().setUnit(biospecimen.getUnit());  //TODO: unit
-
 				enableQuantityTreatment(target);
 				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
 				bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
 				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
 				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
-				
 				// refresh the bioTransaction panel
 				initialiseBioTransactionListPanel();
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
-
 				// refresh the location panel
 				cpModel.getObject().setBiospecimenLocationVO(new BiospecimenLocationVO());
 				initialiseBiospecimenLocationPanel();
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
 				target.add(biospecimenLocationPanel);
-
 				// Notify in progress
 				this.info(processOrAliquot + " biospecimen " + cpModel.getObject().getBiospecimen().getParentUid() + ", please save to confirm");
 				target.add(feedbackPanel);
@@ -1169,6 +1158,36 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		}
 		catch (NoSuchMethodException e) {
 			log.error(e.getMessage());
+		}
+	}
+	private void initDeleteModelWindow(){
+		answer = new ConfirmationAnswer(false);
+		confirmModal =  new ModalWindow("modal");
+		confirmModal.setCookieName("yesNoPanel");
+		if(!isNew()){
+			List<BioTransaction> bioTransactions=iLimsService.getAllBiotransactionForBiospecimen(cpModel.getObject().getBiospecimen());
+			StringBuffer bioTxID=new StringBuffer();
+			for (BioTransaction bioTransaction : bioTransactions) {
+				bioTxID.append(bioTransaction.getId()).append(",");
+			}
+			bioTxID.deleteCharAt(bioTxID.length()-1);
+			String modelTextReplce1=modalText.replaceAll("number", Integer.toString(bioTransactions.size()));
+			String modeltextReplace2=modelTextReplce1.replaceAll("txs", bioTxID.toString());
+			confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modeltextReplace2,confirmModal, answer));
+			confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+				private static final long serialVersionUID = 1L;
+				public void onClose(AjaxRequestTarget target) {
+		            if (answer.isAnswer()) {
+		           	 	iLimsService.deleteBiospecimen(cpModel.getObject());
+		           		getSession().getFeedbackMessages().info(me, "Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
+		               } else {
+		               		EditModeButtonsPanel editModeButtonsPanel=((EditModeButtonsPanel)buttonsPanelWMC.get("buttonsPanel"));
+		               		editModeButtonsPanel.setDeleteButtonEnabled(true);
+		               		target.add(editModeButtonsPanel);
+		              }
+		        target.add(feedbackPanel);
+		     }
+		     });
 		}
 	}
 

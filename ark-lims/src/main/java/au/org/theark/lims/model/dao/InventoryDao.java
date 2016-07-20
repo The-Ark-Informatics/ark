@@ -380,7 +380,9 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	public List<InvRack> searchInvRack(InvRack invRack, List<Study> studyListForUser) throws ArkSystemException {
 		StringBuilder hqlString = new StringBuilder();
 		hqlString.append("FROM InvRack AS rack \n");
-		hqlString.append("WHERE invFreezer.id IN (SELECT id FROM InvFreezer AS freezer \n");
+		//Added new condition to not showing the fully occupied racks to change the box.
+		//hqlString.append("WHERE invFreezer.id IN (SELECT id FROM InvFreezer AS freezer \n");
+		hqlString.append("WHERE rack.available <> 0 AND invFreezer.id IN (SELECT id FROM InvFreezer AS freezer \n");
 		hqlString.append("								WHERE freezer.invSite.id IN (SELECT invSite.id FROM StudyInvSite \n");
 		hqlString.append("																		WHERE study IN (:studies)))");
 

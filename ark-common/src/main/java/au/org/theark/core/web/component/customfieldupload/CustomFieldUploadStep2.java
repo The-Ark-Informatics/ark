@@ -124,47 +124,34 @@ public class CustomFieldUploadStep2 extends AbstractWizardStepPanel {
 					throw new FileFormatException();
 				}
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				
-				
 				// Field upload
 				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_FIELD)){
 					CustomFieldImportValidator fieldvalidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
 					validationMessages = fieldvalidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
-					
 				}
 				//Categoty upload
 				else if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_CATEGORY)){
 					CustomFieldCategoryImportValidator categoryValidator = new CustomFieldCategoryImportValidator(iArkCommonService, containerForm.getModelObject());
 					validationMessages = categoryValidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
-					
 				}
 					inputStream.close();
 					inputStream = null;
-	
 				containerForm.getModelObject().setValidationMessages(validationMessages);
 				validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-
 				if (validationMessage != null && validationMessage.length() > 0) {
 					form.getNextButton().setEnabled(false);
 					target.add(form.getWizardButtonContainer());
 					downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
-
-						/**
-						 * 
-						 */
 						private static final long	serialVersionUID	= 1L;
-
 						@Override
 						protected void onError(AjaxRequestTarget target, Form<?> form) {
 							this.error("Unexpected Error: Download request could not be processed");
 						}
-
 					};
 					addOrReplace(downloadValMsgButton);
 					target.add(downloadValMsgButton);
 				}
-
 				// Show file data
 				FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
 				inputStream = new BufferedInputStream(new FileInputStream(temp));

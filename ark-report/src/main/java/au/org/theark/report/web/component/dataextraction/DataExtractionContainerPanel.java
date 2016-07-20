@@ -83,14 +83,14 @@ public class DataExtractionContainerPanel extends AbstractContainerPanel<SearchV
 				Long studySessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				if (isActionPermitted() && studySessionId != null) {
 					Study studyInContext = iArkCommonService.getStudy(studySessionId);
-					containerForm.getModelObject().setListOfSearchesForResultList(iArkCommonService.getSearchesForThisStudy(studyInContext));
+					cpModel.getObject().getSearch().setStudy(studyInContext);
+					//containerForm.getModelObject().setListOfSearchesForResultList(iArkCommonService.getSearchesForThisStudy(studyInContext));
+					containerForm.getModelObject().setListOfSearchesForResultList(iArkCommonService.getSearchesForSearch(cpModel.getObject().getSearch()));
 				}
-			
-				pageableListView.removeAll();
+				//pageableListView.removeAll();
 				return containerForm.getModelObject().getListOfSearchesForResultList(); //.getStudyCompList();
 			}
 		};
-
 		pageableListView = searchResultPanel.buildPageableListView(iModel);
 		pageableListView.setReuseItems(true);
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);

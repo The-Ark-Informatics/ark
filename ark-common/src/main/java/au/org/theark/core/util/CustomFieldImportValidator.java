@@ -130,6 +130,53 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 		this.delimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
 
 	}
+	public HashSet<Integer> getInsertRows() {
+		return insertRows;
+	}
+
+	public void setInsertRows(HashSet<Integer> insertRows) {
+		this.insertRows = insertRows;
+	}
+
+	public HashSet<Integer> getUpdateRows() {
+		return updateRows;
+	}
+
+	public void setUpdateRows(HashSet<Integer> updateRows) {
+		this.updateRows = updateRows;
+	}
+
+	public HashSet<ArkGridCell> getInsertCells() {
+		return insertCells;
+	}
+
+	public void setInsertCells(HashSet<ArkGridCell> insertCells) {
+		this.insertCells = insertCells;
+	}
+
+	public HashSet<ArkGridCell> getUpdateCells() {
+		return updateCells;
+	}
+
+	public void setUpdateCells(HashSet<ArkGridCell> updateCells) {
+		this.updateCells = updateCells;
+	}
+
+	public HashSet<ArkGridCell> getErrorCells() {
+		return errorCells;
+	}
+
+	public void setErrorCells(HashSet<ArkGridCell> errorCells) {
+		this.errorCells = errorCells;
+	}
+
+	public HashSet<ArkGridCell> getWarningCells() {
+		return warningCells;
+	}
+
+	public void setWarningCells(HashSet<ArkGridCell> warningCells) {
+		this.warningCells = warningCells;
+	}
 
 	public boolean isQualityControl() {
 		return qualityControl;
@@ -348,22 +395,19 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 	private java.util.Collection<String> validateDataDictionaryFileData(InputStream fileInputStream, long inLength) throws FileFormatException, CustomFieldSystemException {
 		curPos = 0;
 		int rowIdx = 1;
-
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
-
 		/*
 		 * Field table requires: ID, STUDY_ID, FIELD_TYPE_ID, NAME, DESCRIPTION, UNITS, MIN_VALUE, MAX_VALUE, ENCODED_VALUES, MISSING_VALUE
 		 */
 		CustomField field = new CustomField();
 		field.setStudy(study);
-		
-		//these fields must be available for phenocollection...therefore we are to save / update / get by that ark function...ideally this should be by ark module
-		if(arkFunction.getName().equals(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY) || arkFunction.getName().equals(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)){
-			arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+		if(Constants.ARK_MODULE_STUDY.equalsIgnoreCase(arkModule.getName())){
+			arkFunction=iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+		}else if(Constants.ARK_MODULE_LIMS.equalsIgnoreCase(arkModule.getName())){
+			arkFunction=iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 		}
-
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimChr);
@@ -372,8 +416,6 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 			if (srcLength <= 0) {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
-//			timer = new StopWatch();
-//			timer.start();
 			csvReader.readHeaders();
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			log.debug("Header length: " + csvReader.getHeaders().toString().length());
@@ -382,12 +424,9 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
-
 				ArkGridCell gridCell = null;
-
 				// First column should be Field Name
 				fieldName = csvReader.get("FIELD_NAME");
-
 				// Only check rows with a valid fieldName
 				if (!fieldName.isEmpty()) {
 					int cols = stringLineArray.length;
@@ -396,9 +435,7 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 					field.setName(fieldName);
 					field.setDescription(csvReader.get("DESCRIPTION"));
 					field.setFieldLabel(csvReader.get("QUESTION"));
-
 					//Remove the Units validation for the unit types.
-					
 					if(!Constants.ARK_MODULE_STUDY.equalsIgnoreCase(arkModule.getName())){
 							if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
 									UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
@@ -420,19 +457,14 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 						field.setUnitTypeInText(csvReader.get("UNITS"));
 					}
 					//Add the custom field type and the relevant caregory on 2015-08-21
-					
 					if(csvReader.get("CUSTOM_FIELD_TYPE")!=null && !csvReader.get("CUSTOM_FIELD_TYPE").isEmpty()){
-						
 						CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(csvReader.get("CUSTOM_FIELD_TYPE"));
 						field.setCustomFieldType(customFieldType);
 					}
 					if(csvReader.get("CUSTOM_FIELD_CATEGORY")!=null && !csvReader.get("CUSTOM_FIELD_CATEGORY").isEmpty()){
-						
 						CustomFieldCategory customFieldCategory=iArkCommonService.getCustomFieldCategotyByName(csvReader.get("CUSTOM_FIELD_CATEGORY"));
 						field.setCustomFieldCategory(customFieldCategory);
 					}
-					
-		
 					FieldType studyFieldType = new FieldType();
 					try {
 						studyFieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
@@ -441,9 +473,7 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 					catch (EntityNotFoundException e){
 						// Field Type not found, handled in error messaging below....
 					}
-
 					String encodedValues = csvReader.get("ENCODED_VALUES");
-
 					field.setEncodedValues(encodedValues);
 					/* removed the below logic whie this is moved to customfieldgroup
 					if(encodedValues!=null && !encodedValues.isEmpty()){
@@ -479,13 +509,41 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 								stringBuffer.append(" already has data associated with it and thus no changes can be made to this field.");
 								dataValidationMessages.add(stringBuffer.toString());
 								errorCells.add(gridCell);
-							}
-							else {
+							}else {
 								updateRows.add(rowIdx);
 								for (int colIdx = 0; colIdx < cols; colIdx++) {
 									updateCells.add(new ArkGridCell(colIdx, rowIdx));
 								}
 							}
+						}
+					}
+					//Added following validation methods for name,description,labelTxt and UnitTypeText
+					//Name
+					if (fieldName != null && !fieldName.isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("FIELD_NAME"), rowIdx);
+						if (!CustomFieldImportValidator.validateFieldName(fieldName, dataValidationMessages)) {
+							errorCells.add(gridCell);
+						}
+					}
+					//Description
+					if (csvReader.get("DESCRIPTION") != null && !csvReader.get("DESCRIPTION").isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("DESCRIPTION"), rowIdx);
+						if (!CustomFieldImportValidator.validateFieldDescription(fieldName, csvReader.get("DESCRIPTION"), dataValidationMessages)){
+							errorCells.add(gridCell);
+						}
+					}
+					//Question label
+					if(csvReader.get("QUESTION") != null && !csvReader.get("QUESTION").isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("QUESTION"), rowIdx);
+						if (!CustomFieldImportValidator.validateQuestionLabel(fieldName, csvReader.get("QUESTION"), dataValidationMessages)){
+							errorCells.add(gridCell);
+						}
+					}
+					//UniteTypeText
+					if(csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("UNITS"), rowIdx);
+						if (!CustomFieldImportValidator.validateUnitTypeTxt(fieldName, csvReader.get("UNITS"), dataValidationMessages)){
+							errorCells.add(gridCell);
 						}
 					}
 					//Validate Custom field type.
@@ -505,16 +563,12 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 							errorCells.add(gridCell);
 						}
 					}
-					
-					
-
 					if (csvReader.get("FIELD_TYPE") != null) {
 						gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), rowIdx);
 						if (!CustomFieldImportValidator.validateFieldType(this.fieldName, csvReader.get("FIELD_TYPE"), dataValidationMessages)) {
 							errorCells.add(gridCell);
 						}
 					}
-
 					boolean validForMultiSelect = false;
 					String allowMultiple = (csvReader.get("ALLOW_MULTIPLE_SELECTIONS"));
 					if (field.getEncodedValues() != null && !field.getEncodedValues().isEmpty()) {
@@ -536,13 +590,11 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 								errorCells.add(gridCell);
 							}
 						}
-						
 					} else if (!allowMultiple.isEmpty()) {
 						gridCell = new ArkGridCell(csvReader.getIndex("ALLOW_MULTIPLE_SELECTIONS"), rowIdx);
 						dataValidationMessages.add(CustomFieldValidationMessage.nonConformingAllowMultipleSelect(field.getName()));
 						errorCells.add(gridCell);
 					}
-
 					if (field.getMinValue() != null && !field.getMinValue().isEmpty()) {
 						gridCell = new ArkGridCell(csvReader.getIndex("MINIMUM_VALUE"), rowIdx);
 						// Validate the field definition
@@ -550,7 +602,6 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 							errorCells.add(gridCell);
 						}
 					}
-
 					if (field.getMaxValue() != null && !field.getMaxValue().isEmpty()) {
 						gridCell = new ArkGridCell(csvReader.getIndex("MAXIMUM_VALUE"), rowIdx);
 						// Validate the field definition
@@ -558,7 +609,6 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 							errorCells.add(gridCell);
 						}
 					}
-
 					if (field.getMissingValue() != null && !field.getMissingValue().isEmpty()) {
 						gridCell = new ArkGridCell(csvReader.getIndex("MISSING_VALUE"), rowIdx);
 						// Validate the field definition
@@ -566,7 +616,6 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 							errorCells.add(gridCell);
 						}
 					}
-					
 					// Required column only relevant to specific custom field data (eg subject custom field)
 					if(csvReader.getIndex("REQUIRED") > 0) {
 						if(!DataConversionAndManipulationHelper.isSomethingLikeABoolean(csvReader.get("REQUIRED"))){
@@ -575,7 +624,6 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 							errorCells.add(gridCell);
 						}
 					}
-					
 					fieldCount++;
 					rowIdx++;
 				}
@@ -762,9 +810,10 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 	 * @param delimChar
 	 *           is the delimiter character of the file (eg COMMA, TAB, PIPE etc)
 	 * @return a collection of validation messages
+	 * @throws ArkBaseException 
 	 */
 	@Override
-	public Collection<String> validateDataDictionaryFileData(InputStream inputStream, String fileFormat, char delimChar) {
+	public Collection<String> validateDataDictionaryFileData(InputStream inputStream, String fileFormat, char delimChar) throws ArkBaseException {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -789,9 +838,11 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 		}
 		catch (FileFormatException ffe) {
 			log.error("FILE_FORMAT_EXCPEPTION: " + ffe);
+			throw new FileFormatException("Problem during validating the data dictionary file data.");
 		}
 		catch (ArkBaseException abe) {
 			log.error("ARK_BASE_EXCEPTION: " + abe);
+			throw new ArkBaseException("Problem during validating the data dictionary file data.");
 		}
 		return validationMessages;
 	}
@@ -1003,63 +1054,75 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 
 		return progress;
 	}
-
 	/**
-	public double getSpeed() {
-		double speed = -1;
-
-		if (srcLength > 0)
-			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
-
-		return speed;
+	 * 
+	 * @param fieldName
+	 * @param errorMessages
+	 * @return
+	 */
+	private static boolean validateFieldName(String fieldName, Collection<String> errorMessages) {
+		boolean isValid = false;
+		if (fieldName.length() > Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50 ) {
+			errorMessages.add(CustomFieldValidationMessage.invalidFieldName(fieldName));
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+		return isValid;
 	}
-*/
-
-	public HashSet<Integer> getInsertRows() {
-		return insertRows;
+	/**
+	 * 
+	 * @param fieldName
+	 * @param fieldDescription
+	 * @param errorMessages
+	 * @return
+	 */
+	private static boolean validateFieldDescription(String fieldName,String fieldDescription, Collection<String> errorMessages) {
+		boolean isValid = false;
+		if (fieldDescription.length() > Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255) {
+			errorMessages.add(CustomFieldValidationMessage.invalidFieldDescription(fieldDescription, fieldName));
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+		return isValid;
 	}
-
-	public void setInsertRows(HashSet<Integer> insertRows) {
-		this.insertRows = insertRows;
+	/**
+	 * 
+	 * @param fieldName
+	 * @param questionLabel
+	 * @param errorMessages
+	 * @return
+	 */
+	private static boolean validateQuestionLabel(String fieldName,String questionLabel, Collection<String> errorMessages) {
+		boolean isValid = false;
+		if (questionLabel.length() > Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255) {
+			errorMessages.add(CustomFieldValidationMessage.invalidFieldQuestionLabel(questionLabel, fieldName));
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+		return isValid;
 	}
-
-	public HashSet<Integer> getUpdateRows() {
-		return updateRows;
-	}
-
-	public void setUpdateRows(HashSet<Integer> updateRows) {
-		this.updateRows = updateRows;
-	}
-
-	public HashSet<ArkGridCell> getInsertCells() {
-		return insertCells;
-	}
-
-	public void setInsertCells(HashSet<ArkGridCell> insertCells) {
-		this.insertCells = insertCells;
-	}
-
-	public HashSet<ArkGridCell> getUpdateCells() {
-		return updateCells;
-	}
-
-	public void setUpdateCells(HashSet<ArkGridCell> updateCells) {
-		this.updateCells = updateCells;
-	}
-
-	public HashSet<ArkGridCell> getErrorCells() {
-		return errorCells;
-	}
-
-	public void setErrorCells(HashSet<ArkGridCell> errorCells) {
-		this.errorCells = errorCells;
-	}
-
-	public HashSet<ArkGridCell> getWarningCells() {
-		return warningCells;
-	}
-
-	public void setWarningCells(HashSet<ArkGridCell> warningCells) {
-		this.warningCells = warningCells;
+	/**
+	 * 
+	 * @param fieldName
+	 * @param unitType
+	 * @param errorMessages
+	 * @return
+	 */
+	private static boolean validateUnitTypeTxt(String fieldName,String unitType, Collection<String> errorMessages) {
+		boolean isValid = false;
+		if (unitType.length() > Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50) {
+			errorMessages.add(CustomFieldValidationMessage.invalidFieldUnitTypeTxt(unitType, fieldName));
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+		return isValid;
 	}
 }

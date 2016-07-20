@@ -464,6 +464,6 @@ public interface IStudyService {
 	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar);
 	
 	public List<RelationshipVo> getSubjectChildren(String subjectUID, long studyId);
-
 	public void delete(OtherID otherID);
+	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp);
 }
