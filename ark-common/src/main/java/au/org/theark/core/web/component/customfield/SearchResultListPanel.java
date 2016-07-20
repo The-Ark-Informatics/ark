@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -163,13 +164,14 @@ public class SearchResultListPanel extends Panel {
 				newModel.getObject().setUseCustomFieldDisplay(cpModel.getObject().isUseCustomFieldDisplay());
 
 				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
-						//unitTypeDropDownOn,subjectCustomField);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-
+				//Added on 2016-05-26 to stop showing the previous feed back message when deleting or updating in the form.
+				//This will clear the feedback message.
+				Session.get().cleanupFeedbackMessages();
+				target.add(feedbackPanel);
 			}
 		};
-
 		// Add the label for the link
 		CustomField field = item.getModelObject();
 		Label nameLinkLabel = new Label("nameLbl", field.getName());

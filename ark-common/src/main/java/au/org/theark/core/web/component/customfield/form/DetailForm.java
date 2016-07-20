@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -48,6 +49,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.exception.ArkNotAllowedToUpdateException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -156,16 +158,13 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 */
-	public DetailForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO
-			//boolean unitTypeDropDownOn, boolean subjectCustomField) {
-		){	
+	public DetailForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO){	
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		// Initialise the model to be empty for now
 		cfGroupDdcListModel = new ListModel<CustomFieldGroup>();
 		refreshEntityFromBackend();
 		//this.unitTypeDropDownOn=unitTypeDropDownOn;
 		//this.subjectCustomField = subjectCustomField;
-		
 		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
 	}
 
@@ -227,7 +226,16 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
 		List<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes(arkModule);
 		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(Constants.FIELDTYPE_NAME, Constants.FIELDTYPE_ID);
-		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE, customFieldTypeCollection, fieldTypeRenderer);
+		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE, customFieldTypeCollection, fieldTypeRenderer){
+			@Override
+			protected void onBeforeRender() {
+				if (!isNew()) {
+					// Disable customfieldType if data exists for the field
+					setEnabled(!cpModel.getObject().getCustomField().getCustomFieldHasData());
+				}
+				super.onBeforeRender();
+			}
+		};
 		customFieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long serialVersionUID = 1L;
 					@Override
@@ -563,11 +571,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			}
 			catch (ArkSystemException e) {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
-				e.printStackTrace();
 			}
 			catch (ArkUniqueException e) {
 				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
-				e.printStackTrace();
 			}
 			processErrors(target);
 		}
@@ -580,11 +586,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			}
 			catch (ArkSystemException e) {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
-				e.printStackTrace();
 			}
 			catch (ArkUniqueException e) {
 				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
-				e.printStackTrace();
+			} catch (ArkNotAllowedToUpdateException e) {
+				this.error(new StringResourceModel("error.nonUpdatedCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 			}
 			processErrors(target);
 		}
@@ -718,6 +724,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	private boolean isFieldTypeDate(){
 		FieldType fieldType = getModelObject().getCustomField().getFieldType();
 		return (fieldType != null && fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME));
+	}
+	private boolean hasCustomFieldGotData(){
+		return getModelObject().getCustomField().getCustomFieldHasData();
 	}
 
 }

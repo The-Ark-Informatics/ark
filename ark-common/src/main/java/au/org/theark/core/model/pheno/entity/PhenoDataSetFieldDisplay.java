@@ -29,7 +29,7 @@ import au.org.theark.core.model.Constants;
 @Entity
 @Table(name = "PHENO_DATASET_FIELD_DISPLAY", schema = Constants.PHENO_TABLE_SCHEMA)
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-public class PhenoDataSetFieldDisplay implements Serializable{
+public class PhenoDataSetFieldDisplay implements Serializable {
 	/**
 	 * 
 	 */
@@ -94,8 +94,8 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 			Long phenoDataSetCategoryOrderNumber) {
 		this.phenoDataSetCategoryOrderNumber = phenoDataSetCategoryOrderNumber;
 	}
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "PHENO_DATASET_FIELD_ID", nullable = true)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PHENO_DATASET_FIELD_ID", nullable = false)
 	public PhenoDataSetField getPhenoDataSetField() {
 		return phenoDataSetField;
 	}
@@ -160,7 +160,11 @@ public class PhenoDataSetFieldDisplay implements Serializable{
 	@ArkAuditDisplay
 	@Transient
 	public String getDescriptiveNameIncludingCFGName() {
-		return descriptiveNameIncludingCFGName;
+		StringBuilder displayExpression = new StringBuilder();
+		displayExpression.append(phenoDataSetGroup==null?"UNKNOWN":phenoDataSetGroup.getName());
+		displayExpression.append(" > ");
+		displayExpression.append(phenoDataSetField==null?"UNKNOWN":phenoDataSetField.getName());
+		return displayExpression.toString();
 	}
 	
 	public void setDescriptiveNameIncludingCFGName(

@@ -1,0 +1,33 @@
+language: java
+sudo: required
+install: /bin/true
+script: 
+        - mvn initialize
+        - mvn -e verify
+services:
+        - docker
+env:
+        DOCKER_COMPOSE_VERSION: 1.7.0
+before_install:
+        - sudo apt-get update
+        - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
+        - sudo rm /usr/local/bin/docker-compose
+        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
+
+before_script:
+        - "export DISPLAY=:99.0"
+        - "sh -e /etc/init.d/xvfb start"
+        - sleep 3
+
+addons:
+        hosts:
+                - mysql
+
+notifications:
+        email:
+                recipients:
+                        - gecgooden@gmail.com 
+                on_success: always
+                on_failure: always

@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.TextField;
@@ -52,6 +54,8 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
+	@SpringBean(name = Constants.ARK_PHENO_DATA_SERVICE)
+	private IPhenotypicService 				iPhenoService;
 	
 	private static final long				serialVersionUID	= 1L;
 	private ArkCrudContainerVO				arkCrudContainerVO;
@@ -77,6 +81,8 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		//Add the study for model object not sure why ignores.................
+		getModelObject().getSearch().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
 	}
 
@@ -136,10 +142,10 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 		ArkFunction arkFunctionBiospecimen = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN);
 		ArkFunction arkFunctionSubject = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 
-		Collection<CustomFieldDisplay> availablePhenoCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunctionPheno);
-		this.getModelObject().setAvailablePhenoCustomFieldDisplays(availablePhenoCustomFieldDisplays);
-		Collection<CustomFieldDisplay> selectedPhenoCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();//iArkCommonService.getSelectedPhenoCustomFieldDisplaysForSearch(search);//, true);
-		this.getModelObject().setSelectedPhenoCustomFieldDisplays(selectedPhenoCustomFieldDisplays);
+		Collection<PhenoDataSetFieldDisplay> availablePhenoDataSetFieldDisplays = iPhenoService.getPhenoFieldDisplaysIn(study, arkFunctionPheno);
+		this.getModelObject().setAvailablePhenoDataSetFieldDisplays(availablePhenoDataSetFieldDisplays);
+		Collection<PhenoDataSetFieldDisplay> selectedPhenoCustomFieldDisplays = new ArrayList<PhenoDataSetFieldDisplay>();//iArkCommonService.getSelectedPhenoCustomFieldDisplaysForSearch(search);//, true);
+		this.getModelObject().setSelectedPhenoDataSetFieldDisplays(selectedPhenoCustomFieldDisplays);
 
 
 		Collection<CustomFieldDisplay> availableSubjectCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunctionSubject);
@@ -172,16 +178,14 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 		target.add(feedbackPanel);
 	//	try {
 
-			List<Search> resultList = iArkCommonService.getSearchesForThisStudy(getModelObject().getSearch().getStudy());
-
+			//List<Search> resultList = iArkCommonService.getSearchesForThisStudy(getModelObject().getSearch().getStudy());
+		List<Search> resultList = iArkCommonService.getSearchesForSearch(getModelObject().getSearch());
 			if (resultList != null && resultList.size() == 0) {
 				this.info("Searches with the specified criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
-
 			getModelObject().setListOfSearchesForResultList(resultList);
 			listView.removeAll();
-
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	//	}

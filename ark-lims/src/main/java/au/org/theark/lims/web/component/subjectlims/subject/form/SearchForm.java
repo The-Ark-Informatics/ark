@@ -52,6 +52,8 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.button.ArkAjaxButton;
+import au.org.theark.core.web.component.button.EditModeButtonsPanel;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsSubjectService;
@@ -121,6 +123,12 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 			}
 
 		};
+		
+			EditModeButtonsPanel buttonPanel = (EditModeButtonsPanel)arkCrudContainerVO.getEditButtonContainer(); 
+			if(buttonPanel != null){
+				((ArkAjaxButton)buttonPanel.get("cancel")).setVisible(false);
+			}
+		
 		addOrReplace(newButton);
 	}
 

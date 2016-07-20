@@ -46,19 +46,23 @@
 							<tr>
 								<th width="2%">
 								</th>
-								<th width="48%">
+								<th width="32%">
 									Other ID Source
 								</th>
-								<th width="48%">
+								<th width="32%">
 									Other ID
+								</th>
+								<th width="32%">
+
 								</th>
 								<th width="2%">
 								</th>
 							</tr>
 							<tr wicket:id="linkSubjectStudy.person.otherIDs">
 								<td width="2%"></td>
-								<td width="48%"><input style="width:90%" wicket:id="otherid_source"></input></td>
-								<td width="48%"><input style="width:90%" wicket:id="otherid"></input></td> 
+								<td width="32%"><input style="width:90%" wicket:id="otherid_source"></input></td>
+								<td width="32%"><input style="width:90%" wicket:id="otherid"></input></td>
+								<td width="32%"><input style="width:90%" wicket:id="delete" type="button" wicket:message="value:page.delete"></td>
 								<td width="2%"></td>
 							</tr>
 							<tfoot>
@@ -66,7 +70,7 @@
 									<td width="2%">
 										&nbsp;
 									</td>
-									<td width="96%" colspan="2">
+									<td width="96%" colspan="3">
 										<input wicket:id="newOtherID" type="button" value="Add New"/>
 									</td>
 									<td width="2%">

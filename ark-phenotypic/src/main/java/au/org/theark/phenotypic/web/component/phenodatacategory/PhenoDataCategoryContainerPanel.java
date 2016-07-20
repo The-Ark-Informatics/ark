@@ -142,7 +142,7 @@ public class PhenoDataCategoryContainerPanel extends AbstractContainerPanel<Phen
 		phenoDataSetCategoryProvider = new ArkDataProvider2<PhenoDataSetCategory, PhenoDataSetCategory>() {
 			private static final long	serialVersionUID	= 1L;
 			public int size() {
-					return (int)iPhenotypicService.getPhenoDatasetCategoryCount(criteriaModel.getObject());//todo safe int conversion
+					return (int)iPhenotypicService.getPhenoDataSetCategoryCount(criteriaModel.getObject());//todo safe int conversion
 			}
 			public Iterator<PhenoDataSetCategory> iterator(int first, int count) {
 				List<PhenoDataSetCategory> listCustomFieldCategories = new ArrayList<PhenoDataSetCategory>();

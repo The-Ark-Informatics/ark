@@ -322,7 +322,7 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The category ");
 		stringBuffer.append(categoryName);
-		stringBuffer.append(" has an invalid parent Category for the column ");
+		stringBuffer.append(" has an invalid parent category or you entered custom field Type not valid for the column ");
 		stringBuffer.append(columnName);
 		return (stringBuffer.toString());
 	}
@@ -335,6 +335,42 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append(columnName);
 		return (stringBuffer.toString());
 	}
+	public static String invalidFieldName(String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field name ");
+		stringBuffer.append(columnName);
+		stringBuffer.append(" has exceed the maximum charactor length 50.");
+		return (stringBuffer.toString());
+	}
+	public static String invalidFieldDescription(String fieldDescription,String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field description ");
+		stringBuffer.append(fieldDescription);
+		stringBuffer.append(" has exceed the maximum charactor length 255 for the column.");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidFieldQuestionLabel(String questionLabel,String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field question label ");
+		stringBuffer.append(questionLabel);
+		stringBuffer.append(" has exceed the maximum charactor length 255 for the column.");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidFieldUnitTypeTxt(String fieldUnitTypeTxt,String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field unitTypeTxt ");
+		stringBuffer.append(fieldUnitTypeTxt);
+		stringBuffer.append(" has exceed the maximum charactor length 50 for the column.");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	
 	
 
 }

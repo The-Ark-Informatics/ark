@@ -158,13 +158,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		add(fieldNameTxtFld);
 		add(fieldTypeDdc);
 		add(fieldDescriptionTxtAreaFld);
-		if (arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY)) {
-			panelCustomUnitTypeDropDown.setVisible(true);
-			panelCustomUnitTypeText.setVisible(false);
-		} else {
-			panelCustomUnitTypeDropDown.setVisible(false);
-			panelCustomUnitTypeText.setVisible(true);
-		}
+		panelCustomUnitTypeDropDown.setVisible(!isModuleStudy());
+		panelCustomUnitTypeText.setVisible(isModuleStudy());
 		panelCustomUnitTypeDropDown.add(fieldUnitsTxtFld);
 		add(panelCustomUnitTypeDropDown);
 		panelCustomUnitTypeText.add(fieldUnitsInTextTxtFld);
@@ -344,6 +339,10 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		cusfieldCatSet.addAll(customFieldLst);
 		cusfieldCatLst.addAll(cusfieldCatSet);
 				return cusfieldCatLst;
+	}
+	
+	private boolean isModuleStudy(){
+		return arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY);
 	}
 	
 

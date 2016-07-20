@@ -4,7 +4,7 @@
 	<groupId>au.org.theark</groupId>
 	<artifactId>ark-container</artifactId>
 	<packaging>war</packaging>
-	<version>1.2</version>
+	<version>1.2b.3</version>
 	<name>Ark Container</name>
 	<description>The top level container web application that will contain other sub-modules.</description>
 	<organization>
@@ -23,19 +23,28 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	<parent>
+        <groupId>au.org.theark</groupId>
+        <artifactId>ark</artifactId>
+        <version>1.2b.3</version>
+		<relativePath>../pom.xml</relativePath>
+    </parent>
 	<dependencies>
-     	<!-- MySQL database driver -->
-		<dependency>
-    		<groupId>mysql</groupId>
-    		<artifactId>mysql-connector-java</artifactId>
-    		<version>5.1.19</version>
-		</dependency>
+
 		
 		<!--  Ark Common Module -->
 		<dependency>
 			<groupId>au.org.theark.core</groupId>
 			<artifactId>ark-common</artifactId>
 			<version>${ark-common.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>au.org.theark.core</groupId>
+			<artifactId>ark-common</artifactId>
+			<version>${ark-common.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Ark Study Module -->
@@ -101,47 +110,35 @@
 			<artifactId>ark-genomics</artifactId>
 			<version>${ark-genomics.version}</version>
 		</dependency>
-		
 
+		<!-- Ark Disease Module -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>4.2.0.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>4.2.0.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.ldap</groupId>
-			<artifactId>spring-ldap-core</artifactId>
-			<version>2.0.3.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>4.2.0.RELEASE</version>
-		</dependency>
+			<groupId>au.org.theark.disease</groupId>
+			<artifactId>ark-disease</artifactId>
+			<version>${ark-disease.version}</version>
+		</dependency>		
 
-		<!-- LOGGING DEPENDENCIES - LOG4J -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.12</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
-		</dependency>
+
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.2</version>
+			<version>4.12</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>4.2.0.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>2.52.0</version>
 		</dependency>
 
 		<!--  JETTY DEPENDENCIES FOR TESTING  -->
@@ -163,11 +160,7 @@
 			<version>${jetty.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>au.org.theark.disease</groupId>
-			<artifactId>ark-disease</artifactId>
-			<version>${ark-disease.version}</version>
-		</dependency>
+
 	</dependencies>
 	<build>
 	 	<finalName>ark</finalName>
@@ -186,7 +179,6 @@
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
-			<!-- Inject version number as defined by this POM into our properties files -->
 			<resource>
 				<filtering>true</filtering>
 				<directory>src/main/java</directory>
@@ -209,65 +201,40 @@
 		</testResources>
 		<plugins>
 			<plugin>
-				<inherited>true</inherited>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<optimize>true</optimize>
-					<debug>true</debug>
-				</configuration>
+				<version>1.5.0</version>
+				<artifactId>exec-maven-plugin</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<executions>
+					<execution>
+						<id>Start Docker Compose</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>/bin/sh</executable>
+							<workingDirectory>${project.parent.basedir}</workingDirectory>
+							<arguments>
+								<argument>${project.parent.basedir}/docker/scripts/start_and_wait.sh</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>${jetty.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.8</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-				</configuration>
-			</plugin>
-			<plugin>
-                <groupId>de.juplo</groupId>
-                <artifactId>hibernate4-maven-plugin</artifactId>
-                <version>1.0.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>export</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <envers>true</envers>
-                    <format>true</format>
-                    <delimiter>;</delimiter>
-                    <force>true</force>
-                    <type>CREATE</type>
-                    <target>SCRIPT</target>
-                    <hibernateDialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernateDialect>
-                </configuration>
-        	</plugin>
 		</plugins>
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
-		<ark-common.version>1.0.0</ark-common.version>
-		<ark-study.version>1.0.0</ark-study.version>
-		<ark-phenotypic.version>1.0.0</ark-phenotypic.version>
-		<ark-geno.version>1.0.0</ark-geno.version>
-		<ark-registry.version>1.0.0</ark-registry.version>
-		<ark-lims.version>1.0.1</ark-lims.version>
-		<ark-report.version>1.0.0</ark-report.version>
-		<ark-admin.version>1.0.0</ark-admin.version>
-		<ark-work-tracking.version>1.0.0</ark-work-tracking.version>
-		<ark-disease.version>1.0.0</ark-disease.version>
-		<ark-genomics.version>1.0.0</ark-genomics.version>
+		<ark-common.version>1.2b.3</ark-common.version>
+		<ark-study.version>1.2b.3</ark-study.version>
+		<ark-phenotypic.version>1.2b.3</ark-phenotypic.version>
+		<ark-geno.version>1.2b.3</ark-geno.version>
+		<ark-registry.version>1.2b.3</ark-registry.version>
+		<ark-lims.version>1.2b.3</ark-lims.version>
+		<ark-report.version>1.2b.3</ark-report.version>
+		<ark-admin.version>1.2b.3</ark-admin.version>
+		<ark-work-tracking.version>1.2b.3</ark-work-tracking.version>
+		<ark-disease.version>1.2b.3</ark-disease.version>
+		<ark-genomics.version>1.2b.3</ark-genomics.version>
 	</properties>
 </project>

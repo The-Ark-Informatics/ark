@@ -511,5 +511,8 @@ public interface IStudyDao {
 	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar);
 	
 	public void saveOrUpdate(StudyCalendarVo studyCalendar);
+	
+	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp);
 
+	public void delete(OtherID otherID);
 }

@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -396,6 +397,16 @@ public class Person implements java.io.Serializable {
 	
 	public void setCurrentOrDeathAge(String currentOrDeathAge) {
 		this.currentOrDeathAge = currentOrDeathAge;
+	}
+
+	@Transient
+	public String getDescriptiveLastNameHistory() {
+		return getPersonLastnameHistory().stream().map(name -> name.getLastName()).collect(Collectors.joining(", "));
+	}
+
+	@Transient
+	public String getDescriptiveOtherIDs() {
+		return getOtherIDs().stream().map(otherID -> otherID.getOtherID_Source() + ": " + otherID.getOtherID()).collect(Collectors.joining("\n"));
 	}
 
 	@Override

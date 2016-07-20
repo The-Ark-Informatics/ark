@@ -44,6 +44,7 @@ import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
@@ -820,85 +821,78 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * Field display details.
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException {
-
+	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException ,ArkNotAllowedToUpdateException {
 		boolean isUnique = customFieldDao.isCustomFieldUnqiue(customFieldVO.getCustomField().getName(), customFieldVO.getCustomField().getStudy(), customFieldVO.getCustomField());
 		if (!isUnique) {
 			log.error("Custom Field of this name Already Exists.: ");
 			throw new ArkUniqueException("A Custom Field of this name already exists.");
 		}
-		try {
-			// Remove any encoded values if DATE or NUMBER
-			if (customFieldVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) || customFieldVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-				customFieldVO.getCustomField().setEncodedValues(null);
-			}
-
-			customFieldDao.updateCustomField(customFieldVO.getCustomField());
-			// Custom Field History
-			AuditHistory ah = new AuditHistory();
-			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-			ah.setComment("Updated Custom Field " + customFieldVO.getCustomField().getName());
-			ah.setEntityId(customFieldVO.getCustomField().getId());
-			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
-			createAuditHistory(ah);
-
-			// Only Update CustomFieldDisplay when it is allowed
-			if (customFieldVO.isUseCustomFieldDisplay()) {
-				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
-				customFieldDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
-				// Custom Field Display History
-				ah = new AuditHistory();
-				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-				ah.setComment("Updated Custom Field Display " + customFieldVO.getCustomField().getName());
-				ah.setEntityId(customFieldVO.getCustomField().getId());
-				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
-				createAuditHistory(ah);
-			}
-
-		} catch (ConstraintViolationException cvex) {
-			log.error("Custom Field Already Exists.: " + cvex);
-			throw new ArkUniqueException("A Custom Field already exits.");
-		} catch (Exception ex) {
-			log.error("Problem updating Custom Field: " + ex);
-			throw new ArkSystemException("Problem updating Custom Field: " + ex.getMessage());
-		}
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, EntityCannotBeRemoved {
-		try {
-			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
-				String fieldName = customFieldVO.getCustomField().getName();
-
-				if (customFieldVO.isUseCustomFieldDisplay()) {
-					customFieldDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
-
-					// History for Custom Field Display
-					AuditHistory ah = new AuditHistory();
-					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-					ah.setComment("Deleted Custom Display Field For Custom Field " + fieldName);
-					ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
-					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
-					createAuditHistory(ah);
+		if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
+			String fieldName = customFieldVO.getCustomField().getName();
+			try {
+				// Remove any encoded values if DATE or NUMBER
+				if (customFieldVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) || customFieldVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+					customFieldVO.getCustomField().setEncodedValues(null);
 				}
-				customFieldDao.deleteCustomField(customFieldVO.getCustomField());
-
-				// History for Custom Field
+				customFieldDao.updateCustomField(customFieldVO.getCustomField());
+				// Custom Field History
 				AuditHistory ah = new AuditHistory();
-				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-				ah.setComment("Deleted Custom Field " + fieldName);
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+				ah.setComment("Updated Custom Field " +fieldName);
 				ah.setEntityId(customFieldVO.getCustomField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
 				createAuditHistory(ah);
+				// Only Update CustomFieldDisplay when it is allowed
+				if (customFieldVO.isUseCustomFieldDisplay()) {
+					customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
+					customFieldDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+					// Custom Field Display History
+					ah = new AuditHistory();
+					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+					ah.setComment("Updated Custom Field Display " + fieldName);
+					ah.setEntityId(customFieldVO.getCustomField().getId());
+					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
+					createAuditHistory(ah);
+				}
+			}catch (Exception ex) {
+				log.error("Problem updating Custom Field: " + ex);
+				throw new ArkSystemException("Problem updating Custom Field: " + ex.getMessage());
+			}	
+		}else{
+				throw new ArkNotAllowedToUpdateException("Custom Field cannot be updated, it is used in the system");
+		}	
+	}
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, EntityCannotBeRemoved {
+			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
+				String fieldName = customFieldVO.getCustomField().getName();
+				try{
+					/*if (customFieldVO.isUseCustomFieldDisplay()) {
+						customFieldDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
+						// History for Custom Field Display
+						AuditHistory ah = new AuditHistory();
+						ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+						ah.setComment("Deleted Custom Display Field For Custom Field " + fieldName);
+						ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
+						ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
+						createAuditHistory(ah);
+					}*/
+					customFieldDao.deleteCustomField(customFieldVO.getCustomField());
+					// History for Custom Field
+					AuditHistory ah = new AuditHistory();
+					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+					ah.setComment("Deleted Custom Field " + fieldName);
+					ah.setEntityId(customFieldVO.getCustomField().getId());
+					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
+					createAuditHistory(ah);
+					}catch(Exception ex) {
+						log.error("Unable to delete CustomField. " + ex);
+						throw new ArkSystemException("Unable to delete Custom Field: " + ex.getMessage());
+					}
 			} else {
 				throw new EntityCannotBeRemoved("Custom Field cannot be removed, it is used in the system");
 			}
-		} catch (Exception ex) {
-			log.error("Unable to delete CustomField. " + ex);
-			throw new ArkSystemException("Unable to delete Custom Field: " + ex.getMessage());
-		}
 	}
-
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
 		return arkAuthorisationDao.getArkRoleListByUser(arkUserVo);
 	}
@@ -1393,8 +1387,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * }
 	 */
 
+	@Deprecated
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search) {
 		return studyDao.getSelectedPhenoCustomFieldDisplaysForSearch(search);
+	}
+
+	public Collection<PhenoDataSetFieldDisplay> getSelectedPhenoDataSetFieldDisplaysForSearch(Search search) {
+		return studyDao.getSelectedPhenoDataSetFieldDisplaysForSearch(search);
 	}
 
 	public Collection<CustomFieldDisplay> getSelectedSubjectCustomFieldDisplaysForSearch(Search search) {
@@ -1481,6 +1480,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SEARCH);
 		this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), search.getStudy());
 		studyDao.delete(search);
+	}
+
+	public void delete(SearchResult result) {
+		studyDao.delete(result);
 	}
 
 	public List<OtherID> getOtherIDs(Person person) {
@@ -2091,6 +2094,26 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory){
 		return customFieldDao.isThisCustomCategoryWasAParentCategoryOfAnother(customFieldCategory);
+	}
+
+	@Override
+	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name, CustomFieldType customFieldType) {
+		return customFieldDao.getCustomFieldCategotyByNameAndCustomFieldType(name, customFieldType);
+	}
+
+	@Override
+	public List getSearchesForSearch(Search search) {
+		return studyDao.getSearchesForSearch(search);
+	}
+
+	@Override
+	public List getStudyComponentsNotInThisSubject(Study study,LinkSubjectStudy linkSubjectStudy) {
+		return studyDao.getStudyComponentsNeverUsedInThisSubject(study, linkSubjectStudy);
+	}
+
+	@Override
+	public List getDifferentStudyComponentsInConsentForSubject(Study study,LinkSubjectStudy linkSubjectStudy) {
+		return studyDao.getDifferentStudyComponentsInConsentForSubject(study, linkSubjectStudy);
 	}
 
 	

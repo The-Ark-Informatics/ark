@@ -45,6 +45,7 @@ fi
 cd $WORKSPACE_DIR/ark-common
 if is_changed; 
 then 
+	mvn initialize
 	mvn clean install
 	if [ "$?" != "0" ]; then
 	exit 1

@@ -970,8 +970,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 
 	@Override
-	public long getPhenoDatasetCategoryCount(PhenoDataSetCategory phenoDataSetCategoryCriteria) {
-		return phenotypicDao.getPhenoDatasetCategoryCount(phenoDataSetCategoryCriteria);
+	public long getPhenoDataSetCategoryCount(PhenoDataSetCategory phenoDataSetCategoryCriteria) {
+		return phenotypicDao.getPhenoDataSetCategoryCount(phenoDataSetCategoryCriteria);
 	}
 
 	/*@Override
@@ -1478,6 +1478,12 @@ try {
 	public List<PhenoDataSetFieldDisplay> getPhenoFieldDisplaysIn(List<String> fieldNameCollection, Study study,ArkFunction arkFunction, PhenoDataSetGroup phenoDataSetGroup) {
 		return phenotypicDao.getPhenoFieldDisplaysIn(fieldNameCollection, study, arkFunction, phenoDataSetGroup);
 	}
+
+	@Override
+	public List<PhenoDataSetFieldDisplay> getPhenoFieldDisplaysIn(Study study, ArkFunction arkFunction) {
+		return phenotypicDao.getPhenoFieldDisplaysIn(study, arkFunction);
+	}
+
 	@Override
 	public long getPhenoFieldGroupCount(Study study,ArkFunction arkFunction,Boolean status){
 		return phenotypicDao.getPhenoFieldGroupCount(study,arkFunction,status);

@@ -38,6 +38,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -776,7 +777,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		return pc.getQuestionnaire().getName();
 	}
 	
-	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
+	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<PhenoDataSetFieldDisplay> cfds, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("PHENOTYPIC.csv");
 		final java.io.File file = new File(tempDir, filename);
@@ -838,7 +839,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			
 			csv.endLine();
 			
-			for(String subjectUID : devo.getDemographicData().keySet()) {			
+			for(String subjectUID : phenoCollectionMapping.keySet()) {
 				if (!phenoCollectionMapping.containsKey(subjectUID)) {
 					continue;
 				}
@@ -981,7 +982,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		return file;
 	}	
 
-	public File createMegaCSV(Search search, DataExtractionVO allTheData, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> biocollectionCustomFieldDisplay, List<CustomFieldDisplay> biospecimenCustomFieldDisplay, List<CustomFieldDisplay> phenotypicCustomFieldDisplay, List<ConsentStatusField> consentStatusFields) {
+	public File createMegaCSV(Search search, DataExtractionVO allTheData, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> biocollectionCustomFieldDisplay, List<CustomFieldDisplay> biospecimenCustomFieldDisplay, List<PhenoDataSetFieldDisplay> phenotypicCustomFieldDisplay, List<ConsentStatusField> consentStatusFields) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("COMBINED.csv");
 		final java.io.File file = new File(tempDir, filename);

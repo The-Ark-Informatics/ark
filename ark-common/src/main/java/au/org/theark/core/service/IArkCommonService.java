@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.springframework.mail.MailSendException;
@@ -597,7 +598,7 @@ public interface IArkCommonService<T> {
 	 */
 	public void createCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException;
 
-	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException;
+	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException,ArkNotAllowedToUpdateException;
 
 	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, EntityCannotBeRemoved;
 
@@ -850,6 +851,8 @@ public interface IArkCommonService<T> {
 	// getSelectedDemographicFieldsForSearch(Search search, boolean readOnly);
 
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search);
+
+	public Collection<PhenoDataSetFieldDisplay> getSelectedPhenoDataSetFieldDisplaysForSearch(Search search);
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction);
 
@@ -1232,6 +1235,39 @@ public interface IArkCommonService<T> {
 	 */
 	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
 	
+	/**
+	 * 
+	 * @param customFieldCategory
+	 * @return
+	 */
 	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory);
+	/**
+	 * 
+	 * @param name
+	 * @param customFieldType
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name, CustomFieldType customFieldType);
+	/**
+	 * 
+	 * @param search
+	 * @return
+	 */
+	public List<Search> getSearchesForSearch(Search search);
+	/**
+	 * Get study component never used in the subject.
+	 * 
+	 * @param study
+	 * @param linkSubjectStudy
+	 * @return
+	 */
+	public List<StudyComp> getStudyComponentsNotInThisSubject(Study study,LinkSubjectStudy linkSubjectStudy);
+	/**
+	 * 
+	 * @param study
+	 * @param linkSubjectStudy
+	 * @return
+	 */
+	public List<StudyComp> getDifferentStudyComponentsInConsentForSubject(Study study, LinkSubjectStudy linkSubjectStudy);
 
 }

@@ -1960,7 +1960,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	}
 
 	@Override
-	public long getPhenoDatasetCategoryCount(PhenoDataSetCategory phenoDataSetCategoryCriteria) {
+	public long getPhenoDataSetCategoryCount(PhenoDataSetCategory phenoDataSetCategoryCriteria) {
 		// Handle for study or function not in context
 		if (phenoDataSetCategoryCriteria.getStudy() == null || phenoDataSetCategoryCriteria.getArkFunction() == null) {
 			return 0;
@@ -2519,12 +2519,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				if (phenoDataSetGroup.getStudy() == null || phenoDataSetGroup.getArkFunction() == null) {
 					return 0L;
 				}
-				Criteria criteria = buildGenericPhenoDatasetFieldGroupCriteria(phenoDataSetGroup);
+				Criteria criteria = buildGenericPhenoDataSetFieldGroupCriteria(phenoDataSetGroup);
 				criteria.setProjection(Projections.rowCount());
 				Long totalCount = (Long) criteria.uniqueResult();
 				return totalCount;
 	}
-	private Criteria buildGenericPhenoDatasetFieldGroupCriteria(PhenoDataSetGroup phenoDataSetGroup){
+	private Criteria buildGenericPhenoDataSetFieldGroupCriteria(PhenoDataSetGroup phenoDataSetGroup){
 		
 		Criteria criteria = getSession().createCriteria(PhenoDataSetGroup.class);
 		
@@ -2554,7 +2554,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	@Override
 	public List<PhenoDataSetGroup> getPhenoDataSetGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count) {
-		Criteria criteria = buildGenericPhenoDatasetFieldGroupCriteria(phenoDataSetGroup);
+		Criteria criteria = buildGenericPhenoDataSetFieldGroupCriteria(phenoDataSetGroup);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
 		List<PhenoDataSetGroup> list = (List<PhenoDataSetGroup>)criteria.list();
@@ -2952,7 +2952,20 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				query.setParameter("phenoDataSetGroup", phenoDataSetGroup);
 				return query.list();
 			}
-	}	
+	}
+
+	@Override
+	public List<PhenoDataSetFieldDisplay> getPhenoFieldDisplaysIn(Study study,ArkFunction arkFunction) {
+		String queryString = "select pdsfd from PhenoDataSetFieldDisplay pdsfd " +
+				" where phenoDataSetField.id in ( " +
+				" SELECT id from PhenoDataSetField pdsf " +
+				" where pdsf.study =:study " + " and pdsf.arkFunction =:arkFunction )";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		query.setParameter("arkFunction", arkFunction);
+		return query.list();
+	}
+
 	@Override
 	public long getPhenoFieldGroupCount(Study study,ArkFunction arkFunction,Boolean status) {
 		// Handle for study or function not in context

@@ -48,6 +48,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IAuditDao;
+import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -138,10 +139,11 @@ public class StudyServiceImpl implements IStudyService {
 
 	private static Logger		log	= LoggerFactory.getLogger(StudyServiceImpl.class);
 
-	private IArkCommonService	iArkCommonService;
+	private IArkCommonService		iArkCommonService;
 	private IUserService			iUserService;
 	private IStudyDao				iStudyDao;
 	private IAuditDao				iAuditDao;
+	private ICustomFieldDao 		iCustomFieldDao;
 
 	public IArkCommonService getiArkCommonService() {
 		return iArkCommonService;
@@ -196,6 +198,13 @@ public class StudyServiceImpl implements IStudyService {
 
 	public List<StudyStatus> getListOfStudyStatus() {
 		return iStudyDao.getListOfStudyStatus();
+	}
+	public ICustomFieldDao getiCustomFieldDao() {
+		return iCustomFieldDao;
+	}
+	@Autowired
+	public void setiCustomFieldDao(ICustomFieldDao iCustomFieldDao) {
+		this.iCustomFieldDao = iCustomFieldDao;
 	}
 
 	public void createStudy(StudyModelVO studyModelVo) {
@@ -1301,10 +1310,11 @@ public class StudyServiceImpl implements IStudyService {
 
 					CustomField customField = iArkCommonService.getCustomField(id);
 					customField.setCustomFieldHasData(true);
-					CustomFieldVO customFieldVO = new CustomFieldVO();
-					customFieldVO.setCustomField(customField);
-
-					iArkCommonService.updateCustomField(customFieldVO);
+					//CustomFieldVO customFieldVO = new CustomFieldVO();
+					//customFieldVO.setCustomField(customField);
+					//iArkCommonService.updateCustomField(customFieldVO);
+					iCustomFieldDao.updateCustomField(customField);
+					
 
 				}
 				else if (canUpdate(subjectCustomFieldData)) {
@@ -1329,9 +1339,10 @@ public class StudyServiceImpl implements IStudyService {
 						// loaded
 						CustomField customField = iArkCommonService.getCustomField(id);
 						customField.setCustomFieldHasData(false);
-						CustomFieldVO customFieldVO = new CustomFieldVO();
-						customFieldVO.setCustomField(customField);
-						iArkCommonService.updateCustomField(customFieldVO); // Update it
+						//CustomFieldVO customFieldVO = new CustomFieldVO();
+						//customFieldVO.setCustomField(customField);
+						//iArkCommonService.updateCustomField(customFieldVO); // Update it
+						iCustomFieldDao.updateCustomField(customField);
 
 					}
 				}
@@ -1356,15 +1367,15 @@ public class StudyServiceImpl implements IStudyService {
 				if (canInsert(familyCustomFieldData)) {
 
 					iStudyDao.createOrUpdateFamilyCustomFieldData(familyCustomFieldData);
-					/*Long id = familyCustomFieldData.getCustomFieldDisplay().getCustomField().getId();
+					Long id = familyCustomFieldData.getCustomFieldDisplay().getCustomField().getId();
 
 					CustomField customField = iArkCommonService.getCustomField(id);
 					customField.setCustomFieldHasData(true);
-					CustomFieldVO customFieldVO = new CustomFieldVO();
-					customFieldVO.setCustomField(customField);
+					//CustomFieldVO customFieldVO = new CustomFieldVO();
+					//customFieldVO.setCustomField(customField);
+					//iArkCommonService.updateCustomField(customFieldVO);
+					iCustomFieldDao.updateCustomField(customField);
 
-					iArkCommonService.updateCustomField(customFieldVO);
-*/
 				}
 				else if (canUpdate(familyCustomFieldData)) {
 
@@ -1388,9 +1399,10 @@ public class StudyServiceImpl implements IStudyService {
 						// loaded
 						CustomField customField = iArkCommonService.getCustomField(id);
 						customField.setCustomFieldHasData(false);
-						CustomFieldVO customFieldVO = new CustomFieldVO();
-						customFieldVO.setCustomField(customField);
-						iArkCommonService.updateCustomField(customFieldVO); // Update it
+						//CustomFieldVO customFieldVO = new CustomFieldVO();
+						//customFieldVO.setCustomField(customField);
+						//iArkCommonService.updateCustomField(customFieldVO); // Update it
+						iCustomFieldDao.updateCustomField(customField);
 
 					}
 				}
@@ -2380,5 +2392,12 @@ public class StudyServiceImpl implements IStudyService {
 	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar){
 		return iStudyDao.getSelectedCalendarCustomFieldList(studyCalendar);
 	}
-	
+	public void delete(OtherID otherID) {
+		iStudyDao.delete(otherID);
+	}
+	@Override
+	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp) {
+		
+		return iStudyDao.isStudyComponentBeingUsedInConsent(studyComp);
+	}
 }

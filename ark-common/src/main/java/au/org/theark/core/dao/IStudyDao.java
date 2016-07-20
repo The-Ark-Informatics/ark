@@ -21,6 +21,7 @@ package au.org.theark.core.dao;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -691,7 +692,10 @@ public interface IStudyDao {
 
 	public List<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
 
+	@Deprecated
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search);
+
+	public Collection<PhenoDataSetFieldDisplay> getSelectedPhenoDataSetFieldDisplaysForSearch(Search search);
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction);
 
@@ -728,6 +732,8 @@ public interface IStudyDao {
 
 	public void delete(Search search);
 
+	public void delete(SearchResult result);
+
 	public ConsentStatus getConsentStatusByName(String name);
 	
 	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId);
@@ -759,4 +765,10 @@ public interface IStudyDao {
 	public ConfigField getConfigFieldByName(String configName);
 	
 	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
+	
+	public List<Search> getSearchesForSearch(Search search);
+	
+	public List<StudyComp> getStudyComponentsNeverUsedInThisSubject(Study study,LinkSubjectStudy linkSubjectStudy);
+	
+	public List<StudyComp> getDifferentStudyComponentsInConsentForSubject(Study study,LinkSubjectStudy linkSubjectStudy);
 }

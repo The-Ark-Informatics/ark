@@ -479,17 +479,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria) {
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
-
 		if (studyCompCriteria.getId() != null) {
-			criteria.add(Restrictions.eq(Constants.ID, studyCompCriteria.getId()));
+			//criteria.add(Restrictions.like(Constants.ID, studyCompCriteria.getId().toString(),MatchMode.ANYWHERE));
+			//ARK-1558
+			criteria.add(Restrictions.sqlRestriction(" id LIKE '%"+studyCompCriteria.getId()+"%' "));
 		}
-
 		if (studyCompCriteria.getName() != null) {
-			criteria.add(Restrictions.eq(Constants.STUDY_COMP_NAME, studyCompCriteria.getName()));
+			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_NAME, studyCompCriteria.getName(),MatchMode.ANYWHERE));
 		}
-
 		if (studyCompCriteria.getKeyword() != null) {
-
 			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_KEYWORD, studyCompCriteria.getKeyword(), MatchMode.ANYWHERE));
 		}
 		// Restrict the search for the study do not pull other study components
@@ -2771,5 +2769,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		list=criteria.list();
 		return list;
 	}
+	public void delete(OtherID otherID) {
+		getSession().delete(otherID);
+	}
+	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp){
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study", studyComp.getStudy()));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		List<Consent> consents=criteria.list();
+		return (consents.size() > 0);
 		
+	}
 }

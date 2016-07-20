@@ -109,6 +109,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		this.feedBackPanel = feedBackPanel;
 		initialiseForm();
 	}
+	
 
 	/**
 	 * Initialise method that is specific to classes that follow the CrudContainerVO Pattern. The code related to each function has been modularised

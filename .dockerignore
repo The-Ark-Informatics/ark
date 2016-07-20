@@ -1,0 +1,14 @@
+.dockerignore
+.git
+.gitignore
+3rdParty
+BUILD.md
+HelloSelenium
+README.md
+ark-build-pwd.sh
+docs
+obsolete
+oldarkbuildpw.sh
+selenium-2.40.0
+spark-bluegene
+tools

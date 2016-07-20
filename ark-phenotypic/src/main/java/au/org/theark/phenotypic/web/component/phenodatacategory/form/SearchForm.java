@@ -145,7 +145,7 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetCategoryVO> {
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		getModelObject().getPhenoDataSetCategory().setStudy(study);
 
-		long count = iPhenotypicService.getPhenoDatasetCategoryCount(getModelObject().getPhenoDataSetCategory());
+		long count = iPhenotypicService.getPhenoDataSetCategoryCount(getModelObject().getPhenoDataSetCategory());
 		if (count <= 0L) {
 			this.info("No records match the specified criteria.");
 			target.add(feedbackPanel);

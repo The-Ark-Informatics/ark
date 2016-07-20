@@ -84,7 +84,7 @@ public class OtherID implements java.io.Serializable {
 		this.otherID = otherID;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PersonID")
 	public Person getPerson() {
 		return this.person;

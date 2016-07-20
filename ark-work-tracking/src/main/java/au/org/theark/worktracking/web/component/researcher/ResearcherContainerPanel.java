@@ -55,6 +55,7 @@ public class ResearcherContainerPanel extends AbstractContainerPanel {
 	protected WebMarkupContainer initialiseSearchResults() {
 
 		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
+		searchResultPanel.setOutputMarkupId(true);
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
@@ -74,6 +75,7 @@ public class ResearcherContainerPanel extends AbstractContainerPanel {
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
+		searchResultPanel.setOutputMarkupId(true);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}

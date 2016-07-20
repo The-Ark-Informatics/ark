@@ -1,0 +1,3 @@
+use `audit`;
+ALTER TABLE `audit`.`aud_consent` 
+CHANGE COLUMN `COMMENTS` `COMMENTS` VARCHAR(500) NULL DEFAULT NULL ;
