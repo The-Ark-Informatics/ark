@@ -1,6 +1,7 @@
 <wicket:panel>
 	<div class="searchPanelBreaker">&nbsp;</div>
 	<div wicket:id="detailModalWindow"></div>
+	<div wicket:id="queryModalWindow"></div>
     <table width="0%" cellspacing="0"></table>
 	<table width="100%" cellspacing="0" class="dataview" border="0">
 		<tr>
@@ -38,6 +39,9 @@
 			<th width="5%">
 				<input wicket:id="plinkDelete" type="submit" wicket:message="value:button.plinkdelete" />
 			</th>
+			<th width="5%">
+				<input wicket:id="queryBtn" type="submit" wicket:message="value:button.queryBtn" />
+			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -74,12 +78,15 @@
 				<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
 			-->
 			</td>
+			<td width="5%">
+				
+			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="7"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="8"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>

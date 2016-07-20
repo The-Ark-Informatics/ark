@@ -370,7 +370,12 @@ public class GenomicServiceImpl implements IGenomicService {
 					ds.setPath("/" + fileName);
 				} else {
 					String dirPath = datacenter.getDirectory().trim();
-					if (!"/".equals(dirPath.charAt(0))) {
+					
+//					System.out.println("--------------------------="+dirPath);					
+//					System.out.println("--------------------------="+dirPath.charAt(0));
+//					System.out.println("--------------------------="+(dirPath.length() - 1));
+
+					if ("/".equals(dirPath.charAt(0))) {
 						dirPath = "/" + dirPath;
 					}
 
@@ -912,5 +917,70 @@ public class GenomicServiceImpl implements IGenomicService {
 		}
 		return jobId;
 	}
+	
+	public String executeQueryAnalysis(DataCenterVo dataCenter){
+		MicroService microService = dataCenter.getMicroService();
+
+		String URL = microService.getServiceUrl() + "/queryResult";
+		
+		System.out.println(" -------------------- "+URL+" ----------------------- ");
+
+		String result = null;
+		try {
+			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+
+			JSONObject obj = new JSONObject();
+			obj.put("directory", dataCenter.getDirectory());
+			obj.put("name", dataCenter.getName());
+			obj.put("individualId", dataCenter.getIndividualId());
+			httpService.addPostParameters(obj);
+			List<String> data = httpService.finish();
+			result = data.stream().findFirst().get();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	public byte[] getQueryResult(DataCenterVo dataCenter){
+		MicroService microService = dataCenter.getMicroService();
+
+		String URL = microService.getServiceUrl() + "/queryOutput";
+		
+		System.out.println(" -------------------- "+URL+" ----------------------- ");
+
+		byte[] result = null;
+		try {
+			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+
+			JSONObject obj = new JSONObject();
+			obj.put("directory", dataCenter.getDirectory());
+			obj.put("name", dataCenter.getName());
+			obj.put("individualId", dataCenter.getIndividualId());
+			httpService.addPostParameters(obj);
+			List<String> data = httpService.finish();
+			result = data.stream().findFirst().get().getBytes();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	
+//	public static void main(String[] args) {
+//		String dirPath="/"; 
+//		
+//		if ("/".equals(dirPath.charAt(0))) {
+//			dirPath = "/" + dirPath;
+//		}
+//		
+//		System.out.println(dirPath);
+//	}
 
 }

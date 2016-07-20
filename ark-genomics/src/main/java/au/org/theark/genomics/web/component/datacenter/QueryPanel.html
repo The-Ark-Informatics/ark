@@ -1,0 +1,95 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="queryForm">
+		<div class="detailsPanelBorder">
+		  <div wicket:id="detailFormContainer">
+			<div class="detailPanelBreaker">&nbsp;</div>
+			<div class="panelContentLeft">&nbsp;</div>
+			<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="genomics.querybuilder.individualid">
+								Id:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="individualId" type="text" />
+						<input wicket:id="queryButton" type="submit" wicket:message="value:button.queryBtn" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="result">					
+							<wicket:message key="genomics.querybuilder.resulttype">
+								Result:
+							</wicket:message>							
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="outputType">
+							<option>Online</option>
+							<option>Offline</option>
+						</select>
+					</div>
+				</div>
+				<div class="detailPanelBreaker">&nbsp;</div>
+				
+				<div class="panelContentLeft">&nbsp;</div>
+				<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="genomics.querybuilder.queryresult">
+								Result:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="downloadButton" type="submit" wicket:message="value:button.downloadBtn" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="result">					
+													
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						
+					</div>
+				</div>
+				<div class="detailPanelBreaker">&nbsp;</div>
+				
+									
+			</div>
+			
+			<!--  Row 2 Action Buttons -->
+			
+			<div wicket:id="editButtonContainer">
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />  	
+				</div>
+			</div>
+		</div>
+	</form>
+</wicket:panel>

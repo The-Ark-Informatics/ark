@@ -81,4 +81,8 @@ public interface IGenomicService {
 	
 	public void updateQueueStatus(Analysis analysis);
 	
+	public String executeQueryAnalysis(DataCenterVo dataCenterV0);
+	
+	public byte[] getQueryResult(DataCenterVo dataCenter);
+	
 }

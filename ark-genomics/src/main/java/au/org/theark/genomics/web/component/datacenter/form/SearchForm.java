@@ -125,6 +125,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 		Component uploadBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("plinkUpload");
 		Component deleteBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("plinkDelete");
+		Component queryBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("queryBtn");
 
 		if (resultList != null && resultList.size() == 0) {
 			String dataCenter = dataCenterVo.getName();
@@ -140,6 +141,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 			uploadBtn.setEnabled(false);
 			deleteBtn.setEnabled(false);
+			queryBtn.setEnabled(false);
 
 			cpmModel.getObject().setStatus(null);
 		} else {
@@ -184,6 +186,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 			
 			uploadBtn.setEnabled(false);
 			deleteBtn.setEnabled(false);
+			queryBtn.setEnabled(false);
 			
 			if (dataCenterVo.getDirectory() != null) {
 				
@@ -199,6 +202,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 				if(dataSource !=null && Constants.STATUS_PROCESSED.equalsIgnoreCase(dataSource.getStatus())){
 					deleteBtn.setEnabled(true);
+					queryBtn.setEnabled(true);
 				}
 			}
 		}

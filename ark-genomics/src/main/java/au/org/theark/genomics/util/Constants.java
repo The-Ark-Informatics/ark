@@ -19,6 +19,7 @@ public final class Constants {
 
 	public static final String SEARCH_FORM = "searchForm";
 	public static final String DATA_SOURCE_FORM = "dataSourceForm";
+	public static final String QUERY_FORM = "queryForm";
 
 	public static final String MICRO_SERVICE_ID = "microService.id";
 	public static final String MICRO_SERVICE_NAME = "microService.name";
