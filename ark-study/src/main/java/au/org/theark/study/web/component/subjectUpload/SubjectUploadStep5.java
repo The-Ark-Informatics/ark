@@ -31,22 +31,21 @@ import au.org.theark.core.web.form.AbstractWizardStepPanel;
 public class SubjectUploadStep5 extends AbstractWizardStepPanel {
 
 	private static final long	serialVersionUID	= -6803600838428204753L;
-	private Form<UploadVO>		containerForm;
+	private Form<UploadVO>						containerForm;
+	
 
 	public SubjectUploadStep5(String id, Form<UploadVO> containerForm) {
-		super(id, "Step 5/5: Data Upload Finished", 
-				"The data has been successfully submitted, When the actual upload is finished it will have a status of \"Successfully Completed\".");
+		super(id, "Step 5/5: Data Upload Commenced",
+				"The data is currently being processed for import. On returning to the Study Data Upload tab, the status of this upload will become \"Successfully Completed \""
+				+ " when the import process is complete.<br/>In the event that the import process fails, the status of the upload will become \"Error while importing data\". Please contact the system administrator if this occurs."); 
 		this.containerForm = containerForm;
-		initialiseDetailForm();
 	}
-
-	private void initialiseDetailForm() {
-	}
-
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		if (this.containerForm.getModelObject().getValidationMessages() != null) {
+			containerForm.getModelObject().setStrMessage(containerForm.getModelObject().getValidationMessagesAsString());
 			form.getNextButton().setEnabled(false);
+			form.getFinishButton().setEnabled(true);
 			target.add(form.getWizardButtonContainer());
 		}
 	}

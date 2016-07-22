@@ -1113,15 +1113,15 @@ public class StudyServiceImpl implements IStudyService {
 	/**
 	 * 
 	 */
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId, List<String> listOfUIDsToUpdate) {
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId, List<String> listOfUIDsToUpdate,String customFieldType) {
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
 		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
 		try {
-			String customFieldType=UploadUtilities.getUploadFileDataFileSubjectOrFamily(inputStream,delimChar);
-			if(au.org.theark.core.Constants.SUBJECTUID.equals(customFieldType)){
+			//String customFieldType=new UploadUtilities().getUploadFileDataFileSubjectOrFamily(inputStream,delimChar);
+			if(au.org.theark.core.Constants.SUBJECT.equals(customFieldType)){
 					uploadReport = dataUploader.uploadAndReportSubjectCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate);
-			}else if(au.org.theark.core.Constants.FAMILYUID.equals(customFieldType)){
+			}else if(au.org.theark.core.Constants.FAMILY.equals(customFieldType)){
 				uploadReport = dataUploader.uploadAndReportFamilyCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate);
 			}else{
 				log.error(Constants.FILE_FORMAT_EXCEPTION);

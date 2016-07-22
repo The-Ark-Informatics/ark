@@ -52,6 +52,8 @@ public class UploadVO implements Serializable {
 	private PhenoDataSetGroup					phenoDataSetGroup;
 	private PhenoDataSetCollection				phenoCollection;
 	private Boolean 							previousStepOutCompleted; 
+	private String								customFieldType;
+	private String 								strMessage;
 
 	public UploadVO() {
 		upload = new Upload();
@@ -246,4 +248,20 @@ public class UploadVO implements Serializable {
 	public void setPreviousStepOutCompleted(Boolean previousStepOutCompleted) {
 		this.previousStepOutCompleted = previousStepOutCompleted;
 	}
+
+	public String getCustomFieldType() {
+		return customFieldType;
+	}
+
+	public void setCustomFieldType(String customFieldType) {
+		this.customFieldType = customFieldType;
+	}
+	public String getStrMessage() {
+		return strMessage;
+	}
+
+	public void setStrMessage(String strMessage) {
+		this.strMessage = strMessage;
+	}
+	
 }

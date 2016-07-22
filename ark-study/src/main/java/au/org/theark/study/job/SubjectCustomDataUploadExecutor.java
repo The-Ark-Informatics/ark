@@ -24,21 +24,22 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
 
 import org.jfree.util.Log;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
-
-import com.csvreader.CsvReader;
+import org.quartz.impl.matchers.KeyMatcher;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.service.IStudyService;
 
 public class SubjectCustomDataUploadExecutor {
@@ -49,12 +50,13 @@ public class SubjectCustomDataUploadExecutor {
 	private Long							uploadId;
 	private Long							studyId;
 	private String							fileFormat;
-	private InputStream					inputStream;
+	private InputStream						inputStream;
 	private char							delimiter		= Constants.IMPORT_DELIM_CHAR_COMMA;
 	private long							size;
-
 	private String							report;
 	private List<String>					uidsToUpload;
+	private String 							customFeildType;
+	private UploadVO 						uploadVO;
 	
 	/**
 	 * StudyDataUploadExecutor constructor
@@ -76,7 +78,7 @@ public class SubjectCustomDataUploadExecutor {
 											Long studyId,
 											String fileFormat,
 											char delimiter,
-											long size, String report, List<String> uidsToUpload) {
+											long size, String report, List<String> uidsToUpload,String customFeildType,UploadVO uploadVO) {
 		this.iArkCommonService = iArkCommonService;
 		this.iStudyService = iStudyService;
 		this.inputStream = inputStream;
@@ -87,36 +89,41 @@ public class SubjectCustomDataUploadExecutor {
 		this.size = size;
 		this.report = report;
 		this.uidsToUpload = uidsToUpload;
+		this.customFeildType=customFeildType;
+		this.uploadVO=uploadVO;
 	}
 
-	public void run() throws Exception {
+	public void run() throws SchedulerException{
 
 		SchedulerFactory sf = new StdSchedulerFactory();
-		Scheduler sched = sf.getScheduler();
-
-		Log.warn("executor " + uidsToUpload.size());
+		Scheduler sched;
+		try {
+			sched = sf.getScheduler();
+			JobKey jobKey = new JobKey("SubjectCustomDataUploadJob", "group2");
+			//Listener attached to jobKey
+			sched.getListenerManager().addJobListener(new SubjectCustomDataUploadJobListner(uploadVO,iArkCommonService), KeyMatcher.keyEquals(jobKey));
+			Log.warn("executor " + uidsToUpload.size());
+			JobDetail customDataUploadJob = newJob(SubjectCustomDataUploadJob.class).withIdentity(jobKey).build();
+			// pass initialization parameters into the job
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.ISTUDYSERVICE, iStudyService);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.UPLOADID, uploadId);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.STUDY_ID, studyId);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.REPORT, report);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.FILE_FORMAT, fileFormat);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.INPUT_STREAM, inputStream);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.DELIMITER, delimiter);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.SIZE, size);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.CUSTOM_FIELD_TYPE, customFeildType);
+			Date startTime = nextGivenSecondDate(null, 1);
+			SimpleTrigger trigger1 = newTrigger().withIdentity("SubjectCustomDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
+			sched.start();
+			sched.scheduleJob(customDataUploadJob, trigger1);
+		}catch(SchedulerException schedE){
+			throw new SchedulerException(schedE.getMessage());
+		}
 		
-		JobDetail customDataUploadJob = newJob(SubjectCustomDataUploadJob.class).withIdentity("SubjectCustomDataUploadJob", "group2").build();
-		// pass initialization parameters into the job
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.ISTUDYSERVICE, iStudyService);
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.UPLOADID, uploadId);
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.STUDY_ID, studyId);
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.REPORT, report);
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.FILE_FORMAT, fileFormat);
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.INPUT_STREAM, inputStream);
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.DELIMITER, delimiter);
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.SIZE, size);
-		customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
-	
-		Date startTime = nextGivenSecondDate(null, 1);
-		
-		SimpleTrigger trigger1 = newTrigger().withIdentity("SubjectCustomDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
-		
-		sched.scheduleJob(customDataUploadJob, trigger1);
-		//		log.warn(studyUploadJob.getKey() + " will run at: " + scheduleTime1 + " and repeat: " + trigger1.getRepeatCount() + " times, every " + trigger1.getRepeatInterval() / 1000 + " seconds");
-		// All of the jobs have been added to the scheduler, but none of the jobs will run until the scheduler has been started
-		sched.start();
 	}
 	
 }

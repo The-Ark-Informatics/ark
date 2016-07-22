@@ -1,12 +1,5 @@
 package au.org.theark.study.web.component.subjectUpload;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import au.org.theark.core.Constants;
-
-import com.csvreader.CsvReader;
 
 public class UploadUtilities {
 
@@ -50,33 +43,6 @@ public class UploadUtilities {
 				"__________________________________________________________________________________________________"+
 				"__________________________________________________________________________________________________");
 		return success;
-	}
-	
-	/**
-	 * Check the header and decide the uploader id for Subject or Family
-	 * @param csvReader
-	 * @return
-	 */
-	public static String getUploadFileDataFileSubjectOrFamily(InputStream inputStream, char delimChar){
-		String[] headers=null;
-		CsvReader csvReader=null;
-		try {
-			csvReader=new CsvReader(new InputStreamReader(inputStream), delimChar);
-			csvReader.readHeaders();
-			headers = csvReader.getHeaders();
-			inputStream.reset();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if(headers[0].equals(Constants.SUBJECTUID)){
-			return Constants.SUBJECTUID;
-		}else if(headers[0].equals(Constants.FAMILYUID))
-		{
-			return Constants.FAMILYUID;
-		}else{
-			return Constants.NOT_SUBJECT_OR_FAMILY;
-		}
-	
 	}
 	
 	

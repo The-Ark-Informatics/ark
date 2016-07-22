@@ -966,7 +966,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		//criteria.addOrder(OrderByBorder"{alias}.STUDY_ID, length({alias}.SUBJECT_UID), {alias}.SUBJECT_UID");
 
 		criteria.setProjection(Projections.distinct(Projections.projectionList().add(Projections.id())));
-		//criteria.addOrder(Order.asc("subjectUID"));
+		criteria.addOrder(Order.asc("subjectUID"));
 		return criteria;
 	}
 

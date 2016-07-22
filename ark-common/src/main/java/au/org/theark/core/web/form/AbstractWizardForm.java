@@ -72,10 +72,10 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	protected WebMarkupContainer		wizardPanelFormContainer;
 	protected WebMarkupContainer		wizardButtonContainer;
 
-	private ArkExcelWorkSheetAsGrid	arkExcelWorkSheetAsGrid;
+	private ArkExcelWorkSheetAsGrid		arkExcelWorkSheetAsGrid;
 	private AjaxButton					nextButton;
-	private AjaxLink						previousLink;
-	private AjaxLink						cancelLink;
+	private AjaxLink					previousLink;
+	private AjaxLink					cancelLink;
 	private AjaxButton					finishButton;
 
 	private boolean						cancelled			= false;
@@ -202,6 +202,14 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 
 	public void setNextButton(AjaxButton nextButton) {
 		this.nextButton = nextButton;
+	}
+	
+	public AjaxButton getFinishButton() {
+		return finishButton;
+	}
+
+	public void setFinishButton(AjaxButton finishButton) {
+		this.finishButton = finishButton;
 	}
 
 	public void setPreviousLink(AjaxLink previousLink) {

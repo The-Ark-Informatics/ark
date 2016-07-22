@@ -1,7 +1,14 @@
 use `study`;
--- Do not run the script twice which cause the duplicate enties.
-INSERT INTO `correspondence_outcome_type` (`NAME`) VALUES ('Success');
-INSERT INTO `correspondence_outcome_type` (`NAME`) VALUES ('Failure');
+
+--Not allow to run twice.
+ALTER TABLE `correspondence_outcome_type` 
+ADD UNIQUE INDEX `UK_NAME` (`NAME` ASC);
+
+INSERT IGNORE INTO  `correspondence_outcome_type` (`NAME`) VALUES ('Success'); 
+INSERT IGNORE INTO `correspondence_outcome_type` (`NAME`) VALUES ('Failure');
+INSERT IGNORE INTO `correspondence_outcome_type` (`NAME`) VALUES ('Left voicemail');
+INSERT IGNORE INTO `correspondence_outcome_type` (`NAME`) VALUES ('Return call');
+INSERT IGNORE INTO `correspondence_outcome_type` (`NAME`) VALUES ('Rebook visit');
  	
 DROP TABLE IF EXISTS `correspondence_mode_direction_outcome`;
 CREATE TABLE `correspondence_mode_direction_outcome` (
@@ -53,8 +60,12 @@ SET @ContactMode=(SELECT ID FROM correspondence_outcome_type WHERE name='Contact
 SET @MessageGiven=(SELECT ID FROM correspondence_outcome_type WHERE name='Message given to person');
 SET @Success=(SELECT ID FROM correspondence_outcome_type WHERE name='Success');
 SET @Faliure=(SELECT ID FROM correspondence_outcome_type WHERE name='Failure');
+-- Ark 1531 additional out come types.
+SET @LeftVoicemail=(SELECT ID FROM correspondence_outcome_type WHERE name='Left voicemail');
+SET @ReturnCall=(SELECT ID FROM correspondence_outcome_type WHERE name='Return call');
+SET @RebookVisit=(SELECT ID FROM correspondence_outcome_type WHERE name='Rebook visit');
 
-
+DELETE FROM correspondence_mode_direction_outcome;
 
 INSERT INTO correspondence_mode_direction_outcome(MODE_TYPE_ID,DIRECTION_TYPE_ID,OUTCOME_TYPE_ID) 
 -- Mail, Outgoing
@@ -86,6 +97,10 @@ VALUES(@MailID,@OUTGOID,@Sent),
 (@TelephoneID,@OUTGOID,@MessageGiven),
 (@TelephoneID,@OUTGOID,@NoAnswer),
 (@TelephoneID,@OUTGOID,@NotApplicable),
+-- Ark 1531 additional out come types.
+(@TelephoneID,@OUTGOID,@LeftVoicemail),
+(@TelephoneID,@OUTGOID,@ReturnCall),
+(@TelephoneID,@OUTGOID,@RebookVisit),
 -- Telephone, Incoming
 (@TelephoneID,@INCOMID,@ContactMode),
 (@TelephoneID,@INCOMID,@NoAnswer),

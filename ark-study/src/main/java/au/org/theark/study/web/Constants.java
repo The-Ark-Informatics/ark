@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Constants {
-	public static final String			UPLOAD_STATUS_OF_AWAITING_VALIDATION				= "AWAITING_VALIDATION";
-	public static final String			UPLOAD_STATUS_OF_COMPLETED								= "COMPLETED";
-	public static final String			UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION			= "ERROR_IN_DATA_VALIDATION";
-	public static final String			UPLOAD_STATUS_OF_ERROR_IN_FILE_VALIDATION			= "ERROR_IN_FILE_VALIDATION";
-	public static final String			UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT				= "ERROR_ON_DATA_IMPORT";
-	public static final String			UPLOAD_STATUS_OF_STATUS_NOT_DEFINED					= "STATUS_NOT_DEFINED";
-	public static final String			UPLOAD_STATUS_OF_VALIDATED								= "VALIDATED";
+	public static final String			UPLOAD_STATUS_OF_AWAITING_VALIDATION							= "AWAITING_VALIDATION";
+	public static final String			UPLOAD_STATUS_OF_COMPLETED										= "COMPLETED";
+	public static final String			UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION						= "ERROR_IN_DATA_VALIDATION";
+	public static final String			UPLOAD_STATUS_OF_ERROR_IN_FILE_VALIDATION						= "ERROR_IN_FILE_VALIDATION";
+	public static final String			UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT							= "ERROR_ON_DATA_IMPORT";
+	public static final String			UPLOAD_STATUS_OF_STATUS_NOT_DEFINED								= "STATUS_NOT_DEFINED";
+	public static final String			UPLOAD_STATUS_OF_VALIDATED										= "VALIDATED";
 	public static final String			ADMIN_TAB														= "Administration";
 	public static final String			STUDY_TAB														= "Study";
 	public static final String			SUBJECT_TAB														= "Subject";
@@ -344,9 +344,9 @@ public class Constants {
 	public static final String			UPLOAD_TYPE_NAME										= "name";
 
 	// Exception messages
-	public static final String			IO_EXCEPTION													= "IOException: Input error. ";
+	public static final String			IO_EXCEPTION												= "IOException: Input error. ";
 	public static final String			FILE_FORMAT_EXCEPTION										= "File Format Exception: Input error. ";
-	public static final String			ARK_SYSTEM_EXCEPTION											= "General ARK System Exception: ";
+	public static final String			ARK_SYSTEM_EXCEPTION										= "General ARK System Exception: ";
 	public static final String			ARK_BASE_EXCEPTION											= "Base ARK System Exception: ";
 
 	public static final String[]		SUBJECT_TEMPLATE_HEADER										= { "SUBJECTUID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH",
