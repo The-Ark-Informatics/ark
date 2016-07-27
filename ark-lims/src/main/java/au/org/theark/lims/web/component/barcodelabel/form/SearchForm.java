@@ -65,6 +65,7 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 	private ILimsAdminService						iLimsAdminService;
 
 	private TextField<Long>						idTxtFld;
+	private DropDownChoice<Study>				studyDdc;
 	private TextField<String>					nameTxtFld;
 	private TextArea<String>					descriptionTxtArea;
 
@@ -105,13 +106,39 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 
 	protected void initialiseSearchForm() {
 		idTxtFld = new TextField<Long>("id");
-		nameTxtFld = new TextField<String>("name");
+		initialiseStudyDdc();
+		nameTxtFld = new TextField<String>("name");		
 		descriptionTxtArea = new TextArea<String>("description");
 		addSearchComponentsToForm();
 	}
 
+	private void initialiseStudyDdc() {
+		PropertyModel<Study> studyPm = new PropertyModel<Study>(getModelObject(), "study");
+		List<Study> studyListForUser = new ArrayList<Study>(0);
+		studyListForUser = getStudyListForUser();
+		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
+		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);
+	}
+
+	/**
+	 * Returns a list of Studies the user is permitted to access
+	 * 
+	 * @return
+	 */
+	private List<Study> getStudyListForUser() {
+		List<Study> studyListForUser = new ArrayList<Study>(0);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			studyListForUser.add(study);
+		}
+		return studyListForUser;
+	}
+
 	protected void addSearchComponentsToForm() {
 		add(idTxtFld);
+		add(studyDdc);
 		add(nameTxtFld);
 		add(descriptionTxtArea);
 	}
@@ -119,15 +146,6 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-        if (sessionStudyId != null) {
-			Study study = iArkCommonService.getStudy(sessionStudyId);
-			if (study != null) {
-				getModelObject().setStudy(study);
-			}
-		}
-
 		long count = iLimsAdminService.getBarcodeLabelCount(getModelObject());
 		if (count == 0L) {
 			this.info("There are no records that matched your query. Please modify your filter");
