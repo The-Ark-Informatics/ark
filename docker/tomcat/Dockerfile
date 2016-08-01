@@ -27,8 +27,7 @@ RUN { \
 	} > /etc/apt/preferences.d/unstable-openssl
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		libapr1 \
-		openssl="$OPENSSL_VERSION" \
-	&& rm -rf /var/lib/apt/lists/*
+		openssl="$OPENSSL_VERSION"
 
 # see https://www.apache.org/dist/tomcat/tomcat-8/KEYS
 RUN set -ex \
@@ -72,7 +71,7 @@ RUN set -x \
 		make \
 		openjdk-${JAVA_VERSION%%[-~bu]*}-jdk=$JAVA_DEBIAN_VERSION \
 	" \
-	&& apt-get update && apt-get install -y --no-install-recommends $nativeBuildDeps && rm -rf /var/lib/apt/lists/* \
+	&& apt-get update && apt-get install -y --no-install-recommends $nativeBuildDeps \
 	&& ( \
 		export CATALINA_HOME="$PWD" \
 		&& cd "$nativeBuildDir/native" \
@@ -85,7 +84,6 @@ RUN set -x \
 		&& make -j$(nproc) \
 		&& make install \
 	) \
-	&& apt-get purge -y --auto-remove $nativeBuildDeps \
 	&& rm -rf "$nativeBuildDir" \
 	&& rm bin/tomcat-native.tar.gz
 
