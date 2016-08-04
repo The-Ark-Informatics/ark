@@ -10,10 +10,11 @@ This configuration has four containers defined; MySQL, LDAP (Slapd), Tomcat and 
 2. `docker-compose build`
 3. `docker-compose up`
 
+*Note: The start up process for the docker containers will modify the application context files for The Ark, and as such you should backup any modified application context files that you have before running `docker-compose up`.*
+
 ###Prerequisites
 - [Docker](https://www.docker.com)
 - [Docker Compose](https://www.docker.com/products/docker-compose)
-
 
 ###Extra Commands
 
