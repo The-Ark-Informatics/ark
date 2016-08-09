@@ -34,6 +34,7 @@ import com.csvreader.CsvReader;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.service.IStudyService;
 
 /**
@@ -58,6 +59,7 @@ public class SubjectCustomDataUploadJob implements Job {
 	public static final String		REPORT				= "report";
 	public static final String		LIST_OF_UIDS_TO_UPDATE	= "listOfUidsToUpdate";
 	public static final String		CUSTOM_FIELD_TYPE	= "customfieldType";
+	public static final String		MODEL_OBJECT		= "modelObject";
 	
 	private IStudyService	iStudyService;
 	private IArkCommonService<Void>	iArkCommonService;
@@ -89,10 +91,11 @@ public class SubjectCustomDataUploadJob implements Job {
 		Long studyId 				= data.getLongValue(STUDY_ID);
 		List<String> uidsToUpdate	=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
 		String customfieldType		= data.getString(CUSTOM_FIELD_TYPE);
+		UploadVO uploadVO		= (UploadVO)data.get(MODEL_OBJECT);
 		
 		try {
 			Date startTime = new Date(System.currentTimeMillis());
-			StringBuffer uploadReport = iStudyService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate,customfieldType);
+			StringBuffer uploadReport = iStudyService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate,customfieldType,uploadVO);
 			Upload upload = iStudyService.getUpload(uploadId);
 			save(upload, uploadReport.toString(), originalReport, startTime);
 		}catch(Exception e){

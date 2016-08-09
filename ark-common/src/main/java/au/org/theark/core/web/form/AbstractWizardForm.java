@@ -228,7 +228,6 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		initialiseGridView();
 		wizardPanelContainer.setVisible(true);
 		resultListContainer.setVisible(true);
-
 		target.add(feedBackPanel);
 		target.add(wizardPanelContainer);
 		target.add(wizardPanelFormContainer);

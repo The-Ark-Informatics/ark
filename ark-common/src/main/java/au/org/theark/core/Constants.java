@@ -718,6 +718,8 @@ public class Constants {
 	
 	public static final String UPLOAD_STATUS_AWAITING_VALIDATION = "AWAITING_VALIDATION";
 	
+	public static final String UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT= "ERROR_ON_DATA_IMPORT";
+	
 	//General Form text field maximum field length validation
 	public static final Integer GENERAL_FIELD_NAME_MAX_LENGTH_50 = 50;
 	

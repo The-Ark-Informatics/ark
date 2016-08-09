@@ -116,6 +116,7 @@ public class SubjectCustomDataUploadExecutor {
 			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.SIZE, size);
 			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
 			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.CUSTOM_FIELD_TYPE, customFeildType);
+			customDataUploadJob.getJobDataMap().put(SubjectCustomDataUploadJob.MODEL_OBJECT, uploadVO);
 			Date startTime = nextGivenSecondDate(null, 1);
 			SimpleTrigger trigger1 = newTrigger().withIdentity("SubjectCustomDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
 			sched.start();

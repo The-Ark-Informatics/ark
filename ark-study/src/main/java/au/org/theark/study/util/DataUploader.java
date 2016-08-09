@@ -88,6 +88,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.DataConversionAndManipulationHelper;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.ConsentVO;
+import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
@@ -1158,7 +1159,7 @@ public class DataUploader {
 	 * @throws ArkSystemException
 	 * Used in step 4.
 	 */
-	public StringBuffer uploadAndReportSubjectCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate) throws FileFormatException,
+	public StringBuffer uploadAndReportSubjectCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate,UploadVO uploadVO) throws FileFormatException,
 			ArkSystemException {
 		List<SubjectCustomFieldData> customFieldsToUpdate = new ArrayList<SubjectCustomFieldData>();
 		List<SubjectCustomFieldData> customFieldsToInsert = new ArrayList<SubjectCustomFieldData>();
@@ -1185,16 +1186,18 @@ public class DataUploader {
 		}
 		
 
-		int subjectCount = 0;
+		int subjectCount = 1;
 		long updateFieldsCount = 0L;
 		long insertFieldsCount = 0L;
 		long emptyDataCount = 0L;
+		int percentage=0;
+		int totalUploadSize=0;
 		try {
 			
 			String[] stringLineArray;
-
 			List<LinkSubjectStudy> allSubjectWhichWillBeUpdated = null;
-			if (listOfUIDsToUpdate.size() > 0) {
+			totalUploadSize=listOfUIDsToUpdate.size();
+			if (totalUploadSize > 0) {
 				allSubjectWhichWillBeUpdated = iArkCommonService.getUniqueSubjectsWithTheseUIDs(study, listOfUIDsToUpdate);
 			}
 			else {
@@ -1217,7 +1220,8 @@ public class DataUploader {
 			// read one line which contains potentially many custom fields
 			while (csvReader.readRecord()) {
 				log.info("reading record " + subjectCount);
-
+				percentage=(int)Math.round(((double)(subjectCount)/(double)totalUploadSize)*100.0);
+				uploadVO.setProgress(percentage);
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);

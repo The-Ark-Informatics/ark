@@ -18,8 +18,13 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectUpload;
 
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
+import org.wicketstuff.progressbar.ProgressBar;
+import org.wicketstuff.progressbar.Progression;
+import org.wicketstuff.progressbar.ProgressionModel;
 
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -32,13 +37,24 @@ public class SubjectUploadStep5 extends AbstractWizardStepPanel {
 
 	private static final long	serialVersionUID	= -6803600838428204753L;
 	private Form<UploadVO>						containerForm;
-	
+	private  WebMarkupContainer					progressPanel;
+	private org.wicketstuff.progressbar.ProgressBar progressBar;
 
 	public SubjectUploadStep5(String id, Form<UploadVO> containerForm) {
 		super(id, "Step 5/5: Data Upload Commenced",
 				"The data is currently being processed for import. On returning to the Study Data Upload tab, the status of this upload will become \"Successfully Completed \""
 				+ " when the import process is complete.<br/>In the event that the import process fails, the status of the upload will become \"Error while importing data\". Please contact the system administrator if this occurs."); 
 		this.containerForm = containerForm;
+		progressPanel=new WebMarkupContainer("progressPanel");
+		progressPanel.setOutputMarkupId(true);
+		progressBar = new ProgressBar("bar", new ProgressionModel() {
+	        protected Progression getProgression() {
+	            return new Progression(containerForm.getModelObject().getProgress());
+	        }
+	    });
+		progressBar.setWidth(1000);
+		progressPanel.add(progressBar);
+		add(progressPanel);
 	}
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
@@ -48,5 +64,7 @@ public class SubjectUploadStep5 extends AbstractWizardStepPanel {
 			form.getFinishButton().setEnabled(true);
 			target.add(form.getWizardButtonContainer());
 		}
+		progressBar.start(target);
 	}
+	
 }

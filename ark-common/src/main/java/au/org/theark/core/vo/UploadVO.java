@@ -54,6 +54,7 @@ public class UploadVO implements Serializable {
 	private Boolean 							previousStepOutCompleted; 
 	private String								customFieldType;
 	private String 								strMessage;
+	private Integer 							progress;
 
 	public UploadVO() {
 		upload = new Upload();
@@ -263,5 +264,18 @@ public class UploadVO implements Serializable {
 	public void setStrMessage(String strMessage) {
 		this.strMessage = strMessage;
 	}
+
+	public Integer getProgress() {
+		if(progress==null){
+			return new Integer(0);
+		}else{
+			return progress;
+		}
+	}
+
+	public void setProgress(Integer progress) {
+		this.progress = progress;
+	}
+	
 	
 }
