@@ -223,20 +223,29 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			// Show file data (and key reference)
 //			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
 //																		containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells, containerForm.getModelObject().getUpload().getUploadType());
+		
 			
+			//Sanjaya comment on 2016-07-18 : 
+			//I suspect due to this changes in the display the per page rows. There is a negligence on the coding of  insertRows, updateRows, errorCells.
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid=null; 
-			if(Constants.PEDIGREE_DATA.equalsIgnoreCase(containerForm.getModelObject().getUpload().getUploadType().getName())){
+			/*if(Constants.PEDIGREE_DATA.equalsIgnoreCase(containerForm.getModelObject().getUpload().getUploadType().getName())){
 				arkExcelWorkSheetAsGrid= new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
 						containerForm.getModelObject().getFileUpload(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType(),false);
 			}else{
 				arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
 						containerForm.getModelObject().getFileUpload(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType());
+			}*/
+			if(Constants.PEDIGREE_DATA.equalsIgnoreCase(containerForm.getModelObject().getUpload().getUploadType().getName())){
+				arkExcelWorkSheetAsGrid= new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
+					containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType(), false);
+			}else{
+				arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
+					containerForm.getModelObject().getFileUpload(),insertRows, updateRows, errorCells, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType());
 			}
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
-
 			// Repaint
 			target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
 			target.add(form.getWizardPanelFormContainer());
@@ -245,6 +254,9 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				updateExistingDataContainer.setVisible(false);
 				target.add(updateExistingDataContainer);
 				
+			}else{
+				updateExistingDataContainer.setVisible(true);
+				target.add(updateExistingDataContainer);
 			}
 
 			if (!errorCells.isEmpty()) {

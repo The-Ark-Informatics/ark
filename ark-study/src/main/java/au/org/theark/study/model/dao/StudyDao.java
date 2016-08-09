@@ -75,6 +75,7 @@ import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
+import au.org.theark.core.model.study.entity.CorrespondenceModeDirectionOutcome;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
@@ -540,7 +541,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 			if (isSubjectUIDUnique(subjectUID, study.getId(), "Insert")) {
 				subjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
-			}
+			}	
 			else {// TODO : maybe a for loop to guard against a manual db insert, or just throw exception and holds someone up from further inserts until
 					// investigated why?
 				subjectUID = getNextGeneratedSubjectUID(study);
@@ -576,19 +577,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			VitalStatus vitalStatus = getVitalStatus(new Long(0));
 			subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
 		}
-
 		//log.info("create subject otherIDs:  " + subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs());
-
 		if (subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs() == null || subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs().isEmpty()) { // get
-																																																		// better
-																																																		// values
-																																																		// when
-																																																		// implemented
-																																																		// properly
 			List<OtherID> otherIDs = new ArrayList<OtherID>();
 			subjectVo.getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
 		}
-
 		Session session = getSession();
 		Person person = subjectVo.getLinkSubjectStudy().getPerson();
 
@@ -2779,5 +2772,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<Consent> consents=criteria.list();
 		return (consents.size() > 0);
 		
+	}
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType) {
+		
+		List<CorrespondenceOutcomeType> correspondenceOutcomeTypes=new ArrayList<CorrespondenceOutcomeType>();
+		Criteria criteria = getSession().createCriteria(CorrespondenceModeDirectionOutcome.class);
+		criteria.add(Restrictions.eq("correspondenceModeType", correspondenceModeType));
+		criteria.add(Restrictions.eq("correspondenceDirectionType",correspondenceDirectionType));
+		List<CorrespondenceModeDirectionOutcome> lst=(List<CorrespondenceModeDirectionOutcome>)criteria.list();
+		for (CorrespondenceModeDirectionOutcome correspondenceModeDirectionOutcome : lst) {
+			correspondenceOutcomeTypes.add(correspondenceModeDirectionOutcome.getCorrespondenceOutcomeType());
+		}
+		return correspondenceOutcomeTypes;
 	}
 }

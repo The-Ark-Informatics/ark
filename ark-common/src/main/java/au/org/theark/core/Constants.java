@@ -491,6 +491,7 @@ public class Constants {
 	public static final String ARK_SESSION_ID = "ARK_SESSION_ID";
 	public static final String ARK_USERID = "ARK_USERID";
 	public static final String ARK_HOST = "ARK_HOST";
+	public static final String ARK_USER_NAME = "ARK_USER_NAME";
 	public static final String ARK_SESSION_START_TIMESTAMP = "ARK_SESSION_START_TIMESTAMP";
 	public static final String ARK_SESSION_LAST_ACCESS_TIME = "ARK_SESSION_LAST_ACCESS_TIME";
 	public static final String ARK_SESSION_ACTION = "ARK_SESSION_ACTION";
@@ -716,6 +717,8 @@ public class Constants {
 	public static final String UPLOAD_STATUS_VALIDATED = "VALIDATED";
 	
 	public static final String UPLOAD_STATUS_AWAITING_VALIDATION = "AWAITING_VALIDATION";
+	
+	public static final String UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT= "ERROR_ON_DATA_IMPORT";
 	
 	//General Form text field maximum field length validation
 	public static final Integer GENERAL_FIELD_NAME_MAX_LENGTH_50 = 50;

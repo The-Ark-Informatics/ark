@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -69,17 +70,17 @@ public class CustomFieldUploadValidator {
 
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
-	private Long						studyId;
-	private Study						study;
+	private Long					studyId;
+	private Study					study;
 	java.util.Collection<String>	fileValidationMessages	= new java.util.ArrayList<String>();
 	java.util.Collection<String>	dataValidationMessages	= new java.util.ArrayList<String>();
 	private HashSet<Integer>		existantSubjectUIDRows;
 	private HashSet<Integer>		nonExistantUIDs;
 	private HashSet<ArkGridCell>	errorCells;
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
-	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
-	private int							row							= 1;
+	private char					delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
+	private String					fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
+	private int						row							= 1;
 
 	/*public CustomFieldUploadValidator() {
 		super();
@@ -147,19 +148,23 @@ public class CustomFieldUploadValidator {
 	}
 
 	public HashSet<Integer> getInsertRows() {
-		return existantSubjectUIDRows;
-	}
-
-	public void setInsertRows(HashSet<Integer> insertRows) {
-		this.existantSubjectUIDRows = insertRows;
-	}
-
-	public HashSet<Integer> getUpdateRows() {
+		//return existantSubjectUIDRows;
 		return nonExistantUIDs;
 	}
 
+	public void setInsertRows(HashSet<Integer> insertRows) {
+		//this.existantSubjectUIDRows = insertRows;
+		this.nonExistantUIDs = insertRows;
+	}
+
+	public HashSet<Integer> getUpdateRows() {
+		//return nonExistantUIDs;
+		return existantSubjectUIDRows;
+	}
+
 	public void setUpdateRows(HashSet<Integer> updateRows) {
-		this.nonExistantUIDs = updateRows;
+		this.existantSubjectUIDRows = updateRows;
+		//this.nonExistantUIDs = updateRows;
 	}
 
 	public HashSet<ArkGridCell> getErrorCells() {
@@ -191,7 +196,7 @@ public class CustomFieldUploadValidator {
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter);
+			validationMessages = validateCustomFieldFileFormat(uploadVo,inputStream, fileFormat, delimiterCharacter);
 			
 		}
 		catch (IOException e) {
@@ -215,7 +220,7 @@ public class CustomFieldUploadValidator {
 	 * @return a collection of validation messages
 	 * Step 2 Used.
 	 */
-	private Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
+	private Collection<String> validateCustomFieldFileFormat(UploadVO uploadVO,InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -236,7 +241,7 @@ public class CustomFieldUploadValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			validationMessages = validateCustomFieldMatrixFileFormat(uploadVO,inputStream, inputStream.toString().length(), fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -266,7 +271,7 @@ public class CustomFieldUploadValidator {
 	 * @return a collection of file format validation messages
 	 * Step 2 used.
 	 */
-	private java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException {
+	private java.util.Collection<String> validateCustomFieldMatrixFileFormat(UploadVO uploadVO,InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 0;
@@ -282,31 +287,38 @@ public class CustomFieldUploadValidator {
 			csvReader.readHeaders();
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
-			boolean hasSubjectOrFamilyUIDHeader = false;
+			boolean hasSubjectUID=false;
+			boolean hasFamilyUID=false;
+			boolean hasOneOfSubjectUidOrFamilyUid=false;
 			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 			List<String> badHeaders = new ArrayList<String>();
-			
-			//FamilyUID validation includes
-			for(String header : headerColumnArray){																						
-				if(header.equalsIgnoreCase("SUBJECTUID")||header.equalsIgnoreCase("FAMILYUID")) {
-					hasSubjectOrFamilyUIDHeader = true;
+			//Write the correct function to pick the header specify correctly.
+			for(String header : headerColumnArray){
+				if(header.equalsIgnoreCase(Constants.SUBJECTUID)){
+					hasSubjectUID = true;
 				}
-				else{
-					//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
-					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, subjectCustomFieldArkFunction) == null){
+				if(header.equalsIgnoreCase(Constants.FAMILYUID)){
+					hasFamilyUID = true;
+				}
+				//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
+					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, subjectCustomFieldArkFunction) == null && 
+							!Constants.SUBJECTUID.equals(header) && !Constants.FAMILYUID.equals(header)){
 						badHeaders.add(header);
 						headerError = true;
 					}
-				}
-			}
-			if (headerError || !hasSubjectOrFamilyUIDHeader) {
+			}//end for
+			//The is the XOR for the Result
+			hasOneOfSubjectUidOrFamilyUid=hasSubjectUID^hasFamilyUID;
+			if(hasOneOfSubjectUidOrFamilyUid && hasSubjectUID){uploadVO.setCustomFieldType(Constants.SUBJECT);}
+			if(hasOneOfSubjectUidOrFamilyUid && hasFamilyUID){uploadVO.setCustomFieldType(Constants.FAMILY);}
+			if (headerError || !hasOneOfSubjectUidOrFamilyUid) {
 				// Invalid file format
 				StringBuffer stringBuffer = new StringBuffer();
 				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n\n");
 				stringBuffer.append("This file is not valid because; \n");
 				fileValidationMessages.add(stringBuffer.toString());
-				if(!hasSubjectOrFamilyUIDHeader){
-					fileValidationMessages.add("The column name \"SUBJECTUID\" or \"FAMILYUID\" must exist as the header of the first column.\n");
+				if(!hasOneOfSubjectUidOrFamilyUid){
+					fileValidationMessages.add("The column name must be either \"SUBJECTUID\" or \"FAMILYUID\" as the header of the first column.Both can not take place at once\n");
 				}
 				for (String badHeader : badHeaders) {
 					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing study-specific custom field.\n");
@@ -384,7 +396,7 @@ public class CustomFieldUploadValidator {
 				}
 			}
 
-			validationMessages = validateSubjectFamilyFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
+			validationMessages = validateSubjectFamilyFileData(uploadVo,inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -403,15 +415,15 @@ public class CustomFieldUploadValidator {
 	 * @return
 	 * Used in Step 3
 	 */
-	private Collection<String> validateSubjectFamilyFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
-		java.util.Collection<String> validationMessages = null;
+	private Collection<String> validateSubjectFamilyFileData(UploadVO uploadVo,InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
+		java.util.Collection<String> validationMessages = new ArrayList<String>();
 		try {
 			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
 			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
-			String dataFileType=UploadUtilities.getUploadFileDataFileSubjectOrFamily(inputStream,delimChar);
-			if(Constants.SUBJECTUID.equals(dataFileType)){ 
+			//String dataFileType=new UploadUtilities().getUploadFileDataFileSubjectOrFamily(inputStream,delimChar);
+			if(Constants.SUBJECT.equals(uploadVo.getCustomFieldType())){ 
 				validationMessages = validateMatrixSubjectCustomFileData(inputStream, delimChar, Long.MAX_VALUE, uidsToUpdateReference);
-			}else if(Constants.FAMILYUID.equals(dataFileType)){
+			}else if(Constants.FAMILY.equals(uploadVo.getCustomFieldType())){
 				validationMessages = validateMatrixFamilyCustomFileData(inputStream,delimChar,  Long.MAX_VALUE, uidsToUpdateReference);
 			}else{
 				log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION);
@@ -419,12 +431,14 @@ public class CustomFieldUploadValidator {
 			}
 		}
 		catch (FileFormatException ffe) {
-			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
+			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe.getMessage());
+			validationMessages.add(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe.getMessage());
 		}
 		catch (ArkBaseException abe) {
-			log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + abe);
+			log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + abe.getMessage());
+			validationMessages.add(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + abe.getMessage());
 		}
-		return validationMessages;
+			return validationMessages;
 	}
 
 	
@@ -539,11 +553,11 @@ public class CustomFieldUploadValidator {
 				}
 			}*/
 		}
-
-		//TODO:  test hashset this i.intvalue or left hashset value??
-		for (Iterator<Integer> iterator = nonExistantUIDs.iterator(); iterator.hasNext();) {
-			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("Subject on row " + i.intValue() + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
+		List<Integer> nonExsistingUIDLst=new ArrayList<>(nonExistantUIDs);
+		Collections.sort(nonExsistingUIDLst);
+		//The Header include in the first row.So we have to always go for the array value +1 
+		for (Integer nonExt : nonExsistingUIDLst) {
+			dataValidationMessages.add("Subject on row " + (nonExt+1) + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
 		}
 		return dataValidationMessages;
 	}
@@ -654,11 +668,11 @@ public class CustomFieldUploadValidator {
 				}
 			}*/
 		}
-
-		//TODO:  test hashset this i.intvalue or left hashset value??
-		for (Iterator<Integer> iterator = nonExistantUIDs.iterator(); iterator.hasNext();) {
-			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("FamilyUID on row " + i.intValue() + " does not exist in the database.  Please remove this row and retry or run upload/create this FamilyUID first.");
+		List<Integer> nonExsistingUIDLst=new ArrayList<>(nonExistantUIDs);
+		Collections.sort(nonExsistingUIDLst);
+		//The Header include in the first row.So we have to always go for the array value +1 
+		for (Integer nonExt : nonExsistingUIDLst) {
+			dataValidationMessages.add("Subject on row " + (nonExt+1) + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
 		}
 		return dataValidationMessages;
 		
@@ -1095,6 +1109,8 @@ public class CustomFieldUploadValidator {
 		stringBuffer.append(" is not amongst the valid status options.");
 		return (stringBuffer.toString());
 	}
+	
+	
 	
 
 }

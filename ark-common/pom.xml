@@ -237,12 +237,21 @@
 		-->
 
 		<!--  Quartz (Job scheduling) -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>2.1.4</version>
-		</dependency>
-
+		</dependency> -->
+		<dependency>
+    		<groupId>org.quartz-scheduler</groupId>
+    		<artifactId>quartz</artifactId>
+    		<version>2.2.1</version>
+  		</dependency>
+  		<dependency>
+    		<groupId>org.quartz-scheduler</groupId>
+    		<artifactId>quartz-jobs</artifactId>
+    		<version>2.2.1</version>
+  		</dependency>   
 		<dependency>
 			<groupId>net.tanesha.recaptcha4j</groupId>
 			<artifactId>recaptcha4j</artifactId>
@@ -342,6 +351,17 @@
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>2.52.0</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.wicketstuff</groupId>
+    		<artifactId>wicketstuff-progressbar</artifactId>
+    		<version>7.4.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.wicketstuff/progressbar-spring -->
+		<dependency>
+    		<groupId>org.wicketstuff</groupId>
+   			 <artifactId>progressbar-spring</artifactId>
+   			 <version>1.5-RC5.1</version>
 		</dependency>
 	</dependencies>
 	<build>

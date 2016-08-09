@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import au.org.theark.core.model.study.entity.*;
+
 import org.apache.wicket.util.file.File;
 
 import com.csvreader.CsvReader;
@@ -253,7 +254,8 @@ public interface IStudyService {
 
 	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId,  List<String> listOfUIDsToUpdate);
 
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId,  List<String> listOfUIDsToUpdate);
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId, 
+			List<String> listOfUIDsToUpdate,String customFieldType,UploadVO uploadVO);
 	
 
 //TODO Trav Deprecated	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
@@ -466,4 +468,5 @@ public interface IStudyService {
 	public List<RelationshipVo> getSubjectChildren(String subjectUID, long studyId);
 	public void delete(OtherID otherID);
 	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp);
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType);
 }

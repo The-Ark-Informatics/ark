@@ -75,9 +75,9 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private transient Sheet					sheet;																										// an instance of an Excel
 	// WorkSheet
 	private UploadType 						uploadType;
-	private transient ArkSheetMetaData	sheetMetaData;
-	private byte[]								workBookAsBytes;
-	private char								delimiterType;
+	private transient ArkSheetMetaData		sheetMetaData;
+	private byte[]							workBookAsBytes;
+	private char							delimiterType;
 	private HashSet<Integer>				insertRows;
 	private HashSet<Integer>				updateRows;
 	private HashSet<Integer>				warningRows;
@@ -85,7 +85,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private HashSet<ArkGridCell>			updateCells;
 	private HashSet<ArkGridCell>			warningCells;
 	private HashSet<ArkGridCell>			errorCells;
-	private String								fileFormat;
+	private String							fileFormat;
 	private WebMarkupContainer				wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
 	private WebMarkupContainer				wizardDataGridKeyContainerForCustom	= new WebMarkupContainer("wizardDataGridKeyContainerForCustom");
 	private int									rowsToDisplay					= iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue();
@@ -329,6 +329,44 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		initialiseGrid();
 		initialiseGridKey(fileUpload, uploadType);
 	}
+	
+	//Add this method on 2016-07-18 to include the missing insert rows,updateRows and errorCells.
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload,HashSet<Integer> insertRows, HashSet<Integer> updateRows,HashSet<ArkGridCell> errorCells, int rowsToDisplay, UploadType uploadType,boolean header) {
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.updateRows = updateRows;
+		this.insertRows = insertRows;
+		this.warningRows = new HashSet<Integer>();
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
+		this.rowsToDisplay = rowsToDisplay;
+		this.uploadType = uploadType;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid(header);
+		initialiseGridKey(fileUpload, uploadType);
+	}
+	//Add this method on 2016-07-18 to include the missing insert rows,updateRows and errorCells.
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload,HashSet<Integer> insertRows, HashSet<Integer> updateRows,HashSet<ArkGridCell> errorCells, int rowsToDisplay, UploadType uploadType) {
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.updateRows = updateRows;
+		this.insertRows = insertRows;
+		this.warningRows = new HashSet<Integer>();
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
+		this.rowsToDisplay = rowsToDisplay;
+		this.uploadType = uploadType;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload, uploadType);
+	}
+	
 
 	private void initialiseGrid() {
 		add(new Label("rowsToDisplay", rowsToDisplay + " rows of file"));
@@ -691,7 +729,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private void initialiseGridKey(FileUpload fileUpload, UploadType uploadType) {
 																							//TODO ASAP FIX HARDCODING
 		if(uploadType !=null && uploadType.getName().equalsIgnoreCase("Study-specific (custom) Data")){
-			updateLegendLabel.setDefaultModelObject("Indicates subject does not exist");
+			updateLegendLabel.setDefaultModelObject("Indicates subject will be updated.");
 			updateLegendLabel.setOutputMarkupId(true);
 		}
 

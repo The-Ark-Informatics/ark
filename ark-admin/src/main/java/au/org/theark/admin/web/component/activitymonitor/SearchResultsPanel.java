@@ -21,6 +21,8 @@ package au.org.theark.admin.web.component.activitymonitor;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.InvalidSessionException;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -33,8 +35,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkSubjectSessionVO;
+import au.org.theark.core.vo.ArkUserVO;
 
 public class SearchResultsPanel extends Panel {
 
@@ -66,10 +71,17 @@ public class SearchResultsPanel extends Panel {
 				final String host = subject.getHost();
 				final Date startTimestamp = subject.getStartTimestamp();
 				final Date lastAccessTime = subject.getLastAccessTime();
+				ArkUserVO arkUser=null;
 				SimpleDateFormat sdf = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
-				
+				try {
+					arkUser=iArkCommonService.getUser((String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_USERID));
+				} catch (InvalidSessionException | ArkSystemException
+						| EntityNotFoundException e) {
+					e.printStackTrace();
+				}
 				item.add(new Label(au.org.theark.core.Constants.ARK_SESSION_ID, sessionId));
 				item.add(new Label(au.org.theark.core.Constants.ARK_USERID, userId));
+				item.add(new Label(au.org.theark.core.Constants.ARK_USER_NAME, arkUser.getFirstName()+" "+arkUser.getLastName()));
 				item.add(new Label(au.org.theark.core.Constants.ARK_HOST, host));
 				item.add(new Label(au.org.theark.core.Constants.ARK_SESSION_START_TIMESTAMP, sdf.format(startTimestamp)));
 				item.add(new Label(au.org.theark.core.Constants.ARK_SESSION_LAST_ACCESS_TIME, sdf.format(lastAccessTime)));

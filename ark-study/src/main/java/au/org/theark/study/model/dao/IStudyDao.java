@@ -515,4 +515,6 @@ public interface IStudyDao {
 	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp);
 
 	public void delete(OtherID otherID);
+	
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType);
 }
