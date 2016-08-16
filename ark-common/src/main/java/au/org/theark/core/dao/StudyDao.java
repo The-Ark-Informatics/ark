@@ -431,7 +431,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 
-		criteria.addOrder(OrderByNatural.asc("subjectUID"));
+//		criteria.addOrder(OrderByNatural.asc("subjectUID"));
+		criteria.addOrder(Order.asc("naturalUID"));
 		List<LinkSubjectStudy> list = criteria.list();
 
 		Collection<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
@@ -962,7 +963,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		criteria.setProjection(Projections.distinct(Projections.projectionList().add(Projections.id())));
 
-		criteria.addOrder(OrderByNatural.asc("subjectUID"));
+//		criteria.addOrder(OrderByNatural.asc("subjectUID"));
+		criteria.addOrder(Order.asc("naturalUID"));
 		return criteria;
 	}
 

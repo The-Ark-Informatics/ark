@@ -39,6 +39,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
@@ -58,6 +59,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private SubjectStatus subjectStatus;
 	private Person person;
 	private String subjectUID;
+	private String naturalUID;
 	private ConsentOption consentToActiveContact;
 	private ConsentOption consentToPassiveDataGathering;
 	private ConsentOption consentToUseData;
@@ -183,6 +185,16 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setSubjectUID(String subjectUID) {
 		this.subjectUID = subjectUID;
+	}
+
+	@NotAudited
+	@Column(name = "NATURAL_UID", length = 100)
+	public String getNaturalUID() {
+		return naturalUID;
+	}
+
+	public void setNaturalUID(String naturalUID) {
+		this.naturalUID = naturalUID;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
