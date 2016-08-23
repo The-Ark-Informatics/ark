@@ -2,7 +2,6 @@ version: '2'
 services:
         base:
                 build: ..
-                image: the-ark/base:latest
         mysql:
                 build: db
                 ports:
@@ -13,7 +12,6 @@ services:
                         - mysql_data:/var/lib/mysql
         slapd:
                 build: slapd
-                image: the-ark/slapd:latest
                 env_file: env_file
                 depends_on:
                         - base
@@ -27,7 +25,6 @@ services:
 
         tomcat:
                 build: tomcat
-                image: the-ark/tomcat:latest
                 depends_on:
                         - mysql
                         - slapd
