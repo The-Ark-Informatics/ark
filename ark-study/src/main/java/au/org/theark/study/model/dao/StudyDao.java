@@ -26,12 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-
-
-
-
-
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -67,6 +61,7 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
+import au.org.theark.core.model.report.entity.SearchSubject;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -80,6 +75,7 @@ import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
+import au.org.theark.core.model.study.entity.CorrespondenceModeDirectionOutcome;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
@@ -90,6 +86,8 @@ import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
+import au.org.theark.core.model.study.entity.LinkCalendarCustomField;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
@@ -103,6 +101,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCalendar;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -119,6 +118,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.model.vo.StudyCalendarVo;
 import au.org.theark.study.service.Constants;
 
 @Repository("studyDao")
@@ -192,9 +192,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * @param study
 	 * @param subjectsToUpdate
 	 */
-	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert) {
+	/*public void processFieldsBatch(List<? extends ICustomFieldData> fieldsToUpdate, Study study, List<? extends ICustomFieldData> fieldsToInsert) {
 		Session session = getSession();
 		int count = 0;
+		
+		
 		for (SubjectCustomFieldData dataToUpdate : fieldsToUpdate) {
 			session.update(dataToUpdate);
 			count++;
@@ -219,7 +221,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		session.flush();
 		session.clear();
-	}
+	}*/
 
 	/**
 	 * {@inheritDoc}
@@ -478,17 +480,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria) {
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
-
 		if (studyCompCriteria.getId() != null) {
-			criteria.add(Restrictions.eq(Constants.ID, studyCompCriteria.getId()));
+			//criteria.add(Restrictions.like(Constants.ID, studyCompCriteria.getId().toString(),MatchMode.ANYWHERE));
+			//ARK-1558
+			criteria.add(Restrictions.sqlRestriction(" id LIKE '%"+studyCompCriteria.getId()+"%' "));
 		}
-
 		if (studyCompCriteria.getName() != null) {
-			criteria.add(Restrictions.eq(Constants.STUDY_COMP_NAME, studyCompCriteria.getName()));
+			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_NAME, studyCompCriteria.getName(),MatchMode.ANYWHERE));
 		}
-
 		if (studyCompCriteria.getKeyword() != null) {
-
 			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_KEYWORD, studyCompCriteria.getKeyword(), MatchMode.ANYWHERE));
 		}
 		// Restrict the search for the study do not pull other study components
@@ -541,7 +541,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 			if (isSubjectUIDUnique(subjectUID, study.getId(), "Insert")) {
 				subjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
-			}
+			}	
 			else {// TODO : maybe a for loop to guard against a manual db insert, or just throw exception and holds someone up from further inserts until
 					// investigated why?
 				subjectUID = getNextGeneratedSubjectUID(study);
@@ -577,19 +577,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			VitalStatus vitalStatus = getVitalStatus(new Long(0));
 			subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
 		}
-
 		//log.info("create subject otherIDs:  " + subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs());
-
 		if (subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs() == null || subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs().isEmpty()) { // get
-																																																		// better
-																																																		// values
-																																																		// when
-																																																		// implemented
-																																																		// properly
 			List<OtherID> otherIDs = new ArrayList<OtherID>();
 			subjectVo.getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
 		}
-
 		Session session = getSession();
 		Person person = subjectVo.getLinkSubjectStudy().getPerson();
 
@@ -962,7 +954,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		}
 
-		if (phone != null) {
+		if (phone  != null) {
 
 			if (phone.getId() != null) {
 				phoneCriteria.add(Restrictions.eq(Constants.PHONE_ID, phone.getId()));
@@ -1922,7 +1914,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append("LEFT JOIN cfd.customField AS cf ");
 		sb.append("LEFT JOIN cf.customFieldType AS cft ");
 		sb.append("LEFT JOIN cfd.familyCustomFieldData as fieldList ");
-		sb.append(" with fieldList.familyId = :familyId ");
+		sb.append(" with fieldList.familyUid = :familyUid ");
 		sb.append("  where cfd.customField.study.id = :studyId");
 		sb.append(" and cfd.customField.arkFunction.id = :functionId");
 		//Add new requirement for the category
@@ -1937,7 +1929,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" order by cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
-		query.setParameter("familyId", getSubjectFamilyId(linkSubjectStudyCriteria.getStudy().getId(),linkSubjectStudyCriteria.getSubjectUID()));
+		query.setParameter("familyUid", getSubjectFamilyUId(linkSubjectStudyCriteria.getStudy().getId(),linkSubjectStudyCriteria.getSubjectUID()));
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("functionId", arkFunction.getId());
 		//Add type and category
@@ -1968,9 +1960,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return familyCustomFieldDataList;
 	}
 	
-	
-	public String getSubjectFamilyId(Long studyId, String subjectUID){
-		
+	@Override
+	public String getSubjectFamilyUId(Long studyId, String subjectUID) {
 		String result=null;
 		
 		StringBuffer sb= new StringBuffer("select scfd.TEXT_DATA_VALUE from "
@@ -1989,9 +1980,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	    result = (String) query.uniqueResult();
 	    return result;
 	}
-	
-	
-	
 	
 	
 	/**
@@ -2493,30 +2481,28 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.createAlias("study", "st", JoinType.INNER_JOIN);
 		criteria.createAlias("arkFunction", "af", JoinType.INNER_JOIN);
 		criteria.createAlias("customFieldType", "cft", JoinType.LEFT_OUTER_JOIN);
-
+		criteria.createAlias("fieldType", "ft", JoinType.INNER_JOIN);
 		criteria.add(Restrictions.eq("st.id", studyId));
-		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
+		criteria.add(Restrictions.eq("af.name", au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
 		criteria.add(Restrictions.eq("cf.encodedValues", "0=Yes;1=No;").ignoreCase());
-		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "STUDY")));
-
+		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", au.org.theark.core.Constants.SUBJECT)));
 		pedigreeCustomFields = criteria.list();
 
 		return pedigreeCustomFields;
 	}
-	
-	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId) {
+	@Override
+	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId) {
 		List<CustomField> pedigreeCustomFields = null;
 		Criteria criteria = getSession().createCriteria(CustomField.class, "cf");
 		criteria.createAlias("study", "st", JoinType.INNER_JOIN);
 		criteria.createAlias("arkFunction", "af", JoinType.INNER_JOIN);
 		criteria.createAlias("fieldType", "ft", JoinType.INNER_JOIN);
 		criteria.createAlias("customFieldType", "cft", JoinType.LEFT_OUTER_JOIN);
-
 		criteria.add(Restrictions.eq("st.id", studyId));
-		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
+		criteria.add(Restrictions.eq("af.name",  au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
 		criteria.add(Restrictions.isNull("cf.encodedValues"));
-		criteria.add(Restrictions.eq("ft.name","CHARACTER"));
-		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", "SUBJECT")));
+		criteria.add(Restrictions.eq("ft.name",au.org.theark.core.Constants.FIELD_TYPE_CHARACTER));
+		criteria.add(Restrictions.or(Restrictions.isNull("cft.id"),Restrictions.eq("cft.name", au.org.theark.core.Constants.SUBJECT)));
 		
 		pedigreeCustomFields = criteria.list();
 
@@ -2652,5 +2638,151 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		return criteria;
 	}
+
+	@Override
+	public void processFieldsBatch(List<? extends ICustomFieldData> fieldsToUpdate, Study study,List<? extends ICustomFieldData> fieldsToInsert) {
+		Session session = getSession();
+		int count = 0;
+		for (ICustomFieldData dataToUpdate : fieldsToUpdate) {
+			session.update(dataToUpdate);
+			count++;
+			// based on recommended hibernate practice of <prop key="hibernate.jdbc.batch_size">50</prop>
+			if (count % 50 == 0) {
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!"); // TODO Evaluate why batch not working. hints: may be identity/id generation related.
+																					// Will revisit after all batch work done
+				session.flush();
+				session.clear();
+			}
+		}
+		count = 0;
+		for (ICustomFieldData dataToInsert : fieldsToInsert) {
+			session.save(dataToInsert);
+			count++;
+			// based on recommended hibernate practice of <prop key="hibernate.jdbc.batch_size">50</prop>
+			if (count % 50 == 0) {
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
+				session.flush();
+				session.clear();
+			}
+		}
+		session.flush();
+		session.clear();
+	}
+
+	@Override
+	public void setPreferredPhoneNumberToFalse(Person person) {
+		String queryString = "UPDATE Phone SET preferredPhoneNumber = 0 WHERE person = :person";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("person", person);
+		query.executeUpdate();
+	}
+	
+	public void saveOrUpdate(StudyCalendar studyCalendar){
+		if(studyCalendar.getId() == null || studyCalendar.getId() == 0){
+			getSession().save(studyCalendar);
+		}else{
+			getSession().update(studyCalendar);
+		}
+	}
+	
+	@Override
+	public void saveOrUpdate(StudyCalendarVo studyCalendarVo) {
+		StudyCalendar calendar = studyCalendarVo.getStudyCalendar();
+		saveOrUpdate(calendar);
 		
+		Criteria criteria = getSession().createCriteria(LinkCalendarCustomField.class);
+		criteria.add(Restrictions.eq("studyCalendar", calendar));
+		List<LinkCalendarCustomField> searchResults = criteria.list();
+		for (LinkCalendarCustomField calendarCustomFields : searchResults) {
+			deleteCalendarCustomField(calendarCustomFields);
+		}
+		
+		for(CustomField customField : studyCalendarVo.getSelectedCustomFields()){
+			LinkCalendarCustomField linkCalendarCustomField = new LinkCalendarCustomField();
+			linkCalendarCustomField.setStudyCalendar(calendar);
+			linkCalendarCustomField.setCustomField(customField);
+			saveCalendarCustomField(linkCalendarCustomField);
+		}
+	}
+	
+	private void saveCalendarCustomField(LinkCalendarCustomField calendarCustomField){
+		getSession().save(calendarCustomField);
+	}
+	
+	private void deleteCalendarCustomField(LinkCalendarCustomField calendarCustomField){
+		getSession().delete(calendarCustomField);
+	}
+
+	public void delete(StudyCalendar studyCalendar){
+		getSession().delete(studyCalendar);
+	}
+	
+	public List<StudyCalendar> searchStudyCalenderList(StudyCalendar studyCalendar){
+		List<StudyCalendar> list = new ArrayList<StudyCalendar>();
+		Criteria criteria = getSession().createCriteria(StudyCalendar.class);
+		
+		criteria.add(Restrictions.eq("study", studyCalendar.getStudy()));
+		
+		if(studyCalendar.getName() !=null){
+			criteria.add(Restrictions.ilike("name", studyCalendar.getName(),MatchMode.ANYWHERE));
+		}
+		
+		if(studyCalendar.getStartDate() !=null){
+			criteria.add(Restrictions.ge("startDate", studyCalendar.getStartDate()));
+		}
+		
+		if(studyCalendar.getEndDate() !=null){
+			criteria.add(Restrictions.le("endDate", studyCalendar.getEndDate()));
+		}
+		
+		criteria.setFetchMode("studyComp", FetchMode.JOIN);
+		
+		list = criteria.list();
+		
+		return list;
+	}
+	
+	public List<CustomField> getStudySubjectCustomFieldList(Long studyId){
+		List<CustomField> list = new ArrayList<CustomField>();
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.createAlias("study", "st", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("customFieldType", "cft", JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("st.id", studyId));
+		criteria.add(Restrictions.eq("cft.name", au.org.theark.core.Constants.SUBJECT));
+		list=criteria.list();
+		return list;
+	}
+	
+	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar){
+		List<CustomField> list = new ArrayList<CustomField>();
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.createAlias("linkCalendarCustomField", "lccf", JoinType.INNER_JOIN);
+		criteria.createAlias("linkCalendarCustomField.studyCalendar", "sc", JoinType.INNER_JOIN);
+		criteria.add(Restrictions.eq("sc.id", studyCalendar.getId()));
+		list=criteria.list();
+		return list;
+	}
+	public void delete(OtherID otherID) {
+		getSession().delete(otherID);
+	}
+	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp){
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study", studyComp.getStudy()));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		List<Consent> consents=criteria.list();
+		return (consents.size() > 0);
+		
+	}
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType) {
+		
+		List<CorrespondenceOutcomeType> correspondenceOutcomeTypes=new ArrayList<CorrespondenceOutcomeType>();
+		Criteria criteria = getSession().createCriteria(CorrespondenceModeDirectionOutcome.class);
+		criteria.add(Restrictions.eq("correspondenceModeType", correspondenceModeType));
+		criteria.add(Restrictions.eq("correspondenceDirectionType",correspondenceDirectionType));
+		List<CorrespondenceModeDirectionOutcome> lst=(List<CorrespondenceModeDirectionOutcome>)criteria.list();
+		for (CorrespondenceModeDirectionOutcome correspondenceModeDirectionOutcome : lst) {
+			correspondenceOutcomeTypes.add(correspondenceModeDirectionOutcome.getCorrespondenceOutcomeType());
+		}
+		return correspondenceOutcomeTypes;
+	}
 }

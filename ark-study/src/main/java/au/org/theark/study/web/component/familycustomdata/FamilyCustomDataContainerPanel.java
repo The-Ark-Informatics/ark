@@ -84,7 +84,7 @@ public class FamilyCustomDataContainerPanel extends Panel {
 		}
 		else if (!contextLoaded) {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
-			this.error("A study and subject in context are required to proceed.");
+			this.error(au.org.theark.core.Constants.MESSAGE_NO_SUBJECT_IN_CONTEXT);
 		}
 		else {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
@@ -126,15 +126,15 @@ public class FamilyCustomDataContainerPanel extends Panel {
 			LinkSubjectStudy linkSubjectStudy = null;
 			ArkModule arkModule = null;
 			Study study = null;
-			String familyId=null;
+			String familyUId=null;
 			try {
 				study = iArkCommonService.getStudy(sessionStudyId);
 				cpModel.getObject().getLinkSubjectStudy().setStudy(study);
 				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
 				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-				familyId = iStudyService.getSubjectFamilyId(sessionStudyId, sessionSubjectUID);
-				cpModel.getObject().setFamilyId(familyId);
+				familyUId = iStudyService.getSubjectFamilyId(sessionStudyId, sessionSubjectUID);
+				cpModel.getObject().setFamilyUId(familyUId);
 				// cpModel.getObject().setArkModule(arkModule);
 				if (study != null && linkSubjectStudy != null && arkModule != null) {
 					contextLoaded = true;

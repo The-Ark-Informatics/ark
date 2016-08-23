@@ -23,8 +23,6 @@ import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -42,17 +40,15 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.IntegerConverter;
 import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.InvFreezer;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -100,6 +96,19 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("invRack.id");
 		nameTxtFld = new TextField<String>("invRack.name");
+		nameTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				String rackName = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
+				InvRack invRack=iInventoryService.getInvRackByNameForFreezer(invTankDdc.getModelObject(), rackName);
+				if (invRack != null && invRack.getId() != null) {
+					error("Rack name must be unique for a freezer. Please try again.");
+					target.focusComponent(getComponent());
+				}
+					target.add(feedbackPanel);
+			}
+		});
 		capacityTxtFld = new TextField<Integer>("invRack.capacity"){
 
 			private static final long	serialVersionUID	= 1L;
@@ -168,14 +177,30 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		}
 		ChoiceRenderer<InvFreezer> choiceRenderer = new ChoiceRenderer<InvFreezer>("siteFreezer", Constants.ID);
 		invTankDdc = new DropDownChoice<InvFreezer>("invRack.invFreezer", (List<InvFreezer>) invFreezerList, choiceRenderer);
+		invTankDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				String rackName = (nameTxtFld.getModelObject().toString() != null ? nameTxtFld.getModelObject().toString() : new String());
+				InvRack invRack=iInventoryService.getInvRackByNameForFreezer(invTankDdc.getModelObject(), rackName);
+				if (invRack != null && invRack.getId() != null) {
+					error("Rack name must be unique for a freezer. Please try again.");
+					target.focusComponent(getComponent());
+				}
+					target.add(feedbackPanel);
+			}
+		});
+		
 	}
 
 	protected void attachValidators() {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
+		nameTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
 		invTankDdc.setRequired(true).setLabel(new StringResourceModel("error.freezer.required", this, new Model<String>("Freezer")));
 		capacityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.capacity.required", this, new Model<String>("Capacity")));
 		MinimumValidator<Integer> minValue = new MinimumValidator<Integer>(new Integer(0));
 		capacityTxtFld.add(minValue);
+		descriptionTxtAreaFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
 	}
 
 	private void addComponents() {

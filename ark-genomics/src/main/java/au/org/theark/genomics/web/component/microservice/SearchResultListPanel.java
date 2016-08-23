@@ -3,7 +3,9 @@ package au.org.theark.genomics.web.component.microservice;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -17,6 +19,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.genomics.model.vo.MicroServiceVo;
+import au.org.theark.genomics.service.IGenomicService;
 import au.org.theark.genomics.util.Constants;
 import au.org.theark.genomics.web.component.microservice.form.ContainerForm;
 
@@ -30,6 +33,11 @@ public class SearchResultListPanel extends Panel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
 	
+	@SpringBean(name = Constants.GENOMIC_SERVICE)
+	private IGenomicService iGenomicService;
+	
+	
+	
 	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm) {
 		super(id);
 		arkCrudContainerVO = crudContainerVO;
@@ -38,7 +46,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<MicroService> buildPageableListView(IModel iModel) {
 
-		PageableListView<MicroService> sitePageableListView = new PageableListView<MicroService>("microServiceList", iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<MicroService> sitePageableListView = new PageableListView<MicroService>("microServiceList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -76,6 +84,7 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.MICRO_SERVICE_STATUS, ""));
 				}
+				item.add(buildStatusBtn(microService));
 				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= 1L;
@@ -109,6 +118,23 @@ public class SearchResultListPanel extends Panel {
 		Label nameLinkLabel = new Label("nameLbl", microService.getName());
 		link.add(nameLinkLabel);
 		return link;
+	}
+	
+	private AjaxButton buildStatusBtn(final MicroService microService){
+		AjaxButton statusBtn = new AjaxButton("statusBtn") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				microService.setStatus(iGenomicService.checkServiceStatus(microService));
+				target.add(form);
+			}
+			
+		};
+		
+		Label nameLinkLabel = new Label("statusLbl", "TEST");
+		statusBtn.add(nameLinkLabel);
+		
+		
+		return statusBtn;
 	}
 
 }

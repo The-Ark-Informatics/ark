@@ -1,0 +1,40 @@
+CREATE TABLE `study`.`study_calendar` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `STUDY_ID` INT(11) NULL,
+  `NAME` VARCHAR(45) NULL,
+  `DESCRIPTION` VARCHAR(255) NULL,
+  `START_DATE` DATE NULL,
+  `END_DATE` DATE NULL,
+  `STUDY_COMPONENT_ID` INT(11) NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `fk_study_calendar_study_idx` (`STUDY_ID` ASC),
+  INDEX `fk_study_calendar_study_comp_idx` (`STUDY_COMPONENT_ID` ASC),
+  CONSTRAINT `fk_study_calendar_study`
+    FOREIGN KEY (`STUDY_ID`)
+    REFERENCES `study`.`study` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_study_calendar_study_comp`
+    FOREIGN KEY (`STUDY_COMPONENT_ID`)
+    REFERENCES `study`.`study_comp` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+use audit;
+
+CREATE TABLE `aud_study_calendar` (
+  `ID` bigint(20) NOT NULL,
+  `REV` int(11) NOT NULL,
+  `REVTYPE` tinyint(4) DEFAULT NULL,
+  `STUDY_ID` bigint(20) DEFAULT NULL,
+  `NAME` varchar(45) DEFAULT NULL,
+  `DESCRIPTION` varchar(255) DEFAULT NULL,
+  `START_DATE` date DEFAULT NULL,
+  `END_DATE` date DEFAULT NULL,
+  `STUDY_COMPONENT_ID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`,`REV`),
+  KEY `FK_STUDY_CALENDAR_REVINFO` (`REV`),
+  CONSTRAINT `FK_STUDY_CALENDAR_REVINFO` FOREIGN KEY (`REV`) REFERENCES `revinfo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -160,6 +161,10 @@ public class SearchResultListPanel extends Panel {
 				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
+				//Added on 2016-05-26 to stop showing the previous feed back message when deleting or updating in the form.
+				//This will clear the feedback message.
+				Session.get().cleanupFeedbackMessages();
+				target.add(feedbackPanel);
 
 			}
 		};
@@ -181,7 +186,7 @@ public class SearchResultListPanel extends Panel {
 		columns.add(new ExportableTextColumn<CustomFieldCategory>(Model.of("parentCategory"), "parentCategory.name"));
 		columns.add(new ExportableTextColumn<CustomFieldCategory>(Model.of("orderNumber"), "orderNumber"));
 		
-		DataTable table = new DataTable("datatable", columns, customFieldCategoryDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
+		DataTable table = new DataTable("datatable", columns, customFieldCategoryDataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("FIELD_NAME");
 		headers.add("CUSTOM_FIELD_TYPE");

@@ -83,7 +83,7 @@ public class SearchForm extends Form<PedigreeVo> {
 		} 
 		SecurityUtils.getSubject().getSession().setAttribute(Constants.INBREED_ALLOWED, inbreedAllowed);
 
-		disableSearchForm(sessionPersonId, "There is no subject in context. Please bring a subject into context via the Subject tab.");
+		disableSearchForm(sessionPersonId, au.org.theark.core.Constants.MESSAGE_NO_SUBJECT_IN_CONTEXT);
 		disableSaveButtons();
 		disableFamilyDataButton(sessionStudyId, sessionSubjectUID);
 

@@ -21,11 +21,14 @@ package au.org.theark.core.model.study.entity;
 import java.util.Date;
 
 public interface ICustomFieldData {
+	
+	public abstract Long getId();
+	
+	public abstract void setId(Long Id);
 
 	public abstract CustomFieldDisplay getCustomFieldDisplay();
 
-	public abstract void setCustomFieldDisplay(
-			CustomFieldDisplay customFieldDisplay);
+	public abstract void setCustomFieldDisplay(CustomFieldDisplay customFieldDisplay);
 
 	public abstract Date getDateDataValue();
 

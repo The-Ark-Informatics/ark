@@ -52,6 +52,10 @@ public class TextDataEntryPanel extends AbstractDataEntryPanel<String> {
 		this.add(dataValueTxtFld);
 	}
 
+	public TextField<String> getDataValueTxtFld() {
+		return dataValueTxtFld;
+	}
+
 	@Override
 	public void setRequired(boolean required) {
 		dataValueTxtFld.setRequired(required);

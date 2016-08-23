@@ -3,6 +3,7 @@ package au.org.theark.core.model.study.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,7 +29,7 @@ public class FamilyCustomFieldData implements Serializable, ICustomFieldData {
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private String familyId;
+	private String familyUid;
 	private CustomFieldDisplay customFieldDisplay;
 	private Study study;
 	private String textDataValue;
@@ -36,9 +37,12 @@ public class FamilyCustomFieldData implements Serializable, ICustomFieldData {
 	private String errorDataValue;
 	private Double numberDataValue;
 	
+	public FamilyCustomFieldData() {
+	
+	}
 	
 	@Id
-	@SequenceGenerator(name = "family_custom_field_data_generator", sequenceName = "family_CUSTOM_FIELD_DATA_SEQ")
+	@SequenceGenerator(name = "family_custom_field_data_generator", sequenceName = "FAMILY_CUSTOM_FIELD_DATA_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "family_custom_field_data_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
@@ -48,14 +52,14 @@ public class FamilyCustomFieldData implements Serializable, ICustomFieldData {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	@Column(name = "FAMILY_ID")
-	public String getFamilyId() {
-		return familyId;
+	
+	@Column(name = "FAMILY_UID")
+	public String getFamilyUid() {
+		return familyUid;
 	}
 
-	public void setFamilyId(String familyId) {
-		this.familyId = familyId;
+	public void setFamilyUid(String familyUid) {
+		this.familyUid = familyUid;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

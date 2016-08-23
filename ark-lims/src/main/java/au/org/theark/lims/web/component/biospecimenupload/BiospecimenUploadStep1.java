@@ -145,7 +145,7 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
-		saveFileInMemory();
+		saveFileInMemory(target);
 	}
 
 	public void setWizardForm(WizardForm wizardForm) {
@@ -156,7 +156,7 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		return wizardForm;
 	}
 
-	private void saveFileInMemory() {
+	private void saveFileInMemory(AjaxRequestTarget target) {
 		// Retrieve file and store as Blob in database
 		// TODO: AJAX-ified and asynchronous and hit database
 		FileUpload fileUpload = fileUploadField.getFileUpload();
@@ -181,8 +181,13 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD));
 		wizardForm.setFileName(fileUpload.getClientFileName());
 
-		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForAwaitingValidation());		
+		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(Constants.UPLOAD_STATUS_AWAITING_VALIDATION));		
 		
-		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		try {
+			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		} catch (Exception e) {
+			error("There is a problem during the upload process.");
+			getWizardForm().onError(target, null);
+		}
 	}
 }

@@ -21,6 +21,7 @@ package au.org.theark.study.service;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,6 +48,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IAuditDao;
+import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -79,11 +81,11 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -96,6 +98,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCalendar;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -117,12 +120,18 @@ import au.org.theark.study.model.capsule.ArkRelativeCapsule;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.model.vo.StudyCalendarVo;
 import au.org.theark.study.util.ConsentHistoryComparator;
 import au.org.theark.study.util.DataUploader;
 import au.org.theark.study.util.LinkSubjectStudyConsentHistoryComparator;
 import au.org.theark.study.util.PedigreeUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.subjectUpload.UploadUtilities;
+
+import com.csvreader.CsvReader;
+
+
 
 @Transactional
 @Service(Constants.STUDY_SERVICE)
@@ -130,10 +139,11 @@ public class StudyServiceImpl implements IStudyService {
 
 	private static Logger		log	= LoggerFactory.getLogger(StudyServiceImpl.class);
 
-	private IArkCommonService	iArkCommonService;
+	private IArkCommonService		iArkCommonService;
 	private IUserService			iUserService;
 	private IStudyDao				iStudyDao;
 	private IAuditDao				iAuditDao;
+	private ICustomFieldDao 		iCustomFieldDao;
 
 	public IArkCommonService getiArkCommonService() {
 		return iArkCommonService;
@@ -188,6 +198,13 @@ public class StudyServiceImpl implements IStudyService {
 
 	public List<StudyStatus> getListOfStudyStatus() {
 		return iStudyDao.getListOfStudyStatus();
+	}
+	public ICustomFieldDao getiCustomFieldDao() {
+		return iCustomFieldDao;
+	}
+	@Autowired
+	public void setiCustomFieldDao(ICustomFieldDao iCustomFieldDao) {
+		this.iCustomFieldDao = iCustomFieldDao;
 	}
 
 	public void createStudy(StudyModelVO studyModelVo) {
@@ -1093,14 +1110,24 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return subjectUploadValidator;
 	}
-
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId, List<String> listOfUIDsToUpdate) {
+	/**
+	 * 
+	 */
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId,
+			List<String> listOfUIDsToUpdate,String customFieldType,UploadVO uploadVO) {
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
 		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
 		try {
-			// log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
-			uploadReport = dataUploader.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate);
+			//String customFieldType=new UploadUtilities().getUploadFileDataFileSubjectOrFamily(inputStream,delimChar);
+			if(au.org.theark.core.Constants.SUBJECT.equals(customFieldType)){
+					uploadReport = dataUploader.uploadAndReportSubjectCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate,uploadVO);
+			}else if(au.org.theark.core.Constants.FAMILY.equals(customFieldType)){
+				uploadReport = dataUploader.uploadAndReportFamilyCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate);
+			}else{
+				log.error(Constants.FILE_FORMAT_EXCEPTION);
+				throw new FileFormatException(); 
+			}
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -1145,13 +1172,13 @@ public class StudyServiceImpl implements IStudyService {
 		return uploadReport;
 	}
 	
-	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId) {
+	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId, String user_id) {
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
 		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
 		try {
 			// log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
-			uploadReport = dataUploader.uploadAndReportSubjectAttachmentDataFile(inputStream, size, fileFormat, delimChar);
+			uploadReport = dataUploader.uploadAndReportSubjectAttachmentDataFile(inputStream, size, fileFormat, delimChar, user_id);
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -1208,8 +1235,8 @@ public class StudyServiceImpl implements IStudyService {
 	public void processBatch(List<LinkSubjectStudy> subjectListToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate) {
 		iStudyDao.processBatch(subjectListToInsert, study, subjectsToUpdate);
 	}
-
-	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert) {
+	@Override
+	public void processFieldsBatch(List<? extends ICustomFieldData> fieldsToUpdate, Study study, List<? extends ICustomFieldData> fieldsToInsert) {
 		iStudyDao.processFieldsBatch(fieldsToUpdate, study, fieldsToInsert);
 	}
 
@@ -1284,10 +1311,11 @@ public class StudyServiceImpl implements IStudyService {
 
 					CustomField customField = iArkCommonService.getCustomField(id);
 					customField.setCustomFieldHasData(true);
-					CustomFieldVO customFieldVO = new CustomFieldVO();
-					customFieldVO.setCustomField(customField);
-
-					iArkCommonService.updateCustomField(customFieldVO);
+					//CustomFieldVO customFieldVO = new CustomFieldVO();
+					//customFieldVO.setCustomField(customField);
+					//iArkCommonService.updateCustomField(customFieldVO);
+					iCustomFieldDao.updateCustomField(customField);
+					
 
 				}
 				else if (canUpdate(subjectCustomFieldData)) {
@@ -1312,9 +1340,10 @@ public class StudyServiceImpl implements IStudyService {
 						// loaded
 						CustomField customField = iArkCommonService.getCustomField(id);
 						customField.setCustomFieldHasData(false);
-						CustomFieldVO customFieldVO = new CustomFieldVO();
-						customFieldVO.setCustomField(customField);
-						iArkCommonService.updateCustomField(customFieldVO); // Update it
+						//CustomFieldVO customFieldVO = new CustomFieldVO();
+						//customFieldVO.setCustomField(customField);
+						//iArkCommonService.updateCustomField(customFieldVO); // Update it
+						iCustomFieldDao.updateCustomField(customField);
 
 					}
 				}
@@ -1343,10 +1372,10 @@ public class StudyServiceImpl implements IStudyService {
 
 					CustomField customField = iArkCommonService.getCustomField(id);
 					customField.setCustomFieldHasData(true);
-					CustomFieldVO customFieldVO = new CustomFieldVO();
-					customFieldVO.setCustomField(customField);
-
-					iArkCommonService.updateCustomField(customFieldVO);
+					//CustomFieldVO customFieldVO = new CustomFieldVO();
+					//customFieldVO.setCustomField(customField);
+					//iArkCommonService.updateCustomField(customFieldVO);
+					iCustomFieldDao.updateCustomField(customField);
 
 				}
 				else if (canUpdate(familyCustomFieldData)) {
@@ -1371,9 +1400,10 @@ public class StudyServiceImpl implements IStudyService {
 						// loaded
 						CustomField customField = iArkCommonService.getCustomField(id);
 						customField.setCustomFieldHasData(false);
-						CustomFieldVO customFieldVO = new CustomFieldVO();
-						customFieldVO.setCustomField(customField);
-						iArkCommonService.updateCustomField(customFieldVO); // Update it
+						//CustomFieldVO customFieldVO = new CustomFieldVO();
+						//customFieldVO.setCustomField(customField);
+						//iArkCommonService.updateCustomField(customFieldVO); // Update it
+						iCustomFieldDao.updateCustomField(customField);
 
 					}
 				}
@@ -1414,7 +1444,7 @@ public class StudyServiceImpl implements IStudyService {
 		Boolean flag = false;
 
 		if (subjectCustomFieldData.getId() != null
-				&& subjectCustomFieldData.getFamilyId() != null
+				&& subjectCustomFieldData.getFamilyUid() != null
 				&& (subjectCustomFieldData.getTextDataValue() == null || subjectCustomFieldData.getTextDataValue().isEmpty() || subjectCustomFieldData.getNumberDataValue() == null || subjectCustomFieldData
 						.getDateDataValue() == null)) {
 
@@ -1451,7 +1481,7 @@ public class StudyServiceImpl implements IStudyService {
 		Boolean flag = false;
 
 		if (subjectCustomFieldData.getId() != null
-				&& subjectCustomFieldData.getFamilyId() != null
+				&& subjectCustomFieldData.getFamilyUid() != null
 				&& ((subjectCustomFieldData.getTextDataValue() != null && !subjectCustomFieldData.getTextDataValue().isEmpty()) || subjectCustomFieldData.getDateDataValue() != null || subjectCustomFieldData
 						.getNumberDataValue() != null)) {
 
@@ -1485,7 +1515,7 @@ public class StudyServiceImpl implements IStudyService {
 	private Boolean canInsert(FamilyCustomFieldData familyCustomFieldData) {
 		Boolean flag = false;
 
-		if (familyCustomFieldData.getId() == null && familyCustomFieldData.getFamilyId() != null
+		if (familyCustomFieldData.getId() == null && familyCustomFieldData.getFamilyUid() != null
 				&& (familyCustomFieldData.getNumberDataValue() != null || familyCustomFieldData.getTextDataValue() != null || familyCustomFieldData.getDateDataValue() != null)) {
 
 			flag = true;
@@ -2083,6 +2113,37 @@ public class StudyServiceImpl implements IStudyService {
 
 		return age;
 	}
+	
+	public List<RelationshipVo> getSubjectChildren(String subjectUID, long studyId){
+		List<RelationshipVo> relativeSubjects = new ArrayList<RelationshipVo>();
+		Queue<RelationshipVo> relativeSubjectQueue = new LinkedList<RelationshipVo>();
+		RelationshipVo probandRelationship = iStudyDao.getSubjectRelative(subjectUID, studyId);
+		
+		if(probandRelationship!=null){
+			relativeSubjectQueue.add(probandRelationship);
+		}
+		RelationshipVo relativeSubject = null;
+		while ((relativeSubject = relativeSubjectQueue.poll()) != null) {
+			List<RelationshipVo> relationships = iStudyDao.getSubjectChildRelatives(relativeSubject.getIndividualId(), studyId);
+			for (RelationshipVo childRelativeVo : relationships) {
+				if (relativeSubjects.contains(childRelativeVo)) {
+					childRelativeVo = relativeSubjects.get(relativeSubjects.indexOf(childRelativeVo));
+				}
+				else {
+					relativeSubjectQueue.add(childRelativeVo);
+					relativeSubjects.add(childRelativeVo);
+				}
+
+				if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
+					childRelativeVo.setFatherId(relativeSubject.getIndividualId());
+				}
+				else {
+					childRelativeVo.setMotherId(relativeSubject.getIndividualId());
+				}
+			}
+		}
+		return relativeSubjects;
+	}
 
 	public void create(LinkSubjectPedigree pedigree) {
 		iStudyDao.create(pedigree);
@@ -2283,15 +2344,15 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.pageablePersonAddressLst(personId,adressCriteria, first, count);
 	}
 	
-	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId){
-		return iStudyDao.getFamilyIdCustomFieldsForPedigreeRelativesList(studyId);
+	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId){
+		return iStudyDao.getFamilyUIdCustomFieldsForPedigreeRelativesList(studyId);
 	}
 	
 	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count){
 		return iStudyDao.getFamilyCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, customFieldCategory, customFieldType, first, count);
 	}
 	public String getSubjectFamilyId(Long studyId, String subjectUID){
-		return iStudyDao.getSubjectFamilyId(studyId, subjectUID);
+		return iStudyDao.getSubjectFamilyUId(studyId, subjectUID);
 	}
 
 	@Override
@@ -2299,5 +2360,49 @@ public class StudyServiceImpl implements IStudyService {
 			CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 		return iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, customFieldCategory,customFieldType, first, count);
 	}
+
+	@Override
+	public void setPreferredPhoneNumberToFalse(Person person) {
+		iStudyDao.setPreferredPhoneNumberToFalse(person);
+	}
+
+	@Override
+	public void saveOrUpdate(StudyCalendar studyCalendar) {
+		iStudyDao.saveOrUpdate(studyCalendar);
+	}
 	
+	@Override
+	public void saveOrUpdate(StudyCalendarVo studyCalendarVo) {
+		iStudyDao.saveOrUpdate(studyCalendarVo);
+	}
+
+	@Override
+	public void delete(StudyCalendar studyCalendar) {
+		iStudyDao.delete(studyCalendar);
+	}
+
+	@Override
+	public List<StudyCalendar> searchStudyCalenderList(StudyCalendar studyCalendar) {
+		return iStudyDao.searchStudyCalenderList(studyCalendar);
+	}
+	
+	public List<CustomField> getStudySubjectCustomFieldList(Long studyId){
+		return iStudyDao.getStudySubjectCustomFieldList(studyId);
+	}
+	
+	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar){
+		return iStudyDao.getSelectedCalendarCustomFieldList(studyCalendar);
+	}
+	public void delete(OtherID otherID) {
+		iStudyDao.delete(otherID);
+	}
+	@Override
+	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp) {
+		return iStudyDao.isStudyComponentBeingUsedInConsent(studyComp);
+	}
+
+	@Override
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType) {
+		return iStudyDao.getCorrespondenceOutcomeTypesForModeAndDirection(correspondenceModeType, correspondenceDirectionType);
+	}
 }

@@ -59,9 +59,7 @@ public class SearchForm extends AbstractSearchForm<AuditVO> {
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedbackPanel;
 		setMultiPart(true);
-		
 		this.cpModel = cpModel;
-		
 		initialiseSearchForm();
 	}
 	

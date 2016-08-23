@@ -151,7 +151,7 @@ public class DataUploader {
 			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);//");
 
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
-			List<SubjectCustomFieldData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
+			List<SubjectCustomFieldData> dataThatWeHave = iArkCommonService.getSubjectCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
 			//read one line which contains potentially many custom fields
 			while (csvReader.readRecord()) {
 				log.info("reading record " + subjectCount);

@@ -8,7 +8,19 @@ public class UsernameRevisionListener implements RevisionListener {
 	@Override
 	public void newRevision(Object revisionEntity) {
 		UsernameRevisionEntity ure = (UsernameRevisionEntity) revisionEntity;
-		ure.setUsername(SecurityUtils.getSubject().getPrincipal().toString());
+		
+		try {
+			ure.setUsername(SecurityUtils.getSubject().getPrincipal().toString());
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+			if(Thread.currentThread().getName().contains("Quartz")) { //If this is being called from a background thread
+				System.out.println(AuditThreadLocalHelper.USERNAME.get());
+				ure.setUsername(AuditThreadLocalHelper.USERNAME.get());
+			}	
+		}
+			
 	}
 
 }

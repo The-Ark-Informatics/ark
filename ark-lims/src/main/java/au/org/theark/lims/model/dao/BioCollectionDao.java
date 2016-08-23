@@ -19,6 +19,7 @@
 package au.org.theark.lims.model.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,7 +44,9 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioSampletype;
+import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -330,7 +333,6 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		if(bioCollectionCriteria.getStudy().getParentStudy() != null && bioCollectionCriteria.getStudy().getParentStudy() != bioCollectionCriteria.getStudy()) {
 			studyList.add(bioCollectionCriteria.getStudy().getParentStudy());
 		}
-		
 		criteria.add(Restrictions.in("cfield.study", studyList));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
@@ -442,7 +444,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		try {
 			Long id  = bioCollectionCFData.getBioCollection().getId();
 			BioCollection bioCollection = getBioCollection(id);
-			Study subjectStudy = bioCollection.getStudy();
+			//Study subjectStudy = bioCollection.getStudy();
 			ArkFunction arkFunction = customField.getArkFunction();
 
 			StringBuffer stringBuffer = new StringBuffer();
@@ -493,7 +495,6 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return bioCollection;
 	}
 	
-
 	public List<String> getAllBiocollectionUIDs(Study study){
 		String queryString = "select bio.biocollectionUid " +
 		"from BioCollection bio " +
@@ -503,5 +504,42 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		query.setParameter("study", study);
 		return query.list();
 	}
+	
+	public BioCollection getBioCollectionForStudySubjectByUID(String biocollectionUid, Study study,LinkSubjectStudy linkSubjectStudy) {
+		Criteria criteria = getSession().createCriteria(BioCollection.class,"biocollection");
+		criteria.add(Restrictions.eq("biocollection.biocollectionUid", biocollectionUid));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		return (BioCollection)criteria.uniqueResult(); 
+	}
+	/**
+	 * Insert bio collections in a batch.
+	 * @param insertBioCollections
+	 */
+	public void batchInsertBiocollections(Collection<BioCollection> insertBioCollections) {
+		for (BioCollection biocollection : insertBioCollections) {
+			getSession().save(biocollection);
+		}
+			
+	}
+
+	/**
+	 * Update bio collections in batch.
+	 * @param updateBiospecimens
+	 */
+	public void batchUpdateBiocollections(Collection<BioCollection> updateBioCollections) {
+		for (BioCollection biocollection : updateBioCollections) {
+			getSession().update(biocollection);
+		}
+		
+	}
+	public boolean hasBiocllectionGotCustomFieldData(BioCollection bioCollection) {
+		Criteria criteria = getSession().createCriteria(BioCollectionCustomFieldData.class);
+		criteria.add(Restrictions.eq("bioCollection", bioCollection));
+		List<BioCollectionCustomFieldData> list=(List<BioCollectionCustomFieldData>) criteria.list();
+		return (list.size()>0);
+	}
+    
+	
 	
 }

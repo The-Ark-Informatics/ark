@@ -160,7 +160,7 @@ public interface IBiospecimenDao {
 	
 	public boolean studyHasBiospecimens(Study study);
 
-	public void batchInsertBiospecimens(Collection<Biospecimen> insertBiospecimens);
+	public void batchInsertBiospecimensAndUpdateInventoryCell(Collection<Biospecimen> insertBiospecimens);
 
 	public void batchUpdateBiospecimens(Collection<Biospecimen> updateBiospecimens);
 
@@ -179,8 +179,6 @@ public interface IBiospecimenDao {
 	public List<BiospecimenProtocol> getBiospecimenProtocolList();
 
 	public List<Biospecimen> getRootBiospecimensForBiocollection(BioCollection bc);
-	
-	
 	
 }
 

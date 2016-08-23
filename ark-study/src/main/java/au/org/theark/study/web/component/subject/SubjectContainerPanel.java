@@ -20,10 +20,8 @@ package au.org.theark.study.web.component.subject;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.shiro.SecurityUtils;
@@ -280,7 +278,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		subjectProvider.setModel(this.cpModel);
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		resultsWmc.add(pageNavigator);
@@ -295,7 +293,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
 
-		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("SubjectUID");
 		headers.add("Full Name");
@@ -355,6 +353,11 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 					for (RelationshipVo relationshipVo : relatives) {
 						model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
 					}
+				}else{
+					 List<RelationshipVo> childRelatives= iStudyService.getSubjectChildren(subjectUID, sessionStudyId);
+					 for (RelationshipVo relationshipVo : childRelatives) {
+						model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
+					}
 				}
 				model.getObject().getLinkSubjectStudy().getPerson().setGenderType(genderType);
 				return (int) service.getStudySubjectCount(model.getObject());
@@ -372,6 +375,11 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 						for (RelationshipVo relationshipVo : relatives) {
 							model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
 						}
+					}else{
+						 List<RelationshipVo> childRelatives= iStudyService.getSubjectChildren(subjectUID, sessionStudyId);
+						 for (RelationshipVo relationshipVo : childRelatives) {
+							model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
+						}
 					}
 					listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);
 				}
@@ -381,7 +389,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		subjectProvider.setModel(this.cpModel);
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider, modalWindow, relatives, feedBackPanel);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 
@@ -404,7 +412,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
 
-		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("SubjectUID");
 		headers.add("Full Name");

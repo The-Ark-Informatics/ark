@@ -38,10 +38,11 @@ import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
-import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadContainerPanel;
-import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupContainerPanel;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
-import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadContainerPanel;
+import au.org.theark.phenotypic.web.component.phenodatasetdefinition.DataDictionaryGroupContainerPanel;
+import au.org.theark.phenotypic.web.component.phenodataupload.PhenoDataUploadContainerPanel;
+import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCategoryFieldUploadContainerPanel;
+
 
 @SuppressWarnings({ "serial", "unused" })
 @Deprecated
@@ -86,15 +87,15 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
 			// attach the fields to this "Data Dictionary" function
-			panelToReturn = new CustomFieldContainerPanel(panelId, false, arkFunction,false,false);
+			panelToReturn = new CustomFieldContainerPanel(panelId, false, arkFunction);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)) {
 			//ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-			panelToReturn = new FieldUploadContainerPanel(panelId, arkFunction);
+			panelToReturn = new PhenoDataSetCategoryFieldUploadContainerPanel(panelId, arkFunction);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION)) {
 			//ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
-			panelToReturn = new CustomFieldGroupContainerPanel(panelId, arkFunction);
+			panelToReturn = new DataDictionaryGroupContainerPanel(panelId, arkFunction);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
 			panelToReturn = new PhenoCollectionDataEntryContainerPanel(panelId).initialisePanel();
@@ -103,7 +104,7 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
 			//panelToReturn = new FieldDataUploadContainerPanel(panelId); //OLD Code
 			//panelToReturn = new PhenoDataUploadContainerPanel(panelId);
-			panelToReturn = new CustomDataUploadContainerPanel(panelId, arkFunction);
+			panelToReturn = new PhenoDataUploadContainerPanel(panelId, arkFunction);
 			
 		}
 	/*	TODO trav put new uploader here

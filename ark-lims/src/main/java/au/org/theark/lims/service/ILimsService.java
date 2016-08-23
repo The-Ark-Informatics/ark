@@ -344,9 +344,11 @@ public interface ILimsService {
 
 	public StringBuffer uploadAndReportMatrixBiospecimenFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar);
 
-	public StringBuffer uploadAndReportMatrixLocationFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar);
+	public StringBuffer uploadAndReportMatrixBiospecimenInventoryFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar);
+	
+	public StringBuffer uploadAndReportMatrixBiocollectionFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar);
 
-	public void batchInsertBiospecimens(Collection<Biospecimen> insertBiospecimens);
+	public void batchInsertBiospecimensAndUpdateInventoryCell(Collection<Biospecimen> insertBiospecimens);
 
 	public void batchUpdateBiospecimens(Collection<Biospecimen> updateSubjects);
 
@@ -373,4 +375,15 @@ public interface ILimsService {
 	public List<BiospecimenProtocol> getBiospecimenProtocolList();
 
 	public List<Biospecimen> getRootBiospecimensForBiocollection(BioCollection bc);
+	
+	public BioCollection getBioCollectionForStudySubjectByUID(final String biocollectionUid, final Study study, final LinkSubjectStudy linkSubjectStudy);
+	
+	public void batchInsertBiocollections(Collection<BioCollection> insertBioCollections);
+
+	public void batchUpdateBiocollections(Collection<BioCollection> updateBioCollections);
+	
+	public boolean hasBiocllectionGotCustomFieldData(BioCollection bioCollection);
+	
+	public List<BioTransaction> getAllBiotransactionForBiospecimen(Biospecimen biospecimen);
+
 }

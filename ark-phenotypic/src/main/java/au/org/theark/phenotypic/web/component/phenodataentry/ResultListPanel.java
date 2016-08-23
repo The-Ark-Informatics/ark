@@ -55,7 +55,7 @@ public class ResultListPanel extends Panel {
 			}
 
 		};
-		listDetailForm = new PhenoCollectionListForm("PhenoCollectionListForm", feedbackPanel, modalWindow, cpModel);
+		listDetailForm = new PhenoCollectionListForm("PhenoDataSetCollectionListForm", feedbackPanel, modalWindow, cpModel);
 		listDetailForm.initialiseForm();
 		add(listDetailForm);
 		return this;

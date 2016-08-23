@@ -52,20 +52,32 @@ public class SearchResultListPanel extends Panel {
 	 * 
 	 * @param id
 	 */
-	public SearchResultListPanel(String id, String templateName) {
+	public SearchResultListPanel(String id) {
 		super(id);
-		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", templateName, au.org.theark.core.Constants.CUSTOM_FIELD_UPLOAD_HEADER) {
+		ArkDownloadTemplateButton downloadFieldTemplateButton = new ArkDownloadTemplateButton("downloadTemplateField", "CustomFieldUpload", au.org.theark.core.Constants.CUSTOM_FIELD_UPLOAD_HEADER) {
 
 
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Download request could not be processed");
+				this.error("Unexpected Error: Download custom field template request could not be processed");
 			}
 
 		};
-		add(downloadTemplateButton);
+		ArkDownloadTemplateButton downloadCategoryTemplateButton = new ArkDownloadTemplateButton("downloadTemplateCategory", "CustomFieldCategoryUpload", au.org.theark.core.Constants.CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER) {
+
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Download custom field category request could not be processed");
+			}
+
+		};
+		add(downloadFieldTemplateButton);
+		add(downloadCategoryTemplateButton);
 	}
 
 	/**
@@ -74,7 +86,7 @@ public class SearchResultListPanel extends Panel {
 	 * @return the pageableListView of Upload
 	 */
 	public PageableListView<Upload> buildPageableListView(IModel iModel) {
-		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 			private static final long	serialVersionUID	= 1L;
 

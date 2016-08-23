@@ -49,12 +49,12 @@ public class CustomFieldUploadContainerPanel extends AbstractContainerPanel<Cust
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 	
-	private String templateName;
+	//private String templateName;
 
-	public CustomFieldUploadContainerPanel(String id, ArkFunction arkFunction, String templateName) {
+	public CustomFieldUploadContainerPanel(String id, ArkFunction arkFunction) {
 		super(id);
 		
-		this.templateName = templateName;
+		//this.templateName = templateName;
 
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<CustomFieldUploadVO>(new CustomFieldUploadVO());
@@ -78,7 +78,7 @@ public class CustomFieldUploadContainerPanel extends AbstractContainerPanel<Cust
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultListPanel = new SearchResultListPanel("searchResults",templateName);
+		searchResultListPanel = new SearchResultListPanel("searchResults");
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;

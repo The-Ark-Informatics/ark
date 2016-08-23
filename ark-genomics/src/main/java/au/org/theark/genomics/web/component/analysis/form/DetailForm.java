@@ -4,15 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 
@@ -23,6 +28,7 @@ import au.org.theark.core.model.spark.entity.MicroService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.genomics.jobs.AnalysisExecutor;
+import au.org.theark.genomics.jobs.QueueExecutor;
 import au.org.theark.genomics.model.vo.AnalysisVo;
 import au.org.theark.genomics.service.IGenomicService;
 import au.org.theark.genomics.util.Constants;
@@ -44,7 +50,8 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 	private TextField<String> analysisNameTxtFld;
 	private TextArea<String> analysisDescTxtArea;
 
-	private TextField<String> analysisStatusTxtFld;
+	private Label analysisStatusLbl;
+	private Label analysisJobIdLbl;
 
 	private DropDownChoice<MicroService> microServicesDDC;
 	private DropDownChoice<DataSource> dataSourcesDDC;
@@ -53,10 +60,17 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 	private TextArea<String> parametersTxtArea;
 	private TextField<String> resultTxtFld;
 
+	private FileUploadField fileUploadField;
+	private AjaxButton clearButton;
+	private AjaxButton deleteButton;
+	private Label fileNameLbl;
+
 	private List<MicroService> microServiceList;
 
 	private AjaxButton executeButton;
 	private AjaxButton resultButton;
+	private AjaxButton jobButton;
+	private AjaxButton queueButton;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -79,21 +93,75 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 		this.analysisNameTxtFld = new TextField<String>(Constants.ANALYIS_NAME);
 
 		this.analysisDescTxtArea = new TextArea<String>(Constants.ANALYIS_DESCRIPTION);
-		this.analysisStatusTxtFld = new TextField<String>(Constants.ANALYIS_STATUS);
-		this.analysisStatusTxtFld.setEnabled(false);
+		this.analysisStatusLbl = new Label(Constants.ANALYIS_STATUS);
+		this.analysisStatusLbl.setOutputMarkupId(true);
+//		this.analysisStatusLbl.setEnabled(false);
 
 		this.parametersTxtArea = new TextArea<String>(Constants.ANALYIS_PARAMETERS);
 		this.resultTxtFld = new TextField<String>(Constants.ANALYIS_RESULT);
+		
+		this.analysisJobIdLbl =  new Label(Constants.ANALYIS_JOB_ID);
+		this.analysisJobIdLbl.setOutputMarkupId(true);
+//		this.analysisJobIdLbl.setEnabled(false);
 
 		this.initMicroServiceDropDown();
 		this.initDataSourceDropDown();
 		this.initComputationDropDown();
+		
+		fileUploadField = new FileUploadField("file");
+		//fileUploadField.setOutputMarkupId(true);
+
+		fileNameLbl = new Label(Constants.ANALYIS_SCRIPT_NAME);
+		fileNameLbl.setOutputMarkupId(true);
+
+		this.clearButton = new AjaxButton("clearButton") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+		};
+		clearButton.add(new AttributeModifier("title", new Model<String>("Clear Attachment")));
+
+		this.deleteButton = new AjaxButton("deleteButton") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().getAnalysis().setScriptName(null);
+				// containerForm.getModelObject().getCorrespondence().setAttachmentFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().getAnalysis().setScriptName(null);
+				// containerForm.getModelObject().getCorrespondence().setAttachmentFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+			}
+
+			@Override
+			public boolean isVisible() {
+				return (containerForm.getModelObject().getAnalysis().getScriptName() != null) && !containerForm.getModelObject().getAnalysis().getScriptName().isEmpty();
+			}
+		};
+		deleteButton.add(new AttributeModifier("title", new Model<String>("Delete Attachment")));
+		deleteButton.setOutputMarkupId(true);
+		
 
 		this.executeButton = new AjaxButton("execute") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// TODO Auto-generated method stub
-				// super.onSubmit(target, form);
 
 				try {
 
@@ -114,12 +182,12 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 					e.printStackTrace();
 				}
 
-				target.add(analysisStatusTxtFld);
+				target.add(analysisStatusLbl);
 				target.add(feedBackPanel);
 			}
 		};
 
-		resultButton = new AjaxButton("result") {
+		this.resultButton = new AjaxButton("result") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				Analysis analysis = getFormModelObject().getAnalysis();
@@ -131,6 +199,53 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 					output = analysis.getResult();
 				}
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, output));
+			}
+		};
+		
+		this.jobButton = new AjaxButton("job") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				try {
+
+					Analysis analysis = getFormModelObject().getAnalysis();
+
+					String status = iGenomicService.submitJob(analysis);
+
+					analysis.setStatus(status);
+					
+					iGenomicService.saveOrUpdate(analysis);
+
+				} catch (Exception e) {
+					this.error("Execution failled");
+					e.printStackTrace();
+				}
+
+				target.add(analysisStatusLbl);
+				target.add(feedBackPanel);
+			}
+		};
+		
+		this.queueButton = new AjaxButton("queue") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				try {
+
+					Analysis analysis = getFormModelObject().getAnalysis();
+
+					iGenomicService.submitToQueue(analysis);
+					
+					QueueExecutor executor = new QueueExecutor(analysis, iGenomicService);
+
+					executor.run();
+
+				} catch (Exception e) {
+					this.error("Execution failled");
+					e.printStackTrace();
+				}
+
+				target.add(analysisStatusLbl);
+				target.add(analysisJobIdLbl);
+				target.add(feedBackPanel);
 			}
 		};
 
@@ -195,7 +310,49 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 
 	@Override
 	protected void onSave(Form<AnalysisVo> containerForm, AjaxRequestTarget target) {
-		iGenomicService.saveOrUpdate(containerForm.getModelObject().getAnalysis());
+//		iGenomicService.saveOrUpdate(containerForm.getModelObject().getAnalysis());
+		try {			
+			if (containerForm.getModelObject().getAnalysis().getId() == null) {		
+				
+				byte[] uploadData=null;
+				
+				if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
+					FileUpload fileUpload = fileUploadField.getFileUpload();
+					
+					byte[] byteArray = fileUpload.getMD5();
+					String checksum = getHex(byteArray);
+					uploadData = fileUpload.getBytes();
+					containerForm.getModelObject().getAnalysis().setScriptName(fileUpload.getClientFileName());
+					containerForm.getModelObject().getAnalysis().setChecksum(checksum);
+				}
+				
+				this.iGenomicService.save(containerForm.getModelObject().getAnalysis(),uploadData);
+				this.info("Computation " + containerForm.getModelObject().getAnalysis().getName() + " was created successfully");				
+			} else {
+				
+				String checksum=null;
+				byte[] uploadData=null;
+				
+				if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
+					// retrieve file and store as Blob in database
+					FileUpload fileUpload = fileUploadField.getFileUpload();
+					
+					byte[] byteArray = fileUpload.getMD5();
+					checksum = getHex(byteArray);
+					uploadData = fileUpload.getBytes();
+					containerForm.getModelObject().getAnalysis().setScriptName(fileUpload.getClientFileName());
+				}
+				
+				iGenomicService.update(containerForm.getModelObject().getAnalysis(),uploadData,checksum);
+				this.info("Computation " + containerForm.getModelObject().getAnalysis().getName() + " was updated successfully");
+			}
+			processErrors(target);
+			onSavePostProcess(target);
+		} catch (Exception e) {
+			log.error("Error in saving micro service entity ", e);
+			this.error("A System error occured, we will have someone contact you.");
+			processErrors(target);
+		}
 	}
 
 	@Override
@@ -238,15 +395,23 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisDescTxtArea);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisStatusTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisStatusLbl);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(microServicesDDC);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dataSourcesDDC);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(computationsDDC);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(parametersTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resultTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(analysisJobIdLbl);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(clearButton);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(deleteButton);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileNameLbl);
 
 		arkCrudContainerVO.getEditButtonContainer().add(executeButton);
 		arkCrudContainerVO.getEditButtonContainer().add(resultButton);
+		arkCrudContainerVO.getEditButtonContainer().add(jobButton);
+		arkCrudContainerVO.getEditButtonContainer().add(queueButton);
 	}
 
 }

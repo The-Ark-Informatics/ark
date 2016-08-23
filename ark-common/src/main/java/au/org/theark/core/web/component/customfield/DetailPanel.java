@@ -18,10 +18,12 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.component.customfield.form.DetailForm;
@@ -38,22 +40,20 @@ public class DetailPanel extends Panel {
 
 	private CompoundPropertyModel<CustomFieldVO> cpModel;
 	private ArkCrudContainerVO arkCrudContainerVO;
-	private boolean unitTypeDropDownOn;
-	private boolean subjectCustomField;
+	
+	
 
-	public DetailPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO,boolean unitTypeDropDownOn, boolean subjectCustomField) {
+	public DetailPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO){
 		super(id, cpModel);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.setOutputMarkupPlaceholderTag(true);
-		this.unitTypeDropDownOn=unitTypeDropDownOn;
-		this.subjectCustomField=subjectCustomField;
 		initialisePanel();
 	}
 
 	public void initialisePanel() {
-		detailForm = new DetailForm("detailForm", cpModel, feedbackPanel, arkCrudContainerVO,this.unitTypeDropDownOn, this.subjectCustomField);
+		detailForm = new DetailForm("detailForm", cpModel, feedbackPanel, arkCrudContainerVO);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}

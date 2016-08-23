@@ -406,5 +406,21 @@ public class InventoryServiceImpl implements IInventoryService {
 	public String fillOutAllBoxesWithEmptyInvCellsToCapacity(Study study){
 		return iInventoryDao.fillOutAllBoxesWithEmptyInvCellsToCapacity(study);
 	}
+	
+	public InvSite getInvSiteByname(String siteName){
+		return iInventoryDao.getInvSiteByname(siteName);
+	}
+	
+	public InvFreezer getInvFreezerByNameForSite(InvSite invSite,String freezerName){
+		return iInventoryDao.getFreezerByNameForSite(invSite,freezerName);
+	}
+	
+	public InvRack getInvRackByNameForFreezer(InvFreezer invFreezer,String rackName){
+		return iInventoryDao.getRackByNameForFreezer(invFreezer,rackName);
+	}
+	
+	public InvBox getInvBoxByNameForRack(InvRack invRack,String boxName){
+		return iInventoryDao.getBoxByNameForRack(invRack,boxName);
+	}
 
 }

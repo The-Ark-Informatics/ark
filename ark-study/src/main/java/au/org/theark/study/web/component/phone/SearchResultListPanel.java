@@ -18,15 +18,19 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.phone;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.Phone;
@@ -71,7 +75,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<Phone> buildPageableListView(IModel iModel) {
 
-		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST, iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST, iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 
 			private static final long	serialVersionUID	= 1L;
@@ -99,6 +103,36 @@ public class SearchResultListPanel extends Panel {
 				}
 				else {
 					item.add(new Label("phoneType.name", ""));
+				}
+				if (phone.getPhoneStatus() != null && phone.getPhoneStatus().getName() != null) {
+					item.add(new Label("phoneStatus.name", phone.getPhoneStatus().getName()));
+				}
+				else {
+					item.add(new Label("phoneStatus.name", ""));
+				}
+				if (phone.getValidFrom() != null ) {
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+					String dateValidFrom = "";
+					dateValidFrom = simpleDateFormat.format(phone.getValidFrom());
+					item.add(new Label("validFrom", dateValidFrom));
+				}
+				else {
+					item.add(new Label("validFrom", ""));
+				}
+				if (phone.getValidFrom() != null ) {
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+					String dateValidTo = "";
+					dateValidTo = simpleDateFormat.format(phone.getValidTo());
+					item.add(new Label("validTo", dateValidTo));
+				}
+				else {
+					item.add(new Label("validTo", ""));
+				}
+				if (phone.getPreferredPhoneNumber() != null && phone.getPreferredPhoneNumber() == true) {
+					item.add(new ContextImage("phone.preferredPhoneNumber", new Model<String>("images/icons/tick.png")));
+				}
+				else {
+					item.add(new Label("phone.preferredPhoneNumber", ""));
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {

@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,6 +39,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.envers.Audited;
@@ -75,6 +77,7 @@ public class Person implements java.io.Serializable {
 	private EmailStatus preferredEmailStatus;
 	private EmailStatus otherEmailStatus;
 	private Date dateLastKnownAlive;
+	private String currentOrDeathAge;
 
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(0);
 	private Set<Address> addresses = new HashSet<Address>(0);
@@ -387,12 +390,25 @@ public class Person implements java.io.Serializable {
 	public void setPreferredEmailStatus(EmailStatus preferredEmailStatus) {
 		this.preferredEmailStatus = preferredEmailStatus;
 	}
+	@Column(name = "CURRENT_OR_DEATH_AGE", length = 50)
+	public String getCurrentOrDeathAge() {
+		return currentOrDeathAge;
+	}
+	
+	public void setCurrentOrDeathAge(String currentOrDeathAge) {
+		this.currentOrDeathAge = currentOrDeathAge;
+	}
 
-	
-	
-	
-	
-	
+	@Transient
+	public String getDescriptiveLastNameHistory() {
+		return getPersonLastnameHistory().stream().map(name -> name.getLastName()).collect(Collectors.joining(", "));
+	}
+
+	@Transient
+	public String getDescriptiveOtherIDs() {
+		return getOtherIDs().stream().map(otherID -> otherID.getOtherID_Source() + ": " + otherID.getOtherID()).collect(Collectors.joining("\n"));
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

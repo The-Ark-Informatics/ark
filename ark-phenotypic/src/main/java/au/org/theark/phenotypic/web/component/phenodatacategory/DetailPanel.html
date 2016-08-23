@@ -1,0 +1,113 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailForm">
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div wicket:id="phenoDatasetCategoryDetailWMC">
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+					<!-- Row 1 Study ID and Name-->
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetCategory.id">
+							ID:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<input wicket:id="phenoDataSetCategory.id" type="text" />
+					</div>
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetCategory.name">
+							Name:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<input wicket:id="phenoDataSetCategory.name" type="text" />
+					</div>
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetCategory.description">
+							Description:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<textarea wicket:id="phenoDataSetCategory.description" rows="4" cols="25">
+						</textarea>
+					</div>
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+					<!-- <div class="fldLabel">
+					<wicket:message key="phenoDataSetCategory.parentCategory">
+						Parent Category:
+					</wicket:message>
+				</div>
+				Add parent panel
+				<div wicket:id="parentPanel">
+					<div class="fldControl">
+						<select wicket:id="phenoDataSetCategory.parentCategory">
+							<option>
+								Cat 1
+							</option>
+							<option>
+								Cat 2
+							</option>
+						</select>
+					</div>
+				</div>
+				---------------
+				<div class="detailPanelBreaker">
+						&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+						<div class="fldLabel">
+					<wicket:message key="phenoDataSetCategory.orderNumber">
+						Order No:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+				<input wicket:id="phenoDataSetCategory.orderNumber"	type="text" />
+				</div> -->
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+				</div> 
+			</div>
+			<!-- Detail container end-->
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+			<div class="actionButtons">
+				<div wicket:id="editButtonContainer">
+					<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+					<div wicket:id="history" class="historyPanel"></div>
+				</div>
+			</div>
+			<div class="detailPanelBreaker">
+			&nbsp;
+			</div>
+		</div>
+	</form>
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+</wicket:panel>

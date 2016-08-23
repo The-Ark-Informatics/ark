@@ -60,18 +60,21 @@ public class Upload implements java.io.Serializable {
 	private String userId;
 	private ArkFunction arkFunction;
 	private UploadStatus uploadStatus;
+	private UploadLevel uploadLevel;// introduced upload level to check whether it is field or a category.
+	
 
 	public Upload() {
 	}
 
 	public Upload(Long id, FileFormat fileFormat, DelimiterType delimiterType,
-			String filename, byte[] uploadReport, ArkFunction arkFunction) {
+			String filename, byte[] uploadReport, ArkFunction arkFunction , UploadLevel uploadLevel) {
 		this.id = id;
 		this.fileFormat = fileFormat;
 		this.delimiterType = delimiterType;
 		this.filename = filename;
 		this.uploadReport = uploadReport;
 		this.arkFunction = arkFunction;
+		this.uploadLevel=uploadLevel;
 	}
 
 	@Id
@@ -263,4 +266,15 @@ public class Upload implements java.io.Serializable {
 		this.uploadStatus = uploadStatus;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UPLOAD_LEVEL_ID")
+	public UploadLevel getUploadLevel() {
+		return uploadLevel;
+	}
+
+	public void setUploadLevel(UploadLevel uploadLevel) {
+		this.uploadLevel = uploadLevel;
+	}
+
+	
 }

@@ -44,7 +44,7 @@ import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
-import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 
 /**
  * @author nivedann
@@ -68,7 +68,7 @@ public class CustomFieldDisplay implements Serializable {
 	private Set<SubjectCustomFieldData> subjectCustomFieldData = new HashSet<SubjectCustomFieldData>();
 	private Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData = new HashSet<BioCollectionCustomFieldData>();
 	private Set<BiospecimenCustomFieldData> biospecimenCustomFieldData = new HashSet<BiospecimenCustomFieldData>();
-	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
+	//private Set<PhenoDataSetData> phenoData = new HashSet<PhenoDataSetData>();
 	private Set<FamilyCustomFieldData> familyCustomFieldData = new HashSet<FamilyCustomFieldData>();
 	protected String descriptiveNameIncludingCFGName;
 
@@ -186,15 +186,15 @@ public class CustomFieldDisplay implements Serializable {
 	}
 
 	//TODO: Remove NotAudited when pheno auditing is done
-	@NotAudited
+	/*@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
-	public Set<PhenoData> getPhenoData() {
+	public Set<PhenoDataSetData> getPhenoData() {
 		return phenoData;
 	}
 
-	public void setPhenoData(Set<PhenoData> phenoData) {
+	public void setPhenoData(Set<PhenoDataSetData> phenoData) {
 		this.phenoData = phenoData;
-	}
+	}*/
 
 	@Column(name = "ALLOW_MULTIPLE_SELECTION", precision = 1, scale = 0)
 	public Boolean getAllowMultiselect() {

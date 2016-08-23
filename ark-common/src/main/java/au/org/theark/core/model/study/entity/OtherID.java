@@ -18,9 +18,6 @@
  ******************************************************************************/
 package au.org.theark.core.model.study.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -87,7 +84,7 @@ public class OtherID implements java.io.Serializable {
 		this.otherID = otherID;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PersonID")
 	public Person getPerson() {
 		return this.person;

@@ -25,6 +25,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
+import au.org.theark.report.model.vo.*;
+import au.org.theark.report.model.vo.report.*;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.DetachedCriteria;
@@ -45,8 +49,8 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
@@ -64,20 +68,6 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.report.model.vo.BiospecimenDetailsReportVO;
-import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
-import au.org.theark.report.model.vo.ConsentDetailsReportVO;
-import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
-import au.org.theark.report.model.vo.FieldDetailsReportVO;
-import au.org.theark.report.model.vo.ResearcherCostResportVO;
-import au.org.theark.report.model.vo.report.BiospecimenDetailsDataRow;
-import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
-import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
-import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
-import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
-import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
-import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
-import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 import au.org.theark.report.service.Constants;
 
 /**
@@ -767,9 +757,9 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return result;
 	}
 
-	public List<PhenoCollection> getPhenoCollectionList(Study study) {
-		List<PhenoCollection> results = null;
-		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
+	public List<PhenoDataSetCollection> getPhenoCollectionList(Study study) {
+		List<PhenoDataSetCollection> results = null;
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCollection.class);
 		criteria.add(Restrictions.eq("study", study));
 		results = criteria.list();
 		return results;
@@ -778,7 +768,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	//TODO review
 	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(FieldDetailsReportVO fdrVO) {
 		List<FieldDetailsDataRow> results = new ArrayList<FieldDetailsDataRow>();
-		Criteria criteria = getSession().createCriteria(PhenoCollection.class, "fpc");
+		Criteria criteria = getSession().createCriteria(PhenoDataSetCollection.class, "fpc");
 		criteria.createAlias("phenoCollection", "pc"); // Inner join to Field
 		criteria.createAlias("field", "f"); // Inner join to Field
 		criteria.createAlias("f.fieldType", "ft"); // Inner join to FieldType
@@ -787,7 +777,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			criteria.add(Restrictions.eq("phenoCollection", fdrVO.getPhenoCollection()));
 		}
 		if (fdrVO.getFieldDataAvailable()) {
-			DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoData.class, "fd");
+			DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoDataSetData.class, "fd");
 			// Join FieldPhenoCollection and FieldData on ID FK
 			fieldDataCriteria.add(Property.forName("f.id").eqProperty("fd." + "field.id"));
 			fieldDataCriteria.add(Property.forName("pc.id").eqProperty("fd." + "collection.id"));
@@ -832,7 +822,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 				criteria.add(Restrictions.eq("cfg.id", fdrVO.getCustomFieldDisplay().getCustomFieldGroup().getId()));
 			}
 			if (fdrVO.getFieldDataAvailable()) {
-				DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoData.class, "pd");
+				DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoDataSetData.class, "pd");
 				// Join CustomFieldDisplay and PhenoData on ID FK
 				fieldDataCriteria.add(Property.forName("cfd.id").eqProperty("pd." + "customFieldDisplay.id"));
 				criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("pd.customFieldDisplay"))));
@@ -859,6 +849,53 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return results;
 	}
 
+	public List<PhenoDataSetFieldDetailsDataRow> getPhenoDataSetFieldDetailsList(PhenoDataSetFieldDetailsReportVO reportVO) {
+		List<PhenoDataSetFieldDetailsDataRow> results = new ArrayList<PhenoDataSetFieldDetailsDataRow>();
+		if (reportVO.getPhenoDataSetFieldDisplay() != null) {
+			/*
+			 * Following query returns customFields whether or not they are
+			 * associated with a customFieldGroups (via customFieldDisplay)
+			 */
+			Criteria criteria = getSession().createCriteria(PhenoDataSetField.class, "pf");
+			criteria.createAlias("phenoDatasetFieldDisplay", "pdfd", JoinType.LEFT_OUTER_JOIN);	// Left join to CustomFieldDisplay
+			criteria.createAlias("pdfd.phenoDatasetFieldGroup", "pdfg", JoinType.LEFT_OUTER_JOIN); // Left join to CustomFieldGroup
+			criteria.createAlias("fieldType", "ft", JoinType.LEFT_OUTER_JOIN); // Left join to FieldType
+			criteria.createAlias("unitType", "ut", JoinType.LEFT_OUTER_JOIN); // Left join to UnitType
+			criteria.add(Restrictions.eq("pf.study", reportVO.getStudy()));
+			ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+			criteria.add(Restrictions.eq("pf.arkFunction", function));
+
+			if (reportVO.getPhenoDataSetFieldDisplay().getPhenoDataSetGroup() != null) {
+				criteria.add(Restrictions.eq("pdfg.id", reportVO.getPhenoDataSetFieldDisplay().getPhenoDataSetGroup().getId()));
+			}
+			if (reportVO.getFieldDataAvailable()) {
+				DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoDataSetData.class, "pd");
+				// Join CustomFieldDisplay and PhenoData on ID FK
+				fieldDataCriteria.add(Property.forName("pdfd.id").eqProperty("pd." + "phenoDatasetFieldDisplay.id"));
+				criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("pd.phenoDatasetFieldDisplay"))));
+			}
+
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.property("pdfg.name"), "questionnaire");
+			projectionList.add(Projections.property("pf.name"), "fieldName");
+			projectionList.add(Projections.property("pf.description"), "description");
+			projectionList.add(Projections.property("pf.minValue"), "minValue");
+			projectionList.add(Projections.property("pf.maxValue"), "maxValue");
+			projectionList.add(Projections.property("pf.encodedValues"), "encodedValues");
+			projectionList.add(Projections.property("pf.missingValue"), "missingValue");
+			projectionList.add(Projections.property("ut.name"), "units");
+			projectionList.add(Projections.property("ft.name"), "type");
+
+			criteria.setProjection(projectionList); // only return fields required for report
+			criteria.setResultTransformer(Transformers.aliasToBean(PhenoDataSetFieldDetailsDataRow.class));
+			criteria.addOrder(Order.asc("pdfg.id"));
+			criteria.addOrder(Order.asc("pdfd.sequence"));
+			results = criteria.list();
+		}
+
+		return results;
+	}
+
 	protected ArkFunction getArkFunctionByName(String functionName) {
 		Criteria criteria = getSession().createCriteria(ArkFunction.class);
 		criteria.add(Restrictions.eq("name", functionName));
@@ -876,9 +913,9 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return q.list();
 	}
 
-	public List<CustomFieldGroup> getQuestionnaireList(Study study) {
-		List<CustomFieldGroup> results = null;
-		Criteria criteria = getSession().createCriteria(CustomFieldGroup.class);
+	public List<PhenoDataSetGroup> getQuestionnaireList(Study study) {
+		List<PhenoDataSetGroup> results = null;
+		Criteria criteria = getSession().createCriteria(PhenoDataSetGroup.class);
 		criteria.add(Restrictions.eq("study", study));
 		ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 		criteria.add(Restrictions.eq("arkFunction", function));

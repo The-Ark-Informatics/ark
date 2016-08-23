@@ -68,7 +68,7 @@ public class DiseaseSubMenuTab extends AbstractArkTabPanel {
 						log.info("GENE");
 						panelToReturn = new GeneContainerPanel(panelId, arkContextMarkup);
 					} else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS)) {
-						panelToReturn = new au.org.theark.core.web.component.customfield.CustomFieldContainerPanel(panelId, true, arkFunction,false, false);
+						panelToReturn = new au.org.theark.core.web.component.customfield.CustomFieldContainerPanel(panelId, true, arkFunction);
 						log.info(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS);
 					} else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS_DISPLAY)) {
 						log.info(arkFunction.getName());

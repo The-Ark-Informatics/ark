@@ -138,10 +138,10 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid=null; 
 			if(Constants.PEDIGREE_DATA.equalsIgnoreCase(containerForm.getModelObject().getUpload().getUploadType().getName())){
 				arkExcelWorkSheetAsGrid= new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
-					fileUpload, iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType(),false);
+					fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType(),false);
 			}else{
 				arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
-						fileUpload, iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType());
+						fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType());
 			}
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			WebMarkupContainer wizardDataGridKeyContainer = new WebMarkupContainer("wizardDataGridKeyContainer");

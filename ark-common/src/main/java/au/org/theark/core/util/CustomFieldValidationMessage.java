@@ -289,5 +289,88 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append(columnName);
 		return (stringBuffer.toString());
 	}
+	public static String invalidCustomFieldType(String fieldName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" has an invalid custom field type for the column ");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidCategory(String fieldName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" has an invalid category for the column.");
+		stringBuffer.append(columnName+"\n");
+		stringBuffer.append("Please check again category is under your entered custom field Type");
+		return (stringBuffer.toString());
+	}
+	public static String invalidCustomFieldTypeForCategory(String categoryName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The category ");
+		stringBuffer.append(categoryName);
+		stringBuffer.append(" has an invalid custom field type for the column ");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidParentCategryForCategory(String categoryName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The category ");
+		stringBuffer.append(categoryName);
+		stringBuffer.append(" has an invalid parent category or you entered custom field Type not valid for the column ");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidOrderNumberForCategory(String categoryName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The category ");
+		stringBuffer.append(categoryName);
+		stringBuffer.append(" has an invalid order number for the column ");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidFieldName(String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field name ");
+		stringBuffer.append(columnName);
+		stringBuffer.append(" has exceed the maximum charactor length 50.");
+		return (stringBuffer.toString());
+	}
+	public static String invalidFieldDescription(String fieldDescription,String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field description ");
+		stringBuffer.append(fieldDescription);
+		stringBuffer.append(" has exceed the maximum charactor length 255 for the column.");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidFieldQuestionLabel(String questionLabel,String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field question label ");
+		stringBuffer.append(questionLabel);
+		stringBuffer.append(" has exceed the maximum charactor length 255 for the column.");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	public static String invalidFieldUnitTypeTxt(String fieldUnitTypeTxt,String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field unitTypeTxt ");
+		stringBuffer.append(fieldUnitTypeTxt);
+		stringBuffer.append(" has exceed the maximum charactor length 50 for the column.");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
+	
+	
 
 }

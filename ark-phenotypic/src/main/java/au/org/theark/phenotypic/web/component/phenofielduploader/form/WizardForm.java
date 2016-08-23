@@ -25,18 +25,18 @@ import org.apache.wicket.util.file.File;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
-import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
-import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadStep1;
-import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadStep2;
-import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadStep3;
-import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadStep4;
-import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadStep5;
+import au.org.theark.phenotypic.model.vo.PhenoDataSetFieldUploadVO;
+import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCategoryFieldUploadStep1;
+import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCategoryFieldUploadStep2;
+import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCategoryFieldUploadStep3;
+import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCategoryFieldUploadStep4;
+import au.org.theark.phenotypic.web.component.phenofielduploader.PhenoDataSetCategoryFieldUploadStep5;
 
 /**
  * @author cellis
  * @author elam
  */
-public class WizardForm extends AbstractWizardForm<PhenoFieldUploadVO> {
+public class WizardForm extends AbstractWizardForm<PhenoDataSetFieldUploadVO> {
 
 	private static final long	serialVersionUID	= 5494062431372163197L;
 
@@ -56,11 +56,11 @@ public class WizardForm extends AbstractWizardForm<PhenoFieldUploadVO> {
 	}
 
 	public void initialiseSteps() {
-		FieldUploadStep1 step1 = new FieldUploadStep1("step", containerForm, this);
-		FieldUploadStep2 step2 = new FieldUploadStep2("step", containerForm, this);
-		FieldUploadStep3 step3 = new FieldUploadStep3("step", containerForm, this);
-		FieldUploadStep4 step4 = new FieldUploadStep4("step", containerForm, this);
-		FieldUploadStep5 step5 = new FieldUploadStep5("step", containerForm);
+		PhenoDataSetCategoryFieldUploadStep1 step1 = new PhenoDataSetCategoryFieldUploadStep1("step", containerForm, this);
+		PhenoDataSetCategoryFieldUploadStep2 step2 = new PhenoDataSetCategoryFieldUploadStep2("step", containerForm, this);
+		PhenoDataSetCategoryFieldUploadStep3 step3 = new PhenoDataSetCategoryFieldUploadStep3("step", containerForm, this);
+		PhenoDataSetCategoryFieldUploadStep4 step4 = new PhenoDataSetCategoryFieldUploadStep4("step", containerForm, this);
+		PhenoDataSetCategoryFieldUploadStep5 step5 = new PhenoDataSetCategoryFieldUploadStep5("step", containerForm);
 
 		step1.setNextStep(step2);
 		step2.setNextStep(step3);
@@ -85,7 +85,7 @@ public class WizardForm extends AbstractWizardForm<PhenoFieldUploadVO> {
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
 		// Implement Cancel
-		PhenoFieldUploadVO uploadVO = new PhenoFieldUploadVO();
+		PhenoDataSetFieldUploadVO uploadVO = new PhenoDataSetFieldUploadVO();
 		uploadVO.getUpload().setArkFunction(containerForm.getModelObject().getUpload().getArkFunction());
 		containerForm.setModelObject(uploadVO);
 		initialiseSteps();

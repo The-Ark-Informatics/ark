@@ -35,6 +35,8 @@ import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.model.config.entity.ConfigField;
+import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
@@ -141,9 +143,23 @@ public class UserServiceImpl implements IUserService {
 			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			arkUserVO.setStudy(iArkCommonService.getStudy(sessionStudyId));
 			arkUserVO.getArkUserEntity().setLdapUserName(arkUserVO.getUserName());
+			
+			//Create default config values
+			List<ConfigField> allConfigFields = iArkCommonService.getAllConfigFields();
+			for (ConfigField config : allConfigFields) {
+				System.out.println("Config Field: " + config.getName());
+				UserConfig uc = new UserConfig();
+				uc.setArkUser(arkUserVO.getArkUserEntity());
+				uc.setConfigField(config);
+				uc.setValue(config.getDefaultValue());
+				arkUserVO.getArkUserConfigs().add(uc);
+			}
+			
+			
 			// Create the user in Ark Database as well and persist and update and roles user was assigned
 			iArkAuthorisationService.createArkUser(arkUserVO);
 
+			
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 			ah.setComment("Created User (in LDAP) " + arkUserVO.getUserName());
@@ -201,7 +217,6 @@ public class UserServiceImpl implements IUserService {
 	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException {
 		// Note: Only Remove the Ark User from database not in LDAP
 		iArkAuthorisationService.deleteArkUser(arkUserVO);
-
 	}
 
 	/**
@@ -272,5 +287,8 @@ public class UserServiceImpl implements IUserService {
 		ah.setComment("Created ArkUserRole for " + arkUserRole.getArkUser().getLdapUserName());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
 		iArkCommonService.createAuditHistory(ah);
+	}
+	public void updateArkUserRoleListForExsistingUser(ArkUserVO arkUserVO){
+		iArkAuthorisationService.updateArkUserRoleListForExsistingUser(arkUserVO);
 	}
 }

@@ -69,7 +69,7 @@ public class SearchResultListPanel extends Panel {
 	 */
 	public PageableListView<StudyComp> buildPageableListView(IModel iModel) {
 
-		PageableListView<StudyComp> sitePageableListView = new PageableListView<StudyComp>("studyCompList", iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<StudyComp> sitePageableListView = new PageableListView<StudyComp>("studyCompList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 			private static final long	serialVersionUID	= 1L;
 

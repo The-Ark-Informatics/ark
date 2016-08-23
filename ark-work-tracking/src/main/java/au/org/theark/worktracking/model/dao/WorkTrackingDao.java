@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
@@ -122,6 +123,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		if(researcherCriteria.getResearcherStatus() != null ){
 			criteria.add(Restrictions.eq(Constants.STATUS , researcherCriteria.getResearcherStatus()));
 		}
+		criteria.addOrder(Order.asc(Constants.ORGANIZATION)).addOrder(Order.asc(Constants.LAST_NAME)).addOrder(Order.asc(Constants.FIRST_NAME));
 		
 		List<Researcher> list = criteria.list();
 		return list;
@@ -329,30 +331,28 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		if(billableItemCriteria.getId() != null ){
 			criteria.add(Restrictions.eq("bi.id", billableItemCriteria.getId()));
 		}	
-		
 		if(billableItemCriteria.getDescription() != null ){
 			criteria.add(Restrictions.ilike("bi.description", billableItemCriteria.getDescription(),MatchMode.ANYWHERE));
 		}
-		
 		if(billableItemCriteria.getQuantity() != null ){
 			criteria.add(Restrictions.eq("bi.quantity", billableItemCriteria.getQuantity()));
 		}
-		
 		if(billableItemCriteria.getWorkRequest() != null ){
-			criteria.add(Restrictions.eq("bi.workRequest", billableItemCriteria.getWorkRequest()));
+			criteria.add(Restrictions.eq("wr.name", billableItemCriteria.getWorkRequest().getName()));
 		}
-		
 		if(billableItemCriteria.getInvoice() != null ){
 			criteria.add(Restrictions.eq("bi.invoice", billableItemCriteria.getInvoice()));
 		}
-		
 		if(billableItemVo.getResearcher() != null ){
 			criteria.add(Restrictions.eq("wr.researcher", billableItemVo.getResearcher()));
 		}
 		if(billableItemCriteria.getCommenceDate() !=null){
 			criteria.add(Restrictions.eq("bi.commenceDate", billableItemCriteria.getCommenceDate()));
 		}
-		
+		if(billableItemCriteria.getBillableItemType() !=null){
+			criteria.add(Restrictions.eq("bit.itemName", billableItemCriteria.getBillableItemType().getItemName()));
+		}
+		criteria.addOrder(Order.asc("wr.name")).addOrder(Order.desc("bi.commenceDate"));
 		List<BillableItem> list = criteria.list();
 		return list;
 	}
@@ -426,6 +426,32 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		criteria.setResultTransformer(Transformers.aliasToBean(WorkRequestBillableItemVo.class));
 		object=(WorkRequestBillableItemVo)criteria.uniqueResult();
 		return object;
+	}
+	
+	public boolean isBillableItemTypeExsistForStudy(Long studyId,BillableItemType billableItemType){
+		Criteria criteria = getSession().createCriteria(BillableItemType.class);
+		criteria.add(Restrictions.eq("studyId", studyId));
+		criteria.add(Restrictions.eq("itemName", billableItemType.getItemName()));
+		criteria.setMaxResults(1);
+		BillableItemType type=(BillableItemType)criteria.uniqueResult();
+		if(type!=null && type.getId() > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public boolean isWorkRequestExsistForStudy(Long studyId,WorkRequest workRequest) {
+		Criteria criteria = getSession().createCriteria(WorkRequest.class);
+		criteria.add(Restrictions.eq("studyId", studyId));
+		criteria.add(Restrictions.eq("name", workRequest.getName()));
+		criteria.setMaxResults(1);
+		WorkRequest workReq=(WorkRequest)criteria.uniqueResult();
+		if(workReq!=null && workReq.getId() > 0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 }

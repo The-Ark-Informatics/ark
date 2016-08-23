@@ -40,7 +40,7 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.model.Constants;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 
 /**
  * @author nivedann
@@ -60,7 +60,7 @@ public class CustomFieldGroup implements Serializable {
 	private Study study;
 	private Boolean published;
 	private ArkFunction arkFunction;
-	private Set<PhenoCollection> phenoCollection = new HashSet<PhenoCollection>();
+	private Set<PhenoDataSetCollection> phenoCollection = new HashSet<PhenoDataSetCollection>();
 
 	public CustomFieldGroup() {
 	}
@@ -117,11 +117,11 @@ public class CustomFieldGroup implements Serializable {
 	//TODO: Remove NotAudited when I do pheno auditing
 	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "questionnaire")
-	public Set<PhenoCollection> getPhenoCollection() {
+	public Set<PhenoDataSetCollection> getPhenoCollection() {
 		return phenoCollection;
 	}
 
-	public void setPhenoCollection(Set<PhenoCollection> phenoCollection) {
+	public void setPhenoCollection(Set<PhenoDataSetCollection> phenoCollection) {
 		this.phenoCollection = phenoCollection;
 	}
 

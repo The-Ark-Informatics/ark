@@ -30,13 +30,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.pheno.entity.PhenoData;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
@@ -55,46 +55,42 @@ public class PhenoDataDataViewPanel extends Panel {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
 	
-	protected ArkDataProvider2<PhenoDataCollectionVO, PhenoData> scdDataProvider;
-	protected DataView<PhenoData> dataView;
+	protected ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetData> scdDataProvider;
+	protected DataView<PhenoDataSetData> dataView;
 
 	public PhenoDataDataViewPanel(String id, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id);
 		this.cpModel = cpModel;
-		
 		this.setOutputMarkupPlaceholderTag(true);
 	}
 	
-	public PhenoDataDataViewPanel initialisePanel(Integer numRowsPerPage) {	
-		initialiseDataView();
+	public PhenoDataDataViewPanel initialisePanel(Integer numRowsPerPage,PhenoDataSetCategory phenoDataSetCategory) {	
+		initialiseDataView(phenoDataSetCategory);
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getRowsPerPage());
+			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		}
 		
 		this.add(dataView);
 		return this;
 	}
+	
 
-	private void initialiseDataView() {
+	private void initialiseDataView(PhenoDataSetCategory phenoDataSetCategory) {
 		// TODO fix for READ permission check
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 		// Data provider to get pageable results from backend
-			scdDataProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoData>() {
-				
+			scdDataProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetData>() {
 				public int size() {
-					PhenoCollection phenoCollection = criteriaModel.getObject().getPhenoCollection();
+					PhenoDataSetCollection phenoCollection = criteriaModel.getObject().getPhenoDataSetCollection();
 //					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-	
-					return (int)iPhenotypicService.getPhenoDataCount(phenoCollection);
+					return (int)iPhenotypicService.getPhenoDataCount(phenoCollection,phenoDataSetCategory);
 				}
-	
-				public Iterator<PhenoData> iterator(int first, int count) {
-					PhenoCollection phenoCollection = criteriaModel.getObject().getPhenoCollection();
+				public Iterator<PhenoDataSetData> iterator(int first, int count) {
+					PhenoDataSetCollection phenoCollection = criteriaModel.getObject().getPhenoDataSetCollection();
 //					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-	
-					List<PhenoData> phenoDataList = iPhenotypicService.getPhenoDataList(phenoCollection, first, count);
-					cpModel.getObject().setCustomFieldDataList(phenoDataList);
-					return cpModel.getObject().getCustomFieldDataList().iterator();
+					List<PhenoDataSetData> phenoDataList = iPhenotypicService.getPhenoDataList(phenoCollection,phenoDataSetCategory, first, count);
+					cpModel.getObject().setPhenoFieldDataList(phenoDataList);
+					return cpModel.getObject().getPhenoFieldDataList().iterator();
 				}
 			};
 			// Set the criteria for the data provider
@@ -102,9 +98,9 @@ public class PhenoDataDataViewPanel extends Panel {
 		}
 		else {
 			// Since module is not accessible, create a dummy dataProvider that returns nothing
-			scdDataProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoData>() {
+			scdDataProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetData>() {
 				
-				public Iterator<? extends PhenoData> iterator(int first, int count) {
+				public Iterator<? extends PhenoDataSetData> iterator(int first, int count) {
 					return null;
 				}
 
@@ -117,16 +113,16 @@ public class PhenoDataDataViewPanel extends Panel {
 		dataView = this.buildDataView(scdDataProvider);
 	}
 	
-	public DataView<PhenoData> buildDataView(ArkDataProvider2<PhenoDataCollectionVO, PhenoData> scdDataProvider2) {
+	public DataView<PhenoDataSetData> buildDataView(ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetData> scdDataProvider2) {
 
-		DataView<PhenoData> subjectCFDataDataView = new CustomDataEditorDataView<PhenoData>("customDataList", scdDataProvider2) {
+		DataView<PhenoDataSetData> subjectCFDataDataView = new PhenoDataSetDataEditorDataView<PhenoDataSetData>("phenoDataList", scdDataProvider2) {
 
 			@Override
-			protected void populateItem(final Item<PhenoData> item) {
-				PhenoData phenoData = item.getModelObject();
+			protected void populateItem(final Item<PhenoDataSetData> item) {
+				PhenoDataSetData phenoData = item.getModelObject();
 				// Ensure we tie Subject in context to the item if that link isn't there already
-				if (phenoData.getPhenoCollection() == null) {
-					phenoData.setPhenoCollection(cpModel.getObject().getPhenoCollection());
+				if (phenoData.getPhenoDataSetCollection() == null) {
+					phenoData.setPhenoDataSetCollection(cpModel.getObject().getPhenoDataSetCollection());
 				}
 				super.populateItem(item);
 			}
@@ -144,22 +140,22 @@ public class PhenoDataDataViewPanel extends Panel {
 		return subjectCFDataDataView;
 	}
 	
-	public DataView<PhenoData> getDataView() {
+	public DataView<PhenoDataSetData> getDataView() {
 		return dataView;
 	}
 	
-	public void saveCustomData() {
+	public void savePhenoData() {
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SAVE)) {
-			List<PhenoData> errorList = iPhenotypicService.createOrUpdatePhenoData(cpModel.getObject().getCustomFieldDataList());
+			List<PhenoDataSetData> errorList = iPhenotypicService.createOrUpdatePhenoData(cpModel.getObject().getPhenoFieldDataList());
 			if (errorList.size() > 0) {
-				for (PhenoData phenoData : errorList) {
-					CustomField cf = phenoData.getCustomFieldDisplay().getCustomField();
-					String fieldType = cf.getFieldType().getName();
+				for (PhenoDataSetData phenoData : errorList) {
+					PhenoDataSetField pf = phenoData.getPhenoDataSetFieldDisplay().getPhenoDataSetField();
+					String fieldType = pf.getFieldType().getName();
 					if (fieldType.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
-						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + phenoData.getDateDataValue());
+						this.error("Unable to save this data: " + pf.getFieldLabel() + " = " + phenoData.getDateDataValue());
 					}
 					else {
-						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + phenoData.getTextDataValue());					
+						this.error("Unable to save this data: " + pf.getFieldLabel() + " = " + phenoData.getTextDataValue());					
 					}
 				}
 			}

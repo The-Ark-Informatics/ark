@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,11 +49,13 @@ import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
+import au.org.theark.study.web.component.subjectUpload.UploadUtilities;
 
 import com.csvreader.CsvReader;
 
@@ -67,19 +70,19 @@ public class CustomFieldUploadValidator {
 
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
-	private Long						studyId;
-	private Study						study;
+	private Long					studyId;
+	private Study					study;
 	java.util.Collection<String>	fileValidationMessages	= new java.util.ArrayList<String>();
 	java.util.Collection<String>	dataValidationMessages	= new java.util.ArrayList<String>();
 	private HashSet<Integer>		existantSubjectUIDRows;
 	private HashSet<Integer>		nonExistantUIDs;
 	private HashSet<ArkGridCell>	errorCells;
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
-	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
-	private int							row							= 1;
+	private char					delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
+	private String					fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
+	private int						row							= 1;
 
-	public CustomFieldUploadValidator() {
+	/*public CustomFieldUploadValidator() {
 		super();
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -88,7 +91,7 @@ public class CustomFieldUploadValidator {
 		this.nonExistantUIDs = new HashSet<Integer>();
 		this.errorCells = new HashSet<ArkGridCell>();
 		simpleDateFormat.setLenient(false);
-	}
+	}*/
 
 	public CustomFieldUploadValidator(Study study) {
 		super();
@@ -145,19 +148,23 @@ public class CustomFieldUploadValidator {
 	}
 
 	public HashSet<Integer> getInsertRows() {
-		return existantSubjectUIDRows;
-	}
-
-	public void setInsertRows(HashSet<Integer> insertRows) {
-		this.existantSubjectUIDRows = insertRows;
-	}
-
-	public HashSet<Integer> getUpdateRows() {
+		//return existantSubjectUIDRows;
 		return nonExistantUIDs;
 	}
 
+	public void setInsertRows(HashSet<Integer> insertRows) {
+		//this.existantSubjectUIDRows = insertRows;
+		this.nonExistantUIDs = insertRows;
+	}
+
+	public HashSet<Integer> getUpdateRows() {
+		//return nonExistantUIDs;
+		return existantSubjectUIDRows;
+	}
+
 	public void setUpdateRows(HashSet<Integer> updateRows) {
-		this.nonExistantUIDs = updateRows;
+		this.existantSubjectUIDRows = updateRows;
+		//this.nonExistantUIDs = updateRows;
 	}
 
 	public HashSet<ArkGridCell> getErrorCells() {
@@ -169,11 +176,18 @@ public class CustomFieldUploadValidator {
 	}
 
 	/**
-	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * Validates the file in the default "matrix" file format assumed: 
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * OR
+	 * FAMILYUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns 
 	 * 
+	 * At the Step 2 we crated the csvReader and which will never needed to create 
+	 * again until the upload finishes.
+	 *  
 	 * @param uploadVo
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
+	 * Step 2 used.
 	 */
 	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo) {
 		java.util.Collection<String> validationMessages = null;
@@ -182,7 +196,8 @@ public class CustomFieldUploadValidator {
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter);
+			validationMessages = validateCustomFieldFileFormat(uploadVo,inputStream, fileFormat, delimiterCharacter);
+			
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -191,7 +206,10 @@ public class CustomFieldUploadValidator {
 	}
 
 	/**
-	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * Validates the file in the default "matrix" file format assumed:
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * Or
+	 * FAMILYUID,FIELD1,FIELD2,FIELDN.... Where N is any number of columns  
 	 * 
 	 * @param inputStream
 	 *           is the input stream of the file
@@ -200,8 +218,9 @@ public class CustomFieldUploadValidator {
 	 * @param delimChar
 	 *           is the delimiter character of the file (eg comma)
 	 * @return a collection of validation messages
+	 * Step 2 Used.
 	 */
-	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
+	private Collection<String> validateCustomFieldFileFormat(UploadVO uploadVO,InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -222,7 +241,7 @@ public class CustomFieldUploadValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			validationMessages = validateCustomFieldMatrixFileFormat(uploadVO,inputStream, inputStream.toString().length(), fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -232,66 +251,12 @@ public class CustomFieldUploadValidator {
 		}
 		return validationMessages;
 	}
-
-	/**
-	 * Validates the file in the default "matrix" file data assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
-	 * 
-	 * @param uploadVo
-	 *           is the UploadVO of the file
-	 * @return a collection of validation messages
-	 */
-	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
-		java.util.Collection<String> validationMessages = null;
-		try {
-			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
-			String filename = uploadVo.getFileUpload().getClientFileName();
-			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
-			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-
-			// If Excel, convert to CSV for validation
-			if (fileFormat.equalsIgnoreCase("XLS")) {
-				Workbook w;
-				try {
-					w = Workbook.getWorkbook(inputStream);
-					delimiterCharacter = ',';
-					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
-					inputStream = xlsToCsv.convertXlsToCsv(w);
-					inputStream.reset();
-				}
-				catch (BiffException e) {
-					log.error(e.getMessage());
-				}
-			}
-
-			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
-		}
-		catch (IOException e) {
-			log.error(e.getMessage());
-		}
-		return validationMessages;
-	}
-
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
-		java.util.Collection<String> validationMessages = null;
-
-		try {
-			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
-			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
-			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference);
-		}
-		catch (FileFormatException ffe) {
-			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
-		}
-		catch (ArkBaseException abe) {
-			log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + abe);
-		}
-		return validationMessages;
-	}
-
 	/**
 	 * Validates the file in the custom field list.
 	 * 
 	 * Requires.  SubjectUID specified in row one.  And all Fields must be valid for its type
+	 * Or
+	 * Requires.  FamilyUID specified in row one.  And all Fields must be valid for its type
 	 * 
 	 * Where N is any number of columns
 	 * 
@@ -304,8 +269,9 @@ public class CustomFieldUploadValidator {
 	 * @throws ArkBaseException
 	 *            general ARK Exception
 	 * @return a collection of file format validation messages
+	 * Step 2 used.
 	 */
-	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException {
+	private java.util.Collection<String> validateCustomFieldMatrixFileFormat(UploadVO uploadVO,InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 0;
@@ -321,30 +287,38 @@ public class CustomFieldUploadValidator {
 			csvReader.readHeaders();
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
-			boolean hasSubjectUIDHeader = false;
+			boolean hasSubjectUID=false;
+			boolean hasFamilyUID=false;
+			boolean hasOneOfSubjectUidOrFamilyUid=false;
 			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 			List<String> badHeaders = new ArrayList<String>();
-			
-			for(String header : headerColumnArray){																						
-				if(header.equalsIgnoreCase("SUBJECTUID")) {
-					hasSubjectUIDHeader = true;
+			//Write the correct function to pick the header specify correctly.
+			for(String header : headerColumnArray){
+				if(header.equalsIgnoreCase(Constants.SUBJECTUID)){
+					hasSubjectUID = true;
 				}
-				else{
-					//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
-					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, subjectCustomFieldArkFunction) == null){
+				if(header.equalsIgnoreCase(Constants.FAMILYUID)){
+					hasFamilyUID = true;
+				}
+				//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
+					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, subjectCustomFieldArkFunction) == null && 
+							!Constants.SUBJECTUID.equals(header) && !Constants.FAMILYUID.equals(header)){
 						badHeaders.add(header);
 						headerError = true;
 					}
-				}
-			}
-			if (headerError || !hasSubjectUIDHeader) {
+			}//end for
+			//The is the XOR for the Result
+			hasOneOfSubjectUidOrFamilyUid=hasSubjectUID^hasFamilyUID;
+			if(hasOneOfSubjectUidOrFamilyUid && hasSubjectUID){uploadVO.setCustomFieldType(Constants.SUBJECT);}
+			if(hasOneOfSubjectUidOrFamilyUid && hasFamilyUID){uploadVO.setCustomFieldType(Constants.FAMILY);}
+			if (headerError || !hasOneOfSubjectUidOrFamilyUid) {
 				// Invalid file format
 				StringBuffer stringBuffer = new StringBuffer();
 				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n\n");
 				stringBuffer.append("This file is not valid because; \n");
 				fileValidationMessages.add(stringBuffer.toString());
-				if(!hasSubjectUIDHeader){
-					fileValidationMessages.add("The column name \"SUBJECTUID\" must exist as the header of the first column.\n");
+				if(!hasOneOfSubjectUidOrFamilyUid){
+					fileValidationMessages.add("The column name must be either \"SUBJECTUID\" or \"FAMILYUID\" as the header of the first column.Both can not take place at once\n");
 				}
 				for (String badHeader : badHeaders) {
 					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing study-specific custom field.\n");
@@ -358,11 +332,11 @@ public class CustomFieldUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject/family data file");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("Unexpected exception occurred when trying to process subject/family data file");
 		}
 		finally {
 			if (csvReader != null) {
@@ -387,6 +361,87 @@ public class CustomFieldUploadValidator {
 		return fileValidationMessages;
 	}
 
+
+	/**
+	 * Validates the file in the default "matrix" file data assumed: 
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * Or
+	 * FAMILYUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns 
+	 * 
+	 * @param uploadVo
+	 *           is the UploadVO of the file
+	 * @return a collection of validation messages
+	 * Used in Step 3.
+	 */
+	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
+		java.util.Collection<String> validationMessages = null;
+		try {
+			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
+			String filename = uploadVo.getFileUpload().getClientFileName();
+			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
+	
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
+				}
+				catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+			}
+
+			validationMessages = validateSubjectFamilyFileData(uploadVo,inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
+		return validationMessages;
+	}
+	/**
+	 * Validates the file in the default "matrix" file data assumed: 
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * Or
+	 * FAMILYUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns 
+	 * @param inputStream
+	 * @param fileFormat
+	 * @param delimChar
+	 * @param uidsToUpdateReference
+	 * @return
+	 * Used in Step 3
+	 */
+	private Collection<String> validateSubjectFamilyFileData(UploadVO uploadVo,InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
+		java.util.Collection<String> validationMessages = new ArrayList<String>();
+		try {
+			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
+			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
+			//String dataFileType=new UploadUtilities().getUploadFileDataFileSubjectOrFamily(inputStream,delimChar);
+			if(Constants.SUBJECT.equals(uploadVo.getCustomFieldType())){ 
+				validationMessages = validateMatrixSubjectCustomFileData(inputStream, delimChar, Long.MAX_VALUE, uidsToUpdateReference);
+			}else if(Constants.FAMILY.equals(uploadVo.getCustomFieldType())){
+				validationMessages = validateMatrixFamilyCustomFileData(inputStream,delimChar,  Long.MAX_VALUE, uidsToUpdateReference);
+			}else{
+				log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION);
+				throw new FileFormatException();
+			}
+		}
+		catch (FileFormatException ffe) {
+			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe.getMessage());
+			validationMessages.add(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe.getMessage());
+		}
+		catch (ArkBaseException abe) {
+			log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + abe.getMessage());
+			validationMessages.add(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + abe.getMessage());
+		}
+			return validationMessages;
+	}
+
+	
 	/**
 	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
 	 * 
@@ -405,30 +460,27 @@ public class CustomFieldUploadValidator {
 	 * @throws ArkBaseException
 	 *            general ARK Exception
 	 * @return a collection of data validation messages
+	 * Used in step 3.
 	 */
 	@SuppressWarnings("unchecked")
-	public java.util.Collection<String> validateMatrixCustomFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
-		delimiterCharacter = inDelimChr;
-		fileFormat = inFileFormat;
+	private java.util.Collection<String> validateMatrixSubjectCustomFileData(InputStream inputStream, char delimChar,  long rowsToValidate, List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
 		row = 1;
-		InputStreamReader inputStreamReader = null;
-		CsvReader csvReader = null;
+		int inLength=inputStream.toString().length();
+		CsvReader csvReader=null;
 		
 		try {
-			inputStreamReader = new InputStreamReader(fileInputStream);
 			String[] stringLineArray;
 			if (inLength <= 0) {
 				throw new FileFormatException("The input files' size was not greater than 0.  Actual length reported: " + inLength);
 			}
-
-			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+			csvReader=new CsvReader(new InputStreamReader(inputStream), delimChar);
 			csvReader.readHeaders();
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
 			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
-																							//remove if not subjectuid, enforce fetch of customField to save another query each
-			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
+			CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(Constants.SUBJECT);
+			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysInWithCustomFieldType(fieldNameCollection, study, subjectCustomFieldArkFunction, customFieldType);																//remove if not subjectuid, enforce fetch of customField to save another query each
 			
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();//i might still need this or might not now that i am evaluating by name ... TODO evaluate
@@ -492,23 +544,140 @@ public class CustomFieldUploadValidator {
 					log.error("Cleanup operation failed: csvRdr.close()", ex);
 				}
 			}
-			if (inputStreamReader != null) {
+			/*if (inputStreamReader != null) {
 				try {
 					inputStreamReader.close();
 				}
 				catch (Exception ex) {
 					log.error("Cleanup operation failed: isr.close()", ex);
 				}
-			}
+			}*/
 		}
-
-		//TODO:  test hashset this i.intvalue or left hashset value??
-		for (Iterator<Integer> iterator = nonExistantUIDs.iterator(); iterator.hasNext();) {
-			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("Subject on row " + i.intValue() + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
+		List<Integer> nonExsistingUIDLst=new ArrayList<>(nonExistantUIDs);
+		Collections.sort(nonExsistingUIDLst);
+		//The Header include in the first row.So we have to always go for the array value +1 
+		for (Integer nonExt : nonExsistingUIDLst) {
+			dataValidationMessages.add("Subject on row " + (nonExt+1) + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
 		}
 		return dataValidationMessages;
 	}
+	/**
+	 * 
+	 * Validates the file in the default "matrix" file format assumed: 
+	 * FAMILYUID,FIELD1,FIELD2,FIELDN...
+	 * 
+	 * @param fileInputStream
+	 * @param inLength
+	 * @param inFileFormat
+	 * @param inDelimChr
+	 * @param rowsToValidate
+	 * @param uidsToUpdateReference
+	 * @return
+	 * @throws FileFormatException
+	 * @throws ArkSystemException
+	 * Used in step 3.
+	 */
+	private java.util.Collection<String> validateMatrixFamilyCustomFileData(InputStream inputStream, char  delimChar,  long rowsToValidate, List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
+		row = 1;
+		int inLength=inputStream.toString().length();
+		CsvReader csvReader=null;
+		try {
+			String[] stringLineArray;
+			if (inLength <= 0) {
+				throw new FileFormatException("The input files' size was not greater than 0.  Actual length reported: " + inLength);
+			}
+			csvReader=new CsvReader(new InputStreamReader(inputStream), delimChar);
+			csvReader.readHeaders();
+			List<String> familyUIDsAlreadyExisting = iArkCommonService.getAllFamilyUIDs(study);	
+			//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
+			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
+			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
+			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			//remove if not subjectuid, enforce fetch of customField to save another query each
+			CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(Constants.FAMILY);
+			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysInWithCustomFieldType(fieldNameCollection, study, subjectCustomFieldArkFunction, customFieldType);																//remove if not subjectuid, enforce fetch of customField to save another query each
+			
+			while (csvReader.readRecord()) {
+				stringLineArray = csvReader.getValues();//i might still need this or might not now that i am evaluating by name ... TODO evaluate
+				String familyUID = stringLineArray[0];	// First/0th column should be the SubjectUID
+				if(!familyUIDsAlreadyExisting.contains(familyUID)){
+					nonExistantUIDs.add(row);//TODO test and compare array.
+					for(CustomFieldDisplay cfd : cfdsThatWeNeed){
+						errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+					}
+					errorCells.add(new ArkGridCell(0, row));
+				}
+				else{
+					if(uidsToUpdateReference.contains(familyUID)){
+						for(CustomFieldDisplay cfd : cfdsThatWeNeed){
+							errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+						}
+						errorCells.add(new ArkGridCell(0, row));
+						dataValidationMessages.add("Family " + familyUID + " on row " + row + " is listed multiple times in this file.  " +
+								"Please remove this row and retry.");
+					}
+					else{
+						uidsToUpdateReference.add(familyUID);
+						CustomField customField = null;		
+						for(CustomFieldDisplay cfd : cfdsThatWeNeed){
+							customField = cfd.getCustomField();
+							String theDataAsString = csvReader.get(cfd.getCustomField().getName());
+							if(theDataAsString!=null && !theDataAsString.isEmpty()){
+								//TODO : also check if the value == "missingvaluePatternThingy" , then dont validate
+								if(customField.getMissingValue()!=null && customField.getMissingValue().toString().equalsIgnoreCase(theDataAsString)){
+									//then move on and don't validate it...it goes straight in
+								}
+								else
+								{
+									//log.info("customField = " + customField==null?"null":customField.getName());
+									if(!validateFieldData(customField, theDataAsString, familyUID, dataValidationMessages, cfd.getAllowMultiselect())){
+										errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+									}								
+								}
+							}
+						}
+						existantSubjectUIDRows.add(row);
+					}
+				}
+				row++;
+			}
+		}
+		catch (IOException ioe) {
+			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the Family data file");
+		}
+		catch (Exception ex) {
+			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
+			throw new ArkSystemException("Unexpected exception occurred when trying to process Familu data file");
+		}
+		finally {
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			/*if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}*/
+		}
+		List<Integer> nonExsistingUIDLst=new ArrayList<>(nonExistantUIDs);
+		Collections.sort(nonExsistingUIDLst);
+		//The Header include in the first row.So we have to always go for the array value +1 
+		for (Integer nonExt : nonExsistingUIDLst) {
+			dataValidationMessages.add("Subject on row " + (nonExt+1) + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
+		}
+		return dataValidationMessages;
+		
+	}
+	
 
 	/**
 	 * Returns true of the field data value is a valid format, either NUMBER, CHARACTER or DATE as specified in the data dictionary
@@ -940,5 +1109,8 @@ public class CustomFieldUploadValidator {
 		stringBuffer.append(" is not amongst the valid status options.");
 		return (stringBuffer.toString());
 	}
+	
+	
+	
 
 }

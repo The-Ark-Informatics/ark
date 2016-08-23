@@ -60,6 +60,9 @@ public class Phone implements java.io.Serializable {
 	private Date dateReceived;
 	private YesNo silentMode;
 	private String comment;
+	private Boolean preferredPhoneNumber;
+	private Date validFrom;
+	private Date validTo;
 
 
 	/** default constructor */
@@ -180,5 +183,34 @@ public class Phone implements java.io.Serializable {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "VALID_FROM", length = 7)
+	public Date getValidFrom() {
+		return validFrom;
+	}
+
+	public void setValidFrom(Date validFrom) {
+		this.validFrom = validFrom;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "VALID_TO", length = 7)
+	public Date getValidTo() {
+		return validTo;
+	}
+
+	public void setValidTo(Date validTo) {
+		this.validTo = validTo;
+	}
+	@Column(name = "PREFERRED_PHONE_NUMBER", length = 10)
+	public Boolean getPreferredPhoneNumber() {
+		return preferredPhoneNumber;
+	}
+
+	public void setPreferredPhoneNumber(Boolean preferredPhoneNumber) {
+		this.preferredPhoneNumber = preferredPhoneNumber;
+	}
+	
 	
 }

@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.Payload;
@@ -107,7 +108,7 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
-		saveFileInMemory();
+		saveFileInMemory(target);
 	}
 
 	public void setWizardForm(WizardForm wizardForm) {
@@ -118,7 +119,7 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 		return wizardForm;
 	}
 
-	private void saveFileInMemory() {
+	private void saveFileInMemory(AjaxRequestTarget target) {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 		FileUpload fileUpload = fileUploadField.getFileUpload();
@@ -143,7 +144,8 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 				containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
 			}
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biocollection Custom Data")){
-				containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+				//containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+				containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
 			}
 			else{
 				log.error("\n\n\n\n\n\n\n\n\n\n\n uploadType unrecognized");
@@ -156,7 +158,12 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 		}
 		wizardForm.setFileName(filename);
 
-		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForAwaitingValidation());
-		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(Constants.UPLOAD_STATUS_AWAITING_VALIDATION));
+		try {
+			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		} catch (Exception e) {
+			error("There is a problem during the upload process.");
+			getWizardForm().onError(target, null);
+		}
 	}
 }

@@ -19,12 +19,9 @@
 package au.org.theark.study.util;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -60,8 +57,11 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.LinkSubjectTwin;
@@ -88,6 +88,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.DataConversionAndManipulationHelper;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.ConsentVO;
+import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
@@ -1145,16 +1146,26 @@ public class DataUploader {
 		return defaultPhoneType;
 	}
 
-	@SuppressWarnings("unchecked")
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate) throws FileFormatException,
+	/**
+	 * Upload and report Subject Custom field Data.
+	 * 
+	 * @param inputStream
+	 * @param size
+	 * @param fileFormat
+	 * @param delimChar
+	 * @param listOfUIDsToUpdate
+	 * @return
+	 * @throws FileFormatException
+	 * @throws ArkSystemException
+	 * Used in step 4.
+	 */
+	public StringBuffer uploadAndReportSubjectCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate,UploadVO uploadVO) throws FileFormatException,
 			ArkSystemException {
 		List<SubjectCustomFieldData> customFieldsToUpdate = new ArrayList<SubjectCustomFieldData>();
 		List<SubjectCustomFieldData> customFieldsToInsert = new ArrayList<SubjectCustomFieldData>();
 		delimiterCharacter = delimChar;
 		uploadReport = new StringBuffer();
-
-		InputStreamReader inputStreamReader = null;
-		CsvReader csvReader = null;
+		CsvReader csvReader=null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
 		
 		if (fileFormat.equalsIgnoreCase("XLS")) {
@@ -1175,17 +1186,18 @@ public class DataUploader {
 		}
 		
 
-		int subjectCount = 0;
+		int subjectCount = 1;
 		long updateFieldsCount = 0L;
 		long insertFieldsCount = 0L;
 		long emptyDataCount = 0L;
+		int percentage=0;
+		int totalUploadSize=0;
 		try {
-			inputStreamReader = new InputStreamReader(inputStream);
-			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+			
 			String[] stringLineArray;
-
 			List<LinkSubjectStudy> allSubjectWhichWillBeUpdated = null;
-			if (listOfUIDsToUpdate.size() > 0) {
+			totalUploadSize=listOfUIDsToUpdate.size();
+			if (totalUploadSize > 0) {
 				allSubjectWhichWillBeUpdated = iArkCommonService.getUniqueSubjectsWithTheseUIDs(study, listOfUIDsToUpdate);
 			}
 			else {
@@ -1197,18 +1209,19 @@ public class DataUploader {
 				uploadReport.append("\n");
 				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + size);
 			}
-
+			csvReader=new CsvReader(new InputStreamReader(inputStream), delimChar);
 			csvReader.readHeaders();
-
-			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
+			String[] headers=csvReader.getHeaders();
+			List<String> fieldNameCollection = Arrays.asList(headers);
 			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);// ");
-
-			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
-			List<SubjectCustomFieldData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
+			CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(Constants.SUBJECT);
+			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysInWithCustomFieldType(fieldNameCollection, study, subjectCustomFieldArkFunction, customFieldType);
+			List<SubjectCustomFieldData> dataThatWeHave = iArkCommonService.getSubjectCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
 			// read one line which contains potentially many custom fields
 			while (csvReader.readRecord()) {
 				log.info("reading record " + subjectCount);
-
+				percentage=(int)Math.round(((double)(subjectCount)/(double)totalUploadSize)*100.0);
+				uploadVO.setProgress(percentage);
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
@@ -1217,14 +1230,14 @@ public class DataUploader {
 				for (CustomFieldDisplay cfd : cfdsThatWeNeed) {
 					customField = cfd.getCustomField();
 					// log.info("got customfield from cfd");
-					SubjectCustomFieldData dataInDB = getCustomFieldFromList(dataThatWeHave, subjectUID, cfd);
+					SubjectCustomFieldData dataInDB = getSubjectCustomFieldFromList(dataThatWeHave, subjectUID, cfd);
 					// log.info("got 'data in db' from cfd, subject and ALL data");
 					String theDataAsString = csvReader.get(cfd.getCustomField().getName());
 					// log.info("read data from file");
 
 					if (theDataAsString != null && !theDataAsString.isEmpty()) {
 						if (dataInDB != null) {
-							dataInDB = setValue(customField, cfd, dataInDB, theDataAsString);
+							dataInDB = (SubjectCustomFieldData)setValue(customField, cfd, dataInDB, theDataAsString);
 							// log.info("have set value to entity");
 							customFieldsToUpdate.add(dataInDB);
 							// log.info("added entity to list");
@@ -1273,9 +1286,9 @@ public class DataUploader {
 					log.error("Cleanup operation failed: csvRdr.close()", ex);
 				}
 			}
-			if (inputStreamReader != null) {
+			if (inputStream != null) {
 				try {
-					inputStreamReader.close();
+					inputStream.close();
 				}
 				catch (Exception ex) {
 					log.error("Cleanup operation failed: isr.close()", ex);
@@ -1300,8 +1313,166 @@ public class DataUploader {
 		iStudyService.processFieldsBatch(customFieldsToUpdate, study, customFieldsToInsert);
 		return uploadReport;
 	}
+	
+	/**
+	 * Upload and report Family Custom field Data.
+	 * 
+	 * @param inputStream
+	 * @param size
+	 * @param fileFormat
+	 * @param delimChar
+	 * @param listOfUIDsToUpdate
+	 * @return
+	 * @throws FileFormatException
+	 * @throws ArkSystemException
+	 */
+	public StringBuffer uploadAndReportFamilyCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate) throws FileFormatException,
+			ArkSystemException {
+		List<FamilyCustomFieldData> customFieldsToUpdate = new ArrayList<FamilyCustomFieldData>();
+		List<FamilyCustomFieldData> customFieldsToInsert = new ArrayList<FamilyCustomFieldData>();
+		CsvReader csvReader=null;
+		delimiterCharacter = delimChar;
+		uploadReport = new StringBuffer();
+		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		if (fileFormat.equalsIgnoreCase("XLS")) {
+			Workbook w;
+			try {
+				w = Workbook.getWorkbook(inputStream);
+				delimiterCharacter = ',';
+				XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+				inputStream = xlsToCsv.convertXlsToCsv(w);
+				inputStream.reset();
+			}
+			catch (BiffException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
+		
 
-	private SubjectCustomFieldData setValue(CustomField customField, CustomFieldDisplay customFieldDisplay, SubjectCustomFieldData data, String theDataAsString) {
+		int familyCount = 0;
+		long updateFieldsCount = 0L;
+		long insertFieldsCount = 0L;
+		long emptyDataCount = 0L;
+		try {
+			String[] stringLineArray;
+
+			if (size <= 0) {
+				uploadReport.append("ERROR:  The input size was not greater than 0. Actual length reported: ");
+				uploadReport.append(size);
+				uploadReport.append("\n");
+				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + size);
+			}
+			csvReader=new CsvReader(new InputStreamReader(inputStream), delimChar);
+			csvReader.readHeaders();
+			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
+			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(Constants.FAMILY);
+			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysInWithCustomFieldType(fieldNameCollection, study, subjectCustomFieldArkFunction, customFieldType);
+			List<FamilyCustomFieldData> dataThatWeHave = iArkCommonService.getFamilyCustomFieldDataFor(study,cfdsThatWeNeed,listOfUIDsToUpdate );
+			// read one line which contains potentially many custom fields
+			while (csvReader.readRecord()) {
+				log.info("reading record " + familyCount);
+				stringLineArray = csvReader.getValues();
+				String familyUid = stringLineArray[0];
+				//Additional validation to verify familyUid shoud be a unique value 
+				// for a study.
+				
+				CustomField customField = null;
+				//Iterate through custom fileds and get pick one family custom field at a time.
+				for (CustomFieldDisplay cfd : cfdsThatWeNeed) {
+					customField = cfd.getCustomField();
+					// log.info("got customfield from cfd");
+					FamilyCustomFieldData dataInDB = getFamilyCustomFieldFromList(dataThatWeHave, familyUid, cfd);
+					// log.info("got 'data in db' from cfd, subject and ALL data");
+					String theDataAsString = csvReader.get(cfd.getCustomField().getName());
+					// log.info("read data from file");
+
+					if (theDataAsString != null && !theDataAsString.isEmpty()) {
+						if (dataInDB != null) {
+							dataInDB =(FamilyCustomFieldData)setValue(customField, cfd, dataInDB, theDataAsString);
+							// log.info("have set value to entity");
+							customFieldsToUpdate.add(dataInDB);
+							// log.info("added entity to list");
+							updateFieldsCount++;
+						}
+						else {
+							FamilyCustomFieldData dataToInsert = new FamilyCustomFieldData();
+							dataToInsert.setCustomFieldDisplay(cfd);
+							dataToInsert.setFamilyUid(familyUid);
+							dataToInsert.setStudy(study);
+							setValue(customField, cfd, dataToInsert, theDataAsString);
+							customFieldsToInsert.add(dataToInsert);
+							insertFieldsCount++;
+						}
+					}
+					else {
+						emptyDataCount++;
+					}
+				}
+
+				familyCount++;
+			}
+			log.info("finished message for " + familyCount + "         updates= " + updateFieldsCount + " or \ncustomFieldsToupdate.size=" + customFieldsToUpdate.size() + "\n     inserts = "
+					+ insertFieldsCount + "  or  \ncustomFieldsToInsert.size = " + customFieldsToInsert.size() + "   amount of empty scells =" + emptyDataCount);
+		}
+		catch (IOException ioe) {
+			uploadReport.append("SYSTEM ERROR:   Unexpected I/O exception whilst reading the family data file\n");
+			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the family data file");
+		}
+		catch (Exception ex) {
+			uploadReport.append("SYSTEM ERROR:   Unexpected exception whilst reading the family data file\n");
+			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
+			throw new ArkSystemException("Unexpected exception occurred when trying to process family data file");
+		}
+		finally {
+			uploadReport.append("Total file size: ");
+			uploadReport.append(decimalFormat.format(size / 1024.0 / 1024.0));
+			uploadReport.append(" MB");
+			uploadReport.append("\n");
+
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			/*if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}*/
+
+		}
+
+		uploadReport.append("Inserted ");
+		uploadReport.append(familyCount);
+		uploadReport.append(" rows of data");
+		uploadReport.append("\n");
+
+		uploadReport.append(insertFieldsCount);
+		uploadReport.append(" fields were inserted.");
+		uploadReport.append("\n");
+		uploadReport.append(updateFieldsCount);
+		uploadReport.append(" fields were updated.");
+		uploadReport.append("\n");
+
+		// TODO better exceptionhandling
+		iStudyService.processFieldsBatch(customFieldsToUpdate, study, customFieldsToInsert);
+		return uploadReport;
+	}
+	
+	
+
+	private ICustomFieldData setValue(CustomField customField, CustomFieldDisplay customFieldDisplay, ICustomFieldData data, String theDataAsString) {
 		// Rerun the validation check to determine if "invalid" data was in fact ignored and forcibly set to be loaded in
 		boolean isValidData = CustomFieldUploadValidator.validateFieldData(customField, theDataAsString, "", new ArrayList<String>(0), customFieldDisplay.getAllowMultiselect());
 
@@ -1368,7 +1539,7 @@ public class DataUploader {
 		return data;
 	}
 
-	private SubjectCustomFieldData getCustomFieldFromList(List<SubjectCustomFieldData> dataThatWeHave, String subjectUID, CustomFieldDisplay cfd) {
+	private SubjectCustomFieldData getSubjectCustomFieldFromList(List<SubjectCustomFieldData> dataThatWeHave, String subjectUID, CustomFieldDisplay cfd) {
 		for (SubjectCustomFieldData data : dataThatWeHave) {
 			// TODO ASAP return to ignores case?
 			if (data.getLinkSubjectStudy().getSubjectUID().equals(subjectUID) && data.getCustomFieldDisplay().getId().equals(cfd.getId())) {
@@ -1747,7 +1918,7 @@ public class DataUploader {
 		return exists;
 	}
 
-	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar) throws FileFormatException, ArkSystemException {
+	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, String user_id) throws FileFormatException, ArkSystemException {
 		uploadReport = new StringBuffer();
 		long rowCount = 0;
 		long insertFieldsCount = 0;
@@ -1796,8 +1967,7 @@ public class DataUploader {
 
 				SubjectFile subjectFile = new SubjectFile();
 				
-				String userId = SecurityUtils.getSubject().getPrincipal().toString();
-				subjectFile.setUserId(userId);
+				subjectFile.setUserId(user_id);
 				
 				String subjectUID = stringLineArray[subjectUidIndex];
 				String studyCompName = stringLineArray[studyComponentIndex];
@@ -1882,5 +2052,23 @@ public class DataUploader {
 		}
 
 		return uploadReport;
+	}
+	/**
+	 * 
+	 * @param dataThatWeHave
+	 * @param familyUID
+	 * @param cfd
+	 * @return
+	 */
+	private FamilyCustomFieldData getFamilyCustomFieldFromList(List<FamilyCustomFieldData> dataThatWeHave, String familyUID, CustomFieldDisplay cfd) {
+		for (FamilyCustomFieldData data : dataThatWeHave) {
+			// TODO ASAP return to ignores case?
+			if (data.getFamilyUid().equals(familyUID) && data.getCustomFieldDisplay().getId().equals(cfd.getId())) {
+				dataThatWeHave.remove(data); // TODO test this: but it seems to have drastically reduced the exponential nature of our upload by the final
+														// lookups becoming faster rather than exponentially slower
+				return data;
+			}
+		}
+		return null;
 	}
 }

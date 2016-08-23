@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -62,8 +63,8 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
-	private boolean 				unitTypeDropDownOn;
-	private boolean 				subjectCustomField;
+	
+	
 	
 	/**
 	 * Constructor
@@ -73,13 +74,12 @@ public class SearchResultListPanel extends Panel {
 	 * @param feedBackPanel
 	 * @param unitTypeDropDownOn
 	 */
-	public SearchResultListPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel,boolean unitTypeDropDownOn, boolean subjectCustomField) {
+	public SearchResultListPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id);
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
-		this.unitTypeDropDownOn=unitTypeDropDownOn;
-		this.subjectCustomField=subjectCustomField;
+		
 	}
 
 	public DataView<CustomField> buildDataView(ArkDataProvider2<CustomField, CustomField> subjectProvider) {
@@ -163,13 +163,15 @@ public class SearchResultListPanel extends Panel {
 				newModel.getObject().setCustomField(cf);
 				newModel.getObject().setUseCustomFieldDisplay(cpModel.getObject().isUseCustomFieldDisplay());
 
-				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO,unitTypeDropDownOn,subjectCustomField);
+				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-
+				//Added on 2016-05-26 to stop showing the previous feed back message when deleting or updating in the form.
+				//This will clear the feedback message.
+				Session.get().cleanupFeedbackMessages();
+				target.add(feedbackPanel);
 			}
 		};
-
 		// Add the label for the link
 		CustomField field = item.getModelObject();
 		Label nameLinkLabel = new Label("nameLbl", field.getName());
@@ -190,7 +192,7 @@ public class SearchResultListPanel extends Panel {
 		columns.add(new ExportableTextColumn<CustomField>(Model.of("maxValue"), "maxValue"));
 		columns.add(new ExportableTextColumn<CustomField>(Model.of("missingValue"), "missingValue"));
 
-		DataTable table = new DataTable("datatable", columns, customFieldDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
+		DataTable table = new DataTable("datatable", columns, customFieldDataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("FIELD_NAME");
 		headers.add("FIELD_TYPE");

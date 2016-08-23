@@ -1,0 +1,10 @@
+db.driver=
+db.URL=
+db.username=
+db.password=
+
+ldap.url=
+ldap.basePeopleDn=
+ldap.base=
+ldap.userDn=
+ldap.password=

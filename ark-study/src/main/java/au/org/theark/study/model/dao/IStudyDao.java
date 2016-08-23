@@ -18,9 +18,13 @@
  ******************************************************************************/
 package au.org.theark.study.model.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -47,11 +51,11 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -64,6 +68,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCalendar;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -78,6 +83,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.model.vo.StudyCalendarVo;
 
 public interface IStudyDao {
 	
@@ -96,7 +102,7 @@ public interface IStudyDao {
 	 * @param study
 	 * @param subjectsToUpdate
 	 */
-	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert);
+	public void processFieldsBatch(List<? extends ICustomFieldData> fieldsToUpdate, Study study, List<? extends ICustomFieldData> fieldsToInsert);
 	
 	/**
 	 * Perform all pedigree inserts as an atomic unit.
@@ -486,13 +492,29 @@ public interface IStudyDao {
 	
 	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles);
 	
-	public List<CustomField> getFamilyIdCustomFieldsForPedigreeRelativesList(Long studyId);
+	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
 	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 
-	public String getSubjectFamilyId(Long studyId, String subjectUID);
+	public String getSubjectFamilyUId(Long studyId, String subjectUID);
 	
-	//public List<SubjectCustomFieldData> getSubjectCustomFieldDataListByCategory(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public void setPreferredPhoneNumberToFalse(Person person);
 	
-	//public List<FamilyCustomFieldData> getFamilyCustomFieldDataListByCategory(Study study,String familyId, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public void saveOrUpdate(StudyCalendar studyCalendar);
+
+	public void delete(StudyCalendar studyCalendar);
+	
+	public List<StudyCalendar> searchStudyCalenderList(StudyCalendar studyCalendar);
+	
+	public List<CustomField> getStudySubjectCustomFieldList(Long studyId);
+	
+	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar);
+	
+	public void saveOrUpdate(StudyCalendarVo studyCalendar);
+	
+	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp);
+
+	public void delete(OtherID otherID);
+	
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType);
 }

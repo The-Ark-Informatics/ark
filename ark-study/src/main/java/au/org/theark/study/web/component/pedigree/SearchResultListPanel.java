@@ -71,7 +71,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<RelationshipVo> buildPageableListView(IModel iModel) {
 		
-		sitePageableListView = new PageableListView<RelationshipVo>("relationshipList", iModel, iArkCommonService.getRowsPerPage()) {
+		sitePageableListView = new PageableListView<RelationshipVo>("relationshipList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -134,12 +134,12 @@ public class SearchResultListPanel extends Panel {
 					unsetLink.setVisible(false);
 				}
 				
-				if("Father".equalsIgnoreCase(relationshipVo.getRelationship())){
+				if(!ArkPermissionHelper.isActionPermitted(Constants.SAVE) ||"Father".equalsIgnoreCase(relationshipVo.getRelationship())){
 					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("father").setEnabled(false);
 					
 				}
 				
-				if("Mother".equalsIgnoreCase(relationshipVo.getRelationship())){
+				if(!ArkPermissionHelper.isActionPermitted(Constants.SAVE) ||"Mother".equalsIgnoreCase(relationshipVo.getRelationship())){
 					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("mother").setEnabled(false);
 				}
 				

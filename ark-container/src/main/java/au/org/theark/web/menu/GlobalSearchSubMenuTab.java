@@ -73,10 +73,6 @@ public class GlobalSearchSubMenuTab extends AbstractArkTabPanel {
 		this.studyLogoMarkup = studyLogoMarkup;
 		this.mainTabs = mainTabs;
 		buildTabs();
-		
-//		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//		Study study = iArkCommonService.getStudy(sessionStudyId);
-//		childStudy = study.getParentStudy() != null  && (study != study.getParentStudy());
 	}
 
 	@SuppressWarnings( { "serial", "unchecked" })
@@ -88,9 +84,10 @@ public class GlobalSearchSubMenuTab extends AbstractArkTabPanel {
 		List<ArkFunction> arkFunctionList = new ArrayList<ArkFunction>();
 
 		arkFunctionList.add(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
-		arkFunctionList.add(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+		arkFunctionList.add(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_GLOBAL_BIOSPECIMEN_SEARCH));
 		
 		for(final ArkFunction arkFunction : arkFunctionList) {
+			System.out.println("ArkFunction: " + arkFunction + " " + arkFunction.getResourceKey());
 			moduleSubTabsList.add(new AbstractTab(new StringResourceModel(arkFunction.getResourceKey(), this, null)) {
 				@Override
 				public Panel getPanel(String panelId) {
@@ -100,7 +97,7 @@ public class GlobalSearchSubMenuTab extends AbstractArkTabPanel {
 					if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT)) {
 						panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, mainTabs);// Note the constructor
 					}
-					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
+					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_GLOBAL_BIOSPECIMEN_SEARCH)) {
 						// Clear cache to determine permissions
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 						panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, new TreeModel(iArkCommonService, iInventoryService).createTreeModel());
@@ -114,11 +111,6 @@ public class GlobalSearchSubMenuTab extends AbstractArkTabPanel {
 				}
 			});
 		}
-		System.out.println("TABS");
-		for(ITab tab : moduleSubTabsList) {
-			System.out.println(tab.getTitle().toString());
-		}
-		
 		
 		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel("globalSearchSubMenu", moduleSubTabsList);
 		add(moduleTabbedPanel);

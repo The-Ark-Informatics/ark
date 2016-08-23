@@ -21,6 +21,8 @@ package au.org.theark.core.vo;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.org.theark.core.model.config.entity.UserConfig;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
@@ -39,26 +41,64 @@ public class ArkUserVO extends BaseVO {
 	private String					phoneNumber;
 	private List<String>			userRoleList;
 	private List<String>			userModuleList;
-	private List<ModuleVO>		modules;							// Represents the user associated modules and their roles
-	private List<ModuleVO>		availableModules;
-	private boolean				changePassword;
+	private List<ModuleVO>			modules;							// Represents the user associated modules and their roles
+	private List<ModuleVO>			availableModules;
+	private boolean					changePassword;
 	private String					availableRolesLMC;
 	private String					addAllBtn;
 	private String					selectedRolesLMC;
-	private StudyVO				studyVO;
-	private List<ArkUserVO>		userList;
-	private String 				captcha;
-	private List<Study>			availableChildStudies;
-	private List<Study>			selectedChildStudies;
+	private StudyVO					studyVO;
+	private List<ArkUserVO>			userList;
+	private String 					captcha;
+	private List<Study>				availableChildStudies;
+	private List<Study>				selectedChildStudies;
+	private List<Study>				studyLst;
 
 	/* Database Entity */
-	private ArkUser				arkUserEntity;
-	private List<ArkUserRole>	arkUserRoleList;					// A List that will contain the current user's List Modules and Roles he is linked with
+	private ArkUser					arkUserEntity;
+	private List<ArkUserRole>		arkUserRoleList;					// A List that will contain the current user's List Modules and Roles he is linked with
 																				// for the study in context
+	private List<UserConfig> 	arkUserConfigs = new ArrayList<UserConfig>();
+	
 	private Study					study;
 	private boolean				isArkUserPresentInDatabase;	// Specifies if the user was found in database. if this field is false then changePassword
 																				// must be set to true.
+	
+	private List<ArkRolePolicyTemplate> arkRolePolicyTemplatesList;
+	private int	mode;
 
+	public ArkUserVO() {
+		super();
+		this.arkUserEntity = new ArkUser();
+		this.studyVO = new StudyVO();
+		this.modules = new ArrayList<ModuleVO>();
+		this.userRoleList = new ArrayList<String>();
+		this.arkUserRoleList = new ArrayList<ArkUserRole>();
+		this.study = new Study();
+		this.userName = new String();
+		this.availableChildStudies = new ArrayList<Study>();
+		this.selectedChildStudies = new ArrayList<Study>();
+		this.arkRolePolicyTemplatesList=new ArrayList<ArkRolePolicyTemplate>();
+		
+	}
+
+	public ArkUserVO(String userName, String firstName, String lastName, String email, String password, List<ModuleVO> modules, String phoneNumber, String confirmPassword, int mode,
+			String oldPassword, boolean changePassword) {
+		super();
+		this.userName = userName;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+		this.modules = modules;
+		this.phoneNumber = phoneNumber;
+		this.password = password;
+		this.confirmPassword = confirmPassword;
+		this.mode = mode;
+		this.oldPassword = oldPassword;
+		this.changePassword = changePassword;
+	}
+	
 	public StudyVO getStudyVO() {
 		return studyVO;
 	}
@@ -102,37 +142,6 @@ public class ArkUserVO extends BaseVO {
 		this.txtField = txtField;
 	}
 
-	private int	mode;
-
-	public ArkUserVO() {
-		super();
-		this.arkUserEntity = new ArkUser();
-		this.studyVO = new StudyVO();
-		this.modules = new ArrayList<ModuleVO>();
-		this.userRoleList = new ArrayList<String>();
-		this.arkUserRoleList = new ArrayList<ArkUserRole>();
-		this.study = new Study();
-		this.userName = new String();
-		this.availableChildStudies = new ArrayList<Study>();
-		this.selectedChildStudies = new ArrayList<Study>();
-	}
-
-	public ArkUserVO(String userName, String firstName, String lastName, String email, String password, List<ModuleVO> modules, String phoneNumber, String confirmPassword, int mode,
-			String oldPassword, boolean changePassword) {
-		super();
-		this.userName = userName;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.password = password;
-		this.modules = modules;
-		this.phoneNumber = phoneNumber;
-		this.password = password;
-		this.confirmPassword = confirmPassword;
-		this.mode = mode;
-		this.oldPassword = oldPassword;
-		this.changePassword = changePassword;
-	}
 
 	public boolean isChangePassword() {
 		return changePassword;
@@ -425,5 +434,36 @@ public class ArkUserVO extends BaseVO {
 	 */
 	public List<Study> getSelectedChildStudies() {
 		return selectedChildStudies;
+	}
+
+	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplatesList() {
+		return arkRolePolicyTemplatesList;
+	}
+
+	public void setArkRolePolicyTemplatesList(
+			List<ArkRolePolicyTemplate> arkRolePolicyTemplatesList) {
+		this.arkRolePolicyTemplatesList = arkRolePolicyTemplatesList;
+	}
+	public List<Study> getStudyLst() {
+		return studyLst;
+	}
+
+	public void setStudyLst(List<Study> studyLst) {
+		this.studyLst = studyLst;
+	}
+	
+
+	/**
+	 * @return the arkUserConfigs
+	 */
+	public List<UserConfig> getArkUserConfigs() {
+		return arkUserConfigs;
+	}
+
+	/**
+	 * @param arkUserConfigs the arkUserConfigs to set
+	 */
+	public void setArkUserConfigs(List<UserConfig> arkUserConfigs) {
+		this.arkUserConfigs = arkUserConfigs;
 	}
 }

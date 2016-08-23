@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -15,6 +16,8 @@ import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.UploadLevel;
+import au.org.theark.core.vo.CustomFieldCategoryVO;
 
 public interface ICustomFieldDao {
 
@@ -184,7 +187,7 @@ public interface ICustomFieldDao {
 	 */
 	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction);
 	
-	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
+	//public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
 	
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria, CustomFieldGroup customFieldGroup);
 	
@@ -196,11 +199,6 @@ public interface ICustomFieldDao {
 
 	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction arkFunction, Study study);
 	
-	/**
-	 * 
-	 * @return Custom Field types
-	 */
-	public List<CustomFieldType> getCustomFieldTypes();
 	
 	public long getCustomFieldCategoryCount(CustomFieldCategory customFieldCategoryCriteria);
 	
@@ -269,7 +267,7 @@ public interface ICustomFieldDao {
 	 * @param customFieldType
 	 * @return
 	 */
-	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory)throws ArkSystemException;
+	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory);
 	
 	/**
 	 * List of all available category list for update.
@@ -306,11 +304,81 @@ public interface ICustomFieldDao {
 	 * @return
 	 * @throws ArkSystemException
 	 */
-	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study,CustomFieldType customFieldType) throws ArkSystemException;
+	public List<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(Study study,ArkFunction arkFunction,CustomFieldType customFieldType) throws ArkSystemException;
 	/**
 	 * Get Custom Field Type by name.
 	 * @param name
 	 * @return
 	 */
 	public CustomFieldType getCustomFieldTypeByName(String name);
+	/**
+	 * Get custom field types for a module.
+	 * @param arkModule
+	 * @return
+	 */
+	public List<CustomFieldType> getCustomFieldTypes(ArkModule arkModule);
+	/**
+	 * Return All Upload levels
+	 * @return
+	 */
+	public List<UploadLevel> getAllUploadLevels();
+	
+	/**
+	 * Get custom field categories by study and custom field type.
+	 * @param study
+	 * @param customFieldType
+	 * @return
+	 */
+	public List<CustomFieldCategory> getCustomFieldCategoryByCustomFieldTypeAndStudy(Study study,CustomFieldType customFieldType);
+	/**
+	 * Get custom field category by name
+	 * @param name
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategotyByName(String name);
+	
+	/**
+	 * Get a upload levels by name
+	 * @return
+	 */
+	public UploadLevel getUploadLevelByName(String name);
+	/**
+	 * Get custom field category by name study and function.
+	 * @param name
+	 * @param study
+	 * @param arkFunction
+	 */
+	public CustomFieldCategory getCustomFieldCategoryByNameStudyAndArkFunction(String name,Study study,ArkFunction arkFunction);
+	
+	/**
+	 * Check for the custom field being used for categorise custom field.
+	 * @param customFieldCategory
+	 * @return
+	 */
+	public boolean isCustomFieldCategoryBeingUsed(CustomFieldCategory customFieldCategory);
+	/**
+	 * Get children of custom field categories.
+	 * @param study
+	 * @param arkFunction
+	 * @param parentcustomFieldCategory
+	 * @return
+	 */
+	public List<CustomFieldCategory> getAllSubCategoriesOfThisCategory(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory parentcustomFieldCategory);
+	/**
+	 * Get siblings of custom field categories.
+	 * @param study
+	 * @param arkFunction
+	 * @param customFieldType
+	 * @param customFieldCategory
+	 * @return
+	 */
+	public List<CustomFieldCategory> getSiblingList(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory customFieldCategory);
+	/**
+	 * 
+	 * @param name
+	 * @param customFieldType
+	 * @return
+	 */
+	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name,CustomFieldType customFieldType);
+	
 }

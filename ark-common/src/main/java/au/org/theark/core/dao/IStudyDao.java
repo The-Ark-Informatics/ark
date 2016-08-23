@@ -21,6 +21,7 @@ package au.org.theark.core.dao;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -56,11 +57,14 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -72,6 +76,7 @@ import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -87,11 +92,9 @@ import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
-import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.vo.UserConfigVO;
 
 /**
  * Interface that provides CRUD and accessor methods to Study entities 
@@ -550,7 +553,7 @@ public interface IStudyDao {
 	 * Create a new Upload 
 	 * @param studyUpload
 	 */
-	public void createUpload(Upload studyUpload);
+	public void createUpload(Upload studyUpload) throws Exception;
 
 	/**
 	 * Update a new Upload 
@@ -629,27 +632,24 @@ public interface IStudyDao {
 	public List<String> getSubjectUIDsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids);
 	
 	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids);
-
-	@SuppressWarnings("unchecked")
-	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
-
+	
 	@SuppressWarnings("unchecked")
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction);
 
 	@SuppressWarnings("unchecked")
-	public List<SubjectCustomFieldData> getCustomFieldDataFor(Collection customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataFor(Collection customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded);
 
 	public Payload createPayload(byte[] bytes);
 
 	public Payload getPayloadForUpload(Upload upload);
 
-	public UploadStatus getUploadStatusForUploaded();
+	//public UploadStatus getUploadStatusForUploaded();
 
-	public UploadStatus getUploadStatusForValidated();
+	//public UploadStatus getUploadStatusForValidated();
 	
-	public UploadStatus getUploadStatusForAwaitingValidation();
+	//public UploadStatus getUploadStatusForAwaitingValidation();
 
-	public Collection<UploadType> getUploadTypesForSubject();
+	public Collection<UploadType> getUploadTypesForSubject(Study study);
 
 	public Collection<UploadType> getUploadTypesForLims();
 
@@ -692,7 +692,10 @@ public interface IStudyDao {
 
 	public List<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
 
+	@Deprecated
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search);
+
+	public Collection<PhenoDataSetFieldDisplay> getSelectedPhenoDataSetFieldDisplaysForSearch(Search search);
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction);
 
@@ -729,6 +732,8 @@ public interface IStudyDao {
 
 	public void delete(Search search);
 
+	public void delete(SearchResult result);
+
 	public ConsentStatus getConsentStatusByName(String name);
 	
 	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId);
@@ -739,15 +744,31 @@ public interface IStudyDao {
 
 	public void createUserConfigs(List<UserConfig> userConfigList) throws ArkSystemException;
 	
-	public Collection<ConfigField> getAllConfigFields();
+	public List<ConfigField> getAllConfigFields();
 	
-	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser);
-	
-	public int getRowsPerPage();
-	
-	public int getCustomFieldsPerPage();
+	public List<UserConfig> getUserConfigs(ArkUser arkUser);
 	
 	public void deleteUserConfig(UserConfig uc);
 	
 	public List<Study> getChildStudiesForStudy(Study study);
+	
+	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload);
+	
+	public List<String> getAllFamilyUIDs(Study study);
+	
+	public List<FamilyCustomFieldData> getfamilyCustomFieldDataFor(Study study,Collection customFieldDisplaysThatWeNeed, List familyUIDsToBeIncluded);
+	
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<String>fieldNameCollection,Study study,ArkFunction arkFunction,CustomFieldType customFieldType);
+
+	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField);
+
+	public ConfigField getConfigFieldByName(String configName);
+	
+	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
+	
+	public List<Search> getSearchesForSearch(Search search);
+	
+	public List<StudyComp> getStudyComponentsNeverUsedInThisSubject(Study study,LinkSubjectStudy linkSubjectStudy);
+	
+	public List<StudyComp> getDifferentStudyComponentsInConsentForSubject(Study study,LinkSubjectStudy linkSubjectStudy);
 }

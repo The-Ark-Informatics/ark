@@ -24,6 +24,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -77,6 +80,9 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 
 	@SpringBean(name = Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService										iArkCommonService;
+
+	@SpringBean(name = Constants.ARK_PHENO_DATA_SERVICE)
+	private IPhenotypicService iPhenoService;
 
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor					formVisitor	= new ArkFormVisitor();
@@ -161,6 +167,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				QueryFilterVO filter= new QueryFilterVO();
 				copyQueryFilter = false;
 				listEditor.addItem(filter);
+				listEditor.updateModel();
 				target.add(form);
 			}
 		}.setDefaultFormProcessing(false));
@@ -297,6 +304,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 						iArkCommonService.deleteQueryFilter(item.getModelObject().getQueryFilter());
 						listEditor.removeItem(item);
+						listEditor.updateModel();
 						target.add(form);
 					}
 				}.setDefaultFormProcessing(false).setVisible(item.getIndex()>=0));
@@ -424,14 +432,14 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					break;
 				}
 	
-				case PHENO_CFD:{
-					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+				case PHENO_FD:{
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 					
-					List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
-					ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
-					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
-							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
-							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					List<PhenoDataSetFieldDisplay> fieldCategoryList = iPhenoService.getPhenoFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
+					ChoiceRenderer<PhenoDataSetFieldDisplay> choiceRenderer = new ChoiceRenderer<PhenoDataSetFieldDisplay>("descriptiveNameIncludingCFGName", Constants.ID);
+					fieldDdc = new DropDownChoice<PhenoDataSetFieldDisplay>("queryFilter.field",
+							new PropertyModel(item.getModelObject(), "queryFilter.phenoDataSetFieldDisplay"),
+							(List<PhenoDataSetFieldDisplay>) fieldCategoryList, choiceRenderer);
 					fieldDdc.setRequired(true);
 					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
@@ -442,14 +450,14 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 
 						@Override
 						protected void onUpdate(AjaxRequestTarget target) {
-							queryFilterVoToCopy.getQueryFilter().setCustomFieldDisplay((CustomFieldDisplay) getComponent().getDefaultModelObject());
+							queryFilterVoToCopy.getQueryFilter().setPhenoDataSetFieldDisplay((PhenoDataSetFieldDisplay) getComponent().getDefaultModelObject());
 						}
 					});
 					break;
 				}
 	
 				case BIOCOLLECTION_CFD:{
-					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 					
 					List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
 					ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
@@ -615,7 +623,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 	//					item.getModelObject().getQueryFilter().setDemographicField(null);
 						item.getModelObject().getQueryFilter().setConsentStatusField(null);
-						
+						item.getModelObject().getQueryFilter().setPhenoDataSetFieldDisplay(null);
 						break;
 					}
 
@@ -631,6 +639,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
 						item.getModelObject().getQueryFilter().setConsentStatusField(null);
+						item.getModelObject().getQueryFilter().setPhenoDataSetFieldDisplay(null);
 						break;
 
 					}
@@ -647,6 +656,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
 						item.getModelObject().getQueryFilter().setConsentStatusField(null);
+						item.getModelObject().getQueryFilter().setPhenoDataSetFieldDisplay(null);
 						break;
 					}
 					
@@ -664,28 +674,30 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
 						item.getModelObject().getQueryFilter().setConsentStatusField(null);
+						item.getModelObject().getQueryFilter().setPhenoDataSetFieldDisplay(null);
 						break;
 					}
 
-					case PHENO_CFD:{
-						ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+					case PHENO_FD:{
+						ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 						
-						List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
-						ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
-						fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
-								new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
-								(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+						List<PhenoDataSetFieldDisplay> fieldCategoryList = iPhenoService.getPhenoFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
+						ChoiceRenderer<PhenoDataSetFieldDisplay> choiceRenderer = new ChoiceRenderer<PhenoDataSetFieldDisplay>("descriptiveNameIncludingCFGName", Constants.ID);
+						fieldDdc = new DropDownChoice<PhenoDataSetFieldDisplay>("queryFilter.field",
+								new PropertyModel(item.getModelObject(), "queryFilter.phenoDataSetFieldDisplay"),
+								(List<PhenoDataSetFieldDisplay>) fieldCategoryList, choiceRenderer);
 						fieldDdc.setRequired(true);
 						item.getModelObject().getQueryFilter().setBiospecimenField(null);
 						item.getModelObject().getQueryFilter().setBiocollectionField(null);
-						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
+						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
 						item.getModelObject().getQueryFilter().setConsentStatusField(null);
+						//item.getModelObject().getQueryFilter().setPhenoDataSetFieldDisplay(null);
 						break;
 					}
 
 					case BIOCOLLECTION_CFD:{
-						ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+						ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 						
 						List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
 						ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
@@ -698,6 +710,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
 						item.getModelObject().getQueryFilter().setConsentStatusField(null);
+						item.getModelObject().getQueryFilter().setPhenoDataSetFieldDisplay(null);
 						break;
 					}
 					
@@ -715,6 +728,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
 						item.getModelObject().getQueryFilter().setConsentStatusField(null);
+						item.getModelObject().getQueryFilter().setPhenoDataSetFieldDisplay(null);
 						break;
 					}
 					
@@ -729,6 +743,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setBiocollectionField(null);
 						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
+						item.getModelObject().getQueryFilter().setPhenoDataSetFieldDisplay(null);
 						//item.getModelObject().getQueryFilter().setConsentStatusField(null);
 						break;
 					}

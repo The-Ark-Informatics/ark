@@ -1,0 +1,3 @@
+use `admin`;
+ALTER TABLE `billable_item_type` 
+ADD UNIQUE INDEX `UK_ITEM_NAME_STUDY_ID` (`STUDY_ID` ASC, `ITEM_NAME` ASC);

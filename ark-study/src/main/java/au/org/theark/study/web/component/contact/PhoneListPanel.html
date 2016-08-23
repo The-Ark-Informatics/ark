@@ -23,21 +23,48 @@
 					</wicket:message>
 				</label>
 			</th>
-			<th width="30%">
+			<th width="15%">
 				<label for="phoneNumber">
 					<wicket:message	key="phoneNumber">
 						Phone Number:
 					</wicket:message>
 				</label>
 			</th>
-			<th width="20%">
+			<th width="10%">
 				<label for="phoneType">
 					<wicket:message	key="phoneType">
 						Phone Type:
 					</wicket:message>
 				</label>
 			</th>
-			
+			<th width="10%">
+				<label for="phoneStatus">
+					<wicket:message	key="phoneStatus">
+						Phone Status:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="validFrom">
+					<wicket:message	key="validFrom">
+						Valid From:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="validTo">
+					<wicket:message	key="validTo">
+						Valid To:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="preferredPhoneNumber">
+					<wicket:message key="phone.preferredPhoneNumber">
+						Preferred Phone Number:
+					</wicket:message>
+				</label>
+			</th>
 			<th width="2%">
 				&nbsp;
 			</th>
@@ -57,17 +84,35 @@
 					08
 				</span>
 			</td>
-			<td width="30%">
+			<td width="15%">
 				<a href="#"wicket:id="phoneNumberLink">
 					<span wicket:id="phoneNumberValue">
 						92568489
 					</span>
 				</a>
 			</td>
-			<td width="15%">
+			<td width="10%">
 				<span wicket:id="phoneType.name">
 					Work
 				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="phoneStatus.name">
+					Work
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="validFrom">
+					Work
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="validTo">
+					Work
+				</span>
+			</td>
+			<td width="10%">
+				<img wicket:id="phone.preferredPhoneNumber"/>
 			</td>
 			<td width="2%">
 				&nbsp;
@@ -78,7 +123,7 @@
 				<td width="2%">
 					&nbsp;
 				</td>
-				<td width="96%" colspan="4" align="left">
+				<td width="96%" colspan="8">
 					<span wicket:id="phoneNavigator" class="a"></span>
 				</td>
 				<td width="2%">

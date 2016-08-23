@@ -274,5 +274,13 @@ public interface IInventoryService {
 	public void unallocateBox(InvBox invBox);
 	
 	public String fillOutAllBoxesWithEmptyInvCellsToCapacity(Study study);
+	
+	public InvSite getInvSiteByname(String siteName);
+	
+	public InvFreezer getInvFreezerByNameForSite(InvSite invSite,String freezerName);
+	
+	public InvRack getInvRackByNameForFreezer(InvFreezer invFreezer,String rackName);
+	
+	public InvBox getInvBoxByNameForRack(InvRack invRack,String boxName);
 
 }

@@ -16,8 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.phenofielduploader;
 
+
+package au.org.theark.phenotypic.web.component.phenofielduploader;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
@@ -25,21 +26,22 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm;
 
+
 public class WizardPanel extends Panel {
 
 	private static final long	serialVersionUID	= -4110431686558145782L;
-	private WizardForm				wizardForm;
-	private FeedbackPanel			feedBackPanel;
-	private ContainerForm			containerForm;
-	private ArkCrudContainerVO		arkCrudContainerVO;
-	
+	private WizardForm			wizardForm;
+	private FeedbackPanel		feedBackPanel;
+	private ContainerForm		containerForm;
+	private ArkCrudContainerVO	arkCrudContainerVO;
+
 	public WizardPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.containerForm = containerForm;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
-	
+
 	public void initialisePanel() {
 		wizardForm = new WizardForm("wizardForm", feedBackPanel, containerForm, arkCrudContainerVO);
 		wizardForm.initialiseDetailForm();

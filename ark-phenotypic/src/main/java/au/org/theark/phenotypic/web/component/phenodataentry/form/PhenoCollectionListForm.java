@@ -29,6 +29,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow.WindowClosedCallback;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -47,13 +48,20 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
+import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
@@ -61,6 +69,8 @@ import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.panel.table.DataTablePanel;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.util.PhenoDataSetCategoryOrderingHelper;
+import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataEntryModalDetailPanel;
 
 /**
@@ -77,29 +87,26 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	private IArkCommonService<Void>						iArkCommonService;
 
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService								iPhenotypicService;
-
-	protected CompoundPropertyModel<PhenoDataCollectionVO>			cpModel;
-	protected FeedbackPanel									feedbackPanel;
-	protected AbstractDetailModalWindow					modalWindow;
-
-	private Label												idLbl;
-	private Label												questionnaireLbl;
-//	private Label												nameLbl;
-	private Label												descriptionLbl;
-	private Label												recordDateLbl;
-	private Label												reviewedDateLbl;
-	private Label												statusLbl;
-
-	private Panel												modalContentPanel;
-	protected ArkBusyAjaxButton							newButton;
-	protected AjaxButton									getDataButton;
-
-	protected WebMarkupContainer							dataViewListWMC;
-	private DataView<PhenoCollection>				dataView;
-	private ArkDataProvider2<PhenoDataCollectionVO, PhenoCollection>	PhenoCollectionProvider;
-	private DropDownChoice<CustomFieldGroup>			customFieldGroupDdc;
-	private WebMarkupContainer								phenoDataView;
+	private IPhenotypicService											iPhenotypicService;
+	protected CompoundPropertyModel<PhenoDataCollectionVO>				cpModel;
+	protected FeedbackPanel												feedbackPanel;
+	protected AbstractDetailModalWindow									modalWindow;
+	private Label														idLbl;
+	private Label														questionnaireLbl;
+	private Label														descriptionLbl;
+	private Label														recordDateLbl;
+	private Label														reviewedDateLbl;
+	private Label														statusLbl;
+	private Panel														modalContentPanel;
+	protected ArkBusyAjaxButton 										newButton;
+	protected AjaxButton												getDataButton;
+	protected WebMarkupContainer 										dataViewListWMC;
+	private DataView<PhenoDataSetCollection>							dataView;
+	private ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetCollection>	PhenoCollectionProvider;
+	private DropDownChoice<PhenoDataSetGroup>							phenoDataSetFieldGroupDdc;
+	private WebMarkupContainer categoryPanel;
+	private DropDownChoice<PickedPhenoDataSetCategory>                  pickedPhenoDataSetCategoryDdc;
+	private WebMarkupContainer											phenoDataView;
 
 	public PhenoCollectionListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id, cpModel);
@@ -111,47 +118,75 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	public void initialiseForm() {
 		// Random exceptions occuring, Wicket suggests to implicitly set this, as it tries to auto-detect, but "some situations it cannot" 
 		setMultiPart(true);
-		
 		modalContentPanel = new EmptyPanel("content");
-//		ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-//		CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCPM = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
-//		phenoDataCPM.getObject().setArkFunction(associatedPrimaryFn);
-//		modalContentPanel = new PhenoDataEntryContainerPanel("content", phenoDataCPM).initialisePanel();
-		
+		ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+		CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCPM = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
+		phenoDataCPM.getObject().setArkFunction(associatedPrimaryFn);
+		//modalContentPanel = new PhenoDataEntryContainerPanel("content", phenoDataCPM).initialisePanel();
+		modalContentPanel=new PhenoCollectionDataEntryContainerPanel("content");
 		initialiseDataView();
 		initialiseNewButton();
-		initCustomFieldGroupDdc();
-		
+		initPhenoFieldGroupDdc();
+		initPhenoDataSetFieldCategoryDdc();
 		phenoDataView = new EmptyPanel("phenoDataView");
 		phenoDataView.setOutputMarkupPlaceholderTag(true);
 		add(phenoDataView);
-		
 		initialiseGetDataButton();
-
 		add(modalWindow);		
 	}
 
-	private void initCustomFieldGroupDdc() {
-		LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoCollection().getLinkSubjectStudy();
-		List<CustomFieldGroup> customFieldGroups = iPhenotypicService.getCustomFieldGroupsByLinkSubjectStudy(linkSubjectStudy);
-		
-		ChoiceRenderer<CustomFieldGroup> renderer = new ChoiceRenderer<CustomFieldGroup>("name", "id");
-		customFieldGroupDdc = new DropDownChoice<CustomFieldGroup>("customFieldGroupSelected", customFieldGroups);
-		customFieldGroupDdc.setChoiceRenderer(renderer);
-		
-		customFieldGroupDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			protected void onUpdate(AjaxRequestTarget target) {
-             // Enable getData button when customFieldGroup actually selected
-             getDataButton.setEnabled(customFieldGroupDdc.getValue() != null && !customFieldGroupDdc.getValue().isEmpty());
+	private void initPhenoFieldGroupDdc() {
+		LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy();
+		List<PhenoDataSetGroup> pheDataSetGroupLst = iPhenotypicService.getPhenoDataSetGroupsByLinkSubjectStudy(linkSubjectStudy);
+		ChoiceRenderer<PhenoDataSetGroup> renderer = new ChoiceRenderer<PhenoDataSetGroup>("name", "id");
+		phenoDataSetFieldGroupDdc = new DropDownChoice<PhenoDataSetGroup>("pheDataSetGroupSelected", pheDataSetGroupLst);
+		phenoDataSetFieldGroupDdc.setChoiceRenderer(renderer);
+		phenoDataSetFieldGroupDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+		private static final long	serialVersionUID	= 1L;
+		protected void onUpdate(AjaxRequestTarget target) {
+			categoryPanel.remove(pickedPhenoDataSetCategoryDdc);
+			//Create list of PickedPhenoDataSetCategories here for the hierarchy view of the category.
+			List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(phenoDataSetFieldGroupDdc.getModelObject());
+			List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategoriesHierachical=PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(pickedPhenoDataSetCategories);
+			ChoiceRenderer renderer = new ChoiceRenderer("phenoDataSetCategory.name", "phenoDataSetCategory.id"){
+				@Override
+				public Object getDisplayValue(Object object) {
+				PickedPhenoDataSetCategory pickedCat=(PickedPhenoDataSetCategory)object;
+					return PhenoDataSetCategoryOrderingHelper.getInstance().preTextDecider(pickedCat)+ super.getDisplayValue(object);
+				}
+			};
+			pickedPhenoDataSetCategoryDdc = new DropDownChoice<PickedPhenoDataSetCategory>("pickedPhenoDataSetCategory", pickedPhenoDataSetCategoriesHierachical,renderer);
+			pickedPhenoDataSetCategoryDdc.setOutputMarkupId(true);
+			categoryPanel.add(pickedPhenoDataSetCategoryDdc);
+			target.add(pickedPhenoDataSetCategoryDdc);
+			target.add(categoryPanel);
+	         // Enable getData button when customFieldGroup actually selected
+             getDataButton.setEnabled(phenoDataSetFieldGroupDdc.getValue() != null && !phenoDataSetFieldGroupDdc.getValue().isEmpty() &&
+            		 pickedPhenoDataSetCategoryDdc.getValue() != null && !pickedPhenoDataSetCategoryDdc.getValue().isEmpty());
              target.add(getDataButton);
              target.add(feedbackPanel);
          }
      });
-		
-		add(customFieldGroupDdc);
+		addOrReplace(phenoDataSetFieldGroupDdc);
+	}
+	
+	private void initPhenoDataSetFieldCategoryDdc(){
+		categoryPanel = new WebMarkupContainer("categoryPanel");
+		categoryPanel.setOutputMarkupId(true);
+		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire());
+		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategoriesHierachical=PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(pickedPhenoDataSetCategories);
+		ChoiceRenderer renderer = new ChoiceRenderer("phenoDataSetCategory.name", "phenoDataSetCategory.id"){
+			@Override
+			public Object getDisplayValue(Object object) {
+			PickedPhenoDataSetCategory pickedCat=(PickedPhenoDataSetCategory)object;
+				return PhenoDataSetCategoryOrderingHelper.getInstance().preTextDecider(pickedCat)+ super.getDisplayValue(object);
+			}
+		};
+		pickedPhenoDataSetCategoryDdc = new DropDownChoice<PickedPhenoDataSetCategory>("pickedPhenoDataSetCategory", pickedPhenoDataSetCategoriesHierachical);
+		pickedPhenoDataSetCategoryDdc.setOutputMarkupId(true);
+		pickedPhenoDataSetCategoryDdc.setChoiceRenderer(renderer);
+		categoryPanel.add(pickedPhenoDataSetCategoryDdc);
+		add(categoryPanel);
 	}
 
 	@Override
@@ -177,8 +212,8 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 			if (contextLoaded) {
 				// Successfully loaded from backend
-				cpModel.getObject().getCustomFieldGroup().setStudy(study);
-				cpModel.getObject().getPhenoCollection().setLinkSubjectStudy(linkSubjectStudy);
+				cpModel.getObject().getPhenoDataSetGroup().setStudy(study);
+				cpModel.getObject().getPhenoDataSetCollection().setLinkSubjectStudy(linkSubjectStudy);
 			}
 		}
 
@@ -189,7 +224,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		dataViewListWMC = new WebMarkupContainer("dataViewListWMC");
 		dataViewListWMC.setOutputMarkupId(true);
 		// Data provider to paginate resultList
-		PhenoCollectionProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoCollection>() {
+		PhenoCollectionProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetCollection>() {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -197,8 +232,8 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 				return (int)iPhenotypicService.getPhenoCollectionCount(criteriaModel.getObject());
 			}
 
-			public Iterator<PhenoCollection> iterator(int first, int count) {
-				List<PhenoCollection> phenoCollectionList = new ArrayList<PhenoCollection>();
+			public Iterator<PhenoDataSetCollection> iterator(int first, int count) {
+				List<PhenoDataSetCollection> phenoCollectionList = new ArrayList<PhenoDataSetCollection>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
 					phenoCollectionList = iPhenotypicService.searchPageablePhenoCollections(criteriaModel.getObject(), first, count);
@@ -210,7 +245,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		PhenoCollectionProvider.setCriteriaModel(cpModel);
 
 		dataView = buildDataView(PhenoCollectionProvider);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 
@@ -259,48 +294,39 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	
 	private void initialiseGetDataButton() {
 		getDataButton = new AjaxButton("getData") {
-
 			private static final long	serialVersionUID	= 1L;
-			
 			@Override
 			public boolean isEnabled() {
 				return (true);
 			}
-
 			@Override
 			public boolean isVisible() {
 				boolean isVisible = true;
-
 				String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				isVisible = (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH) && sessionSubjectUID != null);
-
 				return isVisible;
 			}
-
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				if(customFieldGroupDdc.getValue() == null || customFieldGroupDdc.getValue().isEmpty()) {
-					error("Please select a Data Set");	
+				if(phenoDataSetFieldGroupDdc.getValue().isEmpty() || pickedPhenoDataSetCategoryDdc.getValue().isEmpty()) {
+					error("Please select the Data Set and Category first");	
 				}
 				else {
-					LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoCollection().getLinkSubjectStudy();
-					
-					List<CustomFieldGroup> customFieldGroups = new ArrayList<CustomFieldGroup>(0);
-					CustomFieldGroup cfg = iPhenotypicService.getCustomFieldGroupById(new Long(customFieldGroupDdc.getValue()));
-					customFieldGroups.add(cfg);
-					
-					List<CustomField> customFields = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(cfg);
+					LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy();
+					List<PhenoDataSetGroup> phenoDataSetGroupList = new ArrayList<PhenoDataSetGroup>(0);
+					PhenoDataSetGroup pdsg = iPhenotypicService.getPhenoFieldGroupById(new Long(phenoDataSetFieldGroupDdc.getValue()));
+					phenoDataSetGroupList.add(pdsg);
+					PhenoDataSetCategory phenoDataSetCategory =iPhenotypicService.getPhenoDataSetCategoryById(new Long(pickedPhenoDataSetCategoryDdc.getValue()));
+					List<PhenoDataSetField> phenoSetFields =iPhenotypicService.getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroupAndPhenoDataSetCategory(pdsg,phenoDataSetCategory);
 					List<String> subjectUids = new ArrayList<String>(0);
 					subjectUids.add(linkSubjectStudy.getSubjectUID());
-					List<List<String>> dataSet = iPhenotypicService.getPhenoDataAsMatrix(linkSubjectStudy.getStudy(), subjectUids, customFields, customFieldGroups);
-					
+					List<List<String>> dataSet = iPhenotypicService.getPhenoDataAsMatrix(linkSubjectStudy.getStudy(), subjectUids, phenoSetFields, phenoDataSetGroupList,phenoDataSetCategory);
 					phenoDataView = new DataTablePanel("phenoDataView", dataSet);
 					PhenoCollectionListForm.this.addOrReplace(phenoDataView);
 					target.add(phenoDataView);
 				}
 				target.add(feedbackPanel);
 			}
-
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected error: Unable to proceed with New");
@@ -316,48 +342,47 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	 * @param iModel
 	 * @return the pageableListView of PhenoCollection
 	 */
-	public DataView<PhenoCollection> buildDataView(ArkDataProvider2<PhenoDataCollectionVO, PhenoCollection> PhenoCollectionProvider) {
+	public DataView<PhenoDataSetCollection> buildDataView(ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetCollection> PhenoCollectionProvider) {
 
-		DataView<PhenoCollection> PhenoCollectionDataView = new DataView<PhenoCollection>("PhenoCollectionList", PhenoCollectionProvider) {
+		DataView<PhenoDataSetCollection> PhenoCollectionDataView = new DataView<PhenoDataSetCollection>("PhenoDataSetCollectionList", PhenoCollectionProvider) {
 
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void populateItem(final Item<PhenoCollection> item) {
+			protected void populateItem(final Item<PhenoDataSetCollection> item) {
 				item.setOutputMarkupId(true);
 				// DO NOT store the item.getModelObject! Checking it is ok...
-				final PhenoCollection PhenoCollection = item.getModelObject();
+				final PhenoDataSetCollection PhenoCollection = item.getModelObject();
 
-				idLbl = new Label("PhenoCollection.id", String.valueOf(PhenoCollection.getId()));
-				questionnaireLbl = new Label("PhenoCollection.questionnaire", PhenoCollection.getQuestionnaire().getName());
+				idLbl = new Label("phenoDataSetCollection.id", String.valueOf(PhenoCollection.getId()));
+				questionnaireLbl = new Label("phenoDataSetCollection.questionnaire", PhenoCollection.getQuestionnaire().getName());
 				ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
 					public void onClick(AjaxRequestTarget target) {
-						PhenoCollection PhenoCollection = (PhenoCollection) (getParent().getDefaultModelObject());
+						PhenoDataSetCollection phenoDataSetCollection= (PhenoDataSetCollection) (getParent().getDefaultModelObject());
 						CompoundPropertyModel<PhenoDataCollectionVO> newModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
-						newModel.getObject().getPhenoCollection().setId(PhenoCollection.getId());
-						newModel.getObject().setCustomFieldGroup(cpModel.getObject().getCustomFieldGroup());
+						newModel.getObject().setPhenoDataSetCollection(phenoDataSetCollection);
 						showModalWindow(target, newModel);
 					}
 				};
 				link.add(questionnaireLbl);
 				
 //				nameLbl = new Label("PhenoCollection.name", PhenoCollection.getName());
-				descriptionLbl = new Label("PhenoCollection.description", PhenoCollection.getDescription());
-				statusLbl = new Label("PhenoCollection.status", PhenoCollection.getStatus().getName());
+				descriptionLbl = new Label("phenoDataSetCollection.description", PhenoCollection.getDescription());
+				statusLbl = new Label("phenoDataSetCollection.status", PhenoCollection.getStatus().getName());
 				
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 
-				recordDateLbl = new Label("PhenoCollection.recordDate", simpleDateFormat.format(PhenoCollection.getRecordDate()));
+				recordDateLbl = new Label("phenoDataSetCollection.recordDate", simpleDateFormat.format(PhenoCollection.getRecordDate()));
 				
 				if (PhenoCollection.getReviewedDate() == null){
-					reviewedDateLbl = new Label("PhenoCollection.reviewedDate", "");
+					reviewedDateLbl = new Label("phenoDataSetCollection.reviewedDate", "");
 				}
 				else {
-					reviewedDateLbl = new Label("PhenoCollection.reviewedDate", simpleDateFormat.format(PhenoCollection.getReviewedDate()));	
+					reviewedDateLbl = new Label("phenoDataSetCollection.reviewedDate", simpleDateFormat.format(PhenoCollection.getReviewedDate()));	
 				}
 
 				item.add(idLbl);
@@ -386,21 +411,20 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	protected void onNew(AjaxRequestTarget target) {
 		// Needs CREATE permission AND at least one published CustomFieldGroup (Questionnaire) to select from
 		boolean hasQuestionnaires = false;
-
-		CustomFieldGroup questionnaire = new CustomFieldGroup();
+		/*henoDataSetGroup questionnaire=new 
 		questionnaire.setArkFunction(cpModel.getObject().getArkFunction());
-		questionnaire.setStudy(cpModel.getObject().getPhenoCollection().getLinkSubjectStudy().getStudy());
-		questionnaire.setPublished(true);
-		hasQuestionnaires = (iArkCommonService.getCustomFieldGroupCount(questionnaire) > 0);
-
+		questionnaire.setStudy(cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy().getStudy());
+		questionnaire.setPublished(true);*/
+		//hasQuestionnaires = (iArkCommonService.getCustomFieldGroupCount(questionnaire) > 0);
+		hasQuestionnaires = (iPhenotypicService.getPhenoFieldGroupCount(cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy().getStudy(),
+				cpModel.getObject().getArkFunction(),true) > 0);
 		if (hasQuestionnaires) {
 			// Set new Biospecimen into model, then show modalWindow to save
 			CompoundPropertyModel<PhenoDataCollectionVO> newModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
-			newModel.getObject().getPhenoCollection().setLinkSubjectStudy(getModelObject().getPhenoCollection().getLinkSubjectStudy());
+			newModel.getObject().getPhenoDataSetCollection().setLinkSubjectStudy(cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy());
 			// the following should be replaced by a real "Questionnaire" selection when the new form is presented
-			newModel.getObject().getPhenoCollection().setQuestionnaire(questionnaire);
-			newModel.getObject().setCustomFieldGroup(cpModel.getObject().getCustomFieldGroup());
-
+			//newModel.getObject().getPhenoDataSetCollection().setQuestionnaire(questionnaire);
+			//newModel.getObject().setPhenoDataSetGroup(questionnaire);
 			showModalWindow(target, newModel); // listDetailsForm);
 		}
 		else {
@@ -417,8 +441,18 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Subject Dataset Details");
 		modalWindow.setContent(modalContentPanel);
-		modalWindow.show(target);
 		modalWindow.repaintComponent(getDataButton);
+		// 2015-09-29 set windows call back
+		modalWindow.setWindowClosedCallback(new WindowClosedCallback() {
+			private static final long serialVersionUID = 1L; 
+                @Override 
+                public void onClose(AjaxRequestTarget target) 
+                { 
+                	initPhenoFieldGroupDdc();
+                    target.add(phenoDataSetFieldGroupDdc); 
+                } 
+        });
+		modalWindow.show(target);
 	}
 
 	/**
@@ -433,5 +467,29 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	 */
 	public void setNewButton(ArkBusyAjaxButton newButton) {
 		this.newButton = newButton;
+	}
+	private List<PickedPhenoDataSetCategory> populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(PhenoDataSetGroup phenoDataSetGroup){
+		List<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplays=iPhenotypicService.getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroupOrderByPhenoDataSetCategory(phenoDataSetFieldGroupDdc.getModelObject());
+		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=new ArrayList<PickedPhenoDataSetCategory>();
+		for (PhenoDataSetFieldDisplay phenoDataSetFieldDisplay : phenoDataSetFieldDisplays) {
+			PickedPhenoDataSetCategory pickedPhenoDataSetCategory=new PickedPhenoDataSetCategory();
+			pickedPhenoDataSetCategory.setArkFunction(phenoDataSetFieldDisplay.getPhenoDataSetGroup().getArkFunction());
+			pickedPhenoDataSetCategory.setStudy(phenoDataSetFieldDisplay.getPhenoDataSetGroup().getStudy());
+			pickedPhenoDataSetCategory.setPhenoDataSetCategory(phenoDataSetFieldDisplay.getPhenoDataSetCategory());
+			if(phenoDataSetFieldDisplay.getParentPhenoDataSetCategory()!=null){
+				pickedPhenoDataSetCategory.setParentPickedPhenoDataSetCategory(findPickedPhenoDataSetCategoryFromSameList(pickedPhenoDataSetCategories, phenoDataSetFieldDisplay.getParentPhenoDataSetCategory()));
+			}
+			pickedPhenoDataSetCategory.setOrderNumber(phenoDataSetFieldDisplay.getPhenoDataSetCategoryOrderNumber());
+			pickedPhenoDataSetCategories.add(pickedPhenoDataSetCategory);
+		}
+		return pickedPhenoDataSetCategories;
+	}
+	private PickedPhenoDataSetCategory findPickedPhenoDataSetCategoryFromSameList(List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories,PhenoDataSetCategory phenoDataSetCategoryToBefind){
+		for (PickedPhenoDataSetCategory pickedPhenoDataSetCategory : pickedPhenoDataSetCategories) {
+			if (pickedPhenoDataSetCategory.getPhenoDataSetCategory().equals(phenoDataSetCategoryToBefind)){
+				return pickedPhenoDataSetCategory;
+			}
+		}
+		return null;
 	}
 }

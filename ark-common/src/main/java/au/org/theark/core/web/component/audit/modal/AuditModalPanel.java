@@ -190,7 +190,7 @@ public class AuditModalPanel extends Panel {
 			
 		};
 		
-		DataView<AuditRow> dataView = new DataView<AuditRow>("table", dataProvider, iArkCommonService.getRowsPerPage()) {
+		DataView<AuditRow> dataView = new DataView<AuditRow>("table", dataProvider, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 			
 			@Override
 			protected void populateItem(Item<AuditRow> item) {

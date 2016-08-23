@@ -36,8 +36,7 @@ public class DeleteButton extends AjaxDeleteButton {
 		// Properties contains:
 		// confirmDelete=Are you sure you want to delete?
 		// delete=Delete
-		super(Constants.DELETE_FILE, new StringResourceModel("confirmDelete", component, null), new StringResourceModel(Constants.DELETE,
-				component, null));
+		super(Constants.DELETE_FILE, new StringResourceModel("confirmDelete", component, null), new StringResourceModel(Constants.DELETE, component, null));
 	}
 
 	@Override

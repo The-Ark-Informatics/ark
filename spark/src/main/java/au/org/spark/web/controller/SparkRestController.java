@@ -70,6 +70,12 @@ public class SparkRestController {
 		openStackService.listContainers();
 		return new JavaBean();
 	}
+	
+	@RequestMapping(value = "/testp", method = RequestMethod.POST)
+	public @ResponseBody String getPostValue() {
+//		openStackService.listContainers();
+		return "Available";
+	}
 
 	@RequestMapping(value = "/listContainers", method = RequestMethod.GET)
 	public @ResponseBody List<String> listContainers() {
@@ -156,7 +162,7 @@ public class SparkRestController {
 
 		Future<Report> report = null;
 		try {
-			if ("uploading".equalsIgnoreCase(dataCenter.getStatus())) {
+			if (Constants.STATUS_UNPROCESSED.equalsIgnoreCase(dataCenter.getStatus())) {
 				report = jobService.uploadPlinkDataSource(dataCenter);
 			} else {
 				report = jobService.deletePlinkDataSource(dataCenter);
@@ -209,16 +215,18 @@ public class SparkRestController {
 	public @ResponseBody String reportStatus(@RequestBody String uid) {
 
 		String status = "Failed";
-
+		
+		System.out.println("Process UID -- "+uid);
+		
 		Future<Report> report = reportMap.get(uid);
 
 		try {
 			if (report.get() != null && report.isDone()) {
 				System.out.println("Report Generation Done");
-				status = "Completed";
+				status = Constants.STATUS_PROCESSED;
 			} else {
 				System.out.println("Still Working on Report");
-				status = "Running";
+				status = Constants.STATUS_PROCESSING;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -329,7 +337,7 @@ public class SparkRestController {
 				 */
 				
 				sshService.uploadProgram(computationDir, array[0]);
-				return "uploaded:" + fileId + "!";
+				return "Uploaded:" + fileId + "!";
 			} catch (Exception e) {
 				e.printStackTrace();
 				return "You failed to upload " + fileId + " => " + e.getMessage();

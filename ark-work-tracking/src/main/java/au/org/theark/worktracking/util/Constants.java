@@ -39,7 +39,8 @@ public class Constants {
 	public static final String TWO_DECIMAL_PATTERN 														= "\\d*||\\d*.\\d{1,2}";
 	public static final String FOUR_DECIMAL_PATTERN 														= "\\d*||\\d*.\\d{1,4}";
 	public static final String FULL_NUMBER_PATTERN 														= "[0-9]+";
-	public static final String PHONE_NUMBER_PATTERN 														= "[0-9+\\s]+";
+	public static final String PHONE_NUMBER_PATTERN 													= "[0-9+\\s]+";
+	public static final String NON_NEGATIVE_PATTERN 													= "[+]?\\d+\\.\\d+";
 	
 	/* Researcher Constants */	
 	public static final String			FIRST_NAME														= "firstName";
@@ -92,27 +93,27 @@ public class Constants {
 	public static final String RESEARCHER_EMAIL_TAG 														= "Researcher Email";
 	public static final String ERROR_WORK_RESEARCHER_EMAIL_LENGTH 										= "error.work.researcher.email.length";
 	public static final String RESEARCHER_FAX_TAG 														= "Researcher Fax";
-	public static final String ERROR_WORK_RESEARCHER_FAX_LENGTH 											= "error.work.researcher.fax.length";
-	public static final String ERROR_WORK_RESEARCHER_FAX_FORMAT 											= "error.work.researcher.fax.format";
+	public static final String ERROR_WORK_RESEARCHER_FAX_LENGTH 										= "error.work.researcher.fax.length";
+	public static final String ERROR_WORK_RESEARCHER_FAX_FORMAT 										= "error.work.researcher.fax.format";
 	public static final String RESEARCHER_MOBILE_PHONE_TAG 												= "Researcher Mobile Phone";
-	public static final String ERROR_WORK_RESEARCHER_MOBILEPHONE_LENGTH 									= "error.work.researcher.mobilephone.length";
-	public static final String ERROR_WORK_RESEARCHER_MOBILEPHONE_FORMAT 									= "error.work.researcher.mobilephone.format";
+	public static final String ERROR_WORK_RESEARCHER_MOBILEPHONE_LENGTH 								= "error.work.researcher.mobilephone.length";
+	public static final String ERROR_WORK_RESEARCHER_MOBILEPHONE_FORMAT 								= "error.work.researcher.mobilephone.format";
 	public static final String RESEARCHER_OFFICE_PHONE_TAG 												= "Researcher Office Phone";
-	public static final String ERROR_WORK_RESEARCHER_OFFICEPHONE_LENGTH 									= "error.work.researcher.officephone.length";
-	public static final String ERROR_WORK_RESEARCHER_OFFICEPHONE_FORMAT 									= "error.work.researcher.officephone.format";
-	public static final String RESEARCHER_STATUS_TAG 														= "Researcher Status";
-	public static final String ERROR_WORK_RESEARCHER_STATUS_REQUIRED 										= "error.work.researcher.status.required";
+	public static final String ERROR_WORK_RESEARCHER_OFFICEPHONE_LENGTH 								= "error.work.researcher.officephone.length";
+	public static final String ERROR_WORK_RESEARCHER_OFFICEPHONE_FORMAT 								= "error.work.researcher.officephone.format";
+	public static final String RESEARCHER_STATUS_TAG 													= "Researcher Status";
+	public static final String ERROR_WORK_RESEARCHER_STATUS_REQUIRED 									= "error.work.researcher.status.required";
 	public static final String RESEARCHER_ROLE_TAG 														= "Researcher Role";
 	public static final String ERROR_WORK_RESEARCHER_ROLE_REQUIRED 										= "error.work.researcher.role.required";
-	public static final String ERROR_WORK_RESEARCHER_ADDRESS_LENGTH 										= "error.work.researcher.address.length";
+	public static final String ERROR_WORK_RESEARCHER_ADDRESS_LENGTH 									= "error.work.researcher.address.length";
 	public static final String RESEARCHER_ADDRESS_TAG 													= "Researcher Address";
 	public static final String ERROR_WORK_RESEARCHER_ADDRESS_REQUIRED 									= "error.work.researcher.address.required";
-	public static final String ERROR_WORK_RESEARCHER_ORGANIZATION_LENGTH 									= "error.work.researcher.organization.length";
+	public static final String ERROR_WORK_RESEARCHER_ORGANIZATION_LENGTH 								= "error.work.researcher.organization.length";
 	public static final String RESEARCHER_ORGANIZATION_TAG 												= "Researcher Organization";
 	public static final String ERROR_WORK_RESEARCHER_ORGANIZATION_REQUIRED 								= "error.work.researcher.organization.required";
-	public static final String ERROR_WORK_RESEARCHER_LASTNAME_LENGTH 										= "error.work.researcher.lastname.length";
-	public static final String RESEARCHER_LAST_NAME_TAG 													= "Researcher Last Name";
-	public static final String ERROR_WORK_RESEARCHER_LASTNAME_REQUIRED 									= "error.work.researcher.lastname.required";
+	public static final String ERROR_WORK_RESEARCHER_LASTNAME_LENGTH 								= "error.work.researcher.lastname.length";
+	public static final String RESEARCHER_LAST_NAME_TAG 												= "Researcher Last Name";
+	public static final String ERROR_WORK_RESEARCHER_LASTNAME_REQUIRED 								= "error.work.researcher.lastname.required";
 	public static final String ERROR_WORK_RESEARCHER_FIRSTNAME_LENGTH 									= "error.work.researcher.firstname.length";
 	public static final String RESEARCHER_FIRST_NAME_TAG 													= "Researcher First Name";
 	public static final String ERROR_WORK_RESEARCHER_FIRSTNAME_REQUIRED 									= "error.work.researcher.firstname.required";
@@ -160,10 +161,7 @@ public class Constants {
 	public static final String BILLABLE_ITEM_TYPE_QUNATITY_TYPE_TAG 									= "Qunatity Type";
 	public static final String ERROR_BILLABLE_ITEM_TYPE_QUNATITY_TYPE_REQUIRED							= "error.work.billableitemtype.quantitytype.required";
 	
-
-	
 	//Work Request Constants
-	
 	public static final String			WORK_REQUEST_ID													= "workRequest.id";
 	public static final String			WORK_REQUEST_ITEM_NAME											= "workRequest.name";
 	public static final String			WORK_REQUEST_REQUESTED_DATE										= "workRequest.requestedDate";
@@ -254,4 +252,5 @@ public class Constants {
 	
 	public static final String ERROR_BILLABLE_ITEM_GST			 									    = "error.work.billableitem.gst";
 	public static final String ERROR_BILLABLE_ITEM_QUANTITY	 									    	= "error.work.billableitem.quantity";
+	public static final String ERROR_BILLABLE_ITEM_QUANTITY_PER_UNIT	 								= "error.work.error.work.billableitemtype.quantityperunit";
 }

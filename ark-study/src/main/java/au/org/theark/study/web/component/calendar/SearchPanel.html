@@ -1,0 +1,111 @@
+<wicket:panel>
+	&nbsp;
+	<div class="searchPanelContainer">
+		<form wicket:id="searchForm">
+			<div class="searchPanelContent">
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="componentId">
+							<wicket:message key="study.calendar.id">
+								Component Id:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<!--	this will change to ID -->
+						<input wicket:id="studyCalendar.id"	type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="componentId">
+							<wicket:message key="study.calendar.name">
+								Name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="studyCalendar.name"	type="text" />
+					</div>
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="keyword">
+							<wicket:message key="study.calendar.startdate">
+								Keyword:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="studyCalendar.startDate"	type="text" maxlength="10"/>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="keyword">
+							<wicket:message key="study.calendar.enddate">
+								Keyword:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="studyCalendar.endDate" type="text" maxlength="10"/>
+					</div>
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!--	Defines the location for buttons -->
+				<div class="actionButtons">
+					<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+					<input wicket:id="reset" type="submit" wicket:message="value:page.reset" />
+					<input wicket:id="new" type="submit" wicket:message="value:page.new" />
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>

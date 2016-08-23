@@ -91,11 +91,12 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		try {
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			String uploadType = containerForm.getModelObject().getUploadType();
-			log.info("upload type ---=" + uploadType);			
-			if(uploadType.equalsIgnoreCase(au.org.theark.lims.web.Constants.UPLOAD_TYPE_FOR_LOCATION_UPLOADER)){
-				uploadReport = iLimsService.uploadAndReportMatrixLocationFile(containerForm.getModelObject().getUpload().getStudy(), inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);				
-			}
-			else{
+			log.info("upload type ---=" + uploadType);	
+			if(uploadType.equalsIgnoreCase(au.org.theark.lims.web.Constants.UPLOAD_TYPE_FOR_BIOCOLLECTION)){
+				uploadReport = iLimsService.uploadAndReportMatrixBiocollectionFile(containerForm.getModelObject().getUpload().getStudy(), inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);
+			}else if(uploadType.equalsIgnoreCase(au.org.theark.lims.web.Constants.UPLOAD_TYPE_FOR_BIOSPECIMEN_INVENTARY)){
+				uploadReport = iLimsService.uploadAndReportMatrixBiospecimenInventoryFile(containerForm.getModelObject().getUpload().getStudy(), inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);				
+			}else if(uploadType.equalsIgnoreCase(au.org.theark.lims.web.Constants.UPLOAD_TYPE_FOR_BIOSPECIMEN)){
 				uploadReport = iLimsService.uploadAndReportMatrixBiospecimenFile(containerForm.getModelObject().getUpload().getStudy(), inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);
 			}
 		}
@@ -107,7 +108,7 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		updateUploadReport(uploadReport.toString());
 
 		// Save all objects to the database
-		save();
+		save(target);
 	}
 
 	public void updateUploadReport(String importReport) {
@@ -119,10 +120,15 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setUploadReport(bytes);
 	}
 
-	private void save() {
+	private void save(AjaxRequestTarget target) {
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD));
-		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForUploaded());		
-		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(Constants.UPLOAD_STATUS_COMPLETED));		
+		try {
+			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		} catch (Exception e) {
+			error("There is a problem during the upload process.");
+			wizardForm.onError(target, null);
+		}
 	}
 }

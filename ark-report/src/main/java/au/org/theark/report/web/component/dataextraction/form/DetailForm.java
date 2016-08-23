@@ -18,9 +18,14 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction.form;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -42,6 +47,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +72,7 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.report.web.component.dataextraction.filter.QueryFilterPanel;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author nivedann
@@ -80,7 +87,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private TextField<String> searchIdTxtFld;
 	private TextField<String> searchNameTxtFld;
 	private CheckBox includeGenoChkBox;
-	private CheckBox includeMegaChkBox;
 
 	private FeedbackPanel feedBackPanel;
 	private Panel modalContentPanel;
@@ -89,7 +95,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private Palette<DemographicField> demographicFieldsToReturnPalette;
 	private Palette<BiospecimenField> biospecimenFieldsToReturnPalette;
 	private Palette<BiocollectionField> biocollectionFieldsToReturnPalette;
-	private Palette<CustomFieldDisplay> phenoCustomFieldDisplaysToReturnPalette;
+	private Palette<PhenoDataSetFieldDisplay> phenoDatasetFieldDisplaysToReturnPalette;
 	private Palette<CustomFieldDisplay> subjectCustomFieldDisplaysToReturnPalette;
 	private Palette<CustomFieldDisplay> biospecimenCustomFieldDisplaysToReturnPalette;
 	private Palette<CustomFieldDisplay> biocollectionCustomFieldDisplaysToReturnPalette;
@@ -101,13 +107,16 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	private AjaxButton clearButton;
 
+	@SpringBean(name = Constants.ARK_PHENO_DATA_SERVICE)
+	private IPhenotypicService iPhenoService;
+
 	/**
 	 * 
 	 * @param id
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 * @param containerForm
-	 * @param modalWindow2
+	 * @param modalWindow
 	 */
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm, AbstractDetailModalWindow modalWindow) {
 		// super()
@@ -135,10 +144,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	private void initIncludeGeno() {
 		includeGenoChkBox = new CheckBox(Constants.SEARCH_INCLUDE_GENO);
-	}
-
-	private void initIncludeMega() {
-		includeMegaChkBox = new CheckBox(Constants.SEARCH_INCLUDE_MEGA);
+		includeGenoChkBox.setVisible(false);
 	}
 
 	public void initialiseDetailForm() {
@@ -151,11 +157,10 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 		modalContentPanel = new EmptyPanel("content");
 		initIncludeGeno();
-		initIncludeMega();
 		initDemographicFieldsModulePalette();
 		initBiospecimenFieldsModulePalette();
 		initBiocollectionFieldsModulePalette();
-		initPhenoCustomFieldDisplaysModulePalette();
+		initPhenoDataSetFieldDisplaysModulePalette();
 		initSubjectCustomFieldDisplaysModulePalette();
 		initBiospecimenCustomFieldDisplaysModulePalette();
 		initBiocollectionCustomFieldDisplaysModulePalette();
@@ -240,11 +245,10 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(includeGenoChkBox);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(includeMegaChkBox);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(demographicFieldsToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biocollectionFieldsToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biospecimenFieldsToReturnPalette);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(phenoCustomFieldDisplaysToReturnPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(phenoDatasetFieldDisplaysToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectCustomFieldDisplaysToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biospecimenCustomFieldDisplaysToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biocollectionCustomFieldDisplaysToReturnPalette);
@@ -295,6 +299,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 			containerForm.getModelObject().getSearch().setStudy(study);
 			containerForm.getModelObject().getSearch().setStatus("READY TO RUN");
 			containerForm.getModelObject().getSearch().setFinishTime(null);
+			//Add to fix bug  ARK-1581 
+			containerForm.getModelObject().getSearch().setIncludeGeno(false);
 
 			FileUpload subjectFileUpload = subjectListFileUploadField.getFileUpload();
 			List<SubjectVO> selectedSubjects = iArkCommonService.matchSubjectsFromInputFile(subjectFileUpload, study);
@@ -409,27 +415,24 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initPhenoCustomFieldDisplaysModulePalette() {
+	private void initPhenoDataSetFieldDisplaysModulePalette() {
 		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
-		// IChoiceRenderer<String> renderer = new
-		// ChoiceRenderer<String>("customField.name", "id");
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("descriptiveNameIncludingCFGName", "id");
 
-		PropertyModel<Collection<CustomFieldDisplay>> selectedPhenoCustomFieldDisplaysPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "selectedPhenoCustomFieldDisplays");// "selectedDemographicFields");
+		PropertyModel<Collection<PhenoDataSetFieldDisplay>> selectedPhenoDataSetFieldDisplaysPm = new PropertyModel<Collection<PhenoDataSetFieldDisplay>>(searchCPM, "selectedPhenoDataSetFieldDisplays");// "selectedDemographicFields");
 
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId); // Long arkFunctionId
 															// = (Long)
 															// SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
-		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 
-		Collection<CustomFieldDisplay> availablePhenoCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunction);
-		containerForm.getModelObject().setAvailablePhenoCustomFieldDisplays(availablePhenoCustomFieldDisplays);
+		Collection<PhenoDataSetFieldDisplay> availablePhenoDataSetFieldDisplays = iPhenoService.getPhenoFieldDisplaysIn(study, arkFunction); //iArkCommonService.getCustomFieldDisplaysIn(study, arkFunction);
+		containerForm.getModelObject().setAvailablePhenoDataSetFieldDisplays(availablePhenoDataSetFieldDisplays);
 
-		PropertyModel<Collection<CustomFieldDisplay>> availablePhenoCustomFieldDisplayPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "availablePhenoCustomFieldDisplays");
-		phenoCustomFieldDisplaysToReturnPalette = new ArkPalette("selectedPhenoCustomFieldDisplays", selectedPhenoCustomFieldDisplaysPm, availablePhenoCustomFieldDisplayPm, renderer, PALETTE_ROWS, false);
-		phenoCustomFieldDisplaysToReturnPalette.setOutputMarkupId(true);
-
+		PropertyModel<Collection<PhenoDataSetFieldDisplay>> availablePhenoDataSetFieldDisplaysPm = new PropertyModel<Collection<PhenoDataSetFieldDisplay>>(searchCPM, "availablePhenoDataSetFieldDisplays");
+		phenoDatasetFieldDisplaysToReturnPalette = new ArkPalette("selectedPhenoDataSetFieldDisplays", selectedPhenoDataSetFieldDisplaysPm, availablePhenoDataSetFieldDisplaysPm, renderer, PALETTE_ROWS, false);
+		phenoDatasetFieldDisplaysToReturnPalette.setOutputMarkupId(true);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -487,7 +490,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		Study study = iArkCommonService.getStudy(studyId); // Long arkFunctionId
 															// = (Long)
 															// SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
-		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+		//ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 
 		Collection<CustomFieldDisplay> availableBiocollectionCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunction);
 		containerForm.getModelObject().setAvailableBiocollectionCustomFieldDisplays(availableBiocollectionCustomFieldDisplays);

@@ -79,7 +79,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
 		
-		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypesForSubject();
+		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypesForSubject(containerForm.getModelObject().getStudy());
 		ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.UPLOAD_TYPE_NAME, au.org.theark.study.web.Constants.UPLOAD_TYPE_ID);
 		uploadTypeDdc = new DropDownChoice<UploadType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_UPLOAD_TYPE, (List) uploadTypeCollection, uploadTypeRenderer);
 		uploadTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -173,10 +173,10 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
 		containerForm.getModelObject().getUpload().setFilename(filename);
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
+		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD));
 		wizardForm.setFileName(filename);
 
-		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForAwaitingValidation());		
+		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(Constants.UPLOAD_STATUS_AWAITING_VALIDATION));		
 		
 		//Move to step 2 to add the file type validation 
 //		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());

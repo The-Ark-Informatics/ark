@@ -35,7 +35,6 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.disease.web.component.affection.AffectionContainerPanel;
-import au.org.theark.geno.web.component.table.GenoTableContainerPanel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.inventory.tree.TreeModel;
@@ -102,18 +101,20 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					Panel panelToReturn = null;// Set
 					// Clear cache
 					processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, arkFunction);
+					//Demographic Data
 					if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT)) {
 						panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);// Note the constructor
 					}
+					//Study specific demographic data
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA)) {
 						panelToReturn = new SubjectCustomDataContainerPanel(panelId).initialisePanel();
 					}
-					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHONE)) {
+					/*else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHONE)) {
 						panelToReturn = new PhoneContainerPanel(panelId);
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ADDRESS)) {
 						panelToReturn = new AddressContainerPanel(panelId);
-					}
+					}*/
 					//Add Contact Panel
 					else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONTACT)) {
 						panelToReturn = new  ContactContainerPanel (panelId);

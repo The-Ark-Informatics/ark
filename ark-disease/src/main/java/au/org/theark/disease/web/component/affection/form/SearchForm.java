@@ -18,6 +18,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.disease.entity.Affection;
 import au.org.theark.core.model.disease.entity.AffectionStatus;
 import au.org.theark.core.model.disease.entity.Disease;
@@ -60,9 +61,9 @@ public class SearchForm extends AbstractSearchForm<AffectionVO> {
 		sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		initialiseSearchForm();
 		addSearchComponentsToForm();
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		disableSearchForm(sessionStudyId, Constants.MESSAGE_NO_STUDY_IN_CONTEXT);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
+		disableSearchForm(sessionPersonId, Constants.MESSAGE_NO_SUBJECT_IN_CONTEXT);
 	}
 	
 	

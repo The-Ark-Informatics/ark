@@ -18,24 +18,24 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.mydetails;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.vo.UserConfigListVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.mydetails.form.MyConfigsForm;
 import au.org.theark.study.web.component.mydetails.form.MyDetailsForm;
 
 /**
@@ -51,10 +51,10 @@ public class MyDetails extends Panel {
 	private transient Logger						log					= LoggerFactory.getLogger(MyDetails.class);
 	@SpringBean(name = "userService")
 	private IUserService								userService;
-	
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
-	
+
 	private CompoundPropertyModel<ArkUserVO>	arkUserModelCpm;
 
 	public MyDetails(String id, ArkUserVO arkUserVO, final FeedbackPanel feedBackPanel, ModalWindow modalWindow) {
@@ -74,8 +74,40 @@ public class MyDetails extends Panel {
 					arkUser.setChangePassword(true);
 				}
 
+				boolean invalid = false;
+				for(UserConfig config : arkUser.getArkUserConfigs()) {
+					String value = config.getValue();
+					System.out.println("value: " + value);
+					switch(config.getConfigField().getType().getName()) {
+						case "NUMBER":
+							if(!isNumeric(value)) {
+								System.out.println("Field '" + config.getConfigField().getDescription() + "' should be a number");
+								this.error("Field '" + config.getConfigField().getDescription() + "' should be a number");
+								invalid = true;
+							}
+							break;
+						case "CHARACTER":
+							break;
+						case "DATE":
+							if(!isDate(value)) {
+								System.out.println("Field '" + config.getConfigField().getDescription() + "' should be a date (DD/MM/YYYY)");
+								this.error("Field '" + config.getConfigField().getDescription() + "' should be a date (DD/MM/YYYY)");
+								invalid = true;
+							}
+							break;
+						default:
+							break;
+						}
+				}
+				
+				if (invalid) {
+					System.out.println("===== INVALID ======");
+					processFeedback(target, feedBackPanel);
+					return;
+				}
+				
 				try {
-					userService.updateLdapUser(arkUser);
+					userService.updateArkUser(arkUser);
 					this.info("Details for user: " + arkUser.getUserName() + " updated");
 					processFeedback(target, feedBackPanel);
 				}
@@ -106,13 +138,25 @@ public class MyDetails extends Panel {
 			myDetailForm.getUserNameTxtField().setEnabled(false);
 		}
 		add(myDetailForm);
-		
-		UserConfigListVO list = new UserConfigListVO();
-		list.setUserConfigVOs(iArkCommonService.getUserConfigVOs(arkUserVO.getArkUserEntity()));
-		CompoundPropertyModel<UserConfigListVO> userConfigListVOcpm = new CompoundPropertyModel<UserConfigListVO>(list);
-		MyConfigsForm myConfigsForm = new MyConfigsForm("userConfigsForm", userConfigListVOcpm, feedBackPanel, modalWindow);
-		myConfigsForm.initialiseForm();
-		add(myConfigsForm);
 	}
 
+	private boolean isNumeric(String str) {  
+		try {  
+			double d = Double.parseDouble(str);  
+		} catch(NumberFormatException nfe) {  
+			return false;  
+		}  
+		return true;  
+	}
+
+	private boolean isDate(String str) {
+		SimpleDateFormat df = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+		try {
+			return df.parse(str) != null;
+		}
+		catch (ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

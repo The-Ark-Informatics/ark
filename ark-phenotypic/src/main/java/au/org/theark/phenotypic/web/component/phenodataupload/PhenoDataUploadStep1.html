@@ -1,0 +1,150 @@
+<wicket:panel>
+	<div class="wizardStepBorder">
+		<div class="wizardPanelContentLeft">
+			&nbsp;
+		</div>
+		<div wicket:id="header" />
+		<div class="wizardPanelBreaker">
+			&nbsp;
+		</div>
+
+		<div class="wizardPanelContentLeft">
+			&nbsp;
+		</div>
+		
+		<div class="fldLabel">
+			<div class="label">
+				<label for="customFieldGroup">
+					<wicket:message key="phenoDataSetGroup">
+						Questionnaire (phenoDataSetGroup)
+					</wicket:message>
+				</label>
+			</div>
+		</div>
+
+		<div class="fldControl">
+			<div class="label" style="display: inline-block;">
+				<select wicket:id="phenoDataSetGroup">
+					<option>
+						1
+					</option>
+				</select>
+				<div wicket:id="templatePanel" style="display: inline-block;">
+					<input wicket:id="downloadTemplate" type="button" value="Download Template" />
+				</div>
+			</div>
+		</div>
+		<div class="wizardPanelBreaker">
+			&nbsp;
+		</div>
+		<div class="wizardPanelContentLeft">
+			&nbsp;
+		</div>
+		<div class="fldLabel">
+			<div class="label">
+				<label for="filename">
+					<wicket:message key="upload.filename">
+						Filename:
+					</wicket:message>
+				</label>
+			</div>
+		</div>
+		<div class="fldControl">
+			<div class="label">
+				<input wicket:id="upload.filename" id="upload" type="file"/>
+			</div>
+		</div> 
+		<!-- Add download button to here. -->
+		<!-- <div class="fldControl">
+			<div class="label">
+				
+			</div>
+		</div> -->
+<!-- margin here -->
+
+		<div class="fldLabel">
+			<wicket:message key="updateChkBox">
+				Update Existing:
+			</wicket:message>
+		</div>
+		
+		<div class="fldControl">
+			<input wicket:id="updateChkBox" type="checkbox" />
+		</div>
+
+		<div class="wizardPanelBreaker">
+			&nbsp;
+		</div>
+		<div class="wizardPanelContentLeft">
+			&nbsp;
+		</div>
+		
+		
+
+		<div class="fldLabel">
+			<wicket:message key="phenoCollection.description">
+				Name:
+			</wicket:message>
+		</div>
+
+		<div class="fldControl">
+			<input wicket:id="phenoCollection.description"	type="text" />
+		</div>
+		
+		
+		
+<!-- margin here		-->
+
+		<div class="fldLabel">
+			<div class="label">
+				<label for="delimiterType">
+					<wicket:message	key="upload.delimiterType">
+						Delimiter:
+					</wicket:message>
+				</label>
+			</div>
+		</div>
+		<div class="fldControl">
+			<div class="label">
+				<select wicket:id="upload.delimiterType">
+					<option>
+						1
+					</option>
+					<option>
+						2
+					</option>
+					<option>
+						3
+					</option>
+				</select>
+			</div>
+		</div>
+
+		
+		<div class="wizardPanelBreaker">&nbsp;</div>
+		
+		<div class="wizardPanelContentLeft">&nbsp;</div>
+				
+		<div class="floatLeft">
+			<div class="note">
+				<wicket:message key="delimiterType.note">[NOTE]</wicket:message>
+			</div>
+		</div>
+		
+		<div class="wizardPanelBreaker">
+			&nbsp;
+		</div>
+
+		<div class="wizardPanelContentLeft">
+			&nbsp;
+		</div>
+
+		<div class="floatLeft">
+			<div class="note">
+				<wicket:message key="upload.note">
+					NOTE: Click "Download Template" for an example file. Header columns are required.
+				</wicket:message>
+			</div>
+		</div>
+	</div>
+</wicket:panel>

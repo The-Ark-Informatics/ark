@@ -106,10 +106,9 @@ public class CustomFieldCategoryContainerPanel extends AbstractContainerPanel<Cu
 		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
 
 		if ((sessionStudyId != null) && (sessionModuleId != null)) {
-			ArkModule arkModule = null;
 			Study study = null;
 			study = iArkCommonService.getStudy(sessionStudyId);
-			arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
+			ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
 
 			if (study != null && arkModule != null) {
 				cpModel.getObject().getCustomFieldCategory().setStudy(study);
@@ -119,7 +118,7 @@ public class CustomFieldCategoryContainerPanel extends AbstractContainerPanel<Cu
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-		SearchPanel searchPanel = new SearchPanel("searchPanel", cpModel, arkCrudContainerVO, feedBackPanel);//,this.unitTypeDropDownOn);
+		SearchPanel searchPanel = new SearchPanel("searchPanel", cpModel, arkCrudContainerVO, feedBackPanel);
 		searchPanel.initialisePanel();
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
@@ -146,7 +145,6 @@ public class CustomFieldCategoryContainerPanel extends AbstractContainerPanel<Cu
 					return (int)iArkCommonService.getCustomFieldCategoryCount(criteriaModel.getObject());//todo safe int conversion
 				}
 			}
-			@SuppressWarnings("static-access")
 			public Iterator<CustomFieldCategory> iterator(int first, int count) {
 				List<CustomFieldCategory> listCustomFieldCategories = new ArrayList<CustomFieldCategory>();
 				
@@ -166,7 +164,7 @@ public class CustomFieldCategoryContainerPanel extends AbstractContainerPanel<Cu
 		// Set the criteria for the data provider
 		customFieldCategoryProvider.setCriteriaModel(new PropertyModel<CustomFieldCategory>(cpModel, "customFieldCategory"));
 		dataView = searchResultListPanel.buildDataView(customFieldCategoryProvider);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 		private static final long	serialVersionUID	= 1L;
 		@Override

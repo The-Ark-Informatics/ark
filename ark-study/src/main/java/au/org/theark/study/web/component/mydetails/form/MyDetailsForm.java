@@ -18,17 +18,19 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.mydetails.form;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
@@ -42,6 +44,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
@@ -52,16 +55,19 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.config.entity.UserConfig;
+import au.org.theark.core.model.study.entity.ArkPermission;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
 public class MyDetailsForm extends Form<ArkUserVO> {
-
 
 	private static final long			serialVersionUID			= 2381693804874240001L;
 	private transient static Logger	log							= LoggerFactory.getLogger(MyDetailsForm.class);
@@ -70,14 +76,17 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	private IArkCommonService<Void>	iArkCommonService;
 	@SpringBean(name = "userService")
 	private IUserService					iUserService;
-	protected TextField<String>		userNameTxtField			= new TextField<String>(Constants.USER_NAME);
-	protected TextField<String>		firstNameTxtField			= new TextField<String>(Constants.FIRST_NAME);
-	protected TextField<String>		lastNameTxtField			= new TextField<String>(Constants.LAST_NAME);
-	protected TextField<String>		emailTxtField				= new TextField<String>(Constants.EMAIL);
-	protected TextField<String>		phoneNumberTxtField		= new TextField<String>(Constants.PHONE_NUMBER);
-	protected PasswordTextField		userPasswordField			= new PasswordTextField(Constants.PASSWORD);
-	protected PasswordTextField		confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
-	protected WebMarkupContainer		groupPasswordContainer	= new WebMarkupContainer("groupPasswordContainer");
+	protected TextField<String>			userNameTxtField			= new TextField<String>(Constants.USER_NAME);
+	protected TextField<String>			firstNameTxtField			= new TextField<String>(Constants.FIRST_NAME);
+	protected TextField<String>			lastNameTxtField			= new TextField<String>(Constants.LAST_NAME);
+	protected TextField<String>			emailTxtField				= new TextField<String>(Constants.EMAIL);
+	protected TextField<String>			phoneNumberTxtField			= new TextField<String>(Constants.PHONE_NUMBER);
+	protected PasswordTextField			userPasswordField			= new PasswordTextField(Constants.PASSWORD);
+	protected PasswordTextField			confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
+	protected WebMarkupContainer		groupPasswordContainer		= new WebMarkupContainer("groupPasswordContainer");
+	private WebMarkupContainer			listViewPanel				= new WebMarkupContainer("listViewPanel");
+	
+	
 	
 	protected WebMarkupContainer		shibbolethSession = new WebMarkupContainer("shibbolethSession");
 	protected WebMarkupContainer		shibbolethSessionDetails = new WebMarkupContainer("shibbolethSessionDetails");
@@ -86,29 +95,62 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	private AjaxButton					closeButton;
 	private FeedbackPanel				feedbackPanel;
 	private ModalWindow					modalWindow;
+
+	private IModel<List<ArkRolePolicyTemplate>> iModel;
+	private PageableListView<ArkRolePolicyTemplate>		pageableListView;
+	private AjaxPagingNavigator         pageNavigator;
+
 	@SuppressWarnings("unchecked")
-	private PageableListView			pageableListView;
+	private AbstractListEditor<UserConfig> userConfigListEditor;
+	
+
 	// Add a visitor class for required field marking/validation/highlighting
 	ArkFormVisitor							formVisitor					= new ArkFormVisitor();
+	private DropDownChoice<Study>		studyDdc;
+	private Study defaultValue;
+	
+	
 
 	public MyDetailsForm(String id, CompoundPropertyModel<ArkUserVO> model, final FeedbackPanel feedbackPanel, ModalWindow modalWindow) {
 		super(id, model);
 		this.feedbackPanel = feedbackPanel;
 		this.modalWindow = modalWindow;
+		
 	}
 
 	@SuppressWarnings( { "unchecked" })
 	public void initialiseForm() {
-		ArkUserVO arkUserVOFromBackend = new ArkUserVO();
+		//ArkUserVO arkUserVOFromBackend = new ArkUserVO();
 		try {
-			arkUserVOFromBackend = iUserService.lookupArkUser(getModelObject().getUserName(), getModelObject().getStudy());
-			List<ArkUserRole> arkUserRoleList = iArkCommonService.getArkRoleListByUser(arkUserVOFromBackend);
-			arkUserVOFromBackend.setArkUserRoleList(arkUserRoleList);
-			getModelObject().setArkUserRoleList(arkUserRoleList);
+
+			ArkUserVO arkUserVOFromBackend = iUserService.lookupArkUser(getModelObject().getUserName(), getModelObject().getStudy());
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			if(sessionStudyId!=null){
+				arkUserVOFromBackend.setStudy(iArkCommonService.getStudy(sessionStudyId));
+			}else{
+				arkUserVOFromBackend.setStudy(getModelObject().getStudy());
+			}
+			//Study will selected with model object and that will be the page list view accordingly.
+			listViewPanel.setOutputMarkupId(true);
+			iModel = new LoadableDetachableModel() {
+				private static final long	serialVersionUID	= 1L;
+				@Override
+				protected Object load() {
+					return getModelObject().getArkRolePolicyTemplatesList();
+				}
+			};
+			initStudyDdc(arkUserVOFromBackend);
+			
+			List<UserConfig> arkUserConfigs = iArkCommonService.getUserConfigs(arkUserVOFromBackend.getArkUserEntity());
+			arkUserVOFromBackend.setArkUserConfigs(arkUserConfigs);
+			getModelObject().setArkUserConfigs(arkUserConfigs);
+
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
+		
+		emailTxtField.setOutputMarkupId(true);
 
 		saveButton = new AjaxButton(Constants.SAVE) {
 
@@ -139,15 +181,6 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		closeButton.setDefaultFormProcessing(false);
 
 		emailTxtField.add(EmailAddressValidator.getInstance());
-
-		IModel<List<ArkUserRole>> iModel = new LoadableDetachableModel() {
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected Object load() {
-				return getModelObject().getArkUserRoleList();
-			}
-		};
 		
 		boolean loggedInViaAAF = ((String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SHIB_SESSION_ID) != null);
 		groupPasswordContainer.setVisible(!loggedInViaAAF);
@@ -157,64 +190,15 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		
 		shibbolethSession.setVisible(loggedInViaAAF);
 		shibbolethSession.add(shibbolethSessionDetails);
-
-		// TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
-		pageableListView = new PageableListView("arkUserRoleList", iModel, 50) {
-			private static final long	serialVersionUID	= 3557668722549243826L;
-
+		
+		userConfigListEditor = new AbstractListEditor<UserConfig>("arkUserConfigs") {
 			@Override
-			protected void populateItem(final ListItem item) {
-				ArkUserRole arkUserRole = (ArkUserRole) item.getModelObject();
-
-				if (arkUserRole.getStudy() != null) {
-					item.addOrReplace(new Label("studyName", arkUserRole.getStudy().getName()));
-				}
-				else {
-					item.addOrReplace(new Label("studyName", "[All Study Access]"));
-				}
-
-				item.addOrReplace(new Label("moduleName", arkUserRole.getArkModule().getName()));
-				item.addOrReplace(new Label("roleName", arkUserRole.getArkRole().getName()));
-
-				try {
-					Collection<String> rolePermissions = iArkCommonService.getArkRolePermission(arkUserRole.getArkRole().getName());
-					if (rolePermissions.contains("CREATE")) {
-						item.addOrReplace(new ContextImage("arkCreatePermission", new Model<String>("images/icons/tick.png")));
-					}
-					else {
-						item.addOrReplace(new ContextImage("arkCreatePermission", new Model<String>("images/icons/cross.png")));
-					}
-
-					// the ID here must match the ones in mark-up
-					if (rolePermissions.contains("READ")) {
-						item.addOrReplace(new ContextImage("arkReadPermission", new Model<String>("images/icons/tick.png")));
-					}
-					else {
-						item.addOrReplace(new ContextImage("arkReadPermission", new Model<String>("images/icons/cross.png")));
-					}
-
-					// the ID here must match the ones in mark-up
-					if (rolePermissions.contains("UPDATE")) {
-						item.addOrReplace(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/tick.png")));
-					}
-					else {
-						item.addOrReplace(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/cross.png")));
-					}
-
-					// the ID here must match the ones in mark-up
-					if (rolePermissions.contains("DELETE")) {
-						item.addOrReplace(new ContextImage("arkDeletePermission", new Model<String>("images/icons/tick.png")));
-					}
-					else {
-						item.addOrReplace(new ContextImage("arkDeletePermission", new Model<String>("images/icons/cross.png")));
-					}
-				}
-				catch (EntityNotFoundException e) {
-					log.error(e.getMessage());
-				}
-
-				item.setEnabled(false);
-
+			protected void onPopulateItem(au.org.theark.core.web.component.listeditor.ListItem<UserConfig> item) {
+				item.add(new Label("configField.description", item.getModelObject().getConfigField().getDescription()));
+				PropertyModel<String> propModel = new PropertyModel<String>(item.getModel(), "value");
+				TextField<String> valueTxtFld = new TextField<String>("value", propModel);
+				item.add(valueTxtFld);
+				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					private static final long	serialVersionUID	= -8887455455175404701L;
 
@@ -223,17 +207,15 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
 					}
 				}));
+
 			}
 		};
-
-		pageableListView.setReuseItems(true);
-
-		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
-		add(pageNavigator);
 
 		attachValidators();
 		addComponents();
 	}
+
+	
 
 	private void attachValidators() {
 		userNameTxtField.add(EmailAddressValidator.getInstance()).setLabel(new StringResourceModel("userName.incorrect.format", this, null));
@@ -269,14 +251,12 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		add(new EqualPasswordInputValidator(userPasswordField, confirmPasswordField));
 		add(saveButton);
 		add(closeButton);
-		add(pageableListView);
+		add(listViewPanel);
+		add(studyDdc);
+		add(userConfigListEditor);
+		
 	}
-
-	public void onBeforeRender() {
-		super.onBeforeRender();
-		visitChildren(formVisitor);
-	}
-
+	
 	protected void processFeedback(AjaxRequestTarget target, FeedbackPanel fb) {
 
 	}
@@ -291,5 +271,151 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 
 	public TextField<String> getUserNameTxtField() {
 		return userNameTxtField;
+	}
+	/**
+	 * 
+	 * @param permissionsLst
+	 * @param operation
+	 * @return
+	 */
+	private boolean isPermissionLstContain(List<ArkPermission> arkPermissionsLst,String operation){
+		for (ArkPermission arkPermission : arkPermissionsLst) {
+			if(arkPermission.getName().equals(operation)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	private void initStudyDdc(ArkUserVO arkUserVO) {
+		List<Study> studyListForUser =iArkCommonService.getStudyListForUser(arkUserVO);
+		ChoiceRenderer<Study> choiceRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
+		//Set to selected study.
+		defaultValue=arkUserVO.getStudy();
+		studyDdc = new DropDownChoice<Study>("studyLst", new PropertyModel<Study>(this, "defaultValue"),studyListForUser, choiceRenderer);
+		studyDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			private static final long serialVersionUID = -4514605801401294450L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				listViewPanel.remove(pageableListView);
+				listViewPanel.remove(pageNavigator);
+				List<ArkUserRole> arkUserRoleList = iArkCommonService.getArkRoleListByUserAndStudy(arkUserVO, studyDdc.getModelObject());
+				arkUserVO.setArkUserRoleList(arkUserRoleList);
+				getModelObject().setArkUserRoleList(arkUserRoleList);
+				//Add Ark Role Policy Templates
+				List<ArkRolePolicyTemplate> arkRolePolicyTemplatesLst=iArkCommonService.getArkRolePolicytemplateList(arkUserVO);
+				getModelObject().setArkRolePolicyTemplatesList(arkRolePolicyTemplatesLst);
+				log.info("List:"+arkRolePolicyTemplatesLst.size());
+				createPageListView(iModel);
+				listViewPanel.add(pageableListView);
+				listViewPanel.add(pageNavigator);
+				target.add(listViewPanel);
+			}
+		});
+		initiPageListViewWithSelectedStudy(arkUserVO);
+	}
+
+	/**
+	 * initialise page list with study.
+	 * @param arkUserVO
+	 */
+	private void initiPageListViewWithSelectedStudy(ArkUserVO arkUserVO) {
+		List<ArkUserRole> arkUserRoleList = iArkCommonService.getArkRoleListByUserAndStudy(arkUserVO, arkUserVO.getStudy());
+		arkUserVO.setArkUserRoleList(arkUserRoleList);
+		getModelObject().setArkUserRoleList(arkUserRoleList);
+		//Add Ark Role Policy Templates
+		List<ArkRolePolicyTemplate> arkRolePolicyTemplatesLst=iArkCommonService.getArkRolePolicytemplateList(arkUserVO);
+		getModelObject().setArkRolePolicyTemplatesList(arkRolePolicyTemplatesLst);
+		createPageListView(iModel);
+	}
+	
+	private void createPageListView(IModel<List<ArkRolePolicyTemplate>> iModel) {
+		// TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
+		pageableListView = new PageableListView<ArkRolePolicyTemplate>("arkRolePolicyTemplatesList", iModel, 50) {
+			private static final long	serialVersionUID	= 3557668722549243826L;
+
+			@Override
+			protected void populateItem(final ListItem<ArkRolePolicyTemplate> item) {
+				ArkRolePolicyTemplate arkRolePolicyTemplate = (ArkRolePolicyTemplate) item.getModelObject();
+				/*if (((ArkUserVO)getModelObject()).getStudy() != null) {
+					item.addOrReplace(new Label("studyName", ((ArkUserVO)getModelObject()).getStudy().getName()));
+				}
+				else {
+					item.addOrReplace(new Label("studyName", "[All Study Access]"));
+				}*/
+				
+				if(arkRolePolicyTemplate.getArkModule()!=null){
+					item.addOrReplace(new Label("moduleName", arkRolePolicyTemplate.getArkModule().getName()));
+				}else{
+					item.addOrReplace(new Label("moduleName", "Not specified Module"));
+				}
+				if(arkRolePolicyTemplate.getArkRole()!=null){
+					item.addOrReplace(new Label("roleName", arkRolePolicyTemplate.getArkRole().getName()));
+				}else{
+					item.addOrReplace(new Label("roleName", "Not specified Role"));
+				}
+				if(arkRolePolicyTemplate.getArkFunction()!=null){
+					item.addOrReplace(new Label("functionName", arkRolePolicyTemplate.getArkFunction().getName()));
+				}else{
+					item.addOrReplace(new Label("functionName", "Not specified function"));
+				}
+				List<ArkPermission> arkPermissionsList=iArkCommonService.getArkPremissionListForRoleAndModule(arkRolePolicyTemplate);
+				
+					
+					if (isPermissionLstContain(arkPermissionsList,"CREATE")) {
+						item.addOrReplace(new ContextImage("arkCreatePermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.addOrReplace(new ContextImage("arkCreatePermission", new Model<String>("images/icons/cross.png")));
+					}
+
+					// the ID here must match the ones in mark-up
+					if (isPermissionLstContain(arkPermissionsList,"READ")) {
+						item.addOrReplace(new ContextImage("arkReadPermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.addOrReplace(new ContextImage("arkReadPermission", new Model<String>("images/icons/cross.png")));
+					}
+
+					// the ID here must match the ones in mark-up
+					if (isPermissionLstContain(arkPermissionsList,"UPDATE")) {
+						item.addOrReplace(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.addOrReplace(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/cross.png")));
+					}
+
+					// the ID here must match the ones in mark-up
+					if (isPermissionLstContain(arkPermissionsList,"DELETE")) {
+						item.addOrReplace(new ContextImage("arkDeletePermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.addOrReplace(new ContextImage("arkDeletePermission", new Model<String>("images/icons/cross.png")));
+					}
+
+				item.setEnabled(false);
+
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
+					private static final long	serialVersionUID	= -8887455455175404701L;
+
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
+			}
+		};
+		pageableListView.setReuseItems(false);
+		pageableListView.setOutputMarkupId(true);
+		listViewPanel.add(pageableListView);
+		pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
+		listViewPanel.add(pageNavigator);
+	}
+
+	public Study getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(Study defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 }

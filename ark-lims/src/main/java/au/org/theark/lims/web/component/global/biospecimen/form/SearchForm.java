@@ -73,7 +73,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	
 	private DropDownChoice<Study>				studyDdc;
 	
-	private TextField<String>					idTxtFld;
+	//private TextField<String>					idTxtFld;
 	private TextField<String>					biospecimenUidTxtFld;
 	private TextField<String>					bioCollectionUidTxtFld;
 	private DateTextField						sampleDateTxtFld;
@@ -110,7 +110,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	public void initialiseFieldForm() {
 		initStudyDdc();
 		
-		idTxtFld = new TextField<String>("biospecimen.id");
+		//idTxtFld = new TextField<String>("biospecimen.id");
 		
 		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
 		bioCollectionUidTxtFld = new TextField<String>("bioCollection.biocollectionUid");
@@ -172,7 +172,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 	private void addFieldComponents() {
 		add(studyDdc);
-		add(idTxtFld);
+		//add(idTxtFld);
 		add(bioCollectionUidTxtFld);
 		add(biospecimenUidTxtFld);
 		add(sampleDateTxtFld);

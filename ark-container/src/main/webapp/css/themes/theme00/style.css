@@ -270,7 +270,6 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 	width: 25%;
 	height: 5%;
 }
-
 #multiSelect{
 }
 
@@ -861,3 +860,4 @@ div.ex {
 nobreakws{
 	    white-space: nowrap;
 }
+

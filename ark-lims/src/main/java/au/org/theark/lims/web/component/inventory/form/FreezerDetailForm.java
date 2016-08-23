@@ -43,11 +43,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.IntegerConverter;
 import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -111,6 +113,19 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("invFreezer.id");
 		nameTxtFld = new TextField<String>("invFreezer.name");
+		nameTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				String freezerName = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
+				InvFreezer invFreezer=iInventoryService.getInvFreezerByNameForSite(invSiteDdc.getModelObject(), freezerName);
+				if (invFreezer != null && invFreezer.getId() != null) {
+					error("Freezer name must be unique for a site. Please try again.");
+					target.focusComponent(getComponent());
+				}
+					target.add(feedbackPanel);
+			}
+		});
 		capacityTxtFld = new TextField<Integer>("invFreezer.capacity"){
 
 			private static final long	serialVersionUID	= 1L;
@@ -195,14 +210,31 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		}
 		ChoiceRenderer<InvSite> choiceRenderer = new ChoiceRenderer<InvSite>(Constants.NAME, Constants.ID);
 		invSiteDdc = new DropDownChoice<InvSite>("invFreezer.invSite", (List<InvSite>) invSiteList, choiceRenderer);
+		invSiteDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				String freezerName = (nameTxtFld.getModelObject() != null ? nameTxtFld.getModelObject().toString() : new String());
+				if(!freezerName.isEmpty()) {
+					InvFreezer invFreezer=iInventoryService.getInvFreezerByNameForSite(invSiteDdc.getModelObject(), freezerName);
+					if (invFreezer != null && invFreezer.getId() != null) {
+						error("Freezer name must be unique for a site. Please try again.");
+						target.focusComponent(getComponent());
+					}
+				}
+				target.add(feedbackPanel);
+			}
+		});
 	}
 
 	protected void attachValidators() {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
+		nameTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
 		invSiteDdc.setRequired(true).setLabel(new StringResourceModel("error.site.required", this, new Model<String>("Site")));
 		capacityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.capacity.required", this, new Model<String>("Capacity")));
 		MinimumValidator<Integer> minValue = new MinimumValidator<Integer>(new Integer(0));
 		capacityTxtFld.add(minValue);
+		descriptionTxtAreaFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
 	}
 
 	private void addComponents() {

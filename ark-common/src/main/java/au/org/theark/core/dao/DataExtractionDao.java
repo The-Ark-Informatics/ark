@@ -38,6 +38,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -48,7 +49,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -769,138 +770,129 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 	}
 	
 	private String getPhenoCollectionName(String collectionID) {
-		Criteria c = getSession().createCriteria(PhenoCollection.class, "p");
+		Criteria c = getSession().createCriteria(PhenoDataSetCollection.class, "p");
 		c.add(Restrictions.eq("p.id", Long.parseLong(collectionID)));
 
-		PhenoCollection pc = (PhenoCollection) c.uniqueResult();
+		PhenoDataSetCollection pc = (PhenoDataSetCollection) c.uniqueResult();
 		return pc.getQuestionnaire().getName();
 	}
 	
-	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
+	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<PhenoDataSetFieldDisplay> cfds, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("PHENOTYPIC.csv");
 		final java.io.File file = new File(tempDir, filename);
 		if (filename == null || filename.isEmpty()) {
 			filename = "exportcsv.csv";
 		}
+		
+		Set<String> headers = new HashSet<String>();
+		HashMap<String, List<String>> phenoCollectionMapping = new HashMap<String, List<String>>();
 
-		
-		HashMap<String, ExtractionVO> hashOfSubjectsWithData = devo.getPhenoCustomData();
-		
-		HashMap<String, HashMap<String, String>> subjects = new HashMap<String, HashMap<String, String>>(); //Defs not the most elegant solution
-		
-		Set<String> set = new TreeSet<String>();
-		for(String phenoCollectionID : hashOfSubjectsWithData.keySet()) {
-			String phenoName = getPhenoCollectionName(phenoCollectionID);
-			set.add(phenoName);
-			ExtractionVO vo = hashOfSubjectsWithData.get(phenoCollectionID);
-			if(subjects.containsKey(vo.getSubjectUid())) {
-				HashMap<String, String> map = subjects.get(vo.getSubjectUid());
-				for(Entry<String, String> entry : vo.getKeyValues().entrySet()) {
-					map.put(entry.getKey(), entry.getValue());
-				}
-				map.put(phenoName, hashOfSubjectsWithData.get(phenoCollectionID).getRecordDate().toString());
-				subjects.put(vo.getSubjectUid(), map);
+		for(Entry<String, ExtractionVO> entry : devo.getPhenoCustomData().entrySet()) {
+			String subjectUID = entry.getValue().getSubjectUid();
+			if(phenoCollectionMapping.containsKey(subjectUID)) {
+				phenoCollectionMapping.get(subjectUID).add(entry.getKey());
 			} else {
-				HashMap<String, String> map = new HashMap<String, String>();
-				for(Entry<String, String> entry : vo.getKeyValues().entrySet()) {
-					map.put(entry.getKey(), entry.getValue());
-				}
-				map.put(phenoName, hashOfSubjectsWithData.get(phenoCollectionID).getRecordDate().toString());
-				subjects.put(vo.getSubjectUid(), map);
+				List<String> phenoCollectionIDs = new ArrayList<String>();
+				phenoCollectionIDs.add(entry.getKey());
+				phenoCollectionMapping.put(subjectUID, phenoCollectionIDs);
+			}
+		}
+
+		Set<String> phenoCollectionHeadersSet = new HashSet<String>();
+		int maxPhenoCollections = 0; 
+		for(List<String> pc : phenoCollectionMapping.values()) { 
+			if(pc.size() > maxPhenoCollections) { 
+				maxPhenoCollections = pc.size(); 
 			}
 		}
 		
-		List<String> ids = new ArrayList<String>(subjects.keySet());
-		Collections.sort(ids);
-		
+		Iterator<ExtractionVO> iter = devo.getPhenoCustomData().values().iterator();
+		while(iter.hasNext()) {
+			ExtractionVO evo = iter.next();
+			phenoCollectionHeadersSet.addAll(evo.getKeyValues().keySet());
+		}
+
+		List<String> phenoCollectionHeaders = new ArrayList<String>(phenoCollectionHeadersSet);
+		List<String> headersList = new ArrayList<String>(headers);
+		Collections.sort(phenoCollectionHeaders);
+
+		phenoCollectionHeaders.add(0, "Record Date");
+		phenoCollectionHeaders.add(1, "Collection Name");
+
 		OutputStream outputStream;
 		try {
 			outputStream = new FileOutputStream(file);
 			CsvWriter csv = new CsvWriter(outputStream);
-
-			// Header
-			csv.write("SUBJECTUID");
-//			csv.write("RECORD_DATE_TIME");
 			
-			for(String s : set) {
-				csv.write("RECORD_DATE_TIME_" + s);
+			csv.write("Subject UID");
+			
+			for(String header : headersList) {
+				csv.write(header);
 			}
 			
-			for (CustomFieldDisplay cfd : cfds) {
-				csv.write(cfd.getCustomField().getName());
+			for(int i = 1; i <= maxPhenoCollections; i++) {
+				for(String header : phenoCollectionHeaders) {
+					csv.write("P" + i + "_" + header);
+				}
 			}
-
+			
 			csv.endLine();
 			
-			for(String subjectUID : subjects.keySet()) {
-				csv.write(subjectUID);
-
-				for(String s : set) {
-					csv.write(subjects.get(subjectUID).get(s));
+			for(String subjectUID : phenoCollectionMapping.keySet()) {
+				if (!phenoCollectionMapping.containsKey(subjectUID)) {
+					continue;
 				}
 				
-				for(CustomFieldDisplay cfd : cfds) {
-					String value = subjects.get(subjectUID).get(cfd.getCustomField().getName());
-					if(cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && value != null) {
-						try {
-							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-							String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
-							Date date = DateUtils.parseDate(value, dateFormats);
-							csv.write(dateFormat.format(date));
-						}
-						catch (ParseException e) {
-							csv.write(value);
-						}
-					} else if(value == null) {
-						csv.write("");
+				List<String> row = new ArrayList<String>();
+				csv.write(subjectUID);
+				
+				ExtractionVO subjectData = devo.getDemographicData().get(subjectUID);
+				ExtractionVO subjectCustomData = devo.getSubjectCustomData().get(subjectUID);
+				for(String header : headersList) {
+					if(subjectData.getKeyValues().containsKey(header)) {
+						csv.write(subjectData.getKeyValues().get(header));
+					} else if(subjectCustomData != null && subjectCustomData.getKeyValues().containsKey(header)) {
+						csv.write(subjectCustomData.getKeyValues().get(header));
 					} else {
-						csv.write(value);
+						csv.write("");
+					}
+				}
+				if(phenoCollectionMapping.containsKey(subjectUID)) {
+					DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+					for(String phenoCollectionID : phenoCollectionMapping.get(subjectUID)) {
+						ExtractionVO phenoCollectionData = devo.getPhenoCustomData().get(phenoCollectionID);
+						for(String header : phenoCollectionHeaders) {
+							if(header.equals("Record Date")) {
+								csv.write(df.format(phenoCollectionData.getRecordDate()));
+							} else if(header.equals("Collection Name")) {
+								csv.write(phenoCollectionData.getCollectionName());
+							} else if(phenoCollectionData.getKeyValues().containsKey(header)) {
+								csv.write(phenoCollectionData.getKeyValues().get(header));
+							} else {
+								csv.write("");
+							}
+						}
+					}
+					if(phenoCollectionMapping.get(subjectUID).size() < maxPhenoCollections) {
+						for(int i = 0; i < (maxPhenoCollections - phenoCollectionMapping.get(subjectUID).size()); i++) {
+							for(String header : phenoCollectionHeaders) {
+								csv.write("");
+							}
+						}
+					}
+				} else {
+					for(int i = 0; i < maxPhenoCollections; i++) {
+						for(String header : phenoCollectionHeaders) {
+							csv.write("");
+						}
 					}
 				}
 				csv.endLine();
 			}
-			csv.close();
 			
-
-//			for (String phenoCollectionId : hashOfSubjectsWithData.keySet()) {
-//				//csv.write(subjectUID);
-//				
-//				ExtractionVO evo = hashOfSubjectsWithData.get(phenoCollectionId);
-//				
-//				if (evo != null) {
-//					csv.write(evo.getSubjectUid());
-//					csv.write(evo.getRecordDate());
-//					HashMap<String, String> keyValues = evo.getKeyValues();
-//					for (CustomFieldDisplay cfd : cfds) {
-//
-//						String valueResult = keyValues.get(cfd.getCustomField().getName());
-//						if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
-//							try {
-//								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-//								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
-//								Date date = DateUtils.parseDate(valueResult, dateFormats);
-//								csv.write(dateFormat.format(date));
-//							}
-//							catch (ParseException e) {
-//								csv.write(valueResult);
-//							}
-//						}
-//						else {
-//							csv.write(valueResult);
-//						}
-//					}
-//				}
-//				else {
-//					// Write out a line with no values (no data existed for subject in question
-//					for (CustomFieldDisplay cfd : cfds) {
-//						csv.write("");
-//					}
-//				}
-
-//				csv.endLine();
-//			}
-//			csv.close();
+			csv.close();
+		
 		}
 		catch (FileNotFoundException e) {
 			log.error(e.getMessage());
@@ -990,9 +982,9 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		return file;
 	}	
 
-	public File createMegaCSV(Search search, DataExtractionVO allTheData, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> biocollectionCustomFieldDisplay, List<CustomFieldDisplay> biospecimenCustomFieldDisplay, List<CustomFieldDisplay> phenotypicCustomFieldDisplay, List<ConsentStatusField> consentStatusFields) {
+	public File createMegaCSV(Search search, DataExtractionVO allTheData, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> biocollectionCustomFieldDisplay, List<CustomFieldDisplay> biospecimenCustomFieldDisplay, List<PhenoDataSetFieldDisplay> phenotypicCustomFieldDisplay, List<ConsentStatusField> consentStatusFields) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		String filename = new String("MEGA.csv");
+		String filename = new String("COMBINED.csv");
 		final java.io.File file = new File(tempDir, filename);
 		
 		long start = System.currentTimeMillis();

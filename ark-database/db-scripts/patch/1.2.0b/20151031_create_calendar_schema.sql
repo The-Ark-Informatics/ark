@@ -1,0 +1,1 @@
+CREATE SCHEMA `calendar` DEFAULT CHARACTER SET latin1 ;

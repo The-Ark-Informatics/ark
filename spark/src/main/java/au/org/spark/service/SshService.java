@@ -21,7 +21,7 @@ public interface SshService {
 	
 	public void uploadProgram(String destinationDir, String name);
 	
-	public String compileProgram(String name);
+//	public String compileProgram(String name);
 	
 	public String compileProgram(ComputationVo computationVo);
 	

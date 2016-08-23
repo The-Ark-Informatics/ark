@@ -242,7 +242,9 @@
 					<div class="panelContentLeft">
 						&nbsp;
 					</div>
-
+			
+				<!-- Add this web container on 2015-10-29 -->	
+				<div wicket:id="missingValueEntryWMC">
 					<div class="fldLabel">
 						<wicket:message key="customField.missingValue">
 							Missing Value:
@@ -253,24 +255,30 @@
 							</wicket:message>
 						</div>
 					</div>
-
 					<div class="fldControl">
-						<input wicket:id="customField.missingValue"	type="text" />
+						<div wicket:id="missingValueEntryPanel">
+							[missingValueEntryPanel]
+						</div>	
 					</div>
-					
+				</div>	
 					<div class="panelMargin">
 						&nbsp;
 					</div>					
-				
-					<div class="fldLabel">
-						<wicket:message key="customField.defaultValue">
-							Default Value
-						</wicket:message>
-					</div>
-					<div class="fldControl">
-						<textarea wicket:id="customField.defaultValue" rows="4" cols="25">
-						</textarea>
-					</div>
+				<!-- Add this web container on 2016-05-20 -->	
+					<div wicket:id="defaultValueEntryWMC">
+						<div class="fldLabel">
+							<wicket:message key="customField.defaultValue">
+								Default Value
+							</wicket:message>
+						</div>
+						<div class="fldControl">
+							<div wicket:id="defaultValueEntryPnl">
+								[defaultValueEntryPnl]
+							</div>	
+							<!-- <textarea wicket:id="customField.defaultValue" rows="4" cols="25">
+							</textarea> -->
+						</div>
+					</div>	
 				</div>
 				<div class="detailPanelBreaker">
 						&nbsp;

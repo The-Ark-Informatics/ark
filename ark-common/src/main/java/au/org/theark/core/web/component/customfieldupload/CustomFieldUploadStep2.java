@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.CustomFieldCategoryImportValidator;
 import au.org.theark.core.util.CustomFieldImportValidator;
 import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
@@ -105,6 +106,10 @@ public class CustomFieldUploadStep2 extends AbstractWizardStepPanel {
 
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
+
+		//root acording to the field and category 
+		
+		
 		File temp = containerForm.getModelObject().getTempFile();
 
 		if (temp != null && temp.exists()) {
@@ -118,41 +123,39 @@ public class CustomFieldUploadStep2 extends AbstractWizardStepPanel {
 				if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 					throw new FileFormatException();
 				}
-				CustomFieldImportValidator validator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
-
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				inputStream.close();
-				validationMessages = validator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
-				inputStream = null;
-
+				// Field upload
+				if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_FIELD)){
+					CustomFieldImportValidator fieldvalidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+					validationMessages = fieldvalidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
+				}
+				//Categoty upload
+				else if(containerForm.getModelObject().getUpload().getUploadLevel().getName().equalsIgnoreCase(Constants.UPLOAD_LEVEL_CATEGORY)){
+					CustomFieldCategoryImportValidator categoryValidator = new CustomFieldCategoryImportValidator(iArkCommonService, containerForm.getModelObject());
+					validationMessages = categoryValidator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
+				}
+					inputStream.close();
+					inputStream = null;
 				containerForm.getModelObject().setValidationMessages(validationMessages);
 				validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-
 				if (validationMessage != null && validationMessage.length() > 0) {
 					form.getNextButton().setEnabled(false);
 					target.add(form.getWizardButtonContainer());
 					downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
-
-						/**
-						 * 
-						 */
 						private static final long	serialVersionUID	= 1L;
-
 						@Override
 						protected void onError(AjaxRequestTarget target, Form<?> form) {
 							this.error("Unexpected Error: Download request could not be processed");
 						}
-
 					};
 					addOrReplace(downloadValMsgButton);
 					target.add(downloadValMsgButton);
 				}
-
 				// Show file data
 				FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, iArkCommonService.getRowsPerPage(),containerForm.getModelObject().getUpload().getUploadType());
+				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(),containerForm.getModelObject().getUpload().getUploadType());
 				inputStream.close();
 				inputStream = null;
 				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);

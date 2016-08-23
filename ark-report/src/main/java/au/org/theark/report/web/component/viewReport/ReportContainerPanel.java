@@ -48,6 +48,7 @@ public class ReportContainerPanel extends Panel {
 	public void initialisePanel() {
 		add(initialiseFeedBackPanel());
 		reportSelectPanel = new ReportSelectPanel("reportSelectPanel", reportSelectCPM, reportContainerVO);
+		reportSelectPanel.setOutputMarkupId(true);
 		reportSelectPanel.initialisePanel();
 
 		WebMarkupContainer selectedReportContainerWMC = new WebMarkupContainer("selectedReportContainerWMC");

@@ -110,7 +110,7 @@ public class StudyDataUploadJob implements Job {
 		upload.setUploadReport(bytes);
 		upload.setStartTime(startTime);
 		upload.setFinishTime(new Date(System.currentTimeMillis()));
-		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
+		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD));
 		iArkCommonService.updateUpload(upload);
 	}
 

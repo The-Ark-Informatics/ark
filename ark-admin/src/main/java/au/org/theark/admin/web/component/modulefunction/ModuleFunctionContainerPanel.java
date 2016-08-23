@@ -100,7 +100,7 @@ public class ModuleFunctionContainerPanel extends AbstractContainerPanel<AdminVO
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO);
 		initialiseDataView();
 		dataView = searchResultsPanel.buildDataView(dataProvider);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(dataView);

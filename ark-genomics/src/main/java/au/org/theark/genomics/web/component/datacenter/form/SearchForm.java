@@ -115,10 +115,6 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 	}
 
-	private void initDataCenterDropDown(PropertyModel<MicroService> microService) {
-
-	}
-
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
@@ -129,6 +125,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 		Component uploadBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("plinkUpload");
 		Component deleteBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("plinkDelete");
+		Component queryBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("queryBtn");
 
 		if (resultList != null && resultList.size() == 0) {
 			String dataCenter = dataCenterVo.getName();
@@ -136,7 +133,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 			MicroService microService = dataCenterVo.getMicroService();
 
 			if (microService == null || dataCenter == null) {
-				this.error("Need to select a service and data center prior to make a search.");
+				this.error("Need to select a service and data centre prior to make a search.");
 			} else {
 				this.info(getModelObject().getName() + " cannot be reach in the " + getModelObject().getMicroService().getName() + " Service");
 			}
@@ -144,10 +141,11 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 			uploadBtn.setEnabled(false);
 			deleteBtn.setEnabled(false);
+			queryBtn.setEnabled(false);
 
 			cpmModel.getObject().setStatus(null);
 		} else {
-
+			
 			DataSourceVo dataSourceVo = new DataSourceVo();
 			dataSourceVo.setDataCenter(cpmModel.getObject().getName());
 			dataSourceVo.setMicroService(cpmModel.getObject().getMicroService());
@@ -160,23 +158,51 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 			if (dataSource != null && dataSource.getStatus() != null) {
 				cpmModel.getObject().setStatus(dataSource.getStatus());
 			} else {
-				cpmModel.getObject().setStatus("Undefined");
+				cpmModel.getObject().setStatus(Constants.STATUS_UNPROCESSED);
 			}
-
-			if (dataCenterVo.getDirectory() == null) {
-				uploadBtn.setEnabled(false);
-				deleteBtn.setEnabled(false);
-			} else {
-				if (dataSource != null && !(dataSource.getStatus() == null || dataSource.getStatus().trim().length() == 0 || "Deleted".equalsIgnoreCase(dataSource.getStatus()))) {
-					uploadBtn.setEnabled(false);
-				} else {
+						
+			for(DataSourceVo vo : resultList){
+				if(vo.getDataSource().getStatus() == null || vo.getDataSource().getStatus().trim().length() == 0){
+					if(vo.getFileName().contains(".map") || 
+							vo.getFileName().contains(".ped") ||
+							vo.getFileName().contains(".bim") ||
+							vo.getFileName().contains(".fam") ||
+							vo.getFileName().contains(".bed") 
+							){
+						
+						if("Deleting".equalsIgnoreCase(cpmModel.getObject().getStatus()) ||
+								"Uploading".equalsIgnoreCase(cpmModel.getObject().getStatus())
+								){
+							vo.getDataSource().setStatus(Constants.STATUS_NOT_READY);
+						}else{
+							vo.getDataSource().setStatus(Constants.STATUS_READY);
+						}
+					
+					}else{
+						vo.getDataSource().setStatus(Constants.STATUS_NOT_REQUIRED);
+					}
+				}
+			}
+			
+			uploadBtn.setEnabled(false);
+			deleteBtn.setEnabled(false);
+			queryBtn.setEnabled(false);
+			
+			if (dataCenterVo.getDirectory() != null) {
+				
+				if(dataSource == null ){
 					uploadBtn.setEnabled(true);
+				}else{
+					if(dataSource.getStatus() == null || dataSource.getStatus().trim().length() == 0){
+						uploadBtn.setEnabled(true);
+					}else if(Constants.STATUS_UNPROCESSED.equalsIgnoreCase(dataSource.getStatus())){
+						uploadBtn.setEnabled(true);
+					}
 				}
 
-				if (dataSource == null || !"Completed".equalsIgnoreCase(dataSource.getStatus())) {
-					deleteBtn.setEnabled(false);
-				} else {
+				if(dataSource !=null && Constants.STATUS_PROCESSED.equalsIgnoreCase(dataSource.getStatus())){
 					deleteBtn.setEnabled(true);
+					queryBtn.setEnabled(true);
 				}
 			}
 		}
@@ -184,7 +210,6 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		listView.removeAll();
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-
 	}
 
 	@Override
@@ -192,5 +217,5 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		// TODO Auto-generated method stub
 
 	}
-
+	
 }

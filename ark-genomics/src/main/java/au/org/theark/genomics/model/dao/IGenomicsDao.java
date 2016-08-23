@@ -16,7 +16,7 @@ public interface IGenomicsDao {
 	
 	public long saveOrUpdate(Computation computatin);
 
-	public void saveOrUpdate(Analysis analysis);
+	public long saveOrUpdate(Analysis analysis);
 	
 	public void delete(MicroService microService);
 	

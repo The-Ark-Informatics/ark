@@ -24,7 +24,7 @@ public class Constants {
 	public static final String	STATUS_CREATED						= "Created";
 	public static final String	STATUS_ACTIVE						= "Active";
 	public static final String	STATUS_EXPIRED						= "Expired";
-	public static final String	STATUS_DISABLED					= "Disabled";
+	public static final String	STATUS_DISABLED						= "Disabled";
 
 	public static final String PHENOCOLLECTION_STATUS_IN_PROGRESS	= "In Progress";
 
@@ -35,11 +35,13 @@ public class Constants {
 	public static final String	TEST_FILE							= "/home/ark/TestData/testPhenoData.txt";
 
 	// Services
-	public static final String	PHENOTYPIC_SERVICE				= "phenotypicService";
+	public static final String	PHENOTYPIC_SERVICE					= "phenotypicService";
 
 	// Exception messages
 	public static final String	IO_EXCEPTION						= "IOException: Input error. ";
-	public static final String	FILE_FORMAT_EXCEPTION			= "File Format Exception: Input error. ";
+	public static final String	FILE_FORMAT_EXCEPTION				= "File Format Exception: Input error. ";
+	public static final String	CSS_STYLE_CLASS_NAME_COLOR_LINK		= "colorLink";
+	
 
 	
 }

@@ -29,9 +29,12 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
+import com.csvreader.CsvReader;
+
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.service.IStudyService;
 
 /**
@@ -55,6 +58,9 @@ public class SubjectCustomDataUploadJob implements Job {
 	public static final String		SIZE					= "size";
 	public static final String		REPORT				= "report";
 	public static final String		LIST_OF_UIDS_TO_UPDATE	= "listOfUidsToUpdate";
+	public static final String		CUSTOM_FIELD_TYPE	= "customfieldType";
+	public static final String		MODEL_OBJECT		= "modelObject";
+	
 	private IStudyService	iStudyService;
 	private IArkCommonService<Void>	iArkCommonService;
 
@@ -77,26 +83,24 @@ public class SubjectCustomDataUploadJob implements Job {
 		iArkCommonService			= (IArkCommonService<Void>) data.get(IARKCOMMONSERVICE);
 		iStudyService				= (IStudyService) data.get(ISTUDYSERVICE);
 		Long uploadId 				= (Long) data.get(UPLOADID);
-		char delimiter 			= (Character) data.get(DELIMITER);
-		String fileFormat 		= (String) data.get(FILE_FORMAT);
-		InputStream inputStream = (InputStream) data.get(INPUT_STREAM);
+		char delimiter 				= (Character) data.get(DELIMITER);
+		String fileFormat 			= (String) data.get(FILE_FORMAT);
+		InputStream inputStream 	= (InputStream) data.get(INPUT_STREAM);
 		long size 					= data.getLongValue(SIZE);
-		String originalReport 	= data.getString(REPORT);
+		String originalReport 		= data.getString(REPORT);
 		Long studyId 				= data.getLongValue(STUDY_ID);
-		List<String> uidsToUpdate=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
+		List<String> uidsToUpdate	=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
+		String customfieldType		= data.getString(CUSTOM_FIELD_TYPE);
+		UploadVO uploadVO		= (UploadVO)data.get(MODEL_OBJECT);
 		
 		try {
 			Date startTime = new Date(System.currentTimeMillis());
-			StringBuffer uploadReport = iStudyService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate);
+			StringBuffer uploadReport = iStudyService.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate,customfieldType,uploadVO);
 			Upload upload = iStudyService.getUpload(uploadId);
 			save(upload, uploadReport.toString(), originalReport, startTime);
-		}
-		/*catch (FileFormatException e) {	}catch (ArkSystemException e) {	}*/
-		catch(Exception e){
-			// TODO Auto-generated catch block ...fix this throughout the application
-			Upload upload = iStudyService.getUpload(uploadId);
-			upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT));
-			e.printStackTrace();
+		}catch(Exception e){
+			throw new JobExecutionException(e.getMessage());
+			//This exception can be capture in the SubjectCustomDataUploadJobListner class.
 		}
 	}
 
@@ -106,7 +110,7 @@ public class SubjectCustomDataUploadJob implements Job {
 		upload.setUploadReport(bytes);
 		upload.setStartTime(startTime);
 		upload.setFinishTime(new Date(System.currentTimeMillis()));
-		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
+		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD));
 		upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_COMPLETED));
 		iArkCommonService.updateUpload(upload);
 	}

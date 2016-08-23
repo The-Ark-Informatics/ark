@@ -1,0 +1,9 @@
+ALTER TABLE `audit`.`aud_custom_field_category` 
+CHANGE COLUMN `PARENT_ID` `PARENT_ID` BIGINT(20) NULL ;
+
+ALTER TABLE `audit`.`aud_custom_field_category` 
+CHANGE COLUMN `CUSTOM_FIELD_TYPE_ID` `CUSTOM_FIELD_TYPE_ID` BIGINT(20) NOT NULL ;
+
+
+
+

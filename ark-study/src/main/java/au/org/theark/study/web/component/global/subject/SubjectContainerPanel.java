@@ -298,7 +298,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		subjectProvider.setModel(this.cpModel);
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 
 		if(containerForm.getModelObject().getStudyList().isEmpty()) {
 			containerForm.getModelObject().setStudyList(studyListForUser);
@@ -315,30 +315,33 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		resultsWmc.add(pageNavigator);
-		
 
 		List<IColumn<SubjectVO>> columns = new ArrayList<IColumn<SubjectVO>>();
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("SubjectUID"), "subjectUID"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Study"), "linkSubjectStudy.study.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Full Name"), "subjectFullName"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Preferred Name"), "linkSubjectStudy.person.preferredName"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Previous Last Names"), "linkSubjectStudy.person.descriptiveLastNameHistory"));
 		columns.add(new ExportableDateColumn<SubjectVO>(Model.of("Date Of Birth"), "linkSubjectStudy.person.dateOfBirth", au.org.theark.core.Constants.DD_MM_YYYY));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Vital Status"), "linkSubjectStudy.person.vitalStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Gender"), "linkSubjectStudy.person.genderType.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Other IDs"), "linkSubjectStudy.person.descriptiveOtherIDs"));
 
-		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("SubjectUID");
+		headers.add("Study");
 		headers.add("Full Name");
-		headers.add("Preferred Name");
+		headers.add("Previous Last Names");
 		headers.add("Date of Birth");
 		headers.add("Vital Status");
 		headers.add("Gender");
 		headers.add("Subject Status");
 		headers.add("Consent Status");
+		headers.add("Other IDs");
 
-		String filename = study.getName() +"_subjects";
+		String filename = "subjects";
 		RepeatingView toolbars = new RepeatingView("toolbars");
 		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
 		toolbars.add(new Component[] { exportToolBar });
@@ -408,7 +411,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		subjectProvider.setModel(this.cpModel);
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider,modalWindow,relatives,feedBackPanel);
-		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
+		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView){
 
@@ -423,26 +426,29 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 		List<IColumn<SubjectVO>> columns = new ArrayList<IColumn<SubjectVO>>();
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("SubjectUID"), "subjectUID"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Study"), "linkSubjectStudy.study.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Full Name"), "subjectFullName"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Preferred Name"), "linkSubjectStudy.person.preferredName"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Previous Last Names"), "linkSubjectStudy.person.descriptiveLastNameHistory"));
 		columns.add(new ExportableDateColumn<SubjectVO>(Model.of("Date Of Birth"), "linkSubjectStudy.person.dateOfBirth", au.org.theark.core.Constants.DD_MM_YYYY));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Vital Status"), "linkSubjectStudy.person.vitalStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Gender"), "linkSubjectStudy.person.genderType.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Other IDs"), "linkSubjectStudy.person.descriptiveOtherIDs"));
 
-		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("SubjectUID");
+		headers.add("Study");
 		headers.add("Full Name");
-		headers.add("Preferred Name");
+		headers.add("Previous Last Names");
 		headers.add("Date of Birth");
 		headers.add("Vital Status");
 		headers.add("Gender");
 		headers.add("Subject Status");
 		headers.add("Consent Status");
-
-		String filename = study.getName() +"_subjects";
+		headers.add("Other IDs");
+		String filename = "subjects";
 		RepeatingView toolbars = new RepeatingView("toolbars");
 		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
 		toolbars.add(new Component[] { exportToolBar });

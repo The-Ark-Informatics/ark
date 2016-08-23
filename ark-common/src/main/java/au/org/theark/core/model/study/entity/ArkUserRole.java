@@ -19,6 +19,7 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +31,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -89,7 +91,7 @@ public class ArkUserRole implements Serializable {
 		this.arkModule = arkModule;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ARK_USER_ID")
 	public ArkUser getArkUser() {
 		return arkUser;

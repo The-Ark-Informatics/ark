@@ -36,6 +36,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
@@ -66,6 +67,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldCategoryVO> {
 	private TextField<Long>					categoryOrderNoTxtFld;
 	private Collection<CustomFieldCategory> customFieldCategoryCollection;
 	private WebMarkupContainer categoryPanel;
+	
 	
 	/**
 	 * @param id
@@ -111,7 +113,9 @@ public class SearchForm extends AbstractSearchForm<CustomFieldCategoryVO> {
 	 * initialize Custom Filed Types.
 	 */
 	private void initCustomFieldTypeDdc() {
-		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes();
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		ArkModule arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
+		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes(arkModule);;
 		ChoiceRenderer customfieldTypeRenderer = new ChoiceRenderer(Constants.CUSTOM_FIELD_TYPE_NAME, Constants.CUSTOM_FIELD_TYPE_ID);
 		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELDCATEGORY_CUSTOM_FIELD_TYPE, (List) customFieldTypeCollection, customfieldTypeRenderer);
 		customFieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {

@@ -42,6 +42,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
@@ -84,24 +85,25 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 
 	private WebMarkupContainer panelCustomUnitTypeDropDown;
 	private WebMarkupContainer panelCustomUnitTypeText;
-	private boolean unitTypeDropDownOn;
-	private boolean subjectCustomField;
+	//private boolean unitTypeDropDownOn;
+	//private boolean subjectCustomField;
 	private Collection<CustomFieldCategory> customFieldCategoryCollection;
 	private WebMarkupContainer categoryPanel;
 	private WebMarkupContainer orderNumberPanel;
+	private ArkModule arkModule;
+	
 	
 
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, boolean unitTypeDropDownOn, boolean subjectCustomField) {
-
+	public SearchForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, cpModel, feedBackPanel, arkCrudContainerVO);
-		this.unitTypeDropDownOn = unitTypeDropDownOn;
+		//this.unitTypeDropDownOn = unitTypeDropDownOn;
 		this.cpModel = cpModel;
 		this.feedbackPanel = feedBackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
-		this.subjectCustomField = subjectCustomField;
+		//this.subjectCustomField = subjectCustomField;
 		initialiseFieldForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
@@ -156,13 +158,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		add(fieldNameTxtFld);
 		add(fieldTypeDdc);
 		add(fieldDescriptionTxtAreaFld);
-		if (this.unitTypeDropDownOn) {
-			panelCustomUnitTypeDropDown.setVisible(true);
-			panelCustomUnitTypeText.setVisible(false);
-		} else {
-			panelCustomUnitTypeDropDown.setVisible(false);
-			panelCustomUnitTypeText.setVisible(true);
-		}
+		panelCustomUnitTypeDropDown.setVisible(!isModuleStudy());
+		panelCustomUnitTypeText.setVisible(isModuleStudy());
 		panelCustomUnitTypeDropDown.add(fieldUnitsTxtFld);
 		add(panelCustomUnitTypeDropDown);
 		panelCustomUnitTypeText.add(fieldUnitsInTextTxtFld);
@@ -175,7 +172,9 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 	 * initialize Custom Filed Types.
 	 */
 	private void initCustomFieldTypeDdc() {
-		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes();
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
+		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes(arkModule);
 		ChoiceRenderer customfieldTypeRenderer = new ChoiceRenderer(Constants.CUSTOM_FIELD_TYPE_NAME, Constants.CUSTOM_FIELD_TYPE_ID);
 		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELD_CUSTOM_FIELD_TYPE, (List) customFieldTypeCollection, customfieldTypeRenderer);
 		customFieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -302,7 +301,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		newCF.setMaxValue(cf.getMaxValue());
 		newModel.getObject().setUseCustomFieldDisplay(getModelObject().isUseCustomFieldDisplay());
 
-		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO, this.unitTypeDropDownOn, this.subjectCustomField);
+		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
+				//this.unitTypeDropDownOn, this.subjectCustomField);
 		arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 
 		// Reset model's CF object (do NOT replace the CustomFieldVO in the
@@ -339,6 +339,10 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		cusfieldCatSet.addAll(customFieldLst);
 		cusfieldCatLst.addAll(cusfieldCatSet);
 				return cusfieldCatLst;
+	}
+	
+	private boolean isModuleStudy(){
+		return arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY);
 	}
 	
 

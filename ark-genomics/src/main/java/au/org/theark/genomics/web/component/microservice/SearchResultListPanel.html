@@ -30,6 +30,8 @@
 					<wicket:message	key="genomics.microservice.status">Role:</wicket:message>
 				</label>
 			</th>
+			<th width="10%">
+			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -52,12 +54,17 @@
 			<td width="10%">
 				<span wicket:id="microService.status">Status</span>
 			</td>
+			<td width="10%">
+				<button wicket:id="statusBtn">
+					<span wicket:id="statusLbl">Name</span>
+				</button>
+			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="5"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="6"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>

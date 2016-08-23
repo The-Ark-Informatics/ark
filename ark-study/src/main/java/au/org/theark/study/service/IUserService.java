@@ -130,4 +130,6 @@ public interface IUserService {
 	public void createArkUserForChildStudy(ArkUserVO arkUserVo);
 
 	public void createArkUserRole(ArkUserRole arkUserRole);
+	
+	public void updateArkUserRoleListForExsistingUser(ArkUserVO arkUserVO);
 }

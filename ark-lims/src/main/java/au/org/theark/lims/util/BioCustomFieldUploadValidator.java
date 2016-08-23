@@ -443,7 +443,8 @@ public class BioCustomFieldUploadValidator {
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
 			boolean hasBiocollectionUIDHeader = false;							//naming is not great but we are stuck with it for now as it used throughout app/db
-			ArkFunction biocollectionCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+			//ArkFunction biocollectionCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+			ArkFunction biocollectionCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 			List<String> badHeaders = new ArrayList<String>();
 			
 			for(String header : headerColumnArray){																						
@@ -682,7 +683,8 @@ public class BioCustomFieldUploadValidator {
 			}
 			else if(bioFieldType.equalsIgnoreCase(BIOCOLLECTION)){
 				bioUIDsAlreadyExisting = iLimsService.getAllBiocollectionUIDs(study);
-				bioCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+				//bioCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+				bioCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
 			}
 			else{
 				log.error("invalid biofield type...this should never happen");//TODO fix exception handling globally

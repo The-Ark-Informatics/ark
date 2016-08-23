@@ -65,7 +65,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 	private TextField<Long>					phoneIdTxtFld;
 	private TextField<String>				areaCodeTxtFld;
 	private TextField<String>				phoneNumberTxtFld;
-	private DropDownChoice<PhoneType>	phoneTypeChoice;
+	private DropDownChoice<PhoneType>		phoneTypeChoice;
 	private ArkCrudContainerVO				arkCrudContainerVO;
 
 	public SearchForm(String id, CompoundPropertyModel<PhoneVO> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<Phone> listView) {

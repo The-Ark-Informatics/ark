@@ -62,6 +62,10 @@ public class NumberDataEntryPanel extends AbstractDataEntryPanel<Double> {
 		dataValueTxtFld.add(aValidator);
 	}
 
+	public TextField<Double> getDataValueTxtFld() {
+		return dataValueTxtFld;
+	}
+
 	@Override
 	protected DataEntryType getDataEntryType() {
 		return DataEntryType.NUMBER;

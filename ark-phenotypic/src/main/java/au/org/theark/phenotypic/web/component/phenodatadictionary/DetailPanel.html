@@ -1,0 +1,304 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailForm">
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div wicket:id="phenoDataSetFieldDetailWMC">
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.id">
+							Field Id:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<input wicket:id="phenoDataSetField.id" type="text" />
+					</div>
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.name">
+							Name:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<input wicket:id="phenoDataSetField.name" type="text" />
+					</div>
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.fieldType">
+							Field Type:
+						</wicket:message>
+						<div class="note">
+							<wicket:message key="phenoDataSetField.fieldType.note">
+								[Note]
+							</wicket:message>
+						</div>
+					</div>
+					<div class="fldControl">
+						<select wicket:id="phenoDataSetField.fieldType">
+							<option>
+								Number
+							</option>
+							<option>
+								Character
+							</option>
+							<option>
+								Date
+							</option>
+						</select>
+					</div>
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.description">
+							Description:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<textarea wicket:id="phenoDataSetField.description" rows="4" cols="25">
+						</textarea>
+					</div>
+
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.fieldLabel">
+							Label:
+						</wicket:message>
+						<div class="note">
+							<wicket:message key="phenoDataSetField.fieldLabel.note">
+								[Note]
+							</wicket:message>
+						</div>
+					</div>
+						<div class="fldControl">
+							<textarea wicket:id="phenoDataSetField.fieldLabel" rows="4" cols="25" maxlength="255">
+							</textarea>
+						</div>
+					<div class="panelMargin">
+						&nbsp;
+					</div> 
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.unitType">
+							Units:
+						</wicket:message>
+					</div>
+					<!-- Add panel to control hide and show on 2014-10-25 --> 
+					<div wicket:id="panelCustomUnitTypeDropDown">
+						<div class="fldControl">
+							<select wicket:id="phenoDataSetField.unitType">
+								<option>
+									kg
+								</option>
+								<option>
+									cm
+								</option>
+							</select>
+						</div>
+					</div>
+					<div wicket:id="panelCustomUnitTypeText">
+						<div class="fldControl">
+							<input wicket:id="phenoDataSetField.unitTypeInText" type="text" />
+						</div>
+					</div>
+					<!-- End of Add panel to control hide and show on -->
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.encodedValues">
+							Encoded Values:
+						</wicket:message>
+						<div class="note">
+							<wicket:message key="phenoDataSetField.encodedValues.note">
+								[Note]
+							</wicket:message>
+						</div>
+					</div>
+
+					<div class="fldControl">
+						<textarea wicket:id="phenoDataSetField.encodedValues" cols="25">
+						</textarea>
+					</div>
+					
+					<div class="panelMargin">
+							&nbsp;
+					</div>
+					
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.defaultValue">
+							Default Value
+						</wicket:message>
+					</div>
+					<!-- Add this web container on 2016-05-20 -->	
+					<div wicket:id="defaultValueEntryWMC">
+						<div class="fldControl">
+							<div wicket:id="defaultValueEntryPnl">
+								[defaultValueEntryPnl]
+							</div>	
+							<!-- <textarea wicket:id="customField.defaultValue" rows="4" cols="25">
+							</textarea> -->
+						</div>
+					</div>	
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+					<div wicket:id="minMaxValueEntryWMC">
+			
+						<div class="fldLabel">
+							<wicket:message key="phenoDataSetField.minValue">
+								Minimum Value:
+							</wicket:message>
+						</div>
+
+						<div class="fldControl">
+							<div wicket:id="minValueEntryPanel">
+								[minValueEntryPanel]
+							</div>
+						</div>
+
+						<div class="panelMargin">
+							&nbsp;
+						</div>
+
+						<div class="fldLabel">
+							<wicket:message key="phenoDataSetField.maxValue">
+								Maximum Value:
+							</wicket:message>
+						</div>
+
+						<div class="fldControl">
+							<div wicket:id="maxValueEntryPanel">
+								[maxValueEntryPanel]
+							</div>
+						</div>
+					</div>
+
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+			
+				<!-- Add this web container on 2015-10-29 -->	
+				<div wicket:id="missingValueEntryWMC">
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.missingValue">
+							Missing Value:
+						</wicket:message>
+						<div class="note">
+							<wicket:message key="phenoDataSetField.missingValue.note">
+								[Note]
+							</wicket:message>
+						</div>
+					</div>
+					<div class="fldControl">
+						<div wicket:id="missingValueEntryPanel">
+							[missingValueEntryPanel]
+						</div>	
+					</div>
+				</div>	
+					<div class="panelMargin">
+						&nbsp;
+					</div>					
+				<div class="fldLabel">
+				</div>
+				<div class="fldControl">
+				</div>
+				</div>
+				<div class="detailPanelBreaker">
+						&nbsp;
+				</div>
+				<div wicket:id="phenoDataSetFieldDisplayDetailWMC">
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<!-- This will slot the Required field at the back of Missing Value -->
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.required">
+							Required Field:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<input wicket:id="phenoDataSetField.required" type="checkbox" />
+					</div>
+					
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="phenoDataSetField.allowMultiselect">
+							Allow Multiple Selections:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<input wicket:id="phenoDataSetField.allowMultiselect" type="checkbox" />
+					</div>
+
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+					<div wicket:id="phenoDataSetFieldDisplayPositionPanel">
+					</div>
+				</div>
+				
+			</div>
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+			<div class="actionButtons">
+				<div wicket:id="editButtonContainer">
+					<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+					<div wicket:id="history" class="historyPanel"></div>
+				</div>
+			</div>
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+		</div>
+	</form>
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+</wicket:panel>

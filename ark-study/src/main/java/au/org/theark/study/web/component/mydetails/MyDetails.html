@@ -168,128 +168,208 @@
 					[shibboleth session details]
 				</iframe>
 			</div>
-
+			
 			<div class="detailPanelBreaker">
 				&nbsp;
+			</div>
+			
+			<div class="panelMargin">
+					&nbsp;
+			</div>
+			
+			<div class="fldLabel">
+				<h3><wicket:message key="userConfig"></wicket:message></h3>
 			</div>
 
 			<table width="0%" cellspacing="0">
 			</table>
 			<table width="100%" cellspacing="0" class="dataview" border="0">
 				<tr>
-					<th width="2%">
-						&nbsp;
-					</th>
-					<th width="26%">
-						<label for="studyName">
-							<wicket:message key="study.name">
-								Study:
-							</wicket:message>
-						</label>
-					</th>
-					<th width="25%">
-						<label for="moduleName">
-							<wicket:message key="module.name">
-								Module:
-							</wicket:message>
-						</label>
-					</th>
-					<th width="25%">
-						<label for="roleName">
-							<wicket:message key="role.name">
-								Role:
-							</wicket:message>
-						</label>
-					</th>
-					<th width="5%" style="text-align:center">
-						<label for="create">
-							<wicket:message key="create">
-								Create:
-							</wicket:message>
-						</label>
-					</th>
-					<th width="5%" style="text-align:center">
-						<label for="read">
-							<wicket:message key="read">
-								Read:
-							</wicket:message>
-						</label>
-					</th>
-					<th width="5%" style="text-align:center">
-						<label for="update">
-							<wicket:message key="update">
-								Update:
-							</wicket:message>
-						</label>
-					</th>
-					<th width="5%" style="text-align:center">
-						<label for="delete">
-							<wicket:message key="delete">
-								Delete:
-							</wicket:message>
-						</label>
-					</th>
-					<th width="2%">
-						&nbsp;
-					</th>
+					<th width="2%"></th>
+					<th width="48%">Field</th>
+					<th width="48%">Value</th>
+					<th width="2%"></th>
 				</tr>
-				<tr wicket:id="arkUserRoleList">
-					<td width="2%">
-						&nbsp;
-					</td>
-					<td width="26%">
-						<b>
-							<span wicket:id="studyName">
-								Study Name
-							</span>
-						</b>
-					</td>
-					<td width="25%">
-						<span wicket:id="moduleName">
-							Module Name
-						</span>
-					</td>
-					<td width="25%">
-						<span wicket:id="roleName">
-							Role Name
-						</span>
-					</td>
-					<td align="center" width="5%">
-						<img wicket:id="arkCreatePermission"/>
-					</td>
-					<td align="center" width="5%">
-						<img wicket:id="arkReadPermission"/>
-					</td>
-					<td align="center" width="5%">
-						<img wicket:id="arkUpdatePermission"/>
-					</td>
-					<td align="center" width="5%">
-						<img wicket:id="arkDeletePermission"/>
-					</td>
-					<td width="2%">
-						&nbsp;
-					</td>
+				<tr wicket:id="arkUserConfigs">
+					<td width="2%"></td>
+					<td width="48%"><span wicket:id="configField.description"></span></td>
+					<td width="48%"><input wicket:id="value"/></td>
+					<td width="2%"></td>
 				</tr>
-				<tr>
-					<td width="2%">
-						&nbsp;
-					</td>
-					<td width="96%" colspan="7">
-						<span wicket:id="navigator" class="a">
+				<tfoot>
+					<td width="2%"></td>
+					<td width="96%" colspan="2">
+						<!-- <span wicket:id="config_navigator" class="a">
 							[navigator]
-						</span>
+						</span> -->
 					</td>
-					<td width="2%">
-						&nbsp;
-					</td>
-				</tr>
-			</table>
-			<table width="0%" cellspacing="0">
+					<td width="2%"></td>
+				</tfoot>
 			</table>
 
 			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
+			
+			
+			<!-- All the studies for the user -->
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+			<div class="panelContentLeft">
+				&nbsp;
+			</div>
+
+			<div class="fldLabel">
+				<div class="label">
+					<label for="userName">
+						<wicket:message key="study.name">
+							User Name:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+
+			<div class="fldControl">
+				<div class="label">
+					<select wicket:id="studyLst">
+		       				<option>study</option>
+			   			</select>
+				</div>
+			</div>
+			<!-- End of All the studies for the user -->
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+			<table width="0%" cellspacing="0">
+			</table>
+			<div  wicket:id="listViewPanel">
+				<table width="100%" cellspacing="0" class="dataview" border="0">
+					<tr>
+						<th width="2%">
+							&nbsp;
+						</th>
+						<!-- <th width="26%">
+							<label for="studyName">
+								<wicket:message key="study.name">
+									Study:
+								</wicket:message>
+							</label>
+						</th> -->
+						<th width="25%">
+							<label for="moduleName">
+								<wicket:message key="module.name">
+									Module:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="25%">
+							<label for="roleName">
+								<wicket:message key="role.name">
+									Role:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="26%">
+							<label for="functionName">
+								<wicket:message key="function.name">
+									Function:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="5%" style="text-align:center">
+							<label for="create">
+								<wicket:message key="create">
+									Create:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="5%" style="text-align:center">
+							<label for="read">
+								<wicket:message key="read">
+									Read:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="5%" style="text-align:center">
+							<label for="update">
+								<wicket:message key="update">
+									Update:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="5%" style="text-align:center">
+							<label for="delete">
+								<wicket:message key="delete">
+									Delete:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="2%">
+							&nbsp;
+						</th>
+					</tr>
+					<tr wicket:id="arkRolePolicyTemplatesList">
+						<td width="2%">
+							&nbsp;
+						</td>
+						<!-- <td width="26%">
+							<b>
+								<span wicket:id="studyName">
+									Study Name
+								</span>
+							</b> 
+						</td> -->
+						<td width="25%">
+							<span wicket:id="moduleName">
+								Module Name
+							</span>
+						</td>
+						<td width="25%">
+							<span wicket:id="roleName">
+								Role Name
+							</span>
+						</td>
+						<td width="25%">
+							<span wicket:id="functionName">
+								Function Name
+							</span>
+						</td>
+						<td align="center" width="5%">
+							<img wicket:id="arkCreatePermission"/>
+						</td>
+						<td align="center" width="5%">
+							<img wicket:id="arkReadPermission"/>
+						</td>
+						<td align="center" width="5%">
+							<img wicket:id="arkUpdatePermission"/>
+						</td>
+						<td align="center" width="5%">
+							<img wicket:id="arkDeletePermission"/>
+						</td>
+						<td width="2%">
+							&nbsp;
+						</td>
+					</tr>
+					<tr>
+						<td width="2%">
+							&nbsp;
+						</td>
+						<td width="96%" colspan="7">
+							<span wicket:id="navigator" class="a">
+								[navigator]
+							</span>
+						</td>
+						<td width="2%">
+							&nbsp;
+						</td>
+					</tr>
+				</table>
+			</div> 
+			<!-- end of the list view panel -->
+			<table width="0%" cellspacing="0">
+			</table>
+
 
 			<div class="actionButtons">
 				<input wicket:id="save" type="submit" wicket:message="value:page.save" />
@@ -302,83 +382,5 @@
 		
 	</form>
 	&nbsp;
-	<form wicket:id="userConfigsForm">
-		<div class="detailPanelBreaker">
-				&nbsp;
-		</div>
-		<table width="0%" cellspacing="0">
-		</table>
-		<div wicket:id="container">
-		<table width="100%" cellspacing="0" class="dataview" border="0" >
-			<tr>
-				<th width="2%">
-					&nbsp;
-				</th>
-				<th width="43%">
-					<label for="fields">
-							Field:
-					</label>
-				</th>
-				<th width="43%">
-					<label for="value">
-							Value:
-					</label>
-				</th>
-				<th width="10%">
-						&nbsp;
-				</th>
-				<th width="2%">
-						&nbsp;
-				</th>
-			</tr>
-			<tbody>
-				<tr wicket:id="userConfigVOs">
-					<td width="2%">
-						<span wicket:id="row">row</span>
-					</td>
-					<td width="43%">
-						<select wicket:id="configField">
-							<option>Rows Per Page</option>
-							<option>Custom Fields Per Page</option>
-						</select>
-					</td>
-					<td width="43%">
-						<input wicket:id="value" type="text"/>
-					</td>
-					<td width="10%">
-						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
-					</td>
-					<td width="2%">
-							&nbsp;
-					</td>
-				</tr>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td width="2%">
-						&nbsp;
-					</td>
-					<td width="96%" colspan="3">
-						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
-					</td>
-					<td width="2%">
-						&nbsp;
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-		</div>
-		<table width="0%" cellspacing="0">
-		</table>
-
-		<div class="detailPanelBreaker">
-			&nbsp;
-		</div>
-
-		<div class="actionButtons">
-			<input wicket:id="confsave" type="submit" wicket:message="value:page.save" />
-			<input wicket:id="confclose" type="submit" wicket:message="value:page.close" />
-		</div>
-	</form>
 	</div>
 </wicket:panel>

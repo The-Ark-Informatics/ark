@@ -79,14 +79,14 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 		JasperReport report = null;
 		try {
 			design = JRXmlLoader.load(reportFile);
-			// System.out.println(" design -- created " );
+			 System.out.println(" design -- created " );
 			if (design != null) {
 				design.setName(reportTitle); // set the output file name to match report title
 				if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
 					design.setIgnorePagination(true); // don't paginate CSVs
 				}
 				report = JasperCompileManager.compileReport(design);
-				// System.out.println(" design -- compiled " );
+				 System.out.println(" design -- compiled " );
 			}
 		}
 		catch (JRException e) {

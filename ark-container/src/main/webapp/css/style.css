@@ -671,3 +671,8 @@ nobreakws{
 .historyPanel {
 	display:inline;
 }
+.labelSubtext {
+	font-family: verdana, arial, times, sans-serif; font-size:6pt;
+	padding: 0px;
+	margin-top:1px;
+}

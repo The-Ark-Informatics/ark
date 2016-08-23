@@ -41,6 +41,7 @@ public class UploadType implements java.io.Serializable {
 	private String name;
 	private String description;
 	private ArkModule arkModule;
+	private Long order;
 
 	public UploadType() {
 	}
@@ -91,6 +92,15 @@ public class UploadType implements java.io.Serializable {
 
 	public void setArkModule(ArkModule arkModule) {
 		this.arkModule = arkModule;
+	}
+	
+	@Column(name = "ORDER")
+	public Long getOrder() {
+		return order;
+	}
+
+	public void setOrder(Long order) {
+		this.order = order;
 	}
 
 }

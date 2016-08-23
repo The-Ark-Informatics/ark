@@ -81,6 +81,7 @@ public class SearchForm extends AbstractSearchForm<AnalysisVo> {
 	protected void onNew(AjaxRequestTarget target) {
 //		getModelObject().setMode(Constants.MODE_NEW);
 		getModelObject().getAnalysis().setId(null);
+		getModelObject().getAnalysis().setStatus(Constants.STATUS_UNDEFINED);
 		
 		DropDownChoice<DataSource> dataSourceDDC= (DropDownChoice)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.ANALYIS_DATA_SOURCE);
 		DropDownChoice<Computation> computationDDC= (DropDownChoice)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.ANALYIS_COMPUTAION);

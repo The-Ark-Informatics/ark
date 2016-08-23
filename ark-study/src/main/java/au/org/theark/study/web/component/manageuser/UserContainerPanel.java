@@ -30,6 +30,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IUserService;
@@ -46,6 +49,10 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 	/* Spring Beans to Access Service Layer */
 	@SpringBean(name = "userService")
 	private IUserService						iUserService;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<?>				iArkCommonService;
+	private List<ArkUserVO> 					userResultListFilterd;
 
 	public UserContainerPanel(String id) {
 
@@ -73,11 +80,23 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 				List<ArkUserVO> userResultList = new ArrayList<ArkUserVO>();
 				try {
 					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					String sessionUserName	= (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_USERID);
 					if (isActionPermitted()) {
 						if (sessionStudyId != null && sessionStudyId > 0) {
 							// Search Users must list all the users from ArkUser Group and will include all users across studies.
 							userResultList = iUserService.searchUser(containerForm.getModelObject());
-							containerForm.getModelObject().setUserList(userResultList);
+							//*************Added on 2015-12-10 to stop showing all the ldap users we have to filtered them ***************
+							// by the study.
+							ArkUser arkUser = null;
+							try {
+								 arkUser=iArkCommonService.getArkUser(sessionUserName);
+							} catch (EntityNotFoundException e1) {
+								e1.printStackTrace();
+							}
+							List<ArkUser> arkUserList= iArkCommonService.getArkUserListByStudy(arkUser,iArkCommonService.getStudy(sessionStudyId));
+							userResultListFilterd = filterOnlyStudySpecificUsers(userResultList,arkUserList);
+							//*************** End of work on  2015-12-10 ********************************************************
+							containerForm.getModelObject().setUserList(userResultListFilterd);
 						}
 						pageableListView.removeAll();
 					}
@@ -85,7 +104,7 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 				catch (ArkSystemException e) {
 					feedBackPanel.error("A System Error has occured. Please contact support.");
 				}
-				return userResultList;
+				return userResultListFilterd;
 			}
 		};
 
@@ -129,6 +148,47 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 		searchPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
+	}
+	/**
+	 * 
+	 * 
+	 * @param arkVoLst
+	 * @param arkLst
+	 * @return
+	 */
+	private List<ArkUserVO> filterOnlyStudySpecificUsers(List<ArkUserVO> arkVoLst,List<ArkUser> arkLst) {
+		
+		List<ArkUserVO> filteredArkUserVoLst=new ArrayList<ArkUserVO>();
+		for (ArkUserVO arkUserVO : arkVoLst) {
+			for (ArkUser arkUser : arkLst) {
+				if(isArkUserVOEqualArkUser(arkUserVO,arkUser)){
+					filteredArkUserVoLst.add(arkUserVO);
+				}
+			}
+		}
+		return filteredArkUserVoLst;
+	}
+	/**
+	 * 
+	 * 
+	 * @param arkUserVO
+	 * @param arkUser
+	 * @return
+	 */
+	private boolean isArkUserVOEqualArkUser(ArkUserVO arkUserVO,ArkUser arkUser ) {
+		
+		Boolean flag=false;
+		try {
+			if (arkUserVO != null && arkUser != null &&
+					(iUserService.getArkUser(arkUserVO.getUserName()).equals(arkUser))) {
+				flag = true;
+			} else {
+				flag = false;
+			}
+		} catch (EntityNotFoundException e) {
+			flag = false;
+		}
+		return flag;
 	}
 
 }

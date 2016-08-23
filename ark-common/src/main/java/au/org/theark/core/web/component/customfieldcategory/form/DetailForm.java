@@ -21,6 +21,7 @@ package au.org.theark.core.web.component.customfieldcategory.form;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -34,7 +35,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.exception.ArkAlreadyBeingUsedException;
+import au.org.theark.core.exception.ArkNotAllowedToUpdateException;
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -42,6 +47,7 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
@@ -70,18 +76,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 	private IArkCommonService<Void>				iArkCommonService;
 
 	private int											mode;
-
 	private TextField<String>						categoryIdTxtFld;
 	private TextField<String>						categoryNameTxtFld;
 	private TextArea<String>						categoryDescriptionTxtAreaFld;
 	private DropDownChoice<CustomFieldType>			customFieldTypeDdc;
 	private DropDownChoice<CustomFieldCategory>		parentCategoryDdc;
 	private TextField<Long>							categoryOrderNoTxtFld;
-	
 	protected WebMarkupContainer					customFieldCategoryDetailWMC;
 	private Collection<CustomFieldCategory> 		customFieldCategoryCollection;
 	private HistoryButtonPanel 						historyButtonPanel;
-	private  WebMarkupContainer						parentPanel;
+	private WebMarkupContainer						parentPanel;
+	
 
 	/**
 	 * Constructor
@@ -94,6 +99,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 	public DetailForm(String id, CompoundPropertyModel<CustomFieldCategoryVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO){//,boolean unitTypeDropDownOn) {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		refreshEntityFromBackend();
+		
 	}
 
 	protected void refreshEntityFromBackend()  {
@@ -138,9 +144,18 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 	private void initCustomFieldTypeDdc() {
 		parentPanel=new WebMarkupContainer("parentPanel");
 		parentPanel.setOutputMarkupId(true);
-		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes();
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		ArkModule arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
+		java.util.Collection<CustomFieldType> customFieldTypeCollection = iArkCommonService.getCustomFieldTypes(arkModule);
 		ChoiceRenderer customfieldTypeRenderer = new ChoiceRenderer(Constants.CUSTOM_FIELD_TYPE_NAME, Constants.CUSTOM_FIELD_TYPE_ID);
 		customFieldTypeDdc = new DropDownChoice<CustomFieldType>(Constants.FIELDVO_CUSTOMFIELDCATEGORY_CUSTOM_FIELD_TYPE, (List) customFieldTypeCollection, customfieldTypeRenderer);
+		//if custom field(s) assigned to the categories custom field type can not be edited.
+		//or
+		//if the custom field category has child/ren then you can not changed the type.
+		if(!isNew()){
+			customFieldTypeDdc.setEnabled(!(iArkCommonService.isCustomFieldCategoryBeingUsed(getModelObject().getCustomFieldCategory()) ||
+					iArkCommonService.isThisCustomCategoryWasAParentCategoryOfAnother(getModelObject().getCustomFieldCategory())));
+		}
 		customFieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 		private static final long serialVersionUID = 1L;
 				@Override
@@ -230,10 +245,15 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 
 	protected void attachValidators() {
 		categoryNameTxtFld.setRequired(true);
-		// Enforce particular characters for fieldName
 		categoryNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
+		categoryNameTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
+		
+		categoryDescriptionTxtAreaFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));
 		customFieldTypeDdc.setRequired(true);
 		categoryOrderNoTxtFld.setRequired(true);
+		categoryOrderNoTxtFld.add(new RangeValidator<Long>(new Long(au.org.theark.core.Constants.GENERAL_FIELD_WHOLE_NUMBER_MIN_QUANTITY_1),
+				new Long(au.org.theark.core.Constants.GENERAL_FIELD_WHOLE_NUMBER_MAX_QUANTITY_100)));
+		
 	}
 
 	@Override
@@ -248,15 +268,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 			}
 			catch (ArkRunTimeException e) {
 				this.error(new StringResourceModel("error.nonCFMsg", this, null, new Object[] { getModelObject().getCustomFieldCategory().getOrderNumber()}).getString());
-				e.printStackTrace();
 			}
 			catch (ArkRunTimeUniqueException e) {
 				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
-				e.printStackTrace();
 			}
 			catch (ArkSystemException e) {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
-				e.printStackTrace();
 			}
 			
 			
@@ -269,13 +286,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
 				onSavePostProcess(target);
 			}
+			catch(ArkAlreadyBeingUsedException e){
+				this.error(e.getMessage());
+			}
+			catch(ArkNotAllowedToUpdateException e){
+				this.error(e.getMessage());
+			}
 			catch (ArkSystemException e) {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
-				e.printStackTrace();
 			}
 			catch (ArkUniqueException e) {
 				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
-				e.printStackTrace();
 			}
 			processErrors(target);
 		}

@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -58,7 +59,7 @@ public class UserConfig implements Serializable{
 		this.arkUser = arkUser;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "FIELD_ID")
 	public ConfigField getConfigField() {
 		return configField;
@@ -75,5 +76,18 @@ public class UserConfig implements Serializable{
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	@Transient
+	public int getIntValue() throws NumberFormatException {
+		return new Integer(value).intValue();
+	}
+
+	@Override
+	public String toString() {
+		return "UserConfig [id=" + id + ", arkUser=" + arkUser
+				+ ", configField=" + configField + ", value=" + value + "]";
 	}	
+	
+	
 }

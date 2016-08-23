@@ -31,6 +31,8 @@ public class Constants {
 	public static final String ARK_CSV_LOADER_SERVICE = "arkCsvLoaderService";
 	public static final String ARK_DISEASE_SERVICE = "arkDiseaseService";
 	public static final String ARK_AUDIT_SERVICE = "arkAuditService";
+	public static final String ARK_PHENO_DATA_SERVICE = "phenotypicService";
+	
 	
 	/* Global constants */
 	public static final String STUDY_CONTEXT_ID = "studyId";
@@ -65,7 +67,8 @@ public class Constants {
 	public static final String TAB_MODULE_PERSON_CONTACT = "tab.module.person.contact";
 	public static final String TAB_MODULE_SUBJECT_CONSENT = "tab.module.subject.consent";
 	public static final String TAB_MODULE_SUBJECT_SUBJECT_FILE = "tab.module.subject.subjectFile";
-	public static final String TAB_MODULE_SUBJECT_SUBJECT_UPLOAD = "tab.module.subject.subjectUpload";
+	//public static final String TAB_MODULE_SUBJECT_SUBJECT_UPLOAD = "tab.module.subject.subjectUpload";
+	public static final String TAB_MODULE_STUDY_STUDY_DATA_UPLOAD = "tab.module.study.studyDataUpload";
 	public static final String TAB_MODULE_SUBJECT_CORRESPONDENCE = "tab.module.subject.correspondence";
 	public static final String TAB_MODULE_LIMS_SUBJECT_DETAIL = "tab.module.lims.subject.detail";
 
@@ -76,6 +79,8 @@ public class Constants {
 
 	/* Phenotypic data file column names */
 	public static final String SUBJECTUID = "SUBJECTUID";
+	public static final String FAMILYUID = "FAMILYUID";
+	public static final String NOT_SUBJECT_OR_FAMILY = "NOT_SUBJECT_OR_FAMILY";
 	public static final String DATE_COLLECTED = "DATE_COLLECTED";
 
 	/* Tab Panel Names/Keys */
@@ -113,7 +118,7 @@ public class Constants {
 	public static final String STUDY_STATUS_ARCHIVE = "Archive";
 
 	public static final String STUDY_SERVICE = "studyService";
-	public static final String PHENO_SERVICE = "phenotypicService";
+	//public static final String PHENO_SERVICE = "phenotypicService";
 	public static final String LIMS_SERVICE = "limsService";
 	public static final String STUDY_DAO = "studyDao";
 
@@ -282,41 +287,54 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_ATTACHMENT = "ATTACHMENT";
 	public static final String FUNCTION_KEY_VALUE_ADDRESS = "ADDRESS";
 	public static final String FUNCTION_KEY_VALUE_CONTACT = "CONTACT";
-	public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD = "SUBJECT_UPLOAD";
+	public static final String FUNCTION_KEY_VALUE_CALENDAR = "CALENDAR";
+	//public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD = "SUBJECT_UPLOAD";
+	public static final String FUNCTION_KEY_VALUE_STUDY_STUDY_DATA_UPLOAD = "STUDY_DATA_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE = "CORRESPONDENCE";
 	public static final String FUNCTION_KEY_VALUE_REPORT = "REPORT";
 	public static final String FUNCTION_KEY_VALUE_PHENO_SUMMARY = "SUMMARY";
-	public static final String FUNCTION_KEY_VALUE_DATA_DICTIONARY = "DATA_DICTIONARY";
-	public static final String FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD = "DATA_DICTIONARY_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_PHENO_COLLECTION = "PHENO_COLLECTION";
-	public static final String FUNCTION_KEY_VALUE_FIELD_DATA = "FIELD_DATA";
-	public static final String FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD = "FIELD_DATA_UPLOAD";
+	
 	public static final String FUNCTION_KEY_VALUE_LIMS_SUBJECT = "LIMS_SUBJECT";
-	public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION = "LIMS_COLLECTION";
+	//public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION = "LIMS_COLLECTION";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN = "BIOSPECIMEN";
 	public static final String FUNCTION_KEY_VALUE_INVENTORY = "INVENTORY";
+	
 	//Add on 2015-06-22 to categories  custom field
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY = "SUBJECT_CUSTOM_FIELD_CATEGORY";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD = "SUBJECT_CUSTOM_FIELD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA = "SUBJECT_CUSTOM_DATA";
+	
+	//Add on 2015-11-05 to categories the data set
+	public static final String FUNCTION_KEY_VALUE_DATA_CATEGORY = "DATASET_CATEGORY";//(1)
+	public static final String FUNCTION_KEY_VALUE_DATA_CATEGORY_UPLOAD = "DATASET_CATEGORY_UPLOAD";//(2)
+	public static final String FUNCTION_KEY_VALUE_DATA_DICTIONARY = "DATA_DICTIONARY";//(3)
+	public static final String FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD = "DATA_DICTIONARY_UPLOAD";//(4)
+	public static final String FUNCTION_KEY_VALUE_PHENO_COLLECTION = "PHENO_COLLECTION";//(5)
+	public static final String FUNCTION_KEY_VALUE_FIELD_DATA = "FIELD_DATA";//(6)
+	public static final String FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD = "FIELD_DATA_UPLOAD";//(7)
+	
+	
 	public static final String FUNCTION_KEY_VALUE_MODULE = "MODULE";
 	public static final String FUNCTION_KEY_VALUE_FUNCTION = "FUNCTION";
 	public static final String FUNCTION_KEY_VALUE_MODULE_FUNCTION = "MODULE_FUNCTION";
 	public static final String FUNCTION_KEY_VALUE_ROLE = "ROLE";
 	public static final String FUNCTION_KEY_VALUE_MODULE_ROLE = "MODULE_ROLE";
 	public static final String FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE = "ROLE_POLICY_TEMPLATE";
-	public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_FIELD = "LIMS_COLLECTION_CUSTOM_FIELD";
+	public static final String FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY = "LIMS_CUSTOM_FIELD_CATEGORY";
+	//public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_FIELD = "LIMS_COLLECTION_CUSTOM_FIELD";
+	public static final String FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD = "LIMS_CUSTOM_FIELD";//new LIMS custom field.
 	public static final String FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_DATA = "LIMS_COLLECTION_CUSTOM_DATA";
-	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD = "BIOSPECIMEN_CUSTOM_FIELD";
+	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD = "BIOSPECIMEN_CUSTOM_FIELD";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_DATA = "BIOSPECIMEN_CUSTOM_DATA";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMENUID_TEMPLATE = "BIOSPECIMENUID_TEMPLATE";
 	public static final String FUNCTION_KEY_VALUE_BARCODE_PRINTER = "BARCODE_PRINTER";
 	public static final String FUNCTION_KEY_VALUE_BARCODE_LABEL = "BARCODE_LABEL";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD = "BIOSPECIMEN_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_UPLOAD = "SUBJECT_CUSTOM_FIELD_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_CUSTOM_FIELD_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
+	//public static final String FUNCTION_KEY_VALUE_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
+	public static final String FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_UPLOAD = "LIMS_CUSTOM_FIELD_UPLOAD";// new LIMS custom field upload.
+	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_CUSTOM_FIELD_UPLOAD";
+	//public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_DATA_EXTRACTION	= "DATA_EXTRACTION";
 	public static final String FUNCTION_KEY_VALUE_PEDIGREE = "PEDIGREE";
 	public static final String FUNCTION_KEY_VALUE_GENO_TABLE = "GENO_TABLE";
@@ -328,6 +346,8 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS_DISPLAY = "DISEASE_CUSTOM_FIELD_DISPLAY";
 	public static final String FUNCTION_KEY_VALUE_DISEASE_AFFECTION = "DISEASE_AFFECTION";
 
+	public static final String FUNCTION_KEY_VALUE_GLOBAL_BIOSPECIMEN_SEARCH = "GLOBAL_BIOSPECIMEN_SEARCH";
+	
 	/* Ark Module Keys */
 	public static final String ARK_MODULE_KEY = "MODULE_KEY";
 
@@ -372,9 +392,92 @@ public class Constants {
 	public static final String[] DATA_DICTIONARY_HEADER = { "FIELD_NAME",
 			"FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
 			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE" }; //ALLOW MULTI  not here because it is Questionairre/customfieldgroup based
-	public static final String[] CUSTOM_FIELD_UPLOAD_HEADER = { "FIELD_NAME",
+	public static final String[][] CUSTOM_FIELD_UPLOAD_HEADER = {{"", "FIELD_NAME","CUSTOM_FIELD_TYPE","CUSTOM_FIELD_CATEGORY",
 			"FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
-			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"  };
+			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
+			{
+				"DESCRIPTION",
+				"The unique identifier of the field",
+				"The type of the field",
+				"The pre defined category name of the field",
+				"The field type of the field",
+				"The details description of the field",
+				"The question or the label for the field ",
+				"The units for the field",
+				"The encoded value for the field ",
+				"The minimum value for the field",
+				"The maximum value for the field",
+				"The missing value for the field",
+				"The required status for the field",
+				"The multiple selection allowed status for the field"
+		},
+		{ 		"MANDATORY", 
+				"Yes", 
+				"Yes", 
+				"No",
+				"Yes",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No",
+				"No"
+		 },
+		{
+				"VALID VALUES",
+				"Maximum 50 characters", 
+				"", 
+				"", 
+				"",
+				"Maximum 255 characters", 
+				"Maximum 255 characters", 
+				"Maximum 50 characters",
+				"0=Yes;1=No;",
+				"",
+				"",
+				"",
+				"true;yes;1;y;false;no;0;n",
+				"true;yes;1;y;false;no;0;n"
+		},
+		{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "","", "", "", "", "", ""
+		}};
+	public static final String[][] CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER={ { "","CATEGORY_NAME",
+		"CUSTOM_FIELD_TYPE","DESCRIPTION","PARENT_CATEGORY_NAME","ORDER_NUMBER"	},
+		{
+			"DESCRIPTION",
+			"The unique identifier of the category",
+			"The type of the category",
+			"The details description of the category",
+			"The parent category of the category",
+			"The order number of the category"
+		},
+		{
+			"MANDATORY", 
+			"Yes", 
+			"Yes", 
+			"No",
+			"No-if blank category becomes a parent category",
+			"Yes"
+		},
+		{
+			"VALID VALUES",
+			"Maximum 50 characters", 
+			"Maximum 50 characters", 
+			"Maximum 255 characters",
+			"Maximum 50 characters",
+			"Any Integer value starting from 1"
+		},
+		{ "NOTE: Removed this first column, and replace rows 2 to 5.",
+				"", "", "", "",""
+		},
+		{
+			"Please make sure to upload all the parent categories to the system first before assign them to sub categories. ",
+				 "", "", "", "",""
+		}
+	};
 
 	public static final String NAME = "name";
 	public static final String CUSTOM_FIELD_DOT_NAME = "customField.name";
@@ -388,6 +491,7 @@ public class Constants {
 	public static final String ARK_SESSION_ID = "ARK_SESSION_ID";
 	public static final String ARK_USERID = "ARK_USERID";
 	public static final String ARK_HOST = "ARK_HOST";
+	public static final String ARK_USER_NAME = "ARK_USER_NAME";
 	public static final String ARK_SESSION_START_TIMESTAMP = "ARK_SESSION_START_TIMESTAMP";
 	public static final String ARK_SESSION_LAST_ACCESS_TIME = "ARK_SESSION_LAST_ACCESS_TIME";
 	public static final String ARK_SESSION_ACTION = "ARK_SESSION_ACTION";
@@ -441,17 +545,43 @@ public class Constants {
 	// to 20
 	public static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";
 
+	public static final String[] BIOCOLLECTION_TEMPLATE_HEADER = { "SUBJECTUID",
+		"BIOCOLLECTIONUID","NAME","COLLECTIONDATE","COMMENTS"};
+	
 	public static final String[] BIOSPECIMEN_TEMPLATE_HEADER = { "SUBJECTUID",
-			"BIOSPECIMENUID", "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
-			"UNITS", "TREATMENT", "CONCENTRATION", "SITE", "FREEZER", "RACK", "BOX", "ROW", "COLUMN" };
+		"BIOSPECIMENUID", "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
+		"UNITS", "TREATMENT", "CONCENTRATION", "SITE", "FREEZER", "RACK", "BOX", "ROW", "COLUMN" };
 	
-	public static final String[] LOCATION_UPLOAD_TEMPLATE_HEADER = { // "SUBJECTUID",
-		"BIOSPECIMENUID", 											// , "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
-																	//"UNITS", "TREATMENT", "CONCENTRATION",
+	public static final String[] BIOSPECIMEN_INVENTORY_TEMPLATE_HEADER = {"BIOSPECIMENUID",
 		"SITE", "FREEZER", "RACK", "BOX", "ROW","COLUMN" };
-
 	
-	public static final String[][] LOCATION_UPLOAD_TEMPLATE_CELLS = {
+	public static final String[][] BIOCOLLECTION_TEMPLATE_CELLS = {
+		{ "", "SUBJECTUID",  "BIOCOLLECTIONUID","NAME","COLLECTIONDATE","COMMENTS" },
+		{
+				"DESCRIPTION",
+				"The unique identifier assigned for this subject.",
+				"The unique identifier of the biospecimen",
+				"The name of the collection",
+				"The collection date",
+				"The comment"
+		},
+		{ 		"MANDATORY", 
+				"Mandatory IF study not set to autogenerate id's for biocollections",
+				"Yes",
+				"No", 
+				"No", 
+				"No" },
+		{
+				"VALID VALUES",
+				"",
+				"",
+				"",
+				"",
+				""},
+		{ "NOTE: Removed this first column, and replace rows 2 to 5",
+				"", "",	"", "", "" } };
+	
+	public static final String[][] BIOSPECIMEN_INVENTORY_TEMPLATE_CELLS = {
 			{  "", "BIOSPECIMENUID", "SITE",
 					"FREEZER", "RACK", "BOX", "ROW", "COLUMN" 
 			},
@@ -474,8 +604,7 @@ public class Constants {
 					"Yes",
 					"Yes",
 			 },
-			{
-					"VALID VALUES",
+			{		"VALID VALUES",
 					"",
 					"", 
 					"", 
@@ -484,8 +613,7 @@ public class Constants {
 					"", 
 					""
 			},
-			{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", ""
-			} };
+			{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", ""} };
 	
 	public static final String[][] BIOSPECIMEN_TEMPLATE_CELLS = {
 			{ "", "SUBJECTUID", "BIOSPECIMENUID", "BIOCOLLECTIONUID",
@@ -564,10 +692,45 @@ public class Constants {
 	public static final String ARK_GENO_SERVICE = "genoService";
 	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML};
 
-	public static final String			UPLOAD_TYPE_ID											= "id";
-	public static final String			UPLOAD_TYPE_NAME										= "name";
+	public static final String	UPLOAD_TYPE_ID	= "id";
+	public static final String	UPLOAD_TYPE_NAME= "name";
 	
 	public static final String CONFIG_ROWS_PER_PAGE = "ROWS_PER_PAGE";
 	public static final String CONFIG_CUSTOM_FIELDS_PER_PAGE = "CUSTOM_FIELDS_PER_PAGE";
 	
+	public static final String MESSAGE_NO_SUBJECT_IN_CONTEXT="There is no subject in context. Please bring a subject into context via the subject tab.";
+	
+	public static final String MESSAGE_NO_STUDY_IN_CONTEXT="There is no study in context. Please select a study";
+	
+	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY = "Pheno Data Set Category";
+	
+	public static final String ENTITY_TYPE_PHENO_DATASET_FIELD = "PhenoDataSet Field";
+	
+	public static final String ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY = "PhenoDataSet Field Display";
+	
+	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY_FIELD_GROUP = "PhenoDataSet Category Field Group";
+	
+	public static final String UPLOAD_STATUS_COMPLETED = "COMPLETED";
+	
+	public static final String UPLOAD_STATUS_STATUS_NOT_DEFINED = "STATUS_NOT_DEFINED";
+	
+	public static final String UPLOAD_STATUS_VALIDATED = "VALIDATED";
+	
+	public static final String UPLOAD_STATUS_AWAITING_VALIDATION = "AWAITING_VALIDATION";
+	
+	public static final String UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT= "ERROR_ON_DATA_IMPORT";
+	
+	//General Form text field maximum field length validation
+	public static final Integer GENERAL_FIELD_NAME_MAX_LENGTH_50 = 50;
+	
+	public static final Integer GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255 = 255;
+	
+	public static final Integer GENERAL_FIELD_WHOLE_NUMBER_MIN_QUANTITY_1 = 1;
+	
+	public static final Integer GENERAL_FIELD_WHOLE_NUMBER_MAX_QUANTITY_100 = 100;
+	
+	public static final Integer GENERAL_FIELD_COMMENTS_MAX_LENGTH_500 = 500;
+	
+	public static final Integer GENERAL_FIELD_MAX_LENGTH_100 = 100;
+			
 }

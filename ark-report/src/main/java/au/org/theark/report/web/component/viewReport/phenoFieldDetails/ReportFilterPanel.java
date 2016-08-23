@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.viewReport.phenoFieldDetails;
 
+import au.org.theark.report.model.vo.PhenoDataSetFieldDetailsReportVO;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -37,7 +38,7 @@ public class ReportFilterPanel extends Panel {
 		super(id);
 	}
 
-	public void initialisePanel(CompoundPropertyModel<CustomFieldDetailsReportVO> cpModel, FeedbackPanel feedbackPanel, au.org.theark.report.web.component.viewReport.ReportOutputPanel reportOutputPanel) {
+	public void initialisePanel(CompoundPropertyModel<PhenoDataSetFieldDetailsReportVO> cpModel, FeedbackPanel feedbackPanel, au.org.theark.report.web.component.viewReport.ReportOutputPanel reportOutputPanel) {
 		FieldDetailsFilterForm fieldDetailsFilterForm = new FieldDetailsFilterForm("filterForm", cpModel);
 		fieldDetailsFilterForm.initialiseFilterForm(feedbackPanel, reportOutputPanel);
 		add(fieldDetailsFilterForm);

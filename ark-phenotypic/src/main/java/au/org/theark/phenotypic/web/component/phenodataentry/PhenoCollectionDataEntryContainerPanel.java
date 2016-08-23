@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -86,7 +87,7 @@ public class PhenoCollectionDataEntryContainerPanel extends Panel {
 		}
 		else if (!contextLoaded) {
 			dataEditorPanel = new EmptyPanel("resultList");
-			this.error("A study and subject in context are required to proceed.");
+			this.error(Constants.MESSAGE_NO_SUBJECT_IN_CONTEXT);
 		}
 		else {
 			dataEditorPanel = new EmptyPanel("resultList");
@@ -137,7 +138,7 @@ public class PhenoCollectionDataEntryContainerPanel extends Panel {
 			try {
 				study = iArkCommonService.getStudy(sessionStudyId);
 				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
-				cpModel.getObject().getPhenoCollection().setLinkSubjectStudy(linkSubjectStudy);
+				cpModel.getObject().getPhenoDataSetCollection().setLinkSubjectStudy(linkSubjectStudy);
 				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 				if (study != null && linkSubjectStudy != null && arkModule != null) {
 					contextLoaded = true;

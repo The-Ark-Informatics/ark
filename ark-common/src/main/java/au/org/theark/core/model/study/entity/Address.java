@@ -63,6 +63,8 @@ public class Address implements java.io.Serializable {
 	private String comments;
 	private Boolean preferredMailingAddress;
 	private String source;
+	private Date validFrom;
+	private Date validTo;
 
 	private Set<StudySite> studySites = new HashSet<StudySite>(0);
 
@@ -240,4 +242,25 @@ public class Address implements java.io.Serializable {
 	public void setSource(String source) {
 		this.source = source;
 	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "VALID_FROM", length = 7)
+	public Date getValidFrom() {
+		return validFrom;
+	}
+
+	public void setValidFrom(Date validFrom) {
+		this.validFrom = validFrom;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "VALID_TO", length = 7)
+	public Date getValidTo() {
+		return validTo;
+	}
+
+	public void setValidTo(Date validTo) {
+		this.validTo = validTo;
+	}
+	
 }

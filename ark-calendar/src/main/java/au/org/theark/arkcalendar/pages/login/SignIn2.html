@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<wicket:head>
+	<title>The Ark Calendar</title>
+	<link rel="stylesheet" type="text/css" href="styles/jquery-ui.min.css" media="all" />
+	<style>
+		form dt {float: left; width: 33%; text-align: right;}
+		form dd {margin-left: 33%; padding-left: 5px;}
+		
+		ul.feedbackPanel li.feedbackPanelERROR {
+    		color: red;
+    		font-weight: bold;
+    		list-style: outside none circle;
+		}	
+	</style>
+</wicket:head>
+</head>
+<body>
+    <!--<span wicket:id="mainNavigation"/>
+    <p>
+    <i>Username and password are both "wicket"</i>
+    </p>-->
+    <wicket:extend>
+    	<span wicket:id="signInPanel" style=""></span>
+    </wicket:extend>
+</body>
+</html>

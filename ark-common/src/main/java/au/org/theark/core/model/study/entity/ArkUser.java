@@ -38,7 +38,7 @@ import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 @Entity
 @Table(name = "ARK_USER", schema = Constants.STUDY_SCHEMA)
 public class ArkUser implements Serializable {
-
+	
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String ldapUserName;
@@ -67,5 +67,38 @@ public class ArkUser implements Serializable {
 	public void setLdapUserName(String ldapUserName) {
 		this.ldapUserName = ldapUserName;
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result
+				+ ((ldapUserName == null) ? 0 : ldapUserName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ArkUser other = (ArkUser) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (ldapUserName == null) {
+			if (other.ldapUserName != null)
+				return false;
+		} else if (!ldapUserName.equals(other.ldapUserName))
+			return false;
+		return true;
+	}
+
 
 }

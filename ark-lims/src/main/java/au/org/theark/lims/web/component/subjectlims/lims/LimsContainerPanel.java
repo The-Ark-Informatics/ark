@@ -111,7 +111,9 @@ public class LimsContainerPanel extends Panel {
 				((IDetachable)state).detach();
 				state = new InverseSet<Object>(new ProviderSubset<Object>(provider));
 				bioTreePanel = new BiospecimenNestedTreePanel("tree", cpModel, provider, newStateModel(), modalWindow);
-				
+
+				containerForm.addOrReplace(bioTreePanel);
+
 				target.add(bioTreePanel);
 				target.add(biocollectionListPanel);
 				target.add(bioSpecimenListPanel);

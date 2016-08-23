@@ -15,6 +15,7 @@ import org.quartz.SchedulerFactory;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 
+import org.apache.shiro.SecurityUtils;
 import au.org.theark.core.Constants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.study.service.IStudyService;
@@ -59,6 +60,8 @@ public class SubjectAttachmentDataUploadExecutor {
 		subjectAttachmentUploadJob.getJobDataMap().put(StudyDataUploadJob.INPUT_STREAM, inputStream);
 		subjectAttachmentUploadJob.getJobDataMap().put(StudyDataUploadJob.DELIMITER, delimiter);
 		subjectAttachmentUploadJob.getJobDataMap().put(StudyDataUploadJob.SIZE, size);
+		String userId = SecurityUtils.getSubject().getPrincipal().toString();
+		subjectAttachmentUploadJob.getJobDataMap().put(StudyDataUploadJob.CURRENT_USER, userId);
 		Date startTime = nextGivenSecondDate(null, 1);
 		SimpleTrigger trigger1 = newTrigger().withIdentity("subjectAttachmentDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
 		sched.scheduleJob(subjectAttachmentUploadJob, trigger1);

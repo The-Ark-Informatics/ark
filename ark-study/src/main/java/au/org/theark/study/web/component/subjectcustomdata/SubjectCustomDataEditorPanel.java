@@ -36,6 +36,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
@@ -131,11 +132,12 @@ public class SubjectCustomDataEditorPanel extends Panel {
 	private Collection<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(){
 		
 		Study study =cpModel.getObject().getLinkSubjectStudy().getStudy();
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY);
 		
 		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT);
 		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
 		try {
-			customFieldCategoryCollection =  iArkCommonService.getAvailableAllCategoryListInStudyByCustomFieldType(study, customFieldType);
+			customFieldCategoryCollection =  iArkCommonService.getAvailableAllCategoryListInStudyByCustomFieldType(study,arkFunction, customFieldType);
 		} catch (ArkSystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

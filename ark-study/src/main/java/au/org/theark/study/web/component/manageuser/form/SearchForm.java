@@ -144,7 +144,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		containerForm.getModelObject().setMode(Constants.MODE_NEW);
 		prePopulateArkUserRoleList();
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
-
 		// This should re-render the list again
 		ListView listView = (ListView) arkCrudContainerVO.getWmcForarkUserAccountPanel().get("arkUserRoleList");
 		listView.removeAll();

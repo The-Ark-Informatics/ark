@@ -175,7 +175,68 @@
 				</div>
 				<div class="fldControl">
 					<div class="label">
-						<input wicket:id="analysis.status"	type="text" />
+						<span wicket:id="analysis.status"/>
+					</div>
+				</div>
+				
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				 
+				<div class="fldLabel">
+					<div class="label">
+						<label for="organization">
+							<wicket:message key="genomics.analysis.jobid">
+								Result:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<span wicket:id="analysis.jobId"/>
+					</div>
+				</div>
+				
+				<div class="detailPanelBreaker">&nbsp;</div>
+				
+				<div class="panelContentLeft">&nbsp;</div>
+								
+				<div class="fldLabel">
+					<div class="label">
+						<label for="organization">
+							<wicket:message key="genomics.analysis.jobscript">
+								name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<input wicket:id="file" type="file" />
+					<a href="#" wicket:id="clearButton"><img  src="images/icons/editclear.png" /></a>
+					<br>
+					<b>
+						<span wicket:id="analysis.scriptName">File Name</span>
+					</b>
+					<a href="#" wicket:id="deleteButton"><img  src="images/icons/delete.png" /></a>
+				</div>
+				
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				 
+				<div class="fldLabel">
+					<div class="label">
+						<label for="empty">
+							
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						
 					</div>
 				</div>
 				
@@ -191,6 +252,8 @@
 					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
 					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
 					<input wicket:id="execute" type="submit" wicket:message="value:page.execute" />
+					<input wicket:id="job" type="submit" wicket:message="value:page.job" />
+					<input wicket:id="queue" type="submit" wicket:message="value:page.queue" />
 					<input wicket:id="result" type="submit" wicket:message="value:page.result" />
 				</div>
 			</div>

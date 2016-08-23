@@ -39,10 +39,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.IntegerConverter;
 import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.study.entity.Study;
@@ -102,6 +104,19 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("invBox.id");
 		nameTxtFld = new TextField<String>("invBox.name");
+		nameTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				String boxName = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
+				InvBox invBox=iInventoryService.getInvBoxByNameForRack(invTrayDdc.getModelObject(), boxName);
+				if (invBox != null && invBox.getId() != null) {
+					error("Box name must be unique for a Rack. Please try again.");
+					target.focusComponent(getComponent());
+				}
+					target.add(feedbackPanel);
+			}
+		});
 		capacityTxtFld = new TextField<Integer>("invBox.capacity");
 		capacityTxtFld.setEnabled(false);
 		availableTxtFld = new TextField<Integer>("invBox.available");
@@ -255,6 +270,19 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		}
 		ChoiceRenderer<InvRack> choiceRenderer = new ChoiceRenderer<InvRack>("siteFreezerRack", Constants.ID);
 		invTrayDdc = new DropDownChoice<InvRack>("invBox.invRack", (List<InvRack>) invTankList, choiceRenderer);
+		invTrayDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				String boxName = (nameTxtFld.getModelObject().toString() != null ? nameTxtFld.getModelObject().toString() : new String());
+				InvBox invBox=iInventoryService.getInvBoxByNameForRack(invTrayDdc.getModelObject(), boxName);
+				if (invBox != null && invBox.getId() != null) {
+					error("Box name must be unique for a Rack. Please try again.");
+					target.focusComponent(getComponent());
+				}
+					target.add(feedbackPanel);
+			}
+		});
 	}
 
 	private void initColNoTypeDdc() {
@@ -273,6 +301,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	protected void attachValidators() {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
+		nameTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
 		invTrayDdc.setRequired(true).setLabel(new StringResourceModel("error.rack.required", this, new Model<String>("Rack")));
 		noOfColTxtFld.setRequired(true);
 		MinimumValidator<Integer> minValue = new MinimumValidator<Integer>(new Integer(0));

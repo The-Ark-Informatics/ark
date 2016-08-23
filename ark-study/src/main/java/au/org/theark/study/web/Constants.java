@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Constants {
-	public static final String			UPLOAD_STATUS_OF_AWAITING_VALIDATION				= "AWAITING_VALIDATION";
-	public static final String			UPLOAD_STATUS_OF_COMPLETED								= "COMPLETED";
-	public static final String			UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION			= "ERROR_IN_DATA_VALIDATION";
-	public static final String			UPLOAD_STATUS_OF_ERROR_IN_FILE_VALIDATION			= "ERROR_IN_FILE_VALIDATION";
-	public static final String			UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT				= "ERROR_ON_DATA_IMPORT";
-	public static final String			UPLOAD_STATUS_OF_STATUS_NOT_DEFINED					= "STATUS_NOT_DEFINED";
-	public static final String			UPLOAD_STATUS_OF_VALIDATED								= "VALIDATED";
+	public static final String			UPLOAD_STATUS_OF_AWAITING_VALIDATION							= "AWAITING_VALIDATION";
+	public static final String			UPLOAD_STATUS_OF_COMPLETED										= "COMPLETED";
+	public static final String			UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION						= "ERROR_IN_DATA_VALIDATION";
+	public static final String			UPLOAD_STATUS_OF_ERROR_IN_FILE_VALIDATION						= "ERROR_IN_FILE_VALIDATION";
+	public static final String			UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT							= "ERROR_ON_DATA_IMPORT";
+	public static final String			UPLOAD_STATUS_OF_STATUS_NOT_DEFINED								= "STATUS_NOT_DEFINED";
+	public static final String			UPLOAD_STATUS_OF_VALIDATED										= "VALIDATED";
 	public static final String			ADMIN_TAB														= "Administration";
 	public static final String			STUDY_TAB														= "Study";
 	public static final String			SUBJECT_TAB														= "Subject";
@@ -62,9 +62,10 @@ public class Constants {
 	public static final String			RESET																= "reset";
 	public static final String			CLOSE																= "close";
 	public static final String			ADD_PHONE														= "addPhone";
-	public static final int				MODE_NEW															= 1;
+	public static final int				MODE_NEW														= 1;
 	public static final int				MODE_EDIT														= 2;
 	public static final int				MODE_READ														= 3;
+	//public static final int				MODE_EDIT_USER_ROLE_ONLY										= 4;
 
 	/* Person */
 	public static final String			PERSON_PREFERRED_EMAIL										= "linkSubjectStudy.person.preferredEmail";
@@ -73,24 +74,25 @@ public class Constants {
 	public static final String			PERSON_OTHER_EMAIL											= "linkSubjectStudy.person.otherEmail";
 	public static final String			PERSON_PREFERRED_NAME										= "linkSubjectStudy.person.preferredName";
 	public static final String			PERSON_VITAL_STATUS											= "linkSubjectStudy.person.vitalStatus";
-	public static final String			PERSON_PERSON_ID												= "linkSubjectStudy.person.id";
-	public static final String			SUBJECT_UID														= "linkSubjectStudy.subjectUID";
-	public static final String			PERSON_FIRST_NAME												= "linkSubjectStudy.person.firstName";
+	public static final String			PERSON_PERSON_ID											= "linkSubjectStudy.person.id";
+	public static final String			SUBJECT_UID													= "linkSubjectStudy.subjectUID";
+	public static final String			PERSON_FIRST_NAME											= "linkSubjectStudy.person.firstName";
 	public static final String			PERSON_MIDDLE_NAME											= "linkSubjectStudy.person.middleName";
-	public static final String			PERSON_LAST_NAME												= "linkSubjectStudy.person.lastName";
+	public static final String			PERSON_LAST_NAME											= "linkSubjectStudy.person.lastName";
 	public static final String			SUBJECT_PREVIOUS_LAST_NAME									= "subjectPreviousLastname";
-	public static final String			PERSON															= "person";
-	public static final String			GENDER_TYPE														= "genderType";
-	public static final String			ID																	= "id";
-	public static final String			SUBJECT_STATUS													= "linkSubjectStudy.subjectStatus";
-	public static final String			SUBJECT_STATUS_ID												= "id";
-	public static final String			VITAL_STATUS													= "vitalStatus";
-	public static final String			STATUS_NAME														= "statusName";
+	public static final String			PERSON														= "person";
+	public static final String			GENDER_TYPE													= "genderType";
+	public static final String			ID															= "id";
+	public static final String			SUBJECT_STATUS												= "linkSubjectStudy.subjectStatus";
+	public static final String			SUBJECT_STATUS_ID											= "id";
+	public static final String			VITAL_STATUS												= "vitalStatus";
+	public static final String			STATUS_NAME													= "statusName";
 	public static final String			PERSON_MARITAL_STATUS										= "linkSubjectStudy.person.maritalStatus";
 	public static final String			PERSON_CONTACT_METHOD										= "linkSubjectStudy.person.personContactMethod";
-	public static final String			PERSON_DOB														= "linkSubjectStudy.person.dateOfBirth";
-	public static final String			PERSON_DOD														= "linkSubjectStudy.person.dateOfDeath";
-	public static final String			PERSON_COMMENT													= "linkSubjectStudy.comment";
+	public static final String			PERSON_DOB													= "linkSubjectStudy.person.dateOfBirth";
+	public static final String			PERSON_CURRENT_OR_DEATH_AGE									= "linkSubjectStudy.person.currentOrDeathAge";
+	public static final String			PERSON_DOD													= "linkSubjectStudy.person.dateOfDeath";
+	public static final String			PERSON_COMMENT												= "linkSubjectStudy.comment";
 	public static final String			PERSON_DATE_LAST_KNOWN_ALIVE								= "linkSubjectStudy.person.dateLastKnownAlive";
 	public static final String			PERSON_CONSENT_DATE											= "linkSubjectStudy.consentDate";
 	public static final String			PERSON_CONSENT_DOWNLOADED									= "linkSubjectStudy.consentDownloaded";
@@ -342,9 +344,9 @@ public class Constants {
 	public static final String			UPLOAD_TYPE_NAME										= "name";
 
 	// Exception messages
-	public static final String			IO_EXCEPTION													= "IOException: Input error. ";
+	public static final String			IO_EXCEPTION												= "IOException: Input error. ";
 	public static final String			FILE_FORMAT_EXCEPTION										= "File Format Exception: Input error. ";
-	public static final String			ARK_SYSTEM_EXCEPTION											= "General ARK System Exception: ";
+	public static final String			ARK_SYSTEM_EXCEPTION										= "General ARK System Exception: ";
 	public static final String			ARK_BASE_EXCEPTION											= "Base ARK System Exception: ";
 
 	public static final String[]		SUBJECT_TEMPLATE_HEADER										= { "SUBJECTUID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH",
@@ -361,14 +363,16 @@ public class Constants {
 
 	
 	//TODO this is all for validation and templates.  maybe we need some form of validation mapping to db, entities or something like that as this will not be maintainable for long
-	public static final String[][]	SUBJECT_CUSTOM_FIELD_TEMPLATE_CELLS										= {
-			{ "", "SUBJECTUID", "YOUR_FIRST_CUSTOM_FIELD_NAME_HERE", "YOUR_SECOND_CUSTOM_FIELD_NAME_HERE", "AND SO ON"},
-			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "Value for first custom field","Value for second field", "AND SO ON" },
-			{ "NOTE: Removed this first column, and replace row 2 with your actual custom field names (the headers only appear once, row 3 will have your next subject and his/her values", "", "" , "", "" } };
+	public static final String[][]	SUBJECT_OR_FAMILY_CUSTOM_FIELD_DATA_TEMPLATE_CELLS										= {
+			{ "", "SUBJECTUID OR FAMILYUID", "YOUR_FIRST_CUSTOM_FIELD_NAME_HERE", "YOUR_SECOND_CUSTOM_FIELD_NAME_HERE", "AND SO ON"},
+			{ "DESCRIPTION", "The unique identifier assigned for this subject or family.", "Value for first custom field","Value for second field", "AND SO ON" },
+			{ "NOTE: This is the common template to upload the Subject or the Family custom field data.", "This must match the subjectUID in the database or if it's a FAMILYUID it should be the valid FAMILYUID of a SUBJECT", "" , "", "" },
+			{ "		 Please make sure to use either one of a data set.", "", "" , "", "" },
+			{ "		 Removed this first column, and replace row 2 with your actual custom field names (the headers only appear once, row 3 will have your next subject or family and his/her values", "", "" , "", "" } };
 
 	public static final String[][]	SUBJECT_CONSENT_FIELD_TEMPLATE_CELLS										= {
 		{ "", "SUBJECTUID", "STUDY_COMPONENT", "STUDY_COMPONENT_STATUS", "COMPLETED_DATE","CONSENT_TYPE","CONSENT_STATUS","CONSENT_DOWNLOADED","CONSENTED_BY","CONSENT_DATE","COMMENT"},
-		{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "Valid study componenet name","Valid study component Status","If status is completed then (dd/mm/yyyy)","Valid consent type","Valid consent status","Yes/No","","dd/mm/yyyy","" },
+		{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "Valid study component name","Valid study component Status","If status is completed then (dd/mm/yyyy)","Valid consent type","Valid consent status","Yes/No","","dd/mm/yyyy","" },
 		{ "NOTE: Removed this first column", "", "" , "", "","","","" ,"","",""} };
 	
 	public static final String[] SUBJECT_ATTACHMENT_TEMPLATE_HEADER = {"SUBJECTUID", "FILE_NAME_WITH_FULL_PATH", "STUDY_COMPONENT","COMMENT"};
@@ -460,5 +464,14 @@ public class Constants {
 	public static final String ADDRESS_DETAIL_PANEL="addressDetailPanel";
 	
 	public static final String INBREED_ALLOWED="inbreedAllowed";
+	
+	public static final String STUDY_CALENDAR_ID = "studyCalendar.id";
+	public static final String STUDY_CALENDAR_NAME = "studyCalendar.name";
+	public static final String STUDY_CALENDAR_START_DATE = "studyCalendar.startDate";
+	public static final String STUDY_CALENDAR_END_DATE = "studyCalendar.endDate";
+	public static final String STUDY_CALENDAR_DESCRIPTION = "studyCalendar.description";
+	public static final String STUDY_CALENDAR_STUDY_COMP = "studyCalendar.studyComp";
+	
+	public static final Integer MAXIMUM_ACCEPTABLE_AGE = 150;
 	
 }
