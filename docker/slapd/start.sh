@@ -134,14 +134,11 @@ EOF
 		fi
 	fi
 
-	while ! [ -f "/usr/src/app/ark-user-account/.completed" ]; do
-		echo "Sleeping"
-		sleep 1	
-	done	
-
 	echo "Creating ${ARK_USERNAME} in LDAP..."
-	java -jar /usr/src/app/ark-user-account/target/ark-user-account-1.0.0-jar-with-dependencies.jar ${ARK_USERNAME} ${ARK_SUPERUSER_PASSWORD} Super User
-	rm /usr/src/app/ark-user-account/.completed
+	while [ ! -f /usr/target/ark-user-account.jar ]; do
+		sleep 1
+	done
+	java -jar /usr/target/ark-user-account.jar ${ARK_USERNAME} ${ARK_SUPERUSER_PASSWORD} Super User
 	service slapd stop #for some reason this doesn't work
 	killall slapd
 	touch "$DATADIR/.complete"
