@@ -39,6 +39,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkCheckSumNotSameException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Correspondences;
@@ -198,19 +200,27 @@ public class SearchResultListPanel extends Panel {
 				
 				try {
 					data = iArkCommonService.retriveArkFileAttachmentByteArray(studyId,subjectUID,au.org.theark.study.web.Constants.ARK_SUBJECT_CORRESPONDENCE_DIR,fileId,checksum);
+					getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, correspondences.getAttachmentFilename()));
 				}
 				catch (ArkSystemException e) {
-					this.error("Unexpected error: Download request could not be fulfilled.");
+					containerForm.error("Unexpected error: Download request could not be fulfilled.");
+					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+					target.add(containerForm);
 					log.error(e.getMessage());
+				} catch (ArkFileNotFoundException e) {
+					
+				} catch (ArkCheckSumNotSameException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, correspondences.getAttachmentFilename()));
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				log.error("Error Downloading File: " + correspondences.getAttachmentFilename());
-				this.error("There was an error while downloading file. Please contact Administrator");
+				containerForm.error("There was an error while downloading file. Please contact Administrator");
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(containerForm);
 			};
 		};
 

@@ -18,8 +18,11 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.attachments.form;
 
+
+
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -32,12 +35,18 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IOUtils;
+import org.apache.wicket.util.lang.Bytes;
+import org.apache.wicket.util.upload.FileUploadBase.SizeLimitExceededException;
+import org.apache.wicket.util.upload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkBaseException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -91,7 +100,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		subjectFileIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.SUBJECT_FILE_ID);
 		// fileSubjectFile for payload (attached to filename key)
 		fileSubjectFileField = new FileUploadField(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME);
-		fileSubjectFileField.setRequired(true);
+		//fileSubjectFileField.setRequired(true);
 		fileSubjectFileField.add(new ArkDefaultFormFocusBehavior());
 
 		// Initialise Drop Down Choices
@@ -106,6 +115,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected void attachValidators() {
 		// Field validation here
 		fileSubjectFileField.setRequired(true).setLabel(new StringResourceModel("subjectFile.filename.required", this, null));
+		// max upload size, 200MB
+		
 	}
 
 	@Override
@@ -115,76 +126,80 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		Study study = iArkCommonService.getStudy(studyId);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		String userId = SecurityUtils.getSubject().getPrincipal().toString();
-
-		try {
-			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
-			containerForm.getModelObject().getSubjectFile().setLinkSubjectStudy(linkSubjectStudy);
-
-			// Implement Save/Update
-			if (containerForm.getModelObject().getSubjectFile().getId() == null) {
-				// required for file uploads
-				setMultiPart(true);
-
-				// Retrieve file and store as Blob in database
-				// TODO: AJAX-ified and asynchronous and hit database
-				FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
-
-				try {
-					containerForm.getModelObject().getSubjectFile().setPayload(IOUtils.toByteArray(fileSubjectFile.getInputStream()));
+		FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
+			try {
+				linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
+				containerForm.getModelObject().getSubjectFile().setLinkSubjectStudy(linkSubjectStudy);
+				if(au.org.theark.core.Constants.MAXIMUM_PERMISSABLE_FILE_SIZE > fileSubjectFile.getSize()){
+				// Implement Save/Update
+				if (containerForm.getModelObject().getSubjectFile().getId() == null) {
+					// required for file uploads
+					setMultiPart(true);
+					
+					// Retrieve file and store as Blob in database
+					// TODO: AJAX-ified and asynchronous and hit database
+					try {
+						containerForm.getModelObject().getSubjectFile().setPayload(IOUtils.toByteArray(fileSubjectFile.getInputStream()));
+					}
+					catch (IOException e) {
+						log.error("IOException trying to convert inputstream" + e);
+					}
+	
+					byte[] byteArray = fileSubjectFile.getMD5();
+					String checksum = getHex(byteArray);
+		
+					// Set details of ConsentFile object
+					containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
+					containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
+					containerForm.getModelObject().getSubjectFile().setUserId(userId);
+	
+					// Save
+					iStudyService.create(containerForm.getModelObject().getSubjectFile(),Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+					this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
+	//				processErrors(target);
+			}else{
+					//FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
+	
+					try {
+						containerForm.getModelObject().getSubjectFile().setPayload(IOUtils.toByteArray(fileSubjectFile.getInputStream()));
+					}
+					catch (IOException e) {
+						log.error("IOException trying to convert inputstream" + e);
+					}
+	
+					byte[] byteArray = fileSubjectFile.getMD5();
+					String checksum = getHex(byteArray);
+	
+					// Set details of ConsentFile object
+					//containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
+					containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
+					containerForm.getModelObject().getSubjectFile().setUserId(userId);
+					
+					// Update
+					try {
+						iStudyService.update(containerForm.getModelObject().getSubjectFile(),checksum);
+					} catch (ArkFileNotFoundException e) {
+						this.error("Couldn't find the file.");
+					}
+					this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
 				}
-				catch (IOException e) {
-					log.error("IOException trying to convert inputstream" + e);
-				}
-
-				byte[] byteArray = fileSubjectFile.getMD5();
-				String checksum = getHex(byteArray);
-
-				// Set details of ConsentFile object
-				containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
-				containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
-				containerForm.getModelObject().getSubjectFile().setUserId(userId);
-
-				// Save
-				iStudyService.create(containerForm.getModelObject().getSubjectFile());
-				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
-//				processErrors(target);
+				}else{
+					this.error("The file size is larger than the maximum permissible size. Maximum permissible size ="+ (int)(au.org.theark.core.Constants.MAXIMUM_PERMISSABLE_FILE_SIZE/Math.pow(10, 6))+ 
+							   " MB and you try to upload "+(int)(fileSubjectFile.getSize()/Math.pow(10, 6))+ " MB");
+				}	
+			//processErrors(target);
 			}
-			else {
-				FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
-
-				try {
-					containerForm.getModelObject().getSubjectFile().setPayload(IOUtils.toByteArray(fileSubjectFile.getInputStream()));
-				}
-				catch (IOException e) {
-					log.error("IOException trying to convert inputstream" + e);
-				}
-
-				byte[] byteArray = fileSubjectFile.getMD5();
-				String checksum = getHex(byteArray);
-
-				// Set details of ConsentFile object
-				//containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
-				containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
-				containerForm.getModelObject().getSubjectFile().setUserId(userId);
-				
-				// Update
-				iStudyService.update(containerForm.getModelObject().getSubjectFile(),checksum);
-				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
+			catch (EntityNotFoundException e) {
+				this.error("The record you tried to update is no longer available in the system");
 			}
-
-			processErrors(target);
-			onSavePostProcess(target);
-			AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
-			deleteButton.setEnabled(false);
-
+			catch (ArkSystemException e) {
+				this.error("Saving the file attachment failed. Please contact The Ark administrator.");
+			}finally {
+				processErrors(target);
+				onSavePostProcess(target);
+				AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+				deleteButton.setEnabled(false);
 		}
-		catch (EntityNotFoundException e) {
-			this.error("The record you tried to update is no longer available in the system");
-		}
-		catch (ArkSystemException e) {
-			this.error("Saving the file attachment failed. Please contact The Ark administrator.");
-		}
-		processErrors(target);
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
@@ -198,10 +213,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		}
 		catch (EntityNotFoundException e) {
 			this.error("The Person/Subject in context does not exist in the system. Please contact support.");
-			processErrors(target);
 		}
 		subjectVo.setLinkSubjectStudy(linkSubjectStudy);
 		containerForm.setModelObject(subjectVo);
+		processErrors(target);
 	}
 
 	@Override
@@ -234,13 +249,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	 */
 	@Override
 	protected boolean isNew() {
-		if (containerForm.getModelObject().getSubjectFile().getId() == null) {
-			return true;
-		}
-		else {
-			return false;
-		}
-
+			return containerForm.getModelObject().getSubjectFile().getId() == null;
 	}
 
 	/*

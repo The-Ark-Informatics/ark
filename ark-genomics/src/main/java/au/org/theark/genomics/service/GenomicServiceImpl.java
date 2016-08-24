@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.exception.ArkBaseException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.spark.entity.Analysis;
 import au.org.theark.core.model.spark.entity.Computation;
@@ -102,7 +104,7 @@ public class GenomicServiceImpl implements IGenomicService {
 	}
 
 	@Override
-	public void update(Analysis analysis, byte[] attachement, String checksum) throws ArkSystemException {
+	public void update(Analysis analysis, byte[] attachement, String checksum) throws ArkSystemException, ArkFileNotFoundException {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		// String subjectUID = correspondence.getLss().getSubjectUID();
 		String fileName = analysis.getScriptName();
@@ -190,7 +192,7 @@ public class GenomicServiceImpl implements IGenomicService {
 	}
 
 	@Override
-	public void update(Computation computation, byte[] attachement, String checksum) throws ArkSystemException {
+	public void update(Computation computation, byte[] attachement, String checksum) throws ArkSystemException, ArkFileNotFoundException {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		// String subjectUID = correspondence.getLss().getSubjectUID();
 		String fileName = computation.getProgramName();

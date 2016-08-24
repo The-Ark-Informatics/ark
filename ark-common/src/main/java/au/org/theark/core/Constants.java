@@ -732,5 +732,7 @@ public class Constants {
 	public static final Integer GENERAL_FIELD_COMMENTS_MAX_LENGTH_500 = 500;
 	
 	public static final Integer GENERAL_FIELD_MAX_LENGTH_100 = 100;
+	//This is 200MB
+	public static final Integer MAXIMUM_PERMISSABLE_FILE_SIZE=(int)((int)2*Math.pow(10,8));
 			
 }

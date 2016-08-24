@@ -281,7 +281,9 @@ public class Constants {
 	public static final String			SUBJECT_FILE_USER_ID											= "subjectFile.userId";
 	public static final String			SUBJECT_FILE_COMMENTS										= "subjectFile.comments";
 
-	public static final String			STATE_SELECTOR_WMC											= "stateSelector";																								// WebMarkupContainer
+	public static final String			STATE_SELECTOR_WMC											= "stateSelector";
+	public static final String			SUBJECT_FILE_FILENAMELINK									= "subjectFile.link";
+	// WebMarkupContainer
 	// that
 	// will
 	// house
@@ -473,5 +475,11 @@ public class Constants {
 	public static final String STUDY_CALENDAR_STUDY_COMP = "studyCalendar.studyComp";
 	
 	public static final Integer MAXIMUM_ACCEPTABLE_AGE = 150;
+	
+	public static final String FILE="file";
+	
+	public static final String ARK_SUBJECT_CONSENT_DIR="consent";
+	
+	
 	
 }

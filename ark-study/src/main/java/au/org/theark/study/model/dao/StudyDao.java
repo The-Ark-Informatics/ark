@@ -2785,4 +2785,23 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		return correspondenceOutcomeTypes;
 	}
+
+	@Override
+	public boolean isAlreadyHasFileAttached(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp) {
+		Criteria criteria = getSession().createCriteria(SubjectFile.class);
+		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		List<SubjectFile> subjectFiles=criteria.list();
+		return (subjectFiles.size()>0);
+		
+	}
+
+	@Override
+	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy, StudyComp studyComp) {
+		Criteria criteria = getSession().createCriteria(SubjectFile.class);
+		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		criteria.setMaxResults(1);
+		return (SubjectFile)criteria.uniqueResult();
+	}
 }

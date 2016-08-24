@@ -46,6 +46,7 @@ import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -429,7 +430,11 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 //					containerForm.getModelObject().getCorrespondence().setAttachementChecksum(checksum);
 				}
 
-				studyService.update(containerForm.getModelObject().getCorrespondence(),checksum);
+				try {
+					studyService.update(containerForm.getModelObject().getCorrespondence(),checksum);
+				} catch (ArkFileNotFoundException e) {
+					this.error("Couldn't find the file.");;
+				}
 				this.info("Correspondence was successfully updated and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}

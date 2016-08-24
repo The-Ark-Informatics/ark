@@ -18,17 +18,15 @@
  ******************************************************************************/
 package au.org.theark.study.service;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import au.org.theark.core.model.study.entity.*;
-
 import org.apache.wicket.util.file.File;
 
-import com.csvreader.CsvReader;
-
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -40,6 +38,49 @@ import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
+import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
+import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
+import au.org.theark.core.model.study.entity.CorrespondenceModeType;
+import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
+import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
+import au.org.theark.core.model.study.entity.LinkStudySubstudy;
+import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectTwin;
+import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
+import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneStatus;
+import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCalendar;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.model.study.entity.SubjectFile;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.TwinType;
+import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.StudyModelVO;
@@ -190,7 +231,7 @@ public interface IStudyService {
 
 	public void update(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
 	
-	public void update(Correspondences correspondence, String checksum) throws ArkSystemException, EntityNotFoundException;
+	public void update(Correspondences correspondence, String checksum) throws ArkSystemException, EntityNotFoundException,ArkFileNotFoundException;
 
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
 
@@ -229,12 +270,12 @@ public interface IStudyService {
 	 * @throws ArkSystemException
 	 */
 
-	public void create(SubjectFile subjectFile) throws ArkSystemException;
+	public void create(SubjectFile subjectFile, String directoryType) throws ArkSystemException;
 	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
 	
-	public void update(SubjectFile subjectFile, String checksum) throws ArkSystemException, EntityNotFoundException;
+	public void update(SubjectFile subjectFile, String checksum) throws ArkSystemException, EntityNotFoundException,ArkFileNotFoundException;
 
-	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
+	public void delete(SubjectFile subjectFile,String directoryType) throws ArkSystemException, EntityNotFoundException,ArkFileNotFoundException;
 
 	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile) throws EntityNotFoundException, ArkSystemException;
 
@@ -466,7 +507,14 @@ public interface IStudyService {
 	public List<CustomField> getSelectedCalendarCustomFieldList(StudyCalendar studyCalendar);
 	
 	public List<RelationshipVo> getSubjectChildren(String subjectUID, long studyId);
+	
 	public void delete(OtherID otherID);
+	
 	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp);
+	
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType);
+	
+	public boolean isAlreadyHasFileAttached(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
+	
+	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy, StudyComp studyComp);
 }

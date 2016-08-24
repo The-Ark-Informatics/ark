@@ -139,31 +139,25 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxLink<String> buildLink(final Consent consent) {
-
 		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("studyComp.name") {
-
-
 			private static final long	serialVersionUID	= 1L;
-
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Long id = consent.getId();
-
 				try {
 					Consent consentFromBackend = studyService.getConsent(id);
 					containerForm.getModelObject().setConsent(consentFromBackend);
+					//Subject file need to be populated in here.
+					containerForm.getModelObject().setSubjectFile(studyService.getSubjectFileParticularConsent(consentFromBackend.getLinkSubjectStudy(), consentFromBackend.getStudyComp()));
 					// Add consentId into context (for use with consentFile(s))
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, consentFromBackend.getId());
-
 					WebMarkupContainer wmcPlain = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WMC_PLAIN);
 					WebMarkupContainer wmcRequested = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WMC_REQUESTED);
 					WebMarkupContainer wmcRecieved = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WMC_RECIEVED);
 					WebMarkupContainer wmcCompleted = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WMC_COMPLETED);
 
 					new FormHelper().updateStudyCompStatusDates(target, consentFromBackend.getStudyComponentStatus().getName(), wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
-
 					ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-
 				}
 				catch (ArkSystemException e) {
 					containerForm.error("A System Error has occured please contact Support");
