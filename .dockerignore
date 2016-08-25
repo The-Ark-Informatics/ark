@@ -12,3 +12,4 @@ selenium-2.40.0
 spark-bluegene
 tools
 */target
+docker/test/output

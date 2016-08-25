@@ -1,0 +1,11 @@
+version: '2'
+services:
+        test:
+                build: test
+                depends_on:
+                        - tomcat
+                links:
+                        - tomcat
+                        - mysql
+                volumes:
+                        - ./test/output:/output

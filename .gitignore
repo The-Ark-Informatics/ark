@@ -7,6 +7,7 @@
 **/velocity.log
 **/*.swp
 **/.completed
+docker/test/output
 
 # Properties.
 ark-container/src/main/resources/applicationContext.xml
