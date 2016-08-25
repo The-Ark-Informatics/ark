@@ -9,8 +9,6 @@ import au.org.theark.core.selenium.utilities.WicketBy;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.test.integration.BaseIntegrationTest;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.jetty.util.ArrayUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.*;
