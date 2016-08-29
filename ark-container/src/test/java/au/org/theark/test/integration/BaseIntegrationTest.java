@@ -90,10 +90,18 @@ public class BaseIntegrationTest extends TestCase {
         return wait.until((Function<WebDriver, WebElement>) driver -> driver.findElement(locator));
     }
 
-
-    //TODO: Manage case if there is different password, use env_file?
     public void loginAsSuperUser() {
-        loginAsUser("arksuperuser@ark.org.au", "Password_1");
+        String superUserName = "arksuperuser@ark.org.au";
+        String superUserPassword = "Password_1";
+
+        if (System.getenv("ARK_USERNAME") != null) {
+            superUserName = System.getenv("ARK_USERNAME");
+        }
+        if (System.getenv("ARK_SUPERUSER_PASSWORD") != null) {
+            superUserPassword = System.getenv("ARK_SUPERUSER_PASSWORD");
+        }
+
+        loginAsUser(superUserName, superUserPassword);
     }
 
     public void loginAsUser(String username, String password) {

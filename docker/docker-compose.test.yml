@@ -9,3 +9,4 @@ services:
                         - mysql
                 volumes:
                         - ./test/output:/output
+                env_file: env_file
