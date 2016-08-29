@@ -60,7 +60,7 @@ public class BaseIntegrationTest extends TestCase {
     @BeforeClass
     public static void openBrowser() {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
     @Before
@@ -86,7 +86,7 @@ public class BaseIntegrationTest extends TestCase {
     }
 
     protected WebElement waitForElement(final By locator) {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, 30);
         return wait.until((Function<WebDriver, WebElement>) driver -> driver.findElement(locator));
     }
 
@@ -110,7 +110,7 @@ public class BaseIntegrationTest extends TestCase {
         driver.findElement(By.name("signInButton")).click();
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
