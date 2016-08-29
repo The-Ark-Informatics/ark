@@ -81,6 +81,9 @@ public class BaseIntegrationTest extends TestCase {
         if (DOCKER_HOST != null && !DOCKER_HOST.isEmpty()) {
             ipAddress = DOCKER_HOST.replaceAll(".*://", "");
             ipAddress = HostAndPort.fromString(ipAddress).getHostText();
+        } else if (System.getenv("DOCKER") != null) {
+            // This is the case if the test was started in a container via docker-compose
+            ipAddress = "tomcat";
         }
         return ipAddress;
     }

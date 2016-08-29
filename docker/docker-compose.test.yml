@@ -9,4 +9,6 @@ services:
                         - mysql
                 volumes:
                         - ./test/output:/output
+                environment:
+                        - DOCKER=true
                 env_file: env_file
