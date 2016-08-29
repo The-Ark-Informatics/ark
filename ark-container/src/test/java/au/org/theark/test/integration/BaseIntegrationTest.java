@@ -60,6 +60,12 @@ public class BaseIntegrationTest extends TestCase {
     @BeforeClass
     public static void openBrowser() {
         driver = new FirefoxDriver();
+        Dimension size = driver.manage().window().getSize();
+        driver.manage().window().maximize();
+        // If the window size didn't change, assume that it couldn't resize the window so set the size to 1080p
+        if (driver.manage().window().getSize().equals(size)) {
+            driver.manage().window().setSize(new Dimension(1920, 1080));
+        }
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
