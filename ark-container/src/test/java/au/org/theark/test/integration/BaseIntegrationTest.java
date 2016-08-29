@@ -1,25 +1,17 @@
 package au.org.theark.test.integration;
 
-import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.web.pages.login.LoginPage;
 import com.google.common.base.Function;
 import com.google.common.net.HostAndPort;
 import junit.framework.TestCase;
 import org.apache.wicket.util.tester.WicketTester;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.StatelessSession;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.dialect.Dialect;
-import org.hibernate.internal.SessionFactoryImpl;
-import org.hibernate.service.ServiceRegistryBuilder;
-import org.hibernate.service.internal.StandardServiceRegistryImpl;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -31,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @Transactional

@@ -1,28 +1,16 @@
 package au.org.theark.test.integration.global;
 
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.selenium.utilities.WicketBy;
-import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.test.integration.BaseIntegrationTest;
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class ITestGlobal extends BaseIntegrationTest {
