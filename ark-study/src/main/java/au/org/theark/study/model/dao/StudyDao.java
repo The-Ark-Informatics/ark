@@ -618,19 +618,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
 
-		String subjectUID = linkSubjectStudy.getSubjectUID();
-		StringBuilder natBuilder = new StringBuilder();
-		Matcher matcher = Pattern.compile("\\d+").matcher(subjectUID);
-		int last_end = 0;
-		while(matcher.find()) {
-			if (matcher.start() > last_end) {
-				natBuilder.append(subjectUID.substring(last_end, matcher.start()));
-			}
-			String subjectUIDNumber = org.apache.commons.lang.StringUtils.leftPad(subjectUID.substring(matcher.start(), matcher.end()), 20, '0');
-			natBuilder.append(subjectUIDNumber);
-			last_end = matcher.end();
-		}
-		linkSubjectStudy.setNaturalUID(natBuilder.toString());
+        linkSubjectStudy.setNaturalUID(arkCommonService.generateNaturalUID(linkSubjectStudy.getSubjectUID()));
 
 		session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
 

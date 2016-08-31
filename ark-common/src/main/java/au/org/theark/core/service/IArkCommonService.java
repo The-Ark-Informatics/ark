@@ -1270,4 +1270,6 @@ public interface IArkCommonService<T> {
 	 */
 	public List<StudyComp> getDifferentStudyComponentsInConsentForSubject(Study study, LinkSubjectStudy linkSubjectStudy);
 
+	public String generateNaturalUID(String UID);
+
 }

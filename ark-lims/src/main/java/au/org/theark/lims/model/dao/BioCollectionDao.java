@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.dao.IStudyDao;
+import au.org.theark.core.service.IArkCommonService;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -60,10 +62,16 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	private static Logger		log	= LoggerFactory.getLogger(BioCollection.class);
 
 	private BioCollectionUidGenerator bioCollectionUidGenerator;
+	private IArkCommonService arkCommonService;
 
 	@Autowired
 	public void setBioCollectionUidGenerator(BioCollectionUidGenerator bioCollectionUidGenerator) {
 		this.bioCollectionUidGenerator = bioCollectionUidGenerator;
+	}
+
+	@Autowired
+	public void setArkCommonService(IArkCommonService arkCommonService) {
+		this.arkCommonService = arkCommonService;
 	}
 
 	public BioCollection getBioCollection(Long id) throws EntityNotFoundException {
@@ -138,6 +146,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		}
 		
 		biocollection.setBiocollectionUid(biocollectionUid);
+		biocollection.setNaturalUid(arkCommonService.generateNaturalUID(biocollectionUid));
 		getSession().save(biocollection);
 		getSession().refresh(biocollection);
 		return biocollection;
