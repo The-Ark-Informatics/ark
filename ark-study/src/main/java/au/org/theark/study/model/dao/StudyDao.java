@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
@@ -608,6 +610,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
 
 		LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
+
+        linkSubjectStudy.setNaturalUID(arkCommonService.generateNaturalUID(linkSubjectStudy.getSubjectUID()));
+
 		session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
 
 		autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());

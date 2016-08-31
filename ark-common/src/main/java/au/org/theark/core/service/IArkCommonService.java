@@ -1285,4 +1285,6 @@ public interface IArkCommonService<T> {
 	 */
 	public File retriveArkFileAttachmentAsFile(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException,ArkCheckSumNotSameException;
 
+	public String generateNaturalUID(String UID);
+
 }
