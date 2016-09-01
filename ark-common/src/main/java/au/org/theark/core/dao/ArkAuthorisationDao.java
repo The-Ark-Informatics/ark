@@ -1254,4 +1254,24 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		}
 	}
 	
+	public List<Study> getStudiesWithRoleForUser(ArkUserVO arkUserVO, ArkRole arkRole) {
+		try {
+			String ldapName = arkUserVO.getArkUserEntity().getLdapUserName();
+			if(isUserAdminHelper(ldapName, RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) ||
+					isUserAdminHelper(ldapName, RoleConstants.ARK_ROLE_ADMINISTATOR)) {
+				return getStudyListForUser(arkUserVO);
+			}
+
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+
+		criteria.add(Restrictions.eq("arkUser", arkUserVO.getArkUserEntity()));
+        criteria.add(Restrictions.eq("arkRole", arkRole));
+
+		criteria.setProjection(Projections.property("study"));
+
+		return criteria.list();
+	}
 }

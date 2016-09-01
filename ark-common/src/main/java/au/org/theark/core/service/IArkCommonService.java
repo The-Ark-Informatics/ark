@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import au.org.theark.core.dao.IArkAuthorisation;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.springframework.mail.MailSendException;
@@ -1287,4 +1288,6 @@ public interface IArkCommonService<T> {
 
 	public String generateNaturalUID(String UID);
 
-}
+	public IArkAuthorisation getArkAuthorisationDao();
+
+	}
