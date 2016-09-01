@@ -203,4 +203,5 @@ public interface IArkAuthorisation<T> {
 	
 	public void updateArkUserRoleListForExsistingUser(ArkUserVO arkUserVO);
 	
+	public List<Study> getStudiesWithRoleForUser(ArkUserVO arkUserVO, ArkRole arkRole);
 }
