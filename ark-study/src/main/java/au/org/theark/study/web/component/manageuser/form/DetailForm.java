@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -49,7 +48,6 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UserNameExistsException;
@@ -64,7 +62,6 @@ import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractUserDetailForm;
-import au.org.theark.study.model.dao.LdapUserDao;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -99,8 +96,14 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	private ModalWindow 			successModal;
 	private ConfirmationAnswer		confirmationAnswer;
 	
-	private final String modalText = "<p>This user already exists in The Ark. The user will be granted access to this study, but other user details (first name, last name, "
-			+ "email and password) will not be updated..</p>";
+	private final String modalText = "<p>This user already exists in The Ark. The user will be granted access to this study,"
+										+ " but other user details (first name, last name, email and password) will not be updated..</p>";
+	private ModalWindow          ldapDeleteConfirmModal;
+	private ModalWindow 			   ldapSuccessModal;
+	
+	private final String modalTextLdapDelete = "<p>This user does not have access to any other studies."
+												+ " Deleting the user from this study will remove the account from The Ark</p>";
+	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, feedBackPanel, arkCrudContainerVO, containerForm);
 		initialiseRemoveButton();
@@ -158,9 +161,9 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		listView.setReuseItems(true);
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().add(listView);
 		confirmationAnswer = new ConfirmationAnswer(false);
-		confirmModal = new ModalWindow("modalWindow");
+		confirmModal = new ModalWindow("confirmModal");
 		confirmModal.setCookieName("yesNoPanel");
-		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText, confirmModal, confirmationAnswer));
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText,"Add user for this study?", confirmModal, confirmationAnswer));
 		confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
 		private static final long serialVersionUID = 1L;
 			public void onClose(AjaxRequestTarget target) {
@@ -178,7 +181,37 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		});
 		successModal = new ModalWindow("successModalWindow");
 		successModal.setCookieName("okPanel");
-		successModal.setContent(new SuccessFullySaved(confirmModal.getContentId(), "The exsisting user added sucessfully to the Study", successModal));
+		successModal.setContent(new SuccessFullyDone(confirmModal.getContentId(), "The exsisting user added sucessfully to the Study","Sucessfully Saved." ,successModal));
+		
+		ldapDeleteConfirmModal = new ModalWindow("ldapDeleteConfirmModal");
+		ldapDeleteConfirmModal.setCookieName("yesNoPanel");
+		ldapDeleteConfirmModal.setContent(new YesNoPanel(ldapDeleteConfirmModal.getContentId(), modalTextLdapDelete, "Delete user form this study?",ldapDeleteConfirmModal, confirmationAnswer));
+		ldapDeleteConfirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+			private static final long serialVersionUID = 1L;
+				public void onClose(AjaxRequestTarget target) {
+					if (confirmationAnswer.isAnswer() ) {
+						try {
+							iUserService.deleteArkUser(containerForm.getModelObject());
+							ldapSuccessModal.show(target);
+							ldapSuccessModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+								@Override
+								public void onClose(AjaxRequestTarget target) {
+									editCancelProcess(target);
+								}
+							});
+						} catch (ArkSystemException e) {
+							getParent().error("System error:User not deleted properly.");
+							
+						} catch (EntityNotFoundException e) {
+							getParent().error("User not found.");
+						}
+					} else {
+					}
+				}
+		});
+		ldapSuccessModal = new ModalWindow("ldapSuccessModalWindow");
+		ldapSuccessModal.setCookieName("okPanel");
+		ldapSuccessModal.setContent(new SuccessFullyDone(ldapDeleteConfirmModal.getContentId(), "The exsisting user deleted sucessfully from the system.","Successfully deleted." ,ldapSuccessModal));
 		initChildStudyPalette();
 		attachValidators();
 		addDetailFormComponents();
@@ -243,6 +276,8 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(userNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(confirmModal);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(successModal);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(ldapDeleteConfirmModal);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(ldapSuccessModal);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(lastNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(emailTxtField);
@@ -308,23 +343,26 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			if(arkUser!=null){
 				//getCurrentLdapUser(*) will only set the First Name,Last name,Email address,etc and some basic properties only refer the mapper class.
 				ArkUserVO ldapuser=getCurrentLdapUser(userNameTxtField.getModelObject());
-				ldapuser.setArkUserRoleList(containerForm.getModelObject().getArkUserRoleList());
-				ldapuser.setArkUserEntity(arkUser);
-				ldapuser.setArkUserConfigs(containerForm.getModelObject().getArkUserConfigs());
-				ldapuser.setStudy(study);
-				@SuppressWarnings("unchecked")
-				List<ArkUserRole> arkUserRoleLst=iArkCommonService.getArkRoleListByUserAndStudy(ldapuser,ldapuser.getStudy());
-				//Check for existing user in ldap server.
-				if(arkUserRoleLst.size() < 1){
-					//containerForm.getModelObject().setMode(Constants.MODE_EDIT_USER_ROLE_ONLY);
-					containerForm.setModelObject(ldapuser);
-					target.add(containerForm);
-					//formComponentAjaxCall(target, false);
-					confirmModal.show(target);
+				if(ldapuser!=null){
+					ldapuser.setArkUserRoleList(containerForm.getModelObject().getArkUserRoleList());
+					ldapuser.setArkUserEntity(arkUser);
+					ldapuser.setArkUserConfigs(containerForm.getModelObject().getArkUserConfigs());
+					ldapuser.setStudy(study);
+					@SuppressWarnings("unchecked")
+					List<ArkUserRole> arkUserRoleLst=iArkCommonService.getArkRoleListByUserAndStudy(ldapuser,ldapuser.getStudy());
+					//Check for existing user in ldap server.
+					if(arkUserRoleLst.size() < 1){
+						//containerForm.getModelObject().setMode(Constants.MODE_EDIT_USER_ROLE_ONLY);
+						containerForm.setModelObject(ldapuser);
+						target.add(containerForm);
+						//formComponentAjaxCall(target, false);
+						confirmModal.show(target);
+					}else{
+						this.error(new StringResourceModel("user.exists", this, null).getString());
+					}
 				}else{
-					this.info(new StringResourceModel("user.exists", this, null).getString());
-				}
-				
+					this.error(new StringResourceModel("user.not.properly.register", this, null).getString());
+				}	
 			}else{
 			/********************************************************** end **********************************************************************************/	
 				try {
@@ -415,19 +453,16 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		// Remove the Ark User from the Ark Database and his roles.
-		try {
-			iUserService.deleteArkUser(containerForm.getModelObject());
-			this.info(new StringResourceModel("user.removed", this, null).getString());
-			editCancelProcess(target);
-		}
-		catch (EntityNotFoundException e) {
-			this.error(new StringResourceModel("user.notFound", this, null).getString());
-		}
-		catch (ArkSystemException e) {
-			this.error(new StringResourceModel("ark.system.error", this, null).getString());
-		}
-		onCancel(target);
+				//Remove the ark user completely from the system including Ldap
+			if(iUserService.getUserStudyListIncludeChildren(containerForm.getModelObject()).size()==1){
+				ldapDeleteConfirmModal.show(target);
+			}else{
+				// Remove the Ark User from the Ark Database and his roles.
+				iUserService.deleteArkUserRolesForStudy(containerForm.getModelObject().getStudy(), containerForm.getModelObject().getArkUserEntity());
+				this.info(new StringResourceModel("user.removed", this, null).getString());
+				editCancelProcess(target);
+				onCancel(target);
+			}
 	}
 
 	public void enableOrDisableRemoveButton() {
@@ -443,7 +478,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			}
 		}
 		catch (ArkSystemException e) {
-
 			e.printStackTrace();
 		}
 	}
@@ -459,7 +493,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			try {
 					arkUserVO=iUserService.getCurrentUser(userNameTxtField.getModelObject());
 			} catch (EntityNotFoundException e1) {
-					return null;
+				this.error(e1.getMessage());
 			}
 		} 
 		return arkUserVO;

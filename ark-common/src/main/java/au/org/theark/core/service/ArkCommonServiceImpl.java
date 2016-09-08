@@ -2143,9 +2143,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return file;
 	}
 
-	
+	@Override
+	public List<StudyCompStatus> getConsentStudyComponentStatusForStudyAndStudyComp(Study study, StudyComp studyComp) {
+		return studyDao.getConsentStudyComponentStatusForStudyAndStudyComp(study, studyComp);
+	}
 
-	
+	@Override
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp,StudyCompStatus studyCompStatus) {
+		return studyDao.getConsentStatusForStudyStudyCompAndStudyCompStatus(study,studyComp,studyCompStatus);
+	}
 	
 	
 }

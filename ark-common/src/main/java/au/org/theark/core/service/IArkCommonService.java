@@ -1284,5 +1284,21 @@ public interface IArkCommonService<T> {
 	 * @throws ArkCheckSumNotSameException
 	 */
 	public File retriveArkFileAttachmentAsFile(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException,ArkCheckSumNotSameException;
+	
+	/**
+	 * 
+	 * @param study
+	 * @param studyComp
+	 * @return
+	 */
+	public List<StudyCompStatus> getConsentStudyComponentStatusForStudyAndStudyComp(Study study,StudyComp studyComp);
+	/**
+	 * 
+	 * @param study
+	 * @param studyComp
+	 * @param studyCompStatus
+	 * @return
+	 */
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study,StudyComp studyComp,StudyCompStatus studyCompStatus);
 
 }

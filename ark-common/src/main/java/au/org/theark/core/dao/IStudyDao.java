@@ -45,6 +45,7 @@ import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchPayload;
 import au.org.theark.core.model.report.entity.SearchResult;
 import au.org.theark.core.model.report.entity.SearchSubject;
+import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -771,4 +772,10 @@ public interface IStudyDao {
 	public List<StudyComp> getStudyComponentsNeverUsedInThisSubject(Study study,LinkSubjectStudy linkSubjectStudy);
 	
 	public List<StudyComp> getDifferentStudyComponentsInConsentForSubject(Study study,LinkSubjectStudy linkSubjectStudy);
+	
+	public List<StudyCompStatus> getConsentStudyComponentStatusForStudyAndStudyComp(Study study, StudyComp studyComp);
+	
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp,StudyCompStatus studyCompStatus);
+	
+	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException;
 }

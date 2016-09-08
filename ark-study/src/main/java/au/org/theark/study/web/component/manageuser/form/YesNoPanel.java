@@ -18,7 +18,7 @@ public class YesNoPanel extends Panel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public YesNoPanel(String id, String message, final ModalWindow modalWindow, final ConfirmationAnswer confirmationAnswer) {
+	public YesNoPanel(String id, String message, String title,final ModalWindow modalWindow, final ConfirmationAnswer confirmationAnswer) {
 		super(id);
 
 		Form yesNoForm = new Form("yesNoForm");
@@ -28,7 +28,7 @@ public class YesNoPanel extends Panel {
 		messageLabel.setEscapeModelStrings(false);
 
 		yesNoForm.add(messageLabel);
-		modalWindow.setTitle("Add user for this study?");
+		modalWindow.setTitle(title);
 
 		modalWindow.setResizable(false);
 		modalWindow.setUseInitialHeight(true);

@@ -70,6 +70,7 @@ import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.AJAXDownload;
+
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -107,19 +108,19 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	protected DateTextField							consentReceivedDtf;
 	protected DateTextField							consentCompletedDtf;
 
-	protected DropDownChoice<StudyComp>			studyComponentChoice;
-	protected DropDownChoice<StudyCompStatus>	studyComponentStatusChoice;
-	protected DropDownChoice<ConsentStatus>	consentStatusChoice;
-	protected DropDownChoice<ConsentType>		consentTypeChoice;
+	protected DropDownChoice<StudyComp>				studyComponentChoice;
+	protected DropDownChoice<StudyCompStatus>		studyComponentStatusChoice;
+	protected DropDownChoice<ConsentStatus>			consentStatusChoice;
+	protected DropDownChoice<ConsentType>			consentTypeChoice;
 	protected TextArea<String>						commentTxtArea;
 	protected WebMarkupContainer					wmcPlain;
 	protected WebMarkupContainer					wmcRequested;
 	protected WebMarkupContainer					wmcRecieved;
 	protected WebMarkupContainer					wmcCompleted;
-	protected DropDownChoice<YesNo>				consentDownloadedDdc;
+	protected DropDownChoice<YesNo>					consentDownloadedDdc;
 	protected CollapsiblePanel						consentHistoryPanel;
 	protected FileUploadField						fileUploadField;
-	private AjaxButton										clearButton;
+	private AjaxButton								clearButton;
 	protected HistoryButtonPanel					historyButtonPanel;
 	private Label									fileNameLbl;
 	private ArkBusyAjaxLink<String>  				fileNameLnk;

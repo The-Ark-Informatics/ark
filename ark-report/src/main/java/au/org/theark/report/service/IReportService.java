@@ -21,6 +21,7 @@ package au.org.theark.report.service;
 import java.util.List;
 import java.util.Map;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
@@ -80,5 +81,7 @@ public interface IReportService {
 	public List<BiospecimenSummaryDataRow> getBiospecimenSummaryData(final BiospecimenSummaryReportVO biospecimenSummaryReportVO);
 	
 	public List<BiospecimenDetailsDataRow> getBiospecimenDetailsData(BiospecimenDetailsReportVO biospecimenDetailReportVO);
+	
+	public List<StudyComponentDetailsDataRow> getStudyComponentDataRow(StudyComponentReportVO studyComponentReportVO)throws ArkSystemException, EntityNotFoundException;
 
 }

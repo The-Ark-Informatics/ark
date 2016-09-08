@@ -216,7 +216,13 @@ public class UserServiceImpl implements IUserService {
 
 	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException {
 		// Note: Only Remove the Ark User from database not in LDAP
+		iLdapUserDao.deleteArkUser(arkUserVO);
 		iArkAuthorisationService.deleteArkUser(arkUserVO);
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Ark User (in LDAP) " + arkUserVO.getUserName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	/**
@@ -290,5 +296,9 @@ public class UserServiceImpl implements IUserService {
 	}
 	public void updateArkUserRoleListForExsistingUser(ArkUserVO arkUserVO){
 		iArkAuthorisationService.updateArkUserRoleListForExsistingUser(arkUserVO);
+	}
+	public List<Study> getUserStudyListIncludeChildren(ArkUserVO arkUserVO){
+		return iArkAuthorisationService.getUserStudyListIncludeChildren(arkUserVO);
+		
 	}
 }

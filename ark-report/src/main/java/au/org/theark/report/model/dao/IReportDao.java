@@ -21,6 +21,8 @@ package au.org.theark.report.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
@@ -121,5 +123,7 @@ public interface IReportDao {
 	public List<BiospecimenSummaryDataRow> getBiospecimenSummaryData(final BiospecimenSummaryReportVO biospecimenSummaryReportVO);
 	
 	public List<BiospecimenDetailsDataRow> getBiospecimenDetailsData(final BiospecimenDetailsReportVO biospecimenDetailReportVO);
+	
+	public List<StudyComponentDetailsDataRow> getStudyComponentDataRow(StudyComponentReportVO studyComponentReportVO);
 
 }

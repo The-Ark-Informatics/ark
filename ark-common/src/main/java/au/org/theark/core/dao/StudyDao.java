@@ -435,8 +435,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
 			}
 		}
-		criteria.addOrder(Order.asc("subjectUID"));
-		//criteria.addOrder(OrderByNatural.asc("subjectUID"));
+		//criteria.addOrder(Order.asc("subjectUID"));
+		criteria.addOrder(Order.asc("naturalUID"));
 		List<LinkSubjectStudy> list = criteria.list();
 
 		Collection<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
@@ -967,8 +967,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		//criteria.addOrder(OrderByBorder"{alias}.STUDY_ID, length({alias}.SUBJECT_UID), {alias}.SUBJECT_UID");
 
 		criteria.setProjection(Projections.distinct(Projections.projectionList().add(Projections.id())));
-		criteria.addOrder(Order.asc("subjectUID"));
-		//criteria.addOrder(OrderByNatural.asc("subjectUID"));
+		//criteria.addOrder(Order.asc("subjectUID"));
+		criteria.addOrder(Order.asc("naturalUID"));
 		return criteria;
 	}
 
@@ -5375,4 +5375,69 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return fieldsList;
 	}
 
+	@Override
+	public List<StudyCompStatus> getConsentStudyComponentStatusForStudyAndStudyComp(Study study, StudyComp studyComp) {
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study",study));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("studyComponentStatus"));
+		criteria.setProjection(projectionList);
+		criteria.addOrder(Order.asc("id"));
+		List<StudyCompStatus> fieldsList = criteria.list();
+		return fieldsList;
+	}
+
+	@Override
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp,StudyCompStatus studyCompStatus) {
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study",study));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		criteria.add(Restrictions.eq("studyComponentStatus",studyCompStatus));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("consentStatus"));
+		criteria.setProjection(projectionList);
+		criteria.addOrder(Order.asc("id"));
+		List<ConsentStatus> fieldsList = criteria.list();
+		return fieldsList;
+	}
+
+	@Override
+	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(Address.class);
+
+		if (personId != null) {
+			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+
+		if (address != null) {
+			// Add criteria for address
+			if (address.getStreetAddress() != null) {
+				criteria.add(Restrictions.ilike(Constants.STREET_ADDRESS, address.getStreetAddress(), MatchMode.ANYWHERE));
+			}
+
+			if (address.getCountry() != null) {
+				criteria.add(Restrictions.eq(Constants.COUNTRY_NAME, address.getCountry()));
+			}
+
+			if (address.getPostCode() != null) {
+				criteria.add(Restrictions.eq(Constants.POST_CODE, address.getPostCode()));
+			}
+
+			if (address.getCity() != null) {
+				criteria.add(Restrictions.ilike(Constants.CITY, address.getCity()));
+			}
+
+			if (address.getState() != null) {
+				criteria.add(Restrictions.eq(Constants.STATE_NAME, address.getState()));
+			}
+
+			if (address.getAddressType() != null) {
+				criteria.add(Restrictions.eq(Constants.ADDRESS_TYPE, address.getAddressType()));
+			}
+	}
+		List<Address> personAddressList = criteria.list();
+		return personAddressList;
+	
+	}
 }
