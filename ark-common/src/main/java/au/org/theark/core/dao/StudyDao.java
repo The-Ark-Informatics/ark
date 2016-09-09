@@ -436,6 +436,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 		//criteria.addOrder(Order.asc("subjectUID"));
+		//criteria.addOrder(OrderByNatural.asc("subjectUID"));
+
 		criteria.addOrder(Order.asc("naturalUID"));
 		List<LinkSubjectStudy> list = criteria.list();
 

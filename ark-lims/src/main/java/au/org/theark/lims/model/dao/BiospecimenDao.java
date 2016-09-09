@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.service.IArkCommonService;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -74,6 +75,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	private BiospecimenUidGenerator		biospecimenUidGenerator;
 	private IBioTransactionDao	iBioTransactionDao;
 	private IStudyDao iStudyDao;
+	private IArkCommonService arkCommonService;
 	/**
 	 * @param iBioTransactionDao
 	 *           the iBioTransactionDao to set
@@ -94,6 +96,11 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	@Autowired
 	public void setBiospecimenUidGenerator(BiospecimenUidGenerator biospecimenUidGenerator) {
 		this.biospecimenUidGenerator = biospecimenUidGenerator;
+	}
+
+	@Autowired
+	public void setArkCommonService(IArkCommonService arkCommonService) {
+		this.arkCommonService = arkCommonService;
 	}
 
 	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException {	
@@ -164,6 +171,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		}
 		
 		biospecimen.setBiospecimenUid(biospecimenUid);
+		biospecimen.setNaturalUid(arkCommonService.generateNaturalUID(biospecimenUid));
 		getSession().save(biospecimen);
 	}
 
@@ -272,12 +280,13 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			}
 		}
 		else {
+			//Global Search
 			criteria.add(Restrictions.in("study", limsVo.getStudyList()));
 			criteria.createAlias("study", "st");
 			criteria.addOrder(Order.asc("st.name"));
 			criteria.addOrder(Order.asc("lss.subjectUID"));
-			criteria.addOrder(Order.asc("bc.biocollectionUid"));
-			criteria.addOrder(Order.asc("biospecimenUid"));
+			criteria.addOrder(Order.asc("bc.naturalUid"));
+			criteria.addOrder(Order.asc("naturalUid"));
 		}
 		
 		// Restrict on linkSubjectStudy in the LimsVO (or biospecimen)

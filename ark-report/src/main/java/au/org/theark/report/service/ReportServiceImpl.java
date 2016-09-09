@@ -487,7 +487,7 @@ public class ReportServiceImpl implements IReportService {
 				do {
 					pickAddress=findPickAddressWithAddressStatus(addressStatus.get(i), addressLst);
 					i++;
-				} while (pickAddress ==null || (i==addressStatus.size()-1));
+				} while (pickAddress ==null && (i!=addressStatus.size()-1));
 			}
 		return pickAddress;
 	}

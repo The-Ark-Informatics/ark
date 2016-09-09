@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.MimeMessage;
 import javax.naming.InvalidNameException;
@@ -48,6 +50,7 @@ import javax.naming.ldap.Rdn;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
@@ -2152,6 +2155,18 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp,StudyCompStatus studyCompStatus) {
 		return studyDao.getConsentStatusForStudyStudyCompAndStudyCompStatus(study,studyComp,studyCompStatus);
 	}
-	
-	
+	public String generateNaturalUID(String UID) {
+		StringBuilder natBuilder = new StringBuilder();
+		Matcher matcher = Pattern.compile("\\d+").matcher(UID);
+		int last_end = 0;
+		while (matcher.find()) {
+			if (matcher.start() > last_end) {
+				natBuilder.append(UID.substring(last_end, matcher.start()));
+			}
+			String subjectUIDNumber = StringUtils.leftPad(UID.substring(matcher.start(), matcher.end()), 20, '0');
+			natBuilder.append(subjectUIDNumber);
+			last_end = matcher.end();
+		}
+		return natBuilder.toString();
+	}
 }

@@ -608,7 +608,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
 
 		LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
-		
 		String subjectUID = linkSubjectStudy.getSubjectUID();
 		StringBuilder natBuilder = new StringBuilder();
 		Matcher matcher = Pattern.compile("\\d+").matcher(subjectUID);
@@ -622,9 +621,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			last_end = matcher.end();
 		}
 		linkSubjectStudy.setNaturalUID(natBuilder.toString());
-		
 		session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
-
 		autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
 
 		// TODO EXCEPTIONHANDLING

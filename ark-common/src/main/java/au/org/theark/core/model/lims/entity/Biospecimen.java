@@ -63,6 +63,7 @@ public class Biospecimen implements java.io.Serializable {
 	private static final long			serialVersionUID	= -6811160809915149538L;
 	private Long							id;
 	private String							biospecimenUid;
+	private String							naturalUid;
 	private Study							study;
 	private Long							substudyId;
 	private LinkSubjectStudy			linkSubjectStudy;
@@ -169,6 +170,16 @@ public class Biospecimen implements java.io.Serializable {
 
 	public void setBiospecimenUid(String biospecimenUid) {
 		this.biospecimenUid = biospecimenUid;
+	}
+
+	@NotAudited
+	@Column(name = "NATURAL_UID")
+	public String getNaturalUid() {
+		return naturalUid;
+	}
+
+	public void setNaturalUid(String naturalUid) {
+		this.naturalUid = naturalUid;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
