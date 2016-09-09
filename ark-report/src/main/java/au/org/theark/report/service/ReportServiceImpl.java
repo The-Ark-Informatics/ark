@@ -451,7 +451,13 @@ public class ReportServiceImpl implements IReportService {
 		List<StudyComponentDetailsDataRow> results=reportDao.getStudyComponentDataRow(studyComponentReportVO);
 		for (StudyComponentDetailsDataRow studyComponentDetailsDataRow : results) {
 			Address reportAddress=pickPersonReportAddress(studyDao.getPerson(studyComponentDetailsDataRow.getPersonId()));
-				studyComponentDetailsDataRow.setStreetAddress((reportAddress!=null && reportAddress.getStreetAddress()!=null && reportAddress.getAddressLineOne()!=null)?(reportAddress.getAddressLineOne()+" "+reportAddress.getStreetAddress()):"");
+				if(reportAddress!=null && reportAddress.getStreetAddress()!=null && reportAddress.getAddressLineOne()!=null){
+					studyComponentDetailsDataRow.setStreetAddress((reportAddress.getAddressLineOne()+" "+reportAddress.getStreetAddress()));
+				}else if(reportAddress!=null && reportAddress.getStreetAddress()==null && reportAddress.getAddressLineOne()!=null) {
+					studyComponentDetailsDataRow.setStreetAddress((reportAddress.getAddressLineOne()));
+				}else if(reportAddress!=null && reportAddress.getStreetAddress()!=null && reportAddress.getAddressLineOne()==null){
+					studyComponentDetailsDataRow.setStreetAddress((reportAddress.getStreetAddress()));
+				}
 				studyComponentDetailsDataRow.setSuburb((reportAddress!=null && reportAddress.getCity()!=null)?reportAddress.getCity():"");
 				studyComponentDetailsDataRow.setState((reportAddress!=null && reportAddress.getState().getName()!=null)?reportAddress.getState().getName():"");
 				studyComponentDetailsDataRow.setPostcode((reportAddress!=null && reportAddress.getPostCode()!=null)?reportAddress.getPostCode():"");
@@ -514,7 +520,7 @@ public class ReportServiceImpl implements IReportService {
 			Collections.sort(tempAddressLstCanSort, new Comparator<Address>() {
 				@Override
 				public int compare(Address o1, Address o2) {
-					return o1.getDateReceived().compareTo(o2.getDateReceived());
+					return o2.getDateReceived().compareTo(o1.getDateReceived());
 				}
 			});
 		if(tempAddressLstCanSort.size()>0){
