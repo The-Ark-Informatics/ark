@@ -194,6 +194,10 @@ public class ITestStudy extends BaseIntegrationTest {
             e.printStackTrace();
         }
 
+        //Delete user from study modal
+        driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:ldapDeleteConfirmModal:content:yesNoForm:yesButton")).click();
+        driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:ldapSuccessModalWindow:content:success:okButton")).click();
+
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
