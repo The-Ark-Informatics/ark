@@ -153,7 +153,7 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 				ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
 				ArkUserVO arkUserVo = new ArkUserVO();
 				arkUserVo.setArkUserEntity(arkUser);
-				List<Study> studies = new ArrayList<>();
+				List<Study> studies = new ArrayList<Study>();
 				studies = iArkCommonService.getArkAuthorisationDao().getStudiesWithRoleForUser(arkUserVo, iArkCommonService.getArkAuthorisationDao().getArkRoleByName("LIMS Administrator"));
 				criteria.add(Restrictions.in("study", studies));
 			} catch (EntityNotFoundException e) {

@@ -5442,4 +5442,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return personAddressList;
 	
 	}
+	@Override
+	public void deleteUpload(final Upload upload) {
+		getSession().delete(upload);
+	}
+	
 }

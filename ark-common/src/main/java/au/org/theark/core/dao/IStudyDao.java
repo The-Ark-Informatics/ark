@@ -778,4 +778,6 @@ public interface IStudyDao {
 	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp,StudyCompStatus studyCompStatus);
 	
 	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException;
+	
+	public void deleteUpload(final Upload upload);
 }

@@ -5,28 +5,43 @@
 		<tr>
 			<th width="2%">&nbsp;</th>
 			<th width="5%">
-				<wicket:message	key="upload.id">Upload ID</wicket:message>
+				<label for="col1">
+					<wicket:message	key="upload.id">Upload ID</wicket:message>
+				</label>
 			</th>
 			<th width="15%">
-				<wicket:message	key="upload.filename">Name</wicket:message>
+				<label for="col2">
+					<wicket:message	key="upload.filename">Name</wicket:message>
+				</label>
 			</th>
 			<th width="5%">
-				<wicket:message	key="upload.fileFormat">File Format</wicket:message>
+				<label for="col3">
+					<wicket:message	key="upload.fileFormat">File Format</wicket:message>
+				</label>
 			</th>
 			<th width="5%">
-				<wicket:message	key="upload.userId">Uploaded By</wicket:message>
+				<label for="col4">
+					<wicket:message	key="upload.userId">Uploaded By</wicket:message>
+				</label>
 			</th>
-			<th width="5%">
-				<wicket:message	key="upload.startTime">Start Time</wicket:message>
+			<th width="7%">
+				<label for="col6">
+					<wicket:message	key="upload.startTime">Start Time</wicket:message>
+				</label>
 			</th>
-			<th width="5%">
-				<wicket:message	key="upload.finishTime">Finish Time</wicket:message>
+			<th width="7%">
+				<label for="col7">
+					<wicket:message	key="upload.finishTime">Finish Time</wicket:message>
+				</label>
 			</th>
-			<th width="20%" colspan="2">
+			<th width="15%" colspan="1">
+			<label for="col7">
 				<input wicket:id="downloadTemplateField" type="button" value="Download Pheno DataSet Field Template" /><br/>
 				<input wicket:id="downloadTemplateCategory" type="button" value="Download Pheno DataSet Category Template " />
+				<div wicket:id="confirmModal"></div>
+			</label>	
 			</th>
-			<th width="22%">
+			<th width="10%">
 				<wicket:message	key="upload.uploadStatusName">Upload Status</wicket:message>				
 			</th>
 			<th width="2%">&nbsp;</th>
@@ -52,16 +67,14 @@
 			<td width="5%">
 				<span wicket:id="upload.finishTime">Finish Time</span>
 			</td>
-			<td width="10%">
+			<td width="15%">
 			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />&nbsp;
+			  	<input wicket:id="downloadReport" type="submit" wicket:message="value:button.downloadReport" />&nbsp;
+			  	<input wicket:id="deleteUpload" type="submit" wicket:message="value:button.deleteUpload" />&nbsp;
 			</td>
 			<td width="10%">
-				<input wicket:id="downloadReport" type="submit" wicket:message="value:button.downloadReport" />&nbsp;
-			</td>
-			<td width="22%">
 				<span wicket:id="upload.uploadStatus.name">Upload Status</span>
 			</td>
-			
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<!--  The navigation bar -->

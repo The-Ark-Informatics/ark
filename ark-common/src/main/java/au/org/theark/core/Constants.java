@@ -742,6 +742,7 @@ public class Constants {
 	public static final String	CITY							= "city";
 	public static final String	STATE_NAME						= "state";
 	public static final String	ADDRESS_TYPE					= "addressType";
+	public static final String DELETE_UPLOAD 					= "deleteUpload";
 
 			
 }

@@ -61,6 +61,8 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.palette.ArkPalette;
+import au.org.theark.core.web.component.panel.ConfirmationAnswer;
+import au.org.theark.core.web.component.panel.YesNoPanel;
 import au.org.theark.core.web.form.AbstractUserDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;

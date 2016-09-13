@@ -1305,5 +1305,7 @@ public interface IArkCommonService<T> {
 	public String generateNaturalUID(String UID);
 
 	public IArkAuthorisation getArkAuthorisationDao();
+	
+	public void deleteUpload(final Upload upload);
 
 	}

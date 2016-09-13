@@ -1,4 +1,4 @@
-package au.org.theark.study.web.component.manageuser.form;
+package au.org.theark.core.web.component.panel;
 
 
 

@@ -2169,4 +2169,17 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		}
 		return natBuilder.toString();
 	}
+
+	@Override
+	public void deleteUpload(Upload upload) {
+		AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+			ah.setComment("Deleted Upload " + upload.getFilename());
+			ah.setEntityId(upload.getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+			this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), upload.getStudy());
+			studyDao.deleteUpload(upload);
+	}
+	
+	
 }
