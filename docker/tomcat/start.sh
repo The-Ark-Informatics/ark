@@ -1,26 +1,23 @@
 #!/bin/bash
 
-cd /usr/src/app/ark-common/src/main/native/madeline
+if [ ! -d /usr/target ]; then 
+	echo "Volumes from base container not mounted. Mount volumes and try again"
+	exit 1
+fi
 
-sed -i "s/java-6-openjdk-amd64/java-8-openjdk-amd64/g" Makefile
-make clean
-make
-
-cd -
-
-mv /usr/src/app/ark-common/src/main/native/madeline/libmadeline.so /usr/local/tomcat/lib/
-chown root:root /usr/local/tomcat/lib/libmadeline.so
-chmod 644 /usr/local/tomcat/lib/libmadeline.so
-#execstack -c /usr/local/tomcat/lib/libmadeline.so
-
-while [ ! -f "/usr/src/app/.complete" ]; do
-	echo "ARK war not available yet, sleeping 5s then trying again..."
-	sleep 5
+while [ ! -f /usr/target/libmadeline.so ]; do
+	sleep 1
 done
 
-rm /usr/src/app/.complete
-mv /usr/src/app/ark-container/target/ark.war webapps/ark.war
+mv /usr/target/libmadeline.so /usr/local/tomcat/lib
+chown root:root /usr/local/tomcat/lib/libmadeline.so
+chmod 644 /usr/local/tomcat/lib/libmadeline.so
 
-export JAVA_OPTS="-Djava.library.path=/usr/local/tomcat/lib"
+
+while [ ! -f /usr/target/ark.war ]; do
+	sleep 1
+done
+
+mv /usr/target/ark.war webapps/ark.war
+
 catalina.sh jpda run 
-
