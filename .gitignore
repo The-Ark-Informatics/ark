@@ -8,6 +8,7 @@
 **/*.swp
 **/.completed
 docker/test/output
+docker/.env
 
 # Properties.
 ark-container/src/main/resources/applicationContext.xml
