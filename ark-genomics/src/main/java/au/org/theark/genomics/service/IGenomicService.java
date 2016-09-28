@@ -2,6 +2,7 @@ package au.org.theark.genomics.service;
 
 import java.util.List;
 
+import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.spark.entity.Analysis;
 import au.org.theark.core.model.spark.entity.Computation;
@@ -23,7 +24,7 @@ public interface IGenomicService {
 	
 	public void save(Computation computation, byte[] attachement) throws ArkSystemException;
 
-	public void update(Computation computation,byte[] attachement, String checksum) throws ArkSystemException;
+	public void update(Computation computation,byte[] attachement, String checksum) throws ArkBaseException,ArkSystemException;
 
 	public void delete(MicroService microService);
 	
@@ -75,7 +76,7 @@ public interface IGenomicService {
 	
 	public void save(Analysis analysis, byte[] attachement) throws ArkSystemException; 
 	
-	public void update(Analysis analysis, byte[] attachement, String checksum) throws ArkSystemException;
+	public void update(Analysis analysis, byte[] attachement, String checksum) throws ArkBaseException,ArkSystemException;
 	
 	public String submitToQueue(Analysis analysis);
 	

@@ -21,6 +21,7 @@ package au.org.theark.phenotypic.web.component.phenodataupload;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -40,7 +41,8 @@ import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
+import au.org.theark.core.web.component.panel.ConfirmationAnswer;
+import au.org.theark.core.web.component.panel.YesNoPanel;
 import au.org.theark.phenotypic.web.component.phenodataupload.form.ContainerForm;
 
 /**
@@ -57,9 +59,16 @@ public class SearchResultListPanel extends Panel {
 	private static final long	serialVersionUID	= 6150100976180421479L;
 
 	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
+	private ModalWindow 			confirmModal;
+	private ConfirmationAnswer		confirmationAnswer;
+	private final String modalText = "<p>You are about to delete this record of</p><p><b>*.</b></p></p><p> But it will never delete the data imported to the Ark from this file previously.</p>";
+	private SearchResultListPanel me;
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
+		this.setOutputMarkupId(true);
+		me=this;
+		initConfirmModel();
 	}
 
 	/**
@@ -139,6 +148,7 @@ public class SearchResultListPanel extends Panel {
 				// Download upload report button
 				item.add(buildDownloadReportButton(upload));
 
+				item.add(buildDeleteUploadButton(upload));
 				// Delete the upload file
 				// item.add(buildDeleteButton(upload));
 
@@ -245,6 +255,53 @@ public class SearchResultListPanel extends Panel {
 			ajaxButton.setVisible(false);
 
 		return ajaxButton;
+	}
+	/**
+	 * 
+	 * @param upload
+	 * @return
+	 */
+	private AjaxButton buildDeleteUploadButton(Upload upload){
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.core.Constants.DELETE_UPLOAD){
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				updateModelAndVarifyForDeleteUpload(upload);
+				confirmModal.show(target);
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("onError called when buildDeleteUploadButton pressed");
+			};
+		};
+		ajaxButton.setDefaultFormProcessing(false);
+		return ajaxButton;
+	}
+	/**
+	 * 
+	 * @param upload
+	 */
+	private void updateModelAndVarifyForDeleteUpload(Upload upload) {
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText.replace("*"," ["+upload.getId()+"] "+upload.getFilename()),"Delete upload record.", confirmModal, confirmationAnswer));
+		confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+		private static final long serialVersionUID = 1L;
+			public void onClose(AjaxRequestTarget target) {
+				if (confirmationAnswer.isAnswer() ) {
+					iArkCommonService.deleteUpload(upload);
+					target.add(me);
+				} else {//if no nothing be done.Just close I guess
+				}
+			}
+		});
+		addOrReplace(confirmModal);
+	}
+	
+	private void initConfirmModel(){
+		confirmationAnswer = new ConfirmationAnswer(false);
+		confirmModal = new ModalWindow("confirmModal");
+		confirmModal.setCookieName("yesNoPanel");
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText,"Delete upload record.", confirmModal, confirmationAnswer));
+		addOrReplace(confirmModal);
 	}
 
 	/*

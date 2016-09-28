@@ -56,10 +56,8 @@ public class StudyComp implements java.io.Serializable {
 	private String description;
 	private String keyword;
 
-	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(
-			0);
-	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(
-			0);
+	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(0);
+	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(0);
 
 	public StudyComp() {
 	}

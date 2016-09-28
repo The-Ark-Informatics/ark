@@ -517,4 +517,8 @@ public interface IStudyDao {
 	public void delete(OtherID otherID);
 	
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType);
+	
+	public boolean isAlreadyHasFileAttached(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
+	
+	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
 }

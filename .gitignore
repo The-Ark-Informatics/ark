@@ -9,6 +9,7 @@
 **/.completed
 docker/test/output
 docker/.env
+**/.vagrant
 
 # Properties.
 ark-container/src/main/resources/applicationContext.xml

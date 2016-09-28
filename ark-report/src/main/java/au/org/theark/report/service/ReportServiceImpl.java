@@ -19,6 +19,9 @@
 package au.org.theark.report.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +38,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
@@ -441,6 +445,93 @@ public class ReportServiceImpl implements IReportService {
 			BiospecimenDetailsReportVO biospecimenDetailReportVO) {
 		// TODO Auto-generated method stub
 		return reportDao.getBiospecimenDetailsData(biospecimenDetailReportVO);
+	}
+
+	public List<StudyComponentDetailsDataRow> getStudyComponentDataRow(StudyComponentReportVO studyComponentReportVO) throws ArkSystemException, EntityNotFoundException {
+		List<StudyComponentDetailsDataRow> results=reportDao.getStudyComponentDataRow(studyComponentReportVO);
+		for (StudyComponentDetailsDataRow studyComponentDetailsDataRow : results) {
+			Address reportAddress=pickPersonReportAddress(studyDao.getPerson(studyComponentDetailsDataRow.getPersonId()));
+				if(reportAddress!=null && reportAddress.getStreetAddress()!=null && reportAddress.getAddressLineOne()!=null){
+					studyComponentDetailsDataRow.setStreetAddress((reportAddress.getAddressLineOne()+" "+reportAddress.getStreetAddress()));
+				}else if(reportAddress!=null && reportAddress.getStreetAddress()==null && reportAddress.getAddressLineOne()!=null) {
+					studyComponentDetailsDataRow.setStreetAddress((reportAddress.getAddressLineOne()));
+				}else if(reportAddress!=null && reportAddress.getStreetAddress()!=null && reportAddress.getAddressLineOne()==null){
+					studyComponentDetailsDataRow.setStreetAddress((reportAddress.getStreetAddress()));
+				}
+				studyComponentDetailsDataRow.setSuburb((reportAddress!=null && reportAddress.getCity()!=null)?reportAddress.getCity():"");
+				studyComponentDetailsDataRow.setState((reportAddress!=null && reportAddress.getState().getName()!=null)?reportAddress.getState().getName():"");
+				studyComponentDetailsDataRow.setPostcode((reportAddress!=null && reportAddress.getPostCode()!=null)?reportAddress.getPostCode():"");
+				studyComponentDetailsDataRow.setCountry((reportAddress!=null && reportAddress.getCountry().getName()!=null)?reportAddress.getCountry().getName():"");
+		}
+		return results;
+	}
+	
+	/**
+	 * 
+	 * @param person
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	private Address pickPersonReportAddress(Person person) throws ArkSystemException{
+			Address pickAddress=null;
+			List<String> addressStatus = Arrays.asList("Current", "Current - Alternative", "Current - Under Investigation");	
+			List<Address> addressLst=studyDao.getPersonAddressList(person.getId(), null);
+			//1.Preferred
+			for (Address address : addressLst) {
+				if(address.getPreferredMailingAddress()){
+					pickAddress=address;
+					break;
+				}
+			}
+			// if still pickAddress is not found go for second option proceed.................
+			if(pickAddress==null){
+				//2.If no preferred set, then most recent (according to Date Received) current address. If no date received, then any current.
+				//3.If no current address, then most recent current alternative.
+				//4.If no current alternative, then most recent current under investigation.
+				//5.If no current under investigation, don't include an address.
+				int i=0;
+				do {
+					pickAddress=findPickAddressWithAddressStatus(addressStatus.get(i), addressLst);
+					i++;
+				} while (pickAddress ==null && (i!=addressStatus.size()-1));
+			}
+		return pickAddress;
+	}
+	/**
+	 * 
+	 * @param addressStatus
+	 * @param addressLst
+	 * @return
+	 */
+	private Address findPickAddressWithAddressStatus(String addressStatus,List<Address> addressLst){
+		List<Address> tempAddressLstCanSort=new ArrayList<Address>();
+		List<Address> tempAddressLstCanNotSort=new ArrayList<Address>();
+		
+			for (Address address : addressLst) {
+				if(address.getAddressStatus().getName().equals(addressStatus) ){
+					if(address.getDateReceived()!=null){
+						tempAddressLstCanSort.add(address);
+					}else{
+						tempAddressLstCanNotSort.add(address);
+					}
+				}
+			}
+		//Sort them to latest
+			Collections.sort(tempAddressLstCanSort, new Comparator<Address>() {
+				@Override
+				public int compare(Address o1, Address o2) {
+					return o2.getDateReceived().compareTo(o1.getDateReceived());
+				}
+			});
+		if(tempAddressLstCanSort.size()>0){
+			return tempAddressLstCanSort.get(0);
+		}
+		else if(tempAddressLstCanNotSort.size()>0){
+			return tempAddressLstCanNotSort.get(0);
+		}else{
+			return null;
+		}	
+		
 	}
 	
 	

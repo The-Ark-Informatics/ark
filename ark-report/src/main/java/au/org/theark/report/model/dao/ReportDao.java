@@ -25,10 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
-import au.org.theark.report.model.vo.*;
-import au.org.theark.report.model.vo.report.*;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.DetachedCriteria;
@@ -51,6 +47,8 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
@@ -59,7 +57,6 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Phone;
@@ -68,7 +65,26 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.report.model.vo.BiospecimenDetailsReportVO;
+import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
+import au.org.theark.report.model.vo.FieldDetailsReportVO;
+import au.org.theark.report.model.vo.PhenoDataSetFieldDetailsReportVO;
+import au.org.theark.report.model.vo.ResearcherCostResportVO;
+import au.org.theark.report.model.vo.StudyComponentReportVO;
+import au.org.theark.report.model.vo.report.BiospecimenDetailsDataRow;
+import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
+import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
+import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.PhenoDataSetFieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
+import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
+import au.org.theark.report.model.vo.report.StudyComponentDetailsDataRow;
+import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 import au.org.theark.report.service.Constants;
+
 
 /**
  * Provide the backend Data Access Object for Reporting
@@ -86,7 +102,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	public void setiArkCommonService(IArkCommonService<Void> iArkCommonService) {
 		this.iArkCommonService = iArkCommonService;
 	}
-	
+
 	public long getTotalSubjectCount(Study study) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
@@ -857,6 +873,8 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			 * associated with a customFieldGroups (via customFieldDisplay)
 			 */
 			Criteria criteria = getSession().createCriteria(PhenoDataSetField.class, "pf");
+			/*On 2016-08-30 found out this criteria can not have a property type call phenoDatasetFieldDisplay.there is a bug here but didn't fix this 
+			/*Caused by: org.hibernate.QueryException: could not resolve property: phenoDatasetFieldDisplay of: au.org.theark.core.model.pheno.entity.PhenoDataSetField*/
 			criteria.createAlias("phenoDatasetFieldDisplay", "pdfd", JoinType.LEFT_OUTER_JOIN);	// Left join to CustomFieldDisplay
 			criteria.createAlias("pdfd.phenoDatasetFieldGroup", "pdfg", JoinType.LEFT_OUTER_JOIN); // Left join to CustomFieldGroup
 			criteria.createAlias("fieldType", "ft", JoinType.LEFT_OUTER_JOIN); // Left join to FieldType
@@ -1102,6 +1120,47 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.addOrder(Order.asc("bs.biospecimenUid"));
 		results=criteria.list();
 	
+		return results;
+	}
+
+	public List<StudyComponentDetailsDataRow> getStudyComponentDataRow(StudyComponentReportVO studyComponentReportVO) {
+		
+		List<StudyComponentDetailsDataRow> results = new ArrayList<StudyComponentDetailsDataRow>();
+		//List<Consent> results=null;
+		Criteria criteria = getSession().createCriteria(Consent.class,"consent");
+		criteria.createAlias("consent.linkSubjectStudy", "lss", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("lss.subjectStatus", "subjectStatus", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("lss.person", "person", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("consent.studyComponentStatus", "scs", JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("study", studyComponentReportVO.getConsent().getStudy()));
+		criteria.add(Restrictions.eq("studyComp", studyComponentReportVO.getConsent().getStudyComp()));
+		criteria.add(Restrictions.eq("studyComponentStatus", studyComponentReportVO.getConsent().getStudyComponentStatus()));
+		if(studyComponentReportVO.getFromDate()!=null && studyComponentReportVO.getToDate()!=null){
+			if(studyComponentReportVO.getConsent().getStudyComponentStatus().getName().equals(Constants.STUDY_STATUS_COMPLETED)){
+				criteria.add(Restrictions.between("completedDate",studyComponentReportVO.getFromDate() , studyComponentReportVO.getToDate()));
+			}else if(studyComponentReportVO.getConsent().getStudyComponentStatus().getName().equals(Constants.STUDY_STATUS_REQUESTED)){
+				criteria.add(Restrictions.between("requestedDate",studyComponentReportVO.getFromDate() , studyComponentReportVO.getToDate()));
+			}else if(studyComponentReportVO.getConsent().getStudyComponentStatus().getName().equals(Constants.STUDY_STATUS_RECEIVED)){
+				criteria.add(Restrictions.between("receivedDate",studyComponentReportVO.getFromDate() , studyComponentReportVO.getToDate()));
+			}
+		}
+		criteria.add(Restrictions.eq("consentStatus", studyComponentReportVO.getConsent().getConsentStatus()));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("lss.subjectUID"), "subjectUID");
+		projectionList.add(Projections.property("subjectStatus.name"), "subjectStatus");
+		projectionList.add(Projections.property("person.firstName"), "firstName");
+		projectionList.add(Projections.property("person.lastName"), "lastName");
+		projectionList.add(Projections.property("person.dateOfBirth"), "dateOfBirth");
+		projectionList.add(Projections.property("completedDate"), "completedDate");
+		projectionList.add(Projections.property("requestedDate"), "requestedDate");
+		projectionList.add(Projections.property("receivedDate"), "receivedDate");
+		projectionList.add(Projections.property("scs.name"), "componentStatus");
+		projectionList.add(Projections.property("person.id"), "personId");
+		criteria.setProjection(projectionList);
+		criteria.addOrder(Order.asc("lss.subjectUID"));
+		criteria.setResultTransformer(Transformers.aliasToBean(StudyComponentDetailsDataRow.class));
+		results=(criteria.list());
 		return results;
 	}
 	

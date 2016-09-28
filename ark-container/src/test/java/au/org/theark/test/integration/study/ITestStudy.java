@@ -1,11 +1,7 @@
 package au.org.theark.test.integration.study;
 
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.selenium.utilities.WicketBy;
-import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.test.integration.BaseIntegrationTest;
+import java.util.List;
+
 import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -16,7 +12,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.selenium.utilities.WicketBy;
+import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.test.integration.BaseIntegrationTest;
 
 public class ITestStudy extends BaseIntegrationTest {
 
@@ -186,6 +187,10 @@ public class ITestStudy extends BaseIntegrationTest {
             //exception handling
             e.printStackTrace();
         }
+
+        //Delete user from study modal
+        driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:ldapDeleteConfirmModal:content:yesNoForm:yesButton")).click();
+        driver.findElement(By.name("detailContainer:detailPanel:detailForm:detailFormContainer:ldapSuccessModalWindow:content:success:okButton")).click();
 
         try {
             Thread.sleep(500);

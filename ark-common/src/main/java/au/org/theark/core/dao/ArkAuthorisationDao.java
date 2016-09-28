@@ -1253,5 +1253,41 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			session.update(config);
 		}
 	}
+
+	@Override
+	public List<Study> getUserStudyListIncludeChildren(ArkUserVO arkUserVO) {
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkUser", arkUserVO.getArkUserEntity()));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("study"), "study");
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Transformers.aliasToBean(ArkUserRole.class));
+		List<ArkUserRole> arkUserRoleLst=	 (List<ArkUserRole>)criteria.list();
+		List<Study>  studyList=new ArrayList<Study>();
+		for (ArkUserRole arkUserRole : arkUserRoleLst) {
+			studyList.add(arkUserRole.getStudy());
+		}
+		return studyList;
+	}
 	
+	public List<Study> getStudiesWithRoleForUser(ArkUserVO arkUserVO, ArkRole arkRole) {
+		try {
+			String ldapName = arkUserVO.getArkUserEntity().getLdapUserName();
+			if(isUserAdminHelper(ldapName, RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) ||
+					isUserAdminHelper(ldapName, RoleConstants.ARK_ROLE_ADMINISTATOR)) {
+				return getStudyListForUser(arkUserVO);
+			}
+
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+
+		criteria.add(Restrictions.eq("arkUser", arkUserVO.getArkUserEntity()));
+        criteria.add(Restrictions.eq("arkRole", arkRole));
+
+		criteria.setProjection(Projections.property("study"));
+
+		return criteria.list();
+	}
 }

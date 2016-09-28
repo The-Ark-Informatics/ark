@@ -19,6 +19,7 @@
 package au.org.theark.core.web.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
@@ -106,4 +107,16 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 	 * Abstract method that allows sub-classes to implement specific functionality for onEditButtonClick event.
 	 */
 	//public abstract void onEditButtonClick();
+	
+	@Override
+	protected void onSavePostProcess(AjaxRequestTarget target) {
+		if(ArkPermissionHelper.isActionPermitted(Constants.DELETE)){
+			AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("remove");
+			if (ajaxButton != null) {
+				ajaxButton.setEnabled(true);
+				target.add(ajaxButton);
+			}
+		}
+		super.onSavePostProcess(target);
+	}
 }

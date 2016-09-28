@@ -202,5 +202,7 @@ public interface IArkAuthorisation<T> {
 	public boolean isUserAdminHelper(String ldapUserName, String roleName) throws EntityNotFoundException; 
 	
 	public void updateArkUserRoleListForExsistingUser(ArkUserVO arkUserVO);
-	
+	public List<Study> getUserStudyListIncludeChildren(ArkUserVO arkUserVO);
+	public List<Study> getStudiesWithRoleForUser(ArkUserVO arkUserVO, ArkRole arkRole);
+
 }

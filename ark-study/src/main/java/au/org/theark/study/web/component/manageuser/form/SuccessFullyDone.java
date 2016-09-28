@@ -11,14 +11,14 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 
 
-public class SuccessFullySaved extends Panel {
+public class SuccessFullyDone extends Panel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public SuccessFullySaved(String id, String message, final ModalWindow modalWindow) {
+	public SuccessFullyDone(String id, String message, String title,final ModalWindow modalWindow) {
 		super(id);
 
 		Form success = new Form("success");
@@ -28,7 +28,7 @@ public class SuccessFullySaved extends Panel {
 		messageLabel.setEscapeModelStrings(false);
 
 		success.add(messageLabel);
-		modalWindow.setTitle("Successfully Saved.");
+		modalWindow.setTitle(title);
 
 		modalWindow.setResizable(false);
 		modalWindow.setUseInitialHeight(true);

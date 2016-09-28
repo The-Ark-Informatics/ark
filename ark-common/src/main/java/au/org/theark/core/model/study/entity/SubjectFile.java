@@ -87,7 +87,7 @@ public class SubjectFile implements java.io.Serializable {
 	/**
 	 * @return the linkSubjectStudy
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
 	public LinkSubjectStudy getLinkSubjectStudy() {
 		return linkSubjectStudy;
@@ -104,7 +104,7 @@ public class SubjectFile implements java.io.Serializable {
 	/**
 	 * @return the studyComp
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "STUDY_COMP_ID")
 	public StudyComp getStudyComp() {
 		return studyComp;

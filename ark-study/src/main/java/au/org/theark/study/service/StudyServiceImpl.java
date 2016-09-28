@@ -19,9 +19,9 @@
 package au.org.theark.study.service;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,6 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 import au.org.theark.core.dao.IAuditDao;
 import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.exception.ArkBaseException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -112,7 +113,6 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
-import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
@@ -127,9 +127,6 @@ import au.org.theark.study.util.LinkSubjectStudyConsentHistoryComparator;
 import au.org.theark.study.util.PedigreeUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.subjectUpload.UploadUtilities;
-
-import com.csvreader.CsvReader;
 
 
 
@@ -758,7 +755,7 @@ public class StudyServiceImpl implements IStudyService {
 		iStudyDao.update(correspondence);
 	}
 	
-	public void update(Correspondences correspondence, String checksum) throws ArkSystemException, EntityNotFoundException {
+	public void update(Correspondences correspondence, String checksum) throws ArkSystemException, EntityNotFoundException, ArkFileNotFoundException {
 		Long studyId = correspondence.getLss().getStudy().getId();
 		String subjectUID = correspondence.getLss().getSubjectUID();
 		String fileName = correspondence.getAttachmentFilename();
@@ -928,7 +925,7 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.personHasPreferredMailingAddress(person, currentAddressId);
 	}
 
-	public void create(SubjectFile subjectFile) throws ArkSystemException {
+	public void create(SubjectFile subjectFile, String directoryType) throws ArkSystemException {
 
 		Long studyId = subjectFile.getLinkSubjectStudy().getStudy().getId();
 		String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
@@ -942,7 +939,7 @@ public class StudyServiceImpl implements IStudyService {
 		subjectFile.setFileId(fileId);
 
 		// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
-		iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_ATTACHEMENT_DIR, fileName, payload, fileId);
+		iArkCommonService.saveArkFileAttachment(studyId, subjectUID, directoryType, fileName, payload, fileId);
 
 		// Remove the attachment
 		subjectFile.setPayload(null);
@@ -968,7 +965,7 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void update(SubjectFile subjectFile, String checksum) throws ArkSystemException, EntityNotFoundException {
+	public void update(SubjectFile subjectFile, String checksum) throws ArkSystemException, EntityNotFoundException, ArkFileNotFoundException {
 		Long studyId = subjectFile.getLinkSubjectStudy().getStudy().getId();
 		String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
 		String fileName = subjectFile.getFilename();
@@ -1004,15 +1001,12 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {
-
+	public void delete(SubjectFile subjectFile,String directoryType) throws ArkSystemException, EntityNotFoundException, ArkFileNotFoundException {
 		Long studyId = subjectFile.getLinkSubjectStudy().getStudy().getId();
 		String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
 		String fileId = subjectFile.getFileId();
 		String checksum=subjectFile.getChecksum();
-		
-		try {
-				if (iArkCommonService.deleteArkFileAttachment(studyId, subjectUID, fileId, Constants.ARK_SUBJECT_ATTACHEMENT_DIR, checksum)) {
+				if (iArkCommonService.deleteArkFileAttachment(studyId, subjectUID, fileId, directoryType, checksum)) {
 					iStudyDao.delete(subjectFile);
 					AuditHistory ah = new AuditHistory();
 					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
@@ -1024,10 +1018,6 @@ public class StudyServiceImpl implements IStudyService {
 				else {
 					log.error("Could not find the file - "+fileId);
 				}
-		}
-		catch (Exception e) {
-			throw new ArkSystemException(e.getMessage());
-		}
 	}
 
 	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile) throws EntityNotFoundException, ArkSystemException {
@@ -2404,5 +2394,15 @@ public class StudyServiceImpl implements IStudyService {
 	@Override
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType) {
 		return iStudyDao.getCorrespondenceOutcomeTypesForModeAndDirection(correspondenceModeType, correspondenceDirectionType);
+	}
+
+	@Override
+	public boolean isAlreadyHasFileAttached(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp) {
+		return iStudyDao.isAlreadyHasFileAttached(linkSubjectStudy, studyComp);
+	}
+
+	@Override
+	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy, StudyComp studyComp) {
+		return iStudyDao.getSubjectFileParticularConsent(linkSubjectStudy, studyComp);
 	}
 }
