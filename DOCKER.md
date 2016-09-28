@@ -17,7 +17,6 @@ This configuration has five containers defined which are responsible for compili
 ##Extra Commands
 
 These additional commands should be used from within the docker directory.
-
 Command				| Usage
 --------------------------------|------------------------------
 `docker-compose up -d` 				| Starts the containers in daemon mode meaning that no logs are printed to STDOUT
@@ -29,7 +28,7 @@ Command				| Usage
 
 The default passwords are contained in [`docker/env_file`](docker/env_file) and should be modified before the initial `docker-compose up`, as the services are configured in the first run of each container. Passwords can be changed by tearing down all containers and deleting their volumes, however this will also delete any data stored in the MySQL and LDAP containers.
 
-##Configuration
+###Configuration
 Inside `docker/env_file`, you can also set the following Environment Variables which will configure the software inside each container:
 
 Environment Variable 			| Usage	                                  | Default Value

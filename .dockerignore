@@ -13,3 +13,5 @@ spark-bluegene
 tools
 */target
 docker/test/output
+
+*.log

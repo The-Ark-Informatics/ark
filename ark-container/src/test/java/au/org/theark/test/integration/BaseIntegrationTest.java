@@ -86,7 +86,7 @@ public class BaseIntegrationTest extends TestCase {
     }
 
     protected WebElement waitForElement(final By locator) {
-        WebDriverWait wait = new WebDriverWait(driver, 30);
+        WebDriverWait wait = new WebDriverWait(driver, 60);
         return wait.until((Function<WebDriver, WebElement>) driver -> driver.findElement(locator));
     }
 
