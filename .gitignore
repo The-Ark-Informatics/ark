@@ -7,6 +7,8 @@
 **/velocity.log
 **/*.swp
 **/.completed
+docker/test/output
+docker/.env
 **/.vagrant
 
 # Properties.

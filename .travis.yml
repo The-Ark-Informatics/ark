@@ -2,8 +2,8 @@ language: java
 sudo: required
 install: /bin/true
 script: 
-        - mvn initialize
-        - mvn -e verify
+        - docker-compose -f docker/docker-compose.yml -f docker/docker-compose.test.yml build
+        - docker-compose -f docker/docker-compose.yml -f docker/docker-compose.test.yml run test 
 services:
         - docker
 env:
@@ -15,15 +15,6 @@ before_install:
         - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
         - chmod +x docker-compose
         - sudo mv docker-compose /usr/local/bin
-
-before_script:
-        - "export DISPLAY=:99.0"
-        - "sh -e /etc/init.d/xvfb start"
-        - sleep 3
-
-addons:
-        hosts:
-                - mysql
 
 notifications:
         email:
