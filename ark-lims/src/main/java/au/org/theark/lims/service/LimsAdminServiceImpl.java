@@ -2,7 +2,9 @@ package au.org.theark.lims.service;
 
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.velocity.VelocityContext;
@@ -143,48 +145,40 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		return iLimsAdminDao.searchBarcodeLabelData(barcodeLabelData);
 	}
 
-	public String createBioCollectionLabelTemplate(BioCollection bioCollection, BarcodeLabel barcodeLabel) {
+	public List<String> createBioCollectionLabelTemplate(BioCollection bioCollection, BarcodeLabel barcodeLabel) {
 		/* lets make a Context and put data into it */
 		VelocityContext context = getBioCollectionLabelContext(bioCollection);
 
-		/* lets render a template */
-		StringWriter stringWriter = new StringWriter();
-
 		/* lets make our own string to render */
-		String template = getBarcodeLabelTemplate(barcodeLabel);
+		List<String> templates = getBarcodeLabelTemplate(barcodeLabel);
+		List<String> result = new ArrayList<>(templates.size());
 
-		stringWriter = new StringWriter();
+		for(String template : templates) {
+			StringWriter stringWriter = new StringWriter();
+			Velocity.evaluate(context, stringWriter, "bioCollectionLabelTemplate", template);
+			log.info("Created bioCollectionLabelTemplate: " + stringWriter);
+			result.add(stringWriter.toString());
+		}
 
-		Velocity.evaluate(context, stringWriter, "bioCollectionLabelTemplate", template);
-		log.info("Created bioCollectionLabelTemplate: " + stringWriter);
-
-		String result = stringWriter.toString();
-		result = org.apache.commons.lang.StringUtils.replace(result, "\r", "");
-		result = org.apache.commons.lang.StringUtils.replace(result, "\n", "%0A");
-		result = org.apache.commons.lang.StringUtils.replace(result, "\"", "%22");
 		return result;
 	}
 
-	public String createBiospecimenLabelTemplate(Biospecimen biospecimen, BarcodeLabel barcodeLabel) {
+	public List<String> createBiospecimenLabelTemplate(Biospecimen biospecimen, BarcodeLabel barcodeLabel) {
 		log.warn("about to print biospecimen " + biospecimen);
 		/* lets make a Context and put data into it */
 		VelocityContext context = getBiospecimenLabelContext(biospecimen);
 
-		/* lets render a template */
-		StringWriter stringWriter = new StringWriter();
-
 		/* lets make our own string to render */
-		String template = getBarcodeLabelTemplate(barcodeLabel);
+        List<String> templates = getBarcodeLabelTemplate(barcodeLabel);
+        List<String> result = new ArrayList<>(templates.size());
 
-		stringWriter = new StringWriter();
+		for(String template : templates) {
+			StringWriter stringWriter = new StringWriter();
+			Velocity.evaluate(context, stringWriter, "biospecimenLabelTemplate", template);
+			log.info("Created biospecimenLabelTemplate: " + stringWriter);
+			result.add(stringWriter.toString());
+		}
 
-		Velocity.evaluate(context, stringWriter, "biospecimenLabelTemplate", template);
-		log.info("Created biospecimenLabelTemplate: " + stringWriter);
-
-		String result = stringWriter.toString();
-		result = org.apache.commons.lang.StringUtils.replace(result, "\r", "");
-		result = org.apache.commons.lang.StringUtils.replace(result, "\n", "%0A");
-		result = org.apache.commons.lang.StringUtils.replace(result, "\"", "%22");
 		return result;
 	}
 
@@ -332,17 +326,20 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	 * @param barcodeLabel
 	 * @return
 	 */
-	public String getBarcodeLabelTemplate(BarcodeLabel barcodeLabel) {
-		StringBuffer sb = new StringBuffer();
+	public List<String> getBarcodeLabelTemplate(BarcodeLabel barcodeLabel) {
 		barcodeLabel.setBarcodeLabelData(getBarcodeLabelDataByBarcodeLabel(barcodeLabel));
 
+		List<String> barcodeLabelCommands = new LinkedList<>();
+
 		if (barcodeLabel != null && barcodeLabel.getLabelPrefix() != null) {
-			sb.append(barcodeLabel.getLabelPrefix());
-			sb.append("\n");
+
+			barcodeLabelCommands.add(barcodeLabel.getLabelPrefix());
 
 			List<BarcodeLabelData> data = barcodeLabel.getBarcodeLabelData();
 			for (Iterator<BarcodeLabelData> iterator = data.iterator(); iterator.hasNext();) {
 				BarcodeLabelData barcodeLabelData = (BarcodeLabelData) iterator.next();
+
+                StringBuffer sb = new StringBuffer();
 
 				sb.append(barcodeLabelData.getCommand());
 				sb.append(barcodeLabelData.getXCoord());
@@ -401,15 +398,17 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 
 				// Add a line feed
 				// sb.append(barcodeLabelData.getLineFeed());
-				sb.append("\n");
+				// sb.append("\n");
+
+				barcodeLabelCommands.add(sb.toString());
+
 			}
 
 			// add label suffix
-			sb.append(barcodeLabel.getLabelSuffix());
-			sb.append("\n");
+            barcodeLabelCommands.add(barcodeLabel.getLabelSuffix());
 		}
 
-		return sb.toString();
+		return barcodeLabelCommands;
 	}
 
 	public long getBarcodeLabelCount(BarcodeLabel object) {

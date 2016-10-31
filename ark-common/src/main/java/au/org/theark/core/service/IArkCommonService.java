@@ -1287,4 +1287,5 @@ public interface IArkCommonService<T> {
 
 	public String generateNaturalUID(String UID);
 
+	public String getBarcodePrivateKeyPassword();
 }

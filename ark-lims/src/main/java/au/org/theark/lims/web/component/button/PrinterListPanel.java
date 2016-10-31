@@ -20,20 +20,26 @@ package au.org.theark.lims.web.component.button;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import au.org.theark.lims.util.barcode.DigitalCertificateAjaxBehaviour;
+import au.org.theark.lims.util.barcode.PrivateKeySignerAjaxBehaviour;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.util.string.StringValue;
 
 /**
- * Embedded PrintApplet and dynamic drop-down list that populates with the printers connected to the client machine
+ * Embedded PrintApplet and dynamic drop-down list that populates with the all_printers connected to the client machine
  * 
  * @author cellis
  * 
@@ -43,9 +49,13 @@ public class PrinterListPanel extends Panel {
 	protected String					selected				= new String();
 	protected HiddenField<String>	selectedPrinter;
 	protected static List<String>	PRINTERLIST			= Arrays.asList("zebra", "brady_bbp_11");
+	protected DropDownChoice<String> printerListDdc;
 	
 	protected boolean isNew;
-	
+
+	protected DigitalCertificateAjaxBehaviour digitalCertificateAjaxBehaviour;
+	protected PrivateKeySignerAjaxBehaviour privateKeySignerAjaxBehaviour;
+
 	public PrinterListPanel(String id, String selected, boolean isNew) {
 		super(id);
 		setOutputMarkupId(true);
@@ -56,13 +66,6 @@ public class PrinterListPanel extends Panel {
 	}
 
 	private void initPanel() {
-		DropDownChoice<String> printerListDdc = new DropDownChoice<String>("printerList", new PropertyModel<String>(this, "selected"), PRINTERLIST);
-		printerListDdc.add(new AttributeModifier("name", "printerList"));
-		printerListDdc.add(new AttributeModifier("onchange", "changeHiddenInput(this)"));
-		printerListDdc.setOutputMarkupPlaceholderTag(true);
-		printerListDdc.setNullValid(true);
-		this.add(printerListDdc);
-		
 		selectedPrinter = new HiddenField<String>("selectedPrinter", new PropertyModel<String>(this, "selected"));
 		selectedPrinter.setOutputMarkupPlaceholderTag(true);
 		selectedPrinter.add(new AttributeModifier("name", "selectedPrinter"));
@@ -73,74 +76,43 @@ public class PrinterListPanel extends Panel {
 			protected void respond(AjaxRequestTarget arg0) {
 				StringValue selectedPrinter = RequestCycle.get().getRequest().getQueryParameters().getParameterValue("selectedPrinter");
 				selected = selectedPrinter.toString();
+				System.out.println("New selected printer is: " + selected);
 			}
 		});
 		this.add(selectedPrinter);
-		
-		StringBuilder javaScript = new StringBuilder();
-		javaScript.append("function findPrinters() {");
-		javaScript.append("\n");
-		javaScript.append("	var applet = document.jZebra;");
-		javaScript.append("\n");
-		javaScript.append("	if (applet != null) {");
-		javaScript.append("\n");
-		javaScript.append("		document.getElementById('");
-		javaScript.append(printerListDdc.getMarkupId());
-		javaScript.append("').disabled = false;");
-		javaScript.append("\n");
-		javaScript.append("		var listing = applet.getPrinters();");
-		javaScript.append("\n");
-		javaScript.append("		var printers = listing.split(',');\n");
-		javaScript.append("		var objHidden = document.getElementById('");
-		javaScript.append(selectedPrinter.getMarkupId());
-		javaScript.append("');\n");
-		javaScript.append("\n");
-		javaScript.append("		printers.unshift(\"Choose One\");\n");
-		javaScript.append("		for ( var i in printers) {");
-		javaScript.append("\n");
-		javaScript.append("			if(objHidden.value == printers[i]) {\n");
-		javaScript.append("				document.getElementById('");
-		javaScript.append(printerListDdc.getMarkupId());
-		javaScript.append("').options[i] = new Option(printers[i], printers[i], true, true);\n");
-		javaScript.append("			} else {\n");
-		javaScript.append("				document.getElementById('");
-		javaScript.append(printerListDdc.getMarkupId());
-		javaScript.append("').options[i] = new Option(printers[i], printers[i], false, false);\n");
-		javaScript.append("			}\n");
-		javaScript.append("		}");
-		javaScript.append("\n");
-		javaScript.append("	} else {");
-		javaScript.append("\n");
-		javaScript.append("		document.getElementById('");
-		javaScript.append(printerListDdc.getMarkupId());
-		javaScript.append("').options[i] = new Option('N/A');");
-		javaScript.append("\n");
-		javaScript.append("		document.getElementById('");
-		javaScript.append(printerListDdc.getMarkupId());
-		javaScript.append("').disabled = true;");
-		javaScript.append("\n");
-		javaScript.append("	}");
-		javaScript.append("\n");
-		javaScript.append("}");
-		javaScript.append("\n");
-		javaScript.append("\n");
-		javaScript.append("function changeHiddenInput (objDropDown) {");
-		javaScript.append("\n");
-		javaScript.append("	var objHidden = document.getElementById('");
-		javaScript.append(selectedPrinter.getMarkupId());
-		javaScript.append("');\n");
-		javaScript.append("	objHidden.value = objDropDown.value;");
-		javaScript.append("\n");
-		javaScript.append("	callWicket(objDropDown.value);");
-		javaScript.append("}");
-		
-		final Label script = new Label("script", javaScript.toString());
-		script.setOutputMarkupPlaceholderTag(true);
-		script.add(new AttributeModifier("onload", "findPrinters()"));
-		script.setEscapeModelStrings(false); // do not HTML escape JavaScript code
-		this.add(script);
+
+		printerListDdc = new DropDownChoice<String>("printerList", new PropertyModel<String>(this, "selected"), PRINTERLIST);
+		printerListDdc.add(new AttributeModifier("name", "printerList"));
+		printerListDdc.setOutputMarkupPlaceholderTag(true);
+		printerListDdc.setNullValid(true);
+        printerListDdc.setEnabled(false);
+		this.add(printerListDdc);
+
+		digitalCertificateAjaxBehaviour = new DigitalCertificateAjaxBehaviour();
+		this.add(digitalCertificateAjaxBehaviour);
+
+		privateKeySignerAjaxBehaviour = new PrivateKeySignerAjaxBehaviour();
+		this.add(privateKeySignerAjaxBehaviour);
 	}
-	
+
+	@Override
+	public void renderHead(IHeaderResponse response) {
+		super.renderHead(response);
+
+		StringBuilder jsBuilder = new StringBuilder();
+		jsBuilder.append("setupSigning(\"" + digitalCertificateAjaxBehaviour.getCallbackUrl() + "\", \"" + privateKeySignerAjaxBehaviour.getCallbackUrl() + "\");");
+		jsBuilder.append("\n");
+		jsBuilder.append("findPrinters(\"" + printerListDdc.getMarkupId() + "\", \"" + selectedPrinter.getMarkupId() + "\");");
+        response.renderOnLoadJavaScript(jsBuilder.toString());
+
+	}
+
+	@Override
+	protected void onBeforeRender() {
+		printerListDdc.add(new AttributeModifier("onchange", "changeHiddenInput(\"" + printerListDdc.getMarkupId() + "\", \"" + selectedPrinter.getMarkupId() + "\" )"));
+		super.onBeforeRender();
+	}
+
 	/**
 	 * @return the selected
 	 */

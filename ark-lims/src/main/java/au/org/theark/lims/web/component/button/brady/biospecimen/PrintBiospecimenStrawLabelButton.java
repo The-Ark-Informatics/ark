@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.button.brady.biospecimen;
 
+import au.org.theark.lims.util.barcode.PrintZPL;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -29,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.lims.service.ILimsAdminService;
+
+import java.util.List;
 
 /**
  * Class that represents a button to print a straw barcode label to a Brady printer (specifically the BPP 11 model), using TSPL/TSPL2 commands
@@ -46,7 +49,6 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	private final Biospecimen		biospecimen;
 	private IModel<?>					numberModel;
 	private Number						barcodesToPrint;
-	private String						tsplString;
 	private BarcodeLabel				barcodeLabel;
 
 	/**
@@ -92,29 +94,23 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 		if (barcodeLabel != null) {
-			StringBuffer sb = new StringBuffer();
-			
 			if(numberModel == null) {
 				barcodesToPrint = 1;
 			}
 			else {
 				barcodesToPrint = (Number) numberModel.getObject();
 			}
-			
-			for (int i = 0; i < barcodesToPrint.intValue(); i++) {
-				sb.append(iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel));
-				sb.append("%0A");
-			}
 
-			this.tsplString = sb.toString();
+			List<String> printerCommands = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
 
-			if (tsplString == null || tsplString.isEmpty()) {
+
+			if (printerCommands == null || printerCommands.isEmpty()) {
 				this.error("There was an error when attempting to print the straw barcode for: " + biospecimen.getBiospecimenUid());
 				log.error("There was an error when attempting to print the straw barcode for: " + biospecimen.getBiospecimenUid());
 			}
 			else {
-				log.debug(tsplString);
-				target.appendJavaScript("printBarcode(\"" + barcodeLabel.getBarcodePrinterName() + "\",\"" + tsplString + "\");");
+				log.warn("printer = " + barcodeLabel.getBarcodePrinterName());
+				PrintZPL.printZPL(target, this, barcodeLabel.getBarcodePrinterName(), printerCommands, barcodesToPrint.intValue(), true);
 				onPostSubmit(target, form);
 			}
 		}

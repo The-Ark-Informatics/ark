@@ -31,7 +31,6 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
-import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 
 /**
  * The main class that implements the common service IMainTabProvider.This contributes the Tab menu which forms the entry point into Study module. As

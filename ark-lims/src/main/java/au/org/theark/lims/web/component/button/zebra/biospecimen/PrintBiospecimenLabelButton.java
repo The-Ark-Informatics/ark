@@ -18,10 +18,15 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.button.zebra.biospecimen;
 
+import au.org.theark.lims.util.barcode.DigitalCertificateAjaxBehaviour;
+import au.org.theark.lims.util.barcode.PrintZPL;
+import au.org.theark.lims.util.barcode.PrivateKeySignerAjaxBehaviour;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.IRequestParameters;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.lims.service.ILimsAdminService;
+
+import java.util.List;
 
 /**
  * Class that represents a button to print a barcode label to a Zebra printer (generally the TLP2844 model)
@@ -68,6 +75,8 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 		barcodeLabel.setStudy(biospecimen.getStudy());
 		barcodeLabel.setName("zebra biospecimen");
 		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
+
+
 	}
 
 	@Override
@@ -92,8 +101,6 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 		if (barcodeLabel != null) {
-			StringBuffer sb = new StringBuffer();
-			
 			if(numberModel == null) {
 				barcodesToPrint = 1;
 				log.warn("number model was null - set to 1");
@@ -103,25 +110,18 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 				log.warn("number model aka barcodes to print = " + barcodesToPrint);
 			}
 
-			for (int i = 0; i < barcodesToPrint.intValue(); i++) {
-				sb.append(iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel));
-				sb.append("%0A");
-				log.warn("have done this many barcodes in for loop = " + i);
-			}
+			List<String> ZPLCommands = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
 
-			zplString = sb.toString();
-			
-			log.warn("so zpl string looks like this; " + zplString);
-
-			if (zplString == null || zplString.isEmpty()) {
+			if (ZPLCommands == null || ZPLCommands.isEmpty()) {
 				this.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
 				log.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
 			}
 			else {
 				log.warn("printer = " + barcodeLabel.getBarcodePrinterName());
-				target.appendJavaScript("printBarcode(\"" + barcodeLabel.getBarcodePrinterName() + "\",\"" + zplString + "\");");
+				PrintZPL.printZPL(target, this, barcodeLabel.getBarcodePrinterName(), ZPLCommands, barcodesToPrint.intValue(), true);
 				onPostSubmit(target, form);
 			}
+
 		}
 	}
 

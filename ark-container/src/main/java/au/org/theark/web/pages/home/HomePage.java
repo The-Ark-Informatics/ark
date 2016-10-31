@@ -43,7 +43,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
-import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -95,11 +94,6 @@ public class HomePage extends BasePage {
 		else {
 			setResponsePage(LoginPage.class);
 		}
-		
-		// Applet used for barcode printing
-		PrintAppletPanel printAppletPanel = new PrintAppletPanel("printAppletPanel", "zebra");
-		printAppletPanel.add(new AttributeModifier("class", "floatLeft"));
-		this.add(printAppletPanel);
 	}
 
 	public void onBeforeRender(){

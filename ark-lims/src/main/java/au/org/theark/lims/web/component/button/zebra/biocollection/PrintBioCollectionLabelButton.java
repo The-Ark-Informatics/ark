@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.button.zebra.biocollection;
 
+import au.org.theark.lims.util.barcode.PrintZPL;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -37,6 +38,8 @@ import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 
+import java.util.List;
+
 /**
  * Class that represents a button to print a barcode label to a Zebra printer (generally the TLP2844 model)
  * 
@@ -53,7 +56,6 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
 	private ILimsAdminService			iLimsAdminService;
 	private BioCollection				bioCollection;
-	private String							zplString;
 	private BarcodeLabel					barcodeLabel;
 	private IModel<?>						numberModel;
 	private Number							barcodesToPrint;
@@ -112,28 +114,23 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 		if (barcodeLabel != null) {
 			StringBuffer sb = new StringBuffer();
-			
+
 			if(numberModel == null) {
 				barcodesToPrint = 1;
 			}
 			else {
 				barcodesToPrint = (Number) numberModel.getObject();
 			}
-			
-			for (int i = 0; i < barcodesToPrint.intValue(); i++) {
-				sb.append(iLimsAdminService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel));
-				sb.append("%0A");
-			}
-			
-			this.zplString = sb.toString();
 
-			if (zplString == null || zplString.isEmpty()) {
+			List<String> ZPLCommands = iLimsAdminService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
+
+			if (ZPLCommands == null || ZPLCommands.isEmpty()) {
 				this.error("There was an error when attempting to print the barcode for: " + bioCollection.getBiocollectionUid());
 				log.error("There was an error when attempting to print the barcode for: " + bioCollection.getBiocollectionUid());
 			}
 			else {
-				log.debug(zplString);
-				target.appendJavaScript("printBarcode(\"" + barcodeLabel.getBarcodePrinterName() + "\",\"" + zplString + "\");");
+				log.warn("printer = " + barcodeLabel.getBarcodePrinterName());
+				PrintZPL.printZPL(target, this, barcodeLabel.getBarcodePrinterName(), ZPLCommands, barcodesToPrint.intValue(), true);
 				onPostSubmit(target, form);
 			}
 		}

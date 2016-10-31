@@ -203,9 +203,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private JavaMailSender javaMailSender;
 	private VelocityEngine velocityEngine;
 	private IGenoDao genoDao;
-	
-	
-	
+
+	@Value("${barcode.privatekey.password}")
+	private String privateKeyPassword;
+
 	@Value("${file.attachment.dir}")
 	private String fileAttachmentDir;
 
@@ -2159,5 +2160,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			last_end = matcher.end();
 		}
 		return natBuilder.toString();
+	}
+
+	@Override
+	public String getBarcodePrivateKeyPassword() {
+        return privateKeyPassword;
 	}
 }

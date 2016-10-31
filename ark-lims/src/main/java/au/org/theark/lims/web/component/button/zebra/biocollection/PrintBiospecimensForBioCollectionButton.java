@@ -18,8 +18,10 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.button.zebra.biocollection;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import au.org.theark.lims.util.barcode.PrintZPL;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -128,24 +130,21 @@ public abstract class PrintBiospecimensForBioCollectionButton extends AjaxButton
 			else {
 				barcodesToPrint = (Number) numberModel.getObject();
 			}
-			
-			StringBuffer sb = new StringBuffer();
+
+			List<String> allBiospecimenCommands = new ArrayList<String>();
 			for(Biospecimen biospecimen : biospecimenList) {
 				biospecimen.setBarcoded(true);
-				for (int i = 0; i < barcodesToPrint.intValue(); i++) {
-					sb.append(iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel));
-					sb.append("%0A");
-				}
+                List<String> biospecimenZPLCommands = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
+                allBiospecimenCommands.addAll(biospecimenZPLCommands);
 			}
 			
-			this.zplString = sb.toString();
-			if (zplString == null || zplString.isEmpty()) {
+			if (allBiospecimenCommands == null || allBiospecimenCommands.isEmpty()) {
 				this.error("There was an error when attempting to print the biospecimen barcodes for: " + bioCollection.getBiocollectionUid());
 				log.error("There was an error when attempting to print the biospecimen barcodes for: " + bioCollection.getBiocollectionUid());
 			}
 			else {
-				log.debug(zplString);
-				target.appendJavaScript("printBarcode(\"" + barcodeLabel.getBarcodePrinterName() + "\",\"" + zplString + "\");");
+				log.warn("printer = " + barcodeLabel.getBarcodePrinterName());
+				PrintZPL.printZPL(target, this, barcodeLabel.getBarcodePrinterName(), allBiospecimenCommands, barcodesToPrint.intValue(), true);
 				onPostSubmit(target, form);
 			}
 		}

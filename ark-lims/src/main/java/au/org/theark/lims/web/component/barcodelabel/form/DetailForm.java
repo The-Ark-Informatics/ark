@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.Component;
@@ -109,7 +110,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<Long>("id");
 		nameTxtFld = new TextField<String>("name");
-		nameTxtFld.setEnabled(false);
+		nameTxtFld.setEnabled(isNew());
 		descriptionTxtArea = new TextArea<String>("description");
 		versionTxtFld = new TextField<Number>("version");
 		
@@ -142,7 +143,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			BarcodeLabelDataPanel barcodeLabelDataPanel = new BarcodeLabelDataPanel("barcodeLabelDataPanel", containerForm.getModelObject(), feedBackPanel);
 			barcodeLabelDataPanel.initialisePanel();
 			arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(barcodeLabelDataPanel);
-			exampleBarcodeDataFile.setModelObject(iLimsAdminService.getBarcodeLabelTemplate(containerForm.getModelObject()));
+			exampleBarcodeDataFile.setModelObject(StringUtils.join(iLimsAdminService.getBarcodeLabelTemplate(containerForm.getModelObject()), "\n"));
 		}
 		
 		String selected = new String();
@@ -155,9 +156,9 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			@Override
 			public void renderHead(Component component, IHeaderResponse response) {
 				super.renderHead(component, response);
-				response.renderOnLoadJavaScript("findPrinters()");
+				//response.renderOnLoadJavaScript("findPrinters()");
 				String js = "function callWicket(selectedPrinter) { var wcall = wicketAjaxGet ('"
-				    + getCallbackUrl() + "&selectedPrinter='+selectedPrinter, function() { }, function() { } ) }";
+					+ getCallbackUrl() + "&selectedPrinter='+selectedPrinter, function() { }, function() { } ) }";
 				response.renderJavaScript(js, "selectPrinter");
 			}
 			@Override
@@ -230,7 +231,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 					containerForm.getModelObject().setLabelSuffix(labelSuffix);
 					containerForm.getModelObject().setVersion(version);
 					
-					exampleBarcodeDataFile.setModelObject(iLimsAdminService.getBarcodeLabelTemplate(barcodeLabelTemplateDdc.getModelObject()));
+					exampleBarcodeDataFile.setModelObject(StringUtils.join(iLimsAdminService.getBarcodeLabelTemplate(barcodeLabelTemplateDdc.getModelObject()), "\n"));
 					exampleBarcodeDataFile.setVisible(true);
 					target.add(exampleBarcodeDataFile);
 					

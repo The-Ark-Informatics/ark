@@ -1,2 +1,3 @@
 file.attachment.dir=~/arkFileData
 service.auth.header=
+barcode.privatekey.password=

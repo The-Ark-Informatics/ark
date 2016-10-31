@@ -134,7 +134,7 @@ public class BarcodeLabel implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@Column(name = "LABEL_PREFIX", length = 50, nullable = false)
+	@Column(name = "LABEL_PREFIX", length = 50)
 	public String getLabelPrefix() {
 		return this.labelPrefix;
 	}
@@ -143,7 +143,7 @@ public class BarcodeLabel implements java.io.Serializable {
 		this.labelPrefix = labelPrefix;
 	}
 
-	@Column(name = "LABEL_SUFFIX", length = 50, nullable = false)
+	@Column(name = "LABEL_SUFFIX", length = 50)
 	public String getLabelSuffix() {
 		return this.labelSuffix;
 	}

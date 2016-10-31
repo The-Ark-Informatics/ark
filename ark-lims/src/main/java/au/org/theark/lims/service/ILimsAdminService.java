@@ -81,7 +81,7 @@ public interface ILimsAdminService {
 	 * @param barcodeLabel
 	 * @return
 	 */
-	public String createBioCollectionLabelTemplate(BioCollection bioCollection, BarcodeLabel barcodeLabel);
+	public List<String> createBioCollectionLabelTemplate(BioCollection bioCollection, BarcodeLabel barcodeLabel);
 
 	/**
 	 * Create the template string to send to the barcode printer for the specified biospecimen and barcodeLabel
@@ -89,7 +89,7 @@ public interface ILimsAdminService {
 	 * @param barcodeLabel
 	 * @return
 	 */
-	public String createBiospecimenLabelTemplate(Biospecimen biospecimen, BarcodeLabel barcodeLabel);
+	public List<String> createBiospecimenLabelTemplate(Biospecimen biospecimen, BarcodeLabel barcodeLabel);
 
 	/**
 	 * Get the total count of the entities
@@ -174,7 +174,7 @@ public interface ILimsAdminService {
 	 * @param barcodeLabel
 	 * @return
 	 */
-	public String getBarcodeLabelTemplate(BarcodeLabel barcodeLabel);
+	public List<String> getBarcodeLabelTemplate(BarcodeLabel barcodeLabel);
 
 	/**
 	 * Get the barcode labels for the specified study
