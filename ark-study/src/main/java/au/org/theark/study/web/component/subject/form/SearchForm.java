@@ -256,6 +256,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		if(!otherIDTxtFld.getValue().isEmpty()) {
 			OtherID searchedOtherID = new OtherID();
 			searchedOtherID.setOtherID(otherIDTxtFld.getValue());
+			searchedOtherID.setPerson(cpmModel.getObject().getLinkSubjectStudy().getPerson());
 			getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs().add(searchedOtherID);
 		}
 		
