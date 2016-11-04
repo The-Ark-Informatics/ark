@@ -47,7 +47,7 @@ BEGIN
 	SET totalPadLength = 0;
 	SET instring = REPLACE(TRIM(instring), ' ', '');
 	SET sortString = instring;
-	SET numStartIndex = udf_FirstNumberPos(instring);
+	SET numStartIndex = study.udf_FirstNumberPos(instring);
 	SET numEndIndex = 0;
 	SET i = 1;
 	SET sameOrderCharsLen = LENGTH(sameOrderChars);
@@ -63,7 +63,7 @@ BEGIN
 		SET numStartIndex = numStartIndex + numEndIndex;
 		SET numEndIndex = numStartIndex;
 
-		WHILE (udf_FirstNumberPos(SUBSTRING(instring, numEndIndex, 1)) = 1) DO
+		WHILE (study.udf_FirstNumberPos(SUBSTRING(instring, numEndIndex, 1)) = 1) DO
 			SET numEndIndex = numEndIndex + 1;
 		END WHILE;
 
@@ -78,7 +78,7 @@ BEGIN
 		SET sortString = INSERT(sortString, numStartIndex + totalPadLength, 0, REPEAT('0', padLength));
 
 		SET totalPadLength = totalPadLength + padLength;
-		SET numStartIndex = udf_FirstNumberPos(RIGHT(instring, LENGTH(instring) - numEndIndex));
+		SET numStartIndex = study.udf_FirstNumberPos(RIGHT(instring, LENGTH(instring) - numEndIndex));
 	END WHILE;
 
 	RETURN sortString;

@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
@@ -75,6 +76,10 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 	public void delete(Computation computation) {
 		getSession().delete(computation);
 	}
+	
+	public void delete(Analysis analysis) {
+		getSession().delete(analysis);
+	}
 
 	public List<MicroService> searchMicroService(MicroService microService) {
 		Criteria criteria = getSession().createCriteria(MicroService.class);
@@ -90,6 +95,8 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		if (microService.getServiceUrl() != null) {
 			criteria.add(Restrictions.ilike(Constants.SERVICE_URL, microService.getServiceUrl(), MatchMode.ANYWHERE));
 		}
+		
+		criteria.addOrder(Order.asc(Constants.ID));
 		
 		List<MicroService> list = criteria.list();
 		return list;
@@ -113,6 +120,7 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		if (computation.getName() != null) {
 			criteria.add(Restrictions.like("c.name", computation.getName(), MatchMode.ANYWHERE));
 		}
+		criteria.addOrder(Order.asc("c.id"));
 
 		List<Computation> list = criteria.list();
 		return list;
@@ -136,7 +144,7 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 			criteria.add(Restrictions.eq(Constants.MICROSERVICE, dataSourceVo.getMicroService()));
 		}
 		list = criteria.list();
-
+		
 		return list.size() > 0 ? list.get(0) : null;
 	}
 
@@ -144,12 +152,15 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		Criteria criteria = getSession().createCriteria(DataSource.class);
 		criteria.add(Restrictions.eq(Constants.MICROSERVICE, microService));
 		List<DataSource> list = criteria.list();
+		criteria.addOrder(Order.asc("name"));
 		return list;
 	}
 
 	public List<Computation> searchComputation(MicroService microService) {
 		Criteria criteria = getSession().createCriteria(Computation.class);
 		criteria.add(Restrictions.eq(Constants.MICROSERVICE, microService));
+		criteria.add(Restrictions.eq(Constants.AVAILABLE, Boolean.TRUE));
+		criteria.addOrder(Order.asc("name"));
 		List<Computation> list = criteria.list();
 		return list;
 	}
@@ -168,9 +179,20 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		criteria.setFetchMode("microService", FetchMode.JOIN);
 		criteria.setFetchMode("dataSource", FetchMode.JOIN);
 		criteria.setFetchMode("computation", FetchMode.JOIN);
-		
+		criteria.addOrder(Order.asc("a.id"));
 		List<Analysis> list= criteria.list();
 		return list;
+	}
+	
+	public int getAnalysisCount(long computationId){
+		int count = 0;
+		Criteria criteria = getSession().createCriteria(Analysis.class, "a");
+		criteria.createAlias("computation", "c", JoinType.INNER_JOIN);
+		criteria.setFetchMode("computation", FetchMode.JOIN);
+		criteria.add(Restrictions.eq("c.id", computationId));
+		List<Analysis> list = criteria.list();
+		count =list.size();
+		return count;
 	}
 
 }

@@ -1,8 +1,5 @@
 package au.org.theark.genomics.web.component.computation;
 
-import java.util.ArrayList;
-
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -15,9 +12,6 @@ import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.genomics.model.vo.ComputationVo;
 import au.org.theark.genomics.service.IGenomicService;
 import au.org.theark.genomics.util.Constants;
-import au.org.theark.genomics.web.component.computation.DetailPanel;
-import au.org.theark.genomics.web.component.computation.SearchPanel;
-import au.org.theark.genomics.web.component.computation.SearchResultListPanel;
 import au.org.theark.genomics.web.component.computation.form.ContainerForm;
 
 public class ComputationContainerPanel extends AbstractContainerPanel {

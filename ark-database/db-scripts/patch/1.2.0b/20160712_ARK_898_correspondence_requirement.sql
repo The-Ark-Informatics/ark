@@ -1,7 +1,7 @@
 use `study`;
 
 ALTER TABLE `correspondence_outcome_type` 
-DROP INDEX `UK_NAME`,
+-- DROP INDEX `UK_NAME`,
 ADD UNIQUE INDEX `UK_NAME` (`NAME` ASC);
 
 -- Ignoring the duplicate values.

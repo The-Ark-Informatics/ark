@@ -13,6 +13,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.shiro.SecurityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -200,8 +201,12 @@ public class GenomicServiceImpl implements IGenomicService {
 
 		String fileId = null;
 		if (attachement != null) {
+			
+			System.out.println("attachment is not null");
 
 			if (computation.getProgramId() != null) {
+				
+				System.out.println("attachment is not null program id is not null");
 
 				// Get existing file Id
 				fileId = computation.getProgramId();
@@ -219,6 +224,9 @@ public class GenomicServiceImpl implements IGenomicService {
 				// application.properties {@code fileAttachmentDir}
 				iArkCommonService.saveArkFileAttachment(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR, fileName, attachement, fileId);
 			} else {
+				
+				System.out.println("attachment is not null program id is null");
+				
 				// Generate unique file id for given file name
 				fileId = iArkCommonService.generateArkFileId(fileName);
 
@@ -232,7 +240,11 @@ public class GenomicServiceImpl implements IGenomicService {
 			// Set new file checksum
 			computation.setChecksum(checksum);
 		} else {
-			if (computation.getProgramId() != null) {
+			System.out.println("attachment is null");
+			if (computation.getProgramId() != null && computation.getProgramName() == null) {
+				
+				System.out.println("attachment is null && program id is not null");
+				
 				// Get existing file Id
 				fileId = computation.getProgramId();
 
@@ -250,8 +262,23 @@ public class GenomicServiceImpl implements IGenomicService {
 	}
 
 	@Override
-	public void delete(Computation computation) {
-		// TODO Auto-generated method stub
+	public void delete(Computation computation) throws ArkSystemException, ArkFileNotFoundException {
+
+		Long studyId = computation.getMicroService().getStudyId();
+		String computationId = computation.getId().toString();
+		String fileId = computation.getProgramId();
+		String checksum = computation.getChecksum();
+
+		if (fileId != null && iArkCommonService.deleteArkFileAttachment(studyId, computationId, fileId, "computation", checksum)) {
+			genomicsDao.delete(computation);
+		} else {
+			genomicsDao.delete(computation);
+		}
+
+	}
+
+	public void delete(Analysis analysis) {
+		genomicsDao.delete(analysis);
 	}
 
 	public List<MicroService> searchMicroService(MicroService microService) {
@@ -372,10 +399,11 @@ public class GenomicServiceImpl implements IGenomicService {
 					ds.setPath("/" + fileName);
 				} else {
 					String dirPath = datacenter.getDirectory().trim();
-					
-//					System.out.println("--------------------------="+dirPath);					
-//					System.out.println("--------------------------="+dirPath.charAt(0));
-//					System.out.println("--------------------------="+(dirPath.length() - 1));
+
+					// System.out.println("--------------------------="+dirPath);
+					// System.out.println("--------------------------="+dirPath.charAt(0));
+					// System.out.println("--------------------------="+(dirPath.length()
+					// - 1));
 
 					if ("/".equals(dirPath.charAt(0))) {
 						dirPath = "/" + dirPath;
@@ -527,40 +555,31 @@ public class GenomicServiceImpl implements IGenomicService {
 		return processUID;
 	}
 
-	public byte[] getAnalysisResult(Analysis analysis) {
+	public byte[] getAnalysisResult(Analysis analysis) throws Exception {
 		byte[] result = null;
 		MicroService microService = analysis.getMicroService();
-
 		String URL = microService.getServiceUrl() + "/getAnalysisResult";
-
 		StringBuffer sb = new StringBuffer();
-		try {
-			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
 
-			JSONObject obj = new JSONObject();
-			obj.put("programId", analysis.getComputation().getProgramId().split("[.]")[0]);
-			obj.put("programName", analysis.getComputation().getProgramName().split("[.]")[0]);
-			obj.put("analysisId", analysis.getId());
-			obj.put("parameters", analysis.getParameters());
-			obj.put("result", analysis.getResult());
-			obj.put("jobId", analysis.getJobId());
+		ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
 
-			httpService.addPostParameters(obj);
-			List<String> data = httpService.finish();
-			for (String s : data) {
-				if (s.contains("\n")) {
-					sb.append(s);
-				} else {
-					sb.append(s + "\n");
-				}
+		JSONObject obj = new JSONObject();
+		obj.put("programId", analysis.getComputation().getProgramId().split("[.]")[0]);
+		obj.put("programName", analysis.getComputation().getProgramName().split("[.]")[0]);
+		obj.put("analysisId", analysis.getId());
+		obj.put("parameters", analysis.getParameters());
+		obj.put("result", analysis.getResult());
+		obj.put("jobId", analysis.getJobId());
+
+		httpService.addPostParameters(obj);
+		List<String> data = httpService.finish();
+		for (String s : data) {
+			if (s.contains("\n")) {
+				sb.append(s);
+			} else {
+				sb.append(s + "\n");
 			}
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-
 		result = sb.toString().getBytes();
 		return result;
 	}
@@ -612,7 +631,7 @@ public class GenomicServiceImpl implements IGenomicService {
 			}
 
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(30000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -649,88 +668,89 @@ public class GenomicServiceImpl implements IGenomicService {
 
 			log.info("Process Status -- " + result);
 
-			log.info("DataSoure Status -- " + analysis.getStatus());
+			log.info("Analysis Status -- " + analysis.getStatus());
 
 			analysis.setStatus(result);
 
 			saveOrUpdate(analysis);
 
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(30000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	public void updateQueueStatus(Analysis analysis) {
 		MicroService microService = analysis.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/queueStatus";
 
 		String result = "Running";
+		try {
 
-		while (!(Constants.STATUS_COMPLETED.equalsIgnoreCase(result) || Constants.STATUS_FAILED.equalsIgnoreCase(result))) {
+			while (!(Constants.STATUS_COMPLETED.equalsIgnoreCase(result) || Constants.STATUS_FAILED.equalsIgnoreCase(result))) {
 
-			try {
 				ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
 				httpService.addPostParameters(analysis.getJobId());
 				List<String> data = httpService.finish();
 				result = data.stream().findFirst().get();
 
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+				// } catch (MalformedURLException e) {
+				// e.printStackTrace();
+				// } catch (IOException e) {
+				// e.printStackTrace();
+				// }
+
+				log.info("Process Status -- " + result);
+
+				log.info("DataSoure Status -- " + analysis.getStatus());
+
+				analysis.setStatus(WordUtils.capitalize(result.toLowerCase()));
+
+				saveOrUpdate(analysis);
+
+				// try {
+				Thread.sleep(30000);
+
 			}
-
-			log.info("Process Status -- " + result);
-
-			log.info("DataSoure Status -- " + analysis.getStatus());
-
-			analysis.setStatus(result);
-
-			saveOrUpdate(analysis);
-
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-
-	public void uploadComputation(Computation computation) {
-		MicroService microService = computation.getMicroService();
-		String URL = microService.getServiceUrl() + "/upload";
-		try {
-			ArkMultipartService multipartService = new ArkMultipartService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
-
-			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			String directory = iArkCommonService.getArkFileDirName(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR);
-			String location = directory + File.separator + computation.getProgramId();
-			File file = new File(location);
-
-			multipartService.addFormField("name", computation.getProgramId() + "");
-			multipartService.addFilePart("file", file);
-
-			List<String> outputList = multipartService.finish();
-			if (outputList.size() > 0) {
-				if (outputList.get(0).contains(Constants.STATUS_UPLOADED)) {
-					computation.setStatus(Constants.STATUS_UPLOADED);
-				} else {
-					computation.setStatus(Constants.STATUS_UPLOAD_FAILED);
-				}
-			}
-			genomicsDao.saveOrUpdate(computation);
 		} catch (Exception e) {
 			e.printStackTrace();
+			result = Constants.STATUS_FAILED;
+			analysis.setStatus(result);
+			saveOrUpdate(analysis);
+
 		}
+	}
+
+	public void uploadComputation(Computation computation) throws Exception {
+		MicroService microService = computation.getMicroService();
+		String URL = microService.getServiceUrl() + "/upload";
+
+		ArkMultipartService multipartService = new ArkMultipartService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String directory = iArkCommonService.getArkFileDirName(studyId, computation.getId().toString(), Constants.ARK_GENOMICS_COMPUTATION_DIR);
+		String location = directory + File.separator + computation.getProgramId();
+		File file = new File(location);
+
+		multipartService.addFormField("name", computation.getProgramId() + "");
+		multipartService.addFilePart("file", file);
+
+		List<String> outputList = multipartService.finish();
+		if (outputList.size() > 0) {
+			if (outputList.get(0).contains(Constants.STATUS_UPLOADED)) {
+				computation.setStatus(Constants.STATUS_UPLOADED);
+			} else {
+				computation.setStatus(Constants.STATUS_UPLOAD_FAILED);
+			}
+		}
+		genomicsDao.saveOrUpdate(computation);
 
 	}
 
-	public String compileComputation(Computation computation) {
+	public String compileComputation(Computation computation) throws Exception {
 		MicroService microService = computation.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/compile";
@@ -739,37 +759,30 @@ public class GenomicServiceImpl implements IGenomicService {
 
 		String processUID = null;
 
-		try {
+		ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
 
-			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+		JSONObject obj = new JSONObject();
 
-			JSONObject obj = new JSONObject();
+		String programId[] = computation.getProgramId().split("[.]");
+		String programName[] = computation.getProgramName().split("[.]");
+		obj.put("programId", programId[0]);
+		obj.put("name", computation.getName());
+		obj.put("program", programName[0]);
 
-			String programId[] = computation.getProgramId().split("[.]");
-			String programName[] = computation.getProgramName().split("[.]");
-			obj.put("programId", programId[0]);
-			obj.put("name", computation.getName());
-			obj.put("program", programName[0]);
+		httpService.addPostParameters(obj);
+		List<String> data = httpService.finish();
+		processUID = data.stream().findFirst().get();
 
-			httpService.addPostParameters(obj);
-			List<String> data = httpService.finish();
-			processUID = data.stream().findFirst().get();
+		// if (Constants.STATUS_COMPILED.equalsIgnoreCase(status)) {
+		// computation.setStatus(Constants.STATUS_COMPILED);
+		// } else {
+		// computation.setStatus(Constants.STATUS_CPMPILE_FAILED);
+		// }
 
-			if (Constants.STATUS_COMPILED.equalsIgnoreCase(status)) {
-				computation.setStatus(Constants.STATUS_COMPILED);
-			} else {
-				computation.setStatus(Constants.STATUS_CPMPILE_FAILED);
-			}
+		computation.setStatus(Constants.STATUS_SUBMITTED);
 
-			genomicsDao.saveOrUpdate(computation);
+		genomicsDao.saveOrUpdate(computation);
 
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return processUID;
 	}
 
@@ -805,7 +818,7 @@ public class GenomicServiceImpl implements IGenomicService {
 			saveOrUpdate(computation);
 
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(30000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -876,56 +889,52 @@ public class GenomicServiceImpl implements IGenomicService {
 		return status;
 	}
 
-	public String submitToQueue(Analysis analysis) {
+	public String submitToQueue(Analysis analysis) throws Exception {
 		MicroService microService = analysis.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/jobQueue";
 
 		String jobId = null;
 
-		try {
-			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+		ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
 
-			JSONObject obj = new JSONObject();
-			obj.put("programId", analysis.getComputation().getProgramId().split("[.]")[0]);
-			obj.put("programName", analysis.getComputation().getProgramName().split("[.]")[0]);
-			obj.put("analysisId", analysis.getId());
-			
-			if(analysis.getDataSource() !=null){
-				obj.put("sourcePath", analysis.getDataSource().getPath());
-				obj.put("sourceDataCenter", analysis.getDataSource().getDataCenter());
-				obj.put("sourceDir", analysis.getDataSource().getDirectory());
-			}else{
-				obj.put("sourcePath", "");
-				obj.put("sourceDataCenter", "");
-				obj.put("sourceDir", "");
-			}
-			obj.put("parameters", analysis.getParameters());
-			obj.put("result", analysis.getResult());
-			obj.put("scriptName", analysis.getScriptName());
-			
-			System.out.println("----------------------------------"+analysis.getScriptName());
+		JSONObject obj = new JSONObject();
+		obj.put("programId", analysis.getComputation().getProgramId().split("[.]")[0]);
+		obj.put("programName", analysis.getComputation().getProgramName().split("[.]")[0]);
+		obj.put("analysisId", analysis.getId());
 
-			httpService.addPostParameters(obj);
-			List<String> data = httpService.finish();
-			jobId = data.stream().findFirst().get();
-			
-			analysis.setJobId(jobId);
-			
-			genomicsDao.saveOrUpdate(analysis);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (analysis.getDataSource() != null) {
+			obj.put("sourcePath", analysis.getDataSource().getPath());
+			obj.put("sourceDataCenter", analysis.getDataSource().getDataCenter());
+			obj.put("sourceDir", analysis.getDataSource().getDirectory());
+		} else {
+			obj.put("sourcePath", "");
+			obj.put("sourceDataCenter", "");
+			obj.put("sourceDir", "");
 		}
+		obj.put("parameters", analysis.getParameters());
+		obj.put("result", analysis.getResult());
+		obj.put("scriptName", analysis.getScriptName());
+
+		System.out.println("----------------------------------" + analysis.getScriptName());
+
+		httpService.addPostParameters(obj);
+		List<String> data = httpService.finish();
+		jobId = data.stream().findFirst().get();
+
+		analysis.setJobId(jobId);
+		analysis.setStatus(Constants.STATUS_SUBMITTED);
+		genomicsDao.saveOrUpdate(analysis);
+
 		return jobId;
 	}
-	
-	public String executeQueryAnalysis(DataCenterVo dataCenter){
+
+	public String executeQueryAnalysis(DataCenterVo dataCenter) {
 		MicroService microService = dataCenter.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/queryResult";
-		
-		System.out.println(" -------------------- "+URL+" ----------------------- ");
+
+		System.out.println(" -------------------- " + URL + " ----------------------- ");
 
 		String result = null;
 		try {
@@ -946,13 +955,13 @@ public class GenomicServiceImpl implements IGenomicService {
 
 		return result;
 	}
-	
-	public byte[] getQueryResult(DataCenterVo dataCenter){
+
+	public byte[] getQueryResult(DataCenterVo dataCenter) {
 		MicroService microService = dataCenter.getMicroService();
 
 		String URL = microService.getServiceUrl() + "/queryOutput";
-		
-		System.out.println(" -------------------- "+URL+" ----------------------- ");
+
+		System.out.println(" -------------------- " + URL + " ----------------------- ");
 
 		byte[] result = null;
 		try {
@@ -974,15 +983,8 @@ public class GenomicServiceImpl implements IGenomicService {
 		return result;
 	}
 
-	
-//	public static void main(String[] args) {
-//		String dirPath="/"; 
-//		
-//		if ("/".equals(dirPath.charAt(0))) {
-//			dirPath = "/" + dirPath;
-//		}
-//		
-//		System.out.println(dirPath);
-//	}
+	public int getAnalysisCount(long computationId) {
+		return genomicsDao.getAnalysisCount(computationId);
+	}
 
 }

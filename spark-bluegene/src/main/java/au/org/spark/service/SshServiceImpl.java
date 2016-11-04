@@ -1,6 +1,7 @@
 package au.org.spark.service;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -705,10 +706,17 @@ public class SshServiceImpl implements SshService {
 				channelExec = execSession.getClientInstance();
 				in = channelExec.getInputStream();
 
-				String output = map.get(Constants.SPARK_INFO_MAKEFILE).split("[.]")[0];
-
-				command = "mkdir " + path + "/program/out; " + appendCheckStatement(map.get(Constants.SPARK_INFO_MAKETYPE) + " " + path + "/program/" + map.get(Constants.SPARK_INFO_MAKEFILE) + " -o " + path + "/program/out/" + output + ";");
-
+				
+				String outputDir = map.get(Constants.SPARK_OUTPUT);
+				
+				String parameters = map.get(Constants.SPARK_INFO_MAKEPARAMETERS);
+				
+				if("out".equalsIgnoreCase(outputDir)){
+					String output = parameters!=null? parameters.split("[.]")[0]:"";
+					command = "mkdir " + path + "/program/out; " + appendCheckStatement(map.get(Constants.SPARK_INFO_MAKETYPE) + " " + path + "/program/" + map.get(Constants.SPARK_INFO_MAKEPARAMETERS) + " -o " + path + "/program/out/" + output + ";");
+				}else{
+					command = appendCheckStatement(map.get(Constants.SPARK_INFO_MAKETYPE)+" "+ path + "/program/"+(parameters!=null?parameters:"")+";");
+				}
 				System.out.println("Command: " + command);
 
 				channelExec.setCommand(command);
@@ -742,7 +750,7 @@ public class SshServiceImpl implements SshService {
 
 	private String appendCheckStatement(String command) {
 		return "if " + command + " then echo 'Compiled'; else echo 'Compile Failure'; fi;";
-	}
+	}	
 
 	public void executeAnalysis(AnalysisVo analysisVo) {
 		Map<String, String> map = new HashMap<String, String>();
@@ -914,13 +922,16 @@ public class SshServiceImpl implements SshService {
 			String result = null;
 			String resultDir = null;
 
-			if (StringUtils.isEmpty(analysisVo.getJobId())) {
-				result = map.get("result");
+//			if (StringUtils.isEmpty(analysisVo.getJobId())) {
+//				result = map.get("result");
+//
+//				resultDir = "result" + analysisVo.getAnalysisId();
+//			} else {
+//				resultDir = "job" + analysisVo.getAnalysisId();
+//			}
 
-				resultDir = "result" + analysisVo.getAnalysisId();
-			} else {
-				resultDir = "job" + analysisVo.getAnalysisId();
-			}
+			resultDir = "job" + analysisVo.getAnalysisId();
+			
 
 			if (analysisVo.getResult() != null) {
 				command = "cat " + path + "/program/" + resultDir + "/" + analysisVo.getResult() + ";";
@@ -956,6 +967,8 @@ public class SshServiceImpl implements SshService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Error: " + e);
+		}finally{
+			channelExec.disconnect();
 		}
 		return results.toString();
 	}
@@ -1010,7 +1023,7 @@ public class SshServiceImpl implements SshService {
 		}
 	}
 
-	public String jobSubmission(final AnalysisVo analysisVo) {
+	public String jobSubmission1(final AnalysisVo analysisVo) {
 		String jobId = null;
 
 		Map<String, String> map = new HashMap<String, String>();
@@ -1143,6 +1156,164 @@ public class SshServiceImpl implements SshService {
 		return jobId;
 	}
 	
+	public String jobSubmission(final AnalysisVo analysisVo) {
+		String jobId = "0";
+
+		Map<String, String> map = new HashMap<String, String>();
+		ExecSession execSession = null;
+		ChannelExec channelExec = null;
+		InputStream in = null;
+		BufferedReader reader = null;
+		String command = null;
+
+		StringBuffer results = new StringBuffer();
+
+		try {
+			execSession = execSessionFactory.getSession();
+			channelExec = execSession.getClientInstance();
+			in = channelExec.getInputStream();
+
+			String path = "spark/" + analysisVo.getProgramId() + "/" + analysisVo.getProgramName();
+
+			command = "cat " + path + "/spark.info";
+
+			System.out.println("Command: " + command);
+			channelExec.setCommand(command);
+			channelExec.connect();
+
+			reader = new BufferedReader(new InputStreamReader(in));
+			String line;
+			int index = 0;
+
+			while ((line = reader.readLine()) != null) {
+				System.out.println(++index + " : " + line);
+				String array[] = line.split("[:]");
+				if (array.length > 1) {
+					map.put(array[0], array[1]);
+				}
+			}
+
+			int exitStatus = channelExec.getExitStatus();
+
+			if (exitStatus < 0) {
+				System.out.println("Done, but exit status not set!");
+			} else if (exitStatus > 0) {
+				System.out.println("Done, but with error!");
+			} else {
+				System.out.println("Done!");
+			}
+
+//			String resultDir = null;
+//			// Move the data set to the output directory.
+//			if (Constants.DATA_CENTERS.SSH_TEST.toString().equals(analysisVo.getSourceDataCenter())) {
+//				ChannelSftp channelSftp = sftpSession.getClientInstance();
+//				channelSftp.cd(rootPath + File.separator + "spark");
+//				channelSftp.cd(analysisVo.getProgramId() + "/" + analysisVo.getProgramName() + "/program");
+//				resultDir = "result" + analysisVo.getAnalysisId();
+//				channelSftp.mkdir(resultDir);
+//				channelSftp.cd(resultDir);
+//
+//				execSession = execSessionFactory.getSession();
+//				channelExec = execSession.getClientInstance();
+//				String source = rootPath + File.separator + analysisVo.getSourcePath();
+//
+//				String destination = path + "/program" + "/" + resultDir;
+//
+//				if (BooleanUtils.isTrue(analysisVo.isSourceDir())) {
+//					command = "cp -dr " + source + " " + destination;
+//					System.out.println("Command: " + command);
+//				} else {
+//					command = "cp " + source + " " + destination;
+//					System.out.println("Command: " + command);
+//				}
+//				channelExec.setCommand(command);
+//				channelExec.connect();
+//			}
+
+			// execute the program for given data set
+			execSession = execSessionFactory.getSession();
+			channelExec = execSession.getClientInstance();
+			in = channelExec.getInputStream();
+
+			String batchScript = analysisVo.getScriptName();
+//			command = "cd " + path + "/program/" + "job" + analysisVo.getAnalysisId().toString() + "; sbatch " + batchScript + ";";
+			String jobDir="job" + analysisVo.getAnalysisId().toString();
+			StringBuffer commandBuffer = new StringBuffer("cd " + path + "/program;" +"rm -rf "+ jobDir + "; mkdir " + jobDir + ";");
+			commandBuffer.append("cp sparkbatch.sh "+jobDir+"/;");
+			
+			if (Constants.DATA_CENTERS.SSH_TEST.toString().equals(analysisVo.getSourceDataCenter())) {
+				String source = rootPath + File.separator + analysisVo.getSourcePath();
+				if (BooleanUtils.isTrue(analysisVo.isSourceDir())) {
+					commandBuffer.append("cp -dr " + source + " " + jobDir+";");
+				} else {
+					commandBuffer.append("cp " + source + " " + jobDir+";");
+				}
+			}
+			
+			commandBuffer.append("cd "+jobDir+";");
+			commandBuffer.append("echo '#SBATCH --job-name=\"spark-job"+analysisVo.getAnalysisId().toString()+"\"' >> sparkbatch.sh;");
+			commandBuffer.append("echo '#SBATCH --output=\""+analysisVo.getResult()+"\"' >> sparkbatch.sh;");
+			commandBuffer.append("echo \""+map.get("run")+"\" >> sparkbatch.sh;");
+			commandBuffer.append("sbatch sparkbatch.sh;");
+			System.out.println("Command: " + commandBuffer.toString());
+
+			channelExec.setCommand(commandBuffer.toString());
+			channelExec.connect();
+
+			reader = new BufferedReader(new InputStreamReader(in));
+
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+				results.append(line);
+			}
+
+			exitStatus = channelExec.getExitStatus();
+
+			if (exitStatus < 0) {
+				System.out.println("Done, but exit status not set!");
+			} else if (exitStatus > 0) {
+				System.out.println("Done, but with error!");
+			} else {
+				System.out.println("Done!");
+			}
+			
+//			ChannelSftp channelSftp = sftpSession.getClientInstance();
+//			
+//			if(!channelSftp.isConnected()){
+//				channelSftp.connect();
+//			}
+			
+//			channelSftp.cd(rootPath + File.separator + "spark");
+//			channelSftp.cd(analysisVo.getProgramId() + "/" + analysisVo.getProgramName() + "/program/"+jobDir);
+//			InputStream obj_InputStream = new ByteArrayInputStream("A\nB\nC".getBytes());
+//			channelSftp.put(obj_InputStream, "test.sh");
+//			channelSftp.exit();
+//			obj_InputStream.close();
+			
+//			channelSftp.disconnect();
+//			channelSftp.rmdir(jobDir);
+//			channelSftp.mkdir(jobDir);
+			
+			
+			String resultArray[] = results.toString().split("Submitted batch job");
+
+			if (resultArray.length > 0) {
+				jobId = resultArray[1].trim();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Error: " + e);
+		}finally{
+			if(channelExec!=null){
+				channelExec.disconnect();
+			}
+		}
+
+		return jobId;
+	}
+
+	
 //	public static void main(String[] args) {
 ////		String s = "JobState=RUNNING Reason=None Dependency=(null)";
 //		String s = "UserId=thilinaranaweera(4176) GroupId=VR0304(3560)";
@@ -1166,9 +1337,11 @@ public class SshServiceImpl implements SshService {
 
 			execSession = execSessionFactory.getSession();
 			channelExec = execSession.getClientInstance();
+			
 			in = channelExec.getInputStream();
 			
-			command= "checkjob "+jobId;
+//			command= "squeue -j "+jobId;
+			command= "scontrol show job "+jobId;
 
 			System.out.println("Command: " + command);
 
@@ -1180,9 +1353,13 @@ public class SshServiceImpl implements SshService {
 			while ((line = reader.readLine()) != null) {
 				System.out.println(line);
 //				results.append(line);
-				Map<String, String> map = Splitter.on(' ').withKeyValueSeparator('=')
+				
+				if(line.trim().startsWith("JobState")){
+					Map<String, String> map = Splitter.on(' ').withKeyValueSeparator('=')
 						.split(line.trim());
-				jobMap.putAll(map);
+					jobMap.putAll(map);
+					break;
+				}
 			}
 
 			int exitStatus = channelExec.getExitStatus();
@@ -1194,9 +1371,16 @@ public class SshServiceImpl implements SshService {
 			} else {
 				System.out.println("Done!");
 			}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-			status ="Failed";
+//			status ="Failed";
+			jobMap.put("JobState", "Failed");
+		}finally{
+			if(channelExec!=null){
+				channelExec.disconnect();
+			}
 		}
 		
 		status= jobMap.get("JobState");

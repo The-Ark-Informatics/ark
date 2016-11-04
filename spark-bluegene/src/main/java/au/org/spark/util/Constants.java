@@ -24,11 +24,13 @@ public final class Constants {
 	
 	public static final String SPARK_INFO_MAKETYPE="maketype";	
 
-	public static final String SPARK_INFO_MAKEFILE="makefile";	
+	public static final String SPARK_INFO_MAKEPARAMETERS="makeparameter";	
 	
-	public static final String SPARK_INFO_MODE="mode";	
+	public static final String SPARK_INFO_MODE="mode";
 
 	public static final String SPARK_INFO_AUTOMATIC_MODE="automatic";	
+
+	public static final String SPARK_OUTPUT="output";	
 
 	public static final List<String> listDataCenters() {
 		ArrayList<String> list = new ArrayList<String>();
