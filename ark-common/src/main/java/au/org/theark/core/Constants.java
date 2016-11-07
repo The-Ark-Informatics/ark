@@ -734,5 +734,15 @@ public class Constants {
 	public static final Integer GENERAL_FIELD_MAX_LENGTH_100 = 100;
 	//This is 200MB
 	public static final Integer MAXIMUM_PERMISSABLE_FILE_SIZE=(int)((int)2*Math.pow(10,8));
+	
+	public static final String	PERSON_PERSON_ID				= "person.id";
+	public static final String	STREET_ADDRESS					= "streetAddress";
+	public static final String	COUNTRY_NAME					= "country";
+	public static final String	POST_CODE						= "postCode";
+	public static final String	CITY							= "city";
+	public static final String	STATE_NAME						= "state";
+	public static final String	ADDRESS_TYPE					= "addressType";
+	public static final String DELETE_UPLOAD 					= "deleteUpload";
+
 			
 }

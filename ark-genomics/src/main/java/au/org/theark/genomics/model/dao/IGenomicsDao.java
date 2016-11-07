@@ -24,6 +24,8 @@ public interface IGenomicsDao {
 
 	public void delete(Computation dataSource);
 	
+	public void delete(Analysis analysis);
+	
 	public List<MicroService> searchMicroService(final MicroService microService);
 	
 	public List<Computation> searchComputations(Computation computation, Long studyId);
@@ -37,4 +39,6 @@ public interface IGenomicsDao {
 	public List<Computation> searchComputation(MicroService microService);
 	
 	public List<Analysis> searchAnalysis(Analysis analysis, Long studyId);
+	
+	public int getAnalysisCount(long computationId);
 }

@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import au.org.theark.core.Constants;
 
 @Entity
@@ -41,6 +43,8 @@ public class Computation implements Serializable {
 	private String programName;
 
 	private String programId;
+	
+	private Boolean available;
 
 	@Id
 	@SequenceGenerator(name = "computation_generator", sequenceName = "COMPUTATION_SEQUENCE")
@@ -125,6 +129,15 @@ public class Computation implements Serializable {
 
 	public void setProgramName(String programName) {
 		this.programName = programName;
+	}
+
+	@Column(name = "AVAILABLE", nullable = false, columnDefinition = "TINYINT(1)")
+	public Boolean getAvailable() {
+		return available;
+	}
+
+	public void setAvailable(Boolean available) {
+		this.available = available;
 	}
 
 }

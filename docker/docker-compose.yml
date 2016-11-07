@@ -2,6 +2,7 @@ version: '2'
 services:
         base:
                 build: ..
+                image: the-ark/base:latest
         mysql:
                 build: db
                 ports:

@@ -37,7 +37,6 @@ import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
@@ -63,7 +62,6 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
-import au.org.theark.core.model.report.entity.SearchSubject;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -610,11 +608,20 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
 
 		LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
-
-        linkSubjectStudy.setNaturalUID(arkCommonService.generateNaturalUID(linkSubjectStudy.getSubjectUID()));
-
+		String subjectUID = linkSubjectStudy.getSubjectUID();
+		StringBuilder natBuilder = new StringBuilder();
+		Matcher matcher = Pattern.compile("\\d+").matcher(subjectUID);
+		int last_end = 0;
+		while(matcher.find()) {
+			if (matcher.start() > last_end) {
+				natBuilder.append(subjectUID.substring(last_end, matcher.start()));
+			}
+			String subjectUIDNumber = org.apache.commons.lang.StringUtils.leftPad(subjectUID.substring(matcher.start(), matcher.end()), 20, '0');
+			natBuilder.append(subjectUIDNumber);
+			last_end = matcher.end();
+		}
+		linkSubjectStudy.setNaturalUID(natBuilder.toString());
 		session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
-
 		autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
 
 		// TODO EXCEPTIONHANDLING

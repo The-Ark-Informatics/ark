@@ -38,8 +38,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -182,11 +180,9 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public String getNaturalUID() {
 		return naturalUID;
 	}
-
 	public void setNaturalUID(String naturalUID) {
 		this.naturalUID = naturalUID;
 	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_STATUS_ID")
 	public ConsentStatus getConsentStatus() {

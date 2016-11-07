@@ -8,6 +8,9 @@
 **/*.swp
 **/.completed
 docker/.env
+docker/test/output
+docker/.env
+**/.vagrant
 
 # Properties.
 ark-container/src/main/resources/applicationContext.xml
@@ -20,6 +23,8 @@ spark/src/main/resources/spark.properties
 ark-user-account/src/main/resources/applicationContext.xml
 
 spark-bluegene/src/main/resources/spark.properties
+spark-spartan/src/main/resources/spark.properties
+spark-local/src/main/resources/spark.properties
 ark-calendar/src/main/resources/ark-calendar.properties
 
 ark-container/src/main/resources/private-key.pem

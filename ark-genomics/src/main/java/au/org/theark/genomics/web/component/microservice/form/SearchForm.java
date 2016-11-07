@@ -61,8 +61,10 @@ public class SearchForm extends AbstractSearchForm<MicroServiceVo> {
 	protected void initialiseSearchForm() {
 		microServiceIdTxtFld = new TextField<String>(Constants.MICRO_SERVICE_ID);
 		microServiceNameTxtFld = new TextField<String>(Constants.MICRO_SERVICE_NAME);
+		microServiceNameTxtFld.setOutputMarkupId(true);
 		this.initMicroServiceStatusDDL();
 		microServiceURLTxtArea = new TextArea<String>(Constants.MICRO_SERVICE_URL);
+		microServiceURLTxtArea.setOutputMarkupId(true);
 	}
 	
 	private void initMicroServiceStatusDDL(){
@@ -100,7 +102,16 @@ public class SearchForm extends AbstractSearchForm<MicroServiceVo> {
 	protected void onNew(AjaxRequestTarget target) {
 		getModelObject().setMode(Constants.MODE_NEW);
 		getModelObject().getMicroService().setId(null);
+		
+		TextField microserviceNameTxtFld = (TextField)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.MICRO_SERVICE_NAME);
+		TextArea microserviceUrlTxtArea = (TextArea)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.MICRO_SERVICE_URL);
 		preProcessDetailPanel(target);
+		
+		microserviceNameTxtFld.setEnabled(true);
+		microserviceUrlTxtArea.setEnabled(true);
+		
+		target.add(microserviceNameTxtFld);
+		target.add(microserviceUrlTxtArea);
 	}
 
 }

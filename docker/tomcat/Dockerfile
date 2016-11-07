@@ -1,4 +1,3 @@
-# Remove the-ark/base as parent, and use normal debian/ubuntu image then in cmd use script to pull the war and so from the volume of base
 FROM tomcat:7-jre8 
 
 MAINTAINER George Gooden <gecgooden@gmail.com>

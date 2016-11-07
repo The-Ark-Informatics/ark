@@ -6,6 +6,8 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -111,7 +113,22 @@ public class SearchResultListPanel extends Panel {
 				MicroServiceVo microServiceVo = containerForm.getModelObject();
 				microServiceVo.setMode(Constants.MODE_EDIT);
 				microServiceVo.setMicroService(microService);
+				
+				TextField microserviceNameTxtFld = (TextField)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.MICRO_SERVICE_NAME);
+				TextArea microserviceUrlTxtArea = (TextArea)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.MICRO_SERVICE_URL);
+				AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
+				
+				microserviceNameTxtFld.setEnabled(false);
+				microserviceUrlTxtArea.setEnabled(false);
+				deleteButton.setEnabled(false);
+				
+				target.add(microserviceNameTxtFld);
+				target.add(microserviceUrlTxtArea);
+				target.add(deleteButton);
+				
+				
 			}
 		};
 		

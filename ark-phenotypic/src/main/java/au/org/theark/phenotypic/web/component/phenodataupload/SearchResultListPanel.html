@@ -24,21 +24,24 @@
 					<wicket:message	key="upload.userId">Uploaded By</wicket:message>
 				</label>
 			</th>
-			<th width="5%">
+			<th width="7%">
 				<label for="col6">
 					<wicket:message	key="upload.startTime">Start Time</wicket:message>
 				</label>
 			</th>
-			<th width="5%">
+			<th width="7%">
 				<label for="col7">
 					<wicket:message	key="upload.finishTime">Finish Time</wicket:message>
 				</label>
 			</th>
-			<!-- <th width="20%">
-				<input wicket:id="downloadTemplate" type="button" value="Download Template" />
-			</th> -->
-			<th width="2%">&nbsp;</th>
-			<th width="22%">
+			<th width="15%">
+				<label for="col7">
+				<span> </span>
+				</label>
+				<!-- <input wicket:id="downloadTemplate" type="button" value="Download Template" /> -->
+				<div wicket:id="confirmModal"></div>
+			</th> 
+	  		<th width="10%">
 				<wicket:message	key="upload.uploadStatusName">Upload Status</wicket:message>				
 			</th>
 			<th width="2%">&nbsp;</th>
@@ -64,13 +67,12 @@
 			<td width="5%">
 				<span wicket:id="upload.finishTime">Finish Time</span>
 			</td>
-			<td width="10%">
+			<td width="15%">
 			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />&nbsp;
+			  	<input wicket:id="upload.uploadReport" type="submit" wicket:message="value:button.downloadReport" />&nbsp;
+			  	<input wicket:id="deleteUpload" type="submit" wicket:message="value:button.deleteUpload" />&nbsp;
 			</td>
 			<td width="10%">
-				<input wicket:id="upload.uploadReport" type="submit" wicket:message="value:button.downloadReport" />&nbsp;
-			</td>
-			<td width="22%">
 				<span wicket:id="upload.uploadStatus.name">Upload Status</span>
 			</td>
 			<td width="2%">&nbsp;</td>

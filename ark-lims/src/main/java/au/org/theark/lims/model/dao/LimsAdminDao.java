@@ -3,6 +3,12 @@ package au.org.theark.lims.model.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
@@ -10,6 +16,9 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
@@ -22,7 +31,14 @@ import au.org.theark.core.model.study.entity.Study;
 
 @Repository("limsAdminDao")
 public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
-	//private static final Logger	log	= LoggerFactory.getLogger(LimsAdminDao.class);
+	private static final Logger log	= LoggerFactory.getLogger(LimsAdminDao.class);
+
+	private IArkCommonService iArkCommonService;
+
+	@Autowired
+	public void setiArkCommonService(IArkCommonService iArkCommonService) {
+		this.iArkCommonService = iArkCommonService;
+	}
 
 	public void createBarcodeLabel(BarcodeLabel barcodeLabel) {
 		getSession().save(barcodeLabel);
@@ -131,6 +147,18 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		
 		if(barcodeLabel.getStudy() != null) {
 			criteria.add(Restrictions.eq("study", barcodeLabel.getStudy()));
+		} else {
+		    try {
+				Subject currentUser = SecurityUtils.getSubject();
+				ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+				ArkUserVO arkUserVo = new ArkUserVO();
+				arkUserVo.setArkUserEntity(arkUser);
+				List<Study> studies = new ArrayList<Study>();
+				studies = iArkCommonService.getArkAuthorisationDao().getStudiesWithRoleForUser(arkUserVo, iArkCommonService.getArkAuthorisationDao().getArkRoleByName("LIMS Administrator"));
+				criteria.add(Restrictions.in("study", studies));
+			} catch (EntityNotFoundException e) {
+				log.error(e.getMessage());
+			}
 		}
 		
 		/*if(barcodeLabel.getBarcodePrinter() != null) {

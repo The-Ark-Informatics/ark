@@ -25,6 +25,10 @@
 					<wicket:message	key="genomics.computation.status">Role:</wicket:message>
 				</label>
 			</th>
+			<th width="10%">
+				<label for="Download">			
+				</label>
+			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -43,6 +47,9 @@
 			</td>
 			<td width="10%">
 				<span wicket:id="computation.status">Status</span>
+			</td>
+			<td width="10%">
+				<input wicket:id="downloadPackage" type="submit" wicket:message="value:button.downloadFile" />
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>

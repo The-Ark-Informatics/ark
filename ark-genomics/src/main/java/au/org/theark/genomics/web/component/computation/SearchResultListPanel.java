@@ -1,17 +1,37 @@
 package au.org.theark.genomics.web.component.computation;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.IRequestCycle;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
+import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.file.File;
+import org.apache.wicket.util.file.Files;
+import org.apache.wicket.util.io.IOUtils;
+import org.apache.wicket.util.resource.FileResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
 
+import au.org.theark.core.exception.ArkCheckSumNotSameException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.spark.entity.Computation;
+import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
@@ -69,6 +89,8 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.COMPUTATION_STATUS, ""));
 				}
 				
+				item.add(buildDownloadButton(computation));
+				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= 1L;
 
@@ -102,4 +124,87 @@ public class SearchResultListPanel extends Panel {
 		link.add(nameLinkLabel);
 		return link;
 	}
+	
+	private AjaxButton buildDownloadButton(final Computation computation) {
+		AjaxButton ajaxButton = new AjaxButton("downloadPackage") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// Attempt to download the Blob as an array of bytes
+				byte[] data = null;
+				Long studyId =computation.getMicroService().getStudyId();
+				String computationId = computation.getId().toString();
+				String fileName = computation.getProgramName();
+				String fileId = computation.getProgramId();
+
+				String checksum = computation.getChecksum();
+				try {
+					
+					data = iArkCommonService.retriveArkFileAttachmentByteArray(studyId,computationId,"computation",fileId,checksum);
+
+					if (data != null) {
+						
+						System.out.println("----------------------- SIze of data ----------------------------");
+						System.out.println("Size - "+data.length);
+						System.out.println("-----------------------------------------------------------------");
+						
+						InputStream inputStream = new ByteArrayInputStream(data);
+						OutputStream outputStream;
+
+						final String tempDir = System.getProperty("java.io.tmpdir");
+						final java.io.File file = new File(tempDir, computation.getProgramName());
+						outputStream = new FileOutputStream(file);
+						IOUtils.copy(inputStream, outputStream);
+
+						IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(file));
+						getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream) {
+							@Override
+							public void respond(IRequestCycle requestCycle) {
+								super.respond(requestCycle);
+								Files.remove(file);
+							}
+						}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
+					}
+				}
+				catch(ArkSystemException e){
+					this.error("Unexpected error: Download request could not be fulfilled.");
+				}catch (IOException e) {
+					this.error("Unexpected error: Download request could not be fulfilled.");
+				} catch (ArkFileNotFoundException e) {
+					this.error("Unexpected error: Download request could not be fulfilled.");
+				} catch (ArkCheckSumNotSameException e) {
+					e.printStackTrace();
+				}
+				
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(containerForm);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Download request could not be fulfilled.");
+//				log.error("Unexpected error: Download request could not be fulfilled.");
+			};
+			
+			@Override
+			public boolean isVisible() {
+				boolean visible=true;
+				if(computation.getProgramId() == null){
+					visible=false;
+				}			
+				return visible;
+			}
+		};
+
+		ajaxButton.setVisible(true);
+		ajaxButton.setDefaultFormProcessing(false);
+
+		//if (subjectFile.getPayload() == null)
+		//ajaxButton.setVisible(false);
+
+		return ajaxButton;
+	}
+
 }

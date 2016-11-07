@@ -1,25 +1,17 @@
 package au.org.theark.test.integration;
 
-import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.web.pages.login.LoginPage;
 import com.google.common.base.Function;
 import com.google.common.net.HostAndPort;
 import junit.framework.TestCase;
 import org.apache.wicket.util.tester.WicketTester;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.StatelessSession;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.dialect.Dialect;
-import org.hibernate.internal.SessionFactoryImpl;
-import org.hibernate.service.ServiceRegistryBuilder;
-import org.hibernate.service.internal.StandardServiceRegistryImpl;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -31,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @Transactional
@@ -60,7 +51,13 @@ public class BaseIntegrationTest extends TestCase {
     @BeforeClass
     public static void openBrowser() {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        Dimension size = driver.manage().window().getSize();
+        driver.manage().window().maximize();
+        // If the window size didn't change, assume that it couldn't resize the window so set the size to 1080p
+        if (driver.manage().window().getSize().equals(size)) {
+            driver.manage().window().setSize(new Dimension(1920, 1080));
+        }
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
     @Before
@@ -81,19 +78,30 @@ public class BaseIntegrationTest extends TestCase {
         if (DOCKER_HOST != null && !DOCKER_HOST.isEmpty()) {
             ipAddress = DOCKER_HOST.replaceAll(".*://", "");
             ipAddress = HostAndPort.fromString(ipAddress).getHostText();
+        } else if (System.getenv("DOCKER") != null) {
+            // This is the case if the test was started in a container via docker-compose
+            ipAddress = "tomcat";
         }
         return ipAddress;
     }
 
     protected WebElement waitForElement(final By locator) {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, 60);
         return wait.until((Function<WebDriver, WebElement>) driver -> driver.findElement(locator));
     }
 
-
-    //TODO: Manage case if there is different password, use env_file?
     public void loginAsSuperUser() {
-        loginAsUser("arksuperuser@ark.org.au", "Password_1");
+        String superUserName = "arksuperuser@ark.org.au";
+        String superUserPassword = "Password_1";
+
+        if (System.getenv("ARK_USERNAME") != null) {
+            superUserName = System.getenv("ARK_USERNAME");
+        }
+        if (System.getenv("ARK_SUPERUSER_PASSWORD") != null) {
+            superUserPassword = System.getenv("ARK_SUPERUSER_PASSWORD");
+        }
+
+        loginAsUser(superUserName, superUserPassword);
     }
 
     public void loginAsUser(String username, String password) {
@@ -102,7 +110,7 @@ public class BaseIntegrationTest extends TestCase {
         driver.findElement(By.name("signInButton")).click();
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

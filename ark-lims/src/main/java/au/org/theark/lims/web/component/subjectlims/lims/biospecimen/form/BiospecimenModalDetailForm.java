@@ -79,6 +79,8 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.EditModeButtonsPanel;
+import au.org.theark.core.web.component.panel.ConfirmationAnswer;
+import au.org.theark.core.web.component.panel.YesNoPanel;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
@@ -1173,7 +1175,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			bioTxID.deleteCharAt(bioTxID.length()-1);
 			String modelTextReplce1=modalText.replaceAll("number", Integer.toString(bioTransactions.size()));
 			String modeltextReplace2=modelTextReplce1.replaceAll("txs", bioTxID.toString());
-			confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modeltextReplace2,confirmModal, answer));
+			confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modeltextReplace2,"Warning",confirmModal, answer));
 			confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
 				private static final long serialVersionUID = 1L;
 				public void onClose(AjaxRequestTarget target) {

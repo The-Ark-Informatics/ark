@@ -49,6 +49,7 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -1553,7 +1554,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void updateProcess(Process p) {
 		genoDao.updateProcess(p);
-
 	}
 
 	public List<Command> getCommands() {
@@ -1684,7 +1684,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try {
 			md5input = new FileInputStream(new File(fileName));
 			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
-				data = IOUtils.toByteArray(md5input);
+//				data = IOUtils.toByteArray(md5input);
+				data = FileUtils.readFileToByteArray(new File(fileName));
 			} else {
 				log.error("MD5 Hashes are not matching");
 				throw new ArkCheckSumNotSameException("MD5 Hashes are not matching");
@@ -2147,6 +2148,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return file;
 	}
 
+	@Override
+	public List<StudyCompStatus> getConsentStudyComponentStatusForStudyAndStudyComp(Study study, StudyComp studyComp) {
+		return studyDao.getConsentStudyComponentStatusForStudyAndStudyComp(study, studyComp);
+	}
+
+	@Override
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp,StudyCompStatus studyCompStatus) {
+		return studyDao.getConsentStatusForStudyStudyCompAndStudyCompStatus(study,studyComp,studyCompStatus);
+	}
 	public String generateNaturalUID(String UID) {
 		StringBuilder natBuilder = new StringBuilder();
 		Matcher matcher = Pattern.compile("\\d+").matcher(UID);
@@ -2165,5 +2175,16 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public String getBarcodePrivateKeyPassword() {
         return privateKeyPassword;
+	}
+
+	@Override
+	public void deleteUpload(Upload upload) {
+		AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+			ah.setComment("Deleted Upload " + upload.getFilename());
+			ah.setEntityId(upload.getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+			this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), upload.getStudy());
+			studyDao.deleteUpload(upload);
 	}
 }

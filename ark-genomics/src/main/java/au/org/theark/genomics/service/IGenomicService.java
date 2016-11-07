@@ -3,6 +3,7 @@ package au.org.theark.genomics.service;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkBaseException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.spark.entity.Analysis;
 import au.org.theark.core.model.spark.entity.Computation;
@@ -30,7 +31,9 @@ public interface IGenomicService {
 	
 	public void delete(DataSource dataSource);
 	
-	public void delete(Computation computation);
+	public void delete(Computation computation) throws ArkSystemException, ArkFileNotFoundException;
+	
+	public void delete(Analysis analysis);
 
 	public List<MicroService> searchMicroService(final MicroService microService);
 	
@@ -54,9 +57,9 @@ public interface IGenomicService {
 	
 //	public void uploadComputaion(Computation computation);
 	
-	public void uploadComputation(Computation computation);
+	public void uploadComputation(Computation computation) throws Exception;
 	
-	public String compileComputation(Computation computation);
+	public String compileComputation(Computation computation) throws Exception;
 	
 	public void updateCompilationStatus(String processUID, Computation computation);
 	
@@ -70,7 +73,7 @@ public interface IGenomicService {
 	
 	public void updateAnalysisStatus(final String processUID, Analysis analysis);
 	
-	public byte[] getAnalysisResult(Analysis analysis);
+	public byte[] getAnalysisResult(Analysis analysis) throws Exception;
 	
 	public String submitJob(Analysis analysis);
 	
@@ -78,12 +81,14 @@ public interface IGenomicService {
 	
 	public void update(Analysis analysis, byte[] attachement, String checksum) throws ArkBaseException,ArkSystemException;
 	
-	public String submitToQueue(Analysis analysis);
+	public String submitToQueue(Analysis analysis) throws Exception;
 	
 	public void updateQueueStatus(Analysis analysis);
 	
 	public String executeQueryAnalysis(DataCenterVo dataCenterV0);
 	
 	public byte[] getQueryResult(DataCenterVo dataCenter);
+	
+	public int getAnalysisCount(long computationId);
 	
 }

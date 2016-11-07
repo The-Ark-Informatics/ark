@@ -39,6 +39,11 @@ public class Constants {
 	public static final String	CONSENT_DATE							= "consentDate";
 	public static final String	CONSENT_STATUS							= "consentStatus";
 	public static final String	STUDY_COMP								= "studyComp";
+	//Add to Study Component Report
+	public static final String	CONSENT_STUDY_COMP						= "consent.studyComp";
+	public static final String	CONSENT_STUDY_COMP_STATUS				= "consent.studyComponentStatus";
+	public static final String	CONSENT_CONSENT_STATUS					= "consent.consentStatus";
+	
 
 	public static final String	PHENO_COLLECTION						= "phenoCollection";
 	public static final String	FIELD_DATA_AVAILABLE					= "fieldDataAvailable";
@@ -73,5 +78,14 @@ public class Constants {
 	public static final String	ERROR_BIOSPECIMEN_SUMMARY_REPORT_STUDY_REQUIRED 	= "error.biospecimensummaryreport.study.required";
 	public static final String	BIOSPECIMEN_SUMMARY_REPORT_STUDY_TAG 				= "Study";
 	public static final String 	RUN_BATCH_QUERY 									= "runBatchQuery";
+	public static final String	WMC_FROMDATE										= "wmc-fromDate";
+	public static final String	WMC_TODATE											= "wmc-toDate";
+	public static final String	FROM_DATE_LABEL										= "fromDateLabel";
+	public static final String	TO_DATE_LABEL										= "toDateLabel";
+	public static final String	FROM_DATE											= "fromDate";
+	public static final String	TO_DATE												= "toDate";
 	
+	public static final String	STUDY_STATUS_COMPLETED								= "Completed";
+	public static final String	STUDY_STATUS_REQUESTED								= "Requested";
+	public static final String	STUDY_STATUS_RECEIVED								= "Received";
 }

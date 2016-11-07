@@ -85,5 +85,12 @@ public interface ILdapUserDao {
 	 * @throws ArkSystemException
 	 */
 	public ArkUserVO lookupArkUser(String arkUserName) throws ArkSystemException;
+	
+	/**
+	 * 
+	 * @param arkUserVO
+	 * @throws ArkSystemException
+	 */
+	public void deleteArkUser(ArkUserVO arkUserVO) throws  ArkSystemException;
 
 }

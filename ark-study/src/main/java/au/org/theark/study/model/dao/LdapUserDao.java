@@ -549,4 +549,23 @@ public class LdapUserDao implements ILdapUserDao {
 			throw new ArkSystemException("A System error has occured");
 		}
 	}
+	@Override
+	public void deleteArkUser(ArkUserVO arkUserVO) throws  ArkSystemException {
+		
+		log.debug("Inside DeleteArkUser");
+					LdapName ldapName;
+			try {
+				ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
+				ldapName.add(new Rdn(Constants.CN, arkUserVO.getUserName()));
+				Name nameObj = ldapName;
+				// Create the person in ArkUsers Group in LDAP
+				ldapDataContextSource.getLdapTemplate().unbind(nameObj);
+			} catch (InvalidNameException ine) {
+				log.error("A System exception occured " + ine.getMessage());
+				// TODO Implement a LDAP ContextSourceTransactionManager for client side Transaction management
+				// Note LDAP as such does not participate in Txn management.
+				throw new ArkSystemException("A System exception occured.");
+			}
+	}	
+
 }

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import au.org.theark.core.dao.IArkAuthorisation;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.springframework.mail.MailSendException;
@@ -1284,8 +1285,29 @@ public interface IArkCommonService<T> {
 	 * @throws ArkCheckSumNotSameException
 	 */
 	public File retriveArkFileAttachmentAsFile(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException,ArkCheckSumNotSameException;
+	
+	/**
+	 * 
+	 * @param study
+	 * @param studyComp
+	 * @return
+	 */
+	public List<StudyCompStatus> getConsentStudyComponentStatusForStudyAndStudyComp(Study study,StudyComp studyComp);
+	/**
+	 * 
+	 * @param study
+	 * @param studyComp
+	 * @param studyCompStatus
+	 * @return
+	 */
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study,StudyComp studyComp,StudyCompStatus studyCompStatus);
 
 	public String generateNaturalUID(String UID);
 
 	public String getBarcodePrivateKeyPassword();
+
+	public IArkAuthorisation getArkAuthorisationDao();
+	
+	public void deleteUpload(final Upload upload);
+
 }
