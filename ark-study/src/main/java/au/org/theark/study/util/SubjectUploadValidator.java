@@ -600,7 +600,7 @@ public class SubjectUploadValidator {
 						if (silent != null && !silent.isEmpty()) {// if null or empty just ignore...if invalid flag
 							if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(silent)) {
 								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue
-										+ " is not in the valid boolean value.  Please use true or false for this column.");
+										+ " is not a valid boolean value.  Please use true or false for this column.");
 								errorCells.add(new ArkGridCell(col, row));
 							}
 						}
@@ -613,7 +613,7 @@ public class SubjectUploadValidator {
 						if (prefer != null && !prefer.isEmpty()) {// if null or empty just ignore...if invalid flag
 							if (prefer != null && !DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)) {
 								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue
-										+ " is not in the valid boolean value. Please use true or false for this column.");
+										+ " is not a valid boolean value. Please use true or false for this column.");
 								errorCells.add(new ArkGridCell(col, row));
 							}
 						}
