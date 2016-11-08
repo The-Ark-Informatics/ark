@@ -1285,6 +1285,11 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getFamilyCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
 	}
 
+	/**
+	 * During the insert and delete the record of the custom filed we must careful to update the status of the 
+	 * customer field "HasData" stage that is why we have additional update statements for 
+	 * Please check insert and update here.
+	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public List<SubjectCustomFieldData> createOrUpdateSubjectCustomFieldData(List<SubjectCustomFieldData> subjectCustomFieldDataList) {
 

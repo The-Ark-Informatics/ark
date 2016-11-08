@@ -18,11 +18,9 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectcustomdata;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -103,7 +101,8 @@ public class SubjectCustomDataEditorPanel extends Panel {
 		});
 		//dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null);
 		//initialise
-		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null,customeFieldCategoryDdc.getModelObject());
+		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customeFieldCategoryDdc.getModelObject());
+		//dataViewPanel.getDataView().setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue());
 		
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
 			@Override
@@ -112,7 +111,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 				target.add(this);
 			}
 		};
-		pageNavigator.setVisible(false);
+		pageNavigator.setVisible(true);
 		customDataEditorForm.add(customeFieldCategoryDdc);
 		customDataEditorForm.getDataViewWMC().add(dataViewPanel);
 
