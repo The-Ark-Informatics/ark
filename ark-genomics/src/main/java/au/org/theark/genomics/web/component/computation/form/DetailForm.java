@@ -7,6 +7,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -16,15 +17,14 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 
-import au.org.theark.core.model.spark.entity.Analysis;
 import au.org.theark.core.model.spark.entity.Computation;
 import au.org.theark.core.model.spark.entity.MicroService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.genomics.jobs.AnalysisExecutor;
 import au.org.theark.genomics.jobs.CompilationExecutor;
 import au.org.theark.genomics.model.vo.ComputationVo;
 import au.org.theark.genomics.service.IGenomicService;
@@ -42,7 +42,6 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 	private IGenomicService iGenomicService;
 
 	private ArkCrudContainerVO arkCrudContainerVO;
-	
 
 	private TextField<String> computationIdTxtFld;
 	private TextField<String> computationNameTxtFld;
@@ -55,13 +54,15 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 	private AjaxButton clearButton;
 	private AjaxButton deleteButton;
 	private Label fileNameLbl;
-	
+
+	private CheckBox availableChkBox;
+
 	private List<MicroService> microServiceList;
-	
+
 	private AjaxButton uploadButton;
 	private AjaxButton compileButton;
 
-	public DetailForm(String id, FeedbackPanel feedBackPanel,ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
@@ -86,11 +87,12 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 		this.computationStatusTxtFld = new TextField<String>(Constants.COMPUTATION_STATUS);
 		computationStatusTxtFld.setEnabled(false);
 
-//		PropertyModel<Computation> pm = new PropertyModel<Computation>(cpmModel, "computation");
+		// PropertyModel<Computation> pm = new
+		// PropertyModel<Computation>(cpmModel, "computation");
 		this.initMicroServiceDropDown();
 
 		fileUploadField = new FileUploadField("file");
-		//fileUploadField.setOutputMarkupId(true);
+		// fileUploadField.setOutputMarkupId(true);
 
 		fileNameLbl = new Label("computation.programName");
 		fileNameLbl.setOutputMarkupId(true);
@@ -99,6 +101,7 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				fileUploadField.clearInput();
+				getFormModelObject().getComputation().setProgramName(null);
 				target.add(fileUploadField);
 			}
 
@@ -138,36 +141,62 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 		};
 		deleteButton.add(new AttributeModifier("title", new Model<String>("Delete Attachment")));
 		deleteButton.setOutputMarkupId(true);
-		
+
 		this.uploadButton = new AjaxButton("upload") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// TODO Auto-generated method stub
 				Computation computation = containerForm.getModelObject().getComputation();
-				computation.setStatus("uploading");
-				iGenomicService.uploadComputation(computation);				
-				target.add(computationStatusTxtFld);
-				target.add(this);
-			}
-			
-			@Override
-			public boolean isEnabled() {
-				
-				boolean enabled=true;
-				Computation computation=getFormModelObject().getComputation(); 
-				if(computation!=null && computation.getStatus() !=null && (computation.getStatus().equalsIgnoreCase(Constants.STATUS_UPLOADED) || computation.getStatus().equalsIgnoreCase(Constants.STATUS_PROCESSED))){
-					enabled=false;
+				try {
+					iGenomicService.uploadComputation(computation);
+				} catch (Exception e) {
+					this.error("Computation upload failed");
+					computation.setStatus(Constants.STATUS_UPLOAD_FAILED);
+					e.printStackTrace();
 				}
 				
-				// TODO Auto-generated method stub
+				try{
+					iGenomicService.update(computation, null, null);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				target.add(computationStatusTxtFld);
+				target.add(feedBackPanel);
+				target.add(uploadButton);
+				target.add(this);
+			}
+
+			@Override
+			public boolean isEnabled() {
+
+				// boolean enabled=true;
+				// Computation
+				// computation=getFormModelObject().getComputation();
+				// if(computation!=null && computation.getStatus() !=null &&
+				// (computation.getStatus().equalsIgnoreCase(Constants.STATUS_UPLOADED)
+				// ||
+				// computation.getStatus().equalsIgnoreCase(Constants.STATUS_PROCESSED))){
+				// enabled=false;
+				// }
+				// return enabled;
+
+				boolean enabled = false;
+				Computation computation = getFormModelObject().getComputation();
+				if (computation.getId() != null && 
+						!(Constants.STATUS_UPLOADING.equalsIgnoreCase(computation.getStatus()) 
+								|| Constants.STATUS_UPLOADED.equalsIgnoreCase(computation.getStatus()) 
+								|| Constants.STATUS_PROCESSED.equalsIgnoreCase(computation.getStatus()) )) {
+					enabled = true;
+				}
 				return enabled;
 			}
 		};
-		
+		this.uploadButton.setOutputMarkupId(true);
+
 		this.compileButton = new AjaxButton("compile") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				
+
 				try {
 
 					Computation computation = getFormModelObject().getComputation();
@@ -183,17 +212,33 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 					executor.run();
 
 				} catch (Exception e) {
-					this.error("Execution failled");
+					this.error("Computation Compilation failled");
 					e.printStackTrace();
 				}
 
 				target.add(computationStatusTxtFld);
-				target.add(feedBackPanel);			
+				target.add(feedBackPanel);
+				target.add(compileButton);
+			}
+
+			@Override
+			public boolean isEnabled() {
+
+				boolean enabled = false;
+				Computation computation = getFormModelObject().getComputation();
+				if (computation.getId() != null && 
+						(Constants.STATUS_UPLOADED.equalsIgnoreCase(computation.getStatus()))) {
+					enabled = true;
+				}
+				return enabled;
 			}
 		};
-		
+		this.compileButton.setOutputMarkupId(true);
+
 		arkCrudContainerVO.getEditButtonContainer().add(uploadButton);
 		arkCrudContainerVO.getEditButtonContainer().add(compileButton);
+
+		this.availableChkBox = new CheckBox(Constants.COMPUTATION_AVAILABLE);
 
 		addDetailFormComponents();
 		attachValidators();
@@ -201,7 +246,7 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 
 	private void initMicroServiceDropDown() {
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		this.microServicesDDC = new DropDownChoice(Constants.COMPUTATION_MICROSERVICE,  this.microServiceList, defaultChoiceRenderer);
+		this.microServicesDDC = new DropDownChoice(Constants.COMPUTATION_MICROSERVICE, this.microServiceList, defaultChoiceRenderer);
 		// this.microServicesDDC.add(new
 		// AjaxFormComponentUpdatingBehavior("onChange") {
 		//
@@ -226,14 +271,8 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 
 	@Override
 	protected void attachValidators() {
-		// microServiceNameTxtFld.setRequired(true).setLabel(new
-		// StringResourceModel(Constants.ERROR_MICRO_SERVICE_NAME_REQUIRED,
-		// microServiceNameTxtFld, new
-		// Model<String>(Constants.ERROR_MICRO_SERVICE_NAME_TAG)));
-		// microServiceTxtArea.setRequired(true).setLabel(new
-		// StringResourceModel(Constants.ERROR_MICRO_SERVICE_URL_REQUIRED,
-		// microServiceNameTxtFld, new
-		// Model<String>(Constants.ERROR_MICRO_SERVICE_URL_TAG)));
+		computationNameTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_COMPUTATION_NAME_REQUIRED, computationNameTxtFld, new Model<String>(Constants.ERROR_COMPUTATION_NAME_TAG)));
+		microServicesDDC.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_COMPUTATION_MICROSERVICE_REQUIRED, microServicesDDC, new Model<String>(Constants.ERROR_COMPUTATION_MICROSERVICE_TAG)));
 	}
 
 	@Override
@@ -244,45 +283,46 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 
 	@Override
 	protected void onSave(Form<ComputationVo> containerForm, AjaxRequestTarget target) {
-		try {			
-			if (containerForm.getModelObject().getComputation().getId() == null) {		
-				
-				byte[] uploadData=null;
-				
+		try {
+			if (containerForm.getModelObject().getComputation().getId() == null) {
+
+				byte[] uploadData = null;
+
 				if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
 					FileUpload fileUpload = fileUploadField.getFileUpload();
-					
+
 					byte[] byteArray = fileUpload.getMD5();
 					String checksum = getHex(byteArray);
 					uploadData = fileUpload.getBytes();
 					containerForm.getModelObject().getComputation().setProgramName(fileUpload.getClientFileName());
 					containerForm.getModelObject().getComputation().setChecksum(checksum);
 				}
-				
-				this.iGenomicService.save(containerForm.getModelObject().getComputation(),uploadData);
-				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was created successfully");				
+
+				this.iGenomicService.save(containerForm.getModelObject().getComputation(), uploadData);
+				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was created successfully");
 			} else {
-				
-				String checksum=null;
-				byte[] uploadData=null;
-				
+
+				String checksum = null;
+				byte[] uploadData = null;
+
 				if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
 					// retrieve file and store as Blob in database
 					FileUpload fileUpload = fileUploadField.getFileUpload();
-					
+
 					byte[] byteArray = fileUpload.getMD5();
 					checksum = getHex(byteArray);
 					uploadData = fileUpload.getBytes();
 					containerForm.getModelObject().getComputation().setProgramName(fileUpload.getClientFileName());
 				}
-				
-				iGenomicService.update(containerForm.getModelObject().getComputation(),uploadData,checksum);
+
+				iGenomicService.update(containerForm.getModelObject().getComputation(), uploadData, checksum);
 				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was updated successfully");
 			}
+			target.add(uploadButton);
 			processErrors(target);
 			onSavePostProcess(target);
 		} catch (Exception e) {
-			log.error("Error in saving micro service entity ", e);
+			log.error("Error in computation entity ", e);
 			this.error("A System error occured, we will have someone contact you.");
 			processErrors(target);
 		}
@@ -292,13 +332,24 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 
-			iGenomicService.delete(containerForm.getModelObject().getComputation());
-			ComputationVo computaionVo = new ComputationVo();
-			containerForm.setModelObject(computaionVo);
-			containerForm.info("Computation was deleted successfully.");
-			editCancelProcess(target);
+			Computation computation = containerForm.getModelObject().getComputation();
 
+			// int analysisCount =
+			// iGenomicService.getAnalysisCount(computation.getId());
+
+			// if(analysisCount == 0){
+			if (computation.getStatus() == null) {
+				iGenomicService.delete(computation);
+				ComputationVo computaionVo = new ComputationVo();
+				containerForm.setModelObject(computaionVo);
+				containerForm.info("Computation was deleted successfully.");
+				editCancelProcess(target);
+			} else {
+				containerForm.error("Computation package is already uploaded");
+				processErrors(target);
+			}
 		} catch (Exception e) {
+			log.error("Error in deleting computation entity ", e);
 			containerForm.error("A System Error has occured please contact support.");
 			processErrors(target);
 		}
@@ -318,8 +369,8 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 			return false;
 		}
 	}
-	
-	private ComputationVo getFormModelObject(){
+
+	private ComputationVo getFormModelObject() {
 		return containerForm.getModelObject();
 	}
 
@@ -334,6 +385,7 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(clearButton);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(deleteButton);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(fileNameLbl);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(availableChkBox);
 	}
 
 }

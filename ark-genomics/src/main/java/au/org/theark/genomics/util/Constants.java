@@ -52,6 +52,7 @@ public final class Constants {
 	public static final String COMPUTATION_DESCRIPTION = "computation.description";
 	public static final String COMPUTATION_MICROSERVICE = "computation.microService";
 	public static final String COMPUTATION_STATUS = "computation.status";
+	public static final String COMPUTATION_AVAILABLE = "computation.available";
 	
 	public static final String ANALYIS_ID = "analysis.id";
 	public static final String ANALYIS_NAME = "analysis.name";
@@ -76,6 +77,7 @@ public final class Constants {
 	public static final String SERVICE_URL = "serviceUrl";
 	public static final String DATACENTER = "dataCenter";
 	public static final String MICROSERVICE = "microService";
+	public static final String AVAILABLE = "available";
 
 	public static final String ERROR_MICRO_SERVICE_NAME_TAG = "Micro Service Name";
 	public static final String ERROR_MICRO_SERVICE_NAME_REQUIRED = "error.microservice.name.required";
@@ -104,6 +106,8 @@ public final class Constants {
 	public static final String STATUS_PROCESSING="Processing";
 
 	public static final String STATUS_UPLOADED="Uploaded";
+
+	public static final String STATUS_UPLOADING="Uploading";
 	
 	public static final String STATUS_UPLOAD_FAILED="Upload Failed";
 	
@@ -118,6 +122,23 @@ public final class Constants {
 	public static final String STATUS_RUNNING="Running";
 
 	public static final String STATUS_FAILED="Failed";
+	
+	public static final String STATUS_SUBMITTED="Submitted";
+	
+	public static final String ERROR_COMPUTATION_NAME_TAG = "Computation Name";
+	public static final String ERROR_COMPUTATION_NAME_REQUIRED = "error.computation.name.required";
+	
+	public static final String ERROR_COMPUTATION_MICROSERVICE_TAG = "Micro Service";
+	public static final String ERROR_COMPUTATION_MICROSERVICE_REQUIRED = "error.computation.microservice.required";
+	
+	public static final String ERROR_ANALYSIS_NAME_TAG = "Analysis Name";
+	public static final String ERROR_ANALYSIS_NAME_REQUIRED = "error.analysis.name.required";
+	
+	public static final String ERROR_ANALYSIS_MICROSERVICE_TAG = "Micro Service";
+	public static final String ERROR_ANALYSIS_MICROSERVICE_REQUIRED = "error.analysis.microservice.required";
+	
+	public static final String ERROR_ANALYSIS_COMPUTATION_TAG = "Alogorithm";
+	public static final String ERROR_ANALYSIS_COMPUTATION_REQUIRED = "error.analysis.computation.required";
 	
 	
 	

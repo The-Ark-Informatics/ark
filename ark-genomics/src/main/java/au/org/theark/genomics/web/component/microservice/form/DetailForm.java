@@ -2,6 +2,7 @@ package au.org.theark.genomics.web.component.microservice.form;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -48,8 +49,10 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 		microServiceIdTxtFld = new TextField<String>(Constants.MICRO_SERVICE_ID);
 		microServiceIdTxtFld.setEnabled(false);
 		microServiceNameTxtFld = new TextField<String>(Constants.MICRO_SERVICE_NAME);
+		microServiceNameTxtFld.setOutputMarkupId(true);
 		microServiceDescription = new TextArea<String>(Constants.MICRO_SERVICE_DESCRIPTION);
 		microServiceTxtArea = new TextArea<String>(Constants.MICRO_SERVICE_URL);
+		microServiceTxtArea.setOutputMarkupId(true);
 		addDetailFormComponents();
 		attachValidators();
 	}
@@ -81,6 +84,16 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 			}
 			processErrors(target);
 			onSavePostProcess(target);
+			
+			AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+			deleteButton.setEnabled(false);
+			this.microServiceNameTxtFld.setEnabled(false);
+			this.microServiceTxtArea.setEnabled(false);
+			
+			target.add(deleteButton);
+			target.add(this.microServiceNameTxtFld);
+			target.add(this.microServiceTxtArea);
+			
 		} catch (Exception e) {
 			log.error("Error in saving micro service entity ",e);
 			this.error("A System error occured, we will have someone contact you.");

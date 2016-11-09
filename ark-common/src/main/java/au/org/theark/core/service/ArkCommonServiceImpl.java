@@ -49,6 +49,7 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -1552,7 +1553,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void updateProcess(Process p) {
 		genoDao.updateProcess(p);
-
 	}
 
 	public List<Command> getCommands() {
@@ -1683,7 +1683,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try {
 			md5input = new FileInputStream(new File(fileName));
 			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
-				data = IOUtils.toByteArray(md5input);
+//				data = IOUtils.toByteArray(md5input);
+				data = FileUtils.readFileToByteArray(new File(fileName));
 			} else {
 				log.error("MD5 Hashes are not matching");
 				throw new ArkCheckSumNotSameException("MD5 Hashes are not matching");
