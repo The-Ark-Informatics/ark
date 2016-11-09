@@ -1877,11 +1877,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			
 			
 			
-			hqlQuery = noDataHQLquery.toString();
+			/*hqlQuery = noDataHQLquery.toString();
 			
 			Query noDataQuery = session.createQuery(hqlQuery);
 			noDataQuery.setParameter("study", study);
-			noDataQuery.setParameterList("phenoDataSetGroups", phenoDataSetGroups);
+			noDataQuery.setParameterList("phenoDataSetGroups", phenoDataSetGroups);*/
 			//noDataQuery.list();
 			//dataSet.addAll(noDataQuery.list());
 		}
