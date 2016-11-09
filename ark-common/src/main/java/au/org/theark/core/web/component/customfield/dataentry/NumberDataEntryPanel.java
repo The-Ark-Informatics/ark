@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.dataentry;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
@@ -45,6 +47,12 @@ public class NumberDataEntryPanel extends AbstractDataEntryPanel<Double> {
 				
 		dataValueTxtFld = new TextField<Double>("numberDataValue", dataValueModel, Double.class);
 		dataValueTxtFld.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
+        dataValueTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				System.out.println("onChange NumberDataEntryPanel!");
+			}
+		});
 		this.add(dataValueTxtFld);
 	}
 	

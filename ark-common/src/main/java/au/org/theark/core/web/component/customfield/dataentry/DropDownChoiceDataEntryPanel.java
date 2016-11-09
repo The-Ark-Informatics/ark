@@ -20,6 +20,8 @@ package au.org.theark.core.web.component.customfield.dataentry;
 
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.IModel;
@@ -90,6 +92,12 @@ public class DropDownChoiceDataEntryPanel extends AbstractDataEntryPanel<Encoded
 		dataValueDdc = new DropDownChoice<EncodedValueVO>("ddcDataValue", dataValueModel, choiceList, renderer);
 		dataValueDdc.setNullValid(true);	// nullValid allows you to set the "Choose One" option
 		dataValueDdc.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
+		dataValueDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				System.out.println("onChange DDC");
+			}
+		});
 		this.add(dataValueDdc);
 	}
 

@@ -20,6 +20,9 @@ package au.org.theark.core.web.component.customfield.dataentry;
 
 import java.util.Date;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
@@ -58,6 +61,14 @@ public class DateDataEntryPanel extends AbstractDataEntryPanel<Date> {
 		datePicker.bind(dataValueDateFld);
 		dataValueDateFld.setLabel(fieldLabelModel); // set the ${label} for feedback messages
 		dataValueDateFld.add(datePicker);
+
+		dataValueDateFld.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				System.out.println("onChange dateDataEntryPanel");
+			}
+		});
+
 
 		this.add(dataValueDateFld);
 	}

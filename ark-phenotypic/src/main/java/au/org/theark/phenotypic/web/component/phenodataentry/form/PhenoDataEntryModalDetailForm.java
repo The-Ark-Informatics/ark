@@ -19,9 +19,16 @@
 package au.org.theark.phenotypic.web.component.phenodataentry.form;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import au.org.theark.core.model.pheno.entity.*;
+import com.googlecode.wicket.jquery.ui.widget.dialog.DialogButton;
+import com.googlecode.wicket.jquery.ui.widget.dialog.DialogButtons;
+import com.googlecode.wicket.jquery.ui.widget.dialog.DialogIcon;
+import com.googlecode.wicket.jquery.ui.widget.dialog.MessageDialog;
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -36,6 +43,7 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -43,12 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
-import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
-import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -92,6 +94,10 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		protected Label									             jQueryLabel;                      
 		private DropDownChoice<PickedPhenoDataSetCategory>           pickedPhenoDataSetCategoryDdc;
 		private WebMarkupContainer 									 categoryPanel;
+
+	private List<PhenoDataSetData> state;
+	private int currentPage = 0;
+	private int toPage;
 
 	/**
 	 * Constructor
@@ -180,26 +186,116 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	}
 
 	private boolean initialisePhenoCollectionDataEntry(PhenoDataSetCategory phenoDataSetCategory) {
+
+		AbstractDefaultAjaxBehavior confirmBehaviour = new AbstractDefaultAjaxBehavior() {
+			@Override
+			protected void respond(AjaxRequestTarget target) {
+				System.out.println("onConfirm");
+				System.out.println(dataEntryNavigator.getPageable().getCurrentPage());
+				dataEntryNavigator.getPageable().setCurrentPage(toPage);
+				System.out.println(dataEntryNavigator.getPageable().getCurrentPage());
+				currentPage = toPage;
+				target.add(dataEntryWMC);
+			}
+		};
+
+		add(confirmBehaviour);
+
 		boolean replacePanel = false;
 		//if (!(phenoCollectionDataEntryPanel instanceof PhenoDataDataViewPanel)) {
 			CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCpModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 			phenoDataCpModel.getObject().setPhenoDataSetCollection(cpModel.getObject().getPhenoDataSetCollection());
 			phenoDataCpModel.getObject().getPhenoDataSetCollection().setQuestionnaire(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire());
 			phenoDataCpModel.getObject().setArkFunction(cpModel.getObject().getArkFunction());
-			
+
 			PhenoDataDataViewPanel phenoCFDataEntryPanel;
 			if(phenoDataSetCategory!=null){
-				phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel)
-				.initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),phenoDataSetCategory);
+				phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel) {
+					@Override
+					protected void onBeforeRender() {
+						super.onBeforeRender();
+						System.out.println("Items on load:");
+                        if(state == null) {
+							state = new ArrayList<PhenoDataSetData>();
+						} else {
+							state.clear();
+						}
+						Iterator<Item<PhenoDataSetData>> itemsIterator = this.getDataView().getItems();
+						while(itemsIterator.hasNext()) {
+							Item<PhenoDataSetData> item = itemsIterator.next();
+							System.out.println(item.getModelObject().getId());
+							switch (item.getModelObject().getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName()) {
+								case "CHARACTER":
+									System.out.println(item.getModelObject().getTextDataValue());
+									break;
+								case "NUMBER":
+									System.out.println(item.getModelObject().getNumberDataValue());
+									break;
+								case "DATE":
+									System.out.println(item.getModelObject().getDateDataValue());
+									break;
+							}
+							if (item.getModelObject() != null) {
+								state.add(item.getModelObject().deepCopy());
+							} else {
+								state.add(null);
+							}
+						}
+					}
+				}.initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),phenoDataSetCategory);
 			}else{
 				 phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel)
 				.initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),null);
 			}
 			dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
 				private static final long	serialVersionUID	= 1L;
+
 				@Override
 				protected void onAjaxEvent(AjaxRequestTarget target) {
-					target.add(dataEntryWMC);
+
+					List<PhenoDataSetData> stateCheck = new ArrayList<PhenoDataSetData>();
+
+					System.out.println("Changed Page: ");
+					System.out.println(dataEntryNavigator.getPageable().getCurrentPage());
+                    System.out.println("Pheno Data on this page:");
+                    Iterator<Item<PhenoDataSetData>> itemsIterator = phenoCFDataEntryPanel.getDataView().getItems();
+                    while(itemsIterator.hasNext()) {
+						Item<PhenoDataSetData> item = itemsIterator.next();
+						System.out.println(item.getModelObject().getId());
+						stateCheck.add(item.getModelObject());
+					}
+
+					boolean unequalFlag = false;
+					System.out.println("Comparing contents before page change");
+					for(int i = 0; i < state.size(); i++) {
+						PhenoDataSetData stateP = state.get(i);
+                        PhenoDataSetData stateC = stateCheck.get(i);
+						if(stateC.getPhenoDataSetFieldDisplay() != null) {
+							switch (stateC.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName()) {
+								case "CHARACTER":
+									System.out.println(stateP.getTextDataValue() + " " + stateC.getTextDataValue() + " " + stateP.equals(stateC));
+									break;
+								case "NUMBER":
+									System.out.println(stateP.getNumberDataValue() + " " + stateC.getNumberDataValue() + " " + stateP.equals(stateC));
+									break;
+								case "DATE":
+									System.out.println(stateP.getDateDataValue() + " " + stateC.getDateDataValue() + " " + stateP.equals(stateC));
+									break;
+							}
+						}
+						if(!stateP.equals(stateC)) { //if the states aren't equal
+							unequalFlag = true;
+							break;
+						}
+					}
+					if(unequalFlag) {
+						toPage = dataEntryNavigator.getPageable().getCurrentPage();
+						dataEntryNavigator.getPageable().setCurrentPage(currentPage);
+						target.appendJavaScript("if(confirm('You have unsaved data. If you change page, your unsaved changes will be lost. Are you sure you want to switch page?')) { $.ajax('" + confirmBehaviour.getCallbackUrl() + "') } else { };");
+					} else {
+						target.add(dataEntryWMC);
+						currentPage = dataEntryNavigator.getPageable().getCurrentPage();
+					}
 				}
 			};
 			//dataEntryNavigator = new ArkAjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView(), dataEntryWMC, jQueryLabel);

@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.model.IModel;
@@ -100,6 +102,12 @@ public class CheckGroupDataEntryPanel extends AbstractDataEntryPanel<ArrayList<E
 		checkBoxMultipleChoice = new CheckBoxMultipleChoice("checkGroupDataValue", dataValueModel, allChoicesList, renderer);
 		//checkBoxMultipleChoice.setNullValid(true);	// nullValid allows you to set the "Choose One" option
 		checkBoxMultipleChoice.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
+		checkBoxMultipleChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				System.out.println("onChange checkBoxMulti");
+			}
+		});
 		this.add(checkBoxMultipleChoice);
 	}
 

@@ -2,6 +2,7 @@ package au.org.theark.core.model.pheno.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -83,6 +84,17 @@ public class PhenoDataSetData implements Serializable, IPhenoDataSetFieldData {
 		this.textDataValue = textDataValue;
 	}
 
+	@Override
+	public PhenoDataSetData deepCopy() {
+		PhenoDataSetData clone = new PhenoDataSetData();
+		clone.setId(this.getId());
+		clone.setDateDataValue(this.getDateDataValue());
+        clone.setTextDataValue(this.getTextDataValue());
+		clone.setNumberDataValue(this.getNumberDataValue());
+		clone.setErrorDataValue(this.getErrorDataValue());
+		return clone;
+	}
+
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_DATA_VALUE")
@@ -113,4 +125,20 @@ public class PhenoDataSetData implements Serializable, IPhenoDataSetFieldData {
 		this.errorDataValue = errorDataValue;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		PhenoDataSetData that = (PhenoDataSetData) o;
+		return Objects.equals(getId(), that.getId()) &&
+				Objects.equals(getTextDataValue(), that.getTextDataValue()) &&
+				Objects.equals(getDateDataValue(), that.getDateDataValue()) &&
+				Objects.equals(getNumberDataValue(), that.getNumberDataValue()) &&
+				Objects.equals(getErrorDataValue(), that.getErrorDataValue());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId(), getPhenoDataSetFieldDisplay(), getPhenoDataSetCollection(), getTextDataValue(), getDateDataValue(), getNumberDataValue(), getErrorDataValue());
+	}
 }

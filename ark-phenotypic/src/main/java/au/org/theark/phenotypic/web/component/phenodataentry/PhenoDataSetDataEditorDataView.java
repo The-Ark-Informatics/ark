@@ -25,6 +25,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -260,7 +263,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 				}
 			}
 		}
-		
+
 		item.add(fieldLabelLbl);
 		item.add(dataValueEntryPanel);
 	}

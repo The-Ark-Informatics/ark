@@ -58,14 +58,14 @@ public class PhenoDataEntryModalDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		jQueryLabel = new Label("jQueryDirtyFormScript", "");
-		jQueryLabel.setOutputMarkupId(true);
-		detailForm = new PhenoDataEntryModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel, jQueryLabel);
+//		jQueryLabel = new Label("jQueryDirtyFormScript", "");
+//		jQueryLabel.setOutputMarkupId(true);
+		detailForm = new PhenoDataEntryModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel, null);//jQueryLabel);
 		detailForm.initialiseDetailForm();
-		jQueryLabel = new JQueryDirtyFormScript("jQueryDirtyFormScript", detailForm.getMarkupId());
+//		jQueryLabel = new JQueryDirtyFormScript("jQueryDirtyFormScript", detailForm.getMarkupId());
 		add(detailFeedbackPanel);
 		add(detailForm);
-		add(jQueryLabel);
+//		add(jQueryLabel);
 	}
 
 	/**

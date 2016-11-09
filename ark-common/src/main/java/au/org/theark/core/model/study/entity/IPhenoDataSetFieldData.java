@@ -20,6 +20,7 @@ package au.org.theark.core.model.study.entity;
 
 import java.util.Date;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 
 public interface IPhenoDataSetFieldData {
@@ -48,4 +49,5 @@ public interface IPhenoDataSetFieldData {
 
 	public abstract void setTextDataValue(String textDataValue);
 
+    public abstract PhenoDataSetData deepCopy();
 }
