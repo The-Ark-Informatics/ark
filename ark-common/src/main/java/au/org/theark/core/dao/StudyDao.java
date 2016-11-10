@@ -422,10 +422,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			criteria.add(Restrictions.eq("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID()));
 		}
 
+		
 		if (subjectVO.getLinkSubjectStudy().getSubjectStatus() != null) {
 			criteria.add(Restrictions.eq("subjectStatus", subjectVO.getLinkSubjectStudy().getSubjectStatus()));
 			SubjectStatus subjectStatus = getSubjectStatus("Archive");
-			if (subjectStatus != null) {
+			/**
+			 * Allow this object to be picked up only the Subject status is selected as "Archive".
+			 * Please follow the method in "buildGeneralSubjectCriteria" where you will find the same implementation. 
+			 */
+			if (subjectStatus != null && !subjectVO.getLinkSubjectStudy().getSubjectStatus().equals(subjectStatus)) {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
 			}
 		}
@@ -948,15 +953,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if (subjectVO.getLinkSubjectStudy().getSubjectUID() != null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0) {
 			criteria.add(Restrictions.ilike("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
 		}
-
+		/**
+		 * The new requirement arises on 2017-11-10 we need to show the archived subjects when only filtered as archive. 
+		 */
+		
 		if (subjectVO.getLinkSubjectStudy().getSubjectStatus() != null) {
 			criteria.add(Restrictions.eq("subjectStatus", subjectVO.getLinkSubjectStudy().getSubjectStatus()));
 			SubjectStatus subjectStatus = getSubjectStatus("Archive");
-			if (subjectStatus != null) {
+			/**
+			 * Not equal will show up all the time except the "Archive" subject status not selected.
+			 */
+			if (subjectStatus != null && !subjectVO.getLinkSubjectStudy().getSubjectStatus().equals(subjectStatus)) {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
 			}
-		}
-		else {
+			
+		}else {
 			SubjectStatus subjectStatus = getSubjectStatus("Archive");
 			if (subjectStatus != null) {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
