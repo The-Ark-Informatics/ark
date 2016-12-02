@@ -53,6 +53,7 @@ import au.org.theark.core.vo.ContactVO;
 import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -89,6 +90,7 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 	
 	private DateTextField 					dateValidFrom;
 	private DateTextField 					dateValidTo;
+	private HistoryButtonPanel historyButtonPanel;
 
 	/**
 	 * /**
@@ -109,6 +111,7 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		// Disable preferred phone for new phone and if no others exist
 		boolean enabled = !(isNew() && containerForm.getModelObject().getPhoneVo().getPhoneList().size() == 0);
 		preferredPhoneNumberChkBox.setEnabled(enabled);
+		historyButtonPanel.setVisible(!isNew());
 		super.onBeforeRender();
 	}
 
@@ -148,6 +151,7 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		ChoiceRenderer<PhoneType> defaultChoiceRenderer = new ChoiceRenderer<PhoneType>(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice<PhoneType>("phoneVo.phone.phoneType", phoneTypeList, defaultChoiceRenderer);
 		phoneTypeChoice.add(new ArkDefaultFormFocusBehavior());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
 		addDetailFormComponents();
 		attachValidators();
 	}
@@ -165,6 +169,7 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(source);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
+		arkCrudContainerVO.getEditButtonContainer().add(historyButtonPanel);
 		this.add(new DateFromToValidator(dateValidFrom, dateValidTo,"Valid from date","Valid to date"));
 	}
 

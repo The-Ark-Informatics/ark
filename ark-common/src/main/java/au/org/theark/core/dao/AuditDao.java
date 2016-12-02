@@ -116,7 +116,12 @@ public class AuditDao extends HibernateSessionDao implements IAuditDao {
 		criteria.add(Restrictions.eq("fieldName", field));
 		criteria.createAlias("auditEntity", "ae");
 		criteria.add(Restrictions.eq("ae.classIdentifier", cls.getCanonicalName()));
-		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);		
-		return ((AuditField) criteria.uniqueResult()).getName();
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);	
+		AuditField auditField=(AuditField) criteria.uniqueResult();
+		if(auditField!=null){
+			return auditField.getName();
+		}else{
+			return null;
+		}
 	}
 }

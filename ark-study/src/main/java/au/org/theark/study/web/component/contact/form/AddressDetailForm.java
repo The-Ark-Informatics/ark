@@ -58,6 +58,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -99,6 +100,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	private ArkCrudContainerVO 				arkCrudContainerVO;
 	private DateTextField 					dateValidFrom;
 	private DateTextField 					dateValidTo;
+	private HistoryButtonPanel historyButtonPanel;
 
 	/**
 	 * 
@@ -118,6 +120,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		// Disable preferred mailing for new address and no others exist
 		boolean enabled = !(isNew() && containerForm.getModelObject().getAddressVo().getAddresses().size() == 0);
 		preferredMailingAddressChkBox.setEnabled(enabled);
+		historyButtonPanel.setVisible(!isNew());
 		super.onBeforeRender();
 	}
 
@@ -130,6 +133,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		otherState = new TextField<String>("addressVo.address.otherState");
 		sourceTxtFld = new TextField<String>("addressVo.address.source");
 		addressLineOneTxtFld = new TextField<String>("addressVo.address.addressLineOne");
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
 		
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();
@@ -157,6 +161,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(addressLineOneTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
+		arkCrudContainerVO.getEditButtonContainer().add(historyButtonPanel);
 		this.add(new DateFromToValidator(dateValidFrom, dateValidTo,"Valid from date","Valid to date"));
 	}
 
