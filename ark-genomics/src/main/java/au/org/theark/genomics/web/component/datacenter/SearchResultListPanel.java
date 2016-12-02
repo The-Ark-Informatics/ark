@@ -178,6 +178,8 @@ public class SearchResultListPanel extends Panel {
 					executor.run();
 					
 					this.setEnabled(false);
+					queryBtn.setEnabled(false);
+					plinkUploadBtn.setEnabled(false);
 
 					target.add(SearchResultListPanel.this);
 					

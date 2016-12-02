@@ -391,8 +391,13 @@ public class GenomicServiceImpl implements IGenomicService {
 			for (int i = 0; i < array.size(); ++i) {
 				JSONObject obj2 = (JSONObject) array.get(i);
 
-				DataSourceVo ds = new DataSourceVo();
+//				DataSourceVo ds = new DataSourceVo();
+//				String fileName = obj2.get("fileName").toString();
 				String fileName = obj2.get("fileName").toString();
+				if(fileName.startsWith(".")){
+					continue;
+				}
+				DataSourceVo ds = new DataSourceVo();
 				ds.setFileName(fileName);
 				ds.setDirectory(obj2.get("directory").toString());
 				if (datacenter.getDirectory() == null || datacenter.getDirectory().trim().length() == 0) {
