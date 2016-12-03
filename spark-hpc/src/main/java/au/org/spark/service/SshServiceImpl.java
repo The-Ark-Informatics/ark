@@ -101,11 +101,15 @@ public class SshServiceImpl implements SshService {
 		Vector<String> filest = null;
 
 		if (directory == null) {
-			channelSftp.cd(rootPath);
-			filest = channelSftp.ls(rootPath);
+//			channelSftp.cd(rootPath);
+//			filest = channelSftp.ls(rootPath);
+			channelSftp.cd(rootPath+File.separator+"data");
+			filest = channelSftp.ls(rootPath+File.separator+"data");
 		} else {
-			channelSftp.cd(rootPath + directory);
-			filest = channelSftp.ls(rootPath + directory);
+//			channelSftp.cd(rootPath + directory);
+//			filest = channelSftp.ls(rootPath + directory);
+			channelSftp.cd(rootPath+File.separator+"data" + directory);
+			filest = channelSftp.ls(rootPath+File.separator+"data" + directory);
 		}
 
 		for (int i = 0; i < filest.size(); i++) {
@@ -300,9 +304,11 @@ public class SshServiceImpl implements SshService {
 		String directory = dataCenter.getDirectory();
 
 		if (directory == null) {
-			channelSftp.cd(rootPath);
+//			channelSftp.cd(rootPath);
+			channelSftp.cd(rootPath+File.separator+"data");
 		} else {
-			channelSftp.cd(rootPath + File.separator + directory);
+//			channelSftp.cd(rootPath + File.separator + directory);
+			channelSftp.cd(rootPath + File.separator+"data"+File.separator + directory);
 		}
 
 		String mapFile = null;
@@ -1341,7 +1347,8 @@ public class SshServiceImpl implements SshService {
 			commandBuffer.append("cp sparkbatch.sh " + jobDir + "/;");
 
 			if (Constants.DATA_CENTERS.SSH_HPC.toString().equals(analysisVo.getSourceDataCenter())) {
-				String source = rootPath + File.separator + analysisVo.getSourcePath();
+//				String source = rootPath + File.separator + analysisVo.getSourcePath();
+				String source = rootPath + File.separator +"data" + File.separator +analysisVo.getSourcePath();
 				if (BooleanUtils.isTrue(analysisVo.isSourceDir())) {
 					commandBuffer.append("cp -dr " + source + " " + jobDir + ";");
 				} else {
