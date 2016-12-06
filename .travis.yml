@@ -16,6 +16,7 @@ before_install:
         - chmod +x docker-compose
         - sudo mv docker-compose /usr/local/bin
         - sudo lsof -i
+        - sudo /etc/init.d/mysql stop
 
 notifications:
         email:
