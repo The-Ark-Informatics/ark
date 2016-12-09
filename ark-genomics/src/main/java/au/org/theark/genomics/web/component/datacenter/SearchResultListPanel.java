@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
@@ -12,10 +13,12 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.spark.entity.DataSource;
+import au.org.theark.core.model.spark.entity.MicroService;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
@@ -60,6 +63,8 @@ public class SearchResultListPanel extends Panel {
 	private AjaxButton queryBtn;
 
 	private Label statusLabel;
+	
+	private PageableListView<DataSourceVo> sitePageableListView;
 
 	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm) {
 		super(id);
@@ -76,7 +81,102 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				
+				DataCenterVo dataCenterVo = containerForm.getModelObject();
+				CompoundPropertyModel<DataCenterVo> cpmModel= (CompoundPropertyModel<DataCenterVo>)containerForm.getModel();
+				List<DataSourceVo> resultList = iGenomicService.searchDataSources(containerForm.getModelObject());
 
+				Component uploadBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("plinkUpload");
+				Component deleteBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("plinkDelete");
+				Component queryBtn = arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults").get("queryBtn");
+
+				
+				
+				if (resultList != null && resultList.size() == 0) {
+					String dataCenter = dataCenterVo.getName();
+
+					MicroService microService = dataCenterVo.getMicroService();
+
+					if (microService == null || dataCenter == null) {
+						this.error("Need to select a service and data centre prior to make a search.");
+					} else {
+//						this.info(getModelObject().getName() + " cannot be reach in the " + getModelObject().getMicroService().getName() + " Service");
+						this.info("Cannot find any directories or files in the search location");
+					}
+					target.add(feedbackPanel);
+
+					uploadBtn.setEnabled(false);
+					deleteBtn.setEnabled(false);
+					queryBtn.setEnabled(false);
+
+					cpmModel.getObject().setStatus(null);
+				} else {
+					
+					DataSourceVo dataSourceVo = new DataSourceVo();
+					dataSourceVo.setDataCenter(cpmModel.getObject().getName());
+					dataSourceVo.setMicroService(cpmModel.getObject().getMicroService());
+
+					String dir = cpmModel.getObject().getDirectory();
+					dataSourceVo.setPath(dir == null ? "/" : dir.charAt(0) == '/' ? dir : ("/" + dir));
+
+					DataSource dataSource = iGenomicService.getDataSource(dataSourceVo);
+
+					if (dataSource != null && dataSource.getStatus() != null) {
+						cpmModel.getObject().setStatus(dataSource.getStatus());
+					} else {
+						cpmModel.getObject().setStatus(Constants.STATUS_UNPROCESSED);
+					}
+								
+					for(DataSourceVo vo : resultList){
+						if(vo.getDataSource().getStatus() == null || vo.getDataSource().getStatus().trim().length() == 0){
+							if(vo.getFileName().contains(".map") || 
+									vo.getFileName().contains(".ped") ||
+									vo.getFileName().contains(".bim") ||
+									vo.getFileName().contains(".fam") ||
+									vo.getFileName().contains(".bed") 
+									){
+								
+								if("Deleting".equalsIgnoreCase(cpmModel.getObject().getStatus()) ||
+										"Uploading".equalsIgnoreCase(cpmModel.getObject().getStatus())
+										){
+									vo.getDataSource().setStatus(Constants.STATUS_NOT_READY);
+								}else{
+									vo.getDataSource().setStatus(Constants.STATUS_READY);
+								}
+							
+							}else{
+								vo.getDataSource().setStatus(Constants.STATUS_NOT_REQUIRED);
+							}
+						}
+					}
+					
+					uploadBtn.setEnabled(false);
+					deleteBtn.setEnabled(false);
+					queryBtn.setEnabled(false);
+					
+					if (dataCenterVo.getDirectory() != null) {
+						
+						if(dataSource == null ){
+							uploadBtn.setEnabled(true);
+						}else{
+							if(dataSource.getStatus() == null || dataSource.getStatus().trim().length() == 0){
+								uploadBtn.setEnabled(true);
+							}else if(Constants.STATUS_UNPROCESSED.equalsIgnoreCase(dataSource.getStatus())){
+								uploadBtn.setEnabled(true);
+							}
+						}
+
+						if(dataSource !=null && Constants.STATUS_PROCESSED.equalsIgnoreCase(dataSource.getStatus())){
+							deleteBtn.setEnabled(true);
+							queryBtn.setEnabled(true);
+						}
+					}
+				}
+				
+				sitePageableListView.removeAll();
+				containerForm.getModelObject().setDataSourceList(resultList);
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+//				target.add(arkCrudContainerVO.getSearchPanelContainer());	
 			}
 		};
 
@@ -227,7 +327,7 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	public PageableListView<DataSourceVo> buildPageableListView(IModel iModel) {
-		PageableListView<DataSourceVo> sitePageableListView = new PageableListView<DataSourceVo>("dataSourceList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		this.sitePageableListView = new PageableListView<DataSourceVo>("dataSourceList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 
 			@Override
 			protected void populateItem(final ListItem<DataSourceVo> item) {

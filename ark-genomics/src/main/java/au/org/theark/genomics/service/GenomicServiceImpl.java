@@ -991,5 +991,13 @@ public class GenomicServiceImpl implements IGenomicService {
 	public int getAnalysisCount(long computationId) {
 		return genomicsDao.getAnalysisCount(computationId);
 	}
-
+	
+	public int getDataSourceCount(long dataSourceId){
+		return genomicsDao.getDataSourceCount(dataSourceId);
+	}
+	
+	public void refreshDataSource(DataSource dataSource){
+		genomicsDao.refreshDataSource(dataSource);
+	}
+		
 }
