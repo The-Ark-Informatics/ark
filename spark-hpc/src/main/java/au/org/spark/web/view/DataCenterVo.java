@@ -18,6 +18,8 @@ public class DataCenterVo implements Serializable {
 	private String status;
 	
 	private String individualId;
+	
+	private String microserviceId;
 
 	public String getName() {
 		return name;
@@ -57,6 +59,14 @@ public class DataCenterVo implements Serializable {
 
 	public void setIndividualId(String individualId) {
 		this.individualId = individualId;
+	}
+
+	public String getMicroserviceId() {
+		return microserviceId;
+	}
+
+	public void setMicroserviceId(String microserviceId) {
+		this.microserviceId = microserviceId;
 	}
 	
 }

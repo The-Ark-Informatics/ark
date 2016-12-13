@@ -46,7 +46,7 @@ public final class Constants {
 	}
 	
 	public static final String dataCenterTablePrefix(DataCenterVo dataCenterVo){
-		return (dataCenterVo.getName()+"_"+dataCenterVo.getDirectory().replaceAll("[^A-Za-z0-9]", "_")).toUpperCase();
+		return ("ms"+dataCenterVo.getMicroserviceId() +"_"+ dataCenterVo.getName()+"_"+dataCenterVo.getDirectory().replaceAll("[^A-Za-z0-9]", "_")).toUpperCase();
 	}
 	
 }
