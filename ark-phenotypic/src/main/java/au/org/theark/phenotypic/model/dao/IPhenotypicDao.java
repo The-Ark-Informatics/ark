@@ -242,7 +242,7 @@ public interface IPhenotypicDao {
 
 	public FileFormat getFileFormatByName(String name);
 
-	public Long isCustomFieldUsed(PhenoDataSetData phenoData);
+	public Long isPhenoDataSetFieldUsed(PhenoDataSetData phenoData);
 
 	public void createPhenoData(PhenoDataSetData phenoData);
 

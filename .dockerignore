@@ -1,7 +1,6 @@
 .dockerignore
 .git
 .gitignore
-3rdParty
 BUILD.md
 HelloSelenium
 README.md
@@ -12,3 +11,7 @@ oldarkbuildpw.sh
 selenium-2.40.0
 spark-bluegene
 tools
+*/target
+docker/test/output
+
+*.log

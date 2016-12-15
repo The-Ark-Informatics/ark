@@ -1,0 +1,126 @@
+<wicket:panel>
+	<form wicket:id="filterForm">
+		<div id="searchPanelContent">
+
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			<div id="panelContentLeft">&nbsp;</div>
+
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="researcher">
+						<wicket:message key="studyComp">Study Comp:</wicket:message>
+					</label>
+	 			</div> 
+	 		</div> 			     
+
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="consent.studyComp">
+	       				<option>studyComp1</option>
+	       				<option>studyComp2</option>
+	       			</select>
+	       		</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="researcher">
+						<wicket:message key="studyCompStatus">Study Component Status:</wicket:message>
+					</label>
+	 			</div> 
+	 		</div> 			     
+
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="consent.studyComponentStatus">
+	       				<option>studyCompStatus1</option>
+	       				<option>studyCompStatus2</option>
+	       			</select>
+	       		</div>
+			</div>
+			
+		<!-- **************** This the show and hide panel start and dynamically change. ***************************************-->	
+			<div wicket:id="panelFromDateTwoDate"  >
+					
+				<div id="searchPanelBreaker" >&nbsp;</div>		
+				
+				<div id="panelContentLeft" >&nbsp;</div>
+				
+				<div wicket:id="wmc-fromDate">
+						<div class="fldLabel">
+							<span wicket:id="fromDateLabel"></span>
+						</div>
+						<div class="fldControl">
+							<input wicket:id="fromDate" type="text" maxLength="10"/>
+						</div>
+				</div>
+	
+				<div id="panelMargin" >&nbsp;</div>
+				
+				<div wicket:id="wmc-toDate">
+						<div class="fldLabel">
+							<span wicket:id="toDateLabel"></span>
+						</div>
+						<div class="fldControl">
+							<input wicket:id="toDate"	type="text" maxLength="10"/>
+						</div>
+				</div>
+			</div>
+			
+		<!-- ************************************ end of the panel *******************************************************************-->	
+				
+			<div id="searchPanelBreaker">&nbsp;</div>		
+	
+			<div id="panelContentLeft">&nbsp;</div>	
+			
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="consentStatus"><wicket:message key="consentStatus">Consent Status:</wicket:message></label>		
+	 			</div> 
+	 		</div> 			       			
+			
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="consent.consentStatus">
+	       				<option>Completed</option>
+						<option>Not Completed</option>
+	       			</select>
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="report.outputFormatChoice"><wicket:message key="report.outputFormatChoice">Output Format:</wicket:message></label>
+	 			</div> 
+	 		</div> 			     
+
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="report.outputFormatChoice">
+	       				<option>PDF</option>
+	       			</select>
+	       		</div>
+			</div>
+					
+			<div id="searchPanelBreaker">&nbsp;</div>		
+			<!--  Defines the location for buttons -->			
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="actionButtons">&nbsp;
+				<div>
+					<input wicket:id="generate" type="submit" wicket:message="value:button.generate" />
+				</div>
+			</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+		</div>
+	</form>
+</wicket:panel>

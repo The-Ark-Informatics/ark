@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Blob;
@@ -37,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.MimeMessage;
 import javax.naming.InvalidNameException;
@@ -44,9 +48,10 @@ import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
@@ -78,6 +83,9 @@ import au.org.theark.core.dao.IGenoDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkAlreadyBeingUsedException;
+import au.org.theark.core.exception.ArkBaseException;
+import au.org.theark.core.exception.ArkCheckSumNotSameException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkNotAllowedToUpdateException;
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
@@ -97,6 +105,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -1544,7 +1553,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void updateProcess(Process p) {
 		genoDao.updateProcess(p);
-
 	}
 
 	public List<Command> getCommands() {
@@ -1665,48 +1673,42 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	/**
 	 * {@inheritDoc}
+	 * @throws ArkFileNotFoundException 
 	 */
-	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException {
+	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException,ArkCheckSumNotSameException {
 		byte[] data = null;
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
 		String fileName = directoryName + File.separator + fileId;
-
 		FileInputStream md5input = null;
-		FileInputStream fileInput = null;
-		boolean fileInputIsNull = true;
 		try {
 			md5input = new FileInputStream(new File(fileName));
 			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
-				fileInput = new FileInputStream(new File(fileName));
-				// Convert file to byte array
-				data = IOUtils.toByteArray(fileInput);
-				fileInputIsNull = false;
+//				data = IOUtils.toByteArray(md5input);
+				data = FileUtils.readFileToByteArray(new File(fileName));
 			} else {
 				log.error("MD5 Hashes are not matching");
-				throw new ArkSystemException("MD5 Hashes are not matching");
+				throw new ArkCheckSumNotSameException("MD5 Hashes are not matching");
 			}
 		} catch (Exception e) {
 			log.error("Error", e);
-			throw new ArkSystemException("exception while getting data" + e.getMessage());
+			throw new ArkFileNotFoundException("File not found in: "+e.getMessage());
 		} finally {
 			try {
-				md5input.close();
-				if (!fileInputIsNull) {
-					fileInput.close();
+				if(md5input!=null){
+					md5input.close();
+					}
+				}catch (IOException e) {
+					throw new ArkSystemException("exception while closing stream. " + e.getMessage());
 				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				log.error("Error", e);
-				throw new ArkSystemException("exception while closing stream" + e.getMessage());
-			}
 		}
 		return data;
 	}
-
 	/**
 	 * {@inheritDoc}
+	 * @throws ArkFileNotFoundException 
+	 * @throws ArkBaseException 
 	 */
-	public boolean deleteArkFileAttachment(Long studyId, String subjectUID, String fileId, String attachmentType, String checksum) throws ArkSystemException {
+	public boolean deleteArkFileAttachment(Long studyId, String subjectUID, String fileId, String attachmentType, String checksum) throws ArkSystemException, ArkFileNotFoundException {
 		String directory = getArkFileDirName(studyId, subjectUID, attachmentType);
 		String location = directory + File.separator + fileId;
 		File file = new File(location);
@@ -1721,21 +1723,19 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				if (delete = file.delete()) {
 					log.info("File deleted successfully");
 				} else {
-					log.error("Could not find the file in " + location);
-					throw new ArkSystemException("Could not find the attachment");
+					throw new ArkFileNotFoundException("Could not find the attachment");
 				}
 			} else {
-				log.error("Checksum -- " + checksum);
-				throw new ArkSystemException("Attachment hash value mismatch");
+				throw new ArkCheckSumNotSameException("Attachment hash value mismatch");
 			}
 		} catch (Exception e) {
-			log.error("Error", e);
-			throw new ArkSystemException(e.getMessage());
+			throw new ArkFileNotFoundException(e.getMessage());
 		} finally {
 			try {
-				md5input.close();
+				if(md5input!=null){
+					md5input.close();
+				}
 			} catch (Exception e) {
-				log.error("Error", e);
 				throw new ArkSystemException(e.getMessage());
 			}
 		}
@@ -2115,10 +2115,72 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List getDifferentStudyComponentsInConsentForSubject(Study study,LinkSubjectStudy linkSubjectStudy) {
 		return studyDao.getDifferentStudyComponentsInConsentForSubject(study, linkSubjectStudy);
 	}
+	/**
+	 * {@inheritDoc}
+	 * @throws ArkFileNotFoundException 
+	 */
+	public File retriveArkFileAttachmentAsFile(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException,ArkCheckSumNotSameException {
+		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
+		String fileName = directoryName + File.separator + fileId;
+		FileInputStream md5input = null;
+		File file;
+		try {
+			file=new File(fileName);
+			md5input = new FileInputStream(file);
+			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
+			} else {
+				log.error("MD5 Hashes are not matching");
+				throw new ArkCheckSumNotSameException("MD5 Hashes are not matching");
+			}
+		} catch (Exception e) {
+			log.error("Error", e);
+			throw new ArkFileNotFoundException("File not found in: "+e.getMessage());
+		} finally {
+			try {
+				if(md5input!=null){
+					md5input.close();
+					}
+				}catch (IOException e) {
+					throw new ArkSystemException("exception while closing stream. " + e.getMessage());
+				}
+		}
+		return file;
+	}
 
-	
+	@Override
+	public List<StudyCompStatus> getConsentStudyComponentStatusForStudyAndStudyComp(Study study, StudyComp studyComp) {
+		return studyDao.getConsentStudyComponentStatusForStudyAndStudyComp(study, studyComp);
+	}
 
-	
+	@Override
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp,StudyCompStatus studyCompStatus) {
+		return studyDao.getConsentStatusForStudyStudyCompAndStudyCompStatus(study,studyComp,studyCompStatus);
+	}
+	public String generateNaturalUID(String UID) {
+		StringBuilder natBuilder = new StringBuilder();
+		Matcher matcher = Pattern.compile("\\d+").matcher(UID);
+		int last_end = 0;
+		while (matcher.find()) {
+			if (matcher.start() > last_end) {
+				natBuilder.append(UID.substring(last_end, matcher.start()));
+			}
+			String subjectUIDNumber = StringUtils.leftPad(UID.substring(matcher.start(), matcher.end()), 20, '0');
+			natBuilder.append(subjectUIDNumber);
+			last_end = matcher.end();
+		}
+		return natBuilder.toString();
+	}
+
+	@Override
+	public void deleteUpload(Upload upload) {
+		AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+			ah.setComment("Deleted Upload " + upload.getFilename());
+			ah.setEntityId(upload.getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+			this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), upload.getStudy());
+			studyDao.deleteUpload(upload);
+	}
 	
 	
 }

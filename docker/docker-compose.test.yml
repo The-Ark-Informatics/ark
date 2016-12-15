@@ -1,0 +1,14 @@
+version: '2'
+services:
+        test:
+                build: test
+                depends_on:
+                        - tomcat
+                links:
+                        - tomcat
+                        - mysql
+                volumes:
+                        - ./test/output:/output
+                environment:
+                        - DOCKER=true
+                env_file: env_file

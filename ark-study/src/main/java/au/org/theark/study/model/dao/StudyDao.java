@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
@@ -35,7 +37,6 @@ import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
-import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
@@ -61,7 +62,6 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
-import au.org.theark.core.model.report.entity.SearchSubject;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -608,8 +608,20 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
 
 		LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
+		String subjectUID = linkSubjectStudy.getSubjectUID();
+		StringBuilder natBuilder = new StringBuilder();
+		Matcher matcher = Pattern.compile("\\d+").matcher(subjectUID);
+		int last_end = 0;
+		while(matcher.find()) {
+			if (matcher.start() > last_end) {
+				natBuilder.append(subjectUID.substring(last_end, matcher.start()));
+			}
+			String subjectUIDNumber = org.apache.commons.lang.StringUtils.leftPad(subjectUID.substring(matcher.start(), matcher.end()), 20, '0');
+			natBuilder.append(subjectUIDNumber);
+			last_end = matcher.end();
+		}
+		linkSubjectStudy.setNaturalUID(natBuilder.toString());
 		session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
-
 		autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
 
 		// TODO EXCEPTIONHANDLING
@@ -2784,5 +2796,24 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			correspondenceOutcomeTypes.add(correspondenceModeDirectionOutcome.getCorrespondenceOutcomeType());
 		}
 		return correspondenceOutcomeTypes;
+	}
+
+	@Override
+	public boolean isAlreadyHasFileAttached(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp) {
+		Criteria criteria = getSession().createCriteria(SubjectFile.class);
+		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		List<SubjectFile> subjectFiles=criteria.list();
+		return (subjectFiles.size()>0);
+		
+	}
+
+	@Override
+	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy, StudyComp studyComp) {
+		Criteria criteria = getSession().createCriteria(SubjectFile.class);
+		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		criteria.setMaxResults(1);
+		return (SubjectFile)criteria.uniqueResult();
 	}
 }

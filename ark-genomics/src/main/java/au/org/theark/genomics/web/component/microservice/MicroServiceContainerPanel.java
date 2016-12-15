@@ -59,6 +59,7 @@ public class MicroServiceContainerPanel extends AbstractContainerPanel {
 	protected WebMarkupContainer initialiseSearchResults() {
 
 		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
+		searchResultPanel.setOutputMarkupId(true);
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;

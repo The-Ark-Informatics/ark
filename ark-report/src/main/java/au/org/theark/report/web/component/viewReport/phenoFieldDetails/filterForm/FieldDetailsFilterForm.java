@@ -18,24 +18,13 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.viewReport.phenoFieldDetails.filterForm;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
-import au.org.theark.core.model.report.entity.ReportOutputFormat;
-import au.org.theark.core.model.report.entity.ReportTemplate;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
-import au.org.theark.report.model.vo.PhenoDataSetFieldDetailsReportVO;
-import au.org.theark.report.web.Constants;
-import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
-import au.org.theark.report.web.component.viewReport.phenoFieldDetails.PhenoDataSetFieldDetailsReportDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -50,11 +39,20 @@ import org.wicketstuff.jasperreports.JRResource;
 import org.wicketstuff.jasperreports.handlers.CsvResourceHandler;
 import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
+import au.org.theark.core.model.report.entity.ReportOutputFormat;
+import au.org.theark.core.model.report.entity.ReportTemplate;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.report.model.vo.PhenoDataSetFieldDetailsReportVO;
+import au.org.theark.report.web.Constants;
+import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
+import au.org.theark.report.web.component.viewReport.phenoFieldDetails.PhenoDataSetFieldDetailsReportDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
  * @author elam
@@ -173,9 +171,7 @@ public class FieldDetailsFilterForm extends AbstractReportFilterForm<PhenoDataSe
 	protected void initialisePhenoCollectionDropDown() {
 		List<PhenoDataSetGroup> collectionList = reportService.getQuestionnaireList(cpModel.getObject().getStudy());
 		ChoiceRenderer<PhenoDataSetGroup> defaultChoiceRenderer = new ChoiceRenderer<PhenoDataSetGroup>("name", "id");
-		ddcPhenoCollection = new DropDownChoice<PhenoDataSetGroup>("questionnaire",
-																						new PropertyModel<PhenoDataSetGroup>(cpModel.getObject(), "phenoDataSetFieldDisplay.phenoDataSetField"),
-																						collectionList, defaultChoiceRenderer);
+		ddcPhenoCollection = new DropDownChoice<PhenoDataSetGroup>("questionnaire",	new PropertyModel<PhenoDataSetGroup>(cpModel.getObject(), "phenoDataSetFieldDisplay.phenoDataSetGroup"),collectionList, defaultChoiceRenderer);
 		add(ddcPhenoCollection);
 	}
 

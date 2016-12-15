@@ -1290,7 +1290,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return fileFormat;
 	}
 
-	public Long isCustomFieldUsed(PhenoDataSetData phenoData) {
+	public Long isPhenoDataSetFieldUsed(PhenoDataSetData phenoData) {
 		Long count = new Long("0");
 		PhenoDataSetField phenoDataSetField = phenoData.getPhenoDataSetFieldDisplay().getPhenoDataSetField();
 		
@@ -1298,12 +1298,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		ArkFunction arkFunction = phenoDataSetField.getArkFunction();
 		
 		Criteria criteria = getSession().createCriteria(PhenoDataSetData.class, "pd");
-		criteria.createAlias("pd.customFieldDisplay", "cfd");
-		criteria.createAlias("cfd.customField", "cf");
-		criteria.createAlias("cf.arkFunction", "aF");
-		criteria.createAlias("cf.study", "s");
+		criteria.createAlias("pd.phenoDataSetFieldDisplay", "pdsfd");
+		criteria.createAlias("pdsfd.phenoDataSetField", "pdsf");
+		criteria.createAlias("pdsf.arkFunction", "aF");
+		criteria.createAlias("pdsf.study", "s");
 		criteria.add(Restrictions.eq("aF.id", arkFunction.getId()));
-		criteria.add(Restrictions.eq("cfd.id", phenoData.getPhenoDataSetFieldDisplay().getId()));
+		criteria.add(Restrictions.eq("pdsfd.id", phenoData.getPhenoDataSetFieldDisplay().getId()));
 		criteria.add(Restrictions.eq("s.id", study.getId()));
 		
 		count = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
@@ -1387,15 +1387,16 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		sb.append("  LEFT JOIN pdsfd.phenoDataSetData AS pdsd ");
 		sb.append("  WITH pdsd.phenoDataSetCollection.id = :pcId ");
 		sb.append(" WHERE pdsc.id = :pcId ");
-		sb.append(" and pdsfd.phenoDataSetCategory = :phenoDataSetCategory ");
+		if(phenoDataSetCategory!=null){
+			sb.append(" and pdsfd.phenoDataSetCategory = :phenoDataSetCategory ");
+		}
 		sb.append(" and pdsfd.phenoDataSetField is not null ");
 		sb.append(" ORDER BY pdsfd.phenoDataSetFiledOrderNumber ");
-		
-
-		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("pcId", phenoCollection.getId());
-		query.setParameter("phenoDataSetCategory", phenoDataSetCategory);
+		if(phenoDataSetCategory!=null){
+			query.setParameter("phenoDataSetCategory", phenoDataSetCategory);
+		}
 		query.setFirstResult(first);
 		query.setMaxResults(count);
 		
@@ -1876,11 +1877,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			
 			
 			
-			hqlQuery = noDataHQLquery.toString();
+			/*hqlQuery = noDataHQLquery.toString();
 			
 			Query noDataQuery = session.createQuery(hqlQuery);
 			noDataQuery.setParameter("study", study);
-			noDataQuery.setParameterList("phenoDataSetGroups", phenoDataSetGroups);
+			noDataQuery.setParameterList("phenoDataSetGroups", phenoDataSetGroups);*/
 			//noDataQuery.list();
 			//dataSet.addAll(noDataQuery.list());
 		}

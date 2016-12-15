@@ -888,11 +888,14 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		if (searchStudy.getStudyStatus() != null) {
 			// In future, Super Administrators may be able to search for Archived studies
 			studyCriteria.add(Restrictions.eq("studyStatus", searchStudy.getStudyStatus()));
+			
 			if (!isSuperUser) {
-				// If not a Super Admin always remove Archived studies
+				// If not a Super Admin and status selected as Archive always remove Archived studies
 				try {
 					StudyStatus status = getStudyStatus("Archive");
-					studyCriteria.add(Restrictions.ne("studyStatus", status));
+					if(!searchStudy.getStudyStatus().equals(status)){
+						studyCriteria.add(Restrictions.ne("studyStatus", status));
+					}
 				}
 				catch (StatusNotAvailableException notAvailable) {
 					log.error("Cannot look up and filter on archive status. Reference data could be missing");
@@ -901,12 +904,14 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		}
 		else {
 			// If no status is selected, then default to return all except Archived
-			try {
-				StudyStatus status = getStudyStatus("Archive");
-				studyCriteria.add(Restrictions.ne("studyStatus", status));
-			}
-			catch (StatusNotAvailableException notAvailable) {
-				log.error("Cannot look up and filter on archive status. Reference data could be missing");
+			if (!isSuperUser) {
+				try {
+					StudyStatus status = getStudyStatus("Archive");
+					studyCriteria.add(Restrictions.ne("studyStatus", status));
+				}
+				catch (StatusNotAvailableException notAvailable) {
+					log.error("Cannot look up and filter on archive status. Reference data could be missing");
+				}
 			}
 		}
 		studyCriteria.addOrder(Order.asc("parentStudy"));
@@ -1253,5 +1258,41 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			session.update(config);
 		}
 	}
+
+	@Override
+	public List<Study> getUserStudyListIncludeChildren(ArkUserVO arkUserVO) {
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkUser", arkUserVO.getArkUserEntity()));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("study"), "study");
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Transformers.aliasToBean(ArkUserRole.class));
+		List<ArkUserRole> arkUserRoleLst=	 (List<ArkUserRole>)criteria.list();
+		List<Study>  studyList=new ArrayList<Study>();
+		for (ArkUserRole arkUserRole : arkUserRoleLst) {
+			studyList.add(arkUserRole.getStudy());
+		}
+		return studyList;
+	}
 	
+	public List<Study> getStudiesWithRoleForUser(ArkUserVO arkUserVO, ArkRole arkRole) {
+		try {
+			String ldapName = arkUserVO.getArkUserEntity().getLdapUserName();
+			if(isUserAdminHelper(ldapName, RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) ||
+					isUserAdminHelper(ldapName, RoleConstants.ARK_ROLE_ADMINISTATOR)) {
+				return getStudyListForUser(arkUserVO);
+			}
+
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+
+		criteria.add(Restrictions.eq("arkUser", arkUserVO.getArkUserEntity()));
+        criteria.add(Restrictions.eq("arkRole", arkRole));
+
+		criteria.setProjection(Projections.property("study"));
+
+		return criteria.list();
+	}
 }

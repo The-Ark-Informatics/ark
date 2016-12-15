@@ -595,6 +595,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getFileFormatByName(name);
 	}
 
+	/**
+	 * During the insert and delete the record of the custom filed we must careful to update the status of the 
+	 * customer field "HasData" stage that is why we have additional update statements for 
+	 * Please check insert and update here.
+	 */
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public List<PhenoDataSetData> createOrUpdatePhenoData(List<PhenoDataSetData> phenoDataList) {
 
 		List<PhenoDataSetData> listOfExceptions = new ArrayList<PhenoDataSetData>();
@@ -614,7 +620,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 					phenoDataSetField.setPhenoFieldHasData(true);
 					PhenoDataSetFieldVO phenoDataSetFieldVO=new PhenoDataSetFieldVO();
 					phenoDataSetFieldVO.setPhenoDataSetField(phenoDataSetField);
-					phenotypicDao.updatePhenoDataSetField(phenoDataSetField);
+					updatePhenoDataSetField(phenoDataSetFieldVO);
 				
 				} else if (canUpdate(phenoData)) {
 
@@ -627,19 +633,20 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 					phenotypicDao.updatePhenoData(phenoData);
 
 				} else if (canDelete(phenoData)) {
-					// Check if the CustomField is used by anyone else and if
-					// not set the customFieldHasData to false;
-					Long count = phenotypicDao.isCustomFieldUsed(phenoData);
+					// Check if the PhenoDataSetField is used by anyone else and if
+					// not set the PhenoDataSetFieldHasData to false;
+					//This will help to delete the phenodatesetField to delete one day.
+					Long count = phenotypicDao.isPhenoDataSetFieldUsed(phenoData);
 
 					phenotypicDao.deletePhenoData(phenoData);
 					if (count <= 1) {
-						// Then update the CustomField's hasDataFlag to false.Reload since the session was closed in the front end and the child objects won't be loaded
+						// Then update the PhenoDataSetField hasDataFlag to false.Reload since the session was closed in the front end and the child objects won't be loaded
 						Long id = phenoData.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getId();
 						PhenoDataSetField phenoDataSetField=phenotypicDao.getPhenoDataSetField(id);
 						phenoDataSetField.setPhenoFieldHasData(false);
 						PhenoDataSetFieldVO phenoDataSetFieldVO=new PhenoDataSetFieldVO();
 						phenoDataSetFieldVO.setPhenoDataSetField(phenoDataSetField);
-						phenotypicDao.updatePhenoDataSetField(phenoDataSetField);; 
+						updatePhenoDataSetField(phenoDataSetFieldVO);
 					}
 				}
 			} catch (Exception someException) {
@@ -656,7 +663,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 * must be a persistent entity(with a valid primary key/ID) AND 2. PhenoData
 	 * should have a valid Subject linked to it and must not be null AND 3.
 	 * PhenoData.TextDataValue is NULL OR is EMPTY 4. PhenoData.NumberDataValue
-	 * is NULL 5. PhenoData.DatewDataValue is NULL When these conditiosn are
+	 * is NULL 5. PhenoData.DatewDataValue is NULL When these conditions are
 	 * satisfied this method will return Boolean TRUE
 	 * 
 	 * @param phenoData
@@ -723,9 +730,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		if (phenoData.getId() == null
 				&& phenoData.getPhenoDataSetCollection() != null
-				&& (phenoData.getNumberDataValue() != null
-						|| phenoData.getTextDataValue() != null || phenoData
-						.getDateDataValue() != null)) {
+				&& (phenoData.getNumberDataValue() != null	|| phenoData.getTextDataValue() != null || phenoData.getDateDataValue() != null)) {
 
 			flag = true;
 

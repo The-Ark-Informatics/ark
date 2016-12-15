@@ -21,6 +21,7 @@ package au.org.theark.lims.web.component.biospecimenupload;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -31,6 +32,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Upload;
@@ -38,7 +42,10 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
+import au.org.theark.core.web.component.panel.ConfirmationAnswer;
+import au.org.theark.core.web.component.panel.YesNoPanel;
 import au.org.theark.lims.web.component.biospecimenupload.form.ContainerForm;
+
 
 /**
  * 
@@ -51,12 +58,19 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
+	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
+	private ModalWindow 			confirmModal;
+	private ConfirmationAnswer		confirmationAnswer;
+	private final String modalText = "<p>You are about to delete this record of</p><p><b>*.</b></p></p><p> But it will never delete the data imported to the Ark from this file previously.</p>";
+	private SearchResultListPanel me;
 	private static final long	serialVersionUID	= 6150100976180421479L;
 
 //	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
+		this.setOutputMarkupId(true);
+		me=this;
 		ArkDownloadTemplateButton downloadBiocollectionTemplateButton = new ArkDownloadTemplateButton("downloadBiocollectionTemplate", "BiocollectionUpload", Constants.BIOCOLLECTION_TEMPLATE_CELLS) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
@@ -78,6 +92,7 @@ public class SearchResultListPanel extends Panel {
 				this.error("Unexpected Error: Could not proceed with download biocollection template.");
 			}
 		};
+		initConfirmModel();
 		add(downloadBiocollectionTemplateButton);
 		add(downloadBiospecimanInventoryTemplate);
 		add(downloadBiospecimanTemplate);
@@ -160,6 +175,8 @@ public class SearchResultListPanel extends Panel {
 
 				// Download upload report button
 				item.add(buildDownloadReportButton(upload));
+				
+				item.add(buildDeleteUploadButton(upload));
 
 				// Delete the upload file
 //				item.add(buildDeleteButton(upload));
@@ -266,6 +283,53 @@ public class SearchResultListPanel extends Panel {
 			ajaxButton.setVisible(false);
 
 		return ajaxButton;
+	}
+	/**
+	 * 
+	 * @param upload
+	 * @return
+	 */
+	private AjaxButton buildDeleteUploadButton(final Upload upload){
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.core.Constants.DELETE_UPLOAD){
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				updateModelAndVarifyForDeleteUpload(upload);
+				confirmModal.show(target);
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("onError called when buildDeleteUploadButton pressed");
+			};
+		};
+		ajaxButton.setDefaultFormProcessing(false);
+		return ajaxButton;
+	}
+	/**
+	 * 
+	 * @param upload
+	 */
+	private void updateModelAndVarifyForDeleteUpload(final Upload upload) {
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText.replace("*"," ["+upload.getId()+"] "+upload.getFilename()),"Delete upload record.", confirmModal, confirmationAnswer));
+		confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+		private static final long serialVersionUID = 1L;
+			public void onClose(AjaxRequestTarget target) {
+				if (confirmationAnswer.isAnswer() ) {
+					iArkCommonService.deleteUpload(upload);
+					target.add(me);
+				} else {//if no nothing be done.Just close I guess
+				}
+			}
+		});
+		addOrReplace(confirmModal);
+	}
+	
+	private void initConfirmModel(){
+		confirmationAnswer = new ConfirmationAnswer(false);
+		confirmModal = new ModalWindow("confirmModal");
+		confirmModal.setCookieName("yesNoPanel");
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText,"Delete upload record.", confirmModal, confirmationAnswer));
+		addOrReplace(confirmModal);
 	}
 	
 /* TODO: DELETE of uploaded file is not supported till we can verify whether all subjects 

@@ -21,6 +21,7 @@ package au.org.theark.lims.web.component.barcodelabel.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.org.theark.core.model.report.entity.Entity;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -118,6 +119,7 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);
+        studyDdc.setNullValid(true);
 	}
 
 	/**
@@ -132,6 +134,16 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 		if(sessionStudyId != null) {
 			study = iArkCommonService.getStudy(sessionStudyId);
 			studyListForUser.add(study);
+		}
+
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			studyListForUser = iArkCommonService.getArkAuthorisationDao().getStudiesWithRoleForUser(arkUserVo, iArkCommonService.getArkAuthorisationDao().getArkRoleByName("LIMS Administrator"));
+		} catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
 		}
 		return studyListForUser;
 	}

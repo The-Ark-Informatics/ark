@@ -39,6 +39,7 @@ public class ConsentVO implements Serializable {
 	protected Collection<Consent>			consentList;
 	protected Collection<ConsentFile>	consentFileList;
 	protected SubjectFile					subjectFile;
+	private String 									file;
 
 	/**
 	 * We will need upload information here
@@ -96,4 +97,13 @@ public class ConsentVO implements Serializable {
 	public void setSubjectFile(SubjectFile subjectFile) {
 		this.subjectFile = subjectFile;
 	}
+
+	public String getFile() {
+		return file;
+	}
+
+	public void setFile(String file) {
+		this.file = file;
+	}
+	
 }

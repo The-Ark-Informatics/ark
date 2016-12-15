@@ -29,9 +29,10 @@
 						<input wicket:id="userName" type="text" size="25"/>
 					</div>
 				</div>
-				<div wicket:id="modalWindow"></div>
+				<div wicket:id="confirmModal"></div>
 				<div wicket:id="successModalWindow"></div>
-
+				<div wicket:id="ldapDeleteConfirmModal"></div>
+				<div wicket:id="ldapSuccessModalWindow"></div>
 				<div class="panelMargin">
 					&nbsp;
 				</div>
@@ -233,6 +234,7 @@
 					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
 					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
 					<input wicket:id="remove" type="submit" wicket:message="value:page.remove" />
+					
 				</div>
 			</div>
 

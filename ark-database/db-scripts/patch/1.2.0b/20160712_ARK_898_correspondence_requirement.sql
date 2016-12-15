@@ -1,8 +1,10 @@
 use `study`;
 
---Not allow to run twice.
 ALTER TABLE `correspondence_outcome_type` 
+-- DROP INDEX `UK_NAME`,
 ADD UNIQUE INDEX `UK_NAME` (`NAME` ASC);
+
+-- Ignoring the duplicate values.
 
 INSERT IGNORE INTO  `correspondence_outcome_type` (`NAME`) VALUES ('Success'); 
 INSERT IGNORE INTO `correspondence_outcome_type` (`NAME`) VALUES ('Failure');

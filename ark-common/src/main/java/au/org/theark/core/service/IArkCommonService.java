@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.dao.IArkAuthorisation;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.springframework.mail.MailSendException;
@@ -34,6 +34,8 @@ import org.springframework.mail.SimpleMailMessage;
 
 import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkAlreadyBeingUsedException;
+import au.org.theark.core.exception.ArkCheckSumNotSameException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkNotAllowedToUpdateException;
 import au.org.theark.core.exception.ArkRunTimeException;
 import au.org.theark.core.exception.ArkRunTimeUniqueException;
@@ -55,6 +57,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -984,7 +987,7 @@ public interface IArkCommonService<T> {
 	 * @param checksum
 	 * @return
 	 */
-	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException;
+	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException,ArkFileNotFoundException,ArkCheckSumNotSameException;
 
 	/**
 	 * Delete the Ark file attachment
@@ -997,7 +1000,7 @@ public interface IArkCommonService<T> {
 	 * @return isDeleteSuccess
 	 * @throws ArkSystemException
 	 */
-	public boolean deleteArkFileAttachment(Long studyId, String subjectUID, String fileId, String attachmentType, String checksum) throws ArkSystemException;
+	public boolean deleteArkFileAttachment(Long studyId, String subjectUID, String fileId, String attachmentType, String checksum) throws ArkSystemException,ArkFileNotFoundException;
 	
 	/**
 	 * Copy Large file attachments from one location to another
@@ -1269,5 +1272,40 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public List<StudyComp> getDifferentStudyComponentsInConsentForSubject(Study study, LinkSubjectStudy linkSubjectStudy);
+	/**
+	 * 
+	 * @param studyId
+	 * @param subjectUID
+	 * @param directoryType
+	 * @param fileId
+	 * @param checksum
+	 * @return
+	 * @throws ArkSystemException
+	 * @throws ArkFileNotFoundException
+	 * @throws ArkCheckSumNotSameException
+	 */
+	public File retriveArkFileAttachmentAsFile(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException,ArkCheckSumNotSameException;
+	
+	/**
+	 * 
+	 * @param study
+	 * @param studyComp
+	 * @return
+	 */
+	public List<StudyCompStatus> getConsentStudyComponentStatusForStudyAndStudyComp(Study study,StudyComp studyComp);
+	/**
+	 * 
+	 * @param study
+	 * @param studyComp
+	 * @param studyCompStatus
+	 * @return
+	 */
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study,StudyComp studyComp,StudyCompStatus studyCompStatus);
 
-}
+	public String generateNaturalUID(String UID);
+
+	public IArkAuthorisation getArkAuthorisationDao();
+	
+	public void deleteUpload(final Upload upload);
+
+	}

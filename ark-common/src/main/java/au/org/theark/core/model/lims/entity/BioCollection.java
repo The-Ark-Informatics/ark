@@ -58,6 +58,7 @@ public class BioCollection implements java.io.Serializable {
 	private static final long	serialVersionUID	= -7384213608019152409L;
 	private Long					id;
 	private String					biocollectionUid;
+	private String					natural_Uid;
 	private String					name;
 	private LinkSubjectStudy		linkSubjectStudy;
 	private Study					study;
@@ -105,6 +106,16 @@ public class BioCollection implements java.io.Serializable {
 	
 	public void setBiocollectionUid(String biocollectionUid) {
 		this.biocollectionUid = biocollectionUid;
+	}
+
+	@NotAudited
+	@Column(name = "NATURAL_UID")
+	public String getNaturalUid() {
+		return natural_Uid;
+	}
+
+	public void setNaturalUid(String natural_Uid) {
+		this.natural_Uid = natural_Uid;
 	}
 
 	@Column(name = "TIMESTAMP", length = 55)

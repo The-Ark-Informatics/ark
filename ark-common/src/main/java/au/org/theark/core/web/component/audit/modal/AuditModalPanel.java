@@ -145,6 +145,9 @@ public class AuditModalPanel extends Panel {
 						if(primaryKey != null && reader.isEntityClassAudited(current.getClass())) {
 							List<Number> revisionNumbers = reader.getRevisions(current.getClass(), primaryKey);
 							String fieldName = (s.equalsIgnoreCase("id") ? "ID" : iAuditService.getFieldName(current.getClass(), s));
+							if(fieldName==null){
+								log.info("Please add audit field "+s+" to table(Audit.audit_field) In Entity : "+current.getClass());
+							}
 							for(Number revision : revisionNumbers) {
 								Object rev = reader.find(current.getClass(), primaryKey, revision);
 								Object revProperty = propertyBean.getProperty(rev, s);
@@ -163,7 +166,7 @@ public class AuditModalPanel extends Panel {
 					//The current entity has no property named "s", move on to next "s"
 					//TODO: find better way to catch this (i.e. use a if instead)
 				} catch(Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		}

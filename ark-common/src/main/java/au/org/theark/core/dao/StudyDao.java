@@ -422,10 +422,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			criteria.add(Restrictions.eq("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID()));
 		}
 
+		
 		if (subjectVO.getLinkSubjectStudy().getSubjectStatus() != null) {
 			criteria.add(Restrictions.eq("subjectStatus", subjectVO.getLinkSubjectStudy().getSubjectStatus()));
 			SubjectStatus subjectStatus = getSubjectStatus("Archive");
-			if (subjectStatus != null) {
+			/**
+			 * Allow this object to be picked up only the Subject status is selected as "Archive".
+			 * Please follow the method in "buildGeneralSubjectCriteria" where you will find the same implementation. 
+			 */
+			if (subjectStatus != null && !subjectVO.getLinkSubjectStudy().getSubjectStatus().equals(subjectStatus)) {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
 			}
 		}
@@ -436,7 +441,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 		//criteria.addOrder(Order.asc("subjectUID"));
-		criteria.addOrder(OrderByNatural.asc("subjectUID"));
+		//criteria.addOrder(OrderByNatural.asc("subjectUID"));
+
+		criteria.addOrder(Order.asc("naturalUID"));
 		List<LinkSubjectStudy> list = criteria.list();
 
 		Collection<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
@@ -946,15 +953,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if (subjectVO.getLinkSubjectStudy().getSubjectUID() != null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0) {
 			criteria.add(Restrictions.ilike("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
 		}
-
+		/**
+		 * The new requirement arises on 2017-11-10 we need to show the archived subjects when only filtered as archive. 
+		 */
+		
 		if (subjectVO.getLinkSubjectStudy().getSubjectStatus() != null) {
 			criteria.add(Restrictions.eq("subjectStatus", subjectVO.getLinkSubjectStudy().getSubjectStatus()));
 			SubjectStatus subjectStatus = getSubjectStatus("Archive");
-			if (subjectStatus != null) {
+			/**
+			 * Not equal will show up all the time except the "Archive" subject status not selected.
+			 */
+			if (subjectStatus != null && !subjectVO.getLinkSubjectStudy().getSubjectStatus().equals(subjectStatus)) {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
 			}
-		}
-		else {
+			
+		}else {
 			SubjectStatus subjectStatus = getSubjectStatus("Archive");
 			if (subjectStatus != null) {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
@@ -968,7 +981,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		criteria.setProjection(Projections.distinct(Projections.projectionList().add(Projections.id())));
 		//criteria.addOrder(Order.asc("subjectUID"));
-		criteria.addOrder(OrderByNatural.asc("subjectUID"));
+		criteria.addOrder(Order.asc("naturalUID"));
 		return criteria;
 	}
 
@@ -5375,4 +5388,74 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return fieldsList;
 	}
 
+	@Override
+	public List<StudyCompStatus> getConsentStudyComponentStatusForStudyAndStudyComp(Study study, StudyComp studyComp) {
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study",study));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("studyComponentStatus"));
+		criteria.setProjection(projectionList);
+		criteria.addOrder(Order.asc("id"));
+		List<StudyCompStatus> fieldsList = criteria.list();
+		return fieldsList;
+	}
+
+	@Override
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp,StudyCompStatus studyCompStatus) {
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study",study));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		criteria.add(Restrictions.eq("studyComponentStatus",studyCompStatus));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("consentStatus"));
+		criteria.setProjection(projectionList);
+		criteria.addOrder(Order.asc("id"));
+		List<ConsentStatus> fieldsList = criteria.list();
+		return fieldsList;
+	}
+
+	@Override
+	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(Address.class);
+
+		if (personId != null) {
+			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+
+		if (address != null) {
+			// Add criteria for address
+			if (address.getStreetAddress() != null) {
+				criteria.add(Restrictions.ilike(Constants.STREET_ADDRESS, address.getStreetAddress(), MatchMode.ANYWHERE));
+			}
+
+			if (address.getCountry() != null) {
+				criteria.add(Restrictions.eq(Constants.COUNTRY_NAME, address.getCountry()));
+			}
+
+			if (address.getPostCode() != null) {
+				criteria.add(Restrictions.eq(Constants.POST_CODE, address.getPostCode()));
+			}
+
+			if (address.getCity() != null) {
+				criteria.add(Restrictions.ilike(Constants.CITY, address.getCity()));
+			}
+
+			if (address.getState() != null) {
+				criteria.add(Restrictions.eq(Constants.STATE_NAME, address.getState()));
+			}
+
+			if (address.getAddressType() != null) {
+				criteria.add(Restrictions.eq(Constants.ADDRESS_TYPE, address.getAddressType()));
+			}
+	}
+		List<Address> personAddressList = criteria.list();
+		return personAddressList;
+	
+	}
+	@Override
+	public void deleteUpload(final Upload upload) {
+		getSession().delete(upload);
+	}
+	
 }

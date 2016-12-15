@@ -110,23 +110,37 @@ public class SourceForm extends AbstractDetailForm<DataSourceVo> {
 			iGenomicService.saveOrUpdate(cpModel.getObject().getDataSource());
 			this.info("Data source was updated successfully");
 		}
-		
+
 		processErrors(target);
-		
+
 		AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
 		deleteButton.setEnabled(true);
-		
+
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
 		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 		target.add(arkCrudContainerVO.getEditButtonContainer());
 		target.add(feedBackPanel);
-		
+
 	}
 
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {	
-		iGenomicService.delete(cpModel.getObject().getDataSource());
-		modalWindow.close(target);
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
+		iGenomicService.refreshDataSource(cpModel.getObject().getDataSource());
+		String status = cpModel.getObject().getDataSource().getStatus();
+
+		if (status != null && !(status.toLowerCase().startsWith("pro") || status.toLowerCase().startsWith("ready"))) {
+			int count = iGenomicService.getDataSourceCount(cpModel.getObject().getDataSource().getId());
+			if (count == 0) {
+				iGenomicService.delete(cpModel.getObject().getDataSource());
+				modalWindow.close(target);
+			} else {
+				this.error("Data Source is already attached to an analysis");
+				target.add(feedBackPanel);
+			}
+		} else {
+			this.error("Cannot delete online data source");
+			target.add(feedBackPanel);
+		}
 	}
 
 	@Override
@@ -138,8 +152,7 @@ public class SourceForm extends AbstractDetailForm<DataSourceVo> {
 	protected boolean isNew() {
 		if (cpModel.getObject().getDataSource().getId() == null) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}

@@ -8,6 +8,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -113,8 +114,12 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 
+				DropDownChoice<Computation> microserviceDDC= (DropDownChoice)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.ANALYIS_MICRO_SERVICE);
 				DropDownChoice<DataSource> dataSourceDDC= (DropDownChoice)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.ANALYIS_DATA_SOURCE);
 				DropDownChoice<Computation> computationDDC= (DropDownChoice)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.ANALYIS_COMPUTAION);
+				
+				TextField resultsTxtFld = (TextField)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.ANALYIS_RESULT);
+				
 				if(dataSourceDDC !=null){
 					List<DataSource> dataSources = iGenomicService.searchDataSources(analysis.getMicroService());
 					dataSourceDDC.setChoices(dataSources);
@@ -123,6 +128,14 @@ public class SearchResultListPanel extends Panel {
 				if(computationDDC !=null){
 					List<Computation> computations = iGenomicService.searchComputation(analysis.getMicroService());
 					computationDDC.setChoices(computations);
+				}
+				
+				
+				if(!Constants.STATUS_UNDEFINED.equals(analysis.getStatus())){
+					microserviceDDC.setEnabled(false);
+					dataSourceDDC.setEnabled(false);
+					computationDDC.setEnabled(false);
+					resultsTxtFld.setEnabled(false);
 				}
 				
 				AnalysisVo analysisVo = containerForm.getModelObject();
