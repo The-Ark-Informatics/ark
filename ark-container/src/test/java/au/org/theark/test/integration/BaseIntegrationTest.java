@@ -1,13 +1,27 @@
 package au.org.theark.test.integration;
 
+import au.org.theark.core.dao.ArkLdapContextSource;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.test.util.externalresource.ScreenRecordingExternalResource;
 import au.org.theark.test.util.runners.NameAwareRunner;
 import au.org.theark.test.util.Reference;
 import au.org.theark.web.pages.login.LoginPage;
+import com.gargoylesoftware.htmlunit.javascript.host.External;
 import com.google.common.base.Function;
 import com.google.common.net.HostAndPort;
 import junit.framework.TestCase;
+import org.apache.commons.io.IOUtils;
+import org.apache.directory.api.ldap.model.cursor.CursorException;
+import org.apache.directory.api.ldap.model.cursor.EntryCursor;
+import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.exception.LdapException;
+import org.apache.directory.api.ldap.model.ldif.LdifEntry;
+import org.apache.directory.api.ldap.model.ldif.LdifReader;
+import org.apache.directory.api.ldap.model.ldif.LdifUtils;
+import org.apache.directory.api.ldap.model.message.*;
+import org.apache.directory.api.ldap.model.message.controls.ManageDsaITImpl;
+import org.apache.directory.ldap.client.api.LdapConnection;
+import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.apache.wicket.util.tester.WicketTester;
 import org.bytedeco.javacpp.avutil;
 import org.bytedeco.javacv.*;
@@ -28,10 +42,11 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Transactional
@@ -47,7 +62,7 @@ public class BaseIntegrationTest extends TestCase {
     protected WebElement element;
 
     private ApplicationContext context;
-    File databaseDump;
+    private File databaseDump;
 
     @Autowired
     public void setApplicationContext(ApplicationContext context) {
@@ -68,8 +83,19 @@ public class BaseIntegrationTest extends TestCase {
     @Rule
     public ExternalResource databaseResource = new MySQLExternalResource();
 
+    public MySQLExternalResource getMySQLResource() {
+        return (MySQLExternalResource) databaseResource;
+    }
+
     @Rule
     public ExternalResource screenRecordingResource = new ScreenRecordingExternalResource();
+
+    @Rule
+    public ExternalResource ldapResource = new LDAPExternalResource();
+
+    public LDAPExternalResource getLDAPResource() {
+        return (LDAPExternalResource) ldapResource;
+    }
 
     @BeforeClass
     public static void openBrowser() {
@@ -85,9 +111,67 @@ public class BaseIntegrationTest extends TestCase {
 
     @Before
     public void setup() {
+        importBaseSQL();
+        importLDIF();
+
         tester = new WicketTester();
         tester.startPage(LoginPage.class);
         driver.get("http://" + getHostIP() + ":8080/ark");
+    }
+
+    public void importBaseSQL() {
+        String testName = Reference.currentTestName;
+        String strippedTestName = testName.substring(testName.lastIndexOf(".")+1, testName.length());
+
+        try {
+            File tempFile = File.createTempFile(strippedTestName, ".sql");
+            InputStream inputStream = this.getClass().getResourceAsStream("/" + testName.replace(".", "/") + ".sql");
+            if(inputStream != null) {
+                OutputStream fileStream = new FileOutputStream(tempFile);
+                IOUtils.copy(inputStream, fileStream);
+                fileStream.close();
+
+                getMySQLResource().importSQLFile(tempFile);
+                tempFile.delete();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+    }
+
+    public void importLDIF() {
+        String testName = Reference.currentTestName;
+        InputStream inputStream = this.getClass().getResourceAsStream("/" + testName.replace(".", "/") + ".ldif");
+
+        if(inputStream != null) {
+            LdifReader entries = null;
+            try {
+                entries = new LdifReader(inputStream);
+            } catch (LdapException e) {
+                e.printStackTrace();
+            }
+
+            LdapConnection connection = getLDAPResource().getLDAPConnection();
+
+            for (LdifEntry ldifEntry : entries) {
+                log.info("Entry: " + ldifEntry);
+
+                Entry entry = ldifEntry.getEntry();
+
+                AddRequest addRequest = new AddRequestImpl();
+                addRequest.setEntry(entry);
+                addRequest.addControl(new ManageDsaITImpl());
+
+                try {
+                    AddResponse res = connection.add(addRequest);
+                } catch (LdapException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
     }
 
     @AfterClass
@@ -146,7 +230,8 @@ public class BaseIntegrationTest extends TestCase {
         protected void before() throws Throwable {
             if(databaseDump == null) {
                 try {
-                    databaseDump = new File("/output/" + Reference.currentTestName + ".pre.sql");
+                    databaseDump = new File("/tmp/output/" + Reference.currentTestName + ".pre.sql");
+                    databaseDump.getParentFile().mkdirs();
                     databaseDump = createDatabaseDump(databaseDump);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -158,7 +243,8 @@ public class BaseIntegrationTest extends TestCase {
         protected void after() {
             if(databaseDump != null) {
                 try {
-                    File postTestDump = new File("/output/" + Reference.currentTestName + ".post.sql");
+                    File postTestDump = new File("/tmp/output/" + Reference.currentTestName + ".post.sql");
+                    postTestDump.getParentFile().mkdirs();
                     createDatabaseDump(postTestDump);
                     restoreDatabaseDump(databaseDump);
                 } catch (IOException e) {
@@ -170,7 +256,7 @@ public class BaseIntegrationTest extends TestCase {
         public File createDatabaseDump(File dumpFile) throws IOException {
 
             StringBuilder mysqlDumpCommandBuilder = new StringBuilder();
-            mysqlDumpCommandBuilder.append("/usr/bin/mysqldump")
+            mysqlDumpCommandBuilder.append("mysqldump")
                     .append(" -h ")
                     .append(getDatabaseHost())
                     .append(" -u ")
@@ -198,7 +284,7 @@ public class BaseIntegrationTest extends TestCase {
 
         public void restoreDatabaseDump(File inputFile) throws IOException {
             StringBuilder mysqlRestoreCommandBuilder = new StringBuilder();
-            mysqlRestoreCommandBuilder.append("/usr/bin/mysql")
+            mysqlRestoreCommandBuilder.append("mysql")
                     .append(" -h ")
                     .append(getDatabaseHost())
                     .append(" -u ")
@@ -213,7 +299,31 @@ public class BaseIntegrationTest extends TestCase {
             log.info("Restoring database dump...");
             log.debug(mysqlRestoreCommand);
             ProcessBuilder pb = new ProcessBuilder("/bin/bash", "-c", mysqlRestoreCommand);
-            pb.redirectErrorStream(true);
+            Process p = pb.start();
+            try {
+                p.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void importSQLFile(File inputFile) throws IOException {
+            StringBuilder mysqlRestoreCommandBuilder = new StringBuilder();
+            mysqlRestoreCommandBuilder.append("mysql")
+                    .append(" -h ")
+                    .append(getDatabaseHost())
+                    .append(" -u ")
+                    .append(getDatabaseUser())
+                    .append(" -p")
+                    .append(getDatabasePassword())
+                    .append(" < ")
+                    .append(inputFile.getAbsolutePath());
+
+            String mysqlRestoreCommand = mysqlRestoreCommandBuilder.toString();
+
+            log.info("Importing SQL file...");
+            log.debug(mysqlRestoreCommand);
+            ProcessBuilder pb = new ProcessBuilder("/bin/bash", "-c", mysqlRestoreCommand);
             Process p = pb.start();
             try {
                 p.waitFor();
@@ -228,7 +338,8 @@ public class BaseIntegrationTest extends TestCase {
 
         protected URI getDatabaseURI() {
             try {
-                return new URI(getDataSource().getUrl().replace("jdbc:", ""));
+                URI uri = new URI(getDataSource().getUrl().replace("jdbc:", ""));
+                return uri;
             } catch (URISyntaxException e) {
                 e.printStackTrace();
                 return null;
@@ -245,6 +356,136 @@ public class BaseIntegrationTest extends TestCase {
 
         protected DriverManagerDataSource getDataSource() {
             return (DriverManagerDataSource) context.getBean("dataSource");
+        }
+    }
+
+    public class LDAPExternalResource extends ExternalResource {
+
+        private File preDumpFile;
+
+        @Override
+        protected void before() throws Throwable {
+            preDumpFile = new File("/tmp/output/" + Reference.currentTestName + ".pre.ldif");
+            preDumpFile.getParentFile().mkdirs();
+            createLDIFDump(preDumpFile, false);
+        }
+
+        @Override
+        protected void after() {
+            File postDumpFile = new File("/tmp/output/" + Reference.currentTestName + ".post.ldif");
+            createLDIFDump(postDumpFile, true);
+            importLDIFFile(preDumpFile);
+        }
+
+        protected void importLDIFFile(File ldifFile) {
+            LdapConnection connection = getLDAPConnection();
+
+            try {
+                InputStream is = new FileInputStream(ldifFile);
+                LdifReader entries = new LdifReader(is);
+
+                for(LdifEntry ldifEntry : entries) {
+                    Entry entry = ldifEntry.getEntry();
+                    System.out.println("importing" + entry.getDn().toString());
+                    AddRequest addRequest = new AddRequestImpl();
+                    addRequest.setEntry(entry);
+                    addRequest.addControl(new ManageDsaITImpl());
+
+                    AddResponse res = connection.add(addRequest);
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (LdapException e) {
+                e.printStackTrace();
+            }
+        }
+
+        protected File createLDIFDump(File dumpFile, boolean deleteAfterSearch) {
+            LdapConnection connection = getLDAPConnection();
+            EntryCursor cursor = null;
+            try {
+                cursor = connection.search("ou=arkUsers,dc=the-ark,dc=org,dc=au", "(objectclass=*)", SearchScope.ONELEVEL, "*");
+                try {
+                    StringBuffer stringBuffer = new StringBuffer();
+                    while(cursor.next()) {
+                        Entry entry = cursor.get();
+
+                        stringBuffer.append(LdifUtils.convertToLdif(entry));
+                        stringBuffer.append("\n");
+
+                        if(deleteAfterSearch)
+                            connection.delete(entry.getDn());
+                    }
+                    FileWriter fileWriter = new FileWriter(dumpFile);
+                    fileWriter.write(stringBuffer.toString());
+                    fileWriter.close();
+                } catch (CursorException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (LdapException e) {
+                e.printStackTrace();
+            }
+
+            return dumpFile;
+        }
+
+
+        public LdapConnection getLDAPConnection() {
+            LdapConnection connection = new LdapNetworkConnection(getLDAPHost(), getLDAPPort());
+
+            try {
+                connection.bind(getLDAPUserDN(), getLDAPPassword());
+            } catch (LdapException e) {
+                e.printStackTrace();
+            }
+
+            return connection;
+        }
+
+        protected String getLDAPHost() {
+            return getLDAPURI().getHost();
+        }
+
+        protected int getLDAPPort() {
+            return new Integer(getLDAPURI().getPort());
+        }
+
+        protected URI getLDAPURI() {
+            try {
+                URI uri = new URI(getLDAPDataSource().getUrls()[0]);
+                return uri;
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                return null;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                String errorMessage = "No LDAP database configured, tests will fail";
+                log.error(errorMessage);
+                fail(errorMessage);
+                return null;
+            }
+        }
+
+        protected String getLDAPBasePeopleDn() {
+            return getLDAPDataSource().getBasePeopleDn();
+        }
+
+        protected String getLDAPBase() {
+            return getLDAPDataSource().getBaseLdapName().toString();
+        }
+
+        protected String getLDAPUserDN() {
+            return getLDAPDataSource().getAuthenticationSource().getPrincipal();
+        }
+
+        protected String getLDAPPassword() {
+            return getLDAPDataSource().getPassword();
+        }
+
+        protected ArkLdapContextSource getLDAPDataSource() {
+            return (ArkLdapContextSource) context.getBean("ldapDataContextSource");
         }
     }
 }
