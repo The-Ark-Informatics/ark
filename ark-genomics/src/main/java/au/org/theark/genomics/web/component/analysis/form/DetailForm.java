@@ -380,6 +380,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 			target.add(queueButton);
 			processErrors(target);
 			onSavePostProcess(target);
+			target.add(arkCrudContainerVO.getEditButtonContainer());
 		} catch (Exception e) {
 			log.error("Error in saving micro service entity ", e);
 			this.error("A System error occured, we will have someone contact you.");

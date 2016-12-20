@@ -41,4 +41,8 @@ public interface IGenomicsDao {
 	public List<Analysis> searchAnalysis(Analysis analysis, Long studyId);
 	
 	public int getAnalysisCount(long computationId);
+	
+	public int getDataSourceCount(long dataSourceId);
+	
+	public void refreshDataSource(DataSource dataSource);
 }

@@ -375,6 +375,7 @@ public class GenomicServiceImpl implements IGenomicService {
 			obj.put("name", datacenter.getName());
 			obj.put("directory", datacenter.getDirectory());
 			obj.put("fileName", datacenter.getFileName());
+			obj.put("microserviceId", datacenter.getMicroService().getId().longValue());
 
 			httpService.addPostParameters(obj);
 
@@ -391,8 +392,13 @@ public class GenomicServiceImpl implements IGenomicService {
 			for (int i = 0; i < array.size(); ++i) {
 				JSONObject obj2 = (JSONObject) array.get(i);
 
-				DataSourceVo ds = new DataSourceVo();
+//				DataSourceVo ds = new DataSourceVo();
+//				String fileName = obj2.get("fileName").toString();
 				String fileName = obj2.get("fileName").toString();
+				if(fileName.startsWith(".")){
+					continue;
+				}
+				DataSourceVo ds = new DataSourceVo();
 				ds.setFileName(fileName);
 				ds.setDirectory(obj2.get("directory").toString());
 				if (datacenter.getDirectory() == null || datacenter.getDirectory().trim().length() == 0) {
@@ -510,6 +516,7 @@ public class GenomicServiceImpl implements IGenomicService {
 			obj.put("directory", dataCenter.getDirectory());
 			obj.put("name", dataCenter.getName());
 			obj.put("status", initStatus);
+			obj.put("microserviceId", dataCenter.getMicroService().getId().longValue());
 			httpService.addPostParameters(obj);
 			List<String> data = httpService.finish();
 			processUID = data.stream().findFirst().get();
@@ -944,6 +951,7 @@ public class GenomicServiceImpl implements IGenomicService {
 			obj.put("directory", dataCenter.getDirectory());
 			obj.put("name", dataCenter.getName());
 			obj.put("individualId", dataCenter.getIndividualId());
+			obj.put("microserviceId", dataCenter.getMicroService().getId().longValue());
 			httpService.addPostParameters(obj);
 			List<String> data = httpService.finish();
 			result = data.stream().findFirst().get();
@@ -971,6 +979,7 @@ public class GenomicServiceImpl implements IGenomicService {
 			obj.put("directory", dataCenter.getDirectory());
 			obj.put("name", dataCenter.getName());
 			obj.put("individualId", dataCenter.getIndividualId());
+			obj.put("microserviceId", dataCenter.getMicroService().getId().longValue());
 			httpService.addPostParameters(obj);
 			List<String> data = httpService.finish();
 			result = data.stream().findFirst().get().getBytes();
@@ -986,5 +995,13 @@ public class GenomicServiceImpl implements IGenomicService {
 	public int getAnalysisCount(long computationId) {
 		return genomicsDao.getAnalysisCount(computationId);
 	}
-
+	
+	public int getDataSourceCount(long dataSourceId){
+		return genomicsDao.getDataSourceCount(dataSourceId);
+	}
+	
+	public void refreshDataSource(DataSource dataSource){
+		genomicsDao.refreshDataSource(dataSource);
+	}
+		
 }

@@ -91,4 +91,8 @@ public interface IGenomicService {
 	
 	public int getAnalysisCount(long computationId);
 	
+	public int getDataSourceCount(long dataSourceId);
+	
+	public void refreshDataSource(DataSource dataSource);
+	
 }

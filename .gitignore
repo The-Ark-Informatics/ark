@@ -24,5 +24,6 @@ ark-user-account/src/main/resources/applicationContext.xml
 spark-bluegene/src/main/resources/spark.properties
 spark-spartan/src/main/resources/spark.properties
 spark-local/src/main/resources/spark.properties
+spark-hpc/src/main/resources/spark.properties
 ark-calendar/src/main/resources/ark-calendar.properties
 

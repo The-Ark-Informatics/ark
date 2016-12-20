@@ -135,7 +135,8 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 			if (microService == null || dataCenter == null) {
 				this.error("Need to select a service and data centre prior to make a search.");
 			} else {
-				this.info(getModelObject().getName() + " cannot be reach in the " + getModelObject().getMicroService().getName() + " Service");
+//				this.info(getModelObject().getName() + " cannot be reach in the " + getModelObject().getMicroService().getName() + " Service");
+				this.info("Cannot find any directories or files in the search location");
 			}
 			target.add(feedbackPanel);
 

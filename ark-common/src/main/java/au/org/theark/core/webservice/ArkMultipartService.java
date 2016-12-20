@@ -55,6 +55,7 @@ public class ArkMultipartService {
 		}
 		httpConn.setRequestProperty("Content-Type",
 				"multipart/form-data; boundary=" + boundary);
+//		httpConn.setRequestProperty("maxPostSize", "-1");
 		outputStream = httpConn.getOutputStream();
 		writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),
 				true);

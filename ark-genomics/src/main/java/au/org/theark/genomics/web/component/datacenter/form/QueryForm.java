@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -41,12 +42,15 @@ public class QueryForm extends AbstractDetailForm<DataCenterVo> {
 
 	private CompoundPropertyModel<DataCenterVo> cpmModel;
 	
+	private String selectedOutput;
+	
 	public QueryForm(String id, FeedbackPanel feedBackPanel, CompoundPropertyModel<DataCenterVo> cpModel, ArkCrudContainerVO arkCrudContainerVO, AbstractDetailModalWindow modalWindow) {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		setOutputMarkupId(true);
 		this.modalWindow = modalWindow;
 		this.cpmModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.selectedOutput="PED/MAP";
 	}
 	
 	public void initialiseQueryForm() {
@@ -74,10 +78,11 @@ public class QueryForm extends AbstractDetailForm<DataCenterVo> {
 			downloadBtn.setEnabled(false);
 			
 			List<String> outputTypeList = new ArrayList<String>();
-			outputTypeList.add("PED/MAP");
-			outputTypeList.add("BIN");
+			outputTypeList.add(selectedOutput);
+//			outputTypeList.add("BIN");
 			
-			this.outputDDL = new DropDownChoice<String>("outputType",outputTypeList);
+			this.outputDDL = new DropDownChoice<String>("outputType",new PropertyModel<String>(this, "selectedOutput"),outputTypeList);
+			
 			
 			arkCrudContainerVO.getEditButtonContainer().get("save").setVisible(false);
 			arkCrudContainerVO.getEditButtonContainer().get("delete").setVisible(false);
@@ -119,6 +124,16 @@ public class QueryForm extends AbstractDetailForm<DataCenterVo> {
 	@Override
 	protected boolean isNew() {
 		return false;
+	}
+	
+	
+
+	public String getSelectedOutput() {
+		return selectedOutput;
+	}
+
+	public void setSelectedOutput(String selectedOutput) {
+		this.selectedOutput = selectedOutput;
 	}
 
 	@Override

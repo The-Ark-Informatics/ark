@@ -194,5 +194,19 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		count =list.size();
 		return count;
 	}
+	
+	public int getDataSourceCount(long dataSourceId){
+		int count = 0;
+		Criteria criteria = getSession().createCriteria(Analysis.class, "a");
+		criteria.createAlias("dataSource", "d", JoinType.INNER_JOIN);
+		criteria.setFetchMode("dataSource", FetchMode.JOIN);
+		criteria.add(Restrictions.eq("d.id", dataSourceId));
+		List<Analysis> list = criteria.list();
+		count =list.size();
+		return count;
+	}
 
+	public void refreshDataSource(DataSource dataSource){
+		getSession().refresh(dataSource);
+	}
 }
