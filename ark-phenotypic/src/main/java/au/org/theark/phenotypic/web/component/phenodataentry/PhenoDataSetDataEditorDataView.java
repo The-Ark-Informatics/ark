@@ -107,7 +107,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 														new PropertyModel<Date>(item.getModel(), "dateDataValue"),
 														new Model<String>(labelModel));
 			dateDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-			dateDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
+			dateDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitTypeInText"));
 
 			if (pf.getMinValue() != null && !pf.getMinValue().isEmpty()) {
 				IConverter<Date> dateConverter = dateDataEntryPanel.getDateConverter();
@@ -163,7 +163,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 															new Model<String>(labelModel), choiceList, choiceRenderer); 
 					
 					cgdePanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					cgdePanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
+					cgdePanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitTypeInText"));
 
 					if (pf.getMissingValue() != null && !pf.getMissingValue().isEmpty()) {
 						cgdePanel.setMissingValue(pf.getMissingValue());
@@ -183,7 +183,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 								new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																				new Model<String>(labelModel), choiceList, choiceRenderer);
 					ddcPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					ddcPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
+					ddcPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitTypeInText"));
 					
 					if (pf.getMissingValue() != null && !pf.getMissingValue().isEmpty()) {
 						ddcPanel.setMissingValue(pf.getMissingValue());
@@ -204,7 +204,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 																										new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																										new Model<String>(labelModel));
 					textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
+					textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitTypeInText"));
 					textDataEntryPanel.setTextFieldSize(60);
 					
 					if (requiredField != null && requiredField == true) {
@@ -221,7 +221,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 																						new PropertyModel<Double>(item.getModel(), "numberDataValue"), 
 																						new Model<String>(labelModel));
 					numberDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					numberDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitType.name"));
+					numberDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "phenoDataSetFieldDisplay.phenoDataSetField.unitTypeInText"));
 										
 					if (pf.getMinValue() != null && !pf.getMinValue().isEmpty()) {
 						IConverter<Double> doubleConverter = numberDataEntryPanel.getNumberConverter();

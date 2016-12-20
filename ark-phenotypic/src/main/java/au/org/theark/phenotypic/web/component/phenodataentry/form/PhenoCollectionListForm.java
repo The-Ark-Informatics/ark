@@ -439,7 +439,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		modalContentPanel = new PhenoDataEntryModalDetailPanel("content", modalWindow, cpModel);
 
 		// Set the modalWindow title and content
-		modalWindow.setTitle("Subject Dataset Details");
+		modalWindow.setTitle("Pheno Dataset Details");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.repaintComponent(getDataButton);
 		// 2015-09-29 set windows call back

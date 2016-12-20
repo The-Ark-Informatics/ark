@@ -65,7 +65,6 @@ public class PhenoDataSetData implements Serializable, IPhenoDataSetFieldData {
 	}
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PHENO_DATASET_COLLECTION_ID")
-	@NotAudited
 	public PhenoDataSetCollection getPhenoDataSetCollection() {
 		return phenoDataSetCollection;
 	}

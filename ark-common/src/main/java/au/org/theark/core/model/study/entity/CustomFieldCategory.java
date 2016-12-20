@@ -33,6 +33,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+import org.hibernate.tool.hbm2ddl.Target;
 
 import au.org.theark.core.Constants;
 
@@ -123,6 +124,7 @@ public class CustomFieldCategory implements  java.io.Serializable {
 	/**
 	 * @return the parentCategory
 	 */
+	@Audited
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PARENT_ID")
 	public CustomFieldCategory getParentCategory() {
@@ -160,7 +162,7 @@ public class CustomFieldCategory implements  java.io.Serializable {
 	public Study getStudy() {
 		return study;
 	}
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ARK_FUNCTION_ID")
 	public ArkFunction getArkFunction() {
@@ -179,11 +181,6 @@ public class CustomFieldCategory implements  java.io.Serializable {
 		this.displayLevel = displayLevel;
 	}
 	
-	
-	
-	
-	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

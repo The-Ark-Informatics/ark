@@ -69,7 +69,6 @@ public class PhenoDataDataViewPanel extends Panel {
 		if (numRowsPerPage != null) {
 			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		}
-		
 		this.add(dataView);
 		return this;
 	}
