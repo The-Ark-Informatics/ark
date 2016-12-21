@@ -16,6 +16,9 @@ public class Setting implements Serializable {
     private Long id;
     private String propertyName;
     private String propertyValue;
+    @Enumerated(EnumType.STRING)
+    private PropertyType propertyType;
+    private String highestType;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,15 +48,36 @@ public class Setting implements Serializable {
         this.propertyValue = propertyValue;
     }
 
-    @Enumerated(EnumType.STRING)
-    private SettingType settingType;
-
-    public SettingType getSettingType() {
-        return settingType;
+    public PropertyType getPropertyType() {
+        return propertyType;
     }
 
-    public void setSettingType(SettingType settingType) {
-        this.settingType = settingType;
+    public void setPropertyType(PropertyType propertyType) {
+        this.propertyType = propertyType;
+    }
+
+    /**
+     * The `type` column associated with this entity is used to differentiate between the three implemented types of
+     * settings;
+     *
+     * 1. System,
+     * 2. Study,
+     * 3. User.
+     *
+     * Each tier after System is a sub-set of the tiers above it, e.g. Study settings won't contain all the System
+     * settings and User won't contain all the System or Study settings.
+     *
+     * Contents of this column must match the acceptable discriminator values.
+     *
+     * @return The highest tier that this setting can be used for
+     */
+    @Column(name = "HIGHEST_TYPE")
+    public String getHighestType() {
+        return this.highestType;
+    }
+
+    public void setHighestType(String highestType) {
+        this.highestType = highestType;
     }
 
     @Transient
@@ -72,7 +96,7 @@ public class Setting implements Serializable {
                 "id=" + id +
                 ", propertyName='" + propertyName + '\'' +
                 ", propertyValue='" + propertyValue + '\'' +
-                ", settingType='" + getSettingType().toString() + '\'' +
+                ", propertyType='" + getPropertyType().toString() + '\'' +
                 '}';
     }
 }

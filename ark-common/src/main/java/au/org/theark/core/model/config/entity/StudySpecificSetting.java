@@ -29,7 +29,7 @@ public class StudySpecificSetting extends Setting {
                 ", study_id='" + (study != null ? study.getId() : "NULL") + '\'' +
                 ", propertyName='" + getPropertyName() + '\'' +
                 ", propertyValue='" + getPropertyValue() + '\'' +
-                ", settingType='" + getSettingType().toString() + '\'' +
+                ", settingType='" + getPropertyType().toString() + '\'' +
                 '}';
     }
 }

@@ -1,0 +1,61 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+	<table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="6%">
+                ID
+			</th>
+            <th width="30%">
+				Property Name
+			</th>
+			<th width="30%">
+				Property Value
+			</th>
+			<th width="30%">
+				Property Type
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<tr wicket:id="settingList">
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="6%">
+                <div wicket:id="id"></div>
+			</td>
+			<td width="30%">
+				<div wicket:id="propertyName"></div>
+			</td>
+			<td width="30%">
+				<div wicket:id="propertyValue"></div>
+			</td>
+			<td width="30%">
+				<div wicket:id="propertyType"></div>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">
+					&nbsp;
+				</td>
+				<td width="96%" colspan="3">
+					<span wicket:id="navigator" class="a">
+					</span>
+				</td>
+				<td width="2%">
+					&nbsp;
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

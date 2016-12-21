@@ -1,6 +1,5 @@
 package au.org.theark.core.model.config.entity;
 
-import au.org.theark.core.model.study.entity.Study;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -16,7 +15,7 @@ public class SystemWideSetting extends Setting {
                 "id=" + getId() + '\'' +
                 ", propertyName='" + getPropertyName() + '\'' +
                 ", propertyValue='" + getPropertyValue() + '\'' +
-                ", settingType='" + getSettingType().toString() + '\'' +
+                ", settingType='" + getPropertyType().toString() + '\'' +
                 '}';
     }
 }

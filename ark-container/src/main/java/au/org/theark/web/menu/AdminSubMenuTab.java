@@ -21,6 +21,8 @@ package au.org.theark.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.org.theark.admin.web.component.settings.SettingsContainerPanel;
+import au.org.theark.core.Constants;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -123,6 +125,9 @@ public class AdminSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = containerPanel;
 		} else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_AUDIT)) {
 			AuditContainerPanel containerPanel = new AuditContainerPanel(panelId);
+			panelToReturn = containerPanel;
+		} else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SETTING)) {
+			SettingsContainerPanel containerPanel = new SettingsContainerPanel(panelId);
 			panelToReturn = containerPanel;
 		}
 

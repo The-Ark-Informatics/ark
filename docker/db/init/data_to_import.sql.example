@@ -3107,6 +3107,17 @@ INSERT INTO `user_config` VALUES (2, 1, 2, 50);
 /*!40000 ALTER TABLE `user_config` ENABLE KEYS */;
 UNLOCK TABLES;
 
+CREATE TABLE `settings` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) NOT NULL DEFAULT '',
+  `highest_type` varchar(255) NOT NULL DEFAULT '',
+  `propertyType` varchar(255) NOT NULL,
+  `property_name` text NOT NULL,
+  `property_value` text NOT NULL,
+  `study_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 --
 -- Current Database: `disease`
 --
@@ -6101,6 +6112,7 @@ INSERT INTO `ark_function` VALUES (81,'LIMS_CUSTOM_FIELD_UPLOAD','Manage Custom 
 INSERT INTO `ark_function` VALUES (82,'DATASET_CATEGORY','Phenotypic Data set category use case. This is represented by the Dataset Category tab, under the main Phenotypic(Dataset) Tab.',1,'tab.module.phenotypic.category');
 INSERT INTO `ark_function` VALUES (83,'DATASET_CATEGORY_UPLOAD','Phenotypic Data set category upload use case. This is represented by the Dataset Category tab, under the main Phenotypic(Dataset) Tab.',1,'tab.module.phenotypic.categoryupload');
 INSERT INTO `ark_function` VALUES (84,'GLOBAL_BIOSPECIMEN_SEARCH',NULL,1,'tab.module.lims.global.biospecimen.search');
+INSERT INTO `ark_function` VALUES (85,'SETTINGS',NULL,1,'tab.module.admin.settings');
 /*!40000 ALTER TABLE `ark_function` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -6251,6 +6263,7 @@ INSERT INTO `ark_module_function` VALUES (244,5,81,5);
 INSERT INTO `ark_module_function` VALUES (245,5,43,6);
 INSERT INTO `ark_module_function` VALUES (246,5,42,7);
 INSERT INTO `ark_module_function` VALUES (247,5,84,8);
+INSERT INTO `ark_module_function` VALUES (248,9,85,2);
 /*!40000 ALTER TABLE `ark_module_function` ENABLE KEYS */;
 UNLOCK TABLES;
 

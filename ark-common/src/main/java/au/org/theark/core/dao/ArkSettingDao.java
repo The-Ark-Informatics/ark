@@ -6,8 +6,11 @@ import au.org.theark.core.model.config.entity.SystemWideSetting;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository("settingDao")
 public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao {
@@ -56,5 +59,40 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
     @Override
     public void save(Object object) {
         getSession().save(object);
+    }
+
+    @Override
+    public int getSettingsCount(Setting setting) {
+        Criteria criteria = buildSettingCriteria(setting);
+        criteria.setProjection(Projections.rowCount());
+        Long count = (Long) criteria.uniqueResult();
+        return count.intValue();
+    }
+
+    @Override
+    public List<Setting> searchPageableSettings(Setting setting, int first, int count) {
+        Criteria criteria = buildSettingCriteria(setting);
+        criteria.setFirstResult(first);
+        criteria.setMaxResults(count);
+
+        return (List<Setting>) criteria.list();
+    }
+
+    private Criteria buildSettingCriteria(Setting setting) {
+        Criteria criteria = getSession().createCriteria(Setting.class);
+
+        if(setting.getPropertyName() != null) {
+            criteria.add(Restrictions.eq("propertyName", setting.getPropertyName()));
+        }
+
+        if(setting.getPropertyType() != null) {
+            criteria.add(Restrictions.eq("propertyType", setting.getPropertyType()));
+        }
+
+        if(setting.getHighestType() != null) {
+            criteria.add(Restrictions.eq("highestType", setting.getHighestType()));
+        }
+
+        return criteria;
     }
 }

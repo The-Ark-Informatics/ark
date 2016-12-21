@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Transactional
 @Service(Constants.ARK_SETTING_SERVICE)
 public class ArkSettingServiceImpl implements IArkSettingService {
@@ -40,6 +42,16 @@ public class ArkSettingServiceImpl implements IArkSettingService {
     @Override
     public void save(Object object) {
         iArkSettingDao.save(object);
+    }
+
+    @Override
+    public int getSettingsCount(Setting setting) {
+        return iArkSettingDao.getSettingsCount(setting);
+    }
+
+    @Override
+    public List<Setting> searchPageableSettings(Setting setting, int first, int count) {
+        return iArkSettingDao.searchPageableSettings(setting, first, count);
     }
 
 

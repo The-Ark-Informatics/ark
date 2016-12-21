@@ -340,7 +340,8 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_PEDIGREE = "PEDIGREE";
 	public static final String FUNCTION_KEY_VALUE_GENO_TABLE = "GENO_TABLE";
 	public static final String FUNCTION_KEY_VALUE_AUDIT = "Audit";
-	
+	public static final String FUNCTION_KEY_VALUE_SETTING = "Settings";
+
 	public static final String FUNCTION_KEY_VALUE_GENE = "GENE";
 	public static final String FUNCTION_KEY_VALUE_DISEASE = "DISEASE";
 	public static final String FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS = "DISEASE_CUSTOM_FIELDS";
