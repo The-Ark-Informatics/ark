@@ -32,6 +32,7 @@ public class Constants {
 	public static final String ARK_DISEASE_SERVICE = "arkDiseaseService";
 	public static final String ARK_AUDIT_SERVICE = "arkAuditService";
 	public static final String ARK_PHENO_DATA_SERVICE = "phenotypicService";
+	public static final String ARK_SETTING_SERVICE = "arkSettingService";
 	
 	
 	/* Global constants */
