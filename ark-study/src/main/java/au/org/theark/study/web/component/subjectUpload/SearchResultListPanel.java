@@ -22,7 +22,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -49,7 +54,12 @@ import com.x5.template.Chunk;
 import com.x5.template.Theme;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Payload;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
@@ -77,7 +87,6 @@ public class SearchResultListPanel extends Panel {
 	private ConfirmationAnswer		confirmationAnswer;
 	private final String modalText = "<p>You are about to delete this record of</p><p><b>*.</b></p></p><p> But it will never delete the data imported to the Ark from this file previously.</p>";
 	private SearchResultListPanel me;
-	
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
@@ -101,12 +110,14 @@ public class SearchResultListPanel extends Panel {
 			}
 
 		};
-		ArkDownloadTemplateButton downloadConsentFieldTemplateButton = new ArkDownloadTemplateButton("downloadConsentFieldTemplate", "SubjectConsentFieldUpload", au.org.theark.study.web.Constants.SUBJECT_CONSENT_FIELD_TEMPLATE_CELLS) {
+		
+		ArkDownloadTemplateButton downloadConsentFieldTemplateButton = new ArkDownloadTemplateButton("downloadConsentFieldTemplate", "SubjectConsentFieldUpload", makeConsentTemplateSelectionValuesMorePrecise(au.org.theark.study.web.Constants.SUBJECT_CONSENT_FIELD_TEMPLATE_CELLS)) {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected Error: Could not proceed with download of the template.");
+				
 			}
 
 		};
@@ -407,13 +418,75 @@ public class SearchResultListPanel extends Panel {
 		});
 		addOrReplace(confirmModal);
 	}
-	
+	/**
+	 * initialise confirm model
+	 */
 	private void initConfirmModel(){
 		confirmationAnswer = new ConfirmationAnswer(false);
 		confirmModal = new ModalWindow("confirmModal");
 		confirmModal.setCookieName("yesNoPanel");
 		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText,"Delete upload record.", confirmModal, confirmationAnswer));
 		addOrReplace(confirmModal);
+	}
+	/**
+	 * Selection values for the consent template will be make more pricise and easy to select.
+	 * @param consentTemplate
+	 * @return
+	 */
+	private String[][] makeConsentTemplateSelectionValuesMorePrecise(String[][] consentTemplate){
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		List<String> studyCompList =convertListOfObjectsToListOfString(iArkCommonService.getStudyComponentByStudy(study));
+		List<String> studyCompStatus=convertListOfObjectsToListOfString(iArkCommonService.getStudyComponentStatus());
+		List<String> consentTypes=convertListOfObjectsToListOfString(iArkCommonService.getConsentType());
+		List<String> consentStatus=convertListOfObjectsToListOfString(iArkCommonService.getConsentStatus());
+		
+		//Here we have to be careful not to use the reference object since it will destroy the original values
+		//So array copying will do the trick to keep the original values unchanged for other studies to use it.
+		String[][] newConsentTemplate=new String[consentTemplate.length][consentTemplate[1].length];
+		
+		arrayCopy(consentTemplate, newConsentTemplate);
+		
+		for (String[] mainArray : newConsentTemplate) {
+			for (String innerArray : mainArray) {
+				switch (innerArray) {
+				case "@CompName" :
+					mainArray[ArrayUtils.indexOf(mainArray, innerArray)]=mainArray[ArrayUtils.indexOf(mainArray, innerArray)].replace(innerArray, " ["+StringUtils.join(studyCompList,',')+"].");
+					break;
+				case "@CompNameStatus" :
+					mainArray[ArrayUtils.indexOf(mainArray, innerArray)]=mainArray[ArrayUtils.indexOf(mainArray, innerArray)].replace(innerArray, " ["+StringUtils.join(studyCompStatus,',')+"].");
+					break;
+				case "@ConsentName" :
+					mainArray[ArrayUtils.indexOf(mainArray, innerArray)]=mainArray[ArrayUtils.indexOf(mainArray, innerArray)].replace(innerArray, " ["+StringUtils.join(consentTypes,',')+"].");
+					break;
+				case "@ConsentStatus" :
+					mainArray[ArrayUtils.indexOf(mainArray, innerArray)]=mainArray[ArrayUtils.indexOf(mainArray, innerArray)].replace(innerArray, " ["+StringUtils.join(consentStatus,',')+"].");
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		return newConsentTemplate;
+	}
+	/**
+	 * 
+	 * @param aSource
+	 * @param aDestination
+	 */
+	private void arrayCopy(String[][] aSource, String[][] aDestination) {
+	    for (int i = 0; i < aSource.length; i++) {
+	        System.arraycopy(aSource[i], 0, aDestination[i], 0, aSource[i].length);
+	    }
+	}
+	/**
+	 * Convert list of object values to their list of strings.
+	 * @param list
+	 * @return
+	 */
+	private List<String> convertListOfObjectsToListOfString(List<?> list){
+		return list.stream().map( Object::toString).collect( Collectors.toList() );
 	}
 
 	/*

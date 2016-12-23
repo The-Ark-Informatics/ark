@@ -125,6 +125,11 @@ public class ConsentStatus implements Serializable {
 		
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return   name;
+	}
 	
 	
 
