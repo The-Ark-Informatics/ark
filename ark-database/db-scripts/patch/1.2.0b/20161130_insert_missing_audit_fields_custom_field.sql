@@ -13,7 +13,7 @@ INSERT INTO `audit_field` (`FIELD_NAME`, `NAME`, `ENTITY_ID`)
 VALUES
 	('name','Name',@entityIDCategory),
 	('customFieldType','Custom Field Type',@entityIDCategory),
-	('description','Description',@entityIDCategory);
+	('description','Description',@entityIDCategory),
 	('orderNumber','Order Number',@entityIDCategory);
 
 
