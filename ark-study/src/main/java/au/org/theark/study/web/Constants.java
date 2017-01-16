@@ -76,6 +76,7 @@ public class Constants {
 	public static final String			PERSON_VITAL_STATUS											= "linkSubjectStudy.person.vitalStatus";
 	public static final String			PERSON_PERSON_ID											= "linkSubjectStudy.person.id";
 	public static final String			SUBJECT_UID													= "linkSubjectStudy.subjectUID";
+	public static final String			FAMILY_ID													= "linkSubjectStudy.familyId";
 	public static final String			PERSON_FIRST_NAME											= "linkSubjectStudy.person.firstName";
 	public static final String			PERSON_MIDDLE_NAME											= "linkSubjectStudy.person.middleName";
 	public static final String			PERSON_LAST_NAME											= "linkSubjectStudy.person.lastName";
