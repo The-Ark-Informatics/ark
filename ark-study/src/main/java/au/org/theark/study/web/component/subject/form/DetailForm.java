@@ -121,6 +121,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private WebMarkupContainer								arkContextMarkupContainer;
 
 	protected TextField<String>							subjectUIDTxtFld;
+	protected TextField<String>							familyIdTxtFld;
 	protected TextField<String>							firstNameTxtFld;
 	protected TextField<String>							middleNameTxtFld;
 	protected TextField<String>							lastNameTxtFld;
@@ -224,6 +225,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 		};
 		subjectUIDTxtFld.setOutputMarkupId(true);
+		
+		familyIdTxtFld = new TextField<String>(Constants.FAMILY_ID);
 
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
@@ -552,6 +555,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	public void addDetailFormComponents() {
 
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectUIDTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(familyIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(titleTypeDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(middleNameTxtFld);

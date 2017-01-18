@@ -1,0 +1,7 @@
+ALTER TABLE `study`.`link_subject_study` 
+ADD COLUMN `FAMILY_ID` VARCHAR(50) NULL AFTER `NATURAL_UID`;
+
+ALTER TABLE `audit`.`aud_link_subject_study` 
+ADD COLUMN `FAMILY_ID` VARCHAR(50) NULL AFTER `SUBJECT_STATUS_ID`;
+
+
