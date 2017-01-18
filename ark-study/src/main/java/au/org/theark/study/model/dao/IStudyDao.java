@@ -521,4 +521,5 @@ public interface IStudyDao {
 	public boolean isAlreadyHasFileAttached(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
 	
 	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
+	
 }

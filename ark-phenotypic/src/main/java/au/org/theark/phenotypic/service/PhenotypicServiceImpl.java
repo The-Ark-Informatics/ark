@@ -1533,6 +1533,11 @@ try {
 	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria) {
 		return phenotypicDao.getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(phenoDataSetGroupCriteria);
 	}
+
+	@Override
+	public boolean isEncodedValue(PhenoDataSetField phenoDataSetField, String value) {
+		return phenotypicDao.isInEncodedValues(phenoDataSetField, value);
+	}
 	
 
 	

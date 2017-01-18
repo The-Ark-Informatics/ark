@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -3117,4 +3118,37 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return phenoDataSetFields;
 	}
 
+	@Override
+	public boolean isInEncodedValues(PhenoDataSetField phenoDataSetField, String value) {
+		if(phenoDataSetField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(phenoDataSetField.getMissingValue().trim())) {
+			return true;
+		}
+
+		// Validate if encoded values is definedisInEncodedValues, and not a DATE fieldType
+		if (phenoDataSetField != null && !phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+
+			try {
+				StringTokenizer stringTokenizer = new StringTokenizer(phenoDataSetField.getEncodedValues(), Constants.ENCODED_VALUES_TOKEN);
+
+				// Iterate through all discrete defined values and compare to field data value
+				while (stringTokenizer.hasMoreTokens()) {
+					String encodedValueToken = stringTokenizer.nextToken();
+					StringTokenizer encodedValueSeparator = new StringTokenizer(encodedValueToken, Constants.ENCODED_VALUES_SEPARATOR);
+					String encodedValue = encodedValueSeparator.nextToken().trim();
+
+					if (encodedValue.equalsIgnoreCase(value)) {
+						return true;
+					}
+				}
+
+			}
+			catch (NullPointerException npe) {
+				log.error("Field data null format exception " + npe.getMessage());
+				return false;
+			}
+
+		}
+		return false;
+		
+	}
 }

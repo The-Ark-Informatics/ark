@@ -19,6 +19,7 @@ import jxl.read.biff.BiffException;
 import org.apache.commons.collections.ListUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.collections.MultiMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +27,11 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
@@ -36,6 +40,8 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
 
 import com.csvreader.CsvReader;
 
@@ -49,13 +55,15 @@ public class SubjectConsentUploadValidator {
 	private Study						study;
 	java.util.Collection<String>	fileValidationMessages	= new java.util.ArrayList<String>();
 	java.util.Collection<String>	dataValidationMessages	= new java.util.ArrayList<String>();
-	private HashSet<Integer>		existantSubjectUIDRows;
+	private HashSet<Integer>		insertRows;
+	private HashSet<Integer>		updateRows;
 	private HashSet<Integer>		nonExistantUIDs;
 	private HashSet<ArkGridCell>	errorCells;
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
 	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
 	private int						row							= 1;
+	
 	
 	public SubjectConsentUploadValidator() {
 		super();
@@ -67,8 +75,9 @@ public class SubjectConsentUploadValidator {
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		this.study = iArkCommonService.getStudy(studyId);
-		this.existantSubjectUIDRows = new HashSet<Integer>();
-		this.nonExistantUIDs = new HashSet<Integer>();
+		this.insertRows = new HashSet<Integer>();
+		this.updateRows = new HashSet<Integer>();
+		this.nonExistantUIDs=new HashSet<Integer>();
 		this.errorCells = new HashSet<ArkGridCell>();
 		simpleDateFormat.setLenient(false);
 	}
@@ -222,31 +231,63 @@ public class SubjectConsentUploadValidator {
 			for(YesNo consentDownloaded: consentDownloadedList){
 				consentDownloadedMap.put(consentDownloaded.getName().toUpperCase(), consentDownloaded);
 			}
-			
-			
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();//i might still need this or might not now that i am evaluating by name ... TODO evaluate
 				String subjectUID = stringLineArray[0];	// First/0th column should be the SubjectUID
+				String sudyComp   = stringLineArray[1];
 				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
-					nonExistantUIDs.add(row);//TODO test and compare array.
+					nonExistantUIDs.add(row);
 					errorCells.add(new ArkGridCell(0, row));
-				}
-				else{					
+					dataValidationMessages.add("Please check the Subject UID again it is not available in the study.");
+				}else{
+					LinkSubjectStudy linkSubjectStudy=iArkCommonService.getSubjectByUID(subjectUID, study);
+					StudyComp studyComp=iArkCommonService.getStudyCompByNameAndStudy(study, sudyComp);
+					if(studyComp==null){
+						errorCells.add(new ArkGridCell(0, row));
+						dataValidationMessages.add("Please check the study component  again. it is not available in the study.");
+					}	
+					if(iArkCommonService.isConsentExsistByStudySublectUIDAndStudyComp(study, linkSubjectStudy, studyComp)){//Check for insert or update.Here we have to deal with the existing "consent" table with study component
+						updateRows.add(row);
+					}else {
+						insertRows.add(row);
+					}
 					this.validateRequiredConsentField(studyCompMap,consentUidStudyComponentMultiMap,subjectUID,csvReader.getIndex("STUDY_COMPONENT"), csvReader.get("STUDY_COMPONENT"), "STUDY_COMPONENT");
 					this.validateRequiredConsentField(studyCompStatusMap, csvReader.getIndex("STUDY_COMPONENT_STATUS"), csvReader.get("STUDY_COMPONENT_STATUS"), "STUDY_COMPONENT_STATUS");
 					this.validateRequiredConsentField(consentTypeMap, csvReader.getIndex("CONSENT_TYPE"), csvReader.get("CONSENT_TYPE"), "CONSENT_TYPE");
 					this.validateRequiredConsentField(consentStatusMap, csvReader.getIndex("CONSENT_STATUS"), csvReader.get("CONSENT_STATUS"), "CONSENT_STATUS");
 					this.validateRequiredConsentField(consentDownloadedMap, csvReader.getIndex("CONSENT_DOWNLOADED"), csvReader.get("CONSENT_DOWNLOADED"), "CONSENT_DOWNLOADED");
 					
-					if("Completed".equalsIgnoreCase(csvReader.get("STUDY_COMPONENT_STATUS"))){
+					if(au.org.theark.core.Constants.STUDY_COMP_STATUS_COMPLETED.equalsIgnoreCase(csvReader.get("STUDY_COMPONENT_STATUS"))){
 						try{
 							simpleDateFormat.parse(csvReader.get("COMPLETED_DATE"));
 						}catch(Exception e){
 							errorCells.add(new ArkGridCell(csvReader.getIndex("COMPLETED_DATE"), row));
 							dataValidationMessages.add("valid COMPLETED_DATE is required to upload subject consent");
 						}
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_RECEIVED.equalsIgnoreCase(csvReader.get("STUDY_COMPONENT_STATUS"))){
+						try{
+							simpleDateFormat.parse(csvReader.get("RECEIVED_DATE"));
+						}catch(Exception e){
+							errorCells.add(new ArkGridCell(csvReader.getIndex("RECEIVED_DATE"), row));
+							dataValidationMessages.add("valid RECEIVED_DATE is required to upload subject consent");
+						}
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_REQUESTED.equalsIgnoreCase(csvReader.get("STUDY_COMPONENT_STATUS"))){
+						try{
+							simpleDateFormat.parse(csvReader.get("REQUESTED_DATE"));
+						}catch(Exception e){
+							errorCells.add(new ArkGridCell(csvReader.getIndex("REQUESTED_DATE"), row));
+							dataValidationMessages.add("valid REQUESTED_DATE is required to upload subject consent");
+						}
 					}
-					
+					//Validate one and only date form the completed, received and requested dates 
+					if((!csvReader.get("COMPLETED_DATE").isEmpty() && !csvReader.get("RECEIVED_DATE").isEmpty()) ||
+							(!csvReader.get("COMPLETED_DATE").isEmpty() && !csvReader.get("REQUESTED_DATE").isEmpty())||
+							(!csvReader.get("REQUESTED_DATE").isEmpty() && !csvReader.get("RECEIVED_DATE").isEmpty())){
+						errorCells.add(new ArkGridCell(csvReader.getIndex("RECEIVED_DATE"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("REQUESTED_DATE"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("COMPLETED_DATE"), row));
+						dataValidationMessages.add("Please include exact required study component status date.Only accepetd one of either requested, received or completed date only.");
+					}
 					String consentDate=csvReader.get("CONSENT_DATE");
 					if(consentDate!=null && consentDate.trim().length()>0){
 						try{
@@ -255,10 +296,11 @@ public class SubjectConsentUploadValidator {
 							errorCells.add(new ArkGridCell(csvReader.getIndex("CONSENT_DATE"), row));
 							dataValidationMessages.add("Invalid CONSENT_DATE format");
 						}	
-					}					
+					}
 				}
 				row++;
 			}
+		
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
@@ -465,22 +507,6 @@ public class SubjectConsentUploadValidator {
 
 		return fileValidationMessages;
 	}
-	
-	public HashSet<Integer> getInsertRows() {
-		return existantSubjectUIDRows;
-	}
-
-	public void setInsertRows(HashSet<Integer> insertRows) {
-		this.existantSubjectUIDRows = insertRows;
-	}
-
-	public HashSet<Integer> getUpdateRows() {
-		return nonExistantUIDs;
-	}
-
-	public void setUpdateRows(HashSet<Integer> updateRows) {
-		this.nonExistantUIDs = updateRows;
-	}
 
 	public HashSet<ArkGridCell> getErrorCells() {
 		return errorCells;
@@ -488,6 +514,22 @@ public class SubjectConsentUploadValidator {
 
 	public void setErrorCells(HashSet<ArkGridCell> errorCells) {
 		this.errorCells = errorCells;
+	}
+
+	public HashSet<Integer> getInsertRows() {
+		return insertRows;
+	}
+
+	public void setInsertRows(HashSet<Integer> insertRows) {
+		this.insertRows = insertRows;
+	}
+
+	public HashSet<Integer> getUpdateRows() {
+		return updateRows;
+	}
+
+	public void setUpdateRows(HashSet<Integer> updateRows) {
+		this.updateRows = updateRows;
 	}
 	
 }

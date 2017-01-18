@@ -1629,6 +1629,9 @@ public class DataUploader {
 			int consentDateIndex = csvReader.getIndex("CONSENT_DATE");
 			int commentIndex = csvReader.getIndex("COMMENT");
 			int completedDateIndex = csvReader.getIndex("COMPLETED_DATE");
+			int requestedDateIndex = csvReader.getIndex("REQUESTED_DATE");
+			int receivedDateIndex = csvReader.getIndex("RECEIVED_DATE");
+			
 
 			while (csvReader.readRecord()) {
 				++rowCount;
@@ -1663,17 +1666,27 @@ public class DataUploader {
 					if (stringLineArray.length > commentIndex) {
 						existingConsent.setComments(stringLineArray[commentIndex]);
 					}
-
-					if ("Completed".equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())) {
+					if (au.org.theark.core.Constants.STUDY_COMP_STATUS_COMPLETED.equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())) {
 						try {
 							existingConsent.setCompletedDate(simpleDateFormat.parse(stringLineArray[completedDateIndex]));
 						}
 						catch (Exception e) {
 							existingConsent.setCompletedDate(null);
 						}
-					}
-					else {
-						existingConsent.setCompletedDate(null);
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_RECEIVED.equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())){
+						try {
+							existingConsent.setReceivedDate(simpleDateFormat.parse(stringLineArray[receivedDateIndex]));
+						}
+						catch (Exception e) {
+							existingConsent.setReceivedDate(null);
+						}
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_REQUESTED.equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())){
+						try {
+							existingConsent.setRequestedDate(simpleDateFormat.parse(stringLineArray[requestedDateIndex]));
+						}
+						catch (Exception e) {
+							existingConsent.setRequestedDate(null);
+						}
 					}
 					consentFieldsToUpdate.add(existingConsent);
 				}
@@ -1708,12 +1721,26 @@ public class DataUploader {
 						consent.setComments(stringLineArray[commentIndex].trim());
 					}
 
-					if ("Completed".equalsIgnoreCase(consent.getStudyComponentStatus().getName())) {
+					if (au.org.theark.core.Constants.STUDY_COMP_STATUS_COMPLETED.equalsIgnoreCase(consent.getStudyComponentStatus().getName())) {
 						try {
 							consent.setCompletedDate(simpleDateFormat.parse(stringLineArray[completedDateIndex].trim()));
 						}
 						catch (Exception e) {
 							consent.setCompletedDate(null);
+						}
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_RECEIVED.equalsIgnoreCase(consent.getStudyComponentStatus().getName())){
+						try {
+							consent.setReceivedDate(simpleDateFormat.parse(stringLineArray[receivedDateIndex].trim()));
+						}
+						catch (Exception e) {
+							consent.setReceivedDate(null);
+						}
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_REQUESTED.equalsIgnoreCase(consent.getStudyComponentStatus().getName())){
+						try {
+							consent.setRequestedDate(simpleDateFormat.parse(stringLineArray[requestedDateIndex].trim()));
+						}
+						catch (Exception e) {
+							consent.setRequestedDate(null);
 						}
 					}
 					consentFieldsToInsert.add(consent);

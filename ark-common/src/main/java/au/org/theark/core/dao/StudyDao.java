@@ -27,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,20 +35,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import au.org.theark.core.util.OrderByNatural;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
@@ -1640,7 +1634,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public Collection<UploadType> getUploadTypesForSubject(Study study) {
 		Criteria criteria = getSession().createCriteria(UploadType.class);
 		criteria.add(Restrictions.eq("arkModule", getArkModuleForSubject()));
-		if(study != null && study.getParentStudy() != null) { //i.e. study is a child study
+		//Add an additional condition added on 2017-01-17 when a study got it's children I found the parent study's parent is set as it's own
+		if(study != null && study.getParentStudy() != null && !study.equals(study.getParentStudy())) { //i.e. study is a child study
 			criteria.add(Restrictions.not(Restrictions.eq("name", "Subject Demographic Data")));
 		}
 		return criteria.list();
@@ -5456,6 +5451,25 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	@Override
 	public void deleteUpload(final Upload upload) {
 		getSession().delete(upload);
+	}
+	@Override
+	public StudyComp getStudyCompByNameAndStudy(Study study,String name){
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("name",name));
+		criteria.setMaxResults(1);
+		return (StudyComp)criteria.uniqueResult();
+	}
+	@Override
+	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study,LinkSubjectStudy linkSubjectStudy,StudyComp studyComp){
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("linkSubjectStudy",linkSubjectStudy));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		criteria.setMaxResults(1);
+		Consent consent= (Consent)criteria.uniqueResult();
+		return (consent!=null);
+		
 	}
 	
 }

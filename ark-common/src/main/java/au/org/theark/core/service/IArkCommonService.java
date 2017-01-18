@@ -29,6 +29,8 @@ import java.util.Set;
 import au.org.theark.core.dao.IArkAuthorisation;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -57,6 +59,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -78,6 +81,7 @@ import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -1307,5 +1311,11 @@ public interface IArkCommonService<T> {
 	public IArkAuthorisation getArkAuthorisationDao();
 	
 	public void deleteUpload(final Upload upload);
+	
+	public StudyComp getStudyCompByNameAndStudy(Study study,String name);
+
+	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study,LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
+	
+	public boolean isEncodedValue(CustomField customField, String value);
 
 	}

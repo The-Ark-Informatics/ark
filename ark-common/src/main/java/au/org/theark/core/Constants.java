@@ -394,7 +394,7 @@ public class Constants {
 			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE" }; //ALLOW MULTI  not here because it is Questionairre/customfieldgroup based
 	public static final String[][] CUSTOM_FIELD_UPLOAD_HEADER = {{"", "FIELD_NAME","CUSTOM_FIELD_TYPE","CUSTOM_FIELD_CATEGORY",
 			"FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
-			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
+			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "DEFAULT_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
 			{
 				"DESCRIPTION",
 				"The unique identifier of the field",
@@ -408,6 +408,7 @@ public class Constants {
 				"The minimum value for the field",
 				"The maximum value for the field",
 				"The missing value for the field",
+				"The default value for the field",
 				"The required status for the field",
 				"The multiple selection allowed status for the field"
 		},
@@ -416,6 +417,7 @@ public class Constants {
 				"Yes", 
 				"No",
 				"Yes",
+				"No",
 				"No",
 				"No",
 				"No",
@@ -439,10 +441,11 @@ public class Constants {
 				"",
 				"",
 				"",
+				"",
 				"true;yes;1;y;false;no;0;n",
 				"true;yes;1;y;false;no;0;n"
 		},
-		{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "","", "", "", "", "", ""
+		{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "","", "", "", "", "", "",""
 		}};
 	public static final String[][] CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER={ { "","CATEGORY_NAME",
 		"CUSTOM_FIELD_TYPE","DESCRIPTION","PARENT_CATEGORY_NAME","ORDER_NUMBER"	},
@@ -743,6 +746,10 @@ public class Constants {
 	public static final String	STATE_NAME						= "state";
 	public static final String	ADDRESS_TYPE					= "addressType";
 	public static final String DELETE_UPLOAD 					= "deleteUpload";
+	
+	public static final String STUDY_COMP_STATUS_COMPLETED = "Completed";
+	public static final String STUDY_COMP_STATUS_RECEIVED = "Received";
+	public static final String STUDY_COMP_STATUS_REQUESTED = "Requested";
 
 			
 }

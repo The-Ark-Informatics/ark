@@ -76,7 +76,7 @@ public class Constants {
 	};
 	
 	public static final String[][] PHENO_DATASET_FIELD_UPLOAD_HEADER = {{"", "FIELD_NAME","FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
-		"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
+		"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "DEFAULT_VALUE","REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
 		{
 			"DESCRIPTION",
 			"The unique identifier of the field",
@@ -88,12 +88,14 @@ public class Constants {
 			"The minimum value for the field",
 			"The maximum value for the field",
 			"The missing value for the field",
+			"The default value for the field",
 			"The required status for the field",
 			"The multiple selection allowed status for the field"
 	},
 	{ 		"MANDATORY", 
 			"Yes", 
 			"No", 
+			"No",
 			"No",
 			"No",
 			"No",
@@ -116,10 +118,11 @@ public class Constants {
 			"",
 			"",
 			"",
+			"",
 			"true;yes;1;y;false;no;0;n",
 			"true;yes;1;y;false;no;0;n"
 	},
-	{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "", "", "", "", ""
+	{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "", "", "", "", "",""
 	}};
 	
 	public static final String			UPLOAD_TYPE_CUSTOM_DATA_SETS	= "Custom Data Sets";

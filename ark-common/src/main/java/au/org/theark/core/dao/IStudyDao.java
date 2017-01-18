@@ -52,6 +52,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -780,4 +781,8 @@ public interface IStudyDao {
 	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException;
 	
 	public void deleteUpload(final Upload upload);
+	
+	public StudyComp getStudyCompByNameAndStudy(Study study,String name);
+	
+	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study,LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
 }
