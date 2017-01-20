@@ -296,18 +296,18 @@ public class DataUploader {
 			int maritalStatusIndex = csvReader.getIndex("MARITAL_STATUS");
 			int statusIndex = csvReader.getIndex("STATUS");
 
-			int addressLine1Index = csvReader.getIndex("BUILDING_NAME");
-			int addressLine2Index = csvReader.getIndex("STREET_ADDRESS");
-			int suburbIndex = csvReader.getIndex("SUBURB");
-			int stateIndex = csvReader.getIndex("STATE");
-			int countryIndex = csvReader.getIndex("COUNTRY");
-			int postCodeIndex = csvReader.getIndex("POST_CODE");
+			int addressLine1Index = csvReader.getIndex("ADDRESS_BUILDING_NAME");
+			int addressLine2Index = csvReader.getIndex("ADDRESS_STREET_ADDRESS");
+			int suburbIndex = csvReader.getIndex("ADDRESS_SUBURB");
+			int stateIndex = csvReader.getIndex("ADDRESS_STATE");
+			int countryIndex = csvReader.getIndex("ADDRESS_COUNTRY");
+			int postCodeIndex = csvReader.getIndex("ADDRESS_POST_CODE");
 			int addressSourceIndex = csvReader.getIndex("ADDRESS_SOURCE");
 			int addressStatusIndex = csvReader.getIndex("ADDRESS_STATUS");
 			int addressTypeIndex = csvReader.getIndex("ADDRESS_TYPE");
 			int addressReceivedIndex = csvReader.getIndex("ADDRESS_DATE_RECEIVED");
 			int addressCommentsIndex = csvReader.getIndex("ADDRESS_COMMENTS");
-			int isPreferredMailingIndex = csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
+			int isPreferredMailingIndex = csvReader.getIndex("ADDRESS_IS_PREFERRED");
 
 			int phoneNumberIndex = csvReader.getIndex("PHONE_NUMBER");
 			int areaCodeIndex = csvReader.getIndex("PHONE_AREA_CODE");
@@ -316,7 +316,7 @@ public class DataUploader {
 			int phoneSourceIndex = csvReader.getIndex("PHONE_SOURCE");
 			int phoneCommentsIndex = csvReader.getIndex("PHONE_COMMENTS");
 			int phoneDateReceivedIndex = csvReader.getIndex("PHONE_DATE_RECEIVED");
-			int phoneSilentIndex = csvReader.getIndex("SILENT");
+			int phoneSilentIndex = csvReader.getIndex("PHONE_SILENT");
 
 			// if(PERSON_CONTACT_METHOD is in headers, use it,
 			// else, if CONTACT_METHOD, us IT, else, just set to -1

@@ -79,16 +79,16 @@ public class MyDetails extends Panel {
 					String value = config.getValue();
 					System.out.println("value: " + value);
 					switch(config.getConfigField().getType().getName()) {
-						case "NUMBER":
+						case au.org.theark.core.Constants.FIELD_TYPE_NUMBER:
 							if(!isNumeric(value)) {
 								System.out.println("Field '" + config.getConfigField().getDescription() + "' should be a number");
 								this.error("Field '" + config.getConfigField().getDescription() + "' should be a number");
 								invalid = true;
 							}
 							break;
-						case "CHARACTER":
+						case au.org.theark.core.Constants.FIELD_TYPE_CHARACTER:
 							break;
-						case "DATE":
+						case au.org.theark.core.Constants.FIELD_TYPE_DATE:
 							if(!isDate(value)) {
 								System.out.println("Field '" + config.getConfigField().getDescription() + "' should be a date (DD/MM/YYYY)");
 								this.error("Field '" + config.getConfigField().getDescription() + "' should be a date (DD/MM/YYYY)");

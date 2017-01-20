@@ -122,10 +122,10 @@ public class Constants {
 	public static final String LIMS_SERVICE = "limsService";
 	public static final String STUDY_DAO = "studyDao";
 
-	public static final String FIELD_TYPE_NUMBER = "NUMBER";
-	public static final String FIELD_TYPE_CHARACTER = "CHARACTER";
-	public static final String FIELD_TYPE_DATE = "DATE";
-	public static final String FIELD_TYPE_LOOKUP = "LOOKUP";
+	public static final String FIELD_TYPE_NUMBER = "Number";
+	public static final String FIELD_TYPE_CHARACTER = "Charactor";
+	public static final String FIELD_TYPE_DATE = "Date";
+	public static final String FIELD_TYPE_LOOKUP = "LookUp";
 	public static final String DISCRETE_RANGE_TOKEN = ",";
 	public static final String ENCODED_VALUES_TOKEN = ";";
 	public static final String ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE = " ";
@@ -398,19 +398,19 @@ public class Constants {
 			{
 				"DESCRIPTION",
 				"The unique identifier of the field",
-				"The type of the field",
-				"The pre defined category name of the field",
-				"The field type of the field",
-				"The details description of the field",
-				"The question or the label for the field ",
-				"The units for the field",
-				"The encoded value for the field ",
-				"The minimum value for the field",
-				"The maximum value for the field",
-				"The missing value for the field",
-				"The default value for the field",
-				"The required status for the field",
-				"The multiple selection allowed status for the field"
+				"The type of the custom field data - subject or family",
+				"The pre-defined category name to which the field belongs",
+				"The data type of the field",
+				"A text description of the field",
+				"The question or label text associated with the field",
+				"The units of measurement, if applicable",
+				"A specification of encoded values, optional when FIELD_TYPE is CHARACTER",
+				"The minimum value for the field, optional when FIELD_TYPE is NUMBER & DATE",
+				"The maximum value for the field, optional when FIELD_TYPE is NUMBER & DATE",
+				"A value that represents missing data; the data type must match that indicated by FIELD_TYPE",
+				"The default value for the field if no value is set",
+				"Whether values for this field are mandatory",
+				"If FIELD_TYPE is CHARACTER and encoded values are set, should multiple selections be allowed?"
 		},
 		{ 		"MANDATORY", 
 				"Yes", 
@@ -431,21 +431,21 @@ public class Constants {
 		{
 				"VALID VALUES",
 				"Maximum 50 characters", 
+				"Subject,Family", 
 				"", 
-				"", 
-				"",
+				"Character, Number, Date",
 				"Maximum 255 characters", 
 				"Maximum 255 characters", 
 				"Maximum 50 characters",
-				"0=Yes;1=No;",
+				"Example: 0=No;1=Yes;",
 				"",
 				"",
 				"",
 				"",
-				"true;yes;1;y;false;no;0;n",
-				"true;yes;1;y;false;no;0;n"
+				"Yes, No",
+				"Yes, No"
 		},
-		{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "","", "", "", "", "", "",""
+		{ "NOTE: Remove this first column, and replace the contents of rows 2 to 5", "", "", "", "", "", "", "","", "", "", "", "", "",""
 		}};
 	public static final String[][] CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER={ { "","CATEGORY_NAME",
 		"CUSTOM_FIELD_TYPE","DESCRIPTION","PARENT_CATEGORY_NAME","ORDER_NUMBER"	},

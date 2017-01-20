@@ -353,9 +353,9 @@ public class Constants {
 
 	public static final String[]		SUBJECT_TEMPLATE_HEADER										= { "SUBJECTUID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH",
 			"VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH",  "DATE_LAST_KNOWN_ALIVE", "CAUSE_OF_DEATH", "MARITAL_STATUS", "PREFERRED_CONTACT", "EMAIL",
-			"BUILDING_NAME", "STREET_ADDRESS", "SUBURB", "STATE", "COUNTRY", "POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
-			"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "IS_PREFERRED_MAILING_ADDRESS", "PHONE_AREA_CODE",
-			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","SILENT", "PHONE_DATE_RECEIVED", 
+			"ADDRESS_BUILDING_NAME", "ADDRESS_STREET_ADDRESS", "ADDRESS_SUBURB", "ADDRESS_STATE", "ADDRESS_COUNTRY", "ADDRESS_POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
+			"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "ADDRESS_IS_PREFERRED", "PHONE_AREA_CODE",
+			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","PHONE_SILENT", "PHONE_DATE_RECEIVED", 
 			"PREVIOUS_LAST_NAME", "OTHER_EMAIL", "HEARD_ABOUT_STUDY" , "COMMENTS", "EMAIL_STATUS", "OTHER_EMAIL_STATUS", "EMAIL_STATUS",
 			"CONSENT_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"		
 	};
@@ -390,7 +390,7 @@ public class Constants {
 			"MARITAL_STATUS", "PREFERRED_CONTACT", "EMAIL", 
 			"ADDRESS_BUILDING_NAME", "ADDRESS_STREET_ADDRESS", "ADDRESS_SUBURB", "ADDRESS_STATE", "ADDRESS_COUNTRY", "ADDRESS_POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
 			"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "ADDRESS_IS_PREFERRED", "PHONE_AREA_CODE",
-			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","SILENT", "PHONE_DATE_RECEIVED", 
+			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","PHONE_SILENT", "PHONE_DATE_RECEIVED", 
 			"PREVIOUS_LAST_NAME", "OTHER_EMAIL", "HEARD_ABOUT_STUDY" , "COMMENTS", "EMAIL_STATUS", "OTHER_EMAIL_STATUS",
 			"CONSENT_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"},
 			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This may be automatically generated on upload into The Ark", "The title by which the subject prefers to be addressed",
@@ -414,7 +414,7 @@ public class Constants {
 				"No", "No", "No", "No", "No","No", "No", "No", "No", "No" , "No" , "No", "No",
 				"No", "No", "No" , "No" , "No", "No"},
 			{ "VALID VALUES", "", "Unknown, Br, Capt, Col, Cpl, Dean, Dr, Fr, Lac, Major, Miss, Mr, Mrs, Ms, Past, Prof, Pstr, Rev, Sir, Sr", "", "", "", "", "", "Alive, Deceased, Unknown",
-			"Male, Female, Unknown", "Subject, Prospect, Withdrawn Subject, Archive", "", "", "", "Married, Single, Divorced, Unknown", "Email, Home telephone, Mobile telephone, Post", "", 
+			"Male, Female, Unknown", "Subject, Prospect, Withdrawn Subject, Archive, Inactive", "", "", "", "Married, Single, Divorced, Unknown", "Email, Home telephone, Mobile telephone, Post", "", 
 			"", "", "", "Refer to user interface for options", "Refer to user interface for options", "",  //last three on this line are state country and postcode - i really could enforce something 
 			"", "Current,Current - Alternative,Current - Under Investigation,Incorrect address,Valid past address", "Postal,Work,Residential", "", "", "", "",
 			"", "Mobile,Home,Work", "Unknown,Current,Current Alternative,Current Under Investigation,Valid Past,Incorrect or Disconnected", "", "","Yes,No", "", "", "", "" , "", "Unknown, Verified, Unverified, Bounced", "Unknown, Verified, Unverified, Bounced",

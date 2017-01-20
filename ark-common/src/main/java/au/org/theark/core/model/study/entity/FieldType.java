@@ -25,6 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.WordUtils;
+
 import au.org.theark.core.model.Constants;
 
 /**
@@ -56,7 +58,7 @@ public class FieldType implements Serializable {
 
 	@Column(name = "NAME", nullable = false, length = 255, unique = true)
 	public String getName() {
-		return name;
+		return WordUtils.capitalize(name);
 	}
 
 	public void setName(String name) {

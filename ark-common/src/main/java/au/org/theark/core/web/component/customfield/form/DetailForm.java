@@ -285,7 +285,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		customeFieldCategoryDdc.setOutputMarkupId(true);
 	}
 
-	private void updateEncodedValueFld() {
+	 	private void updateEncodedValueFld() {
 		FieldType fieldType = getModelObject().getCustomField().getFieldType();
 		if (fieldType != null && fieldType.getName().equals(Constants.CHARACTER_FIELD_TYPE_NAME)) {
 			// Only allowed to use encodedValues when fieldType == CHARACTER

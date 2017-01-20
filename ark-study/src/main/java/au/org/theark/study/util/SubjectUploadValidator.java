@@ -593,9 +593,9 @@ public class SubjectUploadValidator {
 					}
 
 					// BOOLEAN CHECKS
-					if (csvReader.getIndex("SILENT") > 0) {
-						col = csvReader.getIndex("SILENT");
-						cellValue = csvReader.get("SILENT");
+					if (csvReader.getIndex("PHONE_SILENT") > 0) {
+						col = csvReader.getIndex("PHONE_SILENT");
+						cellValue = csvReader.get("PHONE_SILENT");
 						String silent = cellValue;
 						if (silent != null && !silent.isEmpty()) {// if null or empty just ignore...if invalid flag
 							if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(silent)) {
@@ -606,9 +606,9 @@ public class SubjectUploadValidator {
 						}
 					}
 
-					if (csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS") > 0) {
-						col = csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
-						cellValue = csvReader.get("IS_PREFERRED_MAILING_ADDRESS");
+					if (csvReader.getIndex("ADDRESS_IS_PREFERRED") > 0) {
+						col = csvReader.getIndex("ADDRESS_IS_PREFERRED");
+						cellValue = csvReader.get("ADDRESS_IS_PREFERRED");
 						String prefer = cellValue;
 						if (prefer != null && !prefer.isEmpty()) {// if null or empty just ignore...if invalid flag
 							if (prefer != null && !DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)) {

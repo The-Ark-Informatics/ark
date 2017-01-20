@@ -18,29 +18,18 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodatadictionary.form;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -58,16 +47,11 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkRunTimeException;
-import au.org.theark.core.exception.ArkRunTimeUniqueException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
-import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
@@ -75,11 +59,10 @@ import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CharactorDefaultMissingAndEncodedValueValidator;
 import au.org.theark.core.util.DateFromToValidator;
-import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
 import au.org.theark.core.util.DefaultMissingValueDateRangeValidator;
 import au.org.theark.core.util.DefaultMissingValueDoubleRangeValidator;
+import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
@@ -89,11 +72,7 @@ import au.org.theark.core.web.component.customfield.dataentry.StringDateModel;
 import au.org.theark.core.web.component.customfield.dataentry.TextDataEntryPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.util.PhenoDataSetCategoryOrderingHelper;
 import au.org.theark.phenotypic.web.component.phenodatadictionary.Constants;
-
-import com.googlecode.wicket.jquery.ui.interaction.draggable.Draggable;
-import com.googlecode.wicket.jquery.ui.interaction.droppable.Droppable;
 
 //import com.googlecode.wicket.jquery.ui.interaction.droppable.Droppable;
 
@@ -151,6 +130,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 	private WebMarkupContainer  					panelCustomUnitTypeText;
 	
 	private HistoryButtonPanel 						historyButtonPanel;
+	//private HistoryCustomPhenoFieldButtonPanel historyCustomPhenoFieldButtonPanel;
 	//private TextField<Long>							phenoDataSetCategoryOrderNoTxtFld;
 	private ArkModule 								arkModule;
 	
@@ -445,6 +425,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		initMinMaxValuePnls();
 		
 		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		//historyCustomPhenoFieldButtonPanel = new HistoryCustomPhenoFieldButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		
 	}
 	
 	protected void attachValidators() {
