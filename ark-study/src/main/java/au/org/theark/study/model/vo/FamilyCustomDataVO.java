@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.vo.StudyCustomDataVo;
 
 
 public class FamilyCustomDataVO extends StudyCustomDataVo<FamilyCustomFieldData> implements Serializable {

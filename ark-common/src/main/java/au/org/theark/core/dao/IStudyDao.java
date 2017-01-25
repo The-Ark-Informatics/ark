@@ -785,4 +785,5 @@ public interface IStudyDao {
 	public StudyComp getStudyCompByNameAndStudy(Study study,String name);
 	
 	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study,LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
+	
 }

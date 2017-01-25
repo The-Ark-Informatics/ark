@@ -41,8 +41,8 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
+import au.org.theark.core.vo.SubjectCustomDataVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.study.model.vo.SubjectCustomDataVO;
 import au.org.theark.study.web.component.subjectcustomdata.form.CustomDataEditorForm;
 
 /**
@@ -61,21 +61,21 @@ public class SubjectCustomDataEditorPanel extends Panel {
 	
 	protected FeedbackPanel feedbackPanel;
 	protected AbstractCustomDataEditorForm<SubjectCustomDataVO> customDataEditorForm;
+	//protected SubjectCustomFiledDataEntryModalDetailForm customDataEditorForm;
 	protected SubjectCustomDataDataViewPanel dataViewPanel;
 	protected Label warnSaveLabel;
 	private DropDownChoice<CustomFieldCategory>		customeFieldCategoryDdc;
+	
 
 	public SubjectCustomDataEditorPanel(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedBackPanel) {
 		super(id);
-
 		this.cpModel = cpModel;
 		this.feedbackPanel = feedBackPanel;
 	}
 
 	public SubjectCustomDataEditorPanel initialisePanel() {
 		
-		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
-		
+		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm(true);
 		Collection<CustomFieldCategory> customFieldCategoryCollection=getAvailableAllCategoryListInStudyByCustomFieldType();
 		List<CustomFieldCategory> customFieldCatLst=CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories((List<CustomFieldCategory>)customFieldCategoryCollection);
 		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID){
@@ -94,6 +94,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 				
 				customDataEditorForm.getDataViewWMC().remove(dataViewPanel);
 				dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null,customeFieldCategoryDdc.getModelObject());
+				cpModel.getObject().setCustomFieldCategory(customeFieldCategoryDdc.getModelObject());
 				customDataEditorForm.getDataViewWMC().add(dataViewPanel);
 				target.add(dataViewPanel);
 				target.add(customDataEditorForm);

@@ -54,7 +54,7 @@ public class FamilyCustomDataEditorPanel extends Panel {
 
 	public FamilyCustomDataEditorPanel initialisePanel() {
 
-		customDataEditorForm = new FamilyCustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel,modalWindow).initialiseForm();
+		customDataEditorForm = new FamilyCustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel,modalWindow).initialiseForm(true);
 		Collection<CustomFieldCategory> customFieldCategoryCollection=getAvailableAllCategoryListInStudyByCustomFieldType();
 		List<CustomFieldCategory> customFieldCatLst=CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories((List<CustomFieldCategory>)customFieldCategoryCollection);
 		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID){

@@ -184,8 +184,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private Label												totalSubjectsLabel;
 	
 	private ArkBusyAjaxButton								newChildStudyButton;
-	private static final PackageResourceReference	NO_STUDY_LOGO		= new PackageResourceReference(DetailForm.class, "no_study_logo.gif");
-
+	//private static final PackageResourceReference	NO_STUDY_LOGO		= new PackageResourceReference(DetailForm.class, "no_study_logo.gif");
+	private static final PackageResourceReference	NO_STUDY_LOGO		= new PackageResourceReference(DetailForm.class, "ark-no-image.png");
+	
 	private HistoryButtonPanel historyButtonPanel;
 	
 	/**
