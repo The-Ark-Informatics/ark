@@ -953,6 +953,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if (subjectVO.getLinkSubjectStudy().getSubjectUID() != null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0) {
 			criteria.add(Restrictions.ilike("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
 		}
+		
+		if (subjectVO.getLinkSubjectStudy().getFamilyId() != null && subjectVO.getLinkSubjectStudy().getFamilyId().length() > 0) {
+			criteria.add(Restrictions.ilike("familyId", subjectVO.getLinkSubjectStudy().getFamilyId(), MatchMode.ANYWHERE));
+		}
+		
 		/**
 		 * The new requirement arises on 2017-11-10 we need to show the archived subjects when only filtered as archive. 
 		 */
