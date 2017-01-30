@@ -24,12 +24,16 @@ import au.org.theark.admin.web.component.settings.form.ContainerForm;
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.IArkSettingDao;
 import au.org.theark.core.model.config.entity.Setting;
+import au.org.theark.core.model.config.entity.StudySpecificSetting;
+import au.org.theark.core.model.config.entity.SystemWideSetting;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IArkSettingService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -65,6 +69,7 @@ public class SettingsContainerPanel extends AbstractContainerPanel<Setting> {
 	@SpringBean(name = Constants.ARK_SETTING_SERVICE)
 	private IArkSettingService iArkSettingService;
 
+	private Class teir;
 	/**
 	 * @param id
 	 */
@@ -72,17 +77,33 @@ public class SettingsContainerPanel extends AbstractContainerPanel<Setting> {
 		super(id);
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<Setting>(new Setting());
-		cpModel.getObject().setHighestType("system");
 		initCrudContainerVO();
 
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
+
+		add(containerForm);
+	}
+
+	public SettingsContainerPanel(String id, Class teir) {
+		this(id);
+		this.teir = teir;
+		if(teir == SystemWideSetting.class) {
+			cpModel = new CompoundPropertyModel<Setting>(new SystemWideSetting());
+			cpModel.getObject().setHighestType("system");
+		}
+		if(teir == StudySpecificSetting.class) {
+			cpModel = new CompoundPropertyModel<Setting>(new StudySpecificSetting());
+			cpModel.getObject().setHighestType("study");
+			Long studyId=(Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study= iArkCommonService.getStudy(studyId);
+			((StudySpecificSetting) cpModel.getObject()).setStudy(study);
+		}
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchPanel());
 		containerForm.add(initialiseSearchResults());
-
-		add(containerForm);
+		//if teir == user
 	}
 
 	@Override
@@ -103,7 +124,7 @@ public class SettingsContainerPanel extends AbstractContainerPanel<Setting> {
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO);
+		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO, teir);
 		initialiseDataView();
 		settingDataView = searchResultsPanel.buildDataView(dataProvider);
 		settingDataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
@@ -119,14 +140,18 @@ public class SettingsContainerPanel extends AbstractContainerPanel<Setting> {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<Setting, IArkSettingService>(iArkSettingService) {
 			public int size() {
-//				return (int)service.getArkModuleRoleCount(model.getObject());
 				return service.getSettingsCount(model.getObject());
 			}
 
 			public Iterator<Setting> iterator(int first, int count) {
 				List<Setting> listCollection = new ArrayList<Setting>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
+					System.out.println("LIST PRE");
 					listCollection = service.searchPageableSettings(model.getObject(), first, count);
+					for(Setting s : listCollection) {
+						System.out.println(s);
+					}
+					System.out.println("LIST POST");
 				}
 
 				return listCollection.iterator();

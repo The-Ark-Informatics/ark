@@ -6,8 +6,10 @@ import au.org.theark.core.model.config.entity.SystemWideSetting;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -58,7 +60,7 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
 
     @Override
     public void save(Object object) {
-        getSession().save(object);
+        getSession().saveOrUpdate(object);
     }
 
     @Override
@@ -78,11 +80,15 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
         return (List<Setting>) criteria.list();
     }
 
-    private Criteria buildSettingCriteria(Setting setting) {
+    private Criteria buildSettingCriteria(Setting setting) { //TODO: Improve this
         Criteria criteria = getSession().createCriteria(Setting.class);
 
         if(setting.getPropertyName() != null) {
-            criteria.add(Restrictions.eq("propertyName", setting.getPropertyName()));
+            criteria.add(Restrictions.like("propertyName", setting.getPropertyName(), MatchMode.ANYWHERE));
+        }
+
+        if(setting.getPropertyValue() != null) {
+            criteria.add(Restrictions.like("propertyValue", setting.getPropertyValue(), MatchMode.ANYWHERE));
         }
 
         if(setting.getPropertyType() != null) {
@@ -90,8 +96,35 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
         }
 
         if(setting.getHighestType() != null) {
-            criteria.add(Restrictions.eq("highestType", setting.getHighestType()));
+            if(setting.getHighestType().equalsIgnoreCase("system")) {
+                criteria.add(Restrictions.eq("class", SystemWideSetting.class));
+            }
+            if(setting.getHighestType().equalsIgnoreCase("study")) {
+                /*criteria.add(
+                        Restrictions.or(
+                            Restrictions.or(
+                                    Restrictions.eq("highestType", setting.getHighestType()),
+                                    Restrictions.eq("highestType", "system")
+                            ),
+                            Restrictions.eq("class", SystemWideSetting.class)
+                        )
+                );*/
+                criteria.add(
+                                Restrictions.eq("highestType", "study")
+                );
+                criteria.add(Restrictions.eq("class", SystemWideSetting.class));
+            }
         }
+
+        /*if(setting instanceof StudySpecificSetting) {
+            StudySpecificSetting sss = (StudySpecificSetting) setting;
+            criteria.add(
+                    Restrictions.or(
+                        Restrictions.eq("study", sss.getStudy()),
+                        Restrictions.isNull("study")
+                    )
+            );
+        }*/
 
         return criteria;
     }

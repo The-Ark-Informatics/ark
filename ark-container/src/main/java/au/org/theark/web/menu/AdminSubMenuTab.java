@@ -23,6 +23,7 @@ import java.util.List;
 
 import au.org.theark.admin.web.component.settings.SettingsContainerPanel;
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.config.entity.SystemWideSetting;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -127,7 +128,7 @@ public class AdminSubMenuTab extends AbstractArkTabPanel {
 			AuditContainerPanel containerPanel = new AuditContainerPanel(panelId);
 			panelToReturn = containerPanel;
 		} else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SETTING)) {
-			SettingsContainerPanel containerPanel = new SettingsContainerPanel(panelId);
+			SettingsContainerPanel containerPanel = new SettingsContainerPanel(panelId, SystemWideSetting.class);
 			panelToReturn = containerPanel;
 		}
 

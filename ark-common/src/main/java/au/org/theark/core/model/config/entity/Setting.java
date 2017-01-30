@@ -96,7 +96,8 @@ public class Setting implements Serializable {
                 "id=" + id +
                 ", propertyName='" + propertyName + '\'' +
                 ", propertyValue='" + propertyValue + '\'' +
-                ", propertyType='" + getPropertyType().toString() + '\'' +
+                ", propertyType='" + propertyType + '\'' +
+                ", highestType='" + highestType + '\'' +
                 '}';
     }
 }

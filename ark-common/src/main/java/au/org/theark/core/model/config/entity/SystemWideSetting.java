@@ -16,6 +16,7 @@ public class SystemWideSetting extends Setting {
                 ", propertyName='" + getPropertyName() + '\'' +
                 ", propertyValue='" + getPropertyValue() + '\'' +
                 ", settingType='" + getPropertyType().toString() + '\'' +
+                ", highestType='" + getHighestType() + '\'' +
                 '}';
     }
 }
