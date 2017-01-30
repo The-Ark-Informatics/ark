@@ -105,6 +105,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -126,6 +127,7 @@ import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -204,6 +206,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private JavaMailSender javaMailSender;
 	private VelocityEngine velocityEngine;
 	private IGenoDao genoDao;
+	
 	
 	
 	
@@ -2181,6 +2184,18 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), upload.getStudy());
 			studyDao.deleteUpload(upload);
 	}
-	
+	@Override
+	public StudyComp getStudyCompByNameAndStudy(Study study,String name){
+		return studyDao.getStudyCompByNameAndStudy(study,name);
+	}
+
+	@Override
+	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study,LinkSubjectStudy linkSubjectStudy,StudyComp studyComp){
+		return  studyDao.isConsentExsistByStudySublectUIDAndStudyComp(study,linkSubjectStudy,studyComp);
+	}
+	@Override
+	public boolean isEncodedValue(CustomField customField, String value){
+		return customFieldDao.isInEncodedValues(customField, value);
+	}
 	
 }

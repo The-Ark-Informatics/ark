@@ -380,5 +380,12 @@ public interface ICustomFieldDao {
 	 * @return
 	 */
 	public CustomFieldCategory getCustomFieldCategotyByNameAndCustomFieldType(String name,CustomFieldType customFieldType);
+	/**
+	 * 
+	 * @param customField
+	 * @param value
+	 * @return
+	 */
+	public boolean isInEncodedValues(CustomField customField, String value);
 	
 }

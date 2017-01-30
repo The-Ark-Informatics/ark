@@ -311,7 +311,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 				this.buttonsPanelWMC.setVisible(false);
 				super.onBeforeRender();
 			}
-		}.initialiseForm();
+		}.initialiseForm(false);
 
 		pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
 			@Override

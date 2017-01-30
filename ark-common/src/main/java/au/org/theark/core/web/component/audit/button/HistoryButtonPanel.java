@@ -1,5 +1,7 @@
 package au.org.theark.core.web.component.audit.button;
 
+import java.io.Serializable;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -9,11 +11,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.web.component.audit.modal.AuditModalPanel;
 
-public class HistoryButtonPanel extends Panel {
+public class HistoryButtonPanel extends Panel{
 
 	private static final long serialVersionUID = 1L;
 	
-	private Object modelObject;
 	private ModalWindow modalWindow;
 	private AjaxButton historyButton;
 	
@@ -32,6 +33,7 @@ public class HistoryButtonPanel extends Panel {
 				modalWindow.setContent(historyPanel);
 				target.add(modalWindow);
 				modalWindow.show(target);
+				target.add(historyPanel.getFeedbackPanel());
 				super.onSubmit(target, form);
 			}
 		};
@@ -41,8 +43,4 @@ public class HistoryButtonPanel extends Panel {
 		
 		parentContainer.addOrReplace(this);
 	}
-	
-	public void setObject(Object modelObject) {
-		this.modelObject = modelObject;
-	}	
 }

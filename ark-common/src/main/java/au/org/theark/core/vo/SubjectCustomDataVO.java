@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.study.model.vo;
+package au.org.theark.core.vo;
 
 import java.io.Serializable;
 
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 
 public class SubjectCustomDataVO extends StudyCustomDataVo<SubjectCustomFieldData> implements Serializable {
@@ -27,6 +28,9 @@ public class SubjectCustomDataVO extends StudyCustomDataVo<SubjectCustomFieldDat
 	private static final long	serialVersionUID	= 1L;
 
 	private SubjectCustomFieldData subjectCustomFieldData;
+	
+	private CustomFieldCategory customFieldCategory;
+	
 	
 	public SubjectCustomDataVO() {
 		super();
@@ -40,6 +44,14 @@ public class SubjectCustomDataVO extends StudyCustomDataVo<SubjectCustomFieldDat
 	public void setSubjectCustomFieldData(
 			SubjectCustomFieldData subjectCustomFieldData) {
 		this.subjectCustomFieldData = subjectCustomFieldData;
+	}
+
+	public CustomFieldCategory getCustomFieldCategory() {
+		return customFieldCategory;
+	}
+
+	public void setCustomFieldCategory(CustomFieldCategory customFieldCategory) {
+		this.customFieldCategory = customFieldCategory;
 	}
 
 }

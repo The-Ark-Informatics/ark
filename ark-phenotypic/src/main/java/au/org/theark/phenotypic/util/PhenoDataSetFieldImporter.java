@@ -199,6 +199,7 @@ public class PhenoDataSetFieldImporter implements IPhenoImporter,Serializable {
 					oldField.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					oldField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					oldField.setMissingValue(csvReader.get("MISSING_VALUE"));
+					oldField.setDefaultValue(csvReader.get("DEFAULT_VALUE"));
 					// Try to update the oldField
 					PhenoDataSetFieldVO updateCFVo = new PhenoDataSetFieldVO();
 					updateCFVo.setPhenoDataSetField(oldField);
@@ -223,6 +224,7 @@ public class PhenoDataSetFieldImporter implements IPhenoImporter,Serializable {
 					phenoDataSetField.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					phenoDataSetField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					phenoDataSetField.setMissingValue(csvReader.get("MISSING_VALUE"));
+					phenoDataSetField.setDefaultValue(csvReader.get("DEFAULT_VALUE"));
 					uploadReport.append("Creating new field: ");
 					uploadReport.append("\tFIELD: ");
 					uploadReport.append((stringLineArray[csvReader.getIndex("FIELD_NAME")]));

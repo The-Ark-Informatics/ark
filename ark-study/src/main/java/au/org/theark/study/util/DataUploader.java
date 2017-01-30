@@ -296,18 +296,18 @@ public class DataUploader {
 			int maritalStatusIndex = csvReader.getIndex("MARITAL_STATUS");
 			int statusIndex = csvReader.getIndex("STATUS");
 
-			int addressLine1Index = csvReader.getIndex("BUILDING_NAME");
-			int addressLine2Index = csvReader.getIndex("STREET_ADDRESS");
-			int suburbIndex = csvReader.getIndex("SUBURB");
-			int stateIndex = csvReader.getIndex("STATE");
-			int countryIndex = csvReader.getIndex("COUNTRY");
-			int postCodeIndex = csvReader.getIndex("POST_CODE");
+			int addressLine1Index = csvReader.getIndex("ADDRESS_BUILDING_NAME");
+			int addressLine2Index = csvReader.getIndex("ADDRESS_STREET_ADDRESS");
+			int suburbIndex = csvReader.getIndex("ADDRESS_SUBURB");
+			int stateIndex = csvReader.getIndex("ADDRESS_STATE");
+			int countryIndex = csvReader.getIndex("ADDRESS_COUNTRY");
+			int postCodeIndex = csvReader.getIndex("ADDRESS_POST_CODE");
 			int addressSourceIndex = csvReader.getIndex("ADDRESS_SOURCE");
 			int addressStatusIndex = csvReader.getIndex("ADDRESS_STATUS");
 			int addressTypeIndex = csvReader.getIndex("ADDRESS_TYPE");
 			int addressReceivedIndex = csvReader.getIndex("ADDRESS_DATE_RECEIVED");
 			int addressCommentsIndex = csvReader.getIndex("ADDRESS_COMMENTS");
-			int isPreferredMailingIndex = csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
+			int isPreferredMailingIndex = csvReader.getIndex("ADDRESS_IS_PREFERRED");
 
 			int phoneNumberIndex = csvReader.getIndex("PHONE_NUMBER");
 			int areaCodeIndex = csvReader.getIndex("PHONE_AREA_CODE");
@@ -316,7 +316,7 @@ public class DataUploader {
 			int phoneSourceIndex = csvReader.getIndex("PHONE_SOURCE");
 			int phoneCommentsIndex = csvReader.getIndex("PHONE_COMMENTS");
 			int phoneDateReceivedIndex = csvReader.getIndex("PHONE_DATE_RECEIVED");
-			int phoneSilentIndex = csvReader.getIndex("SILENT");
+			int phoneSilentIndex = csvReader.getIndex("PHONE_SILENT");
 
 			// if(PERSON_CONTACT_METHOD is in headers, use it,
 			// else, if CONTACT_METHOD, us IT, else, just set to -1
@@ -1629,6 +1629,9 @@ public class DataUploader {
 			int consentDateIndex = csvReader.getIndex("CONSENT_DATE");
 			int commentIndex = csvReader.getIndex("COMMENT");
 			int completedDateIndex = csvReader.getIndex("COMPLETED_DATE");
+			int requestedDateIndex = csvReader.getIndex("REQUESTED_DATE");
+			int receivedDateIndex = csvReader.getIndex("RECEIVED_DATE");
+			
 
 			while (csvReader.readRecord()) {
 				++rowCount;
@@ -1663,17 +1666,27 @@ public class DataUploader {
 					if (stringLineArray.length > commentIndex) {
 						existingConsent.setComments(stringLineArray[commentIndex]);
 					}
-
-					if ("Completed".equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())) {
+					if (au.org.theark.core.Constants.STUDY_COMP_STATUS_COMPLETED.equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())) {
 						try {
 							existingConsent.setCompletedDate(simpleDateFormat.parse(stringLineArray[completedDateIndex]));
 						}
 						catch (Exception e) {
 							existingConsent.setCompletedDate(null);
 						}
-					}
-					else {
-						existingConsent.setCompletedDate(null);
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_RECEIVED.equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())){
+						try {
+							existingConsent.setReceivedDate(simpleDateFormat.parse(stringLineArray[receivedDateIndex]));
+						}
+						catch (Exception e) {
+							existingConsent.setReceivedDate(null);
+						}
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_REQUESTED.equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())){
+						try {
+							existingConsent.setRequestedDate(simpleDateFormat.parse(stringLineArray[requestedDateIndex]));
+						}
+						catch (Exception e) {
+							existingConsent.setRequestedDate(null);
+						}
 					}
 					consentFieldsToUpdate.add(existingConsent);
 				}
@@ -1708,12 +1721,26 @@ public class DataUploader {
 						consent.setComments(stringLineArray[commentIndex].trim());
 					}
 
-					if ("Completed".equalsIgnoreCase(consent.getStudyComponentStatus().getName())) {
+					if (au.org.theark.core.Constants.STUDY_COMP_STATUS_COMPLETED.equalsIgnoreCase(consent.getStudyComponentStatus().getName())) {
 						try {
 							consent.setCompletedDate(simpleDateFormat.parse(stringLineArray[completedDateIndex].trim()));
 						}
 						catch (Exception e) {
 							consent.setCompletedDate(null);
+						}
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_RECEIVED.equalsIgnoreCase(consent.getStudyComponentStatus().getName())){
+						try {
+							consent.setReceivedDate(simpleDateFormat.parse(stringLineArray[receivedDateIndex].trim()));
+						}
+						catch (Exception e) {
+							consent.setReceivedDate(null);
+						}
+					}else if(au.org.theark.core.Constants.STUDY_COMP_STATUS_REQUESTED.equalsIgnoreCase(consent.getStudyComponentStatus().getName())){
+						try {
+							consent.setRequestedDate(simpleDateFormat.parse(stringLineArray[requestedDateIndex].trim()));
+						}
+						catch (Exception e) {
+							consent.setRequestedDate(null);
 						}
 					}
 					consentFieldsToInsert.add(consent);

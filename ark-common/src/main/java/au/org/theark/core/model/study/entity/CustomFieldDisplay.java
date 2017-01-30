@@ -88,7 +88,7 @@ public class CustomFieldDisplay implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CUSTOM_FIELD_ID", nullable = false)
 	public CustomField getCustomField() {
 		return customField;

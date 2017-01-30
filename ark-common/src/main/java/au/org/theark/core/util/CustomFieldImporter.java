@@ -231,6 +231,7 @@ public class CustomFieldImporter implements ICustomImporter,Serializable {
 					oldField.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					oldField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					oldField.setMissingValue(csvReader.get("MISSING_VALUE"));
+					oldField.setDefaultValue(csvReader.get("DEFAULT_VALUE"));
 					// Try to update the oldField
 					CustomFieldVO updateCFVo = new CustomFieldVO();
 					updateCFVo.setCustomField(oldField);
@@ -279,6 +280,7 @@ public class CustomFieldImporter implements ICustomImporter,Serializable {
 					customField.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					customField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					customField.setMissingValue(csvReader.get("MISSING_VALUE"));
+					customField.setDefaultValue(csvReader.get("DEFAULT_VALUE"));
 
 					uploadReport.append("Creating new field: ");
 					uploadReport.append("\tFIELD: ");

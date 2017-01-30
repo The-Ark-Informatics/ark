@@ -696,11 +696,11 @@ public class PhenoDataUploadValidator {
 					Date dateMaxValue = dateFormat.parse(phenoDataSetField.getMaxValue());
 					Date dateFieldValue = dateFormat.parse(valueToValidate);
 
-					if (dateFieldValue.after(dateMaxValue) || dateFieldValue.before(dateMinValue)) {
-						if (dateFieldValue.after(dateMaxValue)) {
+					if (dateMaxValue.before(dateFieldValue) || dateMinValue.after(dateFieldValue)) {
+						if (dateMaxValue.before(dateFieldValue)) {
 							errorMessages.add(valueToValidate + " is greater than the maximum allowed value of " + dateMaxValue);
 						}
-						if (dateFieldValue.before(dateMinValue)) {
+						if (dateMinValue.after(dateFieldValue)) {
 							errorMessages.add(valueToValidate + " is less than the minimum allowed value of " + dateMinValue);
 						}
 						isInValidRange = false;

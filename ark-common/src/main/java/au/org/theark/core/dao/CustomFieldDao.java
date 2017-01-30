@@ -440,7 +440,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 				}
 	}
 	
-	public static boolean isInEncodedValues(CustomField customField, String value) {
+	public boolean isInEncodedValues(CustomField customField, String value) {
 		if(customField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(customField.getMissingValue().trim())) {
 			return true;
 		}
