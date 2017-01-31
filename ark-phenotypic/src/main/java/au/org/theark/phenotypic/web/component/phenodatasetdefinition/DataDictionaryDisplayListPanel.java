@@ -101,13 +101,13 @@ public class DataDictionaryDisplayListPanel extends Panel {
 					item.add(new Label("sequence", ""));
 				}
 				
-				if (cfd.getRequired() != null && cfd.getRequired()) {
+				if (cfd.getPhenoDataSetField().getRequired() != null && cfd.getPhenoDataSetField().getRequired()) {
 					item.addOrReplace(new ContextImage("required", new Model<String>("images/icons/tick.png")));
 				}
 				else {
 					item.addOrReplace(new ContextImage("required", new Model<String>("images/icons/cross.png")));
 				}
-				if(cfd.getAllowMultiselect() != null && cfd.getAllowMultiselect()){
+				if(cfd.getPhenoDataSetField().getAllowMultiselect() != null && cfd.getPhenoDataSetField().getAllowMultiselect()){
 					item.addOrReplace(new ContextImage("allowMultiselect", new Model<String>("images/icons/tick.png")));
 				}
 				else{

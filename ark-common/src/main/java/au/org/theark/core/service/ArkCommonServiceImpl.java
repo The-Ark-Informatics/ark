@@ -879,7 +879,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
 				String fieldName = customFieldVO.getCustomField().getName();
 				try{
-					/*if (customFieldVO.isUseCustomFieldDisplay()) {
+					if (customFieldVO.isUseCustomFieldDisplay()) {
 						customFieldDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
 						// History for Custom Field Display
 						AuditHistory ah = new AuditHistory();
@@ -888,7 +888,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 						ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
 						ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 						createAuditHistory(ah);
-					}*/
+					}
 					customFieldDao.deleteCustomField(customFieldVO.getCustomField());
 					// History for Custom Field
 					AuditHistory ah = new AuditHistory();

@@ -127,12 +127,12 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.PHENODATASET_MISSING_VALUE, ""));
 				}
-				if (field.getRequired() != null && field.getRequired()==true) {
+				/*if (field.getRequired() != null && field.getRequired()==true) {
 					item.add(new ContextImage(Constants.PHENODATASET_REQUIRED, new Model<String>("images/icons/tick.png")));
 				}
 				else {
 					item.add(new ContextImage(Constants.PHENODATASET_REQUIRED, new Model<String>("images/icons/cross.png")));
-				}
+				}*/
 				
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
@@ -190,7 +190,7 @@ public class SearchResultListPanel extends Panel {
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("maxValue"), "maxValue"));
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("missingValue"), "missingValue"));
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("defaultValue"), "defaultValue"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("required"), "required"));
+		//columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("required"), "required"));
 
 		DataTable table = new DataTable("datatable", columns, phenoDataSetFieldDataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
 		List<String> headers = new ArrayList<String>(0);
@@ -204,7 +204,7 @@ public class SearchResultListPanel extends Panel {
 		headers.add("MAXIMUM_VALUE");
 		headers.add("MISSING_VALUE");
 		headers.add("DEFAULT_VALUE");
-		headers.add("REQUIRED");
+		//headers.add("REQUIRED");
 	
 		String filename = "pheno_dataset_dictionary";
 		RepeatingView toolbars = new RepeatingView("toolbars");

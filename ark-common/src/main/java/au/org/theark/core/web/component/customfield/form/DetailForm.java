@@ -211,9 +211,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				target.add(missingValueEntryWMC);
 				target.add(defaultValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
-				if(panelCustomUnitTypeDropDown.isVisible())target.add(fieldUnitTypeDdc);
+				if(panelCustomUnitTypeDropDown.isVisible())
+					target.add(fieldUnitTypeDdc);
 				//Add field unite type as text
-				if(panelCustomUnitTypeText.isVisible())target.add(fieldUnitTypeTxtFld);
+				if(panelCustomUnitTypeText.isVisible())
+					target.add(fieldUnitTypeTxtFld);
 				target.add(fieldAllowMultiselectChkBox);
 			}
 		});

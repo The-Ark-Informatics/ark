@@ -339,7 +339,7 @@ public class AuditModalPanel extends Panel implements Serializable {
 						UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
 						revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
 						} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
-							this.error("Audit information can not be displayed in some records. Please contact the administrator to get more details.");
+							this.error("Audit information can not be displayed in some records.");
 							setFeedbackPanel(feedbackPanel);
 						}
 					}

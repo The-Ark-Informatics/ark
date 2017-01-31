@@ -203,7 +203,7 @@ public class PhenoDataSetFieldImporter implements IPhenoImporter,Serializable {
 					// Try to update the oldField
 					PhenoDataSetFieldVO updateCFVo = new PhenoDataSetFieldVO();
 					updateCFVo.setPhenoDataSetField(oldField);
-					updateCFVo.getPhenoDataSetField().setRequired(csvReader.get("REQUIRED") != null);
+					//updateCFVo.getPhenoDataSetField().setRequired(csvReader.get("REQUIRED") != null);
 					iPhenotypicService.updatePhenoDataSetField(updateCFVo);
 					updateCount++;
 					PhenoFieldUpload phenoFieldUpload=new PhenoFieldUpload();
@@ -229,20 +229,20 @@ public class PhenoDataSetFieldImporter implements IPhenoImporter,Serializable {
 					uploadReport.append("\tFIELD: ");
 					uploadReport.append((stringLineArray[csvReader.getIndex("FIELD_NAME")]));
 					uploadReport.append("\n");
-					// Try to create the field
-					PhenoDataSetFieldVO phenoDataSetFieldVO=new PhenoDataSetFieldVO();
-					phenoDataSetFieldVO.setPhenoDataSetField(phenoDataSetField);
-					/*phenoDataSetFieldVO.setUsePhenoDataSetFieldDisplay(true);	// do not create the CustomFieldDisplay entity
-					phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setRequired(csvReader.get("REQUIRED") != null && 
+					phenoDataSetField.setRequired(csvReader.get("REQUIRED") != null && 
 							(	csvReader.get("REQUIRED").equalsIgnoreCase("yes") ||
 								csvReader.get("REQUIRED").equalsIgnoreCase("y") ||
 								csvReader.get("REQUIRED").equalsIgnoreCase("true") ||
 								csvReader.get("REQUIRED").equalsIgnoreCase("1") ) );
-					phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setAllowMultiselect(csvReader.get("ALLOW_MULTIPLE_SELECTIONS") != null && 
+					phenoDataSetField.setAllowMultiselect(csvReader.get("ALLOW_MULTIPLE_SELECTIONS") != null && 
 							(	csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("yes") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("y") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("true") ||
-								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("1") ) );*/
+								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("1") ) );
+					// Try to create the field
+					PhenoDataSetFieldVO phenoDataSetFieldVO=new PhenoDataSetFieldVO();
+					phenoDataSetFieldVO.setPhenoDataSetField(phenoDataSetField);
+					//phenoDataSetFieldVO.setUsePhenoDataSetFieldDisplay(true);	// do not create the CustomFieldDisplay entity */
 					iPhenotypicService.createPhenoDataSetField(phenoDataSetFieldVO);
 					insertCount++;
 					PhenoFieldUpload phenoFieldUpload=new PhenoFieldUpload();

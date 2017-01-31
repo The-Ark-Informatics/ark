@@ -512,7 +512,7 @@ public class PhenoDataUploadValidator {
 								else
 								{
 									//log.info("customField = " + customField==null?"null":customField.getName());
-									if(!validateFieldData(phenoDataSetField, theDataAsString, subjectUID, dataValidationMessages, pfd.getAllowMultiselect())){
+									if(!validateFieldData(phenoDataSetField, theDataAsString, subjectUID, dataValidationMessages, phenoDataSetField.getAllowMultiselect())){
 										errorCells.add(new ArkGridCell(csvReader.getIndex(pfd.getPhenoDataSetField().getName()), row));
 									}								
 								}

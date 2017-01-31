@@ -2294,9 +2294,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	}
 	
 	public void updatePhenoDataSetDisplay(PhenoDataSetFieldDisplay phenDataSetFieldDisplay) throws  ArkSystemException{
-		if(!phenDataSetFieldDisplay.getRequired()){
-			phenDataSetFieldDisplay.setRequiredMessage(null);
-		}
 		getSession().update(phenDataSetFieldDisplay);
 	}
 	
