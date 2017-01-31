@@ -82,6 +82,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	private DropDownChoice<Study>					studyDdc;
 	private TextField<String>						subjectUIDTxtFld;
+	protected TextField<String>						familyIdTxtFld;
 	private TextField<String>						firstNameTxtFld;
 	private TextField<String>						middleNameTxtFld;
 	private TextField<String>						lastNameTxtFld;
@@ -121,6 +122,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected void addSearchComponentsToForm() {
 		add(studyDdc);
 		add(subjectUIDTxtFld);
+		add(familyIdTxtFld);
 		add(firstNameTxtFld);
 		add(middleNameTxtFld);
 		add(lastNameTxtFld);
@@ -134,6 +136,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected void initialiseSearchForm() {
 		initStudyDdc();
 		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
+		familyIdTxtFld = new TextField<String>(Constants.FAMILY_ID);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
