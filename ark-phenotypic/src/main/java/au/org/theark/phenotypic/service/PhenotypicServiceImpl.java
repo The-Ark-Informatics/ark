@@ -1189,7 +1189,6 @@ try {
 				// to
 				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
 				PhenoDataSetFieldDisplay phenoDataSetFieldDisplay=phenoDataSetFieldVO.getPhenoDataSetFieldDisplay();
-				phenoDataSetFieldDisplay.setAllowMultiselect(false);
 				phenotypicDao.createPhenoDataSetFieldDisplay(phenoDataSetFieldDisplay);
 				// Put in the sequence based on the ID
 				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetFiledOrderNumber(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());

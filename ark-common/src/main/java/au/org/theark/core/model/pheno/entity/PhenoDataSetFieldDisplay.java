@@ -41,9 +41,9 @@ public class PhenoDataSetFieldDisplay implements Serializable {
 	private Long phenoDataSetCategoryOrderNumber;
 	private PhenoDataSetField phenoDataSetField;
 	private Long phenoDataSetFiledOrderNumber;
-	private Boolean required;
-	private String requiredMessage;
-	private Boolean allowMultiselect = Boolean.FALSE;
+	//private Boolean required;
+	//private String requiredMessage;
+	//private Boolean allowMultiselect = Boolean.FALSE;
 	private Set<PhenoDataSetData> phenoDataSetData = new HashSet<PhenoDataSetData>();
 	protected String descriptiveNameIncludingCFGName;
 
@@ -110,7 +110,7 @@ public class PhenoDataSetFieldDisplay implements Serializable {
 		this.phenoDataSetFiledOrderNumber = phenoDataSetFiledOrderNumber;
 	}
 	
-	@Column(name = "REQUIRED")
+	/*@Column(name = "REQUIRED")
 	public Boolean getRequired() {
 		return required;
 	}
@@ -135,7 +135,7 @@ public class PhenoDataSetFieldDisplay implements Serializable {
 
 	public void setAllowMultiselect(Boolean allowMultiselect) {
 		this.allowMultiselect = allowMultiselect;
-	}
+	}*/
 	//TODO: Remove NotAudited when pheno auditing is done
 	//@NotAudited
 	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetFieldDisplay")customFieldDisplay

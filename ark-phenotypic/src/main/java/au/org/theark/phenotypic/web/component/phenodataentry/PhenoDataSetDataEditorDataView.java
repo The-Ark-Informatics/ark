@@ -93,7 +93,8 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 		Panel dataValueEntryPanel;
 		String fieldTypeName = pf.getFieldType().getName();
 		String encodedValues = pf.getEncodedValues();
-		Boolean requiredField = aCustomData.getPhenoDataSetFieldDisplay().getRequired();
+		//Boolean requiredField = aCustomData.getPhenoDataSetFieldDisplay().getRequired();
+		Boolean requiredField = pf.getRequired();
 		if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
 			if(pf.getDefaultValue() != null && item.getModelObject().getDateDataValue() == null) {
 				try {
@@ -157,7 +158,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 
 				ChoiceRenderer<EncodedValueVO> choiceRenderer = new ChoiceRenderer<EncodedValueVO>("value", "key");
 				
- 				if(pfd.getAllowMultiselect()){
+ 				if(pfd.getPhenoDataSetField().getAllowMultiselect()){
 
  					CheckGroupDataEntryPanel cgdePanel = new CheckGroupDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
 															new Model<String>(labelModel), choiceList, choiceRenderer); 

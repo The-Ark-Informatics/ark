@@ -83,9 +83,10 @@ public class Constants {
 	
 	public static final String		FIELDVO_PHENODATASETDISPLAY_ID							= "phenoDataSetFieldDisplay.id";
 	public static final String		FIELDVO_PHENODATASETDISPLAY_CUSTOM_FIELD				= "phenoDataSetFieldDisplay.phenoDataSetField";
-	public static final String		FIELDVO_PHENODATASETDISPLAY_SEQUENCE					= "phenoDataSetFieldDisplay.sequence";
-	public static final String		FIELDVO_PHENODATASETDISPLAY_REQUIRED					= "phenoDataSetFieldDisplay.required";
-	public static final String		FIELDVO_PHENODATASETDISPLAY_REQUIRED_MSG				= "phenoDataSetFieldDisplay.requiredMessage";
+	//public static final String		FIELDVO_PHENODATASETDISPLAY_SEQUENCE					= "phenoDataSetFieldDisplay.sequence";
+	//public static final String		FIELDVO_PHENODATASETDISPLAY_REQUIRED					= "phenoDataSetFieldDisplay.required";
+	//public static final String		FIELDVO_PHENODATASETDISPLAY_REQUIRED_MSG				= "phenoDataSetFieldDisplay.requiredMessage";
+	//public static final String		FIELDVO_PHENODATASETDISPLAY_ALLOW_MULTIPLE_SELECTION	= "phenoDataSetFieldDisplay.allowMultiselect";
 	public static final String		FIELDVO_PHENODATASETDISPLAY_FIELD_GROUP					= "phenoDataSetFieldDisplay.phenoDataSetFieldGroup";
 	//Add new variables-2015-07-20
 	public static final String      CUSTOM_FIELD_TYPE_NAME									="name";

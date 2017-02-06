@@ -51,6 +51,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.FieldType;
@@ -164,10 +165,10 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		if (getModelObject().getPhenoDataSetField().getId() != null) {
 			PhenoDataSetField cfFromBackend = iPhenotypicService.getPhenoDataSetField(getModelObject().getPhenoDataSetField().getId());
 			getModelObject().setPhenoDataSetField(cfFromBackend);
-
-			/*PhenoDataSetFieldDisplay pdsdFromBackend;
-			pdsdFromBackend = iPhenotypicService.getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(getModelObject().getPhenoDataSetField(),null);
-			getModelObject().setPhenoDataSetFieldDisplay(pdsdFromBackend);*/
+			
+			//PhenoDataSetFieldDisplay pdsdFromBackend;
+			//pdsdFromBackend = iPhenotypicService.getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(getModelObject().getPhenoDataSetField(),null);
+			//getModelObject().setPhenoDataSetFieldDisplay(getModelObject().getPhenoDataSetFieldDisplay());
 		}
 		/*if (getModelObject().isUsePhenoDataSetFieldDisplay() == true) {
 			// Ensure the phenoDataSetFieldDisplay.require is never NULL
@@ -383,11 +384,12 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		/*if (getModelObject().isUsePhenoDataSetFieldDisplay()) {
 			// TODO: Have not implemented position support right now
 			phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
-		}*/
-	//	else {
+		}
+		else {
 			phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
-		//}
-		
+		}
+		*/
+		phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
 		// Initialise Drop Down Choices
 		initFieldTypeDdc();
 		initUnitTypeDdc();
