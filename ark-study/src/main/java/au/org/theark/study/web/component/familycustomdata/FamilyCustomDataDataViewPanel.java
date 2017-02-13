@@ -74,7 +74,7 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 				public Iterator<FamilyCustomFieldData> iterator(int first, int count) {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-					String familyUId=criteriaModel.getObject().getFamilyUId();
+//					String familyUId=criteriaModel.getObject().getFamilyUId();
 					CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.FAMILY);
 					List<FamilyCustomFieldData> familyCustomDataList = studyService.getFamilyCustomFieldDataList(lss, arkFunction,customFieldCategory,customFieldType, first, count);
 					//List<FamilyCustomFieldData> familyCustomDataList = studyService.getFamilyCustomFieldDataListByCategory(lss.getStudy(), familyId, arkFunction, customFieldCategory, customFieldType, first, count);
@@ -111,9 +111,12 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 				FamilyCustomFieldData subjectCustomData = item.getModelObject();
 				// Ensure we tie Subject in context to the item if that link
 				// isn't there already
+				
 				if (subjectCustomData.getFamilyUid() == null) {
-					subjectCustomData.setFamilyUid(cpModel.getObject().getFamilyUId());
+					subjectCustomData.setFamilyUid(cpModel.getObject().getLinkSubjectStudy().getFamilyId());
 				}
+
+				
 				if(subjectCustomData.getStudy() == null){
 					subjectCustomData.setStudy(cpModel.getObject().getLinkSubjectStudy().getStudy());
 				}
