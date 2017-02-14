@@ -16,10 +16,11 @@ public interface IArkSettingDao {
 
     public Setting getSetting(String key, Study study, ArkUser arkUser);
 
-    public void save(Object object);
+    public void saveSetting(Setting setting);
 
     public int getSettingsCount(Setting setting);
 
     public List<Setting> searchPageableSettings(Setting setting, int first, int count);
-    
+
+    public Setting getUserSpecificSetting(ArkUser arkUser, String propertyName);
 }

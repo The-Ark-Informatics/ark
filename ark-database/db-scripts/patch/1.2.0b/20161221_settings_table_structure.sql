@@ -1,4 +1,4 @@
-CREATE TABLE `settings` (
+CREATE TABLE `config`.`settings` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL DEFAULT '',
   `highest_type` varchar(255) NOT NULL DEFAULT '',

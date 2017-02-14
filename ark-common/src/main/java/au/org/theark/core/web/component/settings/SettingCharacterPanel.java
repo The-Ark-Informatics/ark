@@ -1,4 +1,4 @@
-package au.org.theark.admin.web.component.settings;
+package au.org.theark.core.web.component.settings;
 
 import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.web.behavior.ArkPlaceholderBehaviour;

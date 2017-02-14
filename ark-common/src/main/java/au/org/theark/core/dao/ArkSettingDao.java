@@ -3,6 +3,7 @@ package au.org.theark.core.dao;
 import au.org.theark.core.model.config.entity.StudySpecificSetting;
 import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.model.config.entity.SystemWideSetting;
+import au.org.theark.core.model.config.entity.UserSpecificSetting;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import org.hibernate.Criteria;
@@ -16,6 +17,13 @@ import java.util.List;
 
 @Repository("settingDao")
 public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao {
+
+    public Setting getSettingByID(Long id) {
+        Criteria criteria = getSession().createCriteria(Setting.class);
+        criteria.add(Restrictions.idEq(id));
+
+        return (Setting) criteria.uniqueResult();
+    }
 
     public SystemWideSetting getSystemWideSetting(String key) {
         Criteria criteria = getSession().createCriteria(SystemWideSetting.class);
@@ -38,6 +46,17 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
     }
 
     @Override
+    public UserSpecificSetting getUserSpecificSetting(ArkUser arkUser, String key) {
+        Criteria criteria = getSession().createCriteria(UserSpecificSetting.class);
+        criteria.add(Restrictions.eq("propertyName", key));
+        criteria.add(Restrictions.eq("arkUser.id", arkUser.getId()));
+
+        UserSpecificSetting userSpecificSetting = (UserSpecificSetting) criteria.uniqueResult();
+
+        return userSpecificSetting;
+    }
+
+    @Override
     public Setting getSetting(String key, Study study, ArkUser arkUser) {
 
         //If both are null then it will definitely be a system wide setting, so don't bother checking the other kinds.
@@ -46,6 +65,10 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
         }
 
         //test UserSpecificSetting when it exists
+        Setting userSpecificSetting = getUserSpecificSetting(arkUser, key);
+        if(userSpecificSetting != null) {
+            return userSpecificSetting;
+        }
 
         Setting studySpecificSetting = getStudySpecificSetting(study, key);
         if(studySpecificSetting != null)
@@ -59,8 +82,17 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
     }
 
     @Override
-    public void save(Object object) {
-        getSession().saveOrUpdate(object);
+    public void saveSetting(Setting setting) {
+        if (setting.getPropertyValue() == null || setting.getPropertyValue().isEmpty()) {
+            if(setting.getId() != null) {
+                Setting fromDB = getSettingByID(setting.getId());
+                if(fromDB != null) {
+                    getSession().delete(fromDB);
+                }
+            }
+        } else {
+            getSession().saveOrUpdate(setting);
+        }
     }
 
     @Override
@@ -110,7 +142,16 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
                         )
                 );*/
                 criteria.add(
-                                Restrictions.eq("highestType", "study")
+                        Restrictions.or(
+                                Restrictions.eq("highestType", "study"),
+                                Restrictions.eq("highestType", "user")
+                        )
+                );
+                criteria.add(Restrictions.eq("class", SystemWideSetting.class));
+            }
+            if(setting.getHighestType().equalsIgnoreCase("user")) {
+                criteria.add(
+                        Restrictions.eq("highestType", "user")
                 );
                 criteria.add(Restrictions.eq("class", SystemWideSetting.class));
             }

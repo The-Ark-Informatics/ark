@@ -23,10 +23,13 @@ import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.settings.form.ContainerForm;
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.IArkSettingDao;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.model.config.entity.StudySpecificSetting;
 import au.org.theark.core.model.config.entity.SystemWideSetting;
+import au.org.theark.core.model.config.entity.UserSpecificSetting;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
@@ -99,11 +102,20 @@ public class SettingsContainerPanel extends AbstractContainerPanel<Setting> {
 			Study study= iArkCommonService.getStudy(studyId);
 			((StudySpecificSetting) cpModel.getObject()).setStudy(study);
 		}
+		if(teir == UserSpecificSetting.class) {
+			cpModel = new CompoundPropertyModel<Setting>(new UserSpecificSetting());
+			cpModel.getObject().setHighestType("user");
+			try {
+				ArkUser arkUser = iArkCommonService.getArkUser(SecurityUtils.getSubject().getPrincipal().toString());
+				((UserSpecificSetting) cpModel.getObject()).setArkUser(arkUser);
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchPanel());
 		containerForm.add(initialiseSearchResults());
-		//if teir == user
 	}
 
 	@Override

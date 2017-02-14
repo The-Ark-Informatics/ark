@@ -40,8 +40,8 @@ public class ArkSettingServiceImpl implements IArkSettingService {
     }
 
     @Override
-    public void save(Object object) {
-        iArkSettingDao.save(object);
+    public void saveSetting(Setting setting) {
+        iArkSettingDao.saveSetting(setting);
     }
 
     @Override
@@ -52,6 +52,11 @@ public class ArkSettingServiceImpl implements IArkSettingService {
     @Override
     public List<Setting> searchPageableSettings(Setting setting, int first, int count) {
         return iArkSettingDao.searchPageableSettings(setting, first, count);
+    }
+
+    @Override
+    public Setting getUserSpecificSetting(ArkUser arkUser, String propertyName) {
+        return iArkSettingDao.getUserSpecificSetting(arkUser, propertyName);
     }
 
 
