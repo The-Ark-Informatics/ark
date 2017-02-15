@@ -104,7 +104,7 @@ public class SearchResultListPanel extends Panel {
 	
 	public PageableListView<DiseaseVO> buildListView(IModel iModel) {
 
-		PageableListView<DiseaseVO> listView = new PageableListView<DiseaseVO>("diseaseList", iModel, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<DiseaseVO> listView = new PageableListView<DiseaseVO>("diseaseList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			@Override
 			protected void populateItem(final ListItem<DiseaseVO> item) {

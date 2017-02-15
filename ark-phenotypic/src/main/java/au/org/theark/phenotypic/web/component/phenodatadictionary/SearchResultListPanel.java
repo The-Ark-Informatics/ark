@@ -192,7 +192,7 @@ public class SearchResultListPanel extends Panel {
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("defaultValue"), "defaultValue"));
 		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("required"), "required"));
 
-		DataTable table = new DataTable("datatable", columns, phenoDataSetFieldDataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		DataTable table = new DataTable("datatable", columns, phenoDataSetFieldDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("FIELD_NAME");
 		headers.add("FIELD_TYPE");

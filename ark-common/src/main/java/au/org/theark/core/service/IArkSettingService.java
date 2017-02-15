@@ -23,4 +23,6 @@ public interface IArkSettingService {
     public List<Setting> searchPageableSettings(Setting setting, int first, int count);
 
     public Setting getUserSpecificSetting(ArkUser arkUser, String propertyName);
+
+
 }

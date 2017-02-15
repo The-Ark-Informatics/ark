@@ -28,8 +28,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
-import au.org.theark.core.model.config.entity.ConfigField;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
@@ -60,7 +58,6 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
@@ -743,14 +740,6 @@ public interface IStudyDao {
 
 	public Collection<PersonLastnameHistory> getPersonLastnameHistory(Person person);
 
-	public void createUserConfigs(List<UserConfig> userConfigList) throws ArkSystemException;
-	
-	public List<ConfigField> getAllConfigFields();
-	
-	public List<UserConfig> getUserConfigs(ArkUser arkUser);
-	
-	public void deleteUserConfig(UserConfig uc);
-	
 	public List<Study> getChildStudiesForStudy(Study study);
 	
 	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload);
@@ -761,10 +750,6 @@ public interface IStudyDao {
 	
 	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List<String>fieldNameCollection,Study study,ArkFunction arkFunction,CustomFieldType customFieldType);
 
-	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField);
-
-	public ConfigField getConfigFieldByName(String configName);
-	
 	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name);
 	
 	public List<Search> getSearchesForSearch(Search search);

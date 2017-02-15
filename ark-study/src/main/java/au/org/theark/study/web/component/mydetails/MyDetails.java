@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
@@ -74,38 +73,6 @@ public class MyDetails extends Panel {
 					arkUser.setChangePassword(true);
 				}
 
-				boolean invalid = false;
-				for(UserConfig config : arkUser.getArkUserConfigs()) {
-					String value = config.getValue();
-					System.out.println("value: " + value);
-					switch(config.getConfigField().getType().getName()) {
-						case "NUMBER":
-							if(!isNumeric(value)) {
-								System.out.println("Field '" + config.getConfigField().getDescription() + "' should be a number");
-								this.error("Field '" + config.getConfigField().getDescription() + "' should be a number");
-								invalid = true;
-							}
-							break;
-						case "CHARACTER":
-							break;
-						case "DATE":
-							if(!isDate(value)) {
-								System.out.println("Field '" + config.getConfigField().getDescription() + "' should be a date (DD/MM/YYYY)");
-								this.error("Field '" + config.getConfigField().getDescription() + "' should be a date (DD/MM/YYYY)");
-								invalid = true;
-							}
-							break;
-						default:
-							break;
-						}
-				}
-				
-				if (invalid) {
-					System.out.println("===== INVALID ======");
-					processFeedback(target, feedBackPanel);
-					return;
-				}
-				
 				try {
 					userService.updateArkUser(arkUser);
 					this.info("Details for user: " + arkUser.getUserName() + " updated");

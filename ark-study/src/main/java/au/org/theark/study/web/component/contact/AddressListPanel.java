@@ -170,7 +170,7 @@ public class AddressListPanel extends Panel {
 
 		addressProvider.setModel(Model.of(containerForm.getModelObject().getAddressVo().getAddress()));
 		dataViewAddress = buildDataView(addressProvider);
-		dataViewAddress.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataViewAddress.setItemsPerPage(iArkCommonService.getRowsPerPage());
 		dataViewAddressSubjectVO = buildDataViewWithSubjectStudyID(addressSubjectProvider);
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("addressNavigator", dataViewAddress);
 		add(pageNavigator);
@@ -186,7 +186,7 @@ public class AddressListPanel extends Panel {
 		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("DateReceived"), "dateReceived"));
 		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("Preferred Mailing Address"), "preferredMailingAddress"));
 
-		DataTable table = new DataTable("datatable", columns, dataViewAddressSubjectVO.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		DataTable table = new DataTable("datatable", columns, dataViewAddressSubjectVO.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("Subject UID:");
 		headers.add("Street Address:");

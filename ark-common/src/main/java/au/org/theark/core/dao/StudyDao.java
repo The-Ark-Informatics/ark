@@ -27,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,20 +35,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import au.org.theark.core.util.OrderByNatural;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
@@ -77,8 +71,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
-import au.org.theark.core.model.config.entity.ConfigField;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
 import au.org.theark.core.model.geno.entity.Pipeline;
@@ -5207,68 +5199,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		c.add(Restrictions.eq("person", person));
 		Collection<PersonLastnameHistory> results = c.list();
 		return results;
-	}
-	
-	public void createUserConfigs(List<UserConfig> userConfigList) throws ArkSystemException {
-		
-		for(UserConfig uc : userConfigList) {
-			getSession().saveOrUpdate(uc);
-		}
-			
-	}
-			
-	public List<ConfigField> getAllConfigFields() {
-		Criteria criteria = getSession().createCriteria(ConfigField.class);
-		final List<ConfigField> configFields = criteria.list();
-		return configFields;
-	}
-	
-	public List<UserConfig> getUserConfigs(ArkUser arkUser) {
-		List<UserConfig> userConfigs = new ArrayList<UserConfig>();
-		Criteria criteria = getSession().createCriteria(UserConfig.class);
-		log.info("arkuser: " + arkUser);
-		log.info("arkuser.id: " + arkUser.getId());
-		if(arkUser != null && arkUser.getId() != null) {
-			criteria.add(Restrictions.eq("arkUser", arkUser));
-			userConfigs = criteria.list();
-			log.info("userconfs.size: " + userConfigs.size());
-		}
-		return userConfigs;
-	}
-	
-	@Override
-	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField) {
-		Criteria criteria = getSession().createCriteria(UserConfig.class);
-		if(arkUser != null && arkUser.getId() != null) {
-			criteria.add(Restrictions.eq("arkUser",  arkUser));
-		}
-		if(configField != null && configField.getId() != null) {
-			criteria.add(Restrictions.eq("configField", configField));
-		}
-		UserConfig userConfig = null;
-		try {
-			userConfig = (UserConfig) criteria.uniqueResult();
-		} catch (HibernateException e) {
-			log.error(e.getMessage());
-			e.printStackTrace();
-			userConfig = new UserConfig();
-			userConfig.setArkUser(arkUser);
-			userConfig.setConfigField(configField);
-//			userConfig.setValue(configField.getDefaultValue());
-		}
-		return userConfig;
-	}	
-	
-	public ConfigField getConfigFieldByName(String configField) {
-		Criteria criteria = getSession().createCriteria(ConfigField.class);
-		criteria.add(Restrictions.eq("name", configField));
-		return (ConfigField) criteria.uniqueResult();
-	}
-		
-	public void deleteUserConfig(UserConfig uc) {
-		if(uc != null) {
-			getSession().delete(uc);
-		}
 	}
 
 	@Override

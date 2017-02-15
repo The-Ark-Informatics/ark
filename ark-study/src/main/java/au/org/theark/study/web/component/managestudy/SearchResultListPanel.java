@@ -96,7 +96,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
 		
-		PageableListView<Study> studyPageableListView = new PageableListView<Study>("studyList", iModel, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<Study> studyPageableListView = new PageableListView<Study>("studyList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

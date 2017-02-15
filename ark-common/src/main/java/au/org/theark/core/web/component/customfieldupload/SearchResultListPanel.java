@@ -88,7 +88,7 @@ public class SearchResultListPanel extends Panel {
 	 * @return the pageableListView of Upload
 	 */
 	public PageableListView<Upload> buildPageableListView(IModel iModel) {
-		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

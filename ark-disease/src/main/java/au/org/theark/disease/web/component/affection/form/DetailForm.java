@@ -291,7 +291,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 		affectionCustomDataVO.setCustomFieldDataList(new ArrayList<AffectionCustomFieldData>(cpModel.getObject().getAffection().getAffectionCustomFieldDataSets()));
 
 		final CompoundPropertyModel<AffectionCustomDataVO> affectionCustomDataModel = new CompoundPropertyModel<AffectionCustomDataVO>(affectionCustomDataVO);
-		dataViewPanel = new AffectionCustomDataDataViewPanel("dataViewPanel", affectionCustomDataModel).initialisePanel(iArkCommonService.getUserConfig(Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue());
+		dataViewPanel = new AffectionCustomDataDataViewPanel("dataViewPanel", affectionCustomDataModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage());
 		customFieldForm = new AbstractCustomDataEditorForm<AffectionCustomDataVO>("customFieldForm", affectionCustomDataModel, feedBackPanel) {
 
 			private static final long	serialVersionUID	= 1L;

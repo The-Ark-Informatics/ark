@@ -101,7 +101,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 		});
 		//dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null);
 		//initialise
-		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customeFieldCategoryDdc.getModelObject());
+		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(),customeFieldCategoryDdc.getModelObject());
 		//dataViewPanel.getDataView().setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue());
 		
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {

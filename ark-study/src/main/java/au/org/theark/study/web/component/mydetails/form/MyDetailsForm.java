@@ -26,12 +26,9 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.model.config.entity.UserSpecificSetting;
 import au.org.theark.core.model.study.entity.*;
-import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkSettingService;
 import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.core.web.component.settings.ArkSettingDataView;
 import au.org.theark.core.web.component.settings.ArkSettingsDataViewPanel;
-import com.gargoylesoftware.htmlunit.javascript.host.arrays.DataView;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -67,10 +64,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -151,11 +146,6 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 				}
 			};
 			initStudyDdc(arkUserVOFromBackend);
-			
-			List<UserConfig> arkUserConfigs = iArkCommonService.getUserConfigs(arkUserVOFromBackend.getArkUserEntity());
-			arkUserVOFromBackend.setArkUserConfigs(arkUserConfigs);
-			getModelObject().setArkUserConfigs(arkUserConfigs);
-
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());

@@ -72,7 +72,7 @@ public class SearchResultListPanel extends Panel {
 
 	public DataView<AffectionVO> buildDataView(final ArkDataProvider<AffectionVO, IArkDiseaseService> diseaseProvider) {
 
-		DataView<AffectionVO> studyCompDataView = new DataView<AffectionVO>("affectionList", diseaseProvider, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		DataView<AffectionVO> studyCompDataView = new DataView<AffectionVO>("affectionList", diseaseProvider, iArkCommonService.getRowsPerPage()) {
 
 			@Override
 			protected void populateItem(final Item<AffectionVO> item) {
@@ -96,7 +96,7 @@ public class SearchResultListPanel extends Panel {
 	
 	public PageableListView<AffectionVO> buildListView(IModel iModel) {
 
-		PageableListView<AffectionVO> listView = new PageableListView<AffectionVO>("affectionList", iModel, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<AffectionVO> listView = new PageableListView<AffectionVO>("affectionList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			@Override
 			protected void populateItem(final ListItem<AffectionVO> item) {

@@ -2,11 +2,14 @@ package au.org.theark.core.service;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.IArkSettingDao;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.model.config.entity.StudySpecificSetting;
 import au.org.theark.core.model.config.entity.SystemWideSetting;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
+import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ import java.util.List;
 public class ArkSettingServiceImpl implements IArkSettingService {
 
     private IArkSettingDao iArkSettingDao;
+
 
     @Autowired
     public void setArkSettingDao(IArkSettingDao iArkSettingDao) {

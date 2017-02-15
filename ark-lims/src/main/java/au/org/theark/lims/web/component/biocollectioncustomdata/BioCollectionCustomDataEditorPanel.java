@@ -59,7 +59,7 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 	
 	public BioCollectionCustomDataEditorPanel initialisePanel() {
 		
-		dataViewPanel = new BioCollectionCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataViewPanel = new BioCollectionCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getRowsPerPage());
 
 		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {

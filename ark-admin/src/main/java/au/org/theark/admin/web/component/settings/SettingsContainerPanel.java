@@ -139,7 +139,7 @@ public class SettingsContainerPanel extends AbstractContainerPanel<Setting> {
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO, teir);
 		initialiseDataView();
 		settingDataView = searchResultsPanel.buildDataView(dataProvider);
-		settingDataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		settingDataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", settingDataView);
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(settingDataView);

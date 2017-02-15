@@ -152,7 +152,7 @@ public class SearchResultListPanel extends Panel {
 		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("parentCategory"), "parentCategory.name"));
 		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("orderNumber"), "orderNumber"));
 
-		DataTable table = new DataTable("datatable", columns, phenoDataSetCategoryDataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		DataTable table = new DataTable("datatable", columns, phenoDataSetCategoryDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("FIELD_NAME");

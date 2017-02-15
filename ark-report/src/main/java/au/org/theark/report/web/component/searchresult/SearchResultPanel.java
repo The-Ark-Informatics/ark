@@ -81,7 +81,7 @@ public class SearchResultPanel extends Panel {
 	 * @return the pageableListView of Upload
 	 */
 	public PageableListView<SearchResult> buildPageableListView(IModel iModel) {
-		PageableListView<SearchResult> sitePageableListView = new PageableListView<SearchResult>(Constants.RESULT_LIST, iModel, iArkCommonService.getUserConfig(Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue()) {
+		PageableListView<SearchResult> sitePageableListView = new PageableListView<SearchResult>(Constants.RESULT_LIST, iModel, iArkCommonService.getCustomFieldsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

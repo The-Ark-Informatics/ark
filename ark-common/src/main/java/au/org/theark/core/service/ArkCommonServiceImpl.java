@@ -48,6 +48,7 @@ import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import au.org.theark.core.model.config.entity.Setting;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -56,6 +57,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,8 +96,6 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.config.entity.ConfigField;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
@@ -204,9 +204,17 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private JavaMailSender javaMailSender;
 	private VelocityEngine velocityEngine;
 	private IGenoDao genoDao;
-	
-	
-	
+	private IArkSettingService iArkSettingService;
+
+	public IArkSettingService getiArkSettingService() {
+		return this.iArkSettingService;
+	}
+
+	@Autowired
+	public void setiArkSettingService(IArkSettingService iArkSettingService) {
+		this.iArkSettingService = iArkSettingService;
+	}
+
 	@Value("${file.attachment.dir}")
 	private String fileAttachmentDir;
 
@@ -1567,44 +1575,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return genoDao.getProcessOutputsForProcess(process);
 	}
 
-	public void createUserConfigs(List userConfigList) throws ArkSystemException {
-		studyDao.createUserConfigs(userConfigList);
-	}
-
-	public List<ConfigField> getAllConfigFields() {
-		return studyDao.getAllConfigFields();
-	}
-
-	public List<UserConfig> getUserConfigs(ArkUser arkUser) {
-		return studyDao.getUserConfigs(arkUser);
-	}
-	
-	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField) {
-		return studyDao.getUserConfig(arkUser, configField);
-	}
-	
-	public UserConfig getUserConfig(String configName) {
-		String currentUser = SecurityUtils.getSubject().getPrincipal().toString();
-		ArkUser arkUser = null;
-		try {
-			arkUser = getArkUser(currentUser);
-			
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		ConfigField configField = studyDao.getConfigFieldByName(configName);
-		
-		UserConfig config = studyDao.getUserConfig(arkUser, configField);
-		
-		return config;
-	}
-	
-	public void deleteUserConfig(UserConfig uc) {
-		studyDao.deleteUserConfig(uc);
-	}
-
 	public List<CustomField> getCustomFieldsNotInList(List customFieldsFromData, ArkFunction function, Study study) {
 		return customFieldDao.getCustomFieldsNotInList(customFieldsFromData, function, study);
 	}
@@ -2181,6 +2151,39 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), upload.getStudy());
 			studyDao.deleteUpload(upload);
 	}
-	
-	
+
+	//----------------- Custom getters/setters for special settings go here -----------------//
+
+	private ArkUser getCurrentArkUser() {
+		ArkUser arkUser = null;
+		String sessionUserName = SecurityUtils.getSubject().getPrincipal().toString();
+		try {
+			arkUser = getArkUser(sessionUserName);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		return arkUser;
+	}
+	private Study getCurrentStudy() {
+		Study currentStudy = null;
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if(sessionStudyId != null) {
+			currentStudy = getStudy(sessionStudyId);
+		}
+		return currentStudy;
+	}
+
+	public int getRowsPerPage() {
+		ArkUser arkUser = getCurrentArkUser();
+		Study currentStudy = getCurrentStudy();
+		return iArkSettingService.getSetting("ROWS_PER_PAGE", currentStudy, arkUser).getIntValue();
+	}
+
+	public int getCustomFieldsPerPage() {
+		ArkUser arkUser = getCurrentArkUser();
+		Study currentStudy = getCurrentStudy();
+		return iArkSettingService.getSetting("CUSTOM_FIELDS_PER_PAGE", currentStudy, arkUser).getIntValue();
+	}
+
 }

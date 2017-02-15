@@ -122,7 +122,7 @@ public class PhenoDataUploadStep2 extends AbstractWizardStepPanel {
 				}
 	
 				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
-						fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType());
+						fileUpload, iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType());
 				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 				//WebMarkupContainer wizardDataGridKeyContainer = new WebMarkupContainer("wizardDataGridKeyContainer");
 				//wizardDataGridKeyContainer.setVisible(false);

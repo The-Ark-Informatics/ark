@@ -44,8 +44,6 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.config.entity.ConfigField;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
@@ -925,18 +923,6 @@ public interface IArkCommonService<T> {
 
 	public List<ProcessOutput> getProcessOutputsForProcess(Process process);
 
-	public List<ConfigField> getAllConfigFields();
-
-	public List<UserConfig> getUserConfigs(ArkUser arkUser);
-
-	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField);
-	
-	public UserConfig getUserConfig(String configName);
-	
-	public void createUserConfigs(List userConfigList) throws ArkSystemException;
-
-	public void deleteUserConfig(UserConfig userConfig);
-
 	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction function, Study study);
 
 	/**
@@ -1308,4 +1294,7 @@ public interface IArkCommonService<T> {
 	
 	public void deleteUpload(final Upload upload);
 
-	}
+	//----------------- Custom getters/setters for special settings go here -----------------//
+	public int getRowsPerPage();
+	public int getCustomFieldsPerPage();
+}
