@@ -171,7 +171,7 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
     private boolean validateInput(Panel finalValuePanel) {
         switch(finalValuePanel.getClass().getSimpleName()) {
             case "SettingNumberPanel":
-                return StringUtils.isNumeric(((TextField) finalValuePanel.get("propertyValue")).getValue());
+                return StringUtils.isNumeric(((TextField) finalValuePanel.get("propertyValue")).getValue()) || ((TextField) finalValuePanel.get("propertyValue")).getValue().isEmpty();
             case "SettingCharacterPanel":
                 return true;
             default:
