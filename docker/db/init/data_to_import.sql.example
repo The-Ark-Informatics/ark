@@ -14504,3 +14504,24 @@ END
 ;;
 DELIMITER ;
 
+
+CREATE TABLE `config`.`settings` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) NOT NULL DEFAULT '',
+  `highest_type` varchar(255) NOT NULL DEFAULT '',
+  `propertyType` varchar(255) NOT NULL,
+  `property_name` text NOT NULL,
+  `property_value` text NOT NULL,
+  `study_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+ALTER TABLE `config`.`settings` ADD `user_id` INT(11)  NULL  DEFAULT NULL  AFTER `study_id`;
+ALTER TABLE `config`.`aud_settings` ADD `user_id` INT(11)  NULL  DEFAULT NULL  AFTER `study_id`;
+
+INSERT INTO config.settings (`type`, `highest_type`, `propertyType`, `property_name`, `property_value`)
+SELECT DISTINCT 'system', 'user', `TYPE`, `NAME`, `DEFAULT_VALUE` from config.config_fields;
+
+INSERT INTO config.settings (`type`, `highest_type`, `propertyType`, `property_name`, `property_value`, `user_id`)
+SELECT DISTINCT 'user', 'user', config_fields.type, config_fields.name, user_config.value, user_config.user_id from user_config inner join config_fields on user_config.field_id = config_fields.id;
