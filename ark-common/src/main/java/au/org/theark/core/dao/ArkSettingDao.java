@@ -64,15 +64,20 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
             return getSystemWideSetting(key);
         }
 
-        //test UserSpecificSetting when it exists
-        Setting userSpecificSetting = getUserSpecificSetting(arkUser, key);
-        if(userSpecificSetting != null) {
-            return userSpecificSetting;
+        if(arkUser != null) {
+            //test UserSpecificSetting when it exists
+            Setting userSpecificSetting = getUserSpecificSetting(arkUser, key);
+            if (userSpecificSetting != null) {
+                return userSpecificSetting;
+            }
         }
 
-        Setting studySpecificSetting = getStudySpecificSetting(study, key);
-        if(studySpecificSetting != null)
-            return studySpecificSetting;
+        if(study != null) {
+            Setting studySpecificSetting = getStudySpecificSetting(study, key);
+            if (studySpecificSetting != null) {
+                return studySpecificSetting;
+            }
+        }
 
         Setting setting = getSystemWideSetting(key);
         if(setting != null)
