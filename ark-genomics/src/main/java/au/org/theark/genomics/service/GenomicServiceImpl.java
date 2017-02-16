@@ -891,6 +891,8 @@ public class GenomicServiceImpl implements IGenomicService {
 			e.printStackTrace();
 		} catch (JAXBException e) {
 			e.printStackTrace();
+		} catch (ArkSystemException e) {
+			e.printStackTrace();
 		}
 
 		return status;

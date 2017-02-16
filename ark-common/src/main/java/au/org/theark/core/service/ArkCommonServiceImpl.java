@@ -1581,6 +1581,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 */
 	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) throws ArkSystemException {
 
+
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
 		createArkFileAttachmentDirectoy(directoryName);
 		createFile(directoryName, fileId, payload);
@@ -1605,8 +1606,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType) {
-		String directoryName = getFileAttachmentDir() + File.separator + studyId + File.separator + directoryType + File.separator + subjectUID;
+	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType) throws ArkSystemException {
+		String directoryName = null;
+		try {
+			directoryName = getFileAttachmentDir() + File.separator + studyId + File.separator + directoryType + File.separator + subjectUID;
+		} catch (NullPointerException npe) {
+			log.error("File Attachment Directory not set. Contact your system administrator.");
+			throw new ArkSystemException(npe.getMessage() + " File Attachment Directory not set. Contact your system administrator.");
+		}
 		return directoryName;
 	}
 
@@ -2183,7 +2190,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return iArkSettingService.getSetting("CUSTOM_FIELDS_PER_PAGE", currentStudy, arkUser).getIntValue();
 	}
 
-	public String getFileAttachmentDir() {
+	public String getFileAttachmentDir() throws NullPointerException {
 		return iArkSettingService.getSetting("FILE_ATTACHMENT_DIR", null, null).getPropertyValue();
 	}
 
