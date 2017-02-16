@@ -318,6 +318,8 @@ public class DataUploader {
 			int phoneDateReceivedIndex = csvReader.getIndex("PHONE_DATE_RECEIVED");
 			int phoneSilentIndex = csvReader.getIndex("PHONE_SILENT");
 			int phoneIsPreferredIndex = csvReader.getIndex("PHONE_IS_PREFERRED");
+			int familyIdIndex = csvReader.getIndex("FAMILY_ID");
+
 
 			// if(PERSON_CONTACT_METHOD is in headers, use it,
 			// else, if CONTACT_METHOD, us IT, else, just set to -1
@@ -380,6 +382,10 @@ public class DataUploader {
 						subject.setSubjectUID(subjectUID);// note: this will be overwritten IF study.isautogenerate
 						subject.setStudy(study);
 						person = new Person();
+					}
+					
+					if(familyIdIndex > 0){
+						subject.setFamilyId(stringLineArray[familyIdIndex]);
 					}
 
 					if (firstNameIndex > 0)

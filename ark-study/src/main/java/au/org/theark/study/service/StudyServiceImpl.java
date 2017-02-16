@@ -2347,7 +2347,7 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getFamilyCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, customFieldCategory, customFieldType, first, count);
 	}
 	public String getSubjectFamilyId(Long studyId, String subjectUID){
-		return iStudyDao.getSubjectFamilyUId(studyId, subjectUID);
+		return iStudyDao.getSubjectFamilyId(studyId, subjectUID);
 	}
 
 	@Override

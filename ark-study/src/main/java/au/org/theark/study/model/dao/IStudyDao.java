@@ -496,7 +496,7 @@ public interface IStudyDao {
 	
 	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 
-	public String getSubjectFamilyUId(Long studyId, String subjectUID);
+	public String getSubjectFamilyId(Long studyId, String subjectUID);
 	
 	public void setPreferredPhoneNumberToFalse(Person person);
 	
