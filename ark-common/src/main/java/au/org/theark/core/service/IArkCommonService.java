@@ -953,7 +953,7 @@ public interface IArkCommonService<T> {
 	 * @param directoryType
 	 * @return
 	 */
-	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType);
+	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType) throws ArkSystemException;
 
 	/**
 	 * Generate a unique file id per attachment
