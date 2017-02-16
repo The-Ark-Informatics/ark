@@ -58,7 +58,7 @@ import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.CharactorDefaultMissingAndEncodedValueValidator;
+import au.org.theark.core.util.CharacterDefaultMissingAndEncodedValueValidator;
 import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.util.DefaultMissingValueDateRangeValidator;
 import au.org.theark.core.util.DefaultMissingValueDoubleRangeValidator;
@@ -282,7 +282,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				
 				TextField<?> missing= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
 				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
-				this.add(new CharactorDefaultMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing,defaultVal, "Encoded Values","Missing Value","Default Value"));
+				this.add(new CharacterDefaultMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing,defaultVal, "Encoded Values","Missing Value","Default Value"));
 				
 			}
 			// Not supporting min and max value for CHARACTER fieldTypes
@@ -427,7 +427,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		initMinMaxValuePnls();
 		
 		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
-		//historyCustomPhenoFieldButtonPanel = new HistoryCustomPhenoFieldButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		
 		
 	}
 	

@@ -317,6 +317,7 @@ public class DataUploader {
 			int phoneCommentsIndex = csvReader.getIndex("PHONE_COMMENTS");
 			int phoneDateReceivedIndex = csvReader.getIndex("PHONE_DATE_RECEIVED");
 			int phoneSilentIndex = csvReader.getIndex("PHONE_SILENT");
+			int phoneIsPreferredIndex = csvReader.getIndex("PHONE_IS_PREFERRED");
 
 			// if(PERSON_CONTACT_METHOD is in headers, use it,
 			// else, if CONTACT_METHOD, us IT, else, just set to -1
@@ -875,7 +876,9 @@ public class DataUploader {
 							String areaCode = stringLineArray[areaCodeIndex];
 							String silentString = stringLineArray[phoneSilentIndex];
 							String phoneSource = stringLineArray[phoneSourceIndex];
+							String phoneIsPreferred=stringLineArray[phoneIsPreferredIndex];
 							String phoneDateReceivedString = stringLineArray[phoneDateReceivedIndex];
+							
 							// log.warn("phone Date Reveived = " + phoneDateReceivedString + " for index = " + phoneDateReceivedIndex);
 
 							phoneToAttachToPerson.setPhoneType(type);
@@ -899,6 +902,15 @@ public class DataUploader {
 									phoneToAttachToPerson.setSilentMode(no);
 								}
 							}
+							if (DataConversionAndManipulationHelper.isSomethingLikeABoolean(phoneIsPreferred)) {
+								if (DataConversionAndManipulationHelper.isSomethingLikeTrue(phoneIsPreferred)) {
+									phoneToAttachToPerson.setPreferredPhoneNumber(true);
+								}
+								else {
+									phoneToAttachToPerson.setPreferredPhoneNumber(false);
+								}
+							}
+							
 							if (phoneComments != null && !phoneComments.isEmpty())
 								phoneToAttachToPerson.setComment(phoneComments);
 							if (phoneSource != null && !phoneSource.isEmpty())

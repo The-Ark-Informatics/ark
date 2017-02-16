@@ -33,6 +33,7 @@ import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 
@@ -76,6 +77,8 @@ public class LimsVO implements Serializable {
 	private List<Study>			selectedStudies;
 	private DefaultTreeModel 			treeModel;
 	protected AbstractTree<Biospecimen> tree;
+	
+	protected CustomFieldCategory customFieldCategory;
 
 	/**
 	 * @return the serialversionuid
@@ -104,6 +107,7 @@ public class LimsVO implements Serializable {
 		this.biospecimenLocationVO = new BiospecimenLocationVO();
 		this.batchBiospecimenList = new ArrayList<BatchBiospecimenVO>(0);
 		this.selectedStudies = new ArrayList<Study>(0);
+		this.customFieldCategory=new CustomFieldCategory();
 	}
 
 	/**
@@ -411,4 +415,13 @@ public class LimsVO implements Serializable {
 	public void setTree(AbstractTree<Biospecimen> tree) {
 		this.tree = tree;
 	}
+
+	public CustomFieldCategory getCustomFieldCategory() {
+		return customFieldCategory;
+	}
+
+	public void setCustomFieldCategory(CustomFieldCategory customFieldCategory) {
+		this.customFieldCategory = customFieldCategory;
+	}
+	
 }

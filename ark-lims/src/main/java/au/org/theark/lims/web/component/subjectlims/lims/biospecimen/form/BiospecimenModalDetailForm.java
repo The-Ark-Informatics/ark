@@ -1172,24 +1172,26 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			for (BioTransaction bioTransaction : bioTransactions) {
 				bioTxID.append(bioTransaction.getId()).append(",");
 			}
-			bioTxID.deleteCharAt(bioTxID.length()-1);
-			String modelTextReplce1=modalText.replaceAll("number", Integer.toString(bioTransactions.size()));
-			String modeltextReplace2=modelTextReplce1.replaceAll("txs", bioTxID.toString());
-			confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modeltextReplace2,"Warning",confirmModal, answer));
-			confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
-				private static final long serialVersionUID = 1L;
-				public void onClose(AjaxRequestTarget target) {
-		            if (answer.isAnswer()) {
-		           	 	iLimsService.deleteBiospecimen(cpModel.getObject());
-		           		getSession().getFeedbackMessages().info(me, "Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
-		               } else {
-		               		EditModeButtonsPanel editModeButtonsPanel=((EditModeButtonsPanel)buttonsPanelWMC.get("buttonsPanel"));
-		               		editModeButtonsPanel.setDeleteButtonEnabled(true);
-		               		target.add(editModeButtonsPanel);
-		              }
-		        target.add(feedbackPanel);
-		     }
-		     });
+			if(bioTxID.length()>0){
+				bioTxID.deleteCharAt(bioTxID.length()-1);
+				String modelTextReplce1=modalText.replaceAll("number", Integer.toString(bioTransactions.size()));
+				String modeltextReplace2=modelTextReplce1.replaceAll("txs", bioTxID.toString());
+				confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modeltextReplace2,"Warning",confirmModal, answer));
+				confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+					private static final long serialVersionUID = 1L;
+					public void onClose(AjaxRequestTarget target) {
+			            if (answer.isAnswer()) {
+			           	 	iLimsService.deleteBiospecimen(cpModel.getObject());
+			           		getSession().getFeedbackMessages().info(me, "Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
+			               } else {
+			               		EditModeButtonsPanel editModeButtonsPanel=((EditModeButtonsPanel)buttonsPanelWMC.get("buttonsPanel"));
+			               		editModeButtonsPanel.setDeleteButtonEnabled(true);
+			               		target.add(editModeButtonsPanel);
+			              }
+			        target.add(feedbackPanel);
+			     }
+			    });
+			}	
 		}
 	}
 

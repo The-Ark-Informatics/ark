@@ -45,10 +45,12 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IAuditService;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.FamilyCustomDataVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.core.vo.SubjectCustomDataVO;
@@ -117,6 +119,8 @@ public class AuditModalPanel extends Panel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Object entity;
+	
+	
 	private WebMarkupContainer masterContainer;	
 	
 	private WebMarkupContainer tableContainer;
@@ -220,46 +224,53 @@ public class AuditModalPanel extends Panel implements Serializable {
 			PhenoDataCollectionVO phenoDataCollectionVO=((PhenoDataCollectionVO)entity);
 			PhenoDataSetCollection phenoDataSetCollection = null;
 			PhenoDataSetCategory phenoDataSetCategory=null;
+			Set<Object> primaryKeyLst= new HashSet<Object>();
 			if(phenoDataCollectionVO.getPhenoDataSetCollection()!=null){
 				 phenoDataSetCollection=phenoDataCollectionVO.getPhenoDataSetCollection();
+				 Set<PhenoDataSetData> phenoDataSetDatas=phenoDataSetCollection.getPhenoDataSetData();
+					for (PhenoDataSetData phenoDataSetData : phenoDataSetDatas) {
+							if(phenoDataSetData.getId()!=null){
+								primaryKeyLst.add(phenoDataSetData.getId());
+							}
+					}
 			}
 			if(phenoDataCollectionVO.getPickedPhenoDataSetCategory()!=null && phenoDataCollectionVO.getPickedPhenoDataSetCategory().getPhenoDataSetCategory()!=null){
 				phenoDataSetCategory=phenoDataCollectionVO.getPickedPhenoDataSetCategory().getPhenoDataSetCategory();
 			}
-				AuditQuery auditQuery = reader.createQuery().forRevisionsOfEntity(PhenoDataSetData.class, true, false)
-						.add(AuditEntity.property("phenoDataSetCollection").eq(phenoDataSetCollection));
-				List<Object> objects= auditQuery.getResultList();
-				//Assigning to a set will automatically remove the duplicates.
-				Set<Object> primaryKeyLst= new HashSet<Object>();
-				for (Object object : objects) {
-					primaryKeyLst.add(((PhenoDataSetData)object).getId());
-				}
-				for (Object pKey : primaryKeyLst) {
-					if(reader.isEntityClassAudited(PhenoDataSetData.class)) {
-						List<Number> revisionNumbers = reader.getRevisions(PhenoDataSetData.class, pKey);
-						for(Number revision : revisionNumbers) {
-							PropertyUtilsBean propertyBean = new PropertyUtilsBean();
-							Object rev =reader.find(PhenoDataSetData.class, pKey, revision);
-							try {
-								Object revProperty = pickDataValue(rev, propertyBean);
-								Object fieldName = propertyBean.getProperty(rev, "phenoDataSetFieldDisplay");
-								PhenoDataSetFieldDisplay phenoDataSetFieldDisplay=(PhenoDataSetFieldDisplay)fieldName;
-								String fieldLabel=((phenoDataSetFieldDisplay.getPhenoDataSetField()!=null && phenoDataSetFieldDisplay.getPhenoDataSetField().getFieldLabel()!=null)?  phenoDataSetFieldDisplay.getPhenoDataSetField().getFieldLabel():phenoDataSetFieldDisplay.getPhenoDataSetField().getName());
-								String unitTypeInText=((phenoDataSetFieldDisplay.getPhenoDataSetField()!=null)?phenoDataSetFieldDisplay.getPhenoDataSetField().getUnitTypeInText():"");;
-								String dataWithUnit= revProperty.toString() +" "+(unitTypeInText!=null?unitTypeInText:"");
-								Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(PhenoDataSetData.class, false, true)
-										.add(AuditEntity.revisionNumber().eq(revision))
-										.add(AuditEntity.id().eq(pKey))
-										.getSingleResult();
-						RevisionType type = (RevisionType) result[2];
-						UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
-						revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((phenoDataSetCategory!=null)?phenoDataSetCategory.getName():"All")+"]"));
-							} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
-								this.error("There are some missing history during the data auditing. Please contact the administrator.");
-								setFeedbackPanel(feedbackPanel);
-							}
+			/*AuditQuery auditQuery = reader.createQuery().forRevisionsOfEntity(PhenoDataSetData.class, true, false)
+					.add(AuditEntity.property("phenoDataSetCollection").eq(phenoDataSetCollection));
+			List<Object> objects= auditQuery.getResultList();
+			//Assigning to a set will automatically remove the duplicates.
+			Set<Object> primaryKeyLst= new HashSet<Object>();
+			for (Object object : objects) {
+				primaryKeyLst.add(((PhenoDataSetData)object).getId());
+			}*/
+			for (Object pKey : primaryKeyLst) {
+				if(reader.isEntityClassAudited(PhenoDataSetData.class)) {
+					List<Number> revisionNumbers = reader.getRevisions(PhenoDataSetData.class, pKey);
+					for(Number revision : revisionNumbers) {
+						PropertyUtilsBean propertyBean = new PropertyUtilsBean();
+						Object rev =reader.find(PhenoDataSetData.class, pKey, revision);
+						try {
+							Object revProperty = pickDataValue(rev, propertyBean);
+							Object fieldName = propertyBean.getProperty(rev, "phenoDataSetFieldDisplay");
+							PhenoDataSetFieldDisplay phenoDataSetFieldDisplay=(PhenoDataSetFieldDisplay)fieldName;
+							String fieldLabel=((phenoDataSetFieldDisplay.getPhenoDataSetField()!=null && phenoDataSetFieldDisplay.getPhenoDataSetField().getFieldLabel()!=null)?  phenoDataSetFieldDisplay.getPhenoDataSetField().getFieldLabel():phenoDataSetFieldDisplay.getPhenoDataSetField().getName());
+							String unitTypeInText=((phenoDataSetFieldDisplay.getPhenoDataSetField()!=null)?phenoDataSetFieldDisplay.getPhenoDataSetField().getUnitTypeInText():"");;
+							String dataWithUnit= revProperty.toString() +" "+(unitTypeInText!=null?unitTypeInText:"");
+							Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(PhenoDataSetData.class, false, true)
+									.add(AuditEntity.revisionNumber().eq(revision))
+									.add(AuditEntity.id().eq(pKey))
+									.getSingleResult();
+					RevisionType type = (RevisionType) result[2];
+					UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+					revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((phenoDataSetCategory!=null)?phenoDataSetCategory.getName():"All")+"]"));
+						} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
+							this.error("There are some missing history during the data auditing. Please contact the administrator.");
+							setFeedbackPanel(feedbackPanel);
 						}
-				}
+					}
+				 }
 			}
 		//Handling the history of PhenoDataSetFiled values.		
 		}else if(entity instanceof PhenoDataSetFieldVO){
@@ -271,7 +282,8 @@ public class AuditModalPanel extends Panel implements Serializable {
 			Set<Object> primaryKeyLst= new HashSet<Object>();
 			for (Object object : objects) {
 				primaryKeyLst.add(((PhenoDataSetField)object).getId());
-			}for (Object pKey : primaryKeyLst) {
+			}
+			for (Object pKey : primaryKeyLst) {
 				if(reader.isEntityClassAudited(PhenoDataSetField.class)) {
 					List<Number> revisionNumbers = reader.getRevisions(PhenoDataSetField.class, pKey);
 					for(Number revision : revisionNumbers) {
@@ -308,46 +320,91 @@ public class AuditModalPanel extends Panel implements Serializable {
 			}
 		//Handling the History of subject custom field data.	
 		}else if (entity instanceof SubjectCustomDataVO){
-			SubjectCustomDataVO subjectCustomDataVO=((SubjectCustomDataVO)entity);
-			CustomFieldCategory customFieldCategory=subjectCustomDataVO.getCustomFieldCategory();
-			AuditQuery auditQuery = reader.createQuery().forRevisionsOfEntity(SubjectCustomFieldData.class, true, true)
-					.add(AuditEntity.property("linkSubjectStudy").eq(subjectCustomDataVO.getLinkSubjectStudy()));
-			List<Object> objects= auditQuery.getResultList();
-			//Assigning to a set will automatically remove the duplicates.
-			Set<Object> primaryKeyLst= new HashSet<Object>();
-			for (Object object : objects) {
-				primaryKeyLst.add(((SubjectCustomFieldData)object).getId());
-			}
-			for (Object pKey : primaryKeyLst) {
-				if(reader.isEntityClassAudited(SubjectCustomFieldData.class)) {
-					List<Number> revisionNumbers = reader.getRevisions(SubjectCustomFieldData.class, pKey);
-					for(Number revision : revisionNumbers) {
-						PropertyUtilsBean propertyBean = new PropertyUtilsBean(); 
-						Object rev =reader.find(SubjectCustomFieldData.class, pKey, revision);
-						Object revProperty = pickDataValue(rev, propertyBean);
-						try {
-							Object fieldName = propertyBean.getProperty(rev, "customFieldDisplay");
-						CustomFieldDisplay customFieldDisplay=(((CustomFieldDisplay)fieldName));
-						String fieldLabel=((customFieldDisplay.getCustomField()!=null && customFieldDisplay.getCustomField().getFieldLabel()!=null)?  customFieldDisplay.getCustomField().getFieldLabel():customFieldDisplay.getCustomField().getName());
-						String unitTypeInText=((customFieldDisplay.getCustomField()!=null)?customFieldDisplay.getCustomField().getUnitTypeInText():"");;
-						String dataWithUnit= (revProperty!=null)?revProperty.toString():"" +" "+(unitTypeInText!=null?unitTypeInText:"");
-						Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(SubjectCustomFieldData.class, false, true)
-								.add(AuditEntity.revisionNumber().eq(revision))
-								.add(AuditEntity.id().eq(pKey))
-								.getSingleResult();
-						RevisionType type = (RevisionType) result[2];
-						UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
-						revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
-						} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
-							this.error("Audit information can not be displayed in some records.");
-							setFeedbackPanel(feedbackPanel);
+				SubjectCustomDataVO subjectCustomDataVO=((SubjectCustomDataVO)entity);
+				CustomFieldCategory customFieldCategory=subjectCustomDataVO.getCustomFieldCategory();
+				/*AuditQuery auditQuery = reader.createQuery().forRevisionsOfEntity(SubjectCustomFieldData.class, true, true)
+						.add(AuditEntity.property("linkSubjectStudy").eq(subjectCustomDataVO.getLinkSubjectStudy()));
+				List<Object> objects= auditQuery.getResultList();
+				//Assigning to a set will automatically remove the duplicates.
+				Set<Object> primaryKeyLst= new HashSet<Object>();
+				for (Object object : objects) {
+					primaryKeyLst.add(((SubjectCustomFieldData)object).getId());
+				}*/
+				List<SubjectCustomFieldData> subjectCustomFieldDatas =subjectCustomDataVO.getCustomFieldDataList();
+				Set<Object> primaryKeyLst= new HashSet<Object>();
+				for (SubjectCustomFieldData subjectCustomFieldData : subjectCustomFieldDatas) {
+						if(subjectCustomFieldData.getId()!=null){
+							primaryKeyLst.add(subjectCustomFieldData.getId());
 						}
-					}
+				}
+				for (Object pKey : primaryKeyLst) {
+					if(reader.isEntityClassAudited(SubjectCustomFieldData.class)) {
+						List<Number> revisionNumbers = reader.getRevisions(SubjectCustomFieldData.class, pKey);
+						for(Number revision : revisionNumbers) {
+							PropertyUtilsBean propertyBean = new PropertyUtilsBean(); 
+							Object rev =reader.find(SubjectCustomFieldData.class, pKey, revision);
+							Object revProperty = pickDataValue(rev, propertyBean);
+							try {
+								Object fieldName = propertyBean.getProperty(rev, "customFieldDisplay");
+							CustomFieldDisplay customFieldDisplay=(((CustomFieldDisplay)fieldName));
+							String fieldLabel=((customFieldDisplay.getCustomField()!=null && customFieldDisplay.getCustomField().getFieldLabel()!=null)?  customFieldDisplay.getCustomField().getFieldLabel():customFieldDisplay.getCustomField().getName());
+							String unitTypeInText=((customFieldDisplay.getCustomField()!=null)?customFieldDisplay.getCustomField().getUnitTypeInText():"");;
+							String dataWithUnit= (revProperty!=null)?revProperty.toString():"" +" "+(unitTypeInText!=null?unitTypeInText:"");
+							Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(SubjectCustomFieldData.class, false, true)
+									.add(AuditEntity.revisionNumber().eq(revision))
+									.add(AuditEntity.id().eq(pKey))
+									.getSingleResult();
+							RevisionType type = (RevisionType) result[2];
+							UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+							revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
+							} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
+								this.error("Audit information can not be displayed in some records.");
+								setFeedbackPanel(feedbackPanel);
+							}
+						}
+				}
+			}
+		//Do it for rest to capture category wise custom field data.
+		//2017-02-03		
+		}else if(entity instanceof FamilyCustomDataVO){
+				FamilyCustomDataVO familyCustomDataVO=((FamilyCustomDataVO)entity);
+				CustomFieldCategory customFieldCategory=familyCustomDataVO.getCustomFieldCategory();
+				List<FamilyCustomFieldData> familyCustfieldDatalst =familyCustomDataVO.getCustomFieldDataList();
+				Set<Object> primaryKeyLst= new HashSet<Object>();
+				for (FamilyCustomFieldData familyCustomFieldData : familyCustfieldDatalst) {
+						if(familyCustomFieldData.getId()!=null){
+							primaryKeyLst.add(familyCustomFieldData.getId());
+						}
+				}
+				for (Object pKey : primaryKeyLst) {
+					if(reader.isEntityClassAudited(FamilyCustomFieldData.class)) {
+						List<Number> revisionNumbers = reader.getRevisions(FamilyCustomFieldData.class, pKey);
+						for(Number revision : revisionNumbers) {
+							PropertyUtilsBean propertyBean = new PropertyUtilsBean(); 
+							Object rev =reader.find(FamilyCustomFieldData.class, pKey, revision);
+							Object revProperty = pickDataValue(rev, propertyBean);
+							try {
+								Object fieldName = propertyBean.getProperty(rev, "customFieldDisplay");
+								CustomFieldDisplay customFieldDisplay=(((CustomFieldDisplay)fieldName));
+									String fieldLabel=((customFieldDisplay.getCustomField()!=null && customFieldDisplay.getCustomField().getFieldLabel()!=null)?  customFieldDisplay.getCustomField().getFieldLabel():customFieldDisplay.getCustomField().getName());
+									String unitTypeInText=((customFieldDisplay.getCustomField()!=null)?customFieldDisplay.getCustomField().getUnitTypeInText():"");;
+									String dataWithUnit= (revProperty!=null)?revProperty.toString():"" +" "+(unitTypeInText!=null?unitTypeInText:"");
+									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(FamilyCustomFieldData.class, false, true)
+											.add(AuditEntity.revisionNumber().eq(revision))
+											.add(AuditEntity.id().eq(pKey))
+											.getSingleResult();
+									RevisionType type = (RevisionType) result[2];
+									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+									revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
+							} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
+								this.error("Audit information can not be displayed in some records.");
+								setFeedbackPanel(feedbackPanel);
+							}
+						}
+				}
 			}
 		}
-			
-			
-		}
+		
 		Collections.sort(revisionEntities, new Comparator<AuditRow>() {
 			@Override
 			public int compare(AuditRow o1, AuditRow o2) {
@@ -479,5 +536,4 @@ public class AuditModalPanel extends Panel implements Serializable {
 	public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
 		this.feedbackPanel = feedbackPanel;
 	}
-	
 }

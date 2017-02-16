@@ -96,7 +96,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 		//Boolean requiredField = aCustomData.getPhenoDataSetFieldDisplay().getRequired();
 		Boolean requiredField = pf.getRequired();
 		if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
-			if(pf.getDefaultValue() != null && item.getModelObject().getDateDataValue() == null) {
+			if(pf.getDefaultValue() != null && item.getModelObject().getDateDataValue() == null && !pf.getDefaultValue().trim().isEmpty()) {
 				try {
 					item.getModelObject().setDateDataValue(new SimpleDateFormat(Constants.DD_MM_YYYY).parse(pf.getDefaultValue()));
 				} catch (ParseException e) {

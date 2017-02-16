@@ -1,32 +1,57 @@
 <wicket:panel>
-	<div class="detailPanelBreaker">
+	<div class="detailsPanelBorder">
 		<div class="customFieldDataPanel">
 			<form wicket:id="customDataEditorForm">
-				<div class="detailsPanelBorder">
-					<div class="detailPanelBreaker">
-						<div wicket:id="dataViewWMC">
-							<div wicket:id="dataViewPanel">
-							</div>
-						</div>
-						<div wicket:id="buttonsPanelWMC">
-							<div wicket:id="buttonsPanel">
-							</div>
-						</div>
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+						&nbsp;
+				</div>
+				<div class="fldLabel">
+					<wicket:message key="biospecimenCustomFieldCategory">
+					Biospecimen Custom Field Category:
+					</wicket:message>
+				</div>
+				<div class="fldControl">
+					<select wicket:id="bioCollectionCustomFieldData.customFieldDisplay.customField.customFieldCategory">
+						<option>
+							Cat1
+						</option>
+						<option>
+							Cat2
+						</option>
+					</select>
+				</div>
+				<div wicket:id="dataViewWMC">
+					<div wicket:id="dataViewPanel" class="detailPanel">
+						[viewPanel]
+					</div>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div wicket:id="buttonsPanelWMC">
+					<div wicket:id="buttonsPanel">
+						[buttonsPanel]
 					</div>
 				</div>
 			</form>
-			<div class="detailPanel">
-				<span wicket:id="navigator" class="a">
+
+			<span wicket:id="navigator" class="a">
+			</span>
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+			<div class="centreLabel">
+				<span wicket:id="warnSaveLabel">
+					[Please "Save"!]
 				</span>
-				<div class="detailPanelBreaker">
-				</div>
-				<div class="centreLabel">
-					<label for="warnSaveLabel">
-						<wicket:message key="warnSaveLabel">
-							Please "Save"!
-						</wicket:message>
-					</label>
-				</div>
+			</div>
+			<div class="detailPanelBreaker">
+				&nbsp;
 			</div>
 		</div>
 	</div>

@@ -55,6 +55,8 @@ import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
@@ -424,9 +426,9 @@ public class LimsServiceImpl implements ILimsService {
 		return iBioCollectionDao.getBioCollectionCustomFieldDataCount(criteria, arkFunction);
 	}
 
-	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count) {
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 		List<BioCollectionCustomFieldData> customfieldDataList = new ArrayList<BioCollectionCustomFieldData>();
-		customfieldDataList  = iBioCollectionDao.getBioCollectionCustomFieldDataList(bioCollectionCriteria, arkFunction, first, count);
+		customfieldDataList  = iBioCollectionDao.getBioCollectionCustomFieldDataList(bioCollectionCriteria, arkFunction, customFieldCategory,customFieldType,first, count);
 		return customfieldDataList;
 	}
 	
@@ -896,6 +898,15 @@ public class LimsServiceImpl implements ILimsService {
 
 	public List<BioTransaction> getAllBiotransactionForBiospecimen(Biospecimen biospecimen) {
 		return iBioTransactionDao.getAllBiotransactionForBiospecimen(biospecimen);
+	}
+
+	public void updateBioCollection(BioCollection bioCollection) throws ArkSystemException {
+		iBioCollectionDao.updateBioCollection(bioCollection);
+		
+	}
+
+	public void deleteBioCollection(BioCollection bioCollection) {
+		iBioCollectionDao.deleteBioCollection(bioCollection);
 	}
 	
 }

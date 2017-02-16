@@ -11,8 +11,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
+import au.org.theark.core.vo.FamilyCustomDataVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.study.model.vo.FamilyCustomDataVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 

@@ -1047,7 +1047,7 @@ public class StudyServiceImpl implements IStudyService {
 		try {
 			InputStream is = new FileInputStream(file);
 
-			log.debug("Importing and reporting Subject file");
+			log.info("Importing and reporting Subject file");
 			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(is, file.length(), fileFormat, delimChar, uidsToUpdate);
 		}
 		catch (IOException ioe) {
@@ -1067,7 +1067,7 @@ public class StudyServiceImpl implements IStudyService {
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 
 		try {
-			log.debug("Validating Subject file format");
+			log.info("Validating Subject file format");
 			InputStream is = new FileInputStream(file);
 			// validationMessages =
 			subjectUploadValidator.validateSubjectMatrixFileFormat(is, file.length(), fileFormat, delimChar);

@@ -136,7 +136,7 @@ public class PhenoDataSetCollection implements Serializable{
 	}
 
 	@NotAudited
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetCollection")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "phenoDataSetCollection")
 	public Set<PhenoDataSetData> getPhenoDataSetData() {
 		return phenoDataSetData;
 	}

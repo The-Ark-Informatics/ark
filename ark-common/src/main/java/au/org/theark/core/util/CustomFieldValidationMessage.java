@@ -367,7 +367,7 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field name ");
 		stringBuffer.append(columnName);
-		stringBuffer.append(" has exceed the maximum charactor length 50.");
+		stringBuffer.append(" has exceed the maximum character length 50.");
 		return (stringBuffer.toString());
 	}
 	public static String invalidFieldDescription(String fieldDescription,String columnName) {
@@ -375,7 +375,7 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field description ");
 		stringBuffer.append(fieldDescription);
-		stringBuffer.append(" has exceed the maximum charactor length 255 for the column.");
+		stringBuffer.append(" has exceed the maximum character length 255 for the column.");
 		stringBuffer.append(columnName);
 		return (stringBuffer.toString());
 	}
@@ -384,7 +384,7 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field question label ");
 		stringBuffer.append(questionLabel);
-		stringBuffer.append(" has exceed the maximum charactor length 255 for the column.");
+		stringBuffer.append(" has exceed the maximum character length 255 for the column.");
 		stringBuffer.append(columnName);
 		return (stringBuffer.toString());
 	}
@@ -393,7 +393,7 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field unitTypeTxt ");
 		stringBuffer.append(fieldUnitTypeTxt);
-		stringBuffer.append(" has exceed the maximum charactor length 50 for the column.");
+		stringBuffer.append(" has exceed the maximum character length 50 for the column.");
 		stringBuffer.append(columnName);
 		return (stringBuffer.toString());
 	}

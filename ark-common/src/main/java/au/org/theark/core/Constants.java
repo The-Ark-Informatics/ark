@@ -123,7 +123,7 @@ public class Constants {
 	public static final String STUDY_DAO = "studyDao";
 
 	public static final String FIELD_TYPE_NUMBER = "Number";
-	public static final String FIELD_TYPE_CHARACTER = "Charactor";
+	public static final String FIELD_TYPE_CHARACTER = "Character";
 	public static final String FIELD_TYPE_DATE = "Date";
 	public static final String FIELD_TYPE_LOOKUP = "LookUp";
 	public static final String DISCRETE_RANGE_TOKEN = ",";
@@ -747,9 +747,11 @@ public class Constants {
 	public static final String	ADDRESS_TYPE					= "addressType";
 	public static final String DELETE_UPLOAD 					= "deleteUpload";
 	
-	public static final String STUDY_COMP_STATUS_COMPLETED = "Completed";
-	public static final String STUDY_COMP_STATUS_RECEIVED = "Received";
-	public static final String STUDY_COMP_STATUS_REQUESTED = "Requested";
+	public static final String STUDY_COMP_STATUS_COMPLETED 		= "Completed";
+	public static final String STUDY_COMP_STATUS_RECEIVED 		= "Received";
+	public static final String STUDY_COMP_STATUS_REQUESTED 		= "Requested";
+	public static final String BIOCOLLECTION 					= "Biocollection";
+	public static final String BIOSPECIMEN 						= "Biospecimen";
 
 			
 }

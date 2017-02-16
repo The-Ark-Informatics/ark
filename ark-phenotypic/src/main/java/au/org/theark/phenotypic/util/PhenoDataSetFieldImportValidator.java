@@ -168,7 +168,10 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
-			csvReader.readHeaders();
+			//csvReader.readHeaders();
+			if(!csvReader.readHeaders()){
+				fileValidationMessages.add("Header reading is not successful.Please check the file format again.");
+			}
 
 			// Set field list (note 2th column to Nth column)
 			// FIELD_NAME FIELD_TYPE DESCRIPTION QUESTION UNITS ENCODED_VALUES MINIMUM_VALUE MAXIMUM_VALUE MISSING_VALUE REQUIRED

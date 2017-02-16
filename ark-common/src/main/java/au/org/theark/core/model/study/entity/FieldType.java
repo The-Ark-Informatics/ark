@@ -58,7 +58,7 @@ public class FieldType implements Serializable {
 
 	@Column(name = "NAME", nullable = false, length = 255, unique = true)
 	public String getName() {
-		return WordUtils.capitalize(name);
+		return name;
 	}
 
 	public void setName(String name) {

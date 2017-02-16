@@ -42,6 +42,8 @@ import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
@@ -259,7 +261,7 @@ public interface ILimsService {
 
 	public long getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction);
 	
-	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count);
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 	
 	/**
 	 * Allows to Save(Insert) or Update  BioCollectionCustomFieldData. If there are BioCollectionCustomFieldData
@@ -385,5 +387,9 @@ public interface ILimsService {
 	public boolean hasBiocllectionGotCustomFieldData(BioCollection bioCollection);
 	
 	public List<BioTransaction> getAllBiotransactionForBiospecimen(Biospecimen biospecimen);
+	
+	public void updateBioCollection(BioCollection bioCollection) throws ArkSystemException;
+	
+	public void deleteBioCollection(BioCollection bioCollection);
 
 }

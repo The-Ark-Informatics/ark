@@ -8,6 +8,7 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
 
+
 public class PhenoDataCollectionVO extends PhenoDataVO<PhenoDataSetData> implements Serializable {
 
 	private static final long	serialVersionUID	= 1L;
@@ -62,6 +63,5 @@ public class PhenoDataCollectionVO extends PhenoDataVO<PhenoDataSetData> impleme
 			PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) {
 		this.phenoDataSetFieldDisplay = phenoDataSetFieldDisplay;
 	}
-
 	
 }

@@ -13,7 +13,7 @@ public class CalendarCustomField implements Serializable {
 	private String name;
 	private Long customFieldCategoryId;
 	private String description;
-	private String fieldType;//Charactor,Number,Date,Look up.
+	private String fieldType;//Character,Number,Date,Look up.
 	private Long studyId;
 	private Long unitTypeId;
 	private String minValue;

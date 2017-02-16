@@ -57,6 +57,7 @@ public class PhenoDataDataViewPanel extends Panel {
 	
 	protected ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetData> scdDataProvider;
 	protected DataView<PhenoDataSetData> dataView;
+	
 
 	public PhenoDataDataViewPanel(String id, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id);
@@ -122,6 +123,7 @@ public class PhenoDataDataViewPanel extends Panel {
 				// Ensure we tie Subject in context to the item if that link isn't there already
 				if (phenoData.getPhenoDataSetCollection() == null) {
 					phenoData.setPhenoDataSetCollection(cpModel.getObject().getPhenoDataSetCollection());
+					
 				}
 				super.populateItem(item);
 			}
@@ -160,4 +162,5 @@ public class PhenoDataDataViewPanel extends Panel {
 			}
 		}
 	}
+	
 }

@@ -200,6 +200,20 @@ public class PhenoDataSetFieldImporter implements IPhenoImporter,Serializable {
 					oldField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					oldField.setMissingValue(csvReader.get("MISSING_VALUE"));
 					oldField.setDefaultValue(csvReader.get("DEFAULT_VALUE"));
+					uploadReport.append("Updating exsisting field: ");
+					uploadReport.append("\tFIELD: ");
+					uploadReport.append((stringLineArray[csvReader.getIndex("FIELD_NAME")]));
+					uploadReport.append("\n");
+					oldField.setRequired(csvReader.get("REQUIRED") != null && 
+							(	csvReader.get("REQUIRED").equalsIgnoreCase("yes") ||
+								csvReader.get("REQUIRED").equalsIgnoreCase("y") ||
+								csvReader.get("REQUIRED").equalsIgnoreCase("true") ||
+								csvReader.get("REQUIRED").equalsIgnoreCase("1") ) );
+					oldField.setAllowMultiselect(csvReader.get("ALLOW_MULTIPLE_SELECTIONS") != null && 
+							(	csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("yes") ||
+								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("y") ||
+								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("true") ||
+								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("1") ) );
 					// Try to update the oldField
 					PhenoDataSetFieldVO updateCFVo = new PhenoDataSetFieldVO();
 					updateCFVo.setPhenoDataSetField(oldField);

@@ -93,7 +93,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 			protected void onUpdate(AjaxRequestTarget target) {
 				
 				customDataEditorForm.getDataViewWMC().remove(dataViewPanel);
-				dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null,customeFieldCategoryDdc.getModelObject());
+				dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customeFieldCategoryDdc.getModelObject());
 				cpModel.getObject().setCustomFieldCategory(customeFieldCategoryDdc.getModelObject());
 				customDataEditorForm.getDataViewWMC().add(dataViewPanel);
 				target.add(dataViewPanel);
