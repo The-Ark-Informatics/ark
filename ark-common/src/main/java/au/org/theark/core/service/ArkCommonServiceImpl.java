@@ -215,9 +215,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		this.iArkSettingService = iArkSettingService;
 	}
 
-	@Value("${file.attachment.dir}")
-	private String fileAttachmentDir;
-
 	public IGenoDao getGenoDao() {
 		return genoDao;
 	}
@@ -1609,7 +1606,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * {@inheritDoc}
 	 */
 	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType) {
-		String directoryName = this.fileAttachmentDir + File.separator + studyId + File.separator + directoryType + File.separator + subjectUID;
+		String directoryName = getFileAttachmentDir() + File.separator + studyId + File.separator + directoryType + File.separator + subjectUID;
 		return directoryName;
 	}
 
@@ -2184,6 +2181,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		ArkUser arkUser = getCurrentArkUser();
 		Study currentStudy = getCurrentStudy();
 		return iArkSettingService.getSetting("CUSTOM_FIELDS_PER_PAGE", currentStudy, arkUser).getIntValue();
+	}
+
+	public String getFileAttachmentDir() {
+		return iArkSettingService.getSetting("FILE_ATTACHMENT_DIR", null, null).getPropertyValue();
 	}
 
 }
