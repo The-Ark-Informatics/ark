@@ -14513,3 +14513,9 @@ SELECT DISTINCT 'system', 'user', `TYPE`, `NAME`, `DEFAULT_VALUE` from config.co
 
 INSERT INTO config.settings (`type`, `highest_type`, `propertyType`, `property_name`, `property_value`, `user_id`)
 SELECT DISTINCT 'user', 'user', config_fields.type, config_fields.name, user_config.value, user_config.user_id from config.user_config inner join config.config_fields on config.user_config.field_id = config.config_fields.id;
+
+INSERT INTO `config`.`settings` (`type`, `highest_type`, `propertyType`, `property_name`, `property_value`, `study_id`, `user_id`)
+VALUES
+	('system', 'system', '0', 'FILE_ATTACHMENT_DIR', '/opt/ark-datastore/', NULL, NULL),
+	('system', 'study', '3', 'BRANDING_IMAGE_RIGHT', '', NULL, NULL),
+	('system', 'study', '3', 'BRANDING_IMAGE_LEFT', '', NULL, NULL);
