@@ -1,16 +1,12 @@
 package au.org.theark.core.dao;
 
-import au.org.theark.core.model.config.entity.StudySpecificSetting;
-import au.org.theark.core.model.config.entity.Setting;
-import au.org.theark.core.model.config.entity.SystemWideSetting;
-import au.org.theark.core.model.config.entity.UserSpecificSetting;
+import au.org.theark.core.model.config.entity.*;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -57,6 +53,37 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
     }
 
     @Override
+    public void createSettingFile(SettingFile sf) {
+        getSession().save(sf);
+    }
+
+    @Override
+    public SettingFile getSettingFileByFileId(String fileId) {
+        Criteria criteria = getSession().createCriteria(SettingFile.class);
+        criteria.add(Restrictions.eq("fileId", fileId));
+
+        SettingFile settingFile = (SettingFile) criteria.uniqueResult();
+
+        return settingFile;
+    }
+
+    @Override
+    public void deleteSettingFile(SettingFile settingFile) {
+       getSession().delete(settingFile);
+    }
+
+    @Override
+    public SettingFile getSettingFileFromSetting(String key, Study study, ArkUser arkUser) {
+        Setting setting = getSetting(key, study, arkUser);
+        if(setting != null && setting.getPropertyType() == PropertyType.FILE) {
+            SettingFile settingFile = getSettingFileByFileId(setting.getPropertyValue());
+            return settingFile;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public Setting getSetting(String key, Study study, ArkUser arkUser) {
 
         //If both are null then it will definitely be a system wide setting, so don't bother checking the other kinds.
@@ -88,16 +115,18 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
 
     @Override
     public void saveSetting(Setting setting) {
-        if (setting.getPropertyValue() == null || setting.getPropertyValue().isEmpty()) {
-            if(setting.getId() != null) {
-                Setting fromDB = getSettingByID(setting.getId());
-                if(fromDB != null) {
-                    getSession().delete(fromDB);
+        if (setting.getClass() != SystemWideSetting.class) {
+            if (setting.getPropertyValue() == null || setting.getPropertyValue().isEmpty()) {
+                if (setting.getId() != null) {
+                    Setting fromDB = getSettingByID(setting.getId());
+                    if (fromDB != null) {
+                        getSession().delete(fromDB);
+                        return;
+                    }
                 }
             }
-        } else {
-            getSession().saveOrUpdate(setting);
         }
+        getSession().saveOrUpdate(setting);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package au.org.theark.core.dao;
 
+import au.org.theark.core.model.config.entity.SettingFile;
 import au.org.theark.core.model.config.entity.StudySpecificSetting;
 import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.model.config.entity.SystemWideSetting;
@@ -23,4 +24,12 @@ public interface IArkSettingDao {
     public List<Setting> searchPageableSettings(Setting setting, int first, int count);
 
     public Setting getUserSpecificSetting(ArkUser arkUser, String propertyName);
+
+    public void createSettingFile(SettingFile sf);
+
+    public SettingFile getSettingFileByFileId(String fileId);
+
+    public void deleteSettingFile(SettingFile settingFile);
+
+    public SettingFile getSettingFileFromSetting(String key, Study study, ArkUser arkUser);
 }

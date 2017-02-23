@@ -2,14 +2,15 @@ package au.org.theark.core.service;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.IArkSettingDao;
-import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.exception.ArkCheckSumNotSameException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.config.entity.Setting;
+import au.org.theark.core.model.config.entity.SettingFile;
 import au.org.theark.core.model.config.entity.StudySpecificSetting;
 import au.org.theark.core.model.config.entity.SystemWideSetting;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
-import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +23,16 @@ public class ArkSettingServiceImpl implements IArkSettingService {
 
     private IArkSettingDao iArkSettingDao;
 
+    private IArkCommonService iArkCommonService;
 
     @Autowired
     public void setArkSettingDao(IArkSettingDao iArkSettingDao) {
         this.iArkSettingDao = iArkSettingDao;
+    }
+
+    @Autowired
+    public void setiArkCommonService(IArkCommonService iArkCommonService) {
+        this.iArkCommonService = iArkCommonService;
     }
 
     @Override
@@ -63,5 +70,43 @@ public class ArkSettingServiceImpl implements IArkSettingService {
         return iArkSettingDao.getUserSpecificSetting(arkUser, propertyName);
     }
 
+    @Override
+    public void createSettingFile(SettingFile sf) {
+        iArkSettingDao.createSettingFile(sf);
+    }
 
+    @Override
+    public SettingFile getSettingFileByFileId(String fileId) {
+        return iArkSettingDao.getSettingFileByFileId(fileId);
+    }
+
+    @Override
+    public void delete(SettingFile settingFile, String arkSettingsDir) throws ArkSystemException, ArkFileNotFoundException {
+        String fileId = settingFile.getFileId();
+        String checksum = settingFile.getChecksum();
+        if (iArkCommonService.deleteArkFileAttachment(null, null, fileId, arkSettingsDir, checksum)) {
+            iArkSettingDao.deleteSettingFile(settingFile);
+        } else {
+            System.out.println("Could not find the file - " + fileId);
+        }
+    }
+
+    @Override
+    public SettingFile getSettingFileFromSetting(String key, Study study, ArkUser arkUser) {
+        return iArkSettingDao.getSettingFileFromSetting(key, study, arkUser);
+    }
+
+    @Override
+    public String getSettingFilePath(SettingFile settingFile) {
+        try {
+           return iArkCommonService.retriveArkFileAttachmentAsFile(null, null, Constants.ARK_SETTINGS_DIR, settingFile.getFileId(), settingFile.getChecksum()).getAbsolutePath();
+        } catch (ArkSystemException e) {
+            e.printStackTrace();
+        } catch (ArkFileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ArkCheckSumNotSameException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

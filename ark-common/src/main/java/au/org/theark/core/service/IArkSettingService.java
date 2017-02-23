@@ -1,6 +1,9 @@
 package au.org.theark.core.service;
 
+import au.org.theark.core.exception.ArkFileNotFoundException;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.config.entity.Setting;
+import au.org.theark.core.model.config.entity.SettingFile;
 import au.org.theark.core.model.config.entity.StudySpecificSetting;
 import au.org.theark.core.model.config.entity.SystemWideSetting;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -24,5 +27,13 @@ public interface IArkSettingService {
 
     public Setting getUserSpecificSetting(ArkUser arkUser, String propertyName);
 
+    public void createSettingFile(SettingFile sf);
 
+    public SettingFile getSettingFileByFileId(String fileId);
+
+    public void delete(SettingFile settingFile, String arkSettingsDir) throws ArkSystemException, ArkFileNotFoundException;
+
+    public SettingFile getSettingFileFromSetting(String key, Study study, ArkUser arkUser);
+
+    public String getSettingFilePath(SettingFile settingFile);
 }

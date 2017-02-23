@@ -746,5 +746,9 @@ public class Constants {
 	public static final String	ADDRESS_TYPE					= "addressType";
 	public static final String DELETE_UPLOAD 					= "deleteUpload";
 
-			
+	public static final String ARK_SETTINGS_DIR = "config";
+
+	public static final String HOSTED_BY_IMAGE = "hosted_by_image.gif";
+	public static final String PRODUCT_IMAGE = "product_image.png";
+	public static final String EVENT_RELOAD_LOGO_IMAGES = "reloadLogos";
 }
