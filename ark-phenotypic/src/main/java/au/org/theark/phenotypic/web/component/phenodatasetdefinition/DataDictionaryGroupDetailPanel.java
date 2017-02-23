@@ -5,9 +5,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.phenotypic.web.component.phenodatasetdefinition.form.DetailForm;

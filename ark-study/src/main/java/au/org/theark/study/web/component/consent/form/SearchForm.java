@@ -23,7 +23,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -99,13 +100,13 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 	protected void initialiseSearchForm() {
 		consentedBy = new TextField<String>(Constants.CONSENT_CONSENTED_BY);
-		consentedDatePicker = new DateTextField(Constants.CONSENT_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		consentedDatePicker = new DateTextField(Constants.CONSENT_CONSENT_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(consentedDatePicker);
 		consentedDatePicker.add(datePicker);
 
-		endConsentedDatePicker = new DateTextField("consentDateEnd", au.org.theark.core.Constants.DD_MM_YYYY);
+		endConsentedDatePicker = new DateTextField("consentDateEnd", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 
 		ArkDatePicker datePicker2 = new ArkDatePicker();
 		datePicker2.bind(endConsentedDatePicker);

@@ -75,7 +75,7 @@ public class BioCollectionCustomDataContainerPanel extends Panel {
 
 	public BioCollectionCustomDataContainerPanel initialisePanel() {
 		add(initialiseFeedbackPanel());
-		add(initialiseCustomDataEditorWMC());
+		//add(initialiseCustomDataEditorWMC());
 		if (!ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 			customDataEditorWMC.setVisible(false);
@@ -83,7 +83,7 @@ public class BioCollectionCustomDataContainerPanel extends Panel {
 		return this;
 	}
 
-	protected WebMarkupContainer initialiseCustomDataEditorWMC() {
+	/*protected WebMarkupContainer initialiseCustomDataEditorWMC() {
 		customDataEditorWMC = new WebMarkupContainer("customDataEditorWMC");
 		Panel dataEditorPanel;
 		boolean contextLoaded = prerenderContextCheck();
@@ -100,7 +100,7 @@ public class BioCollectionCustomDataContainerPanel extends Panel {
 		}
 		customDataEditorWMC.add(dataEditorPanel);
 		return customDataEditorWMC;
-	}
+	}*/
 
 	protected WebMarkupContainer initialiseFeedbackPanel() {
 		/* Feedback Panel doesn't have to sit within a form */

@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -51,7 +51,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.FieldType;
@@ -324,8 +323,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				defaultValueEntryPnl = new TextDataEntryPanel("defaultValueEntryPnl", defaultValueMdl, new Model<String>("DefaultValue"));
 				defaultValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
-				DateTextField fromDate= ((DateDataEntryPanel)minValueEntryPnl).getDataValueDateFld();
-				DateTextField toDate= ((DateDataEntryPanel)maxValueEntryPnl).getDataValueDateFld();
+				DateTextField fromDate= (DateTextField) ((DateDataEntryPanel)minValueEntryPnl).getDataValueDateFld();
+				DateTextField toDate= (DateTextField) ((DateDataEntryPanel)maxValueEntryPnl).getDataValueDateFld();
 				//DateTextField missingDate= ((DateDataEntryPanel)missingValueEntryPnl).getDataValueDateFld();
 				TextField<?> missingDate= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
 				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();

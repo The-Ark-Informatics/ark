@@ -26,7 +26,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -142,7 +143,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		initSubjectStatusDdc();
 		initGenderTypeDdc();
 
-		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);

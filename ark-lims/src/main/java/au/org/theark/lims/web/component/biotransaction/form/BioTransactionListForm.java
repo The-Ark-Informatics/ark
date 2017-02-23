@@ -19,12 +19,12 @@
 package au.org.theark.lims.web.component.biotransaction.form;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -81,7 +81,7 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 		add(feedbackPanel);
 		
 		//transactionDateLbl = new Label("bioTransaction.transactionDate", simpleDateFormat.format(new Date()));
-		transactionDate = new DateTextField("bioTransaction.transactionDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		transactionDate = new DateTextField("bioTransaction.transactionDate", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(transactionDate);
 		transactionDate.add(dobDatePicker);

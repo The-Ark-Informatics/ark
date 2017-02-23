@@ -26,7 +26,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -135,7 +136,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		studyIdTxtFld = new TextField<String>(Constants.STUDY_SEARCH_KEY);
 
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_SEARCH_NAME);
-		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateOfApplicationDp);
 		dateOfApplicationDp.add(datePicker);

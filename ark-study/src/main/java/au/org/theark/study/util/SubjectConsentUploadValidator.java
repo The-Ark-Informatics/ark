@@ -294,7 +294,7 @@ public class SubjectConsentUploadValidator {
 							simpleDateFormat.parse(consentDate);
 						}catch(Exception e){
 							errorCells.add(new ArkGridCell(csvReader.getIndex("CONSENT_DATE"), row));
-							dataValidationMessages.add("Invalid CONSENT_DATE format");
+							dataValidationMessages.add("valid CONSENT_DATE is required to upload subject consent");
 						}	
 					}
 				}

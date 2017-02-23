@@ -23,7 +23,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -122,19 +123,19 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		phoneNumberTxtFld = new TextField<String>("phoneVo.phone.phoneNumber");
 		source = new TextField<String>("phoneVo.phone.source");
 		commentsTxtArea = new TextArea<String>("phoneVo.phone.comment");
-		dateReceivedDp = new DateTextField("phoneVo.phone.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateReceivedDp = new DateTextField("phoneVo.phone.dateReceived", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dPDateReceived = new ArkDatePicker();
 		dPDateReceived.bind(dateReceivedDp);
 		dateReceivedDp.add(dPDateReceived);
 		
 		//Valid From
-		dateValidFrom=new DateTextField("phoneVo.phone.validFrom", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidFrom=new DateTextField("phoneVo.phone.validFrom", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dPDateValidFrom = new ArkDatePicker();
 		dPDateValidFrom.bind(dateValidFrom);
 		dateValidFrom.add(dPDateValidFrom);
 
 		//Valid To
-		dateValidTo=new DateTextField("phoneVo.phone.validTo", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidTo=new DateTextField("phoneVo.phone.validTo", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dPDateValidTo = new ArkDatePicker();
 		dPDateValidTo.bind(dateValidTo);
 		dateValidTo.add(dPDateValidTo);

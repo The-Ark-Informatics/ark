@@ -27,7 +27,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -177,17 +178,17 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		preferredEmailTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_EMAIL);
 		otherEmailTxtFld = new TextField<String>(Constants.PERSON_OTHER_EMAIL);
 
-		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
 
-		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 		ArkDatePicker consentDatePicker = new ArkDatePicker();
 		consentDatePicker.bind(consentDateTxtFld);
 		consentDateTxtFld.add(consentDatePicker);
 
-		dateOfDeathTxtFld = new DateTextField(Constants.PERSON_DOD, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfDeathTxtFld = new DateTextField(Constants.PERSON_DOD, new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 
 		causeOfDeathTxtFld = new TextField<String>(Constants.PERSON_CAUSE_OF_DEATH);
 		ArkDatePicker dodDatePicker = new ArkDatePicker();

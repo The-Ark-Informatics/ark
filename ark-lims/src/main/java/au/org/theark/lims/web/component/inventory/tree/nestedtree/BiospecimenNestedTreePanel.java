@@ -24,7 +24,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionModalDetailPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionDataEntryModalDetailPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
 
 public class BiospecimenNestedTreePanel extends Panel {
@@ -82,7 +82,7 @@ public class BiospecimenNestedTreePanel extends Panel {
 								newModel.getObject().setBioCollection(biocollectionFromDB);
 								newModel.getObject().setTreeModel(cpModel.getObject().getTreeModel());
 								
-								BioCollectionModalDetailPanel modalContentPanel = new BioCollectionModalDetailPanel("content", modalWindow, newModel);
+								BioCollectionDataEntryModalDetailPanel modalContentPanel = new BioCollectionDataEntryModalDetailPanel("content", modalWindow, newModel);
 
 								// Set the modalWindow title and content
 								modalWindow.setTitle("Biocollection Detail");

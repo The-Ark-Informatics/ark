@@ -22,18 +22,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -276,7 +275,15 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(newPositionBtn);
 
 		PropertyModel<Date> recordDateModel = new PropertyModel<Date>(containerForm.getModel(), "affection.recordDate");
-		recordDateTxtFld = new DateTextField("recordDate", recordDateModel){
+		/*recordDateTxtFld = new DateTextField("recordDate", recordDateModel){
+			@Override
+			protected void onBeforeRender() {
+				this.setModel(new PropertyModel<Date>(containerForm.getModel(), "affection.recordDate"));
+				super.onBeforeRender();
+			}
+		};*/
+		recordDateTxtFld =new DateTextField("recordDate", recordDateModel, new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false)){
+			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onBeforeRender() {
 				this.setModel(new PropertyModel<Date>(containerForm.getModel(), "affection.recordDate"));

@@ -20,7 +20,8 @@ package au.org.theark.core.web.component.customfield.dataentry;
 
 import java.util.Date;
 
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.IValidator;
@@ -52,8 +53,7 @@ public class DateDataEntryPanel extends AbstractDataEntryPanel<Date> {
 	public DateDataEntryPanel(String id, IModel<Date> dateDataModel, IModel<String> labelModel) {
 		super(id, labelModel);
 		dataValueModel = dateDataModel;
-
-		dataValueDateFld = new DateTextField("dateDataValue", dataValueModel, au.org.theark.core.Constants.DD_MM_YYYY);
+		dataValueDateFld =new  DateTextField("dateDataValue", dataValueModel, new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dataValueDateFld);
 		dataValueDateFld.setLabel(fieldLabelModel); // set the ${label} for feedback messages

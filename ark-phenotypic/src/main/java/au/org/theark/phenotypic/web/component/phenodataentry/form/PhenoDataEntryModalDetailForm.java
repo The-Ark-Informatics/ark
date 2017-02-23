@@ -25,8 +25,9 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -36,7 +37,6 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
@@ -182,9 +181,8 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		return null;
 	}
 
-	private boolean initialisePhenoCollectionDataEntry(PhenoDataSetCategory phenoDataSetCategory) {
-		boolean replacePanel = false;
-		//if (!(phenoCollectionDataEntryPanel instanceof PhenoDataDataViewPanel)) {
+	private void initialisePhenoCollectionDataEntry(PhenoDataSetCategory phenoDataSetCategory) {
+		
 			CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCpModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 			phenoDataCpModel.getObject().setPhenoDataSetCollection(cpModel.getObject().getPhenoDataSetCollection());
 			phenoDataCpModel.getObject().getPhenoDataSetCollection().setQuestionnaire(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire());
@@ -205,9 +203,6 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			};
 			//dataEntryNavigator = new ArkAjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView(), dataEntryWMC, jQueryLabel);
 			phenoCollectionDataEntryPanel = phenoCFDataEntryPanel;
-			//replacePanel = true;
-		//}
-		return replacePanel;
 	}
 	
 	public void initialiseDetailForm() {
@@ -216,8 +211,8 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		
 //		nameTxtFld = new TextField<String>("PhenoCollection.name");
 		descriptionTxtAreaFld = new TextArea<String>("phenoDataSetCollection.description");
-		recordDateTxtFld = new DateTextField("phenoDataSetCollection.recordDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		reviewedDateTxtFld = new DateTextField("phenoDataSetCollection.reviewedDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		recordDateTxtFld = new DateTextField("phenoDataSetCollection.recordDate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
+		reviewedDateTxtFld = new DateTextField("phenoDataSetCollection.reviewedDate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 
 		ArkDatePicker recordDatePicker = new ArkDatePicker();
 		recordDatePicker.bind(recordDateTxtFld);

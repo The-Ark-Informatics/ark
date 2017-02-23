@@ -181,7 +181,8 @@ public abstract class BasePage extends WebPage {
 
 	protected void showModalWindow(AjaxRequestTarget target) {
 		MyDetailsContainer modalContentPanel = new MyDetailsContainer("content", new ArkUserVO(), currentUser, modalWindow);
-		modalWindow.setTitle("My Detail");
+		//modalWindow.setTitle("My Detail");
+		modalWindow.setTitle("My Account");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
 	}

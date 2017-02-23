@@ -32,8 +32,9 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -241,8 +242,8 @@ public class AutoGenBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> 
 				
 				initBioCollectionDdc(item);
 				initSampleTypeDdc(item);
-
-				sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", new PropertyModel(item.getModelObject(), "biospecimen.sampleDate"), au.org.theark.core.Constants.DD_MM_YYYY);
+				PatternDateConverter pdc = new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false);
+				sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", new PropertyModel(item.getModelObject(), "biospecimen.sampleDate"), pdc);
 				ArkDatePicker sampleDatePicker = new ArkDatePicker();
 				sampleDatePicker.bind(sampleDateTxtFld);
 				sampleDateTxtFld.add(sampleDatePicker);

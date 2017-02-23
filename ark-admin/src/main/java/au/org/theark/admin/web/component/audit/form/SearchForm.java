@@ -7,7 +7,8 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -76,7 +77,7 @@ public class SearchForm extends AbstractSearchForm<AuditVO> {
 		
 		revisedByTxtFld = new TextField<String>("revisedBy");
 		
-		revisedDateTxtFld = new DateTextField("revisedDate", Constants.DD_MM_YYYY);
+		revisedDateTxtFld = new DateTextField("revisedDate", new PatternDateConverter( Constants.DD_MM_YYYY, false));
 		ArkDatePicker revisedDatePicker = new ArkDatePicker();
 		revisedDatePicker.bind(revisedDateTxtFld);
 		revisedDateTxtFld.add(revisedDatePicker);

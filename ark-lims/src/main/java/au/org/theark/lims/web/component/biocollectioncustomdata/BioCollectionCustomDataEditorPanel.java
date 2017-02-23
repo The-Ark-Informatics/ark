@@ -44,11 +44,11 @@ import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.web.component.biocollectioncustomdata.form.CustomDataEditorForm;
 
 
-
-/**
+/*
+*//**
  * @author elam
  * 
- */
+ *//*
 @SuppressWarnings({ "serial" })
 public class BioCollectionCustomDataEditorPanel extends Panel {
 
@@ -118,10 +118,10 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 		return this;
 	}
 	
-	/**
+	*//**
 	 * Get custom field category collection from model.
 	 * @return
-	 */
+	 *//*
 	private Collection<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(){
 		
 		Study study =cpModel.getObject().getBioCollection().getStudy();
@@ -138,3 +138,4 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 		return customFieldCategoryCollection;
 	}
 }
+*/

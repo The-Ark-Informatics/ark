@@ -30,8 +30,9 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.TimeField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -381,7 +382,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		parentUidTxtFld = new TextField<String>("biospecimen.parentUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
-		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 		useCollectionDate = new AjaxLink<Date>("useCollectionDate") {
 			private static final long	serialVersionUID	= 1L;
 
@@ -413,7 +414,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			}
 		};
 
-		processedDateTxtFld = new DateTextField("biospecimen.processedDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		processedDateTxtFld = new DateTextField("biospecimen.processedDate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 		processedTimeTxtFld = new TimeField("biospecimen.processedTime") {
 
 			private static final long	serialVersionUID	= 1L;

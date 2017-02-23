@@ -330,7 +330,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	
 	private void createPageListView(IModel<List<ArkRolePolicyTemplate>> iModel) {
 		// TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
-		pageableListView = new PageableListView<ArkRolePolicyTemplate>("arkRolePolicyTemplatesList", iModel, 50) {
+		pageableListView = new PageableListView<ArkRolePolicyTemplate>("arkRolePolicyTemplatesList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
 			private static final long	serialVersionUID	= 3557668722549243826L;
 
 			@Override

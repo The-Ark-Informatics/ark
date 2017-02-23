@@ -1,7 +1,5 @@
 package au.org.theark.core.web.component.audit.button;
 
-import java.io.Serializable;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;

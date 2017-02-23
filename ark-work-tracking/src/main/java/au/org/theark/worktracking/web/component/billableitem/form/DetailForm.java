@@ -11,7 +11,8 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -132,7 +133,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 			}
 		});
 		
-		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		initDataPicker(billableItemCommenceDateDp);		
 		subjectsUploadField= new FileUploadField(Constants.FILE_NAME);
 		

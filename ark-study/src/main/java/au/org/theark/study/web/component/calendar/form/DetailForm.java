@@ -23,7 +23,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -126,12 +127,12 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 		calendarStudyCompDDL = new DropDownChoice<StudyComp>(Constants.STUDY_CALENDAR_STUDY_COMP,studyCompList,defaultChoiceRenderer);
 		calendarStudyCompDDL.setOutputMarkupId(true);
 		
-		studyCalendarStartDateFld =new DateTextField(Constants.STUDY_CALENDAR_START_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		studyCalendarStartDateFld =new DateTextField(Constants.STUDY_CALENDAR_START_DATE,new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker startDatePicker = new ArkDatePicker();
 		startDatePicker.bind(studyCalendarStartDateFld);
 		studyCalendarStartDateFld.add(startDatePicker);
 		
-		studyCalendarEndDateFld =new DateTextField(Constants.STUDY_CALENDAR_END_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		studyCalendarEndDateFld =new DateTextField(Constants.STUDY_CALENDAR_END_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker endDatePicker = new ArkDatePicker();
 		endDatePicker.bind(studyCalendarEndDateFld);
 		studyCalendarEndDateFld.add(endDatePicker);

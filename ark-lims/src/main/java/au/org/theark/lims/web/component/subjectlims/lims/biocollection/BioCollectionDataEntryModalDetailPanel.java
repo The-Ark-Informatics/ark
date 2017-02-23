@@ -26,20 +26,20 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.web.component.subjectlims.lims.biocollection.form.BioCollectionModalDetailForm;
+import au.org.theark.lims.web.component.subjectlims.lims.biocollection.form.BioCollectionDataEntryModalDetailForm;
 
-public class BioCollectionModalDetailPanel extends Panel {
+public class BioCollectionDataEntryModalDetailPanel extends Panel {
 
 	private static final long						serialVersionUID	= -8745753185256494362L;
 
 	private FeedbackPanel							detailFeedbackPanel;
 	private ModalWindow								modalWindow;
-	private BioCollectionModalDetailForm			detailForm;
+	private BioCollectionDataEntryModalDetailForm			detailForm;
 	private ArkCrudContainerVO						arkCrudContainerVo;
 
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 
-	public BioCollectionModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
+	public BioCollectionDataEntryModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
 		this.detailFeedbackPanel = initialiseFeedBackPanel();
 		this.setModalWindow(modalWindow);
@@ -56,7 +56,7 @@ public class BioCollectionModalDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new BioCollectionModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
+		detailForm = new BioCollectionDataEntryModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
 		detailForm.initialiseDetailForm();
 		add(detailFeedbackPanel);
 		add(detailForm);

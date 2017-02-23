@@ -23,12 +23,11 @@ import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -48,14 +47,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractContainerForm;
@@ -154,19 +149,19 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		
 		descriptionTxtAreaFld = new TextArea<String>("invFreezer.description");
 		
-		lastservicedateDateTxtFld = new DateTextField("invFreezer.lastservicedate", au.org.theark.core.Constants.DD_MM_YYYY);
+		lastservicedateDateTxtFld = new DateTextField("invFreezer.lastservicedate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 		ArkDatePicker arkDatePicker = new ArkDatePicker();
 		arkDatePicker.bind(lastservicedateDateTxtFld);
 		lastservicedateDateTxtFld.add(arkDatePicker);
 		
 		lastservicenoteTxtAreaFld = new TextArea<String>("invFreezer.lastservicenote");
 		
-		commissiondateDateTxtFld = new DateTextField("invFreezer.commissiondate", au.org.theark.core.Constants.DD_MM_YYYY);
+		commissiondateDateTxtFld = new DateTextField("invFreezer.commissiondate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 		ArkDatePicker arkDatePicker2 = new ArkDatePicker();
 		arkDatePicker2.bind(commissiondateDateTxtFld);
 		commissiondateDateTxtFld.add(arkDatePicker2);
 		
-		decommissiondateDateTxtFld = new DateTextField("invFreezer.decommissiondate", au.org.theark.core.Constants.DD_MM_YYYY);
+		decommissiondateDateTxtFld = new DateTextField("invFreezer.decommissiondate",new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 
 		ArkDatePicker arkDatePicker3 = new ArkDatePicker();
 		arkDatePicker3.bind(decommissiondateDateTxtFld);
