@@ -30,15 +30,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Blob;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,6 +71,7 @@ import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
@@ -155,7 +148,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private ICSVLoaderDao csvLoaderDao;
 	private ArkLdapContextSource ldapDataContextSource;
 	private ReCaptchaContextSource reCaptchaContextSource;
-	private JavaMailSender javaMailSender;
+	//private JavaMailSender javaMailSender;
 	private VelocityEngine velocityEngine;
 	private IGenoDao genoDao;
 
@@ -212,18 +205,18 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	/**
 	 * @return the javaMailSender
 	 */
-	public JavaMailSender getJavaMailSender() {
+    /*public JavaMailSender getJavaMailSender() {
 		return javaMailSender;
-	}
+	}*/
 
 	/**
 	 * @param javaMailSender
 	 *            the javaMailSender to set
 	 */
-	@Autowired
+	/*@Autowired
 	public void setJavaMailSender(JavaMailSender javaMailSender) {
 		this.javaMailSender = javaMailSender;
-	}
+	}*/
 
 	public ReCaptchaContextSource getRecaptchaContextSource() {
 		return reCaptchaContextSource;
@@ -924,7 +917,46 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao.getCustomFieldList(customFieldCriteria);
 	}
 
+	private JavaMailSender getJavaMailSender() throws MailSendException {
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
+		try {
+			String host = iArkSettingService.getSystemWideSetting(Constants.MAIL_SETTING_HOST).getPropertyValue();
+			String username = iArkSettingService.getSystemWideSetting(Constants.MAIL_SETTING_USERNAME).getPropertyValue();
+			String password = iArkSettingService.getSystemWideSetting(Constants.MAIL_SETTING_PASSWORD).getPropertyValue();
+			mailSender.setHost(host);
+			mailSender.setUsername(username);
+			mailSender.setPassword(password);
+		} catch (NullPointerException npe) {
+			npe.getStackTrace();
+			throw new MailSendException("Failed to retrieve mail connection settings. Please contact your system administrator");
+		}
+
+		int port = 587;
+		try {
+			port = iArkSettingService.getSystemWideSetting(Constants.MAIL_SETTING_PORT).getIntValue();
+		} catch (NumberFormatException nfe) {
+			nfe.printStackTrace();
+			System.out.println("Unable to read number format, using default");
+		} catch (NullPointerException npe) {
+			npe.getStackTrace();
+			throw new MailSendException("Failed to retrieve mail connection settings. Please contact your system administrator");
+		}
+		mailSender.setPort(port);
+
+		Properties properties = new Properties();
+		properties.setProperty("mail.smtp.auth", "true");
+		properties.setProperty("mail.smtp.starttls.enable", "true");
+
+		mailSender.setJavaMailProperties(properties);
+
+		return mailSender;
+	}
+
 	public void sendEmail(final SimpleMailMessage simpleMailMessage) throws MailSendException, VelocityException {
+
+	    JavaMailSender mailSender = getJavaMailSender();
+
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
@@ -968,7 +1000,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		};
 
 		// send out the email
-		javaMailSender.send(preparator);
+		//javaMailSender.send(preparator);
+		mailSender.send(preparator);
 	}
 
 	public String setResetPasswordMessage(final String fullName, final String password) throws VelocityException {
