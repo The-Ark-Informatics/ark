@@ -60,25 +60,6 @@
 		<property name="reCaptchaPrivateKey" value="6LeH1soSAAAAAHo5FTWfUzS5AQZ6Jea-9dBVtuyL" />
 	</bean>
 
-	<!-- SMTP Configuration -->
-	<!--   
-		NOTE: host will now use "ark-smtp" mapping as defined in the host
-		file.
-	-->
-	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="ark-smtp" />
-		<!-- Parameters for SMTP AUTH Using Google-->
-		<property name="username" value="usernam@gmail.com"/>
-		<property name="password" value="#insert-ultra-secure-password-here#" />
-		<property name="javaMailProperties">
-			<props>
-				<prop key="mail.smtp.auth">true</prop>
-				<!-- used by gmail smtp server -->
-				<prop key="mail.smtp.starttls.enable">true</prop>
-			</props>
-		</property>
-	</bean>
-
 	<!--   velocity allows us to use a template for the email-->
 	<bean id="velocityEngine"
 		class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
