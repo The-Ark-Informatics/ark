@@ -26,10 +26,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
+import au.org.theark.core.util.EventPayload;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -380,8 +382,9 @@ public class SearchResultListPanel extends Panel {
 						mainTabs.setSelectedTab(index);
 						break;
 					}
-				}				
+				}
 				target.add(mainTabs);
+				this.send(target.getPage(), Broadcast.DEPTH, new EventPayload(au.org.theark.core.Constants.EVENT_RELOAD_LOGO_IMAGES, target));
 			}
 		};
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());
@@ -403,7 +406,8 @@ public class SearchResultListPanel extends Panel {
 			link = new AjaxConfirmLink(Constants.SUBJECT_UID, new StringResourceModel("pedigree.parent.dob.warning", this, item.getModel()),item.getModel()) {
 				@Override
 				public void onClick(AjaxRequestTarget target) {
-					processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);	
+					processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
+					this.send(getWebPage(), Broadcast.DEPTH, new EventPayload(au.org.theark.core.Constants.EVENT_RELOAD_LOGO_IMAGES, target));
 				}
 			};
 		}
@@ -412,7 +416,8 @@ public class SearchResultListPanel extends Panel {
 				@Override
 				public void onClick(AjaxRequestTarget target) {
 					processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
-				}	
+					this.send(getWebPage(), Broadcast.DEPTH, new EventPayload(au.org.theark.core.Constants.EVENT_RELOAD_LOGO_IMAGES, target));
+				}
 			};
 		}
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());

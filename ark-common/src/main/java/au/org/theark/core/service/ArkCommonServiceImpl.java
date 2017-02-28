@@ -30,15 +30,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Blob;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +41,8 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import au.org.theark.core.model.config.entity.Setting;
+import au.org.theark.core.model.config.entity.SettingFile;
+import au.org.theark.core.model.study.entity.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -56,19 +50,28 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
+import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.image.NonCachingImage;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.StringValue;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.ldap.NameNotFoundException;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
@@ -115,62 +118,6 @@ import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchPayload;
 import au.org.theark.core.model.report.entity.SearchResult;
 import au.org.theark.core.model.report.entity.SearchSubject;
-import au.org.theark.core.model.study.entity.AddressStatus;
-import au.org.theark.core.model.study.entity.AddressType;
-import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkModuleRole;
-import au.org.theark.core.model.study.entity.ArkPermission;
-import au.org.theark.core.model.study.entity.ArkRole;
-import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
-import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.ArkUserRole;
-import au.org.theark.core.model.study.entity.AuditHistory;
-import au.org.theark.core.model.study.entity.ConsentAnswer;
-import au.org.theark.core.model.study.entity.ConsentOption;
-import au.org.theark.core.model.study.entity.ConsentStatus;
-import au.org.theark.core.model.study.entity.ConsentType;
-import au.org.theark.core.model.study.entity.Country;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
-import au.org.theark.core.model.study.entity.CustomFieldType;
-import au.org.theark.core.model.study.entity.CustomFieldUpload;
-import au.org.theark.core.model.study.entity.DelimiterType;
-import au.org.theark.core.model.study.entity.EmailStatus;
-import au.org.theark.core.model.study.entity.FieldType;
-import au.org.theark.core.model.study.entity.FileFormat;
-import au.org.theark.core.model.study.entity.GenderType;
-import au.org.theark.core.model.study.entity.LinkStudyArkModule;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.MaritalStatus;
-import au.org.theark.core.model.study.entity.OtherID;
-import au.org.theark.core.model.study.entity.Payload;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.PersonContactMethod;
-import au.org.theark.core.model.study.entity.PersonLastnameHistory;
-import au.org.theark.core.model.study.entity.PhoneStatus;
-import au.org.theark.core.model.study.entity.PhoneType;
-import au.org.theark.core.model.study.entity.Relationship;
-import au.org.theark.core.model.study.entity.State;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.core.model.study.entity.StudyCompStatus;
-import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
-import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.core.model.study.entity.SubjectUidPadChar;
-import au.org.theark.core.model.study.entity.SubjectUidToken;
-import au.org.theark.core.model.study.entity.TitleType;
-import au.org.theark.core.model.study.entity.UnitType;
-import au.org.theark.core.model.study.entity.Upload;
-import au.org.theark.core.model.study.entity.UploadLevel;
-import au.org.theark.core.model.study.entity.UploadStatus;
-import au.org.theark.core.model.study.entity.UploadType;
-import au.org.theark.core.model.study.entity.VitalStatus;
-import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
@@ -201,16 +148,18 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private ICSVLoaderDao csvLoaderDao;
 	private ArkLdapContextSource ldapDataContextSource;
 	private ReCaptchaContextSource reCaptchaContextSource;
-	private JavaMailSender javaMailSender;
+	//private JavaMailSender javaMailSender;
 	private VelocityEngine velocityEngine;
 	private IGenoDao genoDao;
+
+	@Autowired
+	@Lazy
 	private IArkSettingService iArkSettingService;
 
 	public IArkSettingService getiArkSettingService() {
 		return this.iArkSettingService;
 	}
 
-	@Autowired
 	public void setiArkSettingService(IArkSettingService iArkSettingService) {
 		this.iArkSettingService = iArkSettingService;
 	}
@@ -256,18 +205,18 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	/**
 	 * @return the javaMailSender
 	 */
-	public JavaMailSender getJavaMailSender() {
+    /*public JavaMailSender getJavaMailSender() {
 		return javaMailSender;
-	}
+	}*/
 
 	/**
 	 * @param javaMailSender
 	 *            the javaMailSender to set
 	 */
-	@Autowired
+	/*@Autowired
 	public void setJavaMailSender(JavaMailSender javaMailSender) {
 		this.javaMailSender = javaMailSender;
-	}
+	}*/
 
 	public ReCaptchaContextSource getRecaptchaContextSource() {
 		return reCaptchaContextSource;
@@ -968,7 +917,46 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao.getCustomFieldList(customFieldCriteria);
 	}
 
+	private JavaMailSender getJavaMailSender() throws MailSendException {
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
+		try {
+			String host = iArkSettingService.getSystemWideSetting(Constants.MAIL_SETTING_HOST).getPropertyValue();
+			String username = iArkSettingService.getSystemWideSetting(Constants.MAIL_SETTING_USERNAME).getPropertyValue();
+			String password = iArkSettingService.getSystemWideSetting(Constants.MAIL_SETTING_PASSWORD).getPropertyValue();
+			mailSender.setHost(host);
+			mailSender.setUsername(username);
+			mailSender.setPassword(password);
+		} catch (NullPointerException npe) {
+			npe.getStackTrace();
+			throw new MailSendException("Failed to retrieve mail connection settings. Please contact your system administrator");
+		}
+
+		int port = 587;
+		try {
+			port = iArkSettingService.getSystemWideSetting(Constants.MAIL_SETTING_PORT).getIntValue();
+		} catch (NumberFormatException nfe) {
+			nfe.printStackTrace();
+			System.out.println("Unable to read number format, using default");
+		} catch (NullPointerException npe) {
+			npe.getStackTrace();
+			throw new MailSendException("Failed to retrieve mail connection settings. Please contact your system administrator");
+		}
+		mailSender.setPort(port);
+
+		Properties properties = new Properties();
+		properties.setProperty("mail.smtp.auth", "true");
+		properties.setProperty("mail.smtp.starttls.enable", "true");
+
+		mailSender.setJavaMailProperties(properties);
+
+		return mailSender;
+	}
+
 	public void sendEmail(final SimpleMailMessage simpleMailMessage) throws MailSendException, VelocityException {
+
+	    JavaMailSender mailSender = getJavaMailSender();
+
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
@@ -1012,7 +1000,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		};
 
 		// send out the email
-		javaMailSender.send(preparator);
+		//javaMailSender.send(preparator);
+		mailSender.send(preparator);
 	}
 
 	public String setResetPasswordMessage(final String fullName, final String password) throws VelocityException {
@@ -1607,14 +1596,34 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * {@inheritDoc}
 	 */
 	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType) throws ArkSystemException {
-		String directoryName = null;
+		StringBuilder directoryName = new StringBuilder();
 		try {
-			directoryName = getFileAttachmentDir() + File.separator + studyId + File.separator + directoryType + File.separator + subjectUID;
+			//directoryName = getFileAttachmentDir() + File.separator + studyId
+			// + File.separator + directoryType + File.separator + subjectUID;
+			directoryName.append(getFileAttachmentDir());
+			if (directoryType == Constants.ARK_SETTINGS_DIR) {
+				if (subjectUID != null) {
+					directoryName.append(File.separator);
+					directoryName.append(subjectUID);
+				} else if (studyId != null) {
+					directoryName.append(File.separator);
+					directoryName.append(studyId);
+				}
+				directoryName.append(File.separator);
+				directoryName.append(directoryType);
+			} else {
+				directoryName.append(File.separator);
+				directoryName.append(studyId);
+				directoryName.append(File.separator);
+				directoryName.append(directoryType);
+				directoryName.append(File.separator);
+				directoryName.append(subjectUID);
+			}
 		} catch (NullPointerException npe) {
 			log.error("File Attachment Directory not set. Contact your system administrator.");
 			throw new ArkSystemException(npe.getMessage() + " File Attachment Directory not set. Contact your system administrator.");
 		}
-		return directoryName;
+		return directoryName.toString();
 	}
 
 	/**
@@ -1647,9 +1656,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	/**
 	 * {@inheritDoc}
-	 * @throws ArkFileNotFoundException 
+	 *
+	 * @throws ArkFileNotFoundException
 	 */
-	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException,ArkCheckSumNotSameException {
+	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException, ArkCheckSumNotSameException {
 		byte[] data = null;
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
 		String fileName = directoryName + File.separator + fileId;
@@ -1665,22 +1675,24 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			}
 		} catch (Exception e) {
 			log.error("Error", e);
-			throw new ArkFileNotFoundException("File not found in: "+e.getMessage());
+			throw new ArkFileNotFoundException("File not found in: " + e.getMessage());
 		} finally {
 			try {
-				if(md5input!=null){
+				if (md5input != null) {
 					md5input.close();
-					}
-				}catch (IOException e) {
-					throw new ArkSystemException("exception while closing stream. " + e.getMessage());
 				}
+			} catch (IOException e) {
+				throw new ArkSystemException("exception while closing stream. " + e.getMessage());
+			}
 		}
 		return data;
 	}
+
 	/**
 	 * {@inheritDoc}
-	 * @throws ArkFileNotFoundException 
-	 * @throws ArkBaseException 
+	 *
+	 * @throws ArkFileNotFoundException
+	 * @throws ArkBaseException
 	 */
 	public boolean deleteArkFileAttachment(Long studyId, String subjectUID, String fileId, String attachmentType, String checksum) throws ArkSystemException, ArkFileNotFoundException {
 		String directory = getArkFileDirName(studyId, subjectUID, attachmentType);
@@ -1706,7 +1718,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			throw new ArkFileNotFoundException(e.getMessage());
 		} finally {
 			try {
-				if(md5input!=null){
+				if (md5input != null) {
 					md5input.close();
 				}
 			} catch (Exception e) {
@@ -2091,32 +2103,34 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @throws ArkFileNotFoundException 
+	 *
+	 * @throws ArkFileNotFoundException
 	 */
-	public File retriveArkFileAttachmentAsFile(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException,ArkCheckSumNotSameException {
+	public File retriveArkFileAttachmentAsFile(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException, ArkFileNotFoundException, ArkCheckSumNotSameException {
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
 		String fileName = directoryName + File.separator + fileId;
 		FileInputStream md5input = null;
 		File file;
 		try {
-			file=new File(fileName);
+			file = new File(fileName);
 			md5input = new FileInputStream(file);
 			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
 			} else {
 				log.error("MD5 Hashes are not matching");
+				System.out.println(checksum + " " + DigestUtils.md5Hex(md5input));
 				throw new ArkCheckSumNotSameException("MD5 Hashes are not matching");
 			}
 		} catch (Exception e) {
 			log.error("Error", e);
-			throw new ArkFileNotFoundException("File not found in: "+e.getMessage());
+			throw new ArkFileNotFoundException("File not found in: " + e.getMessage());
 		} finally {
 			try {
-				if(md5input!=null){
+				if (md5input != null) {
 					md5input.close();
-					}
-				}catch (IOException e) {
-					throw new ArkSystemException("exception while closing stream. " + e.getMessage());
 				}
+			} catch (IOException e) {
+				throw new ArkSystemException("exception while closing stream. " + e.getMessage());
+			}
 		}
 		return file;
 	}
@@ -2148,12 +2162,102 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public void deleteUpload(Upload upload) {
 		AuditHistory ah = new AuditHistory();
-			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-			ah.setComment("Deleted Upload " + upload.getFilename());
-			ah.setEntityId(upload.getId());
-			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
-			this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), upload.getStudy());
-			studyDao.deleteUpload(upload);
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Upload " + upload.getFilename());
+		ah.setEntityId(upload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+		this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), upload.getStudy());
+		studyDao.deleteUpload(upload);
+	}
+
+	private DynamicImageResource getDynamicImageResourceForFile(SettingFile settingFile, File file) {
+		DynamicImageResource dir = new DynamicImageResource() {
+			@Override
+			protected byte[] getImageData(Attributes attributes) {
+				StringValue name = StringValue.valueOf(settingFile.getFilename());
+				byte[] imageBytes = null;
+				if (name.isEmpty() == false) {
+					try {
+						imageBytes = IOUtils.toByteArray(new FileInputStream(file));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
+				return imageBytes;
+			}
+		};
+		return dir;
+	}
+
+	@Override
+	public WebComponent getHostedByImage() {
+		WebComponent hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
+
+		try {
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = null;
+			if(sessionStudyId != null) {
+				study = getStudy(sessionStudyId);
+			}
+			SettingFile settingFile = iArkSettingService.getSettingFileFromSetting("BRANDING_IMAGE_LEFT", study, null);
+			if(settingFile != null) {
+				File hosted_file = retriveArkFileAttachmentAsFile(null, null, au.org.theark.core.Constants.ARK_SETTINGS_DIR, settingFile.getFileId(), settingFile.getChecksum());
+				hostedByImage = new NonCachingImage("hostedByImage", new AbstractReadOnlyModel<DynamicImageResource>() {
+					@Override
+					public DynamicImageResource getObject() {
+						DynamicImageResource dir = getDynamicImageResourceForFile(settingFile, hosted_file);
+						dir.setFormat("image/png");
+						return dir;
+					}
+				});
+			}
+		} catch (ArkSystemException e) {
+			e.printStackTrace();
+		} catch (ArkFileNotFoundException e) {
+			e.printStackTrace();
+		} catch (ArkCheckSumNotSameException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+		hostedByImage.setOutputMarkupId(true);
+    	return hostedByImage;
+	}
+
+	@Override
+	public WebComponent getProductImage() {
+		WebComponent productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
+
+		try {
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = null;
+			if(sessionStudyId != null) {
+			    study = getStudy(sessionStudyId);
+			}
+			SettingFile settingFile = iArkSettingService.getSettingFileFromSetting("BRANDING_IMAGE_RIGHT", study, null);
+			if(settingFile != null) {
+				File product_file = retriveArkFileAttachmentAsFile(null, null, au.org.theark.core.Constants.ARK_SETTINGS_DIR, settingFile.getFileId(), settingFile.getChecksum());
+				productImage = new NonCachingImage("productImage", new AbstractReadOnlyModel<DynamicImageResource>() {
+					@Override
+					public DynamicImageResource getObject() {
+					    DynamicImageResource dir = getDynamicImageResourceForFile(settingFile, product_file);
+						dir.setFormat("image/png");
+						return dir;
+					}
+				});
+			}
+		} catch (ArkSystemException e) {
+			e.printStackTrace();
+		} catch (ArkFileNotFoundException e) {
+			e.printStackTrace();
+		} catch (ArkCheckSumNotSameException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+		productImage.setOutputMarkupId(true);
+		return productImage;
 	}
 
 	//----------------- Custom getters/setters for special settings go here -----------------//
@@ -2193,5 +2297,4 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public String getFileAttachmentDir() throws NullPointerException {
 		return iArkSettingService.getSetting("FILE_ATTACHMENT_DIR", null, null).getPropertyValue();
 	}
-
 }

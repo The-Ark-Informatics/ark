@@ -32,7 +32,7 @@ public class DeleteButton extends AjaxDeleteButton {
 	private static final long	serialVersionUID	= 4966354164332401574L;
 	private transient Logger	log					= LoggerFactory.getLogger(DeleteButton.class);
 
-	DeleteButton(final Upload upload, Component component) {
+	public DeleteButton(final Upload upload, Component component) {
 		// Properties contains:
 		// confirmDelete=Are you sure you want to delete?
 		// delete=Delete

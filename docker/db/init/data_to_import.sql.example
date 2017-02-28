@@ -14513,3 +14513,27 @@ SELECT DISTINCT 'system', 'user', `TYPE`, `NAME`, `DEFAULT_VALUE` from config.co
 
 INSERT INTO config.settings (`type`, `highest_type`, `propertyType`, `property_name`, `property_value`, `user_id`)
 SELECT DISTINCT 'user', 'user', config_fields.type, config_fields.name, user_config.value, user_config.user_id from config.user_config inner join config.config_fields on config.user_config.field_id = config.config_fields.id;
+
+INSERT INTO `config`.`settings` (`type`, `highest_type`, `propertyType`, `property_name`, `property_value`, `study_id`, `user_id`)
+VALUES
+	('system', 'system', '0', 'FILE_ATTACHMENT_DIR', '/opt/ark-datastore/', NULL, NULL),
+	('system', 'study', '3', 'BRANDING_IMAGE_RIGHT', '', NULL, NULL),
+	('system', 'study', '3', 'BRANDING_IMAGE_LEFT', '', NULL, NULL);
+
+CREATE TABLE `config`.`setting_file` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `FILENAME` text NOT NULL,
+  `PAYLOAD` longblob,
+  `CHECKSUM` varchar(50) NOT NULL,
+  `FILE_ID` varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+
+INSERT INTO `config`.`settings` (`type`, `highest_type`, `propertyType`, `property_name`, `property_value`, `study_id`, `user_id`)
+VALUES
+	('system', 'system', '0', 'MAIL_SETTING_HOST', '', NULL, NULL),
+	('system', 'system', '0', 'MAIL_SETTING_USERNAME', '', NULL, NULL),
+	('system', 'system', '0', 'MAIL_SETTING_PASSWORD', '', NULL, NULL),
+	('system', 'system', '2', 'MAIL_SETTING_PORT', '', NULL, NULL);
+

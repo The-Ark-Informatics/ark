@@ -1,20 +1,25 @@
 package au.org.theark.core.web.component.settings;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.config.entity.*;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IArkSettingService;
+import au.org.theark.core.util.EventPayload;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -61,6 +66,7 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                 break;
             case FILE:
                 //Create file upload view
+                valuePanel = new SettingFilePanel("propertyValue", model);
                 break;
         }
         return valuePanel;
@@ -91,6 +97,7 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                 currentModel.setObject(sss);
             }
             valuePanel = createValuePanel(setting.getPropertyType(), currentModel, setting.getPropertyValue());
+            valuePanel.setOutputMarkupId(true);
             item.add(valuePanel);
         } else if (teir == UserSpecificSetting.class) {
             try {
@@ -115,6 +122,7 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                     currentModel.setObject(uss);
                 }
                 valuePanel = createValuePanel(setting.getPropertyType(), currentModel, setting.getPropertyValue());
+                valuePanel.setOutputMarkupId(true);
                 item.add(valuePanel);
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
@@ -133,23 +141,27 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                     target.add(this);
                     return;
                 }
-                setting.setPropertyValue(((TextField) finalValuePanel.get("propertyValue")).getValue());
-                if(teir == SystemWideSetting.class) {
+                getPropertyValueAsString(setting, finalValuePanel);
+                if (teir == SystemWideSetting.class) {
                     iArkSettingService.saveSetting(setting);
-                } else if(teir == StudySpecificSetting.class){
-                    if(currentModel.getObject() != null) {
+                } else if (teir == StudySpecificSetting.class) {
+                    if (currentModel.getObject() != null) {
                         StudySpecificSetting s = (StudySpecificSetting) currentModel.getObject();
-                        s.setPropertyValue(((TextField) finalValuePanel.get("propertyValue")).getValue());
+                        getPropertyValueAsString(s, finalValuePanel);
                         iArkSettingService.saveSetting(s);
                     }
-                } else if(teir == UserSpecificSetting.class) {
-                    if(currentModel.getObject() != null) {
+                } else if (teir == UserSpecificSetting.class) {
+                    if (currentModel.getObject() != null) {
                         UserSpecificSetting s = (UserSpecificSetting) currentModel.getObject();
-                        s.setPropertyValue(((TextField) finalValuePanel.get("propertyValue")).getValue());
+                        getPropertyValueAsString(s, finalValuePanel);
                         iArkSettingService.saveSetting(s);
                     }
                 }
+                System.out.println("This: " + this.getClass());
+                System.out.println("Parent: " + this.getParent());
                 target.add(this);
+                target.add(finalValuePanel);
+                this.send(getWebPage(), Broadcast.DEPTH, new EventPayload(Constants.EVENT_RELOAD_LOGO_IMAGES, target));
                 super.onSubmit(target, form);
             }
         };
@@ -166,6 +178,21 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
         }));
     }
 
+    private void getPropertyValueAsString(Setting setting, Panel valuePanel) {
+        if(setting.getPropertyType() == PropertyType.FILE) {
+            String fileId = null;
+            try {
+                fileId = ((SettingFilePanel) valuePanel).onSave();
+            } catch (ArkSystemException e) {
+                e.printStackTrace();
+                return;
+            }
+            setting.setPropertyValue(fileId);
+        } else {
+            setting.setPropertyValue(((TextField) valuePanel.get("propertyValue")).getValue());
+        }
+    }
+
 
     //TODO: Add date handling.
     private boolean validateInput(Panel finalValuePanel) {
@@ -173,6 +200,8 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
             case "SettingNumberPanel":
                 return StringUtils.isNumericSpace(((TextField) finalValuePanel.get("propertyValue")).getValue());
             case "SettingCharacterPanel":
+                return true;
+            case "SettingFilePanel":
                 return true;
             default:
                 return false;
