@@ -31,6 +31,7 @@ import au.org.theark.core.web.component.settings.ArkSettingDataView;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -51,17 +52,19 @@ public class SearchResultsPanel extends Panel {
 	private ContainerForm			containerForm;
 	private ArkCrudContainerVO		arkCrudContainerVo;
 	private Class teir;
+	private FeedbackPanel feedbackPanel;
 
-	public SearchResultsPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo, Class teir) {
+	public SearchResultsPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo, Class teir, FeedbackPanel feedbackPanel) {
 		super(id);
 		this.containerForm = containerForm;
 		this.arkCrudContainerVo = arkCrudContainerVo;
 		this.teir = teir;
+		this.feedbackPanel = feedbackPanel;
 	}
 
 	@SuppressWarnings("unchecked")
 	public DataView<Setting> buildDataView(ArkDataProvider<Setting, IArkSettingService> dataProvider) {
-		ArkSettingDataView dataView = new ArkSettingDataView<SystemWideSetting>("settingList", dataProvider, teir);
+		ArkSettingDataView dataView = new ArkSettingDataView<SystemWideSetting>("settingList", dataProvider, teir, feedbackPanel);
 		return dataView;
 	}
 

@@ -219,7 +219,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 				return cpModel.getObject();
 			}
 		});
-		arkSettingsDataViewPanel = new ArkSettingsDataViewPanel("settingsPanel", dataProvider, UserSpecificSetting.class);
+		arkSettingsDataViewPanel = new ArkSettingsDataViewPanel("settingsPanel", dataProvider, UserSpecificSetting.class, feedbackPanel);
 		attachValidators();
 		addComponents();
 	}

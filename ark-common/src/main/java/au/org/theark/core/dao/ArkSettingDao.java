@@ -84,6 +84,14 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
     }
 
     @Override
+    public List<SettingValidator> getSettingValidatorsForSetting(Setting setting) {
+        Criteria criteria = getSession().createCriteria(SettingValidator.class);
+        criteria.add(Restrictions.eq("settingPropertyName", setting.getPropertyName()));
+
+        return (List<SettingValidator>) criteria.list();
+    }
+
+    @Override
     public Setting getSetting(String key, Study study, ArkUser arkUser) {
 
         //If both are null then it will definitely be a system wide setting, so don't bother checking the other kinds.

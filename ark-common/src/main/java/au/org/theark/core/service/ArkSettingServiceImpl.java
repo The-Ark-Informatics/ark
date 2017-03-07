@@ -5,10 +5,7 @@ import au.org.theark.core.dao.IArkSettingDao;
 import au.org.theark.core.exception.ArkCheckSumNotSameException;
 import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.config.entity.Setting;
-import au.org.theark.core.model.config.entity.SettingFile;
-import au.org.theark.core.model.config.entity.StudySpecificSetting;
-import au.org.theark.core.model.config.entity.SystemWideSetting;
+import au.org.theark.core.model.config.entity.*;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,5 +105,10 @@ public class ArkSettingServiceImpl implements IArkSettingService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public List<SettingValidator> getSettingValidatorsForSetting(Setting setting) {
+        return iArkSettingDao.getSettingValidatorsForSetting(setting);
     }
 }

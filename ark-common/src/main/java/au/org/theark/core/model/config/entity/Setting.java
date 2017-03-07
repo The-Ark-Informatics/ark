@@ -21,7 +21,9 @@ public class Setting implements Serializable {
     private String highestType;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "setting_generator", sequenceName = "SETTING_SEQ")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "setting_generator")
+    @Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
     public Long getId() {
         return this.id;
     }

@@ -9,18 +9,24 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IArkSettingService;
 import au.org.theark.core.util.EventPayload;
+import au.org.theark.core.web.component.ArkDataProvider;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.event.Broadcast;
+import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.feedback.FeedbackMessages;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -30,6 +36,13 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Created by george on 31/1/17.
  */
@@ -37,6 +50,7 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
     private static final long	serialVersionUID	= 1L;
 
     private Class<T> teir;
+    private FeedbackPanel feedbackPanel;
 
     @SpringBean(name = Constants.ARK_COMMON_SERVICE)
     private IArkCommonService iArkCommonService;
@@ -47,6 +61,11 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
     public ArkSettingDataView(String id, IDataProvider<Setting> dataProvider, Class<T> teir) {
         super(id, dataProvider);
         this.teir = teir;
+    }
+
+    public ArkSettingDataView(String id, IDataProvider<Setting> dataProvider, Class teir, FeedbackPanel feedbackPanel) {
+        this(id, dataProvider, teir);
+        this.feedbackPanel = feedbackPanel;
     }
 
     private Panel createValuePanel(PropertyType type, IModel<Setting> model, String placeholder) {
@@ -69,6 +88,7 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                 valuePanel = new SettingFilePanel("propertyValue", model);
                 break;
         }
+        valuePanel.setOutputMarkupId(true);
         return valuePanel;
     }
 
@@ -97,7 +117,6 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                 currentModel.setObject(sss);
             }
             valuePanel = createValuePanel(setting.getPropertyType(), currentModel, setting.getPropertyValue());
-            valuePanel.setOutputMarkupId(true);
             item.add(valuePanel);
         } else if (teir == UserSpecificSetting.class) {
             try {
@@ -122,7 +141,6 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                     currentModel.setObject(uss);
                 }
                 valuePanel = createValuePanel(setting.getPropertyType(), currentModel, setting.getPropertyValue());
-                valuePanel.setOutputMarkupId(true);
                 item.add(valuePanel);
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
@@ -137,12 +155,25 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
         AjaxButton saveButton = new AjaxButton("save") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                if (!validateInput(finalValuePanel)) {
+                FeedbackMessages me = Session.get().getFeedbackMessages();
+
+                Iterator<FeedbackMessage> entryIter = me.iterator();
+                while (entryIter.hasNext()) {
+                    FeedbackMessage entry =
+                            (FeedbackMessage)entryIter.next();
+                    System.out.println("Message: " +
+                            entry.toString());
+                    entry.markRendered();
+                }
+                target.add(feedbackPanel);
+
+                if (!validateInput(finalValuePanel, currentModel.getObject() == null ? setting : currentModel.getObject())) {
                     target.add(this);
+                    target.add(feedbackPanel);
                     return;
                 }
-                getPropertyValueAsString(setting, finalValuePanel);
                 if (teir == SystemWideSetting.class) {
+                    getPropertyValueAsString(setting, finalValuePanel);
                     iArkSettingService.saveSetting(setting);
                 } else if (teir == StudySpecificSetting.class) {
                     if (currentModel.getObject() != null) {
@@ -157,8 +188,6 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                         iArkSettingService.saveSetting(s);
                     }
                 }
-                System.out.println("This: " + this.getClass());
-                System.out.println("Parent: " + this.getParent());
                 target.add(this);
                 target.add(finalValuePanel);
                 this.send(getWebPage(), Broadcast.DEPTH, new EventPayload(Constants.EVENT_RELOAD_LOGO_IMAGES, target));
@@ -195,16 +224,92 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
 
 
     //TODO: Add date handling.
-    private boolean validateInput(Panel finalValuePanel) {
+    private boolean validateInput(Panel finalValuePanel, Setting setting) {
+        String value = null;
+        if (finalValuePanel.get("propertyValue") instanceof FileUploadField) {
+            value = ((FileUploadField) finalValuePanel.get("propertyValue")).getValue();
+        } else {
+            value = ((TextField) finalValuePanel.get("propertyValue")).getValue();
+        }
         switch(finalValuePanel.getClass().getSimpleName()) {
             case "SettingNumberPanel":
-                return StringUtils.isNumericSpace(((TextField) finalValuePanel.get("propertyValue")).getValue());
+                if(!NumberUtils.isNumber(value)) {
+                    return false;
+                }
+                return executeValidators(iArkSettingService.getSettingValidatorsForSetting(setting), value);
             case "SettingCharacterPanel":
-                return true;
+                return executeValidators(iArkSettingService.getSettingValidatorsForSetting(setting), value);
             case "SettingFilePanel":
-                return true;
+                return executeValidators(iArkSettingService.getSettingValidatorsForSetting(setting), value);
             default:
                 return false;
         }
+    }
+
+    private boolean executeValidators(List<SettingValidator> settingValidators, String value) {
+        for(SettingValidator sv : settingValidators) {
+            switch (sv.getType()) {
+                case NUMBER_GREATER_THAN:
+                    int input = NumberUtils.toInt(value);
+                    int svValue = NumberUtils.toInt(sv.getValue());
+                    if (!(input > svValue)) {
+                        this.error("Number entered is less than or equal to " + sv.getValue());
+                        return false;
+                    }
+                    break;
+                case NUMBER_LESS_THAN:
+                    input = NumberUtils.toInt(value);
+                    svValue = NumberUtils.toInt(sv.getValue());
+                    if (!(input < svValue)) {
+                        this.error("Number entered is greater than or equal to " + sv.getValue());
+                        return false;
+                    }
+                    break;
+                case NUMBER_GREATER_OR_EQUAL_THAN:
+                    input = NumberUtils.toInt(value);
+                    svValue = NumberUtils.toInt(sv.getValue());
+                    if(!(input >= svValue)) {
+                        this.error("Number entered is less than " + sv.getValue());
+                        return false;
+                    }
+                    break;
+                case NUMBER_LESS_OR_EQUAL_THAN:
+                    input = NumberUtils.toInt(value);
+                    svValue = NumberUtils.toInt(sv.getValue());
+                    if(!(input <= svValue)) {
+                        this.error("Number entered is greater than " + sv.getValue());
+                        return false;
+                    }
+                    break;
+                case CHAR_NON_EMPTY:
+                    if(value.isEmpty()) {
+                        this.error("Text entered is empty");
+                        return false;
+                    }
+                    break;
+                case CHAR_MIN_LENGTH:
+                    if(value.length() < NumberUtils.toInt(sv.getValue())) {
+                        this.error("Text entered is less than the minimum required length");
+                        return false;
+                    }
+                case CHAR_MAX_LENGTH:
+                    if(value.length() > NumberUtils.toInt(sv.getValue())) {
+                        this.error("Text entered is longer than the maximum allowed length");
+                        return false;
+                    }
+                    break;
+                case FILE_EXISTS:
+                    break;
+                case DIR_EXISTS:
+                    if(Files.notExists(Paths.get(value))) {
+                        this.error("Directory entered doesn't exist.");
+                        return false;
+                    }
+                    break;
+                case FILE_NON_EMPTY:
+                    break;
+            }
+        }
+        return true;
     }
 }
