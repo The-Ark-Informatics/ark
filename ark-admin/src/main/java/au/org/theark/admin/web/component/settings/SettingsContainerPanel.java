@@ -136,7 +136,7 @@ public class SettingsContainerPanel extends AbstractContainerPanel<Setting> {
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO, teir);
+		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO, teir, feedBackPanel);
 		initialiseDataView();
 		settingDataView = searchResultsPanel.buildDataView(dataProvider);
 		settingDataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
@@ -158,14 +158,8 @@ public class SettingsContainerPanel extends AbstractContainerPanel<Setting> {
 			public Iterator<Setting> iterator(int first, int count) {
 				List<Setting> listCollection = new ArrayList<Setting>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-					System.out.println("LIST PRE");
 					listCollection = service.searchPageableSettings(model.getObject(), first, count);
-					for(Setting s : listCollection) {
-						System.out.println(s);
-					}
-					System.out.println("LIST POST");
 				}
-
 				return listCollection.iterator();
 			}
 		};
