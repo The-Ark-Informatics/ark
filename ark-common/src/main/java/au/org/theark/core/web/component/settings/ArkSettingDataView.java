@@ -31,6 +31,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -160,8 +163,6 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                         iArkSettingService.saveSetting(s);
                     }
                 }
-                System.out.println("This: " + this.getClass());
-                System.out.println("Parent: " + this.getParent());
                 target.add(this);
                 target.add(finalValuePanel);
                 this.send(getWebPage(), Broadcast.DEPTH, new EventPayload(Constants.EVENT_RELOAD_LOGO_IMAGES, target));
@@ -199,8 +200,12 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
 
     //TODO: Add date handling.
     private boolean validateInput(Panel finalValuePanel, Setting setting) {
-        System.out.println("Setting (Validate): " + setting);
-        String value = ((TextField) finalValuePanel.get("propertyValue")).getValue();
+        String value = null;
+        if (finalValuePanel.get("propertyValue") instanceof FileUploadField) {
+            value = ((FileUploadField) finalValuePanel.get("propertyValue")).getValue();
+        } else {
+            value = ((TextField) finalValuePanel.get("propertyValue")).getValue();
+        }
         switch(finalValuePanel.getClass().getSimpleName()) {
             case "SettingNumberPanel":
                 if(!NumberUtils.isNumber(value)) {
@@ -210,7 +215,7 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
             case "SettingCharacterPanel":
                 return executeValidators(iArkSettingService.getSettingValidatorsForSetting(setting), value);
             case "SettingFilePanel":
-                return true;
+                return executeValidators(iArkSettingService.getSettingValidatorsForSetting(setting), value);
             default:
                 return false;
         }
@@ -264,6 +269,9 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                 case FILE_EXISTS:
                     break;
                 case DIR_EXISTS:
+                    if(Files.notExists(Paths.get(value))) {
+                        return false;
+                    }
                     break;
                 case FILE_NON_EMPTY:
                     break;
