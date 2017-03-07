@@ -2,10 +2,7 @@ package au.org.theark.core.service;
 
 import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.config.entity.Setting;
-import au.org.theark.core.model.config.entity.SettingFile;
-import au.org.theark.core.model.config.entity.StudySpecificSetting;
-import au.org.theark.core.model.config.entity.SystemWideSetting;
+import au.org.theark.core.model.config.entity.*;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 
@@ -36,4 +33,6 @@ public interface IArkSettingService {
     public SettingFile getSettingFileFromSetting(String key, Study study, ArkUser arkUser);
 
     public String getSettingFilePath(SettingFile settingFile);
+
+    public List<SettingValidator> getSettingValidatorsForSetting(Setting setting);
 }

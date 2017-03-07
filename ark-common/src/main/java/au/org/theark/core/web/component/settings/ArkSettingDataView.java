@@ -10,6 +10,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IArkSettingService;
 import au.org.theark.core.util.EventPayload;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -29,6 +30,9 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by george on 31/1/17.
@@ -69,6 +73,7 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                 valuePanel = new SettingFilePanel("propertyValue", model);
                 break;
         }
+        valuePanel.setOutputMarkupId(true);
         return valuePanel;
     }
 
@@ -97,7 +102,6 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                 currentModel.setObject(sss);
             }
             valuePanel = createValuePanel(setting.getPropertyType(), currentModel, setting.getPropertyValue());
-            valuePanel.setOutputMarkupId(true);
             item.add(valuePanel);
         } else if (teir == UserSpecificSetting.class) {
             try {
@@ -122,7 +126,6 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                     currentModel.setObject(uss);
                 }
                 valuePanel = createValuePanel(setting.getPropertyType(), currentModel, setting.getPropertyValue());
-                valuePanel.setOutputMarkupId(true);
                 item.add(valuePanel);
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
@@ -137,12 +140,12 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
         AjaxButton saveButton = new AjaxButton("save") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                if (!validateInput(finalValuePanel)) {
+                if (!validateInput(finalValuePanel, currentModel.getObject() == null ? setting : currentModel.getObject())) {
                     target.add(this);
                     return;
                 }
-                getPropertyValueAsString(setting, finalValuePanel);
                 if (teir == SystemWideSetting.class) {
+                    getPropertyValueAsString(setting, finalValuePanel);
                     iArkSettingService.saveSetting(setting);
                 } else if (teir == StudySpecificSetting.class) {
                     if (currentModel.getObject() != null) {
@@ -195,16 +198,77 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
 
 
     //TODO: Add date handling.
-    private boolean validateInput(Panel finalValuePanel) {
+    private boolean validateInput(Panel finalValuePanel, Setting setting) {
+        System.out.println("Setting (Validate): " + setting);
+        String value = ((TextField) finalValuePanel.get("propertyValue")).getValue();
         switch(finalValuePanel.getClass().getSimpleName()) {
             case "SettingNumberPanel":
-                return StringUtils.isNumericSpace(((TextField) finalValuePanel.get("propertyValue")).getValue());
+                if(!NumberUtils.isNumber(value)) {
+                    return false;
+                }
+                return executeValidators(iArkSettingService.getSettingValidatorsForSetting(setting), value);
             case "SettingCharacterPanel":
-                return true;
+                return executeValidators(iArkSettingService.getSettingValidatorsForSetting(setting), value);
             case "SettingFilePanel":
                 return true;
             default:
                 return false;
         }
+    }
+
+    private boolean executeValidators(List<SettingValidator> settingValidators, String value) {
+        for(SettingValidator sv : settingValidators) {
+            switch (sv.getType()) {
+                case NUMBER_GREATER_THAN:
+                    int input = NumberUtils.toInt(value);
+                    int svValue = NumberUtils.toInt(sv.getValue());
+                    if (!(input > svValue)) {
+                        return false;
+                    }
+                    break;
+                case NUMBER_LESS_THAN:
+                    input = NumberUtils.toInt(value);
+                    svValue = NumberUtils.toInt(sv.getValue());
+                    if (!(input < svValue)) {
+                        return false;
+                    }
+                    break;
+                case NUMBER_GREATER_OR_EQUAL_THAN:
+                    input = NumberUtils.toInt(value);
+                    svValue = NumberUtils.toInt(sv.getValue());
+                    if(!(input >= svValue)) {
+                        return false;
+                    }
+                    break;
+                case NUMBER_LESS_OR_EQUAL_THAN:
+                    input = NumberUtils.toInt(value);
+                    svValue = NumberUtils.toInt(sv.getValue());
+                    if(!(input <= svValue)) {
+                        return false;
+                    }
+                    break;
+                case CHAR_NON_EMPTY:
+                    if(value.isEmpty()) {
+                        return false;
+                    }
+                    break;
+                case CHAR_MIN_LENGTH:
+                    if(value.length() < NumberUtils.toInt(sv.getValue())) {
+                        return false;
+                    }
+                case CHAR_MAX_LENGTH:
+                    if(value.length() > NumberUtils.toInt(sv.getValue())) {
+                        return false;
+                    }
+                    break;
+                case FILE_EXISTS:
+                    break;
+                case DIR_EXISTS:
+                    break;
+                case FILE_NON_EMPTY:
+                    break;
+            }
+        }
+        return true;
     }
 }
