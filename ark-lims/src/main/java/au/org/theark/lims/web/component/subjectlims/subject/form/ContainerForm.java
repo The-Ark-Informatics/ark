@@ -35,8 +35,9 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.form.AbstractContainerForm;
-import au.org.theark.lims.model.vo.LimsVO;
+
 
 /**
  * @author cellis

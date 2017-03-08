@@ -22,14 +22,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -73,27 +79,31 @@ import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
 import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.BiospecimenCustomDataVO;
+import au.org.theark.core.vo.BiospecimenLocationVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.EditModeButtonsPanel;
 import au.org.theark.core.web.component.panel.ConfirmationAnswer;
 import au.org.theark.core.web.component.panel.YesNoPanel;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
-import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
-import au.org.theark.lims.model.vo.BiospecimenLocationVO;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.barcode.DataMatrixBarcodeImage;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationDetailPanel;
-import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataDataViewPanel;
 import au.org.theark.lims.web.component.biotransaction.BioTransactionListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenButtonsPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenCustomDataDataViewPanel;
 
 /**
  * Detail form for Biospecimen, as displayed within a modal window
@@ -101,10 +111,10 @@ import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.Biospecimen
  * @author elam
  * @author cellis
  */
-public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> {
+public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 
 	private static final long									serialVersionUID	= 2727419197330261916L;
-	private static final Logger								log					= LoggerFactory.getLogger(BiospecimenModalDetailForm.class);
+	private static final Logger								log					= LoggerFactory.getLogger(BiospecimenDataEntryModalDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>							iArkCommonService;
 
@@ -149,7 +159,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private Panel											biospecimenLocationPanel;
 	private WebMarkupContainer								bioTransactionDetailWmc;
 	private Panel											bioTransactionListPanel;
-	private Panel											biospecimenCFDataEntryPanel;
 	private BiospecimenButtonsPanel							biospecimenbuttonsPanel;
 	private ModalWindow										modalWindow;
 	private AjaxLink<Date>									useCollectionDate;
@@ -158,7 +167,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private String 								    		modalText ="<p><font color=\"blue\">Deleting this biospecimen will also delete number biospecimen linked as transaction(s).</font></p>"
 															+ "<p></p>"
 															+ "<p><font color=\"red\">[Txid(s)(txs).]</font></p>";
-	private BiospecimenModalDetailForm 						me;
+	private BiospecimenDataEntryModalDetailForm 			me;
+	private Panel											biospecimenCFDataEntryPanel;
+	private WebMarkupContainer								dataEntryWMC;  
+	private AjaxPagingNavigator						        dataEntryNavigator;  
+	private DropDownChoice<CustomFieldCategory>				customeFieldCategoryDdc;
 	/**
 	 * Constructor
 	 * 
@@ -168,7 +181,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 * @param modalWindow
 	 * @param listDetailPanel
 	 */
-	public BiospecimenModalDetailForm(String id, FeedbackPanel feedBackPanel, final ArkCrudContainerVO arkCrudContainerVo, final ModalWindow modalWindow, final CompoundPropertyModel<LimsVO> cpModel) {
+	public BiospecimenDataEntryModalDetailForm(String id, FeedbackPanel feedBackPanel, final ArkCrudContainerVO arkCrudContainerVo, final ModalWindow modalWindow, final CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		me=this;
 		this.modalWindow = modalWindow;
@@ -243,7 +256,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				processOrAliquot(target, au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_ALIQUOTING, "Sub-aliquot of: ");
 
 				// Go straight into edit mode
-				onViewEdit(target, BiospecimenModalDetailForm.this);
+				onViewEdit(target, BiospecimenDataEntryModalDetailForm.this);
 			}
 
 			@Override
@@ -251,7 +264,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				onCloneBiospecimen(target);
 
 				// Go straight into edit mode
-				onViewEdit(target, BiospecimenModalDetailForm.this);
+				onViewEdit(target, BiospecimenDataEntryModalDetailForm.this);
 			}
 
 			@Override
@@ -275,7 +288,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				processOrAliquot(target, au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING, "Processed from: ");
 
 				// Go straight into edit mode
-				onViewEdit(target, BiospecimenModalDetailForm.this);
+				onViewEdit(target, BiospecimenDataEntryModalDetailForm.this);
 			}
 
 			@Override
@@ -310,17 +323,26 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 * TODO : Trav investigate how this happens on batch/allocate/process
 	 * @return
 	 */
-	private boolean initialiseBiospecimenCFDataEntry() {
-		boolean replacePanel = false;
-		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-		if (!(biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel)) {
-			CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
-			bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
-			bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
-			biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
-			replacePanel = true;
+	private void initialiseBiospecimenCFDataEntry(CustomFieldCategory customFieldCategory) {
+		
+		BiospecimenCustomDataDataViewPanel local_bioSpecimenCFDataEntryPanel;
+		BiospecimenCustomDataVO biospecimenCustomDataVO=cpModel.getObject().getBiospecimenCustomDataVO();
+		biospecimenCustomDataVO.setBiospecimen(cpModel.getObject().getBiospecimen());
+		biospecimenCustomDataVO.setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
+		if(customFieldCategory!=null){
+			local_bioSpecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel",new CompoundPropertyModel<BiospecimenCustomDataVO>(biospecimenCustomDataVO)).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customFieldCategory);
+		}else{
+			local_bioSpecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", new CompoundPropertyModel<BiospecimenCustomDataVO>(biospecimenCustomDataVO)).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),null);
 		}
-		return replacePanel;
+		dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", local_bioSpecimenCFDataEntryPanel.getDataView()) {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onAjaxEvent(AjaxRequestTarget target) {
+				target.add(dataEntryWMC);
+			}
+		};
+		biospecimenCFDataEntryPanel = local_bioSpecimenCFDataEntryPanel;
+		
 	}
 
 	private boolean initialiseBioTransactionListPanel() {
@@ -545,12 +567,49 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		barcodedChkBox.setEnabled(false);
 
 		initialiseBarcodeImage();
-
-		initialiseBiospecimenCFDataEntry();
 		initialiseBioTransactionListPanel();
 		initialiseBiospecimenLocationPanel();
 		initialiseBiospecimenButtonsPanel();
 		initDeleteModelWindow();
+		
+		Collection<CustomFieldCategory> customFieldCategoryCollection=getOnlyAssignedCategoryListInStudyByCustomFieldType();
+		List<CustomFieldCategory> customFieldCatLst=CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories((List<CustomFieldCategory>)customFieldCategoryCollection);
+		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID){
+						@Override
+						public Object getDisplayValue(Object object) {
+						CustomFieldCategory cuscat=(CustomFieldCategory)object;
+							return CustomFieldCategoryOrderingHelper.getInstance().preTextDecider(cuscat)+ super.getDisplayValue(object);
+						}
+		};
+		customeFieldCategoryDdc = new DropDownChoice<CustomFieldCategory>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY, customFieldCatLst, customfieldCategoryRenderer);
+		customeFieldCategoryDdc.setOutputMarkupId(true);
+		customeFieldCategoryDdc.setNullValid(true);
+		customeFieldCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//Remove
+				dataEntryWMC.remove(biospecimenCFDataEntryPanel);
+				dataEntryWMC.remove(dataEntryNavigator);
+				arkCrudContainerVo.getDetailPanelFormContainer().remove(dataEntryWMC);
+				//Create
+				if(customeFieldCategoryDdc.getModelObject()!=null){
+					initialiseBiospecimenCFDataEntry(customeFieldCategoryDdc.getModelObject());
+				}
+				//Add
+				dataEntryWMC.add(biospecimenCFDataEntryPanel);
+				dataEntryWMC.add(dataEntryNavigator);
+				arkCrudContainerVo.getDetailPanelFormContainer().add(dataEntryWMC);
+				//target
+				target.add(biospecimenCFDataEntryPanel);
+				target.add(dataEntryNavigator);
+				target.add(dataEntryWMC);
+			}
+		});
+		
+		dataEntryWMC = new WebMarkupContainer("dataEntryWMC");
+		dataEntryWMC.setOutputMarkupId(true);
+		
+		initialiseBiospecimenCFDataEntry(customeFieldCategoryDdc.getModelObject());
 
 		attachValidators();
 		addComponents();
@@ -738,13 +797,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 //from this bioTransactionDetailWmc.add(treatmentTypeDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(concentrationTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(amountLbl);
-
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionDetailWmc);
-
-		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenCFDataEntryPanel);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionListPanel);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenLocationPanel);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(customeFieldCategoryDdc);
 		buttonsPanelWMC.add(confirmModal);
+		dataEntryWMC.add(biospecimenCFDataEntryPanel);
+		dataEntryWMC.add(dataEntryNavigator);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(dataEntryWMC);
+		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
@@ -897,9 +958,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				}
 	
 				// refresh the custom field data entry panel (if necessary)
-				if (initialiseBiospecimenCFDataEntry()) {
-					arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
-				}
+				//if (initialiseBiospecimenCFDataEntry(cpModel.getObject().getCustomFieldCategory())) {
+					//arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
+					arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(dataEntryWMC);
+				//}
 	
 				// refresh the bio transactions (if necessary)
 				if (initialiseBioTransactionListPanel()) {
@@ -970,6 +1032,66 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			return false;
 		}
 	}
+	
+	/**
+	 * Get custom field category collection from model.
+	 * @return
+	 */
+	private Collection<CustomFieldCategory> getOnlyAssignedCategoryListInStudyByCustomFieldType(){
+		
+		/*Study study =cpModel.getObject().getBioCollection().getStudy();
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY);
+		
+		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOSPECIMEN);
+		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
+		try {
+			customFieldCategoryCollection =  iArkCommonService.getAvailableAllCategoryListInStudyByCustomFieldType(study,arkFunction, customFieldType);
+		} catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return customFieldCategoryCollection;*/
+		Study study =cpModel.getObject().getBiospecimen().getStudy();
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
+		
+		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOSPECIMEN);
+		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
+		try {
+			customFieldCategoryCollection =  iArkCommonService.getCategoriesListInCustomFieldsByCustomFieldType(study, arkFunction, customFieldType);
+			customFieldCategoryCollection=sortLst(remeoveDuplicates((List<CustomFieldCategory>)customFieldCategoryCollection));
+		} catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return customFieldCategoryCollection;
+	}
+	
+	/**
+	 * Sort custom field list according to the order number.
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> sortLst(List<CustomFieldCategory> customFieldLst){
+		//sort by order number.
+		Collections.sort(customFieldLst, new Comparator<CustomFieldCategory>(){
+		    public int compare(CustomFieldCategory custFieldCategory1, CustomFieldCategory custFieldCatCategory2) {
+		        return custFieldCategory1.getName().compareTo(custFieldCatCategory2.getName());
+		    }
+		});
+				return customFieldLst;
+	}
+	/**
+	 * Remove duplicates from list
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> remeoveDuplicates(List<CustomFieldCategory> customFieldLst){
+		Set<CustomFieldCategory> cusfieldCatSet=new HashSet<CustomFieldCategory>();
+		List<CustomFieldCategory> cusfieldCatLst=new ArrayList<CustomFieldCategory>();
+		cusfieldCatSet.addAll(customFieldLst);
+		cusfieldCatLst.addAll(cusfieldCatSet);
+				return cusfieldCatLst;
+	}
 
 	/**
 	 * Takes all details of a biospecimen, copies to a new Biospecimen, then allows editing of details before save
@@ -1028,7 +1150,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
 				bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
 				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
-				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
+				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null,cpModel.getObject().getCustomFieldCategory());
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
 
 				// refresh the bioTransaction panel
@@ -1131,7 +1253,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
 				bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
 				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
-				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
+				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null,cpModel.getObject().getCustomFieldCategory());
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
 				// refresh the bioTransaction panel
 				initialiseBioTransactionListPanel();

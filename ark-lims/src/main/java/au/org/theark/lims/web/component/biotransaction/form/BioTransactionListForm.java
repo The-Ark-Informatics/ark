@@ -38,9 +38,9 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.AccessRequest;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 

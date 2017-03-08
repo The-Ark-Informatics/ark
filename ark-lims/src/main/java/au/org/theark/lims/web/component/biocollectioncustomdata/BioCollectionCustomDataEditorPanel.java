@@ -40,7 +40,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
 import au.org.theark.core.web.component.customfield.Constants;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
+
 import au.org.theark.lims.web.component.biocollectioncustomdata.form.CustomDataEditorForm;
 
 

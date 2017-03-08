@@ -719,7 +719,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 
 	@Override
 	public List<CustomFieldCategory> getCategoriesListInCustomFieldsByCustomFieldType(Study study, ArkFunction arkFunction,CustomFieldType customFieldType){
-		List<CustomFieldCategory> customFieldCategoryList= new ArrayList<CustomFieldCategory>();
+		/*List<CustomFieldCategory> customFieldCategoryList= new ArrayList<CustomFieldCategory>();
 		Criteria criteria = getSession().createCriteria(CustomField.class);
 		criteria.add(Restrictions.eq("customFieldType", customFieldType));
 		criteria.add(Restrictions.eq("arkFunction", arkFunction));
@@ -729,6 +729,21 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 			if(customField.getCustomFieldCategory()!=null){
 			customFieldCategoryList.add(customField.getCustomFieldCategory());
 			}
+		}
+		return customFieldCategoryList;*/
+		List<CustomFieldCategory> customFieldCategoryList= new ArrayList<CustomFieldCategory>();
+		Criteria criteria = getSession().createCriteria(CustomField.class)
+				.createAlias("customFieldCategory", "customFieldCategory")
+				.add(Restrictions.isNotNull("customFieldCategory"))
+				.add(Restrictions.eq("customFieldType", customFieldType))
+				.add(Restrictions.eq("arkFunction", arkFunction))
+				.add(Restrictions.eq("study", study));
+		List<CustomField> customFieldList = (List<CustomField>) criteria.list();
+		for (CustomField customField : customFieldList) {
+			//remove additional checking.
+		//	if(customField.getCustomFieldCategory()!=null){
+			customFieldCategoryList.add(customField.getCustomFieldCategory());
+		//	}
 		}
 		return customFieldCategoryList;
 	}

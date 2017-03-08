@@ -18,8 +18,13 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biocollection.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -55,11 +60,11 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.BioCollectionCustomDataVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
-import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.button.NumberOfLabelsPanel;
@@ -152,7 +157,7 @@ public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailFo
 		datePicker.bind(collectionDateTxtFld);
 		collectionDateTxtFld.add(datePicker); 
 		
-		Collection<CustomFieldCategory> customFieldCategoryCollection=getAvailableAllCategoryListInStudyByCustomFieldType();
+		Collection<CustomFieldCategory> customFieldCategoryCollection=getOnlyAssignedCategoryListInStudyByCustomFieldType();
 		List<CustomFieldCategory> customFieldCatLst=CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories((List<CustomFieldCategory>)customFieldCategoryCollection);
 		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID){
 						@Override
@@ -232,10 +237,13 @@ public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailFo
 	
 	private void initialiseBioCollectionCFDataEntry(CustomFieldCategory customFieldCategory) {
 		BioCollectionCustomDataDataViewPanel local_bioCollectionCFDataEntryPanel;
+		BioCollectionCustomDataVO bioCollectionCustomDataVO=cpModel.getObject().getBioCollectionCustomDataVO();
+		bioCollectionCustomDataVO.setBioCollection(cpModel.getObject().getBioCollection());
+		bioCollectionCustomDataVO.setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
 		if(customFieldCategory!=null){
-			local_bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel", changeDataModel(cpModel.getObject())).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customFieldCategory);
+			local_bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel",new CompoundPropertyModel<BioCollectionCustomDataVO>(bioCollectionCustomDataVO)).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customFieldCategory);
 		}else{
-			local_bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel", changeDataModel(cpModel.getObject())).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),null);
+			local_bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel", new CompoundPropertyModel<BioCollectionCustomDataVO>(bioCollectionCustomDataVO)).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),null);
 		}
 		dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", local_bioCollectionCFDataEntryPanel.getDataView()) {
 			private static final long	serialVersionUID	= 1L;
@@ -246,17 +254,6 @@ public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailFo
 		};
 		bioCollectionCFDataEntryPanel = local_bioCollectionCFDataEntryPanel;
 		
-	}
-	/**
-	 * Changed data model
-	 * @param limsVO
-	 * @return
-	 */
-	private CompoundPropertyModel<BioCollectionCustomDataVO> changeDataModel(LimsVO limsVO){
-		CompoundPropertyModel<BioCollectionCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BioCollectionCustomDataVO>(new BioCollectionCustomDataVO());		
-		bioCFDataCpModel.getObject().setBioCollection(limsVO.getBioCollection());
-		bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
-		return bioCFDataCpModel;
 	}
 
 	protected void attachValidators() {
@@ -367,9 +364,9 @@ public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailFo
 	 * Get custom field category collection from model.
 	 * @return
 	 */
-	private Collection<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(){
+	private Collection<CustomFieldCategory> getOnlyAssignedCategoryListInStudyByCustomFieldType(){
 		
-		Study study =cpModel.getObject().getBioCollection().getStudy();
+		/*Study study =cpModel.getObject().getBioCollection().getStudy();
 		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY);
 		
 		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOCOLLECTION);
@@ -380,7 +377,47 @@ public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailFo
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return customFieldCategoryCollection;*/
+		Study study =cpModel.getObject().getBioCollection().getStudy();
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
+		
+		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOCOLLECTION);
+		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
+		try {
+			customFieldCategoryCollection =  iArkCommonService.getCategoriesListInCustomFieldsByCustomFieldType(study, arkFunction, customFieldType);
+			customFieldCategoryCollection=sortLst(remeoveDuplicates((List<CustomFieldCategory>)customFieldCategoryCollection));
+		} catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return customFieldCategoryCollection;
+	}
+	
+	/**
+	 * Sort custom field list according to the order number.
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> sortLst(List<CustomFieldCategory> customFieldLst){
+		//sort by order number.
+		Collections.sort(customFieldLst, new Comparator<CustomFieldCategory>(){
+		    public int compare(CustomFieldCategory custFieldCategory1, CustomFieldCategory custFieldCatCategory2) {
+		        return custFieldCategory1.getName().compareTo(custFieldCatCategory2.getName());
+		    }
+		});
+				return customFieldLst;
+	}
+	/**
+	 * Remove duplicates from list
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> remeoveDuplicates(List<CustomFieldCategory> customFieldLst){
+		Set<CustomFieldCategory> cusfieldCatSet=new HashSet<CustomFieldCategory>();
+		List<CustomFieldCategory> cusfieldCatLst=new ArrayList<CustomFieldCategory>();
+		cusfieldCatSet.addAll(customFieldLst);
+		cusfieldCatLst.addAll(cusfieldCatSet);
+				return cusfieldCatLst;
 	}
 	
 }

@@ -36,8 +36,11 @@ import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
+
 
 public interface IBiospecimenDao {
 	/**
@@ -127,7 +130,7 @@ public interface IBiospecimenDao {
 
 	public long getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction);
 	
-	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count);
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory,CustomFieldType customFieldType,int first, int count);
 
 	public void createBiospecimenCustomFieldData(BiospecimenCustomFieldData biospecimanCFData);
 

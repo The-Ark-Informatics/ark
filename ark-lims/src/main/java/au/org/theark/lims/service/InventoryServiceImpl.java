@@ -19,9 +19,9 @@ import au.org.theark.core.model.lims.entity.StudyInvSite;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.BiospecimenLocationVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.model.dao.IInventoryDao;
-import au.org.theark.lims.model.vo.BiospecimenLocationVO;
-import au.org.theark.lims.model.vo.LimsVO;
 
 /**
  * @author cellis

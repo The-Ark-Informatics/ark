@@ -335,9 +335,6 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	 * This count can be based on CustomFieldDisplay alone (i.e. does not need left join to BioCollectionCustomFieldData)
 	 */
 	public long getBioCollectionCustomFieldDataCount(BioCollection bioCollectionCriteria, ArkFunction arkFunction) {
-		//Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		//criteria.createAlias("customField", "cfield");
-//		criteria.add(Restrictions.eq("cfield.study", bioCollectionCriteria.getStudy()));
 		
 		// Added to allow child studies to inherit parent defined custom fields
 		List studyList = new ArrayList();
@@ -345,11 +342,6 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		if(bioCollectionCriteria.getStudy().getParentStudy() != null && bioCollectionCriteria.getStudy().getParentStudy() != bioCollectionCriteria.getStudy()) {
 			studyList.add(bioCollectionCriteria.getStudy().getParentStudy());
 		}
-		//criteria.add(Restrictions.in("cfield.study", studyList));
-		//criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
-		//criteria.setProjection(Projections.rowCount());
-		//return (Long) criteria.uniqueResult();
-		
 		
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customField", "cfield",JoinType.LEFT_OUTER_JOIN);

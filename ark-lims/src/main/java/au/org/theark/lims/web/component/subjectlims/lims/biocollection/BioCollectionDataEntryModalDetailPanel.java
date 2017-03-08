@@ -24,8 +24,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.form.BioCollectionDataEntryModalDetailForm;
 
 public class BioCollectionDataEntryModalDetailPanel extends Panel {

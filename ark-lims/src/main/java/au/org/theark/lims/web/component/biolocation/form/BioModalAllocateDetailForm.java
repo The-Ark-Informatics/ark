@@ -31,8 +31,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.session.ArkSession;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.inventory.panel.box.display.GridBoxPanel;
 import au.org.theark.lims.web.component.inventory.tree.AllocationLinkTree;
 

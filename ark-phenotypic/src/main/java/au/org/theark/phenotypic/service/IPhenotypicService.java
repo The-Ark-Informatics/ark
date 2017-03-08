@@ -457,5 +457,7 @@ public interface IPhenotypicService {
 	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria);
 	
 	public boolean isEncodedValue(PhenoDataSetField phenoDataSetField, String value);
+	
+	public boolean isSameNameFieldGroupExsistsForTheStudy(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO);
 }
 

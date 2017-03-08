@@ -780,10 +780,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenoCollectionCount(criteria);
 	}
 
-	public List<PhenoDataSetCollection> searchPageablePhenoCollections(
-			PhenoDataCollectionVO criteria, int first, int count) {
-		return phenotypicDao.searchPageablePhenoCollection(criteria, first,
-				count);
+	public List<PhenoDataSetCollection> searchPageablePhenoCollections(	PhenoDataCollectionVO criteria, int first, int count) {
+		return phenotypicDao.searchPageablePhenoCollection(criteria, first,	count);
 	}
 	
 	public List<PhenoDataSetField> getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroup)
@@ -1536,6 +1534,12 @@ try {
 	@Override
 	public boolean isEncodedValue(PhenoDataSetField phenoDataSetField, String value) {
 		return phenotypicDao.isInEncodedValues(phenoDataSetField, value);
+	}
+
+	@Override
+	public boolean isSameNameFieldGroupExsistsForTheStudy(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO) {
+		return phenotypicDao.isSameNameFieldGroupExsistsForTheStudy(phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getName(),phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getStudy()
+				,phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getArkFunction());
 	}
 	
 

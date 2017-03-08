@@ -20,7 +20,6 @@ package au.org.theark.lims.web.component.subjectlims.lims.biospecimen;
 
 import org.apache.wicket.Session;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -28,22 +27,22 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.web.component.panel.subject.SubjectDetailPanel;
-import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenModalDetailForm;
+import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenDataEntryModalDetailForm;
 
-public class BiospecimenModalDetailPanel extends Panel {
+public class BiospecimenDataEntryModalDetailPanel extends Panel {
 
 	private static final long						serialVersionUID	= 1755709689461138709L;
 
 	private FeedbackPanel							detailFeedbackPanel;
 	private ModalWindow								modalWindow;
-	private BiospecimenModalDetailForm			detailForm;
+	private BiospecimenDataEntryModalDetailForm			detailForm;
 	private ArkCrudContainerVO						arkCrudContainerVo;
 
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 
-	public BiospecimenModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
+	public BiospecimenDataEntryModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
 		this.detailFeedbackPanel = initialiseFeedBackPanel();
 		this.setModalWindow(modalWindow);
@@ -67,7 +66,7 @@ public class BiospecimenModalDetailPanel extends Panel {
 		subjectDetailPanel.initialisePanel();
 		add(subjectDetailPanel);
 		
-		detailForm = new BiospecimenModalDetailForm("biospecimenModalDetailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
+		detailForm = new BiospecimenDataEntryModalDetailForm("biospecimenModalDetailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
 		detailForm.initialiseDetailForm();
 		add(detailFeedbackPanel);
 		add(detailForm);

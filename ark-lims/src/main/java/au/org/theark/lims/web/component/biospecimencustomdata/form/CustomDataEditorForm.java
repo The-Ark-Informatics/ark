@@ -28,8 +28,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.vo.BiospecimenCustomDataVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
 
 /**
