@@ -18,11 +18,13 @@
  ******************************************************************************/
 package au.org.theark.web.pages.reset;
 
+import au.org.theark.core.service.IArkCommonService;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.UrlRenderer;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,9 +47,10 @@ public class ResetPage<T> extends WebPage {
 	
 	private static final long	serialVersionUID	= -8767984428141993995L;
 	private FeedbackPanel		feedbackPanel;
-	private ContextImage			hostedByImage;
-	private ContextImage			productImage;
 	private ResetForm				resetForm;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 
 	public ResetPage() {
 		String protocol = new UrlRenderer(this.getRequest()).renderFullUrl(this.getRequest().getUrl()).split("://")[0];
@@ -65,16 +68,14 @@ public class ResetPage<T> extends WebPage {
 		feedbackPanel = new FeedbackPanel("feedbackMessage");
 		feedbackPanel.setOutputMarkupPlaceholderTag(true);
 		
-		hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
-		productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
 		resetForm = new ResetForm("resetForm", feedbackPanel, p);
 		addComponents();
 	}
 
 	private void addComponents() {
 		add(feedbackPanel);
-		add(hostedByImage);
-		add(productImage);
+		add(iArkCommonService.getHostedByImage());
+		add(iArkCommonService.getProductImage());
 		add(resetForm);
 	}
 }

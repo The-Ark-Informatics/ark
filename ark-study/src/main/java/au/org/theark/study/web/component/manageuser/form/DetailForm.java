@@ -348,7 +348,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				if(ldapuser!=null){
 					ldapuser.setArkUserRoleList(containerForm.getModelObject().getArkUserRoleList());
 					ldapuser.setArkUserEntity(arkUser);
-					ldapuser.setArkUserConfigs(containerForm.getModelObject().getArkUserConfigs());
 					ldapuser.setStudy(study);
 					@SuppressWarnings("unchecked")
 					List<ArkUserRole> arkUserRoleLst=iArkCommonService.getArkRoleListByUserAndStudy(ldapuser,ldapuser.getStudy());

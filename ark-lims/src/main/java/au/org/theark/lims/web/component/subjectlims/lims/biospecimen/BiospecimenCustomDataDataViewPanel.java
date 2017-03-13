@@ -76,7 +76,7 @@ public class BiospecimenCustomDataDataViewPanel extends Panel {
 	public BiospecimenCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage,CustomFieldCategory customFieldCategory) {	
 		initialiseDataView(customFieldCategory);
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getRowsPerPage());
 		}
 		
 		this.add(dataView);

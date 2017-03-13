@@ -330,9 +330,9 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 		biospecimenCustomDataVO.setBiospecimen(cpModel.getObject().getBiospecimen());
 		biospecimenCustomDataVO.setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
 		if(customFieldCategory!=null){
-			local_bioSpecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel",new CompoundPropertyModel<BiospecimenCustomDataVO>(biospecimenCustomDataVO)).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customFieldCategory);
+			local_bioSpecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel",new CompoundPropertyModel<BiospecimenCustomDataVO>(biospecimenCustomDataVO)).initialisePanel(iArkCommonService.getCustomFieldsPerPage(),customFieldCategory);
 		}else{
-			local_bioSpecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", new CompoundPropertyModel<BiospecimenCustomDataVO>(biospecimenCustomDataVO)).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),null);
+			local_bioSpecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", new CompoundPropertyModel<BiospecimenCustomDataVO>(biospecimenCustomDataVO)).initialisePanel(iArkCommonService.getCustomFieldsPerPage(),null);
 		}
 		dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", local_bioSpecimenCFDataEntryPanel.getDataView()) {
 			private static final long	serialVersionUID	= 1L;

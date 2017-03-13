@@ -123,7 +123,7 @@ public class SearchResultListPanel extends Panel {
 	 */
 	public PageableListView<Search> buildPageableListView(IModel iModel) {
 
-		PageableListView<Search> sitePageableListView = new PageableListView<Search>("searchList", iModel, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<Search> sitePageableListView = new PageableListView<Search>("searchList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

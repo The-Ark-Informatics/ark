@@ -56,8 +56,6 @@ public class BaseIntegrationTest extends TestCase {
 
     private transient static Logger log = LoggerFactory.getLogger(BaseIntegrationTest.class);
 
-    protected WicketTester tester;
-
     protected static FirefoxDriver driver;
     protected WebElement element;
 
@@ -113,9 +111,6 @@ public class BaseIntegrationTest extends TestCase {
     public void setup() {
         importBaseSQL();
         importLDIF();
-
-        tester = new WicketTester();
-        tester.startPage(LoginPage.class);
         driver.get("http://" + getHostIP() + ":8080/ark");
     }
 

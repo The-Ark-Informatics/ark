@@ -230,17 +230,17 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid=null; 
 			/*if(Constants.PEDIGREE_DATA.equalsIgnoreCase(containerForm.getModelObject().getUpload().getUploadType().getName())){
 				arkExcelWorkSheetAsGrid= new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
-						containerForm.getModelObject().getFileUpload(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType(),false);
+						containerForm.getModelObject().getFileUpload(), iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType(),false);
 			}else{
 				arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
-						containerForm.getModelObject().getFileUpload(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType());
+						containerForm.getModelObject().getFileUpload(), iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType());
 			}*/
 			if(Constants.PEDIGREE_DATA.equalsIgnoreCase(containerForm.getModelObject().getUpload().getUploadType().getName())){
 				arkExcelWorkSheetAsGrid= new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
-					containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType(), false);
+					containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells, iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType(), false);
 			}else{
 				arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
-					containerForm.getModelObject().getFileUpload(),insertRows, updateRows, errorCells, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType());
+					containerForm.getModelObject().getFileUpload(),insertRows, updateRows, errorCells, iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType());
 			}
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);

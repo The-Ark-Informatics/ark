@@ -18,12 +18,29 @@
  ******************************************************************************/
 package au.org.theark.web.pages.login;
 
+import au.org.theark.core.exception.ArkCheckSumNotSameException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.config.entity.SettingFile;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.service.IArkSettingService;
+import org.apache.commons.io.IOUtils;
+import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.image.NonCachingImage;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.cycle.RequestCycle;
 
 import au.org.theark.web.pages.Constants;
+import org.apache.wicket.request.resource.DynamicImageResource;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.StringValue;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * <p>
@@ -38,21 +55,17 @@ import au.org.theark.web.pages.Constants;
 public class LoginPage<T> extends WebPage {
 
 	private static final long			serialVersionUID	= -985615571643703296L;
-	
-	
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 
-	
 	public LoginPage() {
 		LoginForm form = new LoginForm("loginForm");
 		this.add(form);
 
-		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
-		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
-
 		// Add images
-		add(hostedByImage);
-		add(productImage);
+		add(iArkCommonService.getHostedByImage());
+		add(iArkCommonService.getProductImage());
 	}
 
 	@Override

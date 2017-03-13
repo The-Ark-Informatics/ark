@@ -102,6 +102,12 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 		
 		dataViewPanel = new BioCollectionCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(),customeFieldCategoryDdc.getModelObject());
 		
+<<<<<<< HEAD
+		dataViewPanel = new BioCollectionCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getRowsPerPage());
+
+		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
+=======
+>>>>>>> master
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {

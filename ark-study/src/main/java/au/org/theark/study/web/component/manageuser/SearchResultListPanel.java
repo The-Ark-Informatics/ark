@@ -86,7 +86,7 @@ public class SearchResultListPanel extends Panel {
 	public PageableListView<ArkUserVO> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
 		// This has to be populated earlier
 
-		PageableListView<ArkUserVO> pageableListView = new PageableListView<ArkUserVO>("userList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<ArkUserVO> pageableListView = new PageableListView<ArkUserVO>("userList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

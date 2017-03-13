@@ -100,7 +100,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 				customDataEditorForm.getDataViewWMC().remove(dataViewPanel);
 				customDataEditorForm.getDataViewWMC().remove(pageNavigator);
 				
-				dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customeFieldCategoryDdc.getModelObject());
+				dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), customeFieldCategoryDdc.getModelObject());
 				cpModel.getObject().setCustomFieldCategory(customeFieldCategoryDdc.getModelObject());
 				
 				customDataEditorForm.getDataViewWMC().add(dataViewPanel);
@@ -112,7 +112,9 @@ public class SubjectCustomDataEditorPanel extends Panel {
 				
 			}
 		});
-		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customeFieldCategoryDdc.getModelObject());
+		//dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null);
+		//initialise
+		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(),customeFieldCategoryDdc.getModelObject());
 		pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {

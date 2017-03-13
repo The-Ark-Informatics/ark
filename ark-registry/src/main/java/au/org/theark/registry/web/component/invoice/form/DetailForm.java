@@ -118,7 +118,7 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 
 		
 		dataView = processResults.buildDataView(processProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		

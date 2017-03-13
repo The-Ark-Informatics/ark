@@ -200,7 +200,7 @@ public class PhoneListPanel extends Panel {
 		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Valid From"), "validFrom"));
 		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Valid To"), "validTo"));
 		
-		DataTable exportTable = new DataTable("datatable", exportColumns, dataViewPhoneSubject.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		DataTable exportTable = new DataTable("datatable", exportColumns, dataViewPhoneSubject.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("Subject UID:");
 		headers.add("ID:");
@@ -230,7 +230,7 @@ public class PhoneListPanel extends Panel {
 	 */
 	private DataView<Phone> buildDataView(ArkDataProvider<Phone, IStudyService> phoneProvider) {
 
-		DataView<Phone> phoneListDataView = new DataView<Phone>("phoneList", phoneProvider, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		DataView<Phone> phoneListDataView = new DataView<Phone>("phoneList", phoneProvider, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -310,7 +310,7 @@ public class PhoneListPanel extends Panel {
 	 */
 	private DataView<PhoneSubjectVO> buildDataViewWithStudySubjectID(ArkDataProvider<PhoneSubjectVO, IStudyService> phoneProvider) {
 
-		DataView<PhoneSubjectVO> phoneListDataView = new DataView<PhoneSubjectVO>("phoneListWithSubjectID", subjectPhoneProvider, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		DataView<PhoneSubjectVO> phoneListDataView = new DataView<PhoneSubjectVO>("phoneListWithSubjectID", subjectPhoneProvider, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

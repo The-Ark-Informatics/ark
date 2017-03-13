@@ -249,7 +249,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		PhenoCollectionProvider.setCriteriaModel(cpModel);
 
 		dataView = buildDataView(PhenoCollectionProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 

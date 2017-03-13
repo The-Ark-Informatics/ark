@@ -192,7 +192,7 @@ public class SearchResultListPanel extends Panel {
 		columns.add(new ExportableTextColumn<CustomField>(Model.of("maxValue"), "maxValue"));
 		columns.add(new ExportableTextColumn<CustomField>(Model.of("missingValue"), "missingValue"));
 
-		DataTable table = new DataTable("datatable", columns, customFieldDataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		DataTable table = new DataTable("datatable", columns, customFieldDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("FIELD_NAME");
 		headers.add("FIELD_TYPE");

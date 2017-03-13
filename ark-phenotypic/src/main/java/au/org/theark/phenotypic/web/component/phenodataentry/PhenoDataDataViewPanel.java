@@ -68,7 +68,7 @@ public class PhenoDataDataViewPanel extends Panel {
 	public PhenoDataDataViewPanel initialisePanel(Integer numRowsPerPage,PhenoDataSetCategory phenoDataSetCategory) {	
 		initialiseDataView(phenoDataSetCategory);
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getRowsPerPage());
 		}
 		this.add(dataView);
 		return this;

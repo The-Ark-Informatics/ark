@@ -226,11 +226,9 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			*/
 			PhenoDataDataViewPanel phenoCFDataEntryPanel;
 			if(phenoDataSetCategory!=null){
-				//phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),phenoDataSetCategory);
-				phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),phenoDataSetCategory);
+				phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), phenoDataSetCategory);
 			}else{
-				 //phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),null);
-				phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),null);
+				 phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), null);
 			}
 			dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
 				private static final long	serialVersionUID	= 1L;

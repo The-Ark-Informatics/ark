@@ -131,7 +131,7 @@ public class BioTransactionListPanel extends Panel {
 		bioTransactionProvider.setCriteriaModel(cpModel);
 
 		dataView = buildDataView(bioTransactionProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 
