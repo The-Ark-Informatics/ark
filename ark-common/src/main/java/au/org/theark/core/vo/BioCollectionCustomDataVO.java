@@ -16,12 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.lims.model.vo;
+package au.org.theark.core.vo;
 
 import java.io.Serializable;
 
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.web.component.customfield.dataentry.CustomDataVO;
 
 public class BioCollectionCustomDataVO extends CustomDataVO<BioCollectionCustomFieldData> implements Serializable {
@@ -31,9 +32,15 @@ public class BioCollectionCustomDataVO extends CustomDataVO<BioCollectionCustomF
 	
 	protected BioCollection bioCollection;
 	
+	private BioCollectionCustomFieldData bioCollectionCustomFieldData;
+	
+	private CustomFieldCategory customFieldCategory;
+		
 	public BioCollectionCustomDataVO() {
 		super();
 		bioCollection = new BioCollection();
+		bioCollectionCustomFieldData=new BioCollectionCustomFieldData();
+		
 	}
 
 	public BioCollection getBioCollection() {
@@ -42,6 +49,21 @@ public class BioCollectionCustomDataVO extends CustomDataVO<BioCollectionCustomF
 
 	public void setBioCollection(BioCollection bioCollection) {
 		this.bioCollection = bioCollection;
+	}
+	
+	public CustomFieldCategory getCustomFieldCategory() {
+		return customFieldCategory;
+	}
+	public void setCustomFieldCategory(CustomFieldCategory customFieldCategory) {
+		this.customFieldCategory = customFieldCategory;
+	}
+
+	public BioCollectionCustomFieldData getBioCollectionCustomFieldData() {
+		return bioCollectionCustomFieldData;
+	}
+
+	public void setBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCustomFieldData) {
+		this.bioCollectionCustomFieldData = bioCollectionCustomFieldData;
 	}
 
 }

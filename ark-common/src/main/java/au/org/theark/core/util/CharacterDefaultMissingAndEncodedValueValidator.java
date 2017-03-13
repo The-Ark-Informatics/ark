@@ -15,7 +15,7 @@ import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
 
-public class CharactorDefaultMissingAndEncodedValueValidator  extends AbstractFormValidator{
+public class CharacterDefaultMissingAndEncodedValueValidator  extends AbstractFormValidator{
 
 	private static final long serialVersionUID = 1L;
 	/** form components to be checked. */
@@ -29,7 +29,7 @@ public class CharactorDefaultMissingAndEncodedValueValidator  extends AbstractFo
 	 * @param dateValidFrom
 	 * @param dateValidTo
 	 */
-    public CharactorDefaultMissingAndEncodedValueValidator(TextArea<?> encoded, TextField<?> missingValue,TextField<?> defaultValue,
+    public CharacterDefaultMissingAndEncodedValueValidator(TextArea<?> encoded, TextField<?> missingValue,TextField<?> defaultValue,
     		String lableComponent1,String  lableComponent2,String  lableComponent3) {
         components = new AbstractTextComponent<?>[] { encoded, missingValue,defaultValue};
         labComp1=lableComponent1;
@@ -51,15 +51,15 @@ public class CharactorDefaultMissingAndEncodedValueValidator  extends AbstractFo
 	        if (encodedLstContainMissingValue(encodedValuLst, missingValue)){
 	        	ValidationError ve = new ValidationError();
 	        	ve.setVariable("encoded",labComp1);
-	        	ve.setVariable("missingCharactorValue",labComp2);
-	        	ve.addMessageKey("charactorMissingValueInEncodedValue.validate.error");
+	        	ve.setVariable("missingCharacterValue",labComp2);
+	        	ve.addMessageKey("characterMissingValueInEncodedValue.validate.error");
 	        	components[0].error((IValidationError) ve);
 	        }
 	        if(!encodedLstContaindefaultValue(encodedValuLst, defaultValue)){
 	        	ValidationError ve = new ValidationError();
 	        	ve.setVariable("encoded",labComp1);
-	        	ve.setVariable("defaultCharactorValue",labComp3);
-	        	ve.addMessageKey("charactorDefaultValueInEncodedValue.validate.error");
+	        	ve.setVariable("defaultCharacterValue",labComp3);
+	        	ve.addMessageKey("characterDefaultValueInEncodedValue.validate.error");
 	        	components[0].error((IValidationError) ve);
 	        }
        }

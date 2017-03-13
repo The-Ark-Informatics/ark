@@ -16,34 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.lims.web.component.subjectlims.lims.biospecimen;
+package au.org.theark.lims.web.component.subjectlims.lims.biocollection;
 
-import org.apache.wicket.Session;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.web.component.panel.subject.SubjectDetailPanel;
-import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenModalDetailForm;
+import au.org.theark.core.vo.LimsVO;
+import au.org.theark.lims.web.component.subjectlims.lims.biocollection.form.BioCollectionDataEntryModalDetailForm;
 
-public class BiospecimenModalDetailPanel extends Panel {
+public class BioCollectionDataEntryModalDetailPanel extends Panel {
 
-	private static final long						serialVersionUID	= 1755709689461138709L;
+	private static final long						serialVersionUID	= -8745753185256494362L;
 
 	private FeedbackPanel							detailFeedbackPanel;
 	private ModalWindow								modalWindow;
-	private BiospecimenModalDetailForm			detailForm;
+	private BioCollectionDataEntryModalDetailForm			detailForm;
 	private ArkCrudContainerVO						arkCrudContainerVo;
 
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 
-	public BiospecimenModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
+	public BioCollectionDataEntryModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
 		this.detailFeedbackPanel = initialiseFeedBackPanel();
 		this.setModalWindow(modalWindow);
@@ -54,30 +49,16 @@ public class BiospecimenModalDetailPanel extends Panel {
 
 	protected FeedbackPanel initialiseFeedBackPanel() {
 		/* Feedback Panel */
-		Session.get().getFeedbackMessages().clear();
 		detailFeedbackPanel = new FeedbackPanel("detailFeedback");
 		detailFeedbackPanel.setOutputMarkupId(true);
 		return detailFeedbackPanel;
 	}
 
 	public void initialisePanel() {
-		// Always show minimal Subject detail at top of form
-		LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getBiospecimen().getLinkSubjectStudy();
-		SubjectDetailPanel subjectDetailPanel = new SubjectDetailPanel("subjectDetailPanel", new Model<LinkSubjectStudy>(linkSubjectStudy));
-		subjectDetailPanel.initialisePanel();
-		add(subjectDetailPanel);
-		
-		detailForm = new BiospecimenModalDetailForm("biospecimenModalDetailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
+		detailForm = new BioCollectionDataEntryModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
 		detailForm.initialiseDetailForm();
 		add(detailFeedbackPanel);
 		add(detailForm);
-	}
-
-	/**
-	 * @return the modalWindow
-	 */
-	public ModalWindow getModalWindow() {
-		return modalWindow;
 	}
 
 	/**
@@ -87,4 +68,12 @@ public class BiospecimenModalDetailPanel extends Panel {
 	public void setModalWindow(ModalWindow modalWindow) {
 		this.modalWindow = modalWindow;
 	}
+
+	/**
+	 * @return the modalWindow
+	 */
+	public ModalWindow getModalWindow() {
+		return modalWindow;
+	}
+
 }

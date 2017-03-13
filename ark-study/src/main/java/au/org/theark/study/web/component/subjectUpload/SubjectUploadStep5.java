@@ -38,7 +38,7 @@ public class SubjectUploadStep5 extends AbstractWizardStepPanel {
 	private static final long	serialVersionUID	= -6803600838428204753L;
 	private Form<UploadVO>						containerForm;
 	private  WebMarkupContainer					progressPanel;
-	private org.wicketstuff.progressbar.ProgressBar progressBar;
+//	private org.wicketstuff.progressbar.ProgressBar progressBar;
 
 	public SubjectUploadStep5(String id, Form<UploadVO> containerForm) {
 		super(id, "Step 5/5: Data Upload Commenced",
@@ -47,13 +47,22 @@ public class SubjectUploadStep5 extends AbstractWizardStepPanel {
 		this.containerForm = containerForm;
 		progressPanel=new WebMarkupContainer("progressPanel");
 		progressPanel.setOutputMarkupId(true);
-		progressBar = new ProgressBar("bar", new ProgressionModel() {
-	        protected Progression getProgression() {
-	            return new Progression(containerForm.getModelObject().getProgress());
-	        }
-	    });
-		progressBar.setWidth(1000);
-		progressPanel.add(progressBar);
+//		progressBar = new ProgressBar("bar", new ProgressionModel() {
+//	 		private static final long serialVersionUID = 1L;
+//
+//			protected Progression getProgression() {
+//	            return new Progression(containerForm.getModelObject().getProgress());
+//	        }
+//	    });
+//		progressBar.setWidth(1000);
+		//(2017-01-13)For the moment progress bar has been hidden from the page.
+		//Because it will shows correct value for the custom filed data but not for the rest of the values any more
+		//Later when time permit hope to revisit for the issue and complete.
+		// Because of the exception ( No Page found for component [ProgressBar [Component id = bar]]) 
+		//I think I haven't properly integrated the progress bar.
+		//I guess it should be in different page "AbstractWizardForm" probably.
+		progressPanel.setVisible(false);
+//		progressPanel.add(progressBar);
 		add(progressPanel);
 	}
 	@Override
@@ -64,7 +73,15 @@ public class SubjectUploadStep5 extends AbstractWizardStepPanel {
 			form.getFinishButton().setEnabled(true);
 			target.add(form.getWizardButtonContainer());
 		}
-		progressBar.start(target);
+		log.info("Progress:"+containerForm.getModelObject().getProgress().toString());
+		if (containerForm.getModelObject().getProgress()>0){
+			progressPanel.setVisible(true);
+			target.add(progressPanel);
+		}
+		//progressBar.start(target);
+		
+		
+		
 	}
 	
 }

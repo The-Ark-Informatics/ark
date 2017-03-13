@@ -26,7 +26,8 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -250,7 +251,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 
 	private void initialiseDatePicker() {
 		// Create new DateTextField and assign date format
-		dateReceivedDp = new DateTextField("address.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateReceivedDp = new DateTextField("address.dateReceived", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateReceivedDp);
 		dateReceivedDp.add(datePicker);

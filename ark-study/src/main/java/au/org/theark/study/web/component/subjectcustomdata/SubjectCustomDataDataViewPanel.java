@@ -32,16 +32,14 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.service.ArkCommonServiceImpl;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.SubjectCustomDataVO;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
-import au.org.theark.study.model.vo.SubjectCustomDataVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 

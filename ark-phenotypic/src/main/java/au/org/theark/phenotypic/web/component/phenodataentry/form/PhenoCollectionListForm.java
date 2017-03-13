@@ -20,8 +20,12 @@ package au.org.theark.phenotypic.web.component.phenodataentry.form;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -146,7 +150,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		protected void onUpdate(AjaxRequestTarget target) {
 			categoryPanel.remove(pickedPhenoDataSetCategoryDdc);
 			//Create list of PickedPhenoDataSetCategories here for the hierarchy view of the category.
-			List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(phenoDataSetFieldGroupDdc.getModelObject());
+			List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=sortLst(remeoveDuplicates(populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(phenoDataSetFieldGroupDdc.getModelObject())));
 			List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategoriesHierachical=PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(pickedPhenoDataSetCategories);
 			ChoiceRenderer renderer = new ChoiceRenderer("phenoDataSetCategory.name", "phenoDataSetCategory.id"){
 				@Override
@@ -173,7 +177,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	private void initPhenoDataSetFieldCategoryDdc(){
 		categoryPanel = new WebMarkupContainer("categoryPanel");
 		categoryPanel.setOutputMarkupId(true);
-		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire());
+		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=sortLst(remeoveDuplicates(populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire())));
 		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategoriesHierachical=PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(pickedPhenoDataSetCategories);
 		ChoiceRenderer renderer = new ChoiceRenderer("phenoDataSetCategory.name", "phenoDataSetCategory.id"){
 			@Override
@@ -439,7 +443,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		modalContentPanel = new PhenoDataEntryModalDetailPanel("content", modalWindow, cpModel);
 
 		// Set the modalWindow title and content
-		modalWindow.setTitle("Subject Dataset Details");
+		modalWindow.setTitle("Pheno Dataset Details");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.repaintComponent(getDataButton);
 		// 2015-09-29 set windows call back
@@ -491,5 +495,32 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Sort custom field list according to the order number.
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<PickedPhenoDataSetCategory> sortLst(List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories){
+		//sort by order number.
+		Collections.sort(pickedPhenoDataSetCategories, new Comparator<PickedPhenoDataSetCategory>(){
+		    public int compare(PickedPhenoDataSetCategory custFieldCategory1, PickedPhenoDataSetCategory custFieldCatCategory2) {
+		        return custFieldCategory1.getOrderNumber().compareTo(custFieldCatCategory2.getOrderNumber());
+		    }
+		});
+				return pickedPhenoDataSetCategories;
+	}
+	/**
+	 * Remove duplicates from list
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<PickedPhenoDataSetCategory> remeoveDuplicates(List<PickedPhenoDataSetCategory> phenoDataSetCategories){
+		Set<PickedPhenoDataSetCategory> phenoDataSetCategoriesSet=new HashSet<PickedPhenoDataSetCategory>();
+		List<PickedPhenoDataSetCategory> phenoDataSetCategoriesNew=new ArrayList<PickedPhenoDataSetCategory>();
+		phenoDataSetCategoriesSet.addAll(phenoDataSetCategories);
+		phenoDataSetCategoriesNew.addAll(phenoDataSetCategoriesSet);
+				return phenoDataSetCategoriesNew;
 	}
 }

@@ -108,6 +108,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -118,6 +119,63 @@ import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchPayload;
 import au.org.theark.core.model.report.entity.SearchResult;
 import au.org.theark.core.model.report.entity.SearchSubject;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkPermission;
+import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.ConsentAnswer;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.CustomFieldUpload;
+import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.FileFormat;
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkStudyArkModule;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
+import au.org.theark.core.model.study.entity.Payload;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
+import au.org.theark.core.model.study.entity.PhoneStatus;
+import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
+import au.org.theark.core.model.study.entity.State;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.SubjectUidPadChar;
+import au.org.theark.core.model.study.entity.SubjectUidToken;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.UploadLevel;
+import au.org.theark.core.model.study.entity.UploadStatus;
+import au.org.theark.core.model.study.entity.UploadType;
+import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
@@ -130,9 +188,9 @@ import au.org.theark.core.vo.SubjectVO;
 /**
  * The implementation of IArkCommonService. We want to auto-wire and hence use
  * the @Service annotation.
- * 
- * @author nivedann
+ *
  * @param <T>
+ * @author nivedann
  */
 
 @Transactional
@@ -172,7 +230,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void setGenoDao(IGenoDao genoDao) {
 		this.genoDao = genoDao;
 	}
-	
+
 	public ICustomFieldDao getCustomFieldDao() {
 		return customFieldDao;
 	}
@@ -194,8 +252,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	/**
-	 * @param velocityEngine
-	 *            the velocityEngine to set
+	 * @param velocityEngine the velocityEngine to set
 	 */
 	@Autowired
 	public void setVelocityEngine(VelocityEngine velocityEngine) {
@@ -210,14 +267,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}*/
 
 	/**
-	 * @param javaMailSender
-	 *            the javaMailSender to set
+	 * @param javaMailSender the javaMailSender to set
 	 */
 	/*@Autowired
 	public void setJavaMailSender(JavaMailSender javaMailSender) {
 		this.javaMailSender = javaMailSender;
 	}*/
-
 	public ReCaptchaContextSource getRecaptchaContextSource() {
 		return reCaptchaContextSource;
 	}
@@ -405,7 +460,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	/**
 	 * returns a the subject (linksubjectystudy) IF there is one, else returns
 	 * null
-	 * 
+	 *
 	 * @param subjectUID
 	 * @param study
 	 * @return LinkSubjectStudy
@@ -485,7 +540,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	/**
 	 * create audit history, forcing userID, necessary due to batch job not
 	 * maintaining session info
-	 * 
+	 *
 	 * @param auditHistory
 	 * @param userID
 	 */
@@ -615,7 +670,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	/**
 	 * Returns All Permissions as collection of Strings
-	 * 
+	 *
 	 * @return Collection<String> that represents ArkPermission
 	 */
 	@SuppressWarnings("unchecked")
@@ -784,7 +839,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * Field display details.
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException ,ArkNotAllowedToUpdateException {
+	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException, ArkNotAllowedToUpdateException {
 		boolean isUnique = customFieldDao.isCustomFieldUnqiue(customFieldVO.getCustomField().getName(), customFieldVO.getCustomField().getStudy(), customFieldVO.getCustomField());
 		if (!isUnique) {
 			log.error("Custom Field of this name Already Exists.: ");
@@ -801,7 +856,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				// Custom Field History
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-				ah.setComment("Updated Custom Field " +fieldName);
+				ah.setComment("Updated Custom Field " + fieldName);
 				ah.setEntityId(customFieldVO.getCustomField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
 				createAuditHistory(ah);
@@ -817,45 +872,47 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 					createAuditHistory(ah);
 				}
-			}catch (Exception ex) {
+			} catch (Exception ex) {
 				log.error("Problem updating Custom Field: " + ex);
 				throw new ArkSystemException("Problem updating Custom Field: " + ex.getMessage());
-			}	
-		}else{
-				throw new ArkNotAllowedToUpdateException("Custom Field cannot be updated, it is used in the system");
-		}	
+			}
+		} else {
+			throw new ArkNotAllowedToUpdateException("Custom Field cannot be updated, it is used in the system");
+		}
 	}
+
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, EntityCannotBeRemoved {
-			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
-				String fieldName = customFieldVO.getCustomField().getName();
-				try{
-					/*if (customFieldVO.isUseCustomFieldDisplay()) {
-						customFieldDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
-						// History for Custom Field Display
-						AuditHistory ah = new AuditHistory();
-						ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-						ah.setComment("Deleted Custom Display Field For Custom Field " + fieldName);
-						ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
-						ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
-						createAuditHistory(ah);
-					}*/
-					customFieldDao.deleteCustomField(customFieldVO.getCustomField());
-					// History for Custom Field
+		if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
+			String fieldName = customFieldVO.getCustomField().getName();
+			try {
+				if (customFieldVO.isUseCustomFieldDisplay()) {
+					customFieldDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
+					// History for Custom Field Display
 					AuditHistory ah = new AuditHistory();
 					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-					ah.setComment("Deleted Custom Field " + fieldName);
-					ah.setEntityId(customFieldVO.getCustomField().getId());
-					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
+					ah.setComment("Deleted Custom Display Field For Custom Field " + fieldName);
+					ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
+					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 					createAuditHistory(ah);
-					}catch(Exception ex) {
-						log.error("Unable to delete CustomField. " + ex);
-						throw new ArkSystemException("Unable to delete Custom Field: " + ex.getMessage());
-					}
-			} else {
-				throw new EntityCannotBeRemoved("Custom Field cannot be removed, it is used in the system");
+				}
+				customFieldDao.deleteCustomField(customFieldVO.getCustomField());
+				// History for Custom Field
+				AuditHistory ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+				ah.setComment("Deleted Custom Field " + fieldName);
+				ah.setEntityId(customFieldVO.getCustomField().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
+				createAuditHistory(ah);
+			} catch (Exception ex) {
+				log.error("Unable to delete CustomField. " + ex);
+				throw new ArkSystemException("Unable to delete Custom Field: " + ex.getMessage());
 			}
+		} else {
+			throw new EntityCannotBeRemoved("Custom Field cannot be removed, it is used in the system");
+		}
 	}
+
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
 		return arkAuthorisationDao.getArkRoleListByUser(arkUserVo);
 	}
@@ -955,7 +1012,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void sendEmail(final SimpleMailMessage simpleMailMessage) throws MailSendException, VelocityException {
 
-	    JavaMailSender mailSender = getJavaMailSender();
+		JavaMailSender mailSender = getJavaMailSender();
 
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 			public void prepare(MimeMessage mimeMessage) throws Exception {
@@ -1011,7 +1068,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		model.put("password", password);
 
 		/* get the text and replace all the mapped fields */
-		String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordMessage.vm","UTF-8", model);
+		String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordMessage.vm", "UTF-8", model);
 		/* send out the email */
 		return text;
 	}
@@ -1164,8 +1221,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		studyDao.updateBioCollectionUidTemplate(bioCollectionUidTemplate);
 	}
 
-	public List<ArkUser> getArkUserListByStudy(ArkUser arkUser,Study study) {
-		return arkAuthorisationDao.getArkUserListByStudy(arkUser,study);
+	public List<ArkUser> getArkUserListByStudy(ArkUser arkUser, Study study) {
+		return arkAuthorisationDao.getArkUserListByStudy(arkUser, study);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1182,7 +1239,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			arkUserVo.setUserName(userName);
 			List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
 
-			for (Iterator<String> iterator = arkModuleNames.iterator(); iterator.hasNext();) {
+			for (Iterator<String> iterator = arkModuleNames.iterator(); iterator.hasNext(); ) {
 				String arkModuleName = (String) iterator.next();
 				ArkUserRole arkUserRole = new ArkUserRole();
 				arkUserRole.setArkUser(arkUser);
@@ -1250,7 +1307,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			return studyDao.getSubjectsThatAlreadyExistWithTheseUIDs(study, subjectUIDs);
 		}
 		return new ArrayList<LinkSubjectStudy>();// maybe exception actually
-													// good here
+		// good here
 	}
 
 	public List<String> getAllSubjectUIDs(Study study) {
@@ -1417,15 +1474,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void runSearch(Long searchId) {
 		// String report = studyDao.runSearch();
 		studyDao.runSearch(searchId); // I guess it can even capture issues and
-										// reports and doesn't need a return
+		// reports and doesn't need a return
 	}
 
 	public void runSearch(Long searchId, String currentUser) {
 		// String report = studyDao.runSearch();
 		studyDao.runSearch(searchId, currentUser); // I guess it can even
-													// capture issues and
-													// reports and doesn't need
-													// a return
+		// capture issues and
+		// reports and doesn't need
+		// a return
 	}
 
 	public void createQueryFilters(List filterList) throws ArkSystemException {
@@ -1463,7 +1520,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void createSearchSubjects(Search search, List subjectVos) {
 		List<SearchSubject> searchSubjects = new ArrayList<SearchSubject>();
 
-		for (Iterator iterator = subjectVos.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = subjectVos.iterator(); iterator.hasNext(); ) {
 			SubjectVO subjectVo = (SubjectVO) iterator.next();
 			SearchSubject searchSubject = new SearchSubject();
 			searchSubject.setSearch(search);
@@ -1791,13 +1848,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	@Override
 	public long getCustomFieldCategoryCount(CustomFieldCategory customFieldCategoryCriteria) {
-		 return customFieldDao.getCustomFieldCategoryCount(customFieldCategoryCriteria);
+		return customFieldDao.getCustomFieldCategoryCount(customFieldCategoryCriteria);
 	}
 
 	@Override
-	public void createCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException {
+	public void createCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO) throws ArkSystemException, ArkRunTimeUniqueException, ArkRunTimeException {
 		try {
-			
+
 			AuditHistory ah = new AuditHistory();
 
 			// Force uppercase and replace erroneous characters
@@ -1820,31 +1877,31 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_CATEGORY);
 
 			createAuditHistory(ah);
-			
+
 			// Create CustomFieldDisplay only if allowed
 			//if (CustomFieldCategoryVO.isUseCustomFieldCategoryDisplay()) {
-				// Set the CustomField this CustomFieldDisplay entity is linked
-				// to
-				//CustomFieldCategoryVO.getCustomFieldDisplay().setCustomField(CustomFieldCategoryVO.getCustomFieldCategory());
-				//customFieldDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
-				// Put in the sequence based on the ID
-				//customFieldVO.getCustomFieldDisplay().setSequence(customFieldVO.getCustomFieldDisplay().getId());
-				//customFieldDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+			// Set the CustomField this CustomFieldDisplay entity is linked
+			// to
+			//CustomFieldCategoryVO.getCustomFieldDisplay().setCustomField(CustomFieldCategoryVO.getCustomFieldCategory());
+			//customFieldDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+			// Put in the sequence based on the ID
+			//customFieldVO.getCustomFieldDisplay().setSequence(customFieldVO.getCustomFieldDisplay().getId());
+			//customFieldDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 
-				// Custom Field Display History
-				//ah = new AuditHistory();
-				//ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-				//ah.setComment("Created Custom Field Display" + customFieldVO.getCustomField().getName());
-				//ah.setEntityId(customFieldVO.getCustomField().getId());
-				//ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
-				//createAuditHistory(ah);
+			// Custom Field Display History
+			//ah = new AuditHistory();
+			//ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+			//ah.setComment("Created Custom Field Display" + customFieldVO.getCustomField().getName());
+			//ah.setEntityId(customFieldVO.getCustomField().getId());
+			//ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
+			//createAuditHistory(ah);
 			//}
 		} catch (ConstraintViolationException cvex) {
 			log.error("Custom Field Category Constrain violation" + cvex);
-			if(cvex.getMessage().contains("Duplicate entry")){
+			if (cvex.getMessage().contains("Duplicate entry")) {
 				log.error("Custom Field Category Duplicates" + cvex);
 				throw new ArkRunTimeUniqueException("A Custom Field Category duplicate value violation");
-			}else if(cvex.getMessage().contains("cannot be null")){
+			} else if (cvex.getMessage().contains("cannot be null")) {
 				log.error("Custom Field Category field cannot be null" + cvex);
 				throw new ArkRunTimeException("A Custom Field Category null violation");
 			}
@@ -1852,12 +1909,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			log.error("Problem creating Custom Field Category: " + ex);
 			throw new ArkSystemException("Problem creating Custom Field Category: " + ex.getMessage());
 		}
-		
+
 	}
 
 	@Override
-	public void updateCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO)throws ArkSystemException, ArkUniqueException,ArkAlreadyBeingUsedException,ArkNotAllowedToUpdateException {
-		CustomFieldCategory customFieldCategory=CustomFieldCategoryVO.getCustomFieldCategory();
+	public void updateCustomFieldCategory(CustomFieldCategoryVO CustomFieldCategoryVO) throws ArkSystemException, ArkUniqueException, ArkAlreadyBeingUsedException, ArkNotAllowedToUpdateException {
+		CustomFieldCategory customFieldCategory = CustomFieldCategoryVO.getCustomFieldCategory();
 		boolean isUnique = customFieldDao.isCustomFieldCategoryUnqiue(customFieldCategory.getName(), customFieldCategory.getStudy(), customFieldCategory);
 		if (!isUnique) {
 			log.error("Custom Field Category of this name already Exists.: ");
@@ -1873,7 +1930,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			throw new ArkNotAllowedToUpdateException("is already assiged as a parent category of "+ subCategoryNames.toString());
 		}*/
 		try {
-				customFieldDao.updateCustomFieldCategory(CustomFieldCategoryVO.getCustomFieldCategory());
+			customFieldDao.updateCustomFieldCategory(CustomFieldCategoryVO.getCustomFieldCategory());
 			// Custom Field History
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
@@ -1902,29 +1959,29 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			log.error("Problem updating Custom Field: " + ex);
 			throw new ArkSystemException("Problem updating Custom Field Category: " + ex.getMessage());
 		}
-		
+
 	}
 
 	@Override
-	public void deleteCustomFieldCategory(CustomFieldCategoryVO customFieldCategoryVO)throws EntityCannotBeRemoved, ArkSystemException {
+	public void deleteCustomFieldCategory(CustomFieldCategoryVO customFieldCategoryVO) throws EntityCannotBeRemoved, ArkSystemException {
 		String fieldName = customFieldCategoryVO.getCustomFieldCategory().getName();
-		boolean isParent=customFieldDao.isThisCustomCategoryWasAParentCategoryOfAnother(customFieldCategoryVO.getCustomFieldCategory());
-		boolean hasCustomfields=customFieldDao.isCustomFieldCategoryBeingUsed(customFieldCategoryVO.getCustomFieldCategory());
-		if(isParent){
-			throw new EntityCannotBeRemoved("Can not delete Custom field Category \""+fieldName+"\" which already assiged as parent category.");
+		boolean isParent = customFieldDao.isThisCustomCategoryWasAParentCategoryOfAnother(customFieldCategoryVO.getCustomFieldCategory());
+		boolean hasCustomfields = customFieldDao.isCustomFieldCategoryBeingUsed(customFieldCategoryVO.getCustomFieldCategory());
+		if (isParent) {
+			throw new EntityCannotBeRemoved("Can not delete Custom field Category \"" + fieldName + "\" which already assiged as parent category.");
 		}
-		if(hasCustomfields){
-			throw new EntityCannotBeRemoved("Can not delete Custom field Category \""+fieldName+"\" which already assiged custom fields.");	
+		if (hasCustomfields) {
+			throw new EntityCannotBeRemoved("Can not delete Custom field Category \"" + fieldName + "\" which already assiged custom fields.");
 		}
-		if(!(isParent&& hasCustomfields)){
-				customFieldDao.deleteCustomFieldCategory(customFieldCategoryVO.getCustomFieldCategory());
-				// History for Custom Field Category
-				AuditHistory ah = new AuditHistory();
-				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-				ah.setComment("Deleted Custom Field Category " + fieldName);
-				ah.setEntityId(customFieldCategoryVO.getCustomFieldCategory().getId());
-				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_CATEGORY);
-				createAuditHistory(ah);
+		if (!(isParent && hasCustomfields)) {
+			customFieldDao.deleteCustomFieldCategory(customFieldCategoryVO.getCustomFieldCategory());
+			// History for Custom Field Category
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+			ah.setComment("Deleted Custom Field Category " + fieldName);
+			ah.setEntityId(customFieldCategoryVO.getCustomFieldCategory().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_CATEGORY);
+			createAuditHistory(ah);
 		}
 	}
 
@@ -1934,51 +1991,52 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, int first,int count) {
+	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, int first, int count) {
 		return customFieldDao.searchPageableCustomFieldCategories(customFieldCategoryCriteria, first, count);
 	}
 
 	@Override
-	public List<CustomFieldCategory> getParentCategoryListByCustomFieldType(Study study,ArkFunction arkFunction, CustomFieldType customFieldType)throws ArkSystemException {
-		return customFieldDao.getParentCategoryListByCustomFieldType(study,arkFunction,customFieldType);
+	public List<CustomFieldCategory> getParentCategoryListByCustomFieldType(Study study, ArkFunction arkFunction, CustomFieldType customFieldType) throws ArkSystemException {
+		return customFieldDao.getParentCategoryListByCustomFieldType(study, arkFunction, customFieldType);
 	}
 
 	@Override
-	public List getAvailableAllCategoryListByCustomFieldTypeExceptThis(Study study,ArkFunction arkFunction, CustomFieldType customFieldType,CustomFieldCategory thisCustomFieldCategory)throws ArkSystemException {
-		return customFieldDao.getAvailableAllCategoryListByCustomFieldTypeExceptThis(study, arkFunction, customFieldType,thisCustomFieldCategory);
+	public List getAvailableAllCategoryListByCustomFieldTypeExceptThis(Study study, ArkFunction arkFunction, CustomFieldType customFieldType, CustomFieldCategory thisCustomFieldCategory) throws ArkSystemException {
+		return customFieldDao.getAvailableAllCategoryListByCustomFieldTypeExceptThis(study, arkFunction, customFieldType, thisCustomFieldCategory);
 	}
 
 	@Override
-	public List getAvailableAllCategoryListByCustomFieldType(Study study,ArkFunction arkFunction, CustomFieldType customFieldType)throws ArkSystemException {
+	public List getAvailableAllCategoryListByCustomFieldType(Study study, ArkFunction arkFunction, CustomFieldType customFieldType) throws ArkSystemException {
 		return customFieldDao.getAvailableAllCategoryListByCustomFieldType(study, arkFunction, customFieldType);
 	}
 
 	@Override
-	public List getCategoriesListInCustomFieldsByCustomFieldType(Study study,ArkFunction arkFunction, CustomFieldType customFieldType)throws ArkSystemException {
+	public List getCategoriesListInCustomFieldsByCustomFieldType(Study study, ArkFunction arkFunction, CustomFieldType customFieldType) throws ArkSystemException {
 		return customFieldDao.getCategoriesListInCustomFieldsByCustomFieldType(study, arkFunction, customFieldType);
 	}
 
 	@Override
-	public List getAvailableAllCategoryListInStudyByCustomFieldType(Study study, ArkFunction arkFunction,CustomFieldType customFieldType)throws ArkSystemException {
-		return customFieldDao.getAvailableAllCategoryListInStudyByCustomFieldType(study,arkFunction, customFieldType);
+	public List getAvailableAllCategoryListInStudyByCustomFieldType(Study study, ArkFunction arkFunction, CustomFieldType customFieldType) throws ArkSystemException {
+		return customFieldDao.getAvailableAllCategoryListInStudyByCustomFieldType(study, arkFunction, customFieldType);
 	}
 
 	@Override
 	public CustomFieldType getCustomFieldTypeByName(String name) {
 		return customFieldDao.getCustomFieldTypeByName(name);
 	}
-	
+
 	@Override
 	public List getCustomFieldTypes(ArkModule arkModule) {
 		return customFieldDao.getCustomFieldTypes(arkModule);
 	}
+
 	@Override
-	public List<UploadLevel> getAllUploadLevels(){
+	public List<UploadLevel> getAllUploadLevels() {
 		return customFieldDao.getAllUploadLevels();
 	}
 
 	@Override
-	public List getCustomFieldCategoryByCustomFieldTypeAndStudy(Study study,CustomFieldType customFieldType) {
+	public List getCustomFieldCategoryByCustomFieldTypeAndStudy(Study study, CustomFieldType customFieldType) {
 		return customFieldDao.getCustomFieldCategoryByCustomFieldTypeAndStudy(study, customFieldType);
 	}
 
@@ -1986,22 +2044,27 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public CustomFieldCategory getCustomFieldCategotyByName(String name) {
 		return customFieldDao.getCustomFieldCategotyByName(name);
 	}
+
 	@Override
-	public UploadLevel getUploadLevelByName(String name){
+	public UploadLevel getUploadLevelByName(String name) {
 		return customFieldDao.getUploadLevelByName(name);
-	};
+	}
+
+	;
+
 	@Override
-	public CustomFieldCategory getCustomFieldCategoryByNameStudyAndArkFunction(String name,Study study,ArkFunction arkFunction){
+	public CustomFieldCategory getCustomFieldCategoryByNameStudyAndArkFunction(String name, Study study, ArkFunction arkFunction) {
 		return customFieldDao.getCustomFieldCategoryByNameStudyAndArkFunction(name, study, arkFunction);
 	}
 
 	@Override
 	public boolean isCustomFieldCategoryBeingUsed(CustomFieldCategory customFieldCategory) {
-			return customFieldDao.isCustomFieldCategoryBeingUsed(customFieldCategory);
+		return customFieldDao.isCustomFieldCategoryBeingUsed(customFieldCategory);
 	}
+
 	@Override
-	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload){
-			studyDao.createCustomFieldCategoryUpload(cfcUpload);
+	public void createCustomFieldCategoryUpload(CustomFieldCategoryUpload cfcUpload) {
+		studyDao.createCustomFieldCategoryUpload(cfcUpload);
 	}
 
 	@Override
@@ -2010,67 +2073,71 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public List getFamilyCustomFieldDataFor(Study study,List customFieldDisplaysThatWeNeed,List familyUIDsToBeIncluded) {
-		return studyDao.getfamilyCustomFieldDataFor(study,customFieldDisplaysThatWeNeed, familyUIDsToBeIncluded);
-	}
-	@Override
-	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List fieldNameCollection, Study study, ArkFunction arkFunction,CustomFieldType customFieldType) {
-		return studyDao.getCustomFieldDisplaysInWithCustomFieldType(fieldNameCollection, study, arkFunction,customFieldType);
+	public List getFamilyCustomFieldDataFor(Study study, List customFieldDisplaysThatWeNeed, List familyUIDsToBeIncluded) {
+		return studyDao.getfamilyCustomFieldDataFor(study, customFieldDisplaysThatWeNeed, familyUIDsToBeIncluded);
 	}
 
 	@Override
-	public List getAllChildrenCategoriedBelongToThisParent(Study study,ArkFunction arkFunction, CustomFieldType customFieldType,CustomFieldCategory parentCategory, List allChildrenLst) {
-		List<CustomFieldCategory> immediateSubCategories=customFieldDao.getAllSubCategoriesOfThisCategory(study,arkFunction,customFieldType,parentCategory);
-		if(!immediateSubCategories.isEmpty()){
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInWithCustomFieldType(List fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldType customFieldType) {
+		return studyDao.getCustomFieldDisplaysInWithCustomFieldType(fieldNameCollection, study, arkFunction, customFieldType);
+	}
+
+	@Override
+	public List getAllChildrenCategoriedBelongToThisParent(Study study, ArkFunction arkFunction, CustomFieldType customFieldType, CustomFieldCategory parentCategory, List allChildrenLst) {
+		List<CustomFieldCategory> immediateSubCategories = customFieldDao.getAllSubCategoriesOfThisCategory(study, arkFunction, customFieldType, parentCategory);
+		if (!immediateSubCategories.isEmpty()) {
 			allChildrenLst.addAll(immediateSubCategories);
-				for (CustomFieldCategory customFieldCategory : immediateSubCategories) {
-					allChildrenLst.addAll(getAllChildrenCategoriedBelongToThisParent(study, arkFunction, customFieldType, customFieldCategory,allChildrenLst));
-				}
+			for (CustomFieldCategory customFieldCategory : immediateSubCategories) {
+				allChildrenLst.addAll(getAllChildrenCategoriedBelongToThisParent(study, arkFunction, customFieldType, customFieldCategory, allChildrenLst));
+			}
 		}
 		return allChildrenLst;
 	}
 
 	@Override
-	public List getSiblingList(Study study, ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory customFieldCategory) {
+	public List getSiblingList(Study study, ArkFunction arkFunction, CustomFieldType customFieldType, CustomFieldCategory customFieldCategory) {
 		return customFieldDao.getSiblingList(study, arkFunction, customFieldType, customFieldCategory);
 	}
 
 	@Override
 	public List<ArkRolePolicyTemplate> getArkRolePolicytemplateList(ArkUserVO arkUserVO) {
-		List<ArkRolePolicyTemplate> allArkRolePolicyTemplates=new ArrayList<ArkRolePolicyTemplate>();
-		List<ArkUserRole> roleLst=arkUserVO.getArkUserRoleList();
-		for (ArkUserRole arkUserRole :roleLst) {
-				allArkRolePolicyTemplates.addAll((List<ArkRolePolicyTemplate>)arkAuthorisationDao.getArkRolePolicytemplateList(arkUserRole));
+		List<ArkRolePolicyTemplate> allArkRolePolicyTemplates = new ArrayList<ArkRolePolicyTemplate>();
+		List<ArkUserRole> roleLst = arkUserVO.getArkUserRoleList();
+		for (ArkUserRole arkUserRole : roleLst) {
+			allArkRolePolicyTemplates.addAll((List<ArkRolePolicyTemplate>) arkAuthorisationDao.getArkRolePolicytemplateList(arkUserRole));
 		}
-		log.info("RoleSize:"+roleLst.size());
-		log.info("Function Size:"+removeDuplicates(allArkRolePolicyTemplates).size());
+		log.info("RoleSize:" + roleLst.size());
+		log.info("Function Size:" + removeDuplicates(allArkRolePolicyTemplates).size());
 		return removeDuplicates(allArkRolePolicyTemplates);
-		
-		 
-	}
-	@Override
-	public List<ArkPermission> getArkPremissionListForRoleAndModule(ArkRolePolicyTemplate arkRolePolicyTemplate){
-		return arkAuthorisationDao.getArkPremissionListForRoleAndModule(arkRolePolicyTemplate);
-	}
-	/**
-	 * Remove duplicates from list
-	 * @param customFieldLst
-	 * @return
-	 */
-	private  List<ArkRolePolicyTemplate> removeDuplicates(List<ArkRolePolicyTemplate> fieldLst){
-		 return new ArrayList<ArkRolePolicyTemplate>(new LinkedHashSet<ArkRolePolicyTemplate>(fieldLst));
-		
+
+
 	}
 
 	@Override
-	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule,String name) {
-		return studyDao.getUploadTypeByModuleAndName(arkModule, name);
-		
+	public List<ArkPermission> getArkPremissionListForRoleAndModule(ArkRolePolicyTemplate arkRolePolicyTemplate) {
+		return arkAuthorisationDao.getArkPremissionListForRoleAndModule(arkRolePolicyTemplate);
 	}
-	
-	private StringBuffer getAllChildrenCategoriedBelongToThisParentAsStringArray(Study study,ArkFunction arkFunction,CustomFieldType customFieldType,CustomFieldCategory parentCategory){
-		StringBuffer subCategoryNames=new StringBuffer();
-		List<CustomFieldCategory> customFieldCategories= customFieldDao.getAllSubCategoriesOfThisCategory(study, arkFunction, customFieldType, parentCategory);
+
+	/**
+	 * Remove duplicates from list
+	 *
+	 * @param customFieldLst
+	 * @return
+	 */
+	private List<ArkRolePolicyTemplate> removeDuplicates(List<ArkRolePolicyTemplate> fieldLst) {
+		return new ArrayList<ArkRolePolicyTemplate>(new LinkedHashSet<ArkRolePolicyTemplate>(fieldLst));
+
+	}
+
+	@Override
+	public UploadType getUploadTypeByModuleAndName(ArkModule arkModule, String name) {
+		return studyDao.getUploadTypeByModuleAndName(arkModule, name);
+
+	}
+
+	private StringBuffer getAllChildrenCategoriedBelongToThisParentAsStringArray(Study study, ArkFunction arkFunction, CustomFieldType customFieldType, CustomFieldCategory parentCategory) {
+		StringBuffer subCategoryNames = new StringBuffer();
+		List<CustomFieldCategory> customFieldCategories = customFieldDao.getAllSubCategoriesOfThisCategory(study, arkFunction, customFieldType, parentCategory);
 		for (CustomFieldCategory customFieldCategory : customFieldCategories) {
 			subCategoryNames.append(customFieldCategory.getName());
 		}
@@ -2078,7 +2145,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory){
+	public boolean isThisCustomCategoryWasAParentCategoryOfAnother(CustomFieldCategory customFieldCategory) {
 		return customFieldDao.isThisCustomCategoryWasAParentCategoryOfAnother(customFieldCategory);
 	}
 
@@ -2093,14 +2160,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public List getStudyComponentsNotInThisSubject(Study study,LinkSubjectStudy linkSubjectStudy) {
+	public List getStudyComponentsNotInThisSubject(Study study, LinkSubjectStudy linkSubjectStudy) {
 		return studyDao.getStudyComponentsNeverUsedInThisSubject(study, linkSubjectStudy);
 	}
 
 	@Override
-	public List getDifferentStudyComponentsInConsentForSubject(Study study,LinkSubjectStudy linkSubjectStudy) {
+	public List getDifferentStudyComponentsInConsentForSubject(Study study, LinkSubjectStudy linkSubjectStudy) {
 		return studyDao.getDifferentStudyComponentsInConsentForSubject(study, linkSubjectStudy);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -2141,9 +2209,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp,StudyCompStatus studyCompStatus) {
-		return studyDao.getConsentStatusForStudyStudyCompAndStudyCompStatus(study,studyComp,studyCompStatus);
+	public List<ConsentStatus> getConsentStatusForStudyStudyCompAndStudyCompStatus(Study study, StudyComp studyComp, StudyCompStatus studyCompStatus) {
+		return studyDao.getConsentStatusForStudyStudyCompAndStudyCompStatus(study, studyComp, studyCompStatus);
 	}
+
 	public String generateNaturalUID(String UID) {
 		StringBuilder natBuilder = new StringBuilder();
 		Matcher matcher = Pattern.compile("\\d+").matcher(UID);
@@ -2197,11 +2266,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try {
 			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study = null;
-			if(sessionStudyId != null) {
+			if (sessionStudyId != null) {
 				study = getStudy(sessionStudyId);
 			}
 			SettingFile settingFile = iArkSettingService.getSettingFileFromSetting("BRANDING_IMAGE_LEFT", study, null);
-			if(settingFile != null) {
+			if (settingFile != null) {
 				File hosted_file = retriveArkFileAttachmentAsFile(null, null, au.org.theark.core.Constants.ARK_SETTINGS_DIR, settingFile.getFileId(), settingFile.getChecksum());
 				hostedByImage = new NonCachingImage("hostedByImage", new AbstractReadOnlyModel<DynamicImageResource>() {
 					@Override
@@ -2222,7 +2291,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			e.printStackTrace();
 		}
 		hostedByImage.setOutputMarkupId(true);
-    	return hostedByImage;
+		return hostedByImage;
 	}
 
 	@Override
@@ -2232,16 +2301,16 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try {
 			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study = null;
-			if(sessionStudyId != null) {
-			    study = getStudy(sessionStudyId);
+			if (sessionStudyId != null) {
+				study = getStudy(sessionStudyId);
 			}
 			SettingFile settingFile = iArkSettingService.getSettingFileFromSetting("BRANDING_IMAGE_RIGHT", study, null);
-			if(settingFile != null) {
+			if (settingFile != null) {
 				File product_file = retriveArkFileAttachmentAsFile(null, null, au.org.theark.core.Constants.ARK_SETTINGS_DIR, settingFile.getFileId(), settingFile.getChecksum());
 				productImage = new NonCachingImage("productImage", new AbstractReadOnlyModel<DynamicImageResource>() {
 					@Override
 					public DynamicImageResource getObject() {
-					    DynamicImageResource dir = getDynamicImageResourceForFile(settingFile, product_file);
+						DynamicImageResource dir = getDynamicImageResourceForFile(settingFile, product_file);
 						dir.setFormat("image/png");
 						return dir;
 					}
@@ -2260,6 +2329,22 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return productImage;
 	}
 
+	@Override
+	public StudyComp getStudyCompByNameAndStudy(Study study, String name) {
+		return studyDao.getStudyCompByNameAndStudy(study, name);
+	}
+
+	@Override
+	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study, LinkSubjectStudy linkSubjectStudy, StudyComp studyComp) {
+		return studyDao.isConsentExsistByStudySublectUIDAndStudyComp(study, linkSubjectStudy, studyComp);
+	}
+
+	@Override
+	public boolean isEncodedValue(CustomField customField, String value) {
+		return customFieldDao.isInEncodedValues(customField, value);
+	}
+
+
 	//----------------- Custom getters/setters for special settings go here -----------------//
 
 	private ArkUser getCurrentArkUser() {
@@ -2272,11 +2357,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		}
 		return arkUser;
 	}
+
 	private Study getCurrentStudy() {
 		Study currentStudy = null;
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if(sessionStudyId != null) {
+		if (sessionStudyId != null) {
 			currentStudy = getStudy(sessionStudyId);
 		}
 		return currentStudy;

@@ -29,17 +29,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.csvreader.CsvReader;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
@@ -57,8 +57,8 @@ import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
-
-import com.csvreader.CsvReader;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 
 /**
  * CustomFieldImportValidator provides support for validating import file before trying to use  <br>
@@ -83,7 +83,7 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 	private char							delimChr						= Constants.IMPORT_DELIM_CHAR_COMMA;
 	private List<String>					fileValidationMessages	= new ArrayList<String>();
 	private List<String>					dataValidationMessages	= new ArrayList<String>();
-	private IArkCommonService<Void>			iArkCommonService			= null;
+	private static IArkCommonService<Void>			iArkCommonService			= null;
 
 	private HashSet<Integer>			insertRows					= new HashSet<Integer>();
 	private HashSet<Integer>			updateRows					= new HashSet<Integer>();
@@ -485,6 +485,7 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					field.setMissingValue(csvReader.get("MISSING_VALUE"));
+					field.setDefaultValue(csvReader.get("DEFAULT_VALUE"));
 
 					//This is how the old custom field being captured by the name.
 					//It is unique field according to the db index defined.
@@ -590,7 +591,7 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 								errorCells.add(gridCell);
 							}
 						}
-					} else if (!allowMultiple.isEmpty()) {
+					} else if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(allowMultiple) && !allowMultiple.isEmpty()) {// please check this again if goes wrong...
 						gridCell = new ArkGridCell(csvReader.getIndex("ALLOW_MULTIPLE_SELECTIONS"), rowIdx);
 						dataValidationMessages.add(CustomFieldValidationMessage.nonConformingAllowMultipleSelect(field.getName()));
 						errorCells.add(gridCell);
@@ -613,6 +614,13 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 						gridCell = new ArkGridCell(csvReader.getIndex("MISSING_VALUE"), rowIdx);
 						// Validate the field definition
 						if (!CustomFieldImportValidator.validateFieldMissingDefinition(field, dataValidationMessages)) {
+							errorCells.add(gridCell);
+						}
+					}
+					if (field.getDefaultValue() != null && !field.getDefaultValue().isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("DEFAULT_VALUE"), rowIdx);
+						// Validate the field definition
+						if (!CustomFieldImportValidator.validateFieldDefaultDefinition(field, dataValidationMessages)) {
 							errorCells.add(gridCell);
 						}
 					}
@@ -887,6 +895,99 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 				isValid = false;
 			}
 		}
+		return isValid;
+	}
+	
+	private static boolean validateFieldDefaultDefinition(CustomField field, Collection<String> errorMessages) {
+		boolean isValid = true;
+		if (!(field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER) || field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER) || field.getFieldType()
+				.getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))) {
+			errorMessages.add(CustomFieldValidationMessage.fieldDefaultValueNotDefinedType(field));
+			isValid = false;
+		}
+		//Character field type
+		//if Encoded value has been introduced check the default value has one of the encoded value occupied.
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+			if(iArkCommonService.isEncodedValue(field, field.getDefaultValue())){
+				isValid=true;
+			}else{
+				errorMessages.add(CustomFieldValidationMessage.fieldDefaultValueNotINEncodedLst(field));
+				isValid=false;
+			}
+		}
+		// Number field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+			try {
+				Float defaultVal = null;
+				Float minVal= null;
+				Float maxVal= null;		
+				
+				if(!field.getDefaultValue().isEmpty()&& field.getDefaultValue()!=null ){
+					defaultVal=	Float.parseFloat(field.getDefaultValue());
+				}
+				if(!field.getMinValue().isEmpty()&& field.getMinValue()!=null ){
+					minVal=	Float.parseFloat(field.getMinValue());
+				}
+				if(!field.getMaxValue().isEmpty()&& field.getMaxValue()!=null ){
+					maxVal=	Float.parseFloat(field.getMaxValue());
+				}
+				//check default value in between min and max
+				if(defaultVal!=null && minVal !=null && maxVal !=null){	
+					if((minVal.equals(defaultVal) && maxVal > defaultVal) || (maxVal.equals(defaultVal) && minVal < defaultVal) ||(minVal < defaultVal && maxVal > defaultVal)){
+						isValid = true;
+					}else{
+						errorMessages.add(CustomFieldValidationMessage.fieldDefaultValueInsideMinAndMaxRange(field));
+						isValid = false;
+					}
+				}	
+			}
+			catch (NumberFormatException nfe) {
+				errorMessages.add(CustomFieldValidationMessage.fieldDefaultValueNotDefinedType(field));
+				isValid = false;
+			}
+			catch (NullPointerException npe) {
+				errorMessages.add(CustomFieldValidationMessage.fieldDefinitionDefaultValueValidatingNull(field));
+				isValid = false;
+			}
+		}
+
+		// Date field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+			try {
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
+				Date defaultDate= null;
+				Date minDate=	null;
+				Date maxDate=	null;
+				if(!field.getDefaultValue().isEmpty()&& field.getDefaultValue()!=null ){
+					defaultDate=	dateFormat.parse(field.getDefaultValue());
+				}
+				if(!field.getMinValue().isEmpty()&& field.getMinValue()!=null ){
+					minDate=	dateFormat.parse(field.getMinValue());
+				}
+				if(!field.getMaxValue().isEmpty()&& field.getMaxValue()!=null ){
+					maxDate=	dateFormat.parse(field.getMaxValue());
+				}
+				//check default value in between min and max
+				if(defaultDate!=null && minDate !=null && maxDate!=null){
+					if((minDate.equals(defaultDate) && maxDate.after(defaultDate))|| (maxDate.equals(defaultDate) && minDate.before(defaultDate)) ||(minDate.before(defaultDate) && maxDate.after(defaultDate))){
+						isValid = true;
+					}else{
+						errorMessages.add(CustomFieldValidationMessage.fieldDefaultDateInsideMinAndMaxRange(field, defaultDate, minDate, maxDate));
+						isValid = false;
+					}
+				}
+			}
+			catch (ParseException pe) {
+				errorMessages.add(CustomFieldValidationMessage.fieldDefinitionDefaultValueNotValidDate(field));
+				isValid = false;
+			}
+			catch (NullPointerException npe) {
+				errorMessages.add(CustomFieldValidationMessage.fieldDefinitionDefaultValueValidatingNull(field));
+				isValid = false;
+			}
+		}
+		
 		return isValid;
 	}
 

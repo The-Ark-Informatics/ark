@@ -11,7 +11,8 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -37,7 +38,6 @@ import au.org.theark.core.web.component.button.AjaxInvoiceButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
-import au.org.theark.worktracking.util.BillableItemCostCalculator;
 import au.org.theark.worktracking.util.Constants;
 
 
@@ -127,7 +127,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		initBillableItemTypeDropDown();
 		initInvoiceDropDown();
 		
-		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		initDataPicker(billableItemCommenceDateDp);
 		
 		

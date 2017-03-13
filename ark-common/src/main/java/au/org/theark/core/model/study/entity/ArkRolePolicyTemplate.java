@@ -80,7 +80,7 @@ public class ArkRolePolicyTemplate implements Serializable {
 		this.arkModule = arkModule;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ARK_FUNCTION_ID")
 	public ArkFunction getArkFunction() {
 		return arkFunction;

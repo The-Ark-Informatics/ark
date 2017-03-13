@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -59,17 +60,15 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ArkPermission;
-import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -1447,7 +1446,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public long getPhenoCollectionCount(PhenoDataCollectionVO collectionCriteria) {
 		Criteria criteria = getSession().createCriteria(PhenoDataSetCollection.class);
-		criteria.createAlias("questionnaire", "qnaire");
+		//criteria.createAlias("questionnaire", "qnaire");
 		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenoDataSetCollection().getLinkSubjectStudy()));
 		// Just a precaution (PhenoCollection to should always map to a CustomFieldGroup where the ArkFunction will correspond to Pheno) 
 		//criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
@@ -1458,8 +1457,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public List<PhenoDataSetCollection> searchPageablePhenoCollection(PhenoDataCollectionVO collectionCriteria, int first, int count) {
 		
-		List<PhenoDataSetCollection> resultList = new ArrayList<PhenoDataSetCollection>();
-		StringBuffer sb = new StringBuffer();
+		//List<PhenoDataSetCollection> resultList = new ArrayList<PhenoDataSetCollection>();
+		/*StringBuffer sb = new StringBuffer();
 		sb.append("SELECT qnaire, pc ");
 		sb.append("  FROM " + PhenoDataSetGroup.class.getName() + " AS qnaire ");
 		sb.append("  LEFT JOIN qnaire.phenoDataSetCollections as pc ");
@@ -1492,16 +1491,25 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				}
 				resultList.add(pc);	
 			}
-		}
+		}*/
 		Criteria criteria = getSession().createCriteria(PhenoDataSetCollection.class);
-		criteria.createAlias("questionnaire", "qnaire");
+		//criteria.createAlias("questionnaire", "qnaire");
 		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenoDataSetCollection().getLinkSubjectStudy()));
 		// Just a precaution (PhenoCollection to should always map to a CustomFieldGroup where the ArkFunction will correspond to Pheno) 
-		criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
+		//criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
-		resultList = criteria.list();
-		return resultList;
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("id"), "id");
+		projectionList.add(Projections.groupProperty("questionnaire"), "questionnaire");
+		projectionList.add(Projections.groupProperty("description"), "description");
+		projectionList.add(Projections.groupProperty("recordDate"), "recordDate");
+		projectionList.add(Projections.groupProperty("reviewedDate"), "reviewedDate");
+		projectionList.add(Projections.groupProperty("reviewedBy"), "reviewedBy");
+		projectionList.add(Projections.groupProperty("status"), "status");
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Transformers.aliasToBean(PhenoDataSetCollection.class));
+		return (List<PhenoDataSetCollection>) criteria.list();
 	}
 	
 	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria){
@@ -2293,9 +2301,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	}
 	
 	public void updatePhenoDataSetDisplay(PhenoDataSetFieldDisplay phenDataSetFieldDisplay) throws  ArkSystemException{
-		if(!phenDataSetFieldDisplay.getRequired()){
-			phenDataSetFieldDisplay.setRequiredMessage(null);
-		}
 		getSession().update(phenDataSetFieldDisplay);
 	}
 	
@@ -3055,6 +3060,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			projectionList.add(Projections.groupProperty("phenoDataSetCategory"), "phenoDataSetCategory");
 			projectionList.add(Projections.groupProperty("parentPhenoDataSetCategory"), "parentPhenoDataSetCategory");
 			projectionList.add(Projections.groupProperty("phenoDataSetCategoryOrderNumber"), "phenoDataSetCategoryOrderNumber");
+			projectionList.add(Projections.groupProperty("phenoDataSetField"), "phenoDataSetField");
 			criteria.setProjection(projectionList);
 			criteria.addOrder(Order.asc("phenoDataSetCategoryOrderNumber"));
 			criteria.setResultTransformer(Transformers.aliasToBean(PhenoDataSetFieldDisplay.class));
@@ -3117,4 +3123,39 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return phenoDataSetFields;
 	}
 
+	@Override
+	public boolean isInEncodedValues(PhenoDataSetField phenoDataSetField, String value) {
+		if(phenoDataSetField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(phenoDataSetField.getMissingValue().trim())) {
+			return true;
+		}
+		// Validate if encoded values is definedisInEncodedValues, and not a DATE fieldType
+		if (phenoDataSetField != null && !phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+			try {
+				StringTokenizer stringTokenizer = new StringTokenizer(phenoDataSetField.getEncodedValues(), Constants.ENCODED_VALUES_TOKEN);
+				// Iterate through all discrete defined values and compare to field data value
+				while (stringTokenizer.hasMoreTokens()) {
+					String encodedValueToken = stringTokenizer.nextToken();
+					StringTokenizer encodedValueSeparator = new StringTokenizer(encodedValueToken, Constants.ENCODED_VALUES_SEPARATOR);
+					String encodedValue = encodedValueSeparator.nextToken().trim();
+					if (encodedValue.equalsIgnoreCase(value)) {
+						return true;
+					}
+				}
+			}
+			catch (NullPointerException npe) {
+				log.error("Field data null format exception " + npe.getMessage());
+				return false;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isSameNameFieldGroupExsistsForTheStudy(String name,Study study,ArkFunction arkFunction) {
+		Criteria criteria = getSession().createCriteria(PhenoDataSetGroup.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("name", name));
+		return ((List<PhenoDataSetGroup>)criteria.list()).size()>0;
+	}
 }

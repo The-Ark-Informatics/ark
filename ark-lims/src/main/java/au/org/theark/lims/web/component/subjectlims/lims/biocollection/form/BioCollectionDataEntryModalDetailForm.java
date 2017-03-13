@@ -18,10 +18,24 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biocollection.form;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -39,47 +53,55 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.BioCollectionCustomDataVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
-import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataDataViewPanel;
 import au.org.theark.lims.web.component.button.NumberOfLabelsPanel;
 import au.org.theark.lims.web.component.button.zebra.biocollection.PrintBioCollectionLabelButton;
 import au.org.theark.lims.web.component.button.zebra.biocollection.PrintBiospecimensForBioCollectionButton;
+import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionCustomDataDataViewPanel;
+
 
 /**
  * @author cellis
  * 
  */
-public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
+public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 
 	private static final long			serialVersionUID	= 2926069852602563767L;
-	private static final Logger		log					= LoggerFactory.getLogger(BioCollectionModalDetailForm.class);
+	private static final Logger		log					= LoggerFactory.getLogger(BioCollectionDataEntryModalDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService					iLimsService;
+	private ILimsService										iLimsService;
 
-	private TextField<String>			idTxtFld;
-	private TextField<String>			biocollectionUidTxtFld;
-	private TextField<String>			nameTxtFld;
-	private TextArea<String>			commentsTxtAreaFld;
-	private DateTextField				collectionDateTxtFld;
-	private ModalWindow					modalWindow;
-	private Panel 							bioCollectionCFDataEntryPanel;
-	private AjaxButton					printBioCollectionLabelButton;
-	private AjaxButton					printBiospecimensForBioCollectionButton;
-	private AjaxButton					printStrawBiospecimensForBioCollectionButton;
+	private TextField<String>									idTxtFld;
+	private TextField<String>									biocollectionUidTxtFld;
+	private TextField<String>									nameTxtFld;
+	private TextArea<String>									commentsTxtAreaFld;
+	private DateTextField										collectionDateTxtFld;
+	private ModalWindow											modalWindow;
+	private Panel 												bioCollectionCFDataEntryPanel;
+	private AjaxButton											printBioCollectionLabelButton;
+	private AjaxButton											printBiospecimensForBioCollectionButton;
+	private AjaxButton											printStrawBiospecimensForBioCollectionButton;
+	protected NumberOfLabelsPanel 								numberOfLabels;
+	private DropDownChoice<CustomFieldCategory>					customeFieldCategoryDdc;
+	private WebMarkupContainer									dataEntryWMC;   
+	private AjaxPagingNavigator						             dataEntryNavigator;    
 	
-	protected NumberOfLabelsPanel numberOfLabels;
 
 	/**
 	 * Constructor
@@ -91,7 +113,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	 * @param containerForm
 	 * @param detailPanelContainer
 	 */
-	public BioCollectionModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
+	public BioCollectionDataEntryModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
 		refreshEntityFromBackend();
@@ -110,8 +132,6 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 			}
 		}		
 	}
-
-
 	public void onBeforeRender(){
 		Study study = this.getModelObject().getBioCollection().getStudy();
 		
@@ -123,38 +143,61 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		}
 			super.onBeforeRender();
 	}
-	
-	private boolean initialiseBioCollectionCFDataEntry() {
-		boolean replacePanel = false;
-		BioCollection bioCollection = cpModel.getObject().getBioCollection();
-		if (!(bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel)) {
-			CompoundPropertyModel<BioCollectionCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BioCollectionCustomDataVO>(new BioCollectionCustomDataVO());		
-			bioCFDataCpModel.getObject().setBioCollection(bioCollection);
-			//bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
-			bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
-			bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
-			replacePanel = true;
-		}
-		return replacePanel;
-	}
-
+	/**
+	 * 
+	 */
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("bioCollection.id");
 		biocollectionUidTxtFld = new TextField<String>("bioCollection.biocollectionUid");
 		nameTxtFld = new TextField<String>("bioCollection.name");
 		
 		commentsTxtAreaFld = new TextArea<String>("bioCollection.comments");
-		collectionDateTxtFld = new DateTextField("bioCollection.collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		collectionDateTxtFld = new DateTextField("bioCollection.collectionDate", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(collectionDateTxtFld);
 		collectionDateTxtFld.add(datePicker); 
 		
-		initialiseBioCollectionCFDataEntry();
+		Collection<CustomFieldCategory> customFieldCategoryCollection=getOnlyAssignedCategoryListInStudyByCustomFieldType();
+		List<CustomFieldCategory> customFieldCatLst=CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories((List<CustomFieldCategory>)customFieldCategoryCollection);
+		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID){
+						@Override
+						public Object getDisplayValue(Object object) {
+						CustomFieldCategory cuscat=(CustomFieldCategory)object;
+							return CustomFieldCategoryOrderingHelper.getInstance().preTextDecider(cuscat)+ super.getDisplayValue(object);
+						}
+		};
+		customeFieldCategoryDdc = new DropDownChoice<CustomFieldCategory>(Constants.FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY, customFieldCatLst, customfieldCategoryRenderer);
+		customeFieldCategoryDdc.setOutputMarkupId(true);
+		customeFieldCategoryDdc.setNullValid(true);
+		customeFieldCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//Remove
+				dataEntryWMC.remove(bioCollectionCFDataEntryPanel);
+				dataEntryWMC.remove(dataEntryNavigator);
+				arkCrudContainerVo.getDetailPanelFormContainer().remove(dataEntryWMC);
+				//Create
+				if(customeFieldCategoryDdc.getModelObject()!=null){
+					initialiseBioCollectionCFDataEntry(customeFieldCategoryDdc.getModelObject());
+				}
+				//Add
+				dataEntryWMC.add(bioCollectionCFDataEntryPanel);
+				dataEntryWMC.add(dataEntryNavigator);
+				arkCrudContainerVo.getDetailPanelFormContainer().add(dataEntryWMC);
+				//target
+				target.add(bioCollectionCFDataEntryPanel);
+				target.add(dataEntryNavigator);
+				target.add(dataEntryWMC);
+			}
+		});
 		
+		
+		dataEntryWMC = new WebMarkupContainer("dataEntryWMC");
+		dataEntryWMC.setOutputMarkupId(true);
+		
+		initialiseBioCollectionCFDataEntry(customeFieldCategoryDdc.getModelObject());
 		BioCollection bioCollection = cpModel.getObject().getBioCollection();
-		
 		numberOfLabels = new NumberOfLabelsPanel("numberOfLabels");
-		
 		printBioCollectionLabelButton = new PrintBioCollectionLabelButton("printBioCollectionLabel", bioCollection, (IModel<Number>) numberOfLabels.getDefaultModel()) {
 
 			private static final long	serialVersionUID	= 1L;
@@ -191,6 +234,27 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		// Focus on Collection Date
 		collectionDateTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
+	
+	private void initialiseBioCollectionCFDataEntry(CustomFieldCategory customFieldCategory) {
+		BioCollectionCustomDataDataViewPanel local_bioCollectionCFDataEntryPanel;
+		BioCollectionCustomDataVO bioCollectionCustomDataVO=cpModel.getObject().getBioCollectionCustomDataVO();
+		bioCollectionCustomDataVO.setBioCollection(cpModel.getObject().getBioCollection());
+		bioCollectionCustomDataVO.setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
+		if(customFieldCategory!=null){
+			local_bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel",new CompoundPropertyModel<BioCollectionCustomDataVO>(bioCollectionCustomDataVO)).initialisePanel(iArkCommonService.getCustomFieldsPerPage(),customFieldCategory);
+		}else{
+			local_bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel", new CompoundPropertyModel<BioCollectionCustomDataVO>(bioCollectionCustomDataVO)).initialisePanel(iArkCommonService.getCustomFieldsPerPage(),null);
+		}
+		dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", local_bioCollectionCFDataEntryPanel.getDataView()) {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onAjaxEvent(AjaxRequestTarget target) {
+				target.add(dataEntryWMC);
+			}
+		};
+		bioCollectionCFDataEntryPanel = local_bioCollectionCFDataEntryPanel;
+		
+	}
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
@@ -204,13 +268,14 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		arkCrudContainerVo.getDetailPanelFormContainer().add(nameTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(commentsTxtAreaFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(collectionDateTxtFld);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionCFDataEntryPanel);
-		
+		arkCrudContainerVo.getDetailPanelFormContainer().add(customeFieldCategoryDdc);
+		dataEntryWMC.add(bioCollectionCFDataEntryPanel);
+		dataEntryWMC.add(dataEntryNavigator);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(dataEntryWMC);
 		add(numberOfLabels);
 		add(printBioCollectionLabelButton);
 		add(printBiospecimensForBioCollectionButton);
 		add(printStrawBiospecimensForBioCollectionButton);
-		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
@@ -236,11 +301,6 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 			if (bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel) {
 				((BioCollectionCustomDataDataViewPanel) bioCollectionCFDataEntryPanel).saveCustomData();
 			}
-			// refresh the CF data entry panel (if necessary)
-			if (initialiseBioCollectionCFDataEntry() == true) {
-				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioCollectionCFDataEntryPanel);
-			}
-			
 			if (target != null) {
 				onSavePostProcess(target);
 			}
@@ -300,4 +360,64 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 			return false;
 		}
 	}
+	/**
+	 * Get custom field category collection from model.
+	 * @return
+	 */
+	private Collection<CustomFieldCategory> getOnlyAssignedCategoryListInStudyByCustomFieldType(){
+		
+		/*Study study =cpModel.getObject().getBioCollection().getStudy();
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD_CATEGORY);
+		
+		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOCOLLECTION);
+		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
+		try {
+			customFieldCategoryCollection =  iArkCommonService.getAvailableAllCategoryListInStudyByCustomFieldType(study,arkFunction, customFieldType);
+		} catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return customFieldCategoryCollection;*/
+		Study study =cpModel.getObject().getBioCollection().getStudy();
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
+		
+		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOCOLLECTION);
+		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
+		try {
+			customFieldCategoryCollection =  iArkCommonService.getCategoriesListInCustomFieldsByCustomFieldType(study, arkFunction, customFieldType);
+			customFieldCategoryCollection=sortLst(remeoveDuplicates((List<CustomFieldCategory>)customFieldCategoryCollection));
+		} catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return customFieldCategoryCollection;
+	}
+	
+	/**
+	 * Sort custom field list according to the order number.
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> sortLst(List<CustomFieldCategory> customFieldLst){
+		//sort by order number.
+		Collections.sort(customFieldLst, new Comparator<CustomFieldCategory>(){
+		    public int compare(CustomFieldCategory custFieldCategory1, CustomFieldCategory custFieldCatCategory2) {
+		        return custFieldCategory1.getName().compareTo(custFieldCatCategory2.getName());
+		    }
+		});
+				return customFieldLst;
+	}
+	/**
+	 * Remove duplicates from list
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> remeoveDuplicates(List<CustomFieldCategory> customFieldLst){
+		Set<CustomFieldCategory> cusfieldCatSet=new HashSet<CustomFieldCategory>();
+		List<CustomFieldCategory> cusfieldCatLst=new ArrayList<CustomFieldCategory>();
+		cusfieldCatSet.addAll(customFieldLst);
+		cusfieldCatLst.addAll(cusfieldCatSet);
+				return cusfieldCatLst;
+	}
+	
 }

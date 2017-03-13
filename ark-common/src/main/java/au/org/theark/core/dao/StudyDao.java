@@ -892,6 +892,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if (subjectVO.getLinkSubjectStudy().getSubjectUID() != null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0) {
 			criteria.add(Restrictions.ilike("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
 		}
+		
+		if (subjectVO.getLinkSubjectStudy().getFamilyId() != null && subjectVO.getLinkSubjectStudy().getFamilyId().length() > 0) {
+			criteria.add(Restrictions.ilike("familyId", subjectVO.getLinkSubjectStudy().getFamilyId(), MatchMode.ANYWHERE));
+		}
+		
 		/**
 		 * The new requirement arises on 2017-11-10 we need to show the archived subjects when only filtered as archive. 
 		 */
@@ -1579,7 +1584,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public Collection<UploadType> getUploadTypesForSubject(Study study) {
 		Criteria criteria = getSession().createCriteria(UploadType.class);
 		criteria.add(Restrictions.eq("arkModule", getArkModuleForSubject()));
-		if(study != null && study.getParentStudy() != null) { //i.e. study is a child study
+		//Add an additional condition added on 2017-01-17 when a study got it's children I found the parent study's parent is set as it's own
+		if(study != null && study.getParentStudy() != null && !study.equals(study.getParentStudy())) { //i.e. study is a child study
 			criteria.add(Restrictions.not(Restrictions.eq("name", "Subject Demographic Data")));
 		}
 		return criteria.list();
@@ -5333,5 +5339,25 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	@Override
 	public void deleteUpload(final Upload upload) {
 		getSession().delete(upload);
+	}
+
+	@Override
+	public StudyComp getStudyCompByNameAndStudy(Study study,String name){
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("name",name));
+		criteria.setMaxResults(1);
+		return (StudyComp)criteria.uniqueResult();
+	}
+	@Override
+	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study,LinkSubjectStudy linkSubjectStudy,StudyComp studyComp){
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("linkSubjectStudy",linkSubjectStudy));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		criteria.setMaxResults(1);
+		Consent consent= (Consent)criteria.uniqueResult();
+		return (consent!=null);
+		
 	}
 }

@@ -36,7 +36,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -133,7 +134,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private DropDownChoice<SubjectUidPadChar>			subjectUidPadCharsDpChoices;
 	private TextField<Integer>								subjectUidStartTxtFld;
 	private Label												subjectUidExampleLbl;
-	private DateTextField									dateOfApplicationDp;
+	private DateTextField 								dateOfApplicationDp;
 	private DropDownChoice<StudyStatus>					studyStatusDpChoices;
 	private CheckBox											autoGenSubIdChkBox;
 	private CheckBox											autoGenBiospecimenIdChkBox;
@@ -184,8 +185,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private Label												totalSubjectsLabel;
 	
 	private ArkBusyAjaxButton								newChildStudyButton;
-	private static final PackageResourceReference	NO_STUDY_LOGO		= new PackageResourceReference(DetailForm.class, "no_study_logo.gif");
-
+	//private static final PackageResourceReference	NO_STUDY_LOGO		= new PackageResourceReference(DetailForm.class, "no_study_logo.gif");
+	private static final PackageResourceReference	NO_STUDY_LOGO		= new PackageResourceReference(DetailForm.class, "ark-no-image.png");
+	
 	private HistoryButtonPanel historyButtonPanel;
 	
 	/**
@@ -254,8 +256,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		autoBiocollectionUidContainer = new WebMarkupContainer("autoBiocollectionUidContainer");
 		autoBiocollectionUidContainer.setOutputMarkupPlaceholderTag(true);
 
+		PatternDateConverter pdc = new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false); 
 		// Create new DateTextField and assign date format
-		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
+		//dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfApplicationDp=new DateTextField(Constants.STUDY_SEARCH_DOA, pdc);
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateOfApplicationDp);
 		dateOfApplicationDp.add(datePicker);
@@ -1098,7 +1102,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel("error.study.status.required", this, new Model<String>("Status")));
 
 		// Max dateOfApplicationDp can be only today
-		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.study.doa.max.range", this, null));
+		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel(Constants.ERROR_STUDY_DOA_MAX_RANGE, this, null));
+		
 
 		// TODO: Write CustomValidator to handle numeric validation
 		// Estimated Year of completion a numeric year field, greater than dateOfApplicationDp

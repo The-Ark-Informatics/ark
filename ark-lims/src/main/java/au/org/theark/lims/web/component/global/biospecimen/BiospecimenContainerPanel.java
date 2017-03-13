@@ -38,7 +38,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.web.component.global.biospecimen.form.ContainerForm;
 
 /**

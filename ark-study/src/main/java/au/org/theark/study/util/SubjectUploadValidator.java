@@ -24,18 +24,18 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.csvreader.CsvReader;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
@@ -50,8 +50,8 @@ import au.org.theark.core.util.DataConversionAndManipulationHelper;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
-
-import com.csvreader.CsvReader;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 
 /**
  * SubjectUploadValidator provides support for validating subject matrix-formatted files.
@@ -179,8 +179,7 @@ public class SubjectUploadValidator {
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-			
-		// If Excel, convert to CSV for validation
+			// If Excel, convert to CSV for validation
 			if (fileFormat.equalsIgnoreCase("XLS")) {
 				Workbook w;
 				try {
@@ -189,18 +188,26 @@ public class SubjectUploadValidator {
 					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
 					inputStream = xlsToCsv.convertXlsToCsv(w);
 					inputStream.reset();
+					validationMessages = validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(),fileFormat, delimiterCharacter);
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
 				}
 				catch (IOException e) {
 					log.error(e.getMessage());
+				}catch (ArkBaseException e) {
+					log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + e);
 				}
+				
 			}
-			
-			validationMessages = validateSubjectFileFormat(inputStream, fileFormat, delimiterCharacter);
-		}
-		catch (IOException e) {
+			//validationMessages = validateSubjectFileFormat(inputStream, fileFormat, delimiterCharacter);
+			/*try {
+				validationMessages = validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(),fileFormat, delimiterCharacter);
+			} catch (ArkBaseException e) {
+				log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + e);
+			}
+			*/
+		}catch (IOException e) {
 			log.error(e.getMessage());
 		}
 		return validationMessages;
@@ -217,7 +224,7 @@ public class SubjectUploadValidator {
 	 *           is the delimiter character of the file (eg comma)
 	 * @return a collection of validation messages
 	 */
-	private Collection<String> validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
+	/*private Collection<String> validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -247,7 +254,7 @@ public class SubjectUploadValidator {
 			log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + abe);
 		}
 		return validationMessages;
-	}
+	}*/
 
 	/**
 	 * Validates the file in the default "matrix" file data assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
@@ -336,42 +343,34 @@ public class SubjectUploadValidator {
 			}
 
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
-			// Set field list (note 2th column to Nth column) // SUBJECTUID DATE_COLLECTED F1 F2 FN // 0 1 2 3 N
-			csvReader.readHeaders();
+			csvReader.readHeaders();// can not check this..
+			
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			String[] headerColumnArray = csvReader.getHeaders();
+			String[] fileHeaderColumnArray = csvReader.getHeaders();
 
-			List<String> subjectColumns = new ArrayList<String>();
-			String[] subjectHeaderColumnArray = au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_HEADER;
+			//List<String> subjectColumns = new ArrayList<String>();
+			String[] requiredHeaderColumnArray = au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_HEADER;
 			boolean headerError = false;
-			for (int i = 0; i < subjectHeaderColumnArray.length; i++) {
+			/*for (int i = 0; i < subjectHeaderColumnArray.length; i++) {
 				String colName = subjectHeaderColumnArray[i];
 				subjectColumns.add(colName);
-			}
-
-			for (int i = 0; i < headerColumnArray.length; i++) {
-				String colName = headerColumnArray[i];
-				if (!subjectColumns.contains(colName)) {
+			}*/
+			for (int i = 0; i < fileHeaderColumnArray.length; i++) {
+				String colName = fileHeaderColumnArray[i];
+				if (!Arrays.asList(requiredHeaderColumnArray).contains(colName) ) {
 					headerError = true;
 					break;
 				}
 			}
-
 			if (headerError) {
 				StringBuffer stringBuffer = new StringBuffer();
 				// TODO ASAP : this should utilize the file that creates the template/requirements!
 				stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
 				stringBuffer.append("Please refer to the template, as seen on step one, for the correct format. \n");
-				/*
-				 * stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n"); stringBuffer.append("The specified delimiter type was: " +
-				 * delimiterCharacter + ".\n"); stringBuffer.append(".\n"); stringBuffer.append("The default format should be as follows:\n");
-				 */
-
-				fileValidationMessages.add(stringBuffer.toString());
-
-				for (int i = 0; i < headerColumnArray.length; i++) {
-					if (!subjectColumns.contains(headerColumnArray[i])) {
-						fileValidationMessages.add("Error: the column name " + headerColumnArray[i] + " is not a valid column name.");
+					fileValidationMessages.add(stringBuffer.toString());
+				for (int i = 0; i < fileHeaderColumnArray.length; i++) {
+					if (!Arrays.asList(requiredHeaderColumnArray).contains(fileHeaderColumnArray[i])) {
+						fileValidationMessages.add("Error: the column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
 					}
 				}
 			}
@@ -593,9 +592,9 @@ public class SubjectUploadValidator {
 					}
 
 					// BOOLEAN CHECKS
-					if (csvReader.getIndex("SILENT") > 0) {
-						col = csvReader.getIndex("SILENT");
-						cellValue = csvReader.get("SILENT");
+					if (csvReader.getIndex("PHONE_SILENT") > 0) {
+						col = csvReader.getIndex("PHONE_SILENT");
+						cellValue = csvReader.get("PHONE_SILENT");
 						String silent = cellValue;
 						if (silent != null && !silent.isEmpty()) {// if null or empty just ignore...if invalid flag
 							if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(silent)) {
@@ -605,10 +604,21 @@ public class SubjectUploadValidator {
 							}
 						}
 					}
-
-					if (csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS") > 0) {
-						col = csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
-						cellValue = csvReader.get("IS_PREFERRED_MAILING_ADDRESS");
+					if (csvReader.getIndex("PHONE_IS_PREFERRED") > 0) {
+						col = csvReader.getIndex("PHONE_IS_PREFERRED");
+						cellValue = csvReader.get("PHONE_IS_PREFERRED");
+						String prefer = cellValue;
+						if (prefer != null && !prefer.isEmpty()) {// if null or empty just ignore...if invalid flag
+							if (prefer != null && !DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)) {
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue
+										+ " is not a valid boolean value. Please use true or false for this column.");
+								errorCells.add(new ArkGridCell(col, row));
+							}
+						}
+					}
+					if (csvReader.getIndex("ADDRESS_IS_PREFERRED") > 0) {
+						col = csvReader.getIndex("ADDRESS_IS_PREFERRED");
+						cellValue = csvReader.get("ADDRESS_IS_PREFERRED");
 						String prefer = cellValue;
 						if (prefer != null && !prefer.isEmpty()) {// if null or empty just ignore...if invalid flag
 							if (prefer != null && !DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)) {

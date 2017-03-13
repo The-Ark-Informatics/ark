@@ -1941,7 +1941,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" order by cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
-		query.setParameter("familyUid", getSubjectFamilyUId(linkSubjectStudyCriteria.getStudy().getId(),linkSubjectStudyCriteria.getSubjectUID()));
+		query.setParameter("familyUid", linkSubjectStudyCriteria.getFamilyId());
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("functionId", arkFunction.getId());
 		//Add type and category
@@ -1973,19 +1973,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	@Override
-	public String getSubjectFamilyUId(Long studyId, String subjectUID) {
-		String result=null;
-		
-		StringBuffer sb= new StringBuffer("select scfd.TEXT_DATA_VALUE from "
-				+ "study.link_subject_study lss "
-				+ "left outer join study.study st on lss.STUDY_ID = st.ID "
-				+ "left outer join study.study_pedigree_config spc on spc.study_id = st.ID "
-				+ "left outer join study.custom_field cf on cf.ID = spc.family_id "
-				+ "left outer join study.custom_field_display cfd on cfd.custom_field_id = cf.id "
-				+ "left outer join study.subject_custom_field_data scfd on scfd.CUSTOM_FIELD_DISPLAY_ID = cfd.id "
-				+ "and scfd.LINK_SUBJECT_STUDY_ID = lss.ID "
-				+ "where st.ID= :studyId and lss.SUBJECT_UID = :subjectUID and spc.family_id is not null");
-		
+	public String getSubjectFamilyId(Long studyId, String subjectUID) {
+		String result=null;		
+		StringBuffer sb= new StringBuffer("select lss.FAMILY_ID from study.link_subject_study lss where lss.STUDY_ID = :studyId and lss.SUBJECT_UID = :subjectUID ");
 		Query query = getSession().createSQLQuery(sb.toString());
 	    query.setParameter("studyId", studyId);
 	    query.setParameter("subjectUID", subjectUID);

@@ -147,7 +147,7 @@ public class SearchResultListPanel extends Panel {
 			
 		};
 		
-		Label nameLinkLabel = new Label("statusLbl", "TEST");
+		Label nameLinkLabel = new Label("statusLbl", "Check status");
 		statusBtn.add(nameLinkLabel);
 		
 		

@@ -1,4 +1,4 @@
-package au.org.theark.study.model.vo;
+package au.org.theark.core.vo;
 
 import au.org.theark.core.model.study.entity.ICustomFieldData;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;

@@ -31,6 +31,8 @@ import au.org.theark.core.model.study.entity.*;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -57,6 +59,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -67,6 +70,63 @@ import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchPayload;
 import au.org.theark.core.model.report.entity.SearchResult;
 import au.org.theark.core.model.report.entity.SearchSubject;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkPermission;
+import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.ConsentAnswer;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.CustomFieldUpload;
+import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.FileFormat;
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkStudyArkModule;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
+import au.org.theark.core.model.study.entity.Payload;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
+import au.org.theark.core.model.study.entity.PhoneStatus;
+import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
+import au.org.theark.core.model.study.entity.State;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.SubjectUidPadChar;
+import au.org.theark.core.model.study.entity.SubjectUidToken;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.UploadLevel;
+import au.org.theark.core.model.study.entity.UploadStatus;
+import au.org.theark.core.model.study.entity.UploadType;
+import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldCategoryVO;
@@ -1242,6 +1302,12 @@ public interface IArkCommonService<T> {
 	public IArkAuthorisation getArkAuthorisationDao();
 	
 	public void deleteUpload(final Upload upload);
+	
+	public StudyComp getStudyCompByNameAndStudy(Study study,String name);
+
+	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study,LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
+	
+	public boolean isEncodedValue(CustomField customField, String value);
 
 	public WebComponent getHostedByImage();
 	public WebComponent getProductImage();
@@ -1250,5 +1316,4 @@ public interface IArkCommonService<T> {
 	public int getRowsPerPage();
 	public int getCustomFieldsPerPage();
 	public String getFileAttachmentDir() throws NullPointerException;
-
 }

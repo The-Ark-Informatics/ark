@@ -101,5 +101,10 @@ public class StudyCompStatus implements java.io.Serializable {
 			Set<LinkStudyStudycomp> linkStudyStudycomps) {
 		this.linkStudyStudycomps = linkStudyStudycomps;
 	}
+	
+	@Override
+	public String toString() {
+		return   name;
+	}
 
 }

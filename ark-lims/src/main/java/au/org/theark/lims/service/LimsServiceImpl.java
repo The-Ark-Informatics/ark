@@ -55,16 +55,18 @@ import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.model.dao.IBioCollectionDao;
 import au.org.theark.lims.model.dao.IBioTransactionDao;
 import au.org.theark.lims.model.dao.IBiospecimenDao;
 import au.org.theark.lims.model.dao.IInventoryDao;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.util.BioCollectionSpecimenUploader;
 import au.org.theark.lims.web.Constants;
 
@@ -424,9 +426,9 @@ public class LimsServiceImpl implements ILimsService {
 		return iBioCollectionDao.getBioCollectionCustomFieldDataCount(criteria, arkFunction);
 	}
 
-	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count) {
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 		List<BioCollectionCustomFieldData> customfieldDataList = new ArrayList<BioCollectionCustomFieldData>();
-		customfieldDataList  = iBioCollectionDao.getBioCollectionCustomFieldDataList(bioCollectionCriteria, arkFunction, first, count);
+		customfieldDataList  = iBioCollectionDao.getBioCollectionCustomFieldDataList(bioCollectionCriteria, arkFunction, customFieldCategory,customFieldType,first, count);
 		return customfieldDataList;
 	}
 	
@@ -449,10 +451,8 @@ public class LimsServiceImpl implements ILimsService {
 			try {
 			/* Insert the Field if it does not have a  ID and has the required fields */
 				if (canInsert(bioCollectionCFData)) {
-		
 					iBioCollectionDao.createBioCollectionCustomFieldData(bioCollectionCFData);
 					Long id = bioCollectionCFData.getCustomFieldDisplay().getCustomField().getId();
-					
 					CustomField customField = arkCommonService.getCustomField(id);
 					customField.setCustomFieldHasData(true);
 					//CustomFieldVO customFieldVO = new CustomFieldVO();
@@ -461,7 +461,6 @@ public class LimsServiceImpl implements ILimsService {
 					iCustomFieldDao.updateCustomField(customField);
 				}
 				else if (canUpdate(bioCollectionCFData)) {
-					
 					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
 					if (bioCollectionCFData.getErrorDataValue() != null) {
 						bioCollectionCFData.setErrorDataValue(null);
@@ -472,7 +471,6 @@ public class LimsServiceImpl implements ILimsService {
 				else if (canDelete(bioCollectionCFData)) {
 					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
 					Long count  = iBioCollectionDao.isCustomFieldUsed(bioCollectionCFData);
-					
 					iBioCollectionDao.deleteBioCollectionCustomFieldData(bioCollectionCFData);
 					if(count <= 1) {
 						//Then update the CustomField's hasDataFlag to false;
@@ -585,9 +583,9 @@ public class LimsServiceImpl implements ILimsService {
 		return iBiospecimenDao.getBiospecimenCustomFieldDataCount(biospecimenCriteria, arkFunction);
 	}
 
-	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count) {
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 		List<BiospecimenCustomFieldData> customfieldDataList = new ArrayList<BiospecimenCustomFieldData>();
-		customfieldDataList  = iBiospecimenDao.getBiospecimenCustomFieldDataList(biospecimenCriteria, arkFunction, first, count);
+		customfieldDataList  = iBiospecimenDao.getBiospecimenCustomFieldDataList(biospecimenCriteria, arkFunction,customFieldCategory,customFieldType, first, count);
 		return customfieldDataList;
 	}
 
@@ -603,17 +601,16 @@ public class LimsServiceImpl implements ILimsService {
 		
 					iBiospecimenDao.createBiospecimenCustomFieldData(biospecimanCFData);
 					Long id = biospecimanCFData.getCustomFieldDisplay().getCustomField().getId();
-					
 					CustomField customField = arkCommonService.getCustomField(id);
-					customField.setCustomFieldHasData(true);
+					/*customField.setCustomFieldHasData(true);
 					CustomFieldVO customFieldVO = new CustomFieldVO();
 					customFieldVO.setCustomField(customField);
-					
-					arkCommonService.updateCustomField(customFieldVO);
+					*/
+					//arkCommonService.updateCustomField(customFieldVO);
+					iCustomFieldDao.updateCustomField(customField);
 
 				}
 				else if (canUpdate(biospecimanCFData)) {
-					
 					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
 					if (biospecimanCFData.getErrorDataValue() != null) {
 						biospecimanCFData.setErrorDataValue(null);
@@ -624,17 +621,17 @@ public class LimsServiceImpl implements ILimsService {
 				else if (canDelete(biospecimanCFData)) {
 					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
 					Long count  = iBiospecimenDao.isCustomFieldUsed(biospecimanCFData);
-					
 					iBiospecimenDao.deleteBiospecimenCustomFieldData(biospecimanCFData);
 					if(count <= 1) {
 						//Then update the CustomField's hasDataFlag to false;
 						Long id = biospecimanCFData.getCustomFieldDisplay().getCustomField().getId();//Reload since the session was closed in the front end and the child objects won't be lazy loaded
 						CustomField customField = arkCommonService.getCustomField(id);
 						customField.setCustomFieldHasData(false);
-						CustomFieldVO customFieldVO = new CustomFieldVO();
+						/*CustomFieldVO customFieldVO = new CustomFieldVO();
 						customFieldVO.setCustomField(customField);
-						arkCommonService.updateCustomField(customFieldVO); //Update it
-					}
+						arkCommonService.updateCustomField(customFieldVO); //Update it*/
+						iCustomFieldDao.updateCustomField(customField);
+						}
 				}
 			}
 			catch (Exception someException) {
@@ -896,6 +893,15 @@ public class LimsServiceImpl implements ILimsService {
 
 	public List<BioTransaction> getAllBiotransactionForBiospecimen(Biospecimen biospecimen) {
 		return iBioTransactionDao.getAllBiotransactionForBiospecimen(biospecimen);
+	}
+
+	public void updateBioCollection(BioCollection bioCollection) throws ArkSystemException {
+		iBioCollectionDao.updateBioCollection(bioCollection);
+		
+	}
+
+	public void deleteBioCollection(BioCollection bioCollection) {
+		iBioCollectionDao.deleteBioCollection(bioCollection);
 	}
 	
 }

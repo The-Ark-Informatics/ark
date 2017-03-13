@@ -5,7 +5,9 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
+
+
 
 /**
  * Panel displaying the location/not allocated details for a Biospecimen in context

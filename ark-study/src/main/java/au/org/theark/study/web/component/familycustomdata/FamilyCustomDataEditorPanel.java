@@ -24,8 +24,8 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
+import au.org.theark.core.vo.FamilyCustomDataVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.study.model.vo.FamilyCustomDataVO;
 import au.org.theark.study.web.component.familycustomdata.form.FamilyCustomDataEditorForm;
 
 public class FamilyCustomDataEditorPanel extends Panel {
@@ -54,7 +54,7 @@ public class FamilyCustomDataEditorPanel extends Panel {
 
 	public FamilyCustomDataEditorPanel initialisePanel() {
 
-		customDataEditorForm = new FamilyCustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel,modalWindow).initialiseForm();
+		customDataEditorForm = new FamilyCustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel,modalWindow).initialiseForm(true);
 		Collection<CustomFieldCategory> customFieldCategoryCollection=getAvailableAllCategoryListInStudyByCustomFieldType();
 		List<CustomFieldCategory> customFieldCatLst=CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories((List<CustomFieldCategory>)customFieldCategoryCollection);
 		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID){
@@ -73,6 +73,7 @@ public class FamilyCustomDataEditorPanel extends Panel {
 				
 				customDataEditorForm.getDataViewWMC().remove(dataViewPanel);
 				dataViewPanel = new FamilyCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null,customeFieldCategoryDdc.getModelObject());
+				cpModel.getObject().setCustomFieldCategory(customeFieldCategoryDdc.getModelObject());
 				customDataEditorForm.getDataViewWMC().add(dataViewPanel);
 				target.add(dataViewPanel);
 				target.add(customDataEditorForm);

@@ -29,7 +29,8 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -70,7 +71,6 @@ import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.AJAXDownload;
-
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -151,24 +151,24 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		wmcCompleted.setOutputMarkupPlaceholderTag(true);
 		wmcCompleted.setVisible(false);
 
-		consentedDatePicker = new DateTextField(Constants.CONSENT_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		consentedDatePicker = new DateTextField(Constants.CONSENT_CONSENT_DATE,new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker arkDatePicker = new ArkDatePicker();
 		arkDatePicker.bind(consentedDatePicker);
 		consentedDatePicker.add(arkDatePicker);
 
-		consentRequestedDtf = new DateTextField(Constants.CONSENT_REQUESTED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		consentRequestedDtf = new DateTextField(Constants.CONSENT_REQUESTED_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker requestedDatePicker = new ArkDatePicker();
 		requestedDatePicker.bind(consentRequestedDtf);
 		consentRequestedDtf.add(requestedDatePicker);
 		wmcRequested.add(consentRequestedDtf);
 
-		consentReceivedDtf = new DateTextField(Constants.CONSENT_RECEIVED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		consentReceivedDtf = new DateTextField(Constants.CONSENT_RECEIVED_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker recievedDatePicker = new ArkDatePicker();
 		recievedDatePicker.bind(consentReceivedDtf);
 		consentReceivedDtf.add(recievedDatePicker);
 		wmcRecieved.add(consentReceivedDtf);
 
-		consentCompletedDtf = new DateTextField(Constants.CONSENT_COMPLETED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		consentCompletedDtf = new DateTextField(Constants.CONSENT_COMPLETED_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker completedDatePicker = new ArkDatePicker();
 		completedDatePicker.bind(consentCompletedDtf);
 		consentCompletedDtf.add(completedDatePicker);

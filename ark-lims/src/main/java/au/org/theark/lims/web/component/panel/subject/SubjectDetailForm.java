@@ -20,7 +20,8 @@ package au.org.theark.lims.web.component.panel.subject;
 
 import java.util.Date;
 
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
@@ -56,7 +57,7 @@ public class SubjectDetailForm extends Form<LinkSubjectStudy> {
 		subjectUIDTxtFld.setOutputMarkupId(true);
 		firstNameTxtFld = new TextField<String>("person.firstName", new PropertyModel<String>(getDefaultModel(), "person.firstName"));
 		lastNameTxtFld = new TextField<String>("person.lastName", new PropertyModel<String>(getDefaultModel(), "person.lastName"));
-		dateOfBirthTxtFld = new DateTextField( "person.dateOfBirth", new PropertyModel<Date>(getDefaultModel(), "person.dateOfBirth"), au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfBirthTxtFld = new DateTextField( "person.dateOfBirth", new PropertyModel<Date>(getDefaultModel(), "person.dateOfBirth"), new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 		addDetailFormComponents();
 	}
 

@@ -13,19 +13,19 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import wickettree.AbstractTree;
-import wickettree.ITreeProvider;
-import wickettree.NestedTree;
-import wickettree.content.StyledLinkLabel;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionModalDetailPanel;
-import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionDataEntryModalDetailPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenDataEntryModalDetailPanel;
+import wickettree.AbstractTree;
+import wickettree.ITreeProvider;
+import wickettree.NestedTree;
+import wickettree.content.StyledLinkLabel;
 
 public class BiospecimenNestedTreePanel extends Panel {
 	/**
@@ -82,7 +82,7 @@ public class BiospecimenNestedTreePanel extends Panel {
 								newModel.getObject().setBioCollection(biocollectionFromDB);
 								newModel.getObject().setTreeModel(cpModel.getObject().getTreeModel());
 								
-								BioCollectionModalDetailPanel modalContentPanel = new BioCollectionModalDetailPanel("content", modalWindow, newModel);
+								BioCollectionDataEntryModalDetailPanel modalContentPanel = new BioCollectionDataEntryModalDetailPanel("content", modalWindow, newModel);
 
 								// Set the modalWindow title and content
 								modalWindow.setTitle("Biocollection Detail");
@@ -123,7 +123,7 @@ public class BiospecimenNestedTreePanel extends Panel {
 								newModel.getObject().setBiospecimen(biospecimenFromDB);
 								newModel.getObject().setTreeModel(cpModel.getObject().getTreeModel());
 								
-								BiospecimenModalDetailPanel modalContentPanel = new BiospecimenModalDetailPanel("content", modalWindow, newModel);
+								BiospecimenDataEntryModalDetailPanel modalContentPanel = new BiospecimenDataEntryModalDetailPanel("content", modalWindow, newModel);
 
 								// Set the modalWindow title and content
 								modalWindow.setTitle("Biospecimen Detail");

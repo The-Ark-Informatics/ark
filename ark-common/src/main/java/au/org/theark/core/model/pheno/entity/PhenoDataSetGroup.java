@@ -101,17 +101,7 @@ public class PhenoDataSetGroup  implements Serializable{
 	public void setArkFunction(ArkFunction arkFunction) {
 		this.arkFunction = arkFunction;
 	}
-
-	//TODO: Remove NotAudited when I do pheno auditing
-	/*@NotAudited
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "questionnaire")
-	public Set<PhenoDataSetCollection> getPhenoCollection() {
-		return phenoCollection;
-	}
-
-	public void setPhenoCollection(Set<PhenoDataSetCollection> phenoCollection) {
-		this.phenoCollection = phenoCollection;
-	}*/
+	
 	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "questionnaire")
 	public Set<PhenoDataSetCollection> getPhenoDataSetCollections() {
@@ -121,17 +111,16 @@ public class PhenoDataSetGroup  implements Serializable{
 			Set<PhenoDataSetCollection> phenoDataSetCollections) {
 		this.phenoDataSetCollections = phenoDataSetCollections;
 	}
-	
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((arkFunction == null) ? 0 : arkFunction.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((study == null) ? 0 : study.hashCode());
 		return result;
 	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -141,6 +130,11 @@ public class PhenoDataSetGroup  implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		PhenoDataSetGroup other = (PhenoDataSetGroup) obj;
+		if (arkFunction == null) {
+			if (other.arkFunction != null)
+				return false;
+		} else if (!arkFunction.equals(other.arkFunction))
+			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -151,8 +145,15 @@ public class PhenoDataSetGroup  implements Serializable{
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
+		if (study == null) {
+			if (other.study != null)
+				return false;
+		} else if (!study.equals(other.study))
+			return false;
 		return true;
 	}
+	
+	
 	
 
 	

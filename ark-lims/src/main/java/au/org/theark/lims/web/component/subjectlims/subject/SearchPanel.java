@@ -24,7 +24,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectlims.subject.form.SearchForm;

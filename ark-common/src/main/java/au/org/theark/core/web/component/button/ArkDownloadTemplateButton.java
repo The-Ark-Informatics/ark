@@ -89,6 +89,37 @@ public abstract class ArkDownloadTemplateButton extends AjaxButton {
 		setVisible(templateFilename != null && templateHeader.length > 0);
 	}
 
+	@Override
+	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+		byte[] data = writeOutXlsFileToBytes();
+		if (data != null) {
+			InputStream inputStream = new ByteArrayInputStream(data);
+			OutputStream outputStream;
+			try {
+				final String tempDir = System.getProperty("java.io.tmpdir");
+				final java.io.File file = new File(tempDir, templateFilename + ".xls");
+				final String fileName = templateFilename + ".xls";
+				outputStream = new FileOutputStream(file);
+				IOUtils.copy(inputStream, outputStream);
+
+				IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(file));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream) {
+					@Override
+					public void respond(IRequestCycle requestCycle) {
+						super.respond(requestCycle);
+						Files.remove(file);
+					}
+				}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
+			}
+			catch (FileNotFoundException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
+	}
+	
 	public byte[] writeOutXlsFileToBytes() {
 		byte[] bytes = null;
 
@@ -128,37 +159,6 @@ public abstract class ArkDownloadTemplateButton extends AjaxButton {
 			e.printStackTrace();
 		}
 		return bytes;
-	}
-
-	@Override
-	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		byte[] data = writeOutXlsFileToBytes();
-		if (data != null) {
-			InputStream inputStream = new ByteArrayInputStream(data);
-			OutputStream outputStream;
-			try {
-				final String tempDir = System.getProperty("java.io.tmpdir");
-				final java.io.File file = new File(tempDir, templateFilename + ".xls");
-				final String fileName = templateFilename + ".xls";
-				outputStream = new FileOutputStream(file);
-				IOUtils.copy(inputStream, outputStream);
-
-				IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(file));
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream) {
-					@Override
-					public void respond(IRequestCycle requestCycle) {
-						super.respond(requestCycle);
-						Files.remove(file);
-					}
-				}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
-			}
-			catch (FileNotFoundException e) {
-				log.error(e.getMessage());
-			}
-			catch (IOException e) {
-				log.error(e.getMessage());
-			}
-		}
 	}
 
 	/**

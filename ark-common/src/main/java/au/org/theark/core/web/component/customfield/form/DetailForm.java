@@ -22,12 +22,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -35,7 +33,6 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -64,11 +61,11 @@ import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.CharactorDefaultMissingAndEncodedValueValidator;
+import au.org.theark.core.util.CharacterDefaultMissingAndEncodedValueValidator;
 import au.org.theark.core.util.DateFromToValidator;
-import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
 import au.org.theark.core.util.DefaultMissingValueDateRangeValidator;
 import au.org.theark.core.util.DefaultMissingValueDoubleRangeValidator;
+import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -211,9 +208,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				target.add(missingValueEntryWMC);
 				target.add(defaultValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
-				if(panelCustomUnitTypeDropDown.isVisible())target.add(fieldUnitTypeDdc);
+				if(panelCustomUnitTypeDropDown.isVisible())
+					target.add(fieldUnitTypeDdc);
 				//Add field unite type as text
-				if(panelCustomUnitTypeText.isVisible())target.add(fieldUnitTypeTxtFld);
+				if(panelCustomUnitTypeText.isVisible())
+					target.add(fieldUnitTypeTxtFld);
 				target.add(fieldAllowMultiselectChkBox);
 			}
 		});
@@ -285,7 +284,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		customeFieldCategoryDdc.setOutputMarkupId(true);
 	}
 
-	private void updateEncodedValueFld() {
+	 	private void updateEncodedValueFld() {
 		FieldType fieldType = getModelObject().getCustomField().getFieldType();
 		if (fieldType != null && fieldType.getName().equals(Constants.CHARACTER_FIELD_TYPE_NAME)) {
 			// Only allowed to use encodedValues when fieldType == CHARACTER
@@ -362,7 +361,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 							
 				TextField<?> missing= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
 				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
-				this.add(new CharactorDefaultMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing,defaultVal, "Encoded Values","Missing Value","Default Value"));
+				this.add(new CharacterDefaultMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing,defaultVal, "Encoded Values","Missing Value","Default Value"));
 				
 			}
 			// Not supporting min and max value for CHARACTER fieldTypes

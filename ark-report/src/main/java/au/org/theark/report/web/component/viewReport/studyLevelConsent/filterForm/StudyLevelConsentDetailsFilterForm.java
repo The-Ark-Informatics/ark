@@ -25,16 +25,11 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -47,7 +42,6 @@ import org.wicketstuff.jasperreports.JRResource;
 import org.wicketstuff.jasperreports.handlers.CsvResourceHandler;
 import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 
-import au.org.theark.core.dao.StudyDao;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -59,6 +53,11 @@ import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
 import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLevelConsentOtherIDReportDataSource;
 import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLevelConsentReportDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
  * @author elam
@@ -230,7 +229,7 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 	}
 
 	protected void initialiseConsentDatePicker() {
-		dtfConsentDate = new DateTextField(Constants.CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		dtfConsentDate = new DateTextField(Constants.CONSENT_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dtfConsentDate);
 		dtfConsentDate.add(datePicker);

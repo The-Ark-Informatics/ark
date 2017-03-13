@@ -49,8 +49,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +60,8 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.BiospecimenLocationVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
@@ -69,8 +69,6 @@ import au.org.theark.core.web.component.export.ExportToolbar;
 import au.org.theark.core.web.component.export.ExportableTextColumn;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.BatchBiospecimenAliquotsVO;
-import au.org.theark.lims.model.vo.BiospecimenLocationVO;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
@@ -79,7 +77,7 @@ import au.org.theark.lims.web.component.biolocation.BioModalAllocateDetailPanel;
 import au.org.theark.lims.web.component.biospecimen.batchaliquot.BatchAliquotBiospecimenPanel;
 import au.org.theark.lims.web.component.biospecimen.batchcreate.AutoGenBatchCreateBiospecimenPanel;
 import au.org.theark.lims.web.component.biospecimen.batchcreate.ManualBatchCreateBiospecimenPanel;
-import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenDataEntryModalDetailPanel;
 
 /**
  * @author cellis
@@ -660,7 +658,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	}
 
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {
-		modalContentPanel = new BiospecimenModalDetailPanel("content", modalWindow, cpModel);
+		modalContentPanel = new BiospecimenDataEntryModalDetailPanel("content", modalWindow, cpModel);
 
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Biospecimen Detail");

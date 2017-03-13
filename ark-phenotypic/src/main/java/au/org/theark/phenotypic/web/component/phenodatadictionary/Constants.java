@@ -20,14 +20,14 @@ package au.org.theark.phenotypic.web.component.phenodatadictionary;
 
 public class Constants {
 	public static final String		FUNCTION_KEY_VALUE_DATA_DICTIONARY							= "DATA_DICTIONARY";
-	public static final String 		FIELD_TYPE_NUMBER 											= "NUMBER";
-	public static final String 		FIELD_TYPE_CHARACTER 										= "CHARACTER";
-	public static final String 		FIELD_TYPE_DATE 											= "DATE";
+	public static final String 		FIELD_TYPE_NUMBER 											= "Number";
+	public static final String 		FIELD_TYPE_CHARACTER 										= "Character";
+	public static final String 		FIELD_TYPE_DATE 											= "Date";
 	public static final String 		DISCRETE_RANGE_TOKEN 										= ",";
 	public static final String 		ENCODED_VALUES_TOKEN 										= ";";
 	public static final String 		ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE 					= " ";
 	public static final String 		ENCODED_VALUES_SEPARATOR 									= "=";
-	public static final String		LOOKUP_FIELD_TYPE_NAME										= "LOOKUP";
+	public static final String		LOOKUP_FIELD_TYPE_NAME										= "LookUp";
 	public static final String		PHENODATASET 												= "phenoDataSet";
 	public static final String		PHENODATASET_ID												= "id";
 	public static final String		PHENODATASET_STUDY											= "study";
@@ -83,9 +83,10 @@ public class Constants {
 	
 	public static final String		FIELDVO_PHENODATASETDISPLAY_ID							= "phenoDataSetFieldDisplay.id";
 	public static final String		FIELDVO_PHENODATASETDISPLAY_CUSTOM_FIELD				= "phenoDataSetFieldDisplay.phenoDataSetField";
-	public static final String		FIELDVO_PHENODATASETDISPLAY_SEQUENCE					= "phenoDataSetFieldDisplay.sequence";
-	public static final String		FIELDVO_PHENODATASETDISPLAY_REQUIRED					= "phenoDataSetFieldDisplay.required";
-	public static final String		FIELDVO_PHENODATASETDISPLAY_REQUIRED_MSG				= "phenoDataSetFieldDisplay.requiredMessage";
+	//public static final String		FIELDVO_PHENODATASETDISPLAY_SEQUENCE					= "phenoDataSetFieldDisplay.sequence";
+	//public static final String		FIELDVO_PHENODATASETDISPLAY_REQUIRED					= "phenoDataSetFieldDisplay.required";
+	//public static final String		FIELDVO_PHENODATASETDISPLAY_REQUIRED_MSG				= "phenoDataSetFieldDisplay.requiredMessage";
+	//public static final String		FIELDVO_PHENODATASETDISPLAY_ALLOW_MULTIPLE_SELECTION	= "phenoDataSetFieldDisplay.allowMultiselect";
 	public static final String		FIELDVO_PHENODATASETDISPLAY_FIELD_GROUP					= "phenoDataSetFieldDisplay.phenoDataSetFieldGroup";
 	//Add new variables-2015-07-20
 	public static final String      CUSTOM_FIELD_TYPE_NAME									="name";

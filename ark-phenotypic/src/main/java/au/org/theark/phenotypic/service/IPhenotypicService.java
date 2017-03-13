@@ -42,6 +42,7 @@ import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -454,5 +455,9 @@ public interface IPhenotypicService {
 	public boolean isPhenoDataSetFieldCategoryBeingUsed(PhenoDataSetCategory phenoDataSetCategory);
 	
 	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria);
+	
+	public boolean isEncodedValue(PhenoDataSetField phenoDataSetField, String value);
+	
+	public boolean isSameNameFieldGroupExsistsForTheStudy(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO);
 }
 

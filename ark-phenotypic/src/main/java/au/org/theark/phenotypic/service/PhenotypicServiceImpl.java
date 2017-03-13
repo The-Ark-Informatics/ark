@@ -780,10 +780,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenoCollectionCount(criteria);
 	}
 
-	public List<PhenoDataSetCollection> searchPageablePhenoCollections(
-			PhenoDataCollectionVO criteria, int first, int count) {
-		return phenotypicDao.searchPageablePhenoCollection(criteria, first,
-				count);
+	public List<PhenoDataSetCollection> searchPageablePhenoCollections(	PhenoDataCollectionVO criteria, int first, int count) {
+		return phenotypicDao.searchPageablePhenoCollection(criteria, first,	count);
 	}
 	
 	public List<PhenoDataSetField> getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroup)
@@ -1189,7 +1187,6 @@ try {
 				// to
 				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
 				PhenoDataSetFieldDisplay phenoDataSetFieldDisplay=phenoDataSetFieldVO.getPhenoDataSetFieldDisplay();
-				phenoDataSetFieldDisplay.setAllowMultiselect(false);
 				phenotypicDao.createPhenoDataSetFieldDisplay(phenoDataSetFieldDisplay);
 				// Put in the sequence based on the ID
 				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetFiledOrderNumber(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());
@@ -1532,6 +1529,17 @@ try {
 	@Override
 	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria) {
 		return phenotypicDao.getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(phenoDataSetGroupCriteria);
+	}
+
+	@Override
+	public boolean isEncodedValue(PhenoDataSetField phenoDataSetField, String value) {
+		return phenotypicDao.isInEncodedValues(phenoDataSetField, value);
+	}
+
+	@Override
+	public boolean isSameNameFieldGroupExsistsForTheStudy(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO) {
+		return phenotypicDao.isSameNameFieldGroupExsistsForTheStudy(phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getName(),phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getStudy()
+				,phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getArkFunction());
 	}
 	
 

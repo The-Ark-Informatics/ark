@@ -1,10 +1,11 @@
-package au.org.theark.study.model.vo;
+package au.org.theark.core.vo;
 
 import java.io.Serializable;
 
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 
+import au.org.theark.core.vo.StudyCustomDataVo;
 
 public class FamilyCustomDataVO extends StudyCustomDataVo<FamilyCustomFieldData> implements Serializable {
 
@@ -12,8 +13,8 @@ public class FamilyCustomDataVO extends StudyCustomDataVo<FamilyCustomFieldData>
 	private static final long serialVersionUID = 1L;
 	
 	private FamilyCustomFieldData familyCustomFieldData;
-
-	private String familyUId;
+	
+	private CustomFieldCategory customFieldCategory;
 
 	public FamilyCustomDataVO() {
 		super();
@@ -29,13 +30,13 @@ public class FamilyCustomDataVO extends StudyCustomDataVo<FamilyCustomFieldData>
 	public void setFamilyCustomFieldData(FamilyCustomFieldData familyCustomFieldData) {
 		this.familyCustomFieldData = familyCustomFieldData;
 	}
-
-	public String getFamilyUId() {
-		return familyUId;
+	
+	public CustomFieldCategory getCustomFieldCategory() {
+		return customFieldCategory;
 	}
 
-	public void setFamilyUId(String familyUId) {
-		this.familyUId = familyUId;
+	public void setCustomFieldCategory(CustomFieldCategory customFieldCategory) {
+		this.customFieldCategory = customFieldCategory;
 	}
 	
 }

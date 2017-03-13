@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.lims.web.component.biospecimencustomdata;
+package au.org.theark.lims.web.component.subjectlims.lims.biospecimen;
 
 import java.util.Iterator;
 import java.util.List;
@@ -34,10 +34,13 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.BiospecimenCustomDataVO;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
-import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
 
 
@@ -57,6 +60,9 @@ public class BiospecimenCustomDataDataViewPanel extends Panel {
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
 	protected ILimsService					iLimsService;
 	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>	iArkCommonService;
+	
 	protected ArkDataProvider2<BiospecimenCustomDataVO, BiospecimenCustomFieldData> scdDataProvider;
 	protected DataView<BiospecimenCustomFieldData> dataView;
 
@@ -67,8 +73,8 @@ public class BiospecimenCustomDataDataViewPanel extends Panel {
 		this.setOutputMarkupPlaceholderTag(true);
 	}
 	
-	public BiospecimenCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage) {	
-		initialiseDataView();
+	public BiospecimenCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage,CustomFieldCategory customFieldCategory) {	
+		initialiseDataView(customFieldCategory);
 		if (numRowsPerPage != null) {
 			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getRowsPerPage());
 		}
@@ -77,7 +83,7 @@ public class BiospecimenCustomDataDataViewPanel extends Panel {
 		return this;
 	}
 
-	private void initialiseDataView() {
+	private void initialiseDataView(final CustomFieldCategory customFieldCategory) {
 		// TODO fix for READ permission check
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 			// Data provider to get pageable results from backend
@@ -86,15 +92,14 @@ public class BiospecimenCustomDataDataViewPanel extends Panel {
 				public int size() {
 					Biospecimen biospecimen = criteriaModel.getObject().getBiospecimen();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-	
 					return (int)iLimsService.getBiospecimenCustomFieldDataCount(biospecimen, arkFunction);
 				}
 	
 				public Iterator<BiospecimenCustomFieldData> iterator(int first, int count) {
 					Biospecimen biospecimen = criteriaModel.getObject().getBiospecimen();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-	
-					List<BiospecimenCustomFieldData> biospecimenCustomDataList = iLimsService.getBiospecimenCustomFieldDataList(biospecimen, arkFunction, first, count);
+					CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOSPECIMEN);
+					List<BiospecimenCustomFieldData> biospecimenCustomDataList = iLimsService.getBiospecimenCustomFieldDataList(biospecimen, arkFunction,customFieldCategory,customFieldType, first, count);
 					cpModel.getObject().setCustomFieldDataList(biospecimenCustomDataList);
 					return cpModel.getObject().getCustomFieldDataList().iterator();
 				}

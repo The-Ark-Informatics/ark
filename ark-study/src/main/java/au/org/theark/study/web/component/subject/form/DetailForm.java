@@ -38,7 +38,8 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -121,6 +122,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private WebMarkupContainer								arkContextMarkupContainer;
 
 	protected TextField<String>							subjectUIDTxtFld;
+	protected TextField<String>							familyIdTxtFld;
 	protected TextField<String>							firstNameTxtFld;
 	protected TextField<String>							middleNameTxtFld;
 	protected TextField<String>							lastNameTxtFld;
@@ -224,6 +226,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 		};
 		subjectUIDTxtFld.setOutputMarkupId(true);
+		
+		familyIdTxtFld = new TextField<String>(Constants.FAMILY_ID);
 
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
@@ -303,7 +307,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		otherEmailTxtFld = new TextField<String>(Constants.PERSON_OTHER_EMAIL);
 
 		heardAboutStudyTxtFld = new TextField<String>(Constants.SUBJECT_HEARD_ABOUT_STUDY_FROM);
-		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
@@ -322,12 +326,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 		});
 
-		dateLastKnownAliveTxtFld = new DateTextField("linkSubjectStudy.person.dateLastKnownAlive", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateLastKnownAliveTxtFld = new DateTextField("linkSubjectStudy.person.dateLastKnownAlive", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dateLastKnownAlivePicker = new ArkDatePicker();
 		dateLastKnownAlivePicker.bind(dateLastKnownAliveTxtFld);
 		dateLastKnownAliveTxtFld.add(dateLastKnownAlivePicker);
 
-		dateOfDeathTxtFld = new DateTextField(Constants.PERSON_DOD, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfDeathTxtFld = new DateTextField(Constants.PERSON_DOD, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		causeOfDeathTxtFld = new TextField<String>(Constants.PERSON_CAUSE_OF_DEATH);
 		ArkDatePicker dodDatePicker = new ArkDatePicker();
 		dodDatePicker.bind(dateOfDeathTxtFld);
@@ -517,7 +521,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 	@SuppressWarnings("unchecked")
 	private void initConsentFields() {
-		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker consentDatePicker = new ArkDatePicker();
 		consentDatePicker.bind(consentDateTxtFld);
 		consentDateTxtFld.add(consentDatePicker);
@@ -552,6 +556,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	public void addDetailFormComponents() {
 
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectUIDTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(familyIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(titleTypeDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(middleNameTxtFld);

@@ -25,8 +25,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 
-import au.org.theark.lims.model.vo.BatchBiospecimenVO;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.BatchBiospecimenVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.web.component.biospecimen.batchcreate.form.ManualBatchCreateBiospecimenForm;
 
 public class ManualBatchCreateBiospecimenPanel extends Panel {

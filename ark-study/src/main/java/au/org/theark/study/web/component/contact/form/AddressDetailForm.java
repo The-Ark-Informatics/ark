@@ -26,7 +26,8 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -262,13 +263,13 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 
 	private void initialiseDatePicker() {
 		// Create new DateTextField and assign date format
-		dateReceivedDp = new DateTextField("addressVo.address.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateReceivedDp = new DateTextField("addressVo.address.dateReceived", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dPDateReceived = new ArkDatePicker();
 		dPDateReceived.bind(dateReceivedDp);
 		dateReceivedDp.add(dPDateReceived);
 		
 		//Valid From
-		dateValidFrom=new DateTextField("addressVo.address.validFrom", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidFrom=new DateTextField("addressVo.address.validFrom", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		dateValidFrom.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long	serialVersionUID	= 1L;
 				@Override
@@ -280,7 +281,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		dPDateValidFrom.bind(dateValidFrom);
 		dateValidFrom.add(dPDateValidFrom);
 		//Valid To
-		dateValidTo=new DateTextField("addressVo.address.validTo", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidTo=new DateTextField("addressVo.address.validTo", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		dateValidTo.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 		private static final long	serialVersionUID	= 1L;
 			@Override

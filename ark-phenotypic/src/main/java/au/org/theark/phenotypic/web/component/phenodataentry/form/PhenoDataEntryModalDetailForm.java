@@ -19,14 +19,19 @@
 package au.org.theark.phenotypic.web.component.phenodataentry.form;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -50,6 +55,7 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
@@ -122,7 +128,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		}
 	}
 	private void initPhenoDataSetFieldCategoryDdc(PhenoDataSetGroup phenoDataSetGroup){
-		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(phenoDataSetGroup);
+		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=sortLst(remeoveDuplicates(populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(phenoDataSetGroup)));
 		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategoriesHierachical=PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(pickedPhenoDataSetCategories);
 		ChoiceRenderer renderer = new ChoiceRenderer("phenoDataSetCategory.name", "phenoDataSetCategory.id"){
 			@Override
@@ -157,17 +163,22 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	}
 	private List<PickedPhenoDataSetCategory> populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(PhenoDataSetGroup phenoDataSetGroup){
 		List<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplays=iPhenotypicService.getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroupOrderByPhenoDataSetCategory(phenoDataSetGroup);
+		
 		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=new ArrayList<PickedPhenoDataSetCategory>();
 		for (PhenoDataSetFieldDisplay phenoDataSetFieldDisplay : phenoDataSetFieldDisplays) {
-			PickedPhenoDataSetCategory pickedPhenoDataSetCategory=new PickedPhenoDataSetCategory();
-			pickedPhenoDataSetCategory.setArkFunction(phenoDataSetFieldDisplay.getPhenoDataSetGroup().getArkFunction());
-			pickedPhenoDataSetCategory.setStudy(phenoDataSetFieldDisplay.getPhenoDataSetGroup().getStudy());
-			pickedPhenoDataSetCategory.setPhenoDataSetCategory(phenoDataSetFieldDisplay.getPhenoDataSetCategory());
-			if(phenoDataSetFieldDisplay.getParentPhenoDataSetCategory()!=null){
-				pickedPhenoDataSetCategory.setParentPickedPhenoDataSetCategory(findPickedPhenoDataSetCategoryFromSameList(pickedPhenoDataSetCategories, phenoDataSetFieldDisplay.getParentPhenoDataSetCategory()));
+			//Add only the categories if they only have the custom fields.Otherwise no point of showing them.   
+			if(phenoDataSetFieldDisplay.getPhenoDataSetField()!=null){
+				PickedPhenoDataSetCategory pickedPhenoDataSetCategory=new PickedPhenoDataSetCategory();
+				pickedPhenoDataSetCategory.setArkFunction(phenoDataSetFieldDisplay.getPhenoDataSetGroup().getArkFunction());
+				pickedPhenoDataSetCategory.setStudy(phenoDataSetFieldDisplay.getPhenoDataSetGroup().getStudy());
+				pickedPhenoDataSetCategory.setPhenoDataSetCategory(phenoDataSetFieldDisplay.getPhenoDataSetCategory());
+				if(phenoDataSetFieldDisplay.getParentPhenoDataSetCategory()!=null){
+					pickedPhenoDataSetCategory.setParentPickedPhenoDataSetCategory(findPickedPhenoDataSetCategoryFromSameList(pickedPhenoDataSetCategories, phenoDataSetFieldDisplay.getParentPhenoDataSetCategory()));
+				}
+				pickedPhenoDataSetCategory.setOrderNumber(phenoDataSetFieldDisplay.getPhenoDataSetCategoryOrderNumber());
+				pickedPhenoDataSetCategories.add(pickedPhenoDataSetCategory);
 			}
-			pickedPhenoDataSetCategory.setOrderNumber(phenoDataSetFieldDisplay.getPhenoDataSetCategoryOrderNumber());
-			pickedPhenoDataSetCategories.add(pickedPhenoDataSetCategory);
+			//
 		}
 		return pickedPhenoDataSetCategories;
 	}
@@ -179,20 +190,45 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		}
 		return null;
 	}
+	/**
+	 * Sort custom field list according to the order number.
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<PickedPhenoDataSetCategory> sortLst(List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories){
+		//sort by order number.
+		Collections.sort(pickedPhenoDataSetCategories, new Comparator<PickedPhenoDataSetCategory>(){
+		    public int compare(PickedPhenoDataSetCategory custFieldCategory1, PickedPhenoDataSetCategory custFieldCatCategory2) {
+		        return custFieldCategory1.getOrderNumber().compareTo(custFieldCatCategory2.getOrderNumber());
+		    }
+		});
+				return pickedPhenoDataSetCategories;
+	}
+	/**
+	 * Remove duplicates from list
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<PickedPhenoDataSetCategory> remeoveDuplicates(List<PickedPhenoDataSetCategory> phenoDataSetCategories){
+		Set<PickedPhenoDataSetCategory> phenoDataSetCategoriesSet=new HashSet<PickedPhenoDataSetCategory>();
+		List<PickedPhenoDataSetCategory> phenoDataSetCategoriesNew=new ArrayList<PickedPhenoDataSetCategory>();
+		phenoDataSetCategoriesSet.addAll(phenoDataSetCategories);
+		phenoDataSetCategoriesNew.addAll(phenoDataSetCategoriesSet);
+				return phenoDataSetCategoriesNew;
+	}
 
-	private boolean initialisePhenoCollectionDataEntry(PhenoDataSetCategory phenoDataSetCategory) {
-		boolean replacePanel = false;
-		//if (!(phenoCollectionDataEntryPanel instanceof PhenoDataDataViewPanel)) {
-			CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCpModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
+	private void initialisePhenoCollectionDataEntry(PhenoDataSetCategory phenoDataSetCategory) {
+		
+			/*CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCpModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 			phenoDataCpModel.getObject().setPhenoDataSetCollection(cpModel.getObject().getPhenoDataSetCollection());
 			phenoDataCpModel.getObject().getPhenoDataSetCollection().setQuestionnaire(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire());
 			phenoDataCpModel.getObject().setArkFunction(cpModel.getObject().getArkFunction());
-			
+			*/
 			PhenoDataDataViewPanel phenoCFDataEntryPanel;
 			if(phenoDataSetCategory!=null){
-				phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), phenoDataSetCategory);
+				phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), phenoDataSetCategory);
 			}else{
-				 phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), null);
+				 phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), null);
 			}
 			dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
 				private static final long	serialVersionUID	= 1L;
@@ -203,9 +239,6 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			};
 			//dataEntryNavigator = new ArkAjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView(), dataEntryWMC, jQueryLabel);
 			phenoCollectionDataEntryPanel = phenoCFDataEntryPanel;
-			//replacePanel = true;
-		//}
-		return replacePanel;
 	}
 	
 	public void initialiseDetailForm() {
@@ -214,8 +247,8 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		
 //		nameTxtFld = new TextField<String>("PhenoCollection.name");
 		descriptionTxtAreaFld = new TextArea<String>("phenoDataSetCollection.description");
-		recordDateTxtFld = new DateTextField("phenoDataSetCollection.recordDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		reviewedDateTxtFld = new DateTextField("phenoDataSetCollection.reviewedDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		recordDateTxtFld = new DateTextField("phenoDataSetCollection.recordDate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
+		reviewedDateTxtFld = new DateTextField("phenoDataSetCollection.reviewedDate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 
 		ArkDatePicker recordDatePicker = new ArkDatePicker();
 		recordDatePicker.bind(recordDateTxtFld);

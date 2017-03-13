@@ -415,13 +415,38 @@
 					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
-					
 					<div class="detailSectionBorder">
+					<!-- Include the category in here -->			
+						<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+					<div class="fldLabel">
+						<wicket:message key="bioSpecimenCustomFieldCategory">
+						BioSpecimen Custom Field Category:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<select wicket:id="customFieldCategory">
+							<option>
+								Cat1
+							</option>
+							<option>
+								Cat2
+							</option>
+						</select>
+					</div>
 						<div class="customFieldDataPanel">
-							<!-- Biospecimen custom field data entry -->
-							<div wicket:id="biospecimenCFDataEntryPanel">
+							<div wicket:id="dataEntryWMC">
+								<!-- Biospecimen custom field data entry -->
+								<div wicket:id="biospecimenCFDataEntryPanel">
+								</div>
+								<span wicket:id="dataEntryNavigator" class="a">
+								</span>
 							</div>
-						</div>
+						</div>	
 					</div>
 
 					<div class="detailSectionBorder">

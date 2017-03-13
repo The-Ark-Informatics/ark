@@ -23,7 +23,6 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -38,7 +37,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
+import au.org.theark.core.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
 
 /**
@@ -75,7 +74,7 @@ public class BioCollectionCustomDataContainerPanel extends Panel {
 
 	public BioCollectionCustomDataContainerPanel initialisePanel() {
 		add(initialiseFeedbackPanel());
-		add(initialiseCustomDataEditorWMC());
+		//add(initialiseCustomDataEditorWMC());
 		if (!ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 			customDataEditorWMC.setVisible(false);
@@ -83,7 +82,7 @@ public class BioCollectionCustomDataContainerPanel extends Panel {
 		return this;
 	}
 
-	protected WebMarkupContainer initialiseCustomDataEditorWMC() {
+	/*protected WebMarkupContainer initialiseCustomDataEditorWMC() {
 		customDataEditorWMC = new WebMarkupContainer("customDataEditorWMC");
 		Panel dataEditorPanel;
 		boolean contextLoaded = prerenderContextCheck();
@@ -100,7 +99,7 @@ public class BioCollectionCustomDataContainerPanel extends Panel {
 		}
 		customDataEditorWMC.add(dataEditorPanel);
 		return customDataEditorWMC;
-	}
+	}*/
 
 	protected WebMarkupContainer initialiseFeedbackPanel() {
 		/* Feedback Panel doesn't have to sit within a form */
