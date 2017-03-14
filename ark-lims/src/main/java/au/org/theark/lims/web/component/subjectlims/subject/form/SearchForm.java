@@ -52,11 +52,11 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.ArkAjaxButton;
 import au.org.theark.core.web.component.button.EditModeButtonsPanel;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
 

@@ -21,7 +21,6 @@ package au.org.theark.core.vo;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
@@ -58,8 +57,6 @@ public class ArkUserVO extends BaseVO {
 	private ArkUser					arkUserEntity;
 	private List<ArkUserRole>		arkUserRoleList;					// A List that will contain the current user's List Modules and Roles he is linked with
 																				// for the study in context
-	private List<UserConfig> 	arkUserConfigs = new ArrayList<UserConfig>();
-	
 	private Study					study;
 	private boolean				isArkUserPresentInDatabase;	// Specifies if the user was found in database. if this field is false then changePassword
 																				// must be set to true.
@@ -450,20 +447,5 @@ public class ArkUserVO extends BaseVO {
 
 	public void setStudyLst(List<Study> studyLst) {
 		this.studyLst = studyLst;
-	}
-	
-
-	/**
-	 * @return the arkUserConfigs
-	 */
-	public List<UserConfig> getArkUserConfigs() {
-		return arkUserConfigs;
-	}
-
-	/**
-	 * @param arkUserConfigs the arkUserConfigs to set
-	 */
-	public void setArkUserConfigs(List<UserConfig> arkUserConfigs) {
-		this.arkUserConfigs = arkUserConfigs;
 	}
 }

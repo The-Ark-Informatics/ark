@@ -18,8 +18,13 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectcustomdata;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -61,10 +66,10 @@ public class SubjectCustomDataEditorPanel extends Panel {
 	
 	protected FeedbackPanel feedbackPanel;
 	protected AbstractCustomDataEditorForm<SubjectCustomDataVO> customDataEditorForm;
-	//protected SubjectCustomFiledDataEntryModalDetailForm customDataEditorForm;
 	protected SubjectCustomDataDataViewPanel dataViewPanel;
 	protected Label warnSaveLabel;
 	private DropDownChoice<CustomFieldCategory>		customeFieldCategoryDdc;
+	private AjaxPagingNavigator 					pageNavigator;
 	
 
 	public SubjectCustomDataEditorPanel(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedBackPanel) {
@@ -76,7 +81,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 	public SubjectCustomDataEditorPanel initialisePanel() {
 		
 		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm(true);
-		Collection<CustomFieldCategory> customFieldCategoryCollection=getAvailableAllCategoryListInStudyByCustomFieldType();
+		Collection<CustomFieldCategory> customFieldCategoryCollection=getOnlyAssignedCategoryListInStudyByCustomFieldType();
 		List<CustomFieldCategory> customFieldCatLst=CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories((List<CustomFieldCategory>)customFieldCategoryCollection);
 		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID){
 						@Override
@@ -93,34 +98,40 @@ public class SubjectCustomDataEditorPanel extends Panel {
 			protected void onUpdate(AjaxRequestTarget target) {
 				
 				customDataEditorForm.getDataViewWMC().remove(dataViewPanel);
-				dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customeFieldCategoryDdc.getModelObject());
+				customDataEditorForm.getDataViewWMC().remove(pageNavigator);
+				
+				dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), customeFieldCategoryDdc.getModelObject());
 				cpModel.getObject().setCustomFieldCategory(customeFieldCategoryDdc.getModelObject());
+				
 				customDataEditorForm.getDataViewWMC().add(dataViewPanel);
+				customDataEditorForm.getDataViewWMC().add(pageNavigator);
+				
 				target.add(dataViewPanel);
-				target.add(customDataEditorForm);
+				target.add(pageNavigator);
+				target.add(customDataEditorForm.getDataViewWMC());
+				
 			}
 		});
 		//dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null);
 		//initialise
-		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue(),customeFieldCategoryDdc.getModelObject());
-		//dataViewPanel.getDataView().setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue());
-		
-		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
+		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(),customeFieldCategoryDdc.getModelObject());
+		pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
+				target.add(dataViewPanel);
+				target.add(pageNavigator);
 				target.add(customDataEditorForm.getDataViewWMC());
-				target.add(this);
 			}
 		};
 		pageNavigator.setVisible(true);
 		customDataEditorForm.add(customeFieldCategoryDdc);
 		customDataEditorForm.getDataViewWMC().add(dataViewPanel);
+		customDataEditorForm.getDataViewWMC().add(pageNavigator);
 
 		warnSaveLabel = new Label("warnSaveLabel", new ResourceModel("warnSaveLabel"));
 		warnSaveLabel.setVisible(ArkPermissionHelper.isActionPermitted(Constants.NEW));
 
 		add(customDataEditorForm);
-		add(pageNavigator);
 		add(warnSaveLabel);
 
 		return this;
@@ -129,20 +140,48 @@ public class SubjectCustomDataEditorPanel extends Panel {
 	 * Get custom field category collection from model.
 	 * @return
 	 */
-	private Collection<CustomFieldCategory> getAvailableAllCategoryListInStudyByCustomFieldType(){
+	private Collection<CustomFieldCategory> getOnlyAssignedCategoryListInStudyByCustomFieldType(){
 		
 		Study study =cpModel.getObject().getLinkSubjectStudy().getStudy();
-		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_CATEGORY);
+		ArkFunction arkFunction=iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 		
 		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT);
 		Collection<CustomFieldCategory> customFieldCategoryCollection = null;
 		try {
-			customFieldCategoryCollection =  iArkCommonService.getAvailableAllCategoryListInStudyByCustomFieldType(study,arkFunction, customFieldType);
+			customFieldCategoryCollection =  iArkCommonService.getCategoriesListInCustomFieldsByCustomFieldType(study, arkFunction, customFieldType);
+			customFieldCategoryCollection=sortLst(remeoveDuplicates((List<CustomFieldCategory>)customFieldCategoryCollection));
 		} catch (ArkSystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return customFieldCategoryCollection;
 	}
+	/**
+	 * Sort custom field list according to the order number.
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> sortLst(List<CustomFieldCategory> customFieldLst){
+		//sort by order number.
+		Collections.sort(customFieldLst, new Comparator<CustomFieldCategory>(){
+		    public int compare(CustomFieldCategory custFieldCategory1, CustomFieldCategory custFieldCatCategory2) {
+		        return custFieldCategory1.getName().compareTo(custFieldCatCategory2.getName());
+		    }
+		});
+				return customFieldLst;
+	}
+	/**
+	 * Remove duplicates from list
+	 * @param customFieldLst
+	 * @return
+	 */
+	private  List<CustomFieldCategory> remeoveDuplicates(List<CustomFieldCategory> customFieldLst){
+		Set<CustomFieldCategory> cusfieldCatSet=new HashSet<CustomFieldCategory>();
+		List<CustomFieldCategory> cusfieldCatLst=new ArrayList<CustomFieldCategory>();
+		cusfieldCatSet.addAll(customFieldLst);
+		cusfieldCatLst.addAll(cusfieldCatSet);
+				return cusfieldCatLst;
+	}
+	
 
 }

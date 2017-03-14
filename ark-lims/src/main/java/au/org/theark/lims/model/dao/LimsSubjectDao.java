@@ -35,7 +35,8 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
+
 
 @Repository("limsSubjectDao")
 public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectDao {

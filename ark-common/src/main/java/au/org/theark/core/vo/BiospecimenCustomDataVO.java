@@ -16,48 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.lims.model.vo;
+package au.org.theark.core.vo;
 
 import java.io.Serializable;
 
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.web.component.customfield.dataentry.CustomDataVO;
 
-/**
- * Represents a Batch of Biospecimen's one VO.
- * 
- * @author cellis
- * 
- */
-public class BatchBiospecimenVO implements Serializable {
+public class BiospecimenCustomDataVO extends CustomDataVO<BiospecimenCustomFieldData> implements Serializable {
+
+
 	private static final long	serialVersionUID	= 1L;
-	protected Integer		numberToCreate;
-	protected Biospecimen	biospecimen;
 	
-	public BatchBiospecimenVO() {
+	protected Biospecimen biospecimen;
+	
+	public BiospecimenCustomDataVO() {
+		super();
 		biospecimen = new Biospecimen();
 	}
-	/**
-	 * @return the numberToCreate
-	 */
-	public Integer getNumberToCreate() {
-		return numberToCreate;
-	}
-	/**
-	 * @param numberToCreate the numberToCreate to set
-	 */
-	public void setNumberToCreate(Integer numberToCreate) {
-		this.numberToCreate = numberToCreate;
-	}
-	/**
-	 * @return the biospecimen
-	 */
+
 	public Biospecimen getBiospecimen() {
 		return biospecimen;
 	}
-	/**
-	 * @param biospecimen the biospecimen to set
-	 */
+
 	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
 	}
+
 }

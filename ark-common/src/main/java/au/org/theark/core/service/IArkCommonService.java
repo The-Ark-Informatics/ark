@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Set;
 
 import au.org.theark.core.dao.IArkAuthorisation;
+import au.org.theark.core.model.study.entity.*;
 import org.apache.velocity.exception.VelocityException;
+import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -46,8 +48,6 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.config.entity.ConfigField;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
@@ -136,6 +136,9 @@ import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 
 public interface IArkCommonService<T> {
+
+
+	public void setiArkSettingService(IArkSettingService iArkSettingService);
 
 	// Place here any common services that must be visible to sub-applications
 	// Get reference data etc.get study maybe required but sub-applications
@@ -929,18 +932,6 @@ public interface IArkCommonService<T> {
 
 	public List<ProcessOutput> getProcessOutputsForProcess(Process process);
 
-	public List<ConfigField> getAllConfigFields();
-
-	public List<UserConfig> getUserConfigs(ArkUser arkUser);
-
-	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField);
-	
-	public UserConfig getUserConfig(String configName);
-	
-	public void createUserConfigs(List userConfigList) throws ArkSystemException;
-
-	public void deleteUserConfig(UserConfig userConfig);
-
 	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction function, Study study);
 
 	/**
@@ -971,7 +962,7 @@ public interface IArkCommonService<T> {
 	 * @param directoryType
 	 * @return
 	 */
-	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType);
+	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType) throws ArkSystemException;
 
 	/**
 	 * Generate a unique file id per attachment
@@ -1318,4 +1309,11 @@ public interface IArkCommonService<T> {
 	
 	public boolean isEncodedValue(CustomField customField, String value);
 
-	}
+	public WebComponent getHostedByImage();
+	public WebComponent getProductImage();
+
+	//----------------- Custom getters/setters for special settings go here -----------------//
+	public int getRowsPerPage();
+	public int getCustomFieldsPerPage();
+	public String getFileAttachmentDir() throws NullPointerException;
+}

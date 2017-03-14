@@ -45,8 +45,6 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
-import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
@@ -481,10 +479,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				session.save(arkUserRole);
 			}
 		}
-		
-		for (UserConfig config : arkUserVO.getArkUserConfigs()) {
-			session.saveOrUpdate(config);
-		}
 	}
 
 	/**
@@ -613,9 +607,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 					for (ArkUserRole arkUserRoleToRemove : getArkUserRolesToRemove(arkUserVO)) {
 						session.delete(arkUserRoleToRemove);
 					}
-				}
-				for (UserConfig config : arkUserVO.getArkUserConfigs()) {
-					session.update(config);
 				}
 			}
 			else {
@@ -1253,9 +1244,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				arkUserRole.setArkUser(arkUserVO.getArkUserEntity());
 				session.save(arkUserRole);
 			}
-		}
-		for (UserConfig config : arkUserVO.getArkUserConfigs()) {
-			session.update(config);
 		}
 	}
 

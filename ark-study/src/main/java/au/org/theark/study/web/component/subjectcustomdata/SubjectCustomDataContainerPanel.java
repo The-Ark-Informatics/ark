@@ -106,36 +106,6 @@ public class SubjectCustomDataContainerPanel extends Panel {
 		customDataEditorWMC.add(dataEditorPanel);
 		return customDataEditorWMC;
 	}
-	
-	/*protected WebMarkupContainer initialiseCustomDataEditorWMC(ModalWindow modalWindow) {
-		customDataEditorWMC = new WebMarkupContainer("customDataEditorWMC");
-		Panel dataEditorPanel;
-		boolean contextLoaded = prerenderContextCheck();
-
-		if (contextLoaded && isActionPermitted()) {
-			customFieldCriteria.setCustomFieldType(new CustomFieldType());
-			long fieldCount = iArkCommonService.getCustomFieldCount(customFieldCriteria);
-			if (fieldCount <= 0L) {
-				dataEditorPanel = new EmptyPanel("customDataEditorPanel");
-				this.error("There are currently no custom fields defined.");
-			}
-			else {
-				dataEditorPanel = new SubjectCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();
-				
-			}
-		}
-		else if (!contextLoaded) {
-			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
-			this.error("A study and subject in context are required to proceed.");
-		}
-		else {
-			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
-			this.error("You do not have sufficient permissions to access this function");
-		}
-		customDataEditorWMC.add(dataEditorPanel);
-		return customDataEditorWMC;
-	}*/
-
 
 	protected WebMarkupContainer initialiseFeedbackPanel() {
 		/* Feedback Panel doesn't have to sit within a form */

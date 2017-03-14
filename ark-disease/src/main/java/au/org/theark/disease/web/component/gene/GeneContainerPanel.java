@@ -94,7 +94,7 @@ public class GeneContainerPanel extends AbstractContainerPanel<GeneVO> {
 		geneProvider.setModel(this.cpModel);
 		
 		dataView = searchResultsPanel.buildDataView(geneProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 		
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 			private static final long serialVersionUID = 1L;

@@ -40,7 +40,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
 import au.org.theark.core.web.component.customfield.Constants;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
+
 import au.org.theark.lims.web.component.biocollectioncustomdata.form.CustomDataEditorForm;
 
 
@@ -102,6 +102,12 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 		
 		dataViewPanel = new BioCollectionCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(),customeFieldCategoryDdc.getModelObject());
 		
+<<<<<<< HEAD
+		dataViewPanel = new BioCollectionCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getRowsPerPage());
+
+		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
+=======
+>>>>>>> master
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {

@@ -21,6 +21,8 @@ package au.org.theark.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.org.theark.admin.web.component.settings.SettingsContainerPanel;
+import au.org.theark.core.model.config.entity.StudySpecificSetting;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
@@ -168,6 +170,9 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CALENDAR)) {
 						panelToReturn = new CalendarContainerPanel(panelId);
+					}
+					else if (arkFunction.getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_SETTING)) {
+						panelToReturn = new SettingsContainerPanel(panelId, StudySpecificSetting.class);
 					}
 					return panelToReturn;
 				}

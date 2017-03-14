@@ -8,10 +8,10 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
-import wickettree.ITreeProvider;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
+import wickettree.ITreeProvider;
 
 /**
  * A provider of {@link Biospecimen}s.

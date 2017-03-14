@@ -20,8 +20,9 @@ package au.org.theark.lims.web.component.inventory.form;
 
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.form.AbstractContainerForm;
-import au.org.theark.lims.model.vo.LimsVO;
+
 
 /**
  * @author nivedann

@@ -15,7 +15,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ ******************************************************************************//*
 package au.org.theark.lims.web.component.biospecimencustomdata;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -26,15 +26,15 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.BiospecimenCustomDataVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.web.component.biospecimencustomdata.form.CustomDataEditorForm;
 
 
-/**
+*//**
  * @author elam
  * 
- */
+ *//*
 @SuppressWarnings({ "serial" })
 public class BiospecimenCustomDataEditorPanel extends Panel {
 
@@ -59,7 +59,7 @@ public class BiospecimenCustomDataEditorPanel extends Panel {
 	
 	public BiospecimenCustomDataEditorPanel initialisePanel() {
 		
-		dataViewPanel = new BiospecimenCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataViewPanel = new BiospecimenCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getRowsPerPage());
 
 		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm(true);
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
@@ -78,3 +78,4 @@ public class BiospecimenCustomDataEditorPanel extends Panel {
 	}
 	
 }
+*/

@@ -16,32 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.lims.model.vo;
+package au.org.theark.admin.web.component.settings.form;
 
-import java.io.Serializable;
+import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.core.model.config.entity.Setting;
+import au.org.theark.core.web.form.AbstractContainerForm;
+import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
-import au.org.theark.core.web.component.customfield.dataentry.CustomDataVO;
+public class ContainerForm extends AbstractContainerForm<Setting> {
 
-public class BiospecimenCustomDataVO extends CustomDataVO<BiospecimenCustomFieldData> implements Serializable {
-
-
-	private static final long	serialVersionUID	= 1L;
-	
-	protected Biospecimen biospecimen;
-	
-	public BiospecimenCustomDataVO() {
-		super();
-		biospecimen = new Biospecimen();
-	}
-
-	public Biospecimen getBiospecimen() {
-		return biospecimen;
-	}
-
-	public void setBiospecimen(Biospecimen biospecimen) {
-		this.biospecimen = biospecimen;
+	public ContainerForm(String id, CompoundPropertyModel<Setting> model) {
+		super(id, model);
 	}
 
 }

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.lims.model.vo;
+package au.org.theark.core.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,44 +41,48 @@ public class LimsVO implements Serializable {
 
 	private static final long		serialVersionUID	= 3823264588506863044L;
 	protected Study						study;
-	protected LinkSubjectStudy		linkSubjectStudy;
-	protected BioCollection			bioCollection;
+	protected LinkSubjectStudy			linkSubjectStudy;
+	protected BioCollection				bioCollection;
 	protected Biospecimen				biospecimen;
 	protected Biospecimen				parentBiospecimen;
 	protected BioTransaction			bioTransaction;
 	protected InvSite					invSite;
 	protected InvFreezer				invFreezer;
 	protected InvRack					invRack;
-	protected InvBox						invBox;
+	protected InvBox					invBox;
 	protected InvCell					invCell;
 
 	/* A light weight VO that will represent a read only view of the location details of a Biospecimen */
-	protected BiospecimenLocationVO	biospecimenLocationVO;
+	protected BiospecimenLocationVO			biospecimenLocationVO;
 
 	/** A List of bioCollection(s) for the linkSubjectStudy in context */
-	protected List<BioCollection>		bioCollectionList;
+	protected List<BioCollection>			bioCollectionList;
 
 	/** A List of biospecimen(s) for the linkSubjectStudy in context */
-	protected List<Biospecimen>		biospecimenList;
+	protected List<Biospecimen>				biospecimenList;
 
 	/** A List of bioTransaction(s) for the biospecimen in context */
-	protected List<BioTransaction>	bioTransactionList;
+	protected List<BioTransaction>			bioTransactionList;
 
 	/** A List of invSite(s) for the study in context */
-	protected List<InvSite>				invSiteList;
+	protected List<InvSite>					invSiteList;
 
 	/** A List of Study(s) for the user in context */
-	protected List<Study>				studyList;
+	protected List<Study>					studyList;
 
 	protected String						biospecimenProcessing;
 	
-	protected List<BatchBiospecimenVO> batchBiospecimenList;
+	protected List<BatchBiospecimenVO> 		batchBiospecimenList;
 	
-	private List<Study>			selectedStudies;
-	private DefaultTreeModel 			treeModel;
-	protected AbstractTree<Biospecimen> tree;
+	private List<Study>						selectedStudies;
+	private DefaultTreeModel 				treeModel;
+	protected AbstractTree<Biospecimen> 	tree;
 	
-	protected CustomFieldCategory customFieldCategory;
+	protected CustomFieldCategory 			customFieldCategory;
+	
+	protected BioCollectionCustomDataVO 	bioCollectionCustomDataVO;
+	
+	protected BiospecimenCustomDataVO 		biospecimenCustomDataVO;
 
 	/**
 	 * @return the serialversionuid
@@ -108,6 +112,8 @@ public class LimsVO implements Serializable {
 		this.batchBiospecimenList = new ArrayList<BatchBiospecimenVO>(0);
 		this.selectedStudies = new ArrayList<Study>(0);
 		this.customFieldCategory=new CustomFieldCategory();
+		this.bioCollectionCustomDataVO=new BioCollectionCustomDataVO();
+		this.biospecimenCustomDataVO=new BiospecimenCustomDataVO();
 	}
 
 	/**
@@ -422,6 +428,20 @@ public class LimsVO implements Serializable {
 
 	public void setCustomFieldCategory(CustomFieldCategory customFieldCategory) {
 		this.customFieldCategory = customFieldCategory;
+	}
+	public BioCollectionCustomDataVO getBioCollectionCustomDataVO() {
+		return bioCollectionCustomDataVO;
+	}
+
+	public void setBioCollectionCustomDataVO(BioCollectionCustomDataVO bioCollectionCustomDataVO) {
+		this.bioCollectionCustomDataVO = bioCollectionCustomDataVO;
+	}
+	public BiospecimenCustomDataVO getBiospecimenCustomDataVO() {
+		return biospecimenCustomDataVO;
+	}
+
+	public void setBiospecimenCustomDataVO(BiospecimenCustomDataVO biospecimenCustomDataVO) {
+		this.biospecimenCustomDataVO = biospecimenCustomDataVO;
 	}
 	
 }

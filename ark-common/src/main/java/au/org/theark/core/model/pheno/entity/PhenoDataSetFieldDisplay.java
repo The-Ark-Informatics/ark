@@ -41,9 +41,6 @@ public class PhenoDataSetFieldDisplay implements Serializable {
 	private Long phenoDataSetCategoryOrderNumber;
 	private PhenoDataSetField phenoDataSetField;
 	private Long phenoDataSetFiledOrderNumber;
-	//private Boolean required;
-	//private String requiredMessage;
-	//private Boolean allowMultiselect = Boolean.FALSE;
 	private Set<PhenoDataSetData> phenoDataSetData = new HashSet<PhenoDataSetData>();
 	protected String descriptiveNameIncludingCFGName;
 
@@ -60,7 +57,7 @@ public class PhenoDataSetFieldDisplay implements Serializable {
 		this.id = id;
 	}
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "PHENO_DATASET_FIELD_GROUP_ID")
+	@JoinColumn(name = "PHENO_DATASET_FIELD_GROUP_ID",nullable = false)
 	public PhenoDataSetGroup getPhenoDataSetGroup() {
 		return phenoDataSetGroup;
 	}
@@ -94,8 +91,8 @@ public class PhenoDataSetFieldDisplay implements Serializable {
 			Long phenoDataSetCategoryOrderNumber) {
 		this.phenoDataSetCategoryOrderNumber = phenoDataSetCategoryOrderNumber;
 	}
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PHENO_DATASET_FIELD_ID", nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "PHENO_DATASET_FIELD_ID", nullable = true)
 	public PhenoDataSetField getPhenoDataSetField() {
 		return phenoDataSetField;
 	}
@@ -109,44 +106,6 @@ public class PhenoDataSetFieldDisplay implements Serializable {
 	public void setPhenoDataSetFiledOrderNumber(Long phenoDataSetFiledOrderNumber) {
 		this.phenoDataSetFiledOrderNumber = phenoDataSetFiledOrderNumber;
 	}
-	
-	/*@Column(name = "REQUIRED")
-	public Boolean getRequired() {
-		return required;
-	}
-	
-	public void setRequired(Boolean required) {
-		this.required = required;
-	}
-
-	@Column(name = "REQUIRED_MESSAGE")
-	public String getRequiredMessage() {
-		return requiredMessage;
-	}
-
-	public void setRequiredMessage(String requiredMessage) {
-		this.requiredMessage = requiredMessage;
-	}
-
-	@Column(name = "ALLOW_MULTIPLE_SELECTION", precision = 1, scale = 0)
-	public Boolean getAllowMultiselect() {
-		return allowMultiselect;
-	}
-
-	public void setAllowMultiselect(Boolean allowMultiselect) {
-		this.allowMultiselect = allowMultiselect;
-	}*/
-	//TODO: Remove NotAudited when pheno auditing is done
-	//@NotAudited
-	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetFieldDisplay")customFieldDisplay
-	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
-	/*public Set<PhenoDataSetData> getPhenoData() {
-		return phenoData;
-	}
-
-	public void setPhenoData(Set<PhenoDataSetData> phenoData) {
-		this.phenoData = phenoData;
-	}*/
 	
 	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetFieldDisplay")

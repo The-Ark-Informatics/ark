@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.audit.UsernameRevisionEntity;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
@@ -52,7 +54,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IAuditService;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.FamilyCustomDataVO;
-
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.core.vo.SubjectCustomDataVO;
@@ -408,12 +410,84 @@ public class AuditModalPanel extends Panel implements Serializable {
 				}
 			}
 		}
-		
-		//else if(entity instanceof LimsVO ){
+		//BioCollection custom field and Biospecimen custom field data.
+		else if(entity instanceof LimsVO ){
+			LimsVO limsVO=((LimsVO)entity);
+			CustomFieldCategory customFieldCategory=limsVO.getCustomFieldCategory();
+			List<BioCollectionCustomFieldData> bioCollectionCustomFieldDatas=limsVO.getBioCollectionCustomDataVO().getCustomFieldDataList();
+			List<BiospecimenCustomFieldData> biospecimenCustomFieldDatas=limsVO.getBiospecimenCustomDataVO().getCustomFieldDataList();
 			
-			
-		//}
-		
+			Set<Object> primaryKeyLst= new HashSet<Object>();
+			//BioCollection part.
+			if(bioCollectionCustomFieldDatas.size()>0){
+				for (BioCollectionCustomFieldData bioCollectionCustomFieldData : bioCollectionCustomFieldDatas) {
+						if(bioCollectionCustomFieldData.getId()!=null){
+							primaryKeyLst.add(bioCollectionCustomFieldData.getId());
+						}
+				}
+				for (Object pKey : primaryKeyLst) {
+					if(reader.isEntityClassAudited(BioCollectionCustomFieldData.class)) {
+						List<Number> revisionNumbers = reader.getRevisions(BioCollectionCustomFieldData.class, pKey);
+						for(Number revision : revisionNumbers) {
+							PropertyUtilsBean propertyBean = new PropertyUtilsBean(); 
+							Object rev =reader.find(BioCollectionCustomFieldData.class, pKey, revision);
+							Object revProperty = pickDataValue(rev, propertyBean);
+							try {
+								Object fieldName = propertyBean.getProperty(rev, "customFieldDisplay");
+								CustomFieldDisplay customFieldDisplay=(((CustomFieldDisplay)fieldName));
+									String fieldLabel=((customFieldDisplay.getCustomField()!=null && customFieldDisplay.getCustomField().getFieldLabel()!=null)?  customFieldDisplay.getCustomField().getFieldLabel():customFieldDisplay.getCustomField().getName());
+									String unitTypeInText=((customFieldDisplay.getCustomField()!=null)?customFieldDisplay.getCustomField().getUnitTypeInText():"");;
+									String dataWithUnit= (revProperty!=null)?revProperty.toString():"" +" "+(unitTypeInText!=null?unitTypeInText:"");
+									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(BioCollectionCustomFieldData.class, false, true)
+											.add(AuditEntity.revisionNumber().eq(revision))
+											.add(AuditEntity.id().eq(pKey))
+											.getSingleResult();
+									RevisionType type = (RevisionType) result[2];
+									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+									revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
+							} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
+								this.error("Audit information can not be displayed in some records.");
+								setFeedbackPanel(feedbackPanel);
+							}
+						}
+				}
+			}
+		//BioSpeciment part.		
+		}else if(biospecimenCustomFieldDatas.size() >0){
+				for (BiospecimenCustomFieldData biospecimenCustomFieldData : biospecimenCustomFieldDatas) {
+					if(biospecimenCustomFieldData.getId()!=null){
+						primaryKeyLst.add(biospecimenCustomFieldData.getId());
+					}
+				}
+				for (Object pKey : primaryKeyLst) {
+					if(reader.isEntityClassAudited(BiospecimenCustomFieldData.class)) {
+						List<Number> revisionNumbers = reader.getRevisions(BiospecimenCustomFieldData.class, pKey);
+						for(Number revision : revisionNumbers) {
+							PropertyUtilsBean propertyBean = new PropertyUtilsBean(); 
+							Object rev =reader.find(BiospecimenCustomFieldData.class, pKey, revision);
+							Object revProperty = pickDataValue(rev, propertyBean);
+							try {
+								Object fieldName = propertyBean.getProperty(rev, "customFieldDisplay");
+								CustomFieldDisplay customFieldDisplay=(((CustomFieldDisplay)fieldName));
+									String fieldLabel=((customFieldDisplay.getCustomField()!=null && customFieldDisplay.getCustomField().getFieldLabel()!=null)?  customFieldDisplay.getCustomField().getFieldLabel():customFieldDisplay.getCustomField().getName());
+									String unitTypeInText=((customFieldDisplay.getCustomField()!=null)?customFieldDisplay.getCustomField().getUnitTypeInText():"");;
+									String dataWithUnit= (revProperty!=null)?revProperty.toString():"" +" "+(unitTypeInText!=null?unitTypeInText:"");
+									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(BiospecimenCustomFieldData.class, false, true)
+											.add(AuditEntity.revisionNumber().eq(revision))
+											.add(AuditEntity.id().eq(pKey))
+											.getSingleResult();
+									RevisionType type = (RevisionType) result[2];
+									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+									revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
+							} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
+								this.error("Audit information can not be displayed in some records.");
+								setFeedbackPanel(feedbackPanel);
+							}
+						}
+				}
+			}
+		}
+	}
 		Collections.sort(revisionEntities, new Comparator<AuditRow>() {
 			@Override
 			public int compare(AuditRow o1, AuditRow o2) {
@@ -436,7 +510,7 @@ public class AuditModalPanel extends Panel implements Serializable {
 			
 		};
 		
-		DataView<AuditRow> dataView = new DataView<AuditRow>("table", dataProvider, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		DataView<AuditRow> dataView = new DataView<AuditRow>("table", dataProvider, iArkCommonService.getRowsPerPage()) {
 			
 			@Override
 			protected void populateItem(Item<AuditRow> item) {

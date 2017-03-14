@@ -319,11 +319,15 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 			getModelObject().getPhenoDataSetGroup().setArkFunction(arkFunction);
 			getModelObject().getPhenoDataSetGroup().setStudy(study);
-		
+		  
 			try {
-				iPhenotypicService.createPhenoFieldDataSetGroup(getModelObject());
-				//initCustomFieldDataListPanel();
-				info("Data Set has been created successfully.");
+				 if(!iPhenotypicService.isSameNameFieldGroupExsistsForTheStudy(getModelObject())){
+					 iPhenotypicService.createPhenoFieldDataSetGroup(getModelObject());
+					//initCustomFieldDataListPanel();
+					info("Data Set has been created successfully.");
+				 }else{
+					error("A Data Set with the same name already exisits. Please choose a unique one.");
+				 }
 			}
 			catch (EntityExistsException e) {
 				error("A Data Set with the same name already exisits. Please choose a unique one.");

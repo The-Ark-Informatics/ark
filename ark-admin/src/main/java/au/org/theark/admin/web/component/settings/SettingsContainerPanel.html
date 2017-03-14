@@ -1,0 +1,29 @@
+<wicket:panel>
+	<!--  Page Left Zone -->
+	<div class="leftZone">&nbsp;</div>
+	
+	<!-- Content Zone -->
+	<div class="contentZone">
+		<form wicket:id="containerForm">
+		 	<span wicket:id="feedbackMessage">[Feedback]</span>
+		 	<!--  The detailContainer  WebMarkupContainer that has the detailPanel -->
+			<div wicket:id="detailContainer">
+				 <div wicket:id="detailPanel">[DetailPanel]</div>
+			</div>
+		 	<!--  The Search WebMarkupContainer that has the SearchPanel -->
+		 	<div wicket:id="searchContainer">
+				 <div wicket:id="searchPanel">[SearchPanel]</div>
+			</div>
+			
+			<!--  The resultListContainer  WebMarkupContainer that has the searchResultsPanel -->
+			<div wicket:id="resultListContainer">
+				 <div wicket:id="searchResultsPanel">[SearchResultsPanel]</div>
+			</div>
+		</form>
+	</div>
+	
+	<!--  Page right Zone -->
+	<div class="rightZone">&nbsp;</div>
+	<!--  Enforce some spacing at bottom of page -->
+	<br>&nbsp;<br>&nbsp;<br>
+</wicket:panel>

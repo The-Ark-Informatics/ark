@@ -18,8 +18,17 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.mydetails.form;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.config.entity.Setting;
+import au.org.theark.core.model.config.entity.UserSpecificSetting;
+import au.org.theark.core.model.study.entity.*;
+import au.org.theark.core.service.IArkSettingService;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.settings.ArkSettingsDataViewPanel;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -55,14 +64,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.config.entity.UserConfig;
-import au.org.theark.core.model.study.entity.ArkPermission;
-import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
-import au.org.theark.core.model.study.entity.ArkUserRole;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -72,10 +75,15 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	private static final long			serialVersionUID			= 2381693804874240001L;
 	private transient static Logger	log							= LoggerFactory.getLogger(MyDetailsForm.class);
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_SETTING_SERVICE)
+	private IArkSettingService iArkSettingService;
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
+
 	@SpringBean(name = "userService")
 	private IUserService					iUserService;
+
 	protected TextField<String>			userNameTxtField			= new TextField<String>(Constants.USER_NAME);
 	protected TextField<String>			firstNameTxtField			= new TextField<String>(Constants.FIRST_NAME);
 	protected TextField<String>			lastNameTxtField			= new TextField<String>(Constants.LAST_NAME);
@@ -85,9 +93,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	protected PasswordTextField			confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
 	protected WebMarkupContainer		groupPasswordContainer		= new WebMarkupContainer("groupPasswordContainer");
 	private WebMarkupContainer			listViewPanel				= new WebMarkupContainer("listViewPanel");
-	
-	
-	
+
 	protected WebMarkupContainer		shibbolethSession = new WebMarkupContainer("shibbolethSession");
 	protected WebMarkupContainer		shibbolethSessionDetails = new WebMarkupContainer("shibbolethSessionDetails");
    
@@ -101,7 +107,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	private AjaxPagingNavigator         pageNavigator;
 
 	@SuppressWarnings("unchecked")
-	private AbstractListEditor<UserConfig> userConfigListEditor;
+	private ArkSettingsDataViewPanel arkSettingsDataViewPanel;
 	
 
 	// Add a visitor class for required field marking/validation/highlighting
@@ -140,11 +146,6 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 				}
 			};
 			initStudyDdc(arkUserVOFromBackend);
-			
-			List<UserConfig> arkUserConfigs = iArkCommonService.getUserConfigs(arkUserVOFromBackend.getArkUserEntity());
-			arkUserVOFromBackend.setArkUserConfigs(arkUserConfigs);
-			getModelObject().setArkUserConfigs(arkUserConfigs);
-
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
@@ -191,31 +192,37 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		shibbolethSession.setVisible(loggedInViaAAF);
 		shibbolethSession.add(shibbolethSessionDetails);
 		
-		userConfigListEditor = new AbstractListEditor<UserConfig>("arkUserConfigs") {
-			@Override
-			protected void onPopulateItem(au.org.theark.core.web.component.listeditor.ListItem<UserConfig> item) {
-				item.add(new Label("configField.description", item.getModelObject().getConfigField().getDescription()));
-				PropertyModel<String> propModel = new PropertyModel<String>(item.getModel(), "value");
-				TextField<String> valueTxtFld = new TextField<String>("value", propModel);
-				item.add(valueTxtFld);
-				
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
-					private static final long	serialVersionUID	= -8887455455175404701L;
+		CompoundPropertyModel<Setting> cpModel = new CompoundPropertyModel<Setting>(new UserSpecificSetting());
+		cpModel.getObject().setHighestType("user");
+		try {
+			ArkUser arkUser = iArkCommonService.getArkUser(SecurityUtils.getSubject().getPrincipal().toString());
+			((UserSpecificSetting) cpModel.getObject()).setArkUser(arkUser);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		ArkDataProvider dataProvider = new ArkDataProvider<Setting, IArkSettingService>(iArkSettingService) {
+			public int size() {
+				return service.getSettingsCount(model.getObject());
+			}
 
-					@Override
-					public String getObject() {
-						return (item.getIndex() % 2 == 1) ? "even" : "odd";
-					}
-				}));
+			public Iterator<Setting> iterator(int first, int count) {
+				List<Setting> listCollection = new ArrayList<Setting>();
+				listCollection = service.searchPageableSettings(model.getObject(), first, count);
 
+				return listCollection.iterator();
 			}
 		};
-
+		// Set the criteria into the data provider's model
+		dataProvider.setModel(new LoadableDetachableModel<Setting>() {
+			@Override
+			protected Setting load() {
+				return cpModel.getObject();
+			}
+		});
+		arkSettingsDataViewPanel = new ArkSettingsDataViewPanel("settingsPanel", dataProvider, UserSpecificSetting.class, feedbackPanel);
 		attachValidators();
 		addComponents();
 	}
-
-	
 
 	private void attachValidators() {
 		userNameTxtField.add(EmailAddressValidator.getInstance()).setLabel(new StringResourceModel("userName.incorrect.format", this, null));
@@ -253,10 +260,9 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		add(closeButton);
 		add(listViewPanel);
 		add(studyDdc);
-		add(userConfigListEditor);
-		
+		add(arkSettingsDataViewPanel);
 	}
-	
+
 	protected void processFeedback(AjaxRequestTarget target, FeedbackPanel fb) {
 
 	}
@@ -273,7 +279,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		return userNameTxtField;
 	}
 	/**
-	 * 
+	 *
 	 * @param permissionsLst
 	 * @param operation
 	 * @return
@@ -327,10 +333,10 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		getModelObject().setArkRolePolicyTemplatesList(arkRolePolicyTemplatesLst);
 		createPageListView(iModel);
 	}
-	
+
 	private void createPageListView(IModel<List<ArkRolePolicyTemplate>> iModel) {
 		// TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
-		pageableListView = new PageableListView<ArkRolePolicyTemplate>("arkRolePolicyTemplatesList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		pageableListView = new PageableListView<ArkRolePolicyTemplate>("arkRolePolicyTemplatesList", iModel, iArkCommonService.getRowsPerPage()) {
 			private static final long	serialVersionUID	= 3557668722549243826L;
 
 			@Override
@@ -342,7 +348,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 				else {
 					item.addOrReplace(new Label("studyName", "[All Study Access]"));
 				}*/
-				
+
 				if(arkRolePolicyTemplate.getArkModule()!=null){
 					item.addOrReplace(new Label("moduleName", arkRolePolicyTemplate.getArkModule().getName()));
 				}else{
@@ -359,8 +365,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 					item.addOrReplace(new Label("functionName", "Not specified function"));
 				}
 				List<ArkPermission> arkPermissionsList=iArkCommonService.getArkPremissionListForRoleAndModule(arkRolePolicyTemplate);
-				
-					
+
+
 					if (isPermissionLstContain(arkPermissionsList,"CREATE")) {
 						item.addOrReplace(new ContextImage("arkCreatePermission", new Model<String>("images/icons/tick.png")));
 					}

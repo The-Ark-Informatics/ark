@@ -32,6 +32,7 @@ public class Constants {
 	public static final String ARK_DISEASE_SERVICE = "arkDiseaseService";
 	public static final String ARK_AUDIT_SERVICE = "arkAuditService";
 	public static final String ARK_PHENO_DATA_SERVICE = "phenotypicService";
+	public static final String ARK_SETTING_SERVICE = "arkSettingService";
 	
 	
 	/* Global constants */
@@ -348,7 +349,8 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_PEDIGREE = "PEDIGREE";
 	public static final String FUNCTION_KEY_VALUE_GENO_TABLE = "GENO_TABLE";
 	public static final String FUNCTION_KEY_VALUE_AUDIT = "Audit";
-	
+	public static final String FUNCTION_KEY_VALUE_SETTING = "Settings";
+
 	public static final String FUNCTION_KEY_VALUE_GENE = "GENE";
 	public static final String FUNCTION_KEY_VALUE_DISEASE = "DISEASE";
 	public static final String FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS = "DISEASE_CUSTOM_FIELDS";
@@ -762,5 +764,16 @@ public class Constants {
 	public static final String BIOCOLLECTION 					= "Biocollection";
 	public static final String BIOSPECIMEN 						= "Biospecimen";
 
-			
+	public static final String ARK_SETTINGS_DIR = "config";
+
+	public static final String HOSTED_BY_IMAGE = "hosted_by_image.gif";
+	public static final String PRODUCT_IMAGE = "product_image.png";
+	public static final String EVENT_RELOAD_LOGO_IMAGES = "reloadLogos";
+
+	public static final String MAIL_SETTING_HOST = "MAIL_SETTING_HOST";
+	public static final String MAIL_SETTING_PORT = "MAIL_SETTING_PORT";
+	public static final String MAIL_SETTING_USERNAME = "MAIL_SETTING_USERNAME";
+	public static final String MAIL_SETTING_PASSWORD = "MAIL_SETTING_PASSWORD";
+	public static final String MAIL_SETTING_PROPERTIES_AUTH = "MAIL_SETTING_PROPERTIES_AUTH";
+	public static final String MAIL_SETTING_PROPERTIES_STARTTLS = "MAIL_SETTING_PROPERTIES_STARTTLS";
 }

@@ -139,7 +139,7 @@ public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO>
 		affectionProvider.setModel(this.cpModel);
 		
 		dataView = searchResultsPanel.buildDataView(affectionProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 		
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 			private static final long serialVersionUID = 1L;

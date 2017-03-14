@@ -20,7 +20,7 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 
 public class InventoryContainerPanel extends AbstractInventoryPanel<LimsVO> {
