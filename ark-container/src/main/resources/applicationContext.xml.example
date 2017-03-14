@@ -28,8 +28,18 @@
 	<!-- Enable annotation configuration -->
 	<context:annotation-config />
 	
-	<!-- Enable Ark properties -->
+	<!-- Enable Ark properties
 	<context:property-placeholder location="classpath*:application.properties"/>
+	<context:property-placeholder location="file:/etc/theark/database.properties"/>-->
+	<bean id="properties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:application.properties</value>
+				<value>file:/etc/theark/database.properties</value>
+				<value>file:/etc/theark/ldap.properties</value>
+			</list>
+		</property>
+	</bean>
 
 	<!--  Belongs to the Ark Container Application -->
 	<context:component-scan base-package="au.org.theark.dao" />
@@ -70,23 +80,19 @@
 			</value>
 		</property>
 	</bean>
-
+	
 	<!--  MySql Data Source -->
-	<!--
-		NOTE: URL will now use "ark-database" mapping as defined in the host
-		file.
-	-->
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url"
-			value="jdbc:mysql://ark-database:3306?rewriteBatchedStatements=true&amp;characterEncoding=utf8" />
+			value="${jdbc.url}?rewriteBatchedStatements=true&amp;characterEncoding=utf8" />
 		<!-- or for utf-8	
 			value="jdbc:mysql://ark-database:3306?characterEncoding=utf8" /> 
 			but the slightest typo or variation will cause you problems!!!
 		-->
-		<property name="username" value="arkadmin" />
-		<property name="password" value="##MYSQL_PASSWORD##" />
+		<property name="username" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.password}" />
 	</bean>
 
 	<!--  Ark LDAP configuration (includes the LDAP data source) -->
@@ -97,11 +103,11 @@
 		au.org.theark.core.dao.ArkLdapContextSource
 	-->
 	<bean id="ldapDataContextSource" class="au.org.theark.core.dao.ArkLdapContextSource">
-		<property name="url" value="ldap://ark-ldap:389" />
-		<property name="basePeopleDn" value="ou=arkUsers" />
-		<property name="base" value="dc=the-ark,dc=org,dc=au" />
-		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
-		<property name="password" value="##SLAPD_PASSWORD##" />
+		<property name="url" value="${ldap.url}" />
+		<property name="basePeopleDn" value="${ldap.basePeopleDn}" />
+		<property name="base" value="${ldap.base}" />
+		<property name="userDn" value="${ldap.userDn}" />
+		<property name="password" value="${ldap.password}" />
 	</bean>
 
 	<!-- Shibboleth service provider -->

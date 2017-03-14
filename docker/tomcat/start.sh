@@ -13,6 +13,8 @@ mv /usr/target/libmadeline.so /usr/local/tomcat/lib
 chown root:root /usr/local/tomcat/lib/libmadeline.so
 chmod 644 /usr/local/tomcat/lib/libmadeline.so
 
+mkdir /etc/theark
+mv /usr/target/*.properties /etc/theark/
 
 while [ ! -f /usr/target/ark.war ]; do
 	sleep 1
