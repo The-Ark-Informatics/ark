@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.vo.ArkVo;
 
 /**
  * A container for Study Component related function.
@@ -30,7 +31,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
  * @author nivedann
  * 
  */
-public class StudyCompVo implements Serializable {
+public class StudyCompVo implements ArkVo, Serializable {
 
 
 	private static final long	serialVersionUID	= 1L;
@@ -65,6 +66,12 @@ public class StudyCompVo implements Serializable {
 
 	public void setStudyComponent(StudyComp studyComponent) {
 		this.studyComponent = studyComponent;
+	}
+	
+	@Override
+	public String getArkVoName() {
+		// TODO Auto-generated method stub
+		return "Study Component";
 	}
 
 }

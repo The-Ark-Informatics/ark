@@ -43,6 +43,15 @@ public class Constants {
 	public static final String PERSON_CONTEXT_CONSENT_ID = "consentId";
 	public static final String MODULE_CONTEXT_NAME = "moduleName";
 	public static final String	COPY												= "copy";
+	
+	
+	/* Validation Messages*/
+	
+	public static final String VALIDATION_MESSAGES = "Validation";
+	public static final String VALIDATION_CREATE = "saved successfully";
+	public static final String VALIDATION_UPDATE = "updated successfully";
+	public static final String VALIDATION_DELETE = "deleted successfully";
+	
 
 	/* Disease tabs */
 	
