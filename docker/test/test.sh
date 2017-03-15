@@ -6,7 +6,7 @@ while [ $(curl --write-out %{http_code} --silent --output /dev/null tomcat:8080/
 done
 
 #Wait for mysql to be populated
-until $(mysql -u root -hmysql -p$MYSQL_ROOT_PASSWORD -e '\q' > /dev/null 2>&1)
+until $(mysql -u ${MYSQL_USER} -hmysql -p$MYSQL_PASSWORD -e '\q' > /dev/null 2>&1)
 do
 	echo "MySQL database not available. Waiting until it is started..."
 	sleep 5;
