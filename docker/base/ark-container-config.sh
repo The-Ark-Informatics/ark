@@ -20,7 +20,7 @@ EOM
 ldap.url=ldap://slapd:389
 ldap.basePeopleDn=ou=arkUsers
 ldap.base=dc=the-ark,dc=org,dc=au
-ldap.userDn=cn=admin,dc=the-ark,dc=org,dc=au
+ldap.userDn=cn=admin,\${ldap.base}
 ldap.password=${SLAPD_PASSWORD}
 EOM
 

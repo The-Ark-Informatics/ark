@@ -28,15 +28,13 @@
 	<!-- Enable annotation configuration -->
 	<context:annotation-config />
 	
-	<!-- Enable Ark properties
-	<context:property-placeholder location="classpath*:application.properties"/>
-	<context:property-placeholder location="file:/etc/theark/database.properties"/>-->
+	<!-- Enable Ark properties -->
 	<bean id="properties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath*:application.properties</value>
-				<value>file:/etc/theark/database.properties</value>
-				<value>file:/etc/theark/ldap.properties</value>
+				<value>file:${config.dir:/etc/theark/}database.properties</value>
+				<value>file:${config.dir:/etc/theark/}ldap.properties</value>
 			</list>
 		</property>
 	</bean>
