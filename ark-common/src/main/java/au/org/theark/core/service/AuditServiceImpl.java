@@ -114,11 +114,11 @@ public class AuditServiceImpl implements IAuditService {
 
 	}
 
-	public List getAllEntitiesForClass(AuditVO auditVO, int first, int count) {
+	public List getAllEntitiesForClass(AuditVO auditVO, long first, long count) {
 		try {
 			Class cls = Class.forName(auditVO.getAuditEntity().getClassIdentifier());
 			AuditQuery query = getAuditQuery(cls, auditVO);
-			query.setFirstResult(first).setMaxResults(count);
+			query.setFirstResult(Math.toIntExact(first)).setMaxResults(Math.toIntExact(count));
 			return query.getResultList();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

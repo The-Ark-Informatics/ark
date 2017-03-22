@@ -61,7 +61,6 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.model.dao.IBioCollectionDao;
 import au.org.theark.lims.model.dao.IBioTransactionDao;
@@ -319,7 +318,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#searchPageableBioTransaction(Long)
 	 */
-	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransaction, int first, int count) {
+	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransaction, long first, long count) {
 		return iBioTransactionDao.searchPageableBioTransactions(bioTransaction, first, count);
 	}
 
@@ -391,7 +390,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#searchPageableBioCollections()
 	 */
-	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count) {
+	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, long first, long count) {
 		return iBioCollectionDao.searchPageableBioCollections(bioCollectionCriteria, first, count);
 	}
 
@@ -426,7 +425,7 @@ public class LimsServiceImpl implements ILimsService {
 		return iBioCollectionDao.getBioCollectionCustomFieldDataCount(criteria, arkFunction);
 	}
 
-	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count) {
 		List<BioCollectionCustomFieldData> customfieldDataList = new ArrayList<BioCollectionCustomFieldData>();
 		customfieldDataList  = iBioCollectionDao.getBioCollectionCustomFieldDataList(bioCollectionCriteria, arkFunction, customFieldCategory,customFieldType,first, count);
 		return customfieldDataList;
@@ -575,7 +574,7 @@ public class LimsServiceImpl implements ILimsService {
 		return iBiospecimenDao.getBiospecimenCount(limsVo);
 	}
 
-	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count) {
+	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, long first, long count) {
 		return iBiospecimenDao.searchPageableBiospecimens(limsVo, first, count);
 	}
 
@@ -583,7 +582,7 @@ public class LimsServiceImpl implements ILimsService {
 		return iBiospecimenDao.getBiospecimenCustomFieldDataCount(biospecimenCriteria, arkFunction);
 	}
 
-	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count) {
 		List<BiospecimenCustomFieldData> customfieldDataList = new ArrayList<BiospecimenCustomFieldData>();
 		customfieldDataList  = iBiospecimenDao.getBiospecimenCustomFieldDataList(biospecimenCriteria, arkFunction,customFieldCategory,customFieldType, first, count);
 		return customfieldDataList;

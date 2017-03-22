@@ -1,62 +1,13 @@
 package au.org.theark.phenotypic.web.component.phenodatasetdefinition.form;
 
 
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.InvalidSessionException;
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.ListMultipleChoice;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IDetachable;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.StringValidator;
-import org.hibernate.exception.ConstraintViolationException;
-
-import wickettree.ITreeProvider;
-import wickettree.util.InverseSet;
-import wickettree.util.ProviderSubset;
-import au.org.theark.core.exception.ArkRunTimeException;
-import au.org.theark.core.exception.ArkRunTimeUniqueException;
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
-import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
+import au.org.theark.core.exception.*;
+import au.org.theark.core.model.pheno.entity.*;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.InverseSet;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
 import au.org.theark.core.web.component.ArkDataProvider2;
@@ -64,12 +15,29 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.util.PhenoDataSetCategoryOrderingHelper;
-import au.org.theark.phenotypic.web.component.phenodatasetdefinition.DataDictionaryDisplayListPanel;
 import au.org.theark.phenotypic.web.component.phenodatasetdefinition.PhenoCategoryFieldNestedTreePanel;
 import au.org.theark.phenotypic.web.component.phenodatasetdefinition.PhenoCategoryFieldTreeProvidor;
-
 import com.itextpdf.text.log.Logger;
 import com.itextpdf.text.log.LoggerFactory;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.InvalidSessionException;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
+import org.apache.wicket.extensions.markup.html.repeater.util.ProviderSubset;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.model.*;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.StringValidator;
+import org.hibernate.exception.ConstraintViolationException;
+
+import java.util.*;
 
 
 /**

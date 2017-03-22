@@ -18,16 +18,25 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.managestudy.form;
 
-import java.io.IOException;
-import java.sql.Blob;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import au.org.theark.core.dao.LobUtil;
+import au.org.theark.core.exception.*;
+import au.org.theark.core.model.lims.entity.*;
+import au.org.theark.core.model.study.entity.*;
+import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.security.ModuleConstants;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.vo.*;
+import au.org.theark.core.web.StudyHelper;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
+import au.org.theark.core.web.component.palette.ArkPalette;
+import au.org.theark.core.web.form.AbstractArchiveDetailForm;
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -42,13 +51,7 @@ import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.image.NonCachingImage;
@@ -68,43 +71,10 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.dao.LobUtil;
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.CannotRemoveArkModuleException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.exception.UnAuthorizedOperation;
-import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
-import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
-import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
-import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
-import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
-import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.SubjectUidPadChar;
-import au.org.theark.core.model.study.entity.SubjectUidToken;
-import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.security.ModuleConstants;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.ContextHelper;
-import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.vo.ModuleVO;
-import au.org.theark.core.vo.StudyCrudContainerVO;
-import au.org.theark.core.vo.StudyModelVO;
-import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.web.StudyHelper;
-import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
-import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
-import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
-import au.org.theark.core.web.component.palette.ArkPalette;
-import au.org.theark.core.web.form.AbstractArchiveDetailForm;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
+import java.io.IOException;
+import java.sql.Blob;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
@@ -876,7 +846,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
-					protected Blob getBlob() {
+					protected Blob getBlob(Attributes attributes) {
 						return studyLogoBlob;
 					}
 				};

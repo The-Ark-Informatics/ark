@@ -68,12 +68,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>wicket-tree</groupId>
-			<artifactId>wicket-tree</artifactId>
-			<version>0.5.0</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-core</artifactId>
 			<version>${shiro.version}</version>
@@ -272,7 +266,6 @@
 
 		<!-- For Datasource connections -->
 
-
 		<dependency>
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itextpdf</artifactId>
@@ -290,13 +283,13 @@
 		<dependency>
 			<groupId>org.wicketstuff</groupId>
 			<artifactId>wicketstuff-datatables</artifactId>
-			<version>1.5.7</version>
+			<version>${wicket.version}</version>
 		</dependency>
 		
 		 <dependency>
 	     	<groupId>net.ftlines.wicket-source</groupId>
 	     	<artifactId>wicket-source</artifactId>
-	     	<version>1.5.0.7</version>
+	     	<version>6.0.0.8</version>
 	 	</dependency>
 	 	
 		<dependency>
@@ -331,7 +324,7 @@
 		<dependency>
 			<groupId>com.googlecode.wicket-jquery-ui</groupId>
 			<artifactId>wicket-jquery-ui</artifactId>
-			<version>1.5.11</version> 
+			<version>${wicket.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -426,30 +419,10 @@
 					<downloadSources>true</downloadSources>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<phase>initialize</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-						<configuration>
-							<groupId>wicket-tree</groupId>
-							<artifactId>wicket-tree</artifactId>
-							<version>0.5.0</version>
-							<packaging>jar</packaging>
-							<file>${basedir}/../3rdParty/wicket-tree-0.5.0.jar</file>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 	<properties>
-		<wicket.version>1.5.11</wicket.version>
+		<wicket.version>6.26.0</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
 		<shiro.version>1.2.3</shiro.version>
 		<hibernate.version>4.2.21.Final</hibernate.version>

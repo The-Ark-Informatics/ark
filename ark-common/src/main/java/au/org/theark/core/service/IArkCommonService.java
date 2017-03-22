@@ -27,12 +27,9 @@ import java.util.List;
 import java.util.Set;
 
 import au.org.theark.core.dao.IArkAuthorisation;
-import au.org.theark.core.model.study.entity.*;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -59,7 +56,6 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -81,7 +77,6 @@ import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
-import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -496,7 +491,7 @@ public interface IArkCommonService<T> {
 	 * 
 	 * @return Collection of SubjectVO
 	 */
-	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, int first, int count);
+	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, long first, long count);
 
 	/**
 	 * A generic interface that will return count of the subjects in the study
@@ -557,7 +552,7 @@ public interface IArkCommonService<T> {
 	 *            - number of items to return (for that page)
 	 * @return Collection of Custom Fields
 	 */
-	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
+	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, long first, long count);
 
 	/**
 	 * A less generic interface that will return a list CustomFields specified
@@ -912,13 +907,13 @@ public interface IArkCommonService<T> {
 
 	public int getPipelineCount(Pipeline p);
 
-	public List<Pipeline> searchPageablePipelines(Pipeline object, int first, int count);
+	public List<Pipeline> searchPageablePipelines(Pipeline object, long first, long count);
 
 	public long getPipelineCount(Study study);
 
 	public int getProcessCount(Process object);
 
-	public List<Process> searchPageableProcesses(Process object, int first, int count);
+	public List<Process> searchPageableProcesses(Process object, long first, long count);
 
 	public void createProcess(Process modelObject);
 
@@ -1063,7 +1058,7 @@ public interface IArkCommonService<T> {
 	 * @param count
 	 * @return
 	 */
-	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, int first, int count);
+	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, long first, long count);
 	
 	/**
 	 * Category list By custom field Type.

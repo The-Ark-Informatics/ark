@@ -2,8 +2,8 @@ package au.org.theark.lims.web.component.inventory.panel;
 
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.tree.BaseTree;
-import org.apache.wicket.markup.html.tree.LabelIconPanel;
+import org.apache.wicket.extensions.markup.html.tree.BaseTree;
+import org.apache.wicket.extensions.markup.html.tree.LabelIconPanel;
 import org.apache.wicket.model.IModel;
 
 public class InventoryLinkIconPanel extends LabelIconPanel {
@@ -26,8 +26,8 @@ public class InventoryLinkIconPanel extends LabelIconPanel {
 	}
 
 	/**
-	 * @see org.apache.wicket.markup.html.tree.LabelIconPanel#addComponents(org.apache.wicket.model.IModel,
-	 *      org.apache.wicket.markup.html.tree.BaseTree)
+	 * @see org.apache.wicket.extensions.markup.html.tree.LabelIconPanel#addComponents(org.apache.wicket.model.IModel,
+	 *      org.apache.wicket.extensions.markup.html.tree.BaseTree)
 	 */
 	@Override
 	protected void addComponents(final IModel<Object> model, final BaseTree tree)

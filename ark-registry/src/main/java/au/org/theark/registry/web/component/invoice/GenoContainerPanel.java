@@ -6,10 +6,13 @@
  */
 package au.org.theark.registry.web.component.invoice;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.registry.web.component.invoice.form.ContainerForm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -18,13 +21,9 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.geno.entity.Pipeline;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.registry.web.component.invoice.form.ContainerForm;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author nivedann
@@ -96,13 +95,13 @@ public class GenoContainerPanel extends AbstractContainerPanel<Pipeline> {
 
 			private static final long	serialVersionUID	= 1L;
 
-			public int size() {
+			public long size() {
 				Study study = iArkCommonService.getStudy((Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID));
 				model.getObject().setStudy(study);
-				return (int) service.getPipelineCount(model.getObject());
+				return service.getPipelineCount(model.getObject());
 			}
 
-			public Iterator<Pipeline> iterator(int first, int count) {
+			public Iterator<Pipeline> iterator(long first, long count) {
 				List<Pipeline> listSubjects = new ArrayList<Pipeline>();
 				if (isActionPermitted()) {
 					listSubjects = iArkCommonService.searchPageablePipelines(model.getObject(), first, count);

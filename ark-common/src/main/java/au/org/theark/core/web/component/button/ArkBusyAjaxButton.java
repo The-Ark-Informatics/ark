@@ -19,8 +19,8 @@
 package au.org.theark.core.web.component.button;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
+import org.apache.wicket.ajax.attributes.AjaxCallListener;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.model.IModel;
 
@@ -65,7 +65,9 @@ public abstract class ArkBusyAjaxButton extends AjaxButton {
 		setOutputMarkupPlaceholderTag(true);
 	}
 
-	@Override
+
+	//Left commented out because strings above are empty and not doing anything anyway
+	/*@Override
 	protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
 			private static final long	serialVersionUID	= 1L;
@@ -85,5 +87,17 @@ public abstract class ArkBusyAjaxButton extends AjaxButton {
 				return script + setBusyIndicatorOff;
 			}
 		};
+	}*/
+
+	@Override
+	protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+		super.updateAjaxAttributes(attributes);
+		attributes.getAjaxCallListeners().add(new AjaxCallListener() {
+
+			@Override
+			public CharSequence getBeforeHandler(Component component) {
+				return super.getBeforeHandler(component);
+			}
+		});
 	}
 }

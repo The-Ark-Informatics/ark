@@ -18,9 +18,10 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.listeditor;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
+import org.apache.wicket.ajax.attributes.AjaxCallListener;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 
@@ -58,8 +59,20 @@ public abstract class AjaxListDeleteButton extends AjaxEditorButton {
 		target.add(getEditor());
 		onDeleteConfirmed(target, form);
 	}
-	
+
 	@Override
+	protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+		super.updateAjaxAttributes(attributes);
+		attributes.getAjaxCallListeners().add(new AjaxCallListener(){
+
+			@Override
+			public CharSequence getBeforeSendHandler(Component component) {
+				return "if(!confirm('" + confirm.getObject() + "')){ return false } else { this.disabled = true; };";
+			}
+		});
+	}
+
+	/*@Override
 	protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
 			private static final long	serialVersionUID	= 7495281332320552876L;
@@ -69,7 +82,7 @@ public abstract class AjaxListDeleteButton extends AjaxEditorButton {
 				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};" + script;
 			}
 		};
-	}
+	}*/
 
 	protected abstract void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form);
 }

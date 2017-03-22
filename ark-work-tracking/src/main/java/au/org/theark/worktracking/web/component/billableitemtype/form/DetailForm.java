@@ -1,8 +1,13 @@
 package au.org.theark.worktracking.web.component.billableitemtype.form;
 
-import java.text.NumberFormat;
-import java.util.List;
-
+import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.worktracking.model.vo.BillableItemTypeVo;
+import au.org.theark.worktracking.service.IWorkTrackingService;
+import au.org.theark.worktracking.util.Constants;
+import au.org.theark.worktracking.util.NumberValidatable;
+import au.org.theark.worktracking.util.ValidatableItemType;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
@@ -18,14 +23,8 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.worktracking.model.vo.BillableItemTypeVo;
-import au.org.theark.worktracking.service.IWorkTrackingService;
-import au.org.theark.worktracking.util.Constants;
-import au.org.theark.worktracking.util.NumberValidatable;
-import au.org.theark.worktracking.util.ValidatableItemType;
+import java.text.NumberFormat;
+import java.util.List;
 
 public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 	
@@ -145,16 +144,16 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		billableItemTypeUnitPriceTxtField.add(new PatternValidator(Constants.TWO_DECIMAL_PATTERN){
 			private static final long serialVersionUID = 1L;
 			@Override
-			protected void onValidate(IValidatable<String> validatable) {
-				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.UNIT_PRICE));
+			public void validate(IValidatable<String> validatable) {
+				super.validate(new NumberValidatable(validatable,ValidatableItemType.UNIT_PRICE));
 			}
 		});
 		billableItemTypeQuantityTypeTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_QUNATITY_TYPE_REQUIRED, billableItemTypeQuantityTypeTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_QUNATITY_TYPE_TAG)));
 		billableItemTypeQuantityPerUnitTxtField.add(new PatternValidator(Constants.NON_NEGATIVE_PATTERN){
 			private static final long serialVersionUID = 1L;
 			@Override
-			protected void onValidate(IValidatable<String> validatable) {
-				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.QUANTITY_PER_UNIT));
+			public void validate(IValidatable<String> validatable) {
+				super.validate(new NumberValidatable(validatable,ValidatableItemType.QUANTITY_PER_UNIT));
 			}
 		});
 //		billableItemTypeGstTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_TWO_DECIMAL_PATTERN){

@@ -18,25 +18,26 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.barcodelabel.form;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import au.org.theark.core.model.lims.entity.BarcodeLabel;
+import au.org.theark.core.model.lims.entity.BarcodeLabelData;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.lims.service.ILimsAdminService;
+import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.barcodelabeldata.BarcodeLabelDataPanel;
+import au.org.theark.lims.web.component.button.PrinterListPanel;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -49,19 +50,10 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.lims.entity.BarcodeLabel;
-import au.org.theark.core.model.lims.entity.BarcodeLabelData;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.lims.service.ILimsAdminService;
-import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.barcodelabeldata.BarcodeLabelDataPanel;
-import au.org.theark.lims.web.component.button.PrinterListPanel;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author cellis
@@ -152,13 +144,15 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		printerList = new PrinterListPanel("printerList", selected, isNew());
 		printerList.add(new AbstractDefaultAjaxBehavior() {
 			private static final long	serialVersionUID	= 1L;
+
+
 			@Override
 			public void renderHead(Component component, IHeaderResponse response) {
 				super.renderHead(component, response);
-				response.renderOnLoadJavaScript("findPrinters()");
+				response.render(JavaScriptHeaderItem.forScript("findPrinters();", "findPrinters"));
 				String js = "function callWicket(selectedPrinter) { var wcall = wicketAjaxGet ('"
 				    + getCallbackUrl() + "&selectedPrinter='+selectedPrinter, function() { }, function() { } ) }";
-				response.renderJavaScript(js, "selectPrinter");
+				response.render(JavaScriptHeaderItem.forScript(js, "selectPrinter"));
 			}
 			@Override
 			protected void respond(AjaxRequestTarget arg0) {

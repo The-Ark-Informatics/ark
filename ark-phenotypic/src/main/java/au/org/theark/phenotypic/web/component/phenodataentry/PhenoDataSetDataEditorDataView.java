@@ -18,13 +18,11 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodataentry;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
+import au.org.theark.core.Constants;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.study.entity.IPhenoDataSetFieldData;
+import au.org.theark.core.web.component.customfield.dataentry.*;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -38,21 +36,16 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.MaximumValidator;
-import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
-import au.org.theark.core.model.study.entity.IPhenoDataSetFieldData;
-import au.org.theark.core.web.component.customfield.dataentry.CheckGroupDataEntryPanel;
-import au.org.theark.core.web.component.customfield.dataentry.DateDataEntryPanel;
-import au.org.theark.core.web.component.customfield.dataentry.DropDownChoiceDataEntryPanel;
-import au.org.theark.core.web.component.customfield.dataentry.EncodedValueVO;
-import au.org.theark.core.web.component.customfield.dataentry.NumberDataEntryPanel;
-import au.org.theark.core.web.component.customfield.dataentry.TextDataEntryPanel;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * PhenoDataSetDataEditorDataView is designed to assist in rendering a phenoDataSetField Data entry panel
@@ -228,7 +221,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 						IConverter<Double> doubleConverter = numberDataEntryPanel.getNumberConverter();
 						try {
 							Double minNumber = (Double) doubleConverter.convertToObject(pf.getMinValue(), getLocale());
-							numberDataEntryPanel.addValidator(new MinimumValidator<Double>(minNumber));
+							numberDataEntryPanel.addValidator(RangeValidator.minimum(minNumber));
 						}
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
@@ -241,7 +234,7 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 						IConverter<Double> doubleConverter = numberDataEntryPanel.getNumberConverter();
 						try {
 							Double maxNumber = (Double) doubleConverter.convertToObject(pf.getMaxValue(), getLocale());
-							numberDataEntryPanel.addValidator(new MaximumValidator<Double>(maxNumber));
+							numberDataEntryPanel.addValidator(RangeValidator.maximum(maxNumber));
 						}
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database

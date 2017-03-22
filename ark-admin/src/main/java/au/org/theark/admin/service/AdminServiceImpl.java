@@ -141,11 +141,11 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkModuleCount(arkModuleCriteria);
 	}
 
-	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, int first, int count) {
+	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, long first, long count) {
 		return iAdminDao.searchPageableArkFunctions(arkFunctionCriteria, first, count);
 	}
 
-	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, int first, int count) {
+	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, long first, long count) {
 		return iAdminDao.searchPageableArkModules(arkModuleCriteria, first, count);
 	}
 
@@ -153,7 +153,7 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkRoleModuleFunctionVOCount(arkRoleModuleFunctionVO);
 	}
 
-	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count) {
+	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, long first, long count) {
 		return iAdminDao.searchPageableArkRoleModuleFunctionVO(arkRoleModuleFunctionVo, first, count);
 	}
 
@@ -177,7 +177,7 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkModuleFunctionCount(arkModuleFunctionCriteria);
 	}
 
-	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, int first, int count) {
+	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, long first, long count) {
 		return iAdminDao.searchPageableArkModuleFunctions(arkModuleFunctionCriteria, first, count);
 	}
 
@@ -205,7 +205,7 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkRoleCount(arkRoleCriteria);
 	}
 
-	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count) {
+	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, long first, long count) {
 		return iAdminDao.searchPageableArkRoles(arkRoleCriteria, first, count);
 	}
 
@@ -233,7 +233,7 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkRoleListByArkModule(arkModule);
 	}
 
-	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count) {
+	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, long first, long count) {
 		return iAdminDao.searchPageableArkModuleRoles(arkModulRoleCriteria, first, count);
 	}
 }

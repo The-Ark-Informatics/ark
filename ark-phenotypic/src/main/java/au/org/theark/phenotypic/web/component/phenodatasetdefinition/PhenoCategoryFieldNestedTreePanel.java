@@ -1,8 +1,15 @@
 package au.org.theark.phenotypic.web.component.phenodatasetdefinition;
 
-import java.util.Set;
-
+import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
+import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
+import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
+import au.org.theark.phenotypic.service.Constants;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import org.apache.wicket.Component;
+import org.apache.wicket.extensions.markup.html.repeater.tree.AbstractTree;
+import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
+import org.apache.wicket.extensions.markup.html.repeater.tree.NestedTree;
+import org.apache.wicket.extensions.markup.html.repeater.tree.content.StyledLinkLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -12,15 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import wickettree.AbstractTree;
-import wickettree.ITreeProvider;
-import wickettree.NestedTree;
-import wickettree.content.StyledLinkLabel;
-import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
-import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
-import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
-import au.org.theark.phenotypic.service.Constants;
-import au.org.theark.phenotypic.service.IPhenotypicService;
+import java.util.Set;
 
 public class PhenoCategoryFieldNestedTreePanel extends Panel {
 	/**

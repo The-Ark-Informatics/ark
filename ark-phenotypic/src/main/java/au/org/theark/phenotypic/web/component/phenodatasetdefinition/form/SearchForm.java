@@ -72,10 +72,10 @@ public class SearchForm extends AbstractSearchForm<PhenoDataSetFieldGroupVO>{
 		final PhenoDataSetGroup cfg = newModel.getObject().getPhenoDataSetGroup();
 		cfdArkDataProvider = new ArkDataProvider2<PhenoDataSetFieldDisplay, PhenoDataSetFieldDisplay>() {
 			private static final long serialVersionUID = 1L;
-			public int size() {
-				return (int)iPhenotypicService.getCFDLinkedToQuestionnaireCount(cfg);
+			public long size() {
+				return iPhenotypicService.getCFDLinkedToQuestionnaireCount(cfg);
 			}
-			public Iterator<PhenoDataSetFieldDisplay> iterator(int first, int count) {
+			public Iterator<PhenoDataSetFieldDisplay> iterator(long first, long count) {
 				
 				Collection<PhenoDataSetFieldDisplay> phenoFieldDisplayList = new ArrayList<PhenoDataSetFieldDisplay>();
 				phenoFieldDisplayList = iPhenotypicService.getCFDLinkedToQuestionnaire(cfg, first, count);

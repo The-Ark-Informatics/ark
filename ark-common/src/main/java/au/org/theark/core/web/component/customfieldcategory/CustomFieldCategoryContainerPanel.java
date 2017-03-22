@@ -136,29 +136,32 @@ public class CustomFieldCategoryContainerPanel extends AbstractContainerPanel<Cu
 		// Data providor to paginate resultList
 		customFieldCategoryProvider = new ArkDataProvider2<CustomFieldCategory, CustomFieldCategory>() {
 			private static final long	serialVersionUID	= 1L;
-			public int size() {
-				if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
-					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
-					return (int)iArkCommonService.getCustomFieldCategoryCount(criteriaModel.getObject());//todo safe int conversion
-				}
-				else{
-					return (int)iArkCommonService.getCustomFieldCategoryCount(criteriaModel.getObject());//todo safe int conversion
-				}
-			}
-			public Iterator<CustomFieldCategory> iterator(int first, int count) {
+
+			@Override
+			public Iterator<? extends CustomFieldCategory> iterator(long first, long count) {
 				List<CustomFieldCategory> listCustomFieldCategories = new ArrayList<CustomFieldCategory>();
-				
+
 				if (isActionPermitted()) {
 					//if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
-						//listCustomFields = iArkCommonService.searchPageableCustomFieldsForPheno(criteriaModel.getObject(), first, count);
+					//listCustomFields = iArkCommonService.searchPageableCustomFieldsForPheno(criteriaModel.getObject(), first, count);
 					//}
 					//else{
 					listCustomFieldCategories = iArkCommonService.searchPageableCustomFieldCategories(criteriaModel.getObject(), first, count);
 					//}
-					
+
 				}
 				return CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories(listCustomFieldCategories).iterator();
 				//return orderHierarchicalyCustomFieldCategories(listCustomFieldCategories).iterator();
+			}
+
+			public long size() {
+				if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
+					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
+					return iArkCommonService.getCustomFieldCategoryCount(criteriaModel.getObject());//todo safe int conversion
+				}
+				else{
+					return iArkCommonService.getCustomFieldCategoryCount(criteriaModel.getObject());//todo safe int conversion
+				}
 			}
 		};
 		// Set the criteria for the data provider

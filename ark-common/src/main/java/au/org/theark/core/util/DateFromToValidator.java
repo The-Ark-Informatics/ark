@@ -2,14 +2,14 @@ package au.org.theark.core.util;
 
 
 
-import java.util.Date;
-
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
+
+import java.util.Date;
 
 public class DateFromToValidator  extends AbstractFormValidator{
 
@@ -45,7 +45,7 @@ public class DateFromToValidator  extends AbstractFormValidator{
 	        	ValidationError ve = new ValidationError();
 	        	ve.setVariable("startDate",labComp1);
 	        	ve.setVariable("endDate",labComp2);
-	        	ve.addMessageKey("dateValidFromAndDatevalidTo.range");
+	        	ve.addKey("dateValidFromAndDatevalidTo.range");
 	        	components[0].error((IValidationError) ve);
 	        }
        }

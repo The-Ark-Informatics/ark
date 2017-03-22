@@ -18,10 +18,15 @@
  ******************************************************************************/
 package au.org.theark.registry.web.component.invoice.form;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import au.org.theark.core.Constants;
+import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.registry.web.component.invoice.ProcessResultListPanel;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -34,15 +39,9 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.model.geno.entity.Pipeline;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
-import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.registry.web.component.invoice.ProcessResultListPanel;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author nivedann
@@ -99,15 +98,15 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 
 			private static final long	serialVersionUID	= 1L;
 
-			public int size() {
+			public long size() {
 				Study study = iArkCommonService.getStudy((Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID));
 				Pipeline p = containerForm.getModelObject();
 				au.org.theark.core.model.geno.entity.Process proc = model.getObject();
 				proc.setPipeline(p);
-				return (int) service.getProcessCount(model.getObject());
+				return service.getProcessCount(model.getObject());
 			}
 
-			public Iterator<au.org.theark.core.model.geno.entity.Process> iterator(int first, int count) {
+			public Iterator<au.org.theark.core.model.geno.entity.Process> iterator(long first, long count) {
 				List<au.org.theark.core.model.geno.entity.Process> list = new ArrayList<au.org.theark.core.model.geno.entity.Process>();
 				list = iArkCommonService.searchPageableProcesses(model.getObject(), first, count);
 				return list.iterator();

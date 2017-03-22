@@ -38,7 +38,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.IntegerConverter;
-import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -304,10 +304,10 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		nameTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
 		invTrayDdc.setRequired(true).setLabel(new StringResourceModel("error.rack.required", this, new Model<String>("Rack")));
 		noOfColTxtFld.setRequired(true);
-		MinimumValidator<Integer> minValue = new MinimumValidator<Integer>(new Integer(0));
-		noOfColTxtFld.add(minValue);
+		RangeValidator<Integer> minValidator = new RangeValidator<>(new Integer(0), null);
+		noOfColTxtFld.add(minValidator);
 		noOfRowTxtFld.setRequired(true);
-		noOfRowTxtFld.add(minValue);
+		noOfRowTxtFld.add(minValidator);
 		colNoTypeDdc.setRequired(true);
 		rowNoTypeDdc.setRequired(true);
 	}

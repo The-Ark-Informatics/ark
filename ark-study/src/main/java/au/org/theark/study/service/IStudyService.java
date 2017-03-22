@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.study.service;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
@@ -480,17 +479,17 @@ public interface IStudyService {
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 	
-	public List<Phone> pageablePersonPhoneList(Long personId,Phone phoneCriteria, int first, int count);
+	public List<Phone> pageablePersonPhoneList(Long personId, Phone phoneCriteria, long first, long count);
 	
-	public List<Address> pageablePersonAddressList(Long personId,Address addressCriteria, int first, int count);
+	public List<Address> pageablePersonAddressList(Long personId, Address addressCriteria, long first, long count);
 	
 	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
-	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count);
 
 	public String getSubjectFamilyId(Long studyId, String subjectUID);
 	
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count);
 	
 	public void setPreferredPhoneNumberToFalse(Person person);
 

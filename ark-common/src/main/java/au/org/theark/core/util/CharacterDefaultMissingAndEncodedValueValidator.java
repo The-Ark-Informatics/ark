@@ -52,14 +52,14 @@ public class CharacterDefaultMissingAndEncodedValueValidator  extends AbstractFo
 	        	ValidationError ve = new ValidationError();
 	        	ve.setVariable("encoded",labComp1);
 	        	ve.setVariable("missingCharacterValue",labComp2);
-	        	ve.addMessageKey("characterMissingValueInEncodedValue.validate.error");
+	        	ve.addKey("characterMissingValueInEncodedValue.validate.error");
 	        	components[0].error((IValidationError) ve);
 	        }
 	        if(!encodedLstContaindefaultValue(encodedValuLst, defaultValue)){
 	        	ValidationError ve = new ValidationError();
 	        	ve.setVariable("encoded",labComp1);
 	        	ve.setVariable("defaultCharacterValue",labComp3);
-	        	ve.addMessageKey("characterDefaultValueInEncodedValue.validate.error");
+	        	ve.addKey("characterDefaultValueInEncodedValue.validate.error");
 	        	components[0].error((IValidationError) ve);
 	        }
        }

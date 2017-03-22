@@ -12,7 +12,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 
 import au.org.theark.core.util.CsvWriter;
 
-public class ExportableTextColumn<T> extends PropertyColumn<T> implements ExportableColumn<T> {
+public class ExportableTextColumn<T, S> extends PropertyColumn<T, S> implements ExportableColumn<T> {
 	private static final long	serialVersionUID	= 1L;
 
 	public ExportableTextColumn(IModel<String> displayModel, String propertyExpression) {
@@ -20,7 +20,7 @@ public class ExportableTextColumn<T> extends PropertyColumn<T> implements Export
 	}
 
 	public void exportCsv(final T object, CsvWriter writer) {
-		IModel<?> textModel = createLabelModel(new AbstractReadOnlyModel<T>() {
+		IModel<?> textModel = getDataModel(new AbstractReadOnlyModel<T>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -33,7 +33,7 @@ public class ExportableTextColumn<T> extends PropertyColumn<T> implements Export
 	}
 
 	public void exportXls(final T object, WritableSheet writer, int col, int row) {
-		IModel<?> textModel = createLabelModel(new AbstractReadOnlyModel<T>() {
+		IModel<?> textModel = getDataModel(new AbstractReadOnlyModel<T>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -57,7 +57,7 @@ public class ExportableTextColumn<T> extends PropertyColumn<T> implements Export
 	}
 
 	public void exportPdf(final T object, PdfPTable writer) {
-		IModel<?> textModel = createLabelModel(new AbstractReadOnlyModel<T>() {
+		IModel<?> textModel = getDataModel(new AbstractReadOnlyModel<T>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

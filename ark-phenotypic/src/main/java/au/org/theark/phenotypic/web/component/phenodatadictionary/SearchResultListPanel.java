@@ -179,17 +179,17 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private void addToolbars(DataView<PhenoDataSetField> phenoDataSetFieldDataView) {
-		List<IColumn<PhenoDataSetField>> columns = new ArrayList<IColumn<PhenoDataSetField>>();
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("name"), "name"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("fieldType"), "fieldType.name"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("description"), "description"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("fieldLabel"), "fieldLabel"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("unitTypeInText"), "unitTypeInText"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("encodedValues"), "encodedValues"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("minValue"), "minValue"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("maxValue"), "maxValue"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("missingValue"), "missingValue"));
-		columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("defaultValue"), "defaultValue"));
+		List<IColumn<PhenoDataSetField, String>> columns = new ArrayList<>();
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("name"), "name"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("fieldType"), "fieldType.name"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("description"), "description"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("fieldLabel"), "fieldLabel"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("unitTypeInText"), "unitTypeInText"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("encodedValues"), "encodedValues"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("minValue"), "minValue"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("maxValue"), "maxValue"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("missingValue"), "missingValue"));
+		columns.add(new ExportableTextColumn<PhenoDataSetField, String>(Model.of("defaultValue"), "defaultValue"));
 		//columns.add(new ExportableTextColumn<PhenoDataSetField>(Model.of("required"), "required"));
 
 		DataTable table = new DataTable("datatable", columns, phenoDataSetFieldDataView.getDataProvider(), iArkCommonService.getRowsPerPage());

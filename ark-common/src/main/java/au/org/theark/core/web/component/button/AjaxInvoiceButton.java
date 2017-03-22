@@ -2,8 +2,8 @@ package au.org.theark.core.web.component.button;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
+import org.apache.wicket.ajax.attributes.AjaxCallListener;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
@@ -24,6 +24,23 @@ public abstract class AjaxInvoiceButton extends IndicatingAjaxButton{
 	}
 
 	@Override
+	protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+		super.updateAjaxAttributes(attributes);
+		attributes.getAjaxCallListeners().add(new AjaxCallListener() {
+
+			@Override
+			public CharSequence getBeforeHandler(Component component) {
+				return "if(!confirm('" + confirm.getObject() + "')) { return false } else { this.disabled = true; };";
+			}
+
+			@Override
+			public CharSequence getSuccessHandler(Component component) {
+				return "this.disabled = false;";
+			}
+		});
+	}
+
+/*	@Override
 	protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
 
@@ -40,7 +57,7 @@ public abstract class AjaxInvoiceButton extends IndicatingAjaxButton{
 				return super.decorateOnSuccessScript(c, "	this.disabled = false; "+script );
 			}
 		};
-	}
+	}*/
 
 	@Override
 	protected abstract void onSubmit(AjaxRequestTarget target, Form<?> form);

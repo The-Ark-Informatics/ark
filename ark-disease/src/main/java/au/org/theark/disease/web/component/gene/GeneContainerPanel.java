@@ -1,9 +1,13 @@
 package au.org.theark.disease.web.component.gene;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.disease.service.IArkDiseaseService;
+import au.org.theark.disease.vo.GeneVO;
+import au.org.theark.disease.web.component.gene.form.ContainerForm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -15,16 +19,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.disease.service.IArkDiseaseService;
-import au.org.theark.disease.vo.DiseaseVO;
-import au.org.theark.disease.vo.GeneVO;
-import au.org.theark.disease.web.component.gene.SearchPanel;
-import au.org.theark.disease.web.component.gene.form.ContainerForm;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class GeneContainerPanel extends AbstractContainerPanel<GeneVO> {
 	
@@ -80,11 +77,11 @@ public class GeneContainerPanel extends AbstractContainerPanel<GeneVO> {
 		geneProvider = new ArkDataProvider<GeneVO, IArkDiseaseService>(iArkDiseaseService) {
 			private static final long serialVersionUID = 1L;
 			
-			public int size() {
+			public long size() {
 				return service.getGeneCount(containerForm.getModelObject());
 			}
 
-			public Iterator<? extends GeneVO> iterator(int first, int count) {
+			public Iterator<? extends GeneVO> iterator(long first, long count) {
 				List<GeneVO> listGenes = new ArrayList<GeneVO>();
 				listGenes = service.searchPageableGenes(model.getObject(), first, count);
 				return listGenes.iterator();

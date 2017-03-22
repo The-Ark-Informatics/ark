@@ -18,14 +18,14 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.button;
 
+import au.org.theark.core.security.ArkPermissionHelper;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
+import org.apache.wicket.ajax.attributes.AjaxCallListener;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
-
-import au.org.theark.core.security.ArkPermissionHelper;
 
 @SuppressWarnings({ "unchecked" })
 /**
@@ -50,6 +50,18 @@ public abstract class AjaxDeleteButton extends IndicatingAjaxButton {
 	}
 
 	@Override
+	protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+		super.updateAjaxAttributes(attributes);
+		attributes.getAjaxCallListeners().add(new AjaxCallListener(){
+
+			@Override
+			public CharSequence getBeforeHandler(Component component) {
+				return "if(!confirm('" + confirm.getObject() + "')){ return false } else { this.disabled = true; };";
+			}
+		});
+	}
+
+	/*@Override
 	protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
 			private static final long	serialVersionUID	= 7495281332320552876L;
@@ -59,7 +71,7 @@ public abstract class AjaxDeleteButton extends IndicatingAjaxButton {
 				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};" + script;
 			}		
 		};
-	}
+	}*/
 
 	@Override
 	protected abstract void onSubmit(AjaxRequestTarget target, Form<?> form);

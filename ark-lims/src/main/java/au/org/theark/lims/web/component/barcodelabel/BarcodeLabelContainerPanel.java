@@ -140,11 +140,11 @@ public class BarcodeLabelContainerPanel extends AbstractContainerPanel<BarcodeLa
 			private static final long	serialVersionUID	= 1L;
 			List<Study> studyListForUser =  getStudyListForUser();
 
-			public int size() {
-				return (int)service.getBarcodeLabelCount(model.getObject(), studyListForUser).intValue();
+			public long size() {
+				return service.getBarcodeLabelCount(model.getObject(), studyListForUser).intValue();
 			}
 
-			public Iterator<BarcodeLabel> iterator(int first, int count) {
+			public Iterator<BarcodeLabel> iterator(long first, long count) {
 				List<BarcodeLabel> listCollection = new ArrayList<BarcodeLabel>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					listCollection = service.searchPageableBarcodeLabels(model.getObject(), first, count, studyListForUser);

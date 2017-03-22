@@ -18,19 +18,6 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.viewReport.form;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
@@ -40,6 +27,18 @@ import au.org.theark.report.model.vo.GenericReportViewVO;
 import au.org.theark.report.service.IReportService;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.attributes.AjaxCallListener;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 /**
  * @author elam
@@ -91,7 +90,7 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 				onErrorProcess(target);
 			}
 
-			@Override
+			/*@Override
 			protected IAjaxCallDecorator getAjaxCallDecorator() {
 				return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
 					private static final long	serialVersionUID	= 1L;
@@ -101,6 +100,18 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 						return script + "wicketHide('" + reportOutputPanel.getMarkupId() + "');";
 					}
 				};
+			}*/
+
+			@Override
+			protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+				super.updateAjaxAttributes(attributes);
+				attributes.getAjaxCallListeners().add(new AjaxCallListener(){
+
+					@Override
+					public CharSequence getSuccessHandler(Component component) {
+						return "wicketHide('" + reportOutputPanel.getMarkupId() + "');";
+					}
+				});
 			}
 		};
 

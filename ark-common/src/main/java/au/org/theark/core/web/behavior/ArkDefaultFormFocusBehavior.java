@@ -20,7 +20,7 @@ package au.org.theark.core.web.behavior;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.IHeaderResponse;
 
 public class ArkDefaultFormFocusBehavior extends Behavior {
 
@@ -29,11 +29,14 @@ public class ArkDefaultFormFocusBehavior extends Behavior {
 
 	public void bind(Component component) {
 		this.component = component;
-		component.setOutputMarkupId(true);
+		//component.setOutputMarkupId(true);
 	}
 
-	public void renderHead(IHeaderResponse iHeaderResponse) {
-		super.renderHead(component,iHeaderResponse);
-		iHeaderResponse.renderOnLoadJavaScript("document.getElementById('" + component.getMarkupId() + "').focus();");
+	@Override
+	public void renderHead(Component component, IHeaderResponse response) {
+		component.setOutputMarkupId(true);
+		super.renderHead(component, response);
+		//response.render(JavaScriptReferenceHeaderItem.forReference(JQueryResourceReference.get()));
+		//response.render(OnDomReadyHeaderItem.forScript("document.getElementById('" + component.getMarkupId() + "').focus();"));
 	}
 }

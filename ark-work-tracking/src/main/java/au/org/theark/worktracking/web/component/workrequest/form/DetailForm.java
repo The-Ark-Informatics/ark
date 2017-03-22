@@ -1,32 +1,5 @@
 package au.org.theark.worktracking.web.component.workrequest.form;
 
-import java.text.NumberFormat;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.datetime.PatternDateConverter;
-import org.apache.wicket.datetime.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converter.DoubleConverter;
-import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.validator.PatternValidator;
-import org.apache.wicket.validation.validator.StringValidator;
-
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
@@ -39,6 +12,26 @@ import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.Constants;
 import au.org.theark.worktracking.util.NumberValidatable;
 import au.org.theark.worktracking.util.ValidatableItemType;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converter.DoubleConverter;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.StringValidator;
+
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.List;
 
 public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 
@@ -197,8 +190,8 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void onValidate(IValidatable<String> validatable) {
-				super.onValidate(new NumberValidatable(validatable, ValidatableItemType.GST));
+			public void validate(IValidatable<String> validatable) {
+				super.validate(new NumberValidatable(validatable, ValidatableItemType.GST));
 			}
 		});
 	}
