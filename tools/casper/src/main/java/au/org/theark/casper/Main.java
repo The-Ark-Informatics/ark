@@ -113,6 +113,7 @@ public class Main {
 		try {
 			Class.forName(dbClass);
 			con = DriverManager.getConnection(dbUrl, username, password);
+			System.out.println("Got Connection.");
 		} catch (ClassNotFoundException e) {
 			log.severe(e.toString());
 		} catch (SQLException e) {
@@ -265,7 +266,7 @@ public class Main {
 		}
 	}
 	
-	private void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) {
+	private void saveArkFileAttachment(final long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) {
 
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
 		System.out.println("about to output to " + directoryName); 
@@ -279,10 +280,13 @@ public class Main {
 			}
 			catch (SecurityException se) {
 				log.severe("Do not have the sufficient permission to access the file directory");
+			}finally{
+				fileDir.exists();
 			}
 			if (result) {
-				log.info("DIR created successfully " + directoryName);
+				//log.info("DIR created successfully " + directoryName);
 			}
+			//
 		}
 		createFile(directoryName, fileId, payload);
 	}

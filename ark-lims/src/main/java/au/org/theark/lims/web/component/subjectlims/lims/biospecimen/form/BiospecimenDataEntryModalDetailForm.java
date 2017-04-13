@@ -889,7 +889,7 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 						BioTransaction bioTransaction = limsVo.getBioTransaction();
 						Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
 
-						if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
+						if (parentBiospecimen.getQuantity()!=null && bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
 							StringBuffer errorMessage = new StringBuffer();
 
 							errorMessage.append("Cannot aliquot more than ");
@@ -1147,12 +1147,16 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 				cpModel.getObject().getBioTransaction().setUnit(biospecimen.getUnit());
 
 				enableQuantityTreatment(target);
+				//Refer the solution for the ARK-1764
 				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
 				bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
-				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
-				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null,cpModel.getObject().getCustomFieldCategory());
-				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
-
+				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
+				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(),null);
+				dataEntryWMC.addOrReplace(biospecimenCFDataEntryPanel);
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(dataEntryWMC);
+				target.add(biospecimenCFDataEntryPanel);
+				target.add(dataEntryWMC);
+				target.add(arkCrudContainerVo.getDetailPanelFormContainer());
 				// refresh the bioTransaction panel
 				initialiseBioTransactionListPanel();
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
@@ -1162,7 +1166,8 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 				initialiseBiospecimenLocationPanel();
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
 				target.add(biospecimenLocationPanel);
-
+				
+				
 				// Notify in progress
 				this.info("Cloning biospecimen " + clonedBiospecimenUid + ", please save to confirm");
 				target.add(feedbackPanel);
@@ -1250,11 +1255,16 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 				cpModel.getObject().getBioTransaction().setQuantity(null);
 				cpModel.getObject().getBioTransaction().setUnit(biospecimen.getUnit());  //TODO: unit
 				enableQuantityTreatment(target);
+				// Refer the solution for the ARK-1764
 				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
 				bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
-				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
-				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null,cpModel.getObject().getCustomFieldCategory());
-				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
+				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD));
+				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(),null);
+				dataEntryWMC.addOrReplace(biospecimenCFDataEntryPanel);
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(dataEntryWMC);
+				target.add(biospecimenCFDataEntryPanel);
+				target.add(dataEntryWMC);
+				target.add(arkCrudContainerVo.getDetailPanelFormContainer());
 				// refresh the bioTransaction panel
 				initialiseBioTransactionListPanel();
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
