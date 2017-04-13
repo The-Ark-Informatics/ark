@@ -1,3 +1,3 @@
-LTER TABLE `spark`.`data_source` 
+ALTER TABLE `spark`.`data_source` 
 ADD COLUMN `DIRECTORY` TINYINT(4) NULL AFTER `MICRO_SERVICE_ID`;
 

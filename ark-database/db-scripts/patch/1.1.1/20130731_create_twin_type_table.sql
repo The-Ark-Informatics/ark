@@ -1,3 +1,4 @@
+use 'study';
 CREATE TABLE `twin_type` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(45) DEFAULT NULL,

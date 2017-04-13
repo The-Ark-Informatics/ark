@@ -3,7 +3,10 @@
 -- Trav's made a biospecimen printer label using zebra languge that is tested working on brady bbp33.  Hopefully works everywhere.
 INSERT INTO `lims`.`barcode_label` (`NAME`, `DESCRIPTION`, `LABEL_PREFIX`, `LABEL_SUFFIX`, `VERSION`) 
 VALUES ('zebra or brady biospecimen', 'Generic biospecimen label using ZPL - tested on brady BBP33', '', '', '1');
-UPDATE `lims`.`barcode_label` SET `LABEL_PREFIX`='^XA\\n', `LABEL_SUFFIX`='^XZ\\n' WHERE `ID`='26';
+
+-- SET @MAX_LABEL_ID=0;
+-- @MAX_LABEL_ID=(SELECT max(id) FROM `lims`.`barcode_label`); 
+UPDATE `lims`.`barcode_label` SET `LABEL_PREFIX`='^XA\\n', `LABEL_SUFFIX`='^XZ\\n' WHERE `ID`=26;
 
 select * from lims.barcode_label;
 
@@ -13,6 +16,9 @@ select * from lims.barcode_label where id = 4;
 INSERT INTO lims.`barcode_label` (`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`,`VERSION`,`BARCODE_PRINTER_NAME`) 
 VALUES (NULL,1,'zebra biospecimen v3','Generic Zebra Biospecimen Label v3','','',3,NULL);
 -- created 26
+
+-- SET @MAX_NEXT_LABEL_ID=0;
+-- @MAX_NEXT_LABEL_ID=(SELECT max(id) FROM `lims`.`barcode_label`); 
 
 select * from lims.barcode_label_data where barcode_label_id = 26;
 

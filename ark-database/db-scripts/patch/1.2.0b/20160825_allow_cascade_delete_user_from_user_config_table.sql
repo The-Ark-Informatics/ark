@@ -1,7 +1,7 @@
 ALTER TABLE `config`.`user_config` 
-DROP FOREIGN KEY `FKF893C6361DA086E1`;
+DROP FOREIGN KEY `user_config_ibfk_3`;
 ALTER TABLE `config`.`user_config` 
-ADD CONSTRAINT `FKF893C6361DA086E1`
+ADD CONSTRAINT `user_config_ibfk_3`
   FOREIGN KEY (`USER_ID`)
   REFERENCES `study`.`ark_user` (`ID`)
   ON DELETE CASCADE
