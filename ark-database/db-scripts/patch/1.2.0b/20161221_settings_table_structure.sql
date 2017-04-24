@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `config`.`settings`;
 CREATE TABLE `config`.`settings` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL DEFAULT '',
@@ -9,6 +10,9 @@ CREATE TABLE `config`.`settings` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+use audit;
+
+DROP TABLE IF EXISTS `audit`.`aud_settings`;
 CREATE TABLE `audit`.`aud_settings` (
   `id` bigint(29) NOT NULL,
   `REV` int(11) NOT NULL,

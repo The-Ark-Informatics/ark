@@ -1,3 +1,4 @@
+use config;
 INSERT INTO config.settings (`type`, `highest_type`, `propertyType`, `property_name`, `property_value`)
 SELECT DISTINCT 'system', 'user', `TYPE`, `NAME`, `DEFAULT_VALUE` from config.config_fields;
 

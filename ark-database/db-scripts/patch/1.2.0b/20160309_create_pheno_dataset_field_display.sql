@@ -1,6 +1,6 @@
 USE `pheno`;
 --
--- Table structure for table `picked_pheno_dataset_category`
+-- Table structure for table `pheno_dataset_field_display`
 --
 DROP TABLE IF EXISTS `pheno_dataset_field_display`;
 CREATE TABLE `pheno_dataset_field_display` (

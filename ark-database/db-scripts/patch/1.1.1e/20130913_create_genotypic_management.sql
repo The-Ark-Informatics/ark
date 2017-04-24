@@ -97,7 +97,7 @@ CREATE  TABLE `geno`.`pipeline_template` (
 /**where do I link a person**/
 DROP TABLE IF EXISTS `geno`.`pipeline`;
 CREATE  TABLE `geno`.`pipeline` (
-  `ID` INT NOT NULL ,
+  `ID` INT NOT NULL AUTO_INCREMENT,
   `NAME` VARCHAR(255) NOT NULL ,
   `DESCRIPTION` VARCHAR(4096) NULL ,
   `STUDY_ID` INT NOT NULL ,
@@ -163,7 +163,7 @@ ALTER TABLE `geno`.`lss_pipeline`
   ON UPDATE NO ACTION
 , ADD INDEX `fk_lss_pipeline_lss_idx` (`LSS_ID` ASC) ;
 
-ALTER TABLE `geno`.`pipeline` CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT  ;
+/* ALTER TABLE `geno`.`pipeline` CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT  ; */
 
 
 ALTER TABLE `geno`.`process` 

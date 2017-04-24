@@ -3,8 +3,8 @@ set @ID2=(SELECT ID FROM `config`.`config_fields` where `NAME`='CUSTOM_FIELDS_PE
 
 set @typeid=(SELECT ID FROM `study`.`field_type` where `NAME`='NUMBER'); ;
 
-UPDATE `config`.`config_fields` SET `TYPE`='2' WHERE `ID`=@ID1;
-UPDATE `config`.`config_fields` SET `TYPE`='2' WHERE `ID`=@ID2;
+UPDATE `config`.`config_fields` SET `TYPE`=@typeid WHERE `ID`=@ID1;
+UPDATE `config`.`config_fields` SET `TYPE`=@typeid WHERE `ID`=@ID2;
 
 -- Add constrain to avoid having unnecessary type ids -------------- 
 
