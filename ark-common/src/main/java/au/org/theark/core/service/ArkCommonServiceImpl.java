@@ -1687,7 +1687,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * {@inheritDoc}
 	 */
 	public String generateArkFileId(String fileName) {
-		return System.currentTimeMillis() + "_" + UUID.randomUUID() + "_" + fileName;
+		return System.currentTimeMillis() + "_" + UUID.randomUUID() + "_" + (fileName != null ? fileName.replaceAll("\\s", "_"):null);
 	}
 
 	/**

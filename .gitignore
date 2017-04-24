@@ -27,3 +27,4 @@ spark-local/src/main/resources/spark.properties
 spark-hpc/src/main/resources/spark.properties
 ark-calendar/src/main/resources/ark-calendar.properties
 
+tools/casper/src/main/resources/casper.properties
