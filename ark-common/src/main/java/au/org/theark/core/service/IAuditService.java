@@ -22,7 +22,7 @@ public interface IAuditService {
 
 	public Long getAllEntitiesCountForClass(AuditVO auditVO);
 	
-	public List getAllEntitiesForClass(AuditVO auditVO, int first, int count);
+	public List getAllEntitiesForClass(AuditVO auditVO, long first, long count);
 
 	public Method getEntityDisplayMethod(Class entityClass);
 	

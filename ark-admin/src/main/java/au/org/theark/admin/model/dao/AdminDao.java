@@ -186,10 +186,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return totalCount;
 	}
 
-	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, int first, int count) {
+	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, long first, long count) {
 		Criteria criteria = buildArkModuleCriteria(arkModuleCriteria);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		List<ArkModule> list = criteria.list();
 
 		return list;
@@ -216,10 +216,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return totalCount;
 	}
 
-	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, int first, int count) {
+	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, long first, long count) {
 		Criteria criteria = buildArkFunctionCriteria(arkFunctionCriteria);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		List<ArkFunction> list = criteria.list();
 
 		return list;
@@ -296,10 +296,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria;
 	}
 
-	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count) {
+	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, long first, long count) {
 		Criteria criteria = buildArkRoleModuleFunctionVoCriteria(arkRoleModuleFunctionVo);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		
 		// Restrict to NOT show Super Administrator (safety)
 		// NOTE arpt alias set in buildarkRoleModuleFunctionVoCriteria 
@@ -373,10 +373,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return totalCount;
 	}
 
-	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, int first, int count) {
+	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, long first, long count) {
 		Criteria criteria = buildArkModuleFunctionCriteria(arkModuleFunctionCriteria);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		List<ArkModuleFunction> list = criteria.list();
 		return list;
 	}
@@ -505,10 +505,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return totalCount;
 	}
 
-	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count) {
+	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, long first, long count) {
 		Criteria criteria = buildArkRoleCriteria(arkRoleCriteria);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		List<ArkRole> list = criteria.list();
 		return list;
 	}
@@ -644,10 +644,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria.list();
 	}
 
-	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count) {
+	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, long first, long count) {
 		Criteria criteria = buildArkModuleRoleCriteria(arkModulRoleCriteria);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		List<ArkModuleRole> list = criteria.list();
 		return list;
 	}

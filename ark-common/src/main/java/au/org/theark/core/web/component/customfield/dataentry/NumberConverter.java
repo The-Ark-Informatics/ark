@@ -1,12 +1,12 @@
 package au.org.theark.core.web.component.customfield.dataentry;
 
+import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converter.AbstractDecimalConverter;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converter.AbstractDecimalConverter;
 
 public class NumberConverter extends AbstractDecimalConverter<Double>
 {
@@ -31,7 +31,7 @@ public class NumberConverter extends AbstractDecimalConverter<Double>
 		if (numberFormat == null)
 		{
 			numberFormat = newNumberFormat(locale);
-			setNumberFormat(locale, numberFormat);
+			//setNumberFormat(locale, numberFormat);
 		}
 		numberFormat.setGroupingUsed(false);
 		return (NumberFormat)numberFormat.clone();

@@ -178,11 +178,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 			private static final long	serialVersionUID	= 1L;
 
-			public int size() {
-				return (int) iLimsService.getBiospecimenCount(criteriaModel.getObject());
+			public long size() {
+				return iLimsService.getBiospecimenCount(criteriaModel.getObject());
 			}
 
-			public Iterator<Biospecimen> iterator(int first, int count) {
+			public Iterator<Biospecimen> iterator(long first, long count) {
 				List<Biospecimen> biospecimenList = new ArrayList<Biospecimen>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					biospecimenList = iLimsService.searchPageableBiospecimens(criteriaModel.getObject(), first, count);
@@ -209,14 +209,14 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		dataViewListWMC.add(pageNavigator);
 		dataViewListWMC.add(dataView);
 
-		List<IColumn<Biospecimen>> columns = new ArrayList<IColumn<Biospecimen>>();
-		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("BiospecimenUID"), "biospecimenUid"));
-		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Study"), "study.name"));
-		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("SubjectUID"), "linkSubjectStudy.subjectUID"));
-		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("ParentUID"), "ParentUid"));
-		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Collection"), "bioCollection.name"));
-		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Sample Type"), "sampleType.name"));
-		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Quantity"), "quantity"));
+		List<IColumn<Biospecimen, String>> columns = new ArrayList<>();
+		columns.add(new ExportableTextColumn<Biospecimen, String>(Model.of("BiospecimenUID"), "biospecimenUid"));
+		columns.add(new ExportableTextColumn<Biospecimen, String>(Model.of("Study"), "study.name"));
+		columns.add(new ExportableTextColumn<Biospecimen, String>(Model.of("SubjectUID"), "linkSubjectStudy.subjectUID"));
+		columns.add(new ExportableTextColumn<Biospecimen, String>(Model.of("ParentUID"), "ParentUid"));
+		columns.add(new ExportableTextColumn<Biospecimen, String>(Model.of("Collection"), "bioCollection.name"));
+		columns.add(new ExportableTextColumn<Biospecimen, String>(Model.of("Sample Type"), "sampleType.name"));
+		columns.add(new ExportableTextColumn<Biospecimen, String>(Model.of("Quantity"), "quantity"));
 		
 		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);

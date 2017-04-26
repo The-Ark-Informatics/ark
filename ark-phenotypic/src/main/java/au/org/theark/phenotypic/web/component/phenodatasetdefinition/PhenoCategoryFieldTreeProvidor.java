@@ -1,16 +1,5 @@
 package au.org.theark.phenotypic.web.component.phenodatasetdefinition;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.InvalidSessionException;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-
-import wickettree.ITreeProvider;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
@@ -21,6 +10,16 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.InvalidSessionException;
+import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class PhenoCategoryFieldTreeProvidor implements ITreeProvider<Object> {
 

@@ -25,7 +25,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.tree.BaseTree;
+import org.apache.wicket.extensions.markup.html.tree.BaseTree;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.lims.entity.InvBox;

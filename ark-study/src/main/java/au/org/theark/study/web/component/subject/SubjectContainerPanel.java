@@ -18,11 +18,21 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.*;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.export.ExportToolbar;
+import au.org.theark.core.web.component.export.ExportableDateColumn;
+import au.org.theark.core.web.component.export.ExportableTextColumn;
+import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.subject.form.ContainerForm;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
@@ -42,25 +52,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.GenderType;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.OtherID;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.core.web.component.export.ExportToolbar;
-import au.org.theark.core.web.component.export.ExportableDateColumn;
-import au.org.theark.core.web.component.export.ExportableTextColumn;
-import au.org.theark.study.model.vo.RelationshipVo;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.subject.form.ContainerForm;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author nivedann
@@ -250,11 +245,11 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 			private static final long serialVersionUID = 1L;
 
-			public int size() {
-				return (int) service.getStudySubjectCount(model.getObject());
+			public long size() {
+				return service.getStudySubjectCount(model.getObject());
 			}
 
-			public Iterator<SubjectVO> iterator(int first, int count) {
+			public Iterator<SubjectVO> iterator(long first, long count) {
 				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
 				if (isActionPermitted()) {
 					listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);
@@ -283,15 +278,15 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		resultsWmc.add(pageNavigator);
 
-		List<IColumn<SubjectVO>> columns = new ArrayList<IColumn<SubjectVO>>();
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("SubjectUID"), "subjectUID"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Full Name"), "subjectFullName"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Preferred Name"), "linkSubjectStudy.person.preferredName"));
-		columns.add(new ExportableDateColumn<SubjectVO>(Model.of("Date Of Birth"), "linkSubjectStudy.person.dateOfBirth", au.org.theark.core.Constants.DD_MM_YYYY));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Vital Status"), "linkSubjectStudy.person.vitalStatus.name"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Gender"), "linkSubjectStudy.person.genderType.name"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
+		List<IColumn<SubjectVO, String>> columns = new ArrayList<>();
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("SubjectUID"), "subjectUID"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Full Name"), "subjectFullName"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Preferred Name"), "linkSubjectStudy.person.preferredName"));
+		columns.add(new ExportableDateColumn<SubjectVO, String>(Model.of("Date Of Birth"), "linkSubjectStudy.person.dateOfBirth", au.org.theark.core.Constants.DD_MM_YYYY));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Vital Status"), "linkSubjectStudy.person.vitalStatus.name"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Gender"), "linkSubjectStudy.person.genderType.name"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
 
 		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
@@ -344,7 +339,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 				}
 			}
 
-			public int size() {
+			public long size() {
 				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				model.getObject().getRelativeUIDs().add(subjectUID);
 				// TODO comment this block to check inbred relatives
@@ -360,10 +355,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 					}
 				}
 				model.getObject().getLinkSubjectStudy().getPerson().setGenderType(genderType);
-				return (int) service.getStudySubjectCount(model.getObject());
+				return service.getStudySubjectCount(model.getObject());
 			}
 
-			public Iterator<SubjectVO> iterator(int first, int count) {
+			public Iterator<SubjectVO> iterator(long first, long count) {
 				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
 				if (isActionPermitted()) {
 					model.getObject().getLinkSubjectStudy().getPerson().setGenderType(genderType);
@@ -402,15 +397,15 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		};
 		resultsWmc.add(pageNavigator);
 
-		List<IColumn<SubjectVO>> columns = new ArrayList<IColumn<SubjectVO>>();
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("SubjectUID"), "subjectUID"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Full Name"), "subjectFullName"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Preferred Name"), "linkSubjectStudy.person.preferredName"));
-		columns.add(new ExportableDateColumn<SubjectVO>(Model.of("Date Of Birth"), "linkSubjectStudy.person.dateOfBirth", au.org.theark.core.Constants.DD_MM_YYYY));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Vital Status"), "linkSubjectStudy.person.vitalStatus.name"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Gender"), "linkSubjectStudy.person.genderType.name"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
-		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
+		List<IColumn<SubjectVO, String>> columns = new ArrayList<>();
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("SubjectUID"), "subjectUID"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Full Name"), "subjectFullName"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Preferred Name"), "linkSubjectStudy.person.preferredName"));
+		columns.add(new ExportableDateColumn<SubjectVO, String>(Model.of("Date Of Birth"), "linkSubjectStudy.person.dateOfBirth", au.org.theark.core.Constants.DD_MM_YYYY));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Vital Status"), "linkSubjectStudy.person.vitalStatus.name"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Gender"), "linkSubjectStudy.person.genderType.name"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
+		columns.add(new ExportableTextColumn<SubjectVO, String>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
 
 		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);

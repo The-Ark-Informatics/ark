@@ -32,7 +32,7 @@ public class ArkValidationMsgBehavior extends Behavior {
 			if (!fc.isValid()) {
 				String error;
 				if (fc.hasFeedbackMessage()) {
-					error = fc.getFeedbackMessage().getMessage().toString();
+					error = fc.getFeedbackMessages().first().toString();
 				}
 				else {
 					error = "Your input is invalid.";

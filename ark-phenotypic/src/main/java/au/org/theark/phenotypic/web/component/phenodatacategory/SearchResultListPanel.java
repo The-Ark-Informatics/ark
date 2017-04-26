@@ -146,11 +146,11 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private void addToolbars(DataView<PhenoDataSetCategory> phenoDataSetCategoryDataView) {
-		List<IColumn<PhenoDataSetCategory>> columns = new ArrayList<IColumn<PhenoDataSetCategory>>();
-		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("name"), "name"));
-		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("description"), "description"));
-		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("parentCategory"), "parentCategory.name"));
-		columns.add(new ExportableTextColumn<PhenoDataSetCategory>(Model.of("orderNumber"), "orderNumber"));
+		List<IColumn<PhenoDataSetCategory, String>> columns = new ArrayList<>();
+		columns.add(new ExportableTextColumn<PhenoDataSetCategory, String>(Model.of("name"), "name"));
+		columns.add(new ExportableTextColumn<PhenoDataSetCategory, String>(Model.of("description"), "description"));
+		columns.add(new ExportableTextColumn<PhenoDataSetCategory, String>(Model.of("parentCategory"), "parentCategory.name"));
+		columns.add(new ExportableTextColumn<PhenoDataSetCategory, String>(Model.of("orderNumber"), "orderNumber"));
 
 		DataTable table = new DataTable("datatable", columns, phenoDataSetCategoryDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 

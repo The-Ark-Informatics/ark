@@ -241,10 +241,10 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return biospecimenUidTemplateResult;
 	}
 
-	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count) {
+	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, long first, long count) {
 		Criteria criteria = buildBiospecimenUidTemplateCriteria(object);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		List<BiospecimenUidTemplate> list = criteria.list();
 		return list;
 	}
@@ -338,10 +338,10 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return totalCount;
 	}
 
-	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count, List<Study> studyListForUser) {
+	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, long first, long count, List<Study> studyListForUser) {
 		Criteria criteria = buildBarcodeLabelCriteria(object);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		criteria.add(Restrictions.in("study", studyListForUser));
 		List<BarcodeLabel> list = criteria.list();
 		return list;

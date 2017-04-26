@@ -18,9 +18,18 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.address.form;
 
-import java.util.Date;
-import java.util.List;
-
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.*;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.AddressVO;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
+import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -31,37 +40,16 @@ import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValidator;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.AddressStatus;
-import au.org.theark.core.model.study.entity.AddressType;
-import au.org.theark.core.model.study.entity.Country;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.State;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.AddressVO;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
-import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
-import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author nivedann
@@ -271,14 +259,13 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 
 		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("address.streetAddress.RequiredValidator", this, new Model<String>("Street Address")));
 
-		streetAddressTxtFld.add(LengthBetweenValidator.maximumLength(255));
+		streetAddressTxtFld.add(StringValidator.maximumLength(255));
 
 		cityTxtFld.setRequired(true).setLabel(new StringResourceModel("address.city.RequiredValidator", this, new Model<String>("City")));
 
 		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("address.postCode.RequiredValidator", this, new Model<String>("Post Code")));
 		// TODO User Centric ones for Max and Min
-		postCodeTxtFld.add(LengthBetweenValidator.maximumLength(10));
-		postCodeTxtFld.add(LengthBetweenValidator.minimumLength(4));
+		postCodeTxtFld.add(StringValidator.lengthBetween(4,10));
 
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("address.dateReceived.DateValidator.maximum", this, null));
 

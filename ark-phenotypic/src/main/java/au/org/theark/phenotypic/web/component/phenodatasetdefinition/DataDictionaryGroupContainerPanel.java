@@ -135,11 +135,11 @@ public class DataDictionaryGroupContainerPanel extends AbstractContainerPanel<Ph
 
 			private static final long serialVersionUID = 1L;
 
-			public int size() {
-				return (int) iPhenotypicService.getPhenoDataSetFieldGroupCount(criteriaModel.getObject());
+			public long size() {
+				return iPhenotypicService.getPhenoDataSetFieldGroupCount(criteriaModel.getObject());
 			}
 
-			public Iterator<PhenoDataSetGroup> iterator(int first, int count) {
+			public Iterator<PhenoDataSetGroup> iterator(long first, long count) {
 				List<PhenoDataSetGroup> listSubjects = new ArrayList<PhenoDataSetGroup>();
 				if (isActionPermitted()) {
 					listSubjects = iPhenotypicService.getPhenoDataSetGroups(criteriaModel.getObject(), first, count);

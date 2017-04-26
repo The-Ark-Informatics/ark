@@ -168,7 +168,7 @@ public class SearchResultListPanel extends Panel {
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				//Added on 2016-05-26 to stop showing the previous feed back message when deleting or updating in the form.
 				//This will clear the feedback message.
-				Session.get().cleanupFeedbackMessages();
+				Session.get().getFeedbackMessages().clear();
 				target.add(feedbackPanel);
 			}
 		};
@@ -181,16 +181,16 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private void addToolbars(DataView<CustomField> customFieldDataView) {
-		List<IColumn<CustomField>> columns = new ArrayList<IColumn<CustomField>>();
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("name"), "name"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("fieldType"), "fieldType.name"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("description"), "description"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("fieldLabel"), "fieldLabel"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("unitType"), "unitType.name"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("encodedValues"), "encodedValues"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("minValue"), "minValue"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("maxValue"), "maxValue"));
-		columns.add(new ExportableTextColumn<CustomField>(Model.of("missingValue"), "missingValue"));
+		List<IColumn<CustomField, String>> columns = new ArrayList<>();
+		columns.add(new ExportableTextColumn<CustomField, String>(Model.of("name"), "name"));
+		columns.add(new ExportableTextColumn<CustomField, String>(Model.of("fieldType"), "fieldType.name"));
+		columns.add(new ExportableTextColumn<CustomField, String>(Model.of("description"), "description"));
+		columns.add(new ExportableTextColumn<CustomField, String>(Model.of("fieldLabel"), "fieldLabel"));
+		columns.add(new ExportableTextColumn<CustomField, String>(Model.of("unitType"), "unitType.name"));
+		columns.add(new ExportableTextColumn<CustomField, String>(Model.of("encodedValues"), "encodedValues"));
+		columns.add(new ExportableTextColumn<CustomField, String>(Model.of("minValue"), "minValue"));
+		columns.add(new ExportableTextColumn<CustomField, String>(Model.of("maxValue"), "maxValue"));
+		columns.add(new ExportableTextColumn<CustomField, String>(Model.of("missingValue"), "missingValue"));
 
 		DataTable table = new DataTable("datatable", columns, customFieldDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);

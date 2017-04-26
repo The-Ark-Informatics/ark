@@ -232,11 +232,11 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 			private static final long	serialVersionUID	= 1L;
 
-			public int size() {
-				return (int)iPhenotypicService.getPhenoCollectionCount(criteriaModel.getObject());
+			public long size() {
+				return iPhenotypicService.getPhenoCollectionCount(criteriaModel.getObject());
 			}
 
-			public Iterator<PhenoDataSetCollection> iterator(int first, int count) {
+			public Iterator<PhenoDataSetCollection> iterator(long first, long count) {
 				List<PhenoDataSetCollection> phenoCollectionList = new ArrayList<PhenoDataSetCollection>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));

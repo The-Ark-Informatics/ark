@@ -31,14 +31,14 @@ public interface IGenoDao {
 
 	public int getPipelineCount(Pipeline p);
 
-	public List<Pipeline> searchPageablePipelines(Pipeline p, int first,
-			int count);
+	public List<Pipeline> searchPageablePipelines(Pipeline p, long first,
+                                                  long count);
 
 	public long getPipelineCount(Study study);
 
 	public int getProcessCount(Process p);
 
-	public List searchPageableProcesses(Process p, int first, int count);
+	public List searchPageableProcesses(Process p, long first, long count);
 
 	public void createProcess(Process p);
 

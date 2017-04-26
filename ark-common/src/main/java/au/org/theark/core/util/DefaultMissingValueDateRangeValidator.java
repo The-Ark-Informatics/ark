@@ -1,9 +1,5 @@
 package au.org.theark.core.util;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -11,6 +7,10 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DefaultMissingValueDateRangeValidator extends AbstractFormValidator {
 
@@ -62,7 +62,7 @@ public class DefaultMissingValueDateRangeValidator extends AbstractFormValidator
 						ve1.setVariable("startDate", labComp1);
 						ve1.setVariable("endDate", labComp2);
 						ve1.setVariable("missingvValueDate", labComp3);
-						ve1.addMessageKey("missingValueDateValidate.range");
+						ve1.addKey("missingValueDateValidate.range");
 						componentTexts[0].error((IValidationError) ve1);
 					}
 				} catch (ParseException e) {
@@ -81,7 +81,7 @@ public class DefaultMissingValueDateRangeValidator extends AbstractFormValidator
 						ve2.setVariable("startDate", labComp1);
 						ve2.setVariable("endDate", labComp2);
 						ve2.setVariable("defaultValueDate", labComp4);
-						ve2.addMessageKey("defaultValueDateValidate.range");
+						ve2.addKey("defaultValueDateValidate.range");
 						componentTexts[0].error((IValidationError) ve2);
 					}
 				} catch (ParseException e) {
@@ -93,7 +93,7 @@ public class DefaultMissingValueDateRangeValidator extends AbstractFormValidator
 		if(defaultValueString!=null && !defaultValueString.isEmpty() && !isValidDate(defaultValueString)){
 			ValidationError ve3 = new ValidationError();
 			ve3.setVariable("defaultValueDate", labComp4);
-			ve3.addMessageKey("defaultValueDateValidate.NotValidDate");
+			ve3.addKey("defaultValueDateValidate.NotValidDate");
 			componentTexts[0].error((IValidationError) ve3);
 		}
 		

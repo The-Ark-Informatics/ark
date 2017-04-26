@@ -20,7 +20,7 @@ public interface IArkSettingService {
 
     public int getSettingsCount(Setting setting);
 
-    public List<Setting> searchPageableSettings(Setting setting, int first, int count);
+    public List<Setting> searchPageableSettings(Setting setting, long first, long count);
 
     public Setting getUserSpecificSetting(ArkUser arkUser, String propertyName);
 

@@ -127,7 +127,7 @@ public interface ILimsAdminDao {
 
 	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars();
 
-	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count);
+	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, long first, long count);
 
 	public BiospecimenUidTemplate searchBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
 
@@ -166,5 +166,5 @@ public interface ILimsAdminDao {
 	
 	public Long getBarcodeLabelCount(BarcodeLabel object, List<Study> studyListForUser);
 
-	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count, List<Study> studyListForUser);
+	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, long first, long count, List<Study> studyListForUser);
 }

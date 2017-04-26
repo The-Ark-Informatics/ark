@@ -89,13 +89,13 @@ public class BiospecimenCustomDataDataViewPanel extends Panel {
 			// Data provider to get pageable results from backend
 			scdDataProvider = new ArkDataProvider2<BiospecimenCustomDataVO, BiospecimenCustomFieldData>() {
 				
-				public int size() {
+				public long size() {
 					Biospecimen biospecimen = criteriaModel.getObject().getBiospecimen();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-					return (int)iLimsService.getBiospecimenCustomFieldDataCount(biospecimen, arkFunction);
+					return iLimsService.getBiospecimenCustomFieldDataCount(biospecimen, arkFunction);
 				}
 	
-				public Iterator<BiospecimenCustomFieldData> iterator(int first, int count) {
+				public Iterator<BiospecimenCustomFieldData> iterator(long first, long count) {
 					Biospecimen biospecimen = criteriaModel.getObject().getBiospecimen();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 					CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOSPECIMEN);
@@ -111,11 +111,11 @@ public class BiospecimenCustomDataDataViewPanel extends Panel {
 			// Since module is not accessible, create a dummy dataProvider that returns nothing
 			scdDataProvider = new ArkDataProvider2<BiospecimenCustomDataVO, BiospecimenCustomFieldData>() {
 				
-				public Iterator<? extends BiospecimenCustomFieldData> iterator(int first, int count) {
+				public Iterator<? extends BiospecimenCustomFieldData> iterator(long first, long count) {
 					return null;
 				}
 
-				public int size() {
+				public long size() {
 					return 0;
 				}
 			};

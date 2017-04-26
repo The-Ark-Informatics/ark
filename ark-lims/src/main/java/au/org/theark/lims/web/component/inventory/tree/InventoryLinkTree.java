@@ -18,25 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.LinkTree;
-import org.apache.wicket.markup.html.tree.WicketTreeModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.InvBox;
@@ -53,6 +34,23 @@ import au.org.theark.lims.model.TreeNodeModel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.tree.LinkTree;
+import org.apache.wicket.extensions.markup.html.tree.WicketTreeModel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventoryLinkTree extends LinkTree {
 
@@ -186,7 +184,7 @@ public class InventoryLinkTree extends LinkTree {
 		
 		//Set the junction tree node to session
 		ArkSession.get().setNodeObject(node);
-		
+
 		this.updateTree(target);
 	}
 
@@ -195,5 +193,5 @@ public class InventoryLinkTree extends LinkTree {
 	protected Component newNodeComponent(String id, IModel model) {
 		InventoryNodePanel panel = new InventoryNodePanel(id, model, InventoryLinkTree.this, feedbackPanel, detailContainer, containerForm);
 		return panel;
-	}	
+	}
 }

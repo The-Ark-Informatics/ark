@@ -70,7 +70,7 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		return (Long) criteria.uniqueResult();
 	}
 
-	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransaction, int first, int count) {
+	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransaction, long first, long count) {
 		// Handle for biospecimen not in context
 		if (bioTransaction.getBiospecimen() == null) {
 			return new ArrayList<BioTransaction>(0);
@@ -80,8 +80,8 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		criteria.addOrder(Order.desc("transactionDate"));
 		criteria.addOrder(Order.desc("id"));
 		// support pageable results list
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		
 		List<BioTransaction> list = criteria.list();
 		return list;

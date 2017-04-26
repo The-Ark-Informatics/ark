@@ -1,11 +1,15 @@
 package au.org.theark.disease.dao;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
+import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.dao.ICustomFieldDao;
+import au.org.theark.core.model.disease.entity.*;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.disease.vo.AffectionListVO;
+import au.org.theark.disease.vo.AffectionVO;
+import au.org.theark.disease.vo.DiseaseVO;
+import au.org.theark.disease.vo.GeneVO;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.NonUniqueObjectException;
@@ -16,21 +20,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import au.org.theark.core.dao.HibernateSessionDao;
-import au.org.theark.core.dao.ICustomFieldDao;
-import au.org.theark.core.model.disease.entity.Affection;
-import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
-import au.org.theark.core.model.disease.entity.AffectionStatus;
-import au.org.theark.core.model.disease.entity.Disease;
-import au.org.theark.core.model.disease.entity.Gene;
-import au.org.theark.core.model.disease.entity.Position;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.disease.vo.AffectionListVO;
-import au.org.theark.disease.vo.AffectionVO;
-import au.org.theark.disease.vo.DiseaseVO;
-import au.org.theark.disease.vo.GeneVO;
+import java.util.*;
 
 @Repository("diseaseDao")
 public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
@@ -52,10 +42,10 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 		return result;
 	}
 
-	public List<DiseaseVO> searchPageableDiseases(DiseaseVO diseaseVO, int first, int count) {
+	public List<DiseaseVO> searchPageableDiseases(DiseaseVO diseaseVO, long first, long count) {
 		Criteria criteria = buildSearchDiseaseSearchCriteria(diseaseVO);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		return getDistinctDiseases(criteria);
 	}
 
@@ -101,10 +91,10 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 		return result;
 	}
 
-	public List<GeneVO> searchPageableGenes(GeneVO geneVO, int first, int count) {
+	public List<GeneVO> searchPageableGenes(GeneVO geneVO, long first, long count) {
 		Criteria criteria = buildSearchGeneSearchCriteria(geneVO);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		return getDistinctGenes(criteria);
 	}
 
@@ -190,10 +180,10 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 		return buildSearchAffectionCriteria(affectionVO).list().size();
 	}
 
-	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, int first, int count) {
+	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, long first, long count) {
 		Criteria criteria = buildSearchAffectionCriteria(affectionVO);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 
 		List<AffectionVO> affectionVOs = new ArrayList<AffectionVO>();
 		for (Affection affection : (List<Affection>) criteria.list()) {

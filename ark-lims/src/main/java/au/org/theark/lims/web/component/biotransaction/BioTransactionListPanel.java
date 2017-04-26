@@ -115,11 +115,11 @@ public class BioTransactionListPanel extends Panel {
 
 			private static final long	serialVersionUID	= 1L;
 
-			public int size() {
-				return (int)iLimsService.getBioTransactionCount(criteriaModel.getObject().getBioTransaction());
+			public long size() {
+				return iLimsService.getBioTransactionCount(criteriaModel.getObject().getBioTransaction());
 			}
 
-			public Iterator<BioTransaction> iterator(int first, int count) {
+			public Iterator<BioTransaction> iterator(long first, long count) {
 				List<BioTransaction> biospecimenList = new ArrayList<BioTransaction>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					biospecimenList = iLimsService.searchPageableBioTransactions(criteriaModel.getObject().getBioTransaction(), first, count);

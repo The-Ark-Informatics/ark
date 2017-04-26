@@ -151,11 +151,11 @@ public class SettingsContainerPanel extends AbstractContainerPanel<Setting> {
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<Setting, IArkSettingService>(iArkSettingService) {
-			public int size() {
+			public long size() {
 				return service.getSettingsCount(model.getObject());
 			}
 
-			public Iterator<Setting> iterator(int first, int count) {
+			public Iterator<Setting> iterator(long first, long count) {
 				List<Setting> listCollection = new ArrayList<Setting>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					listCollection = service.searchPageableSettings(model.getObject(), first, count);

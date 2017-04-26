@@ -60,7 +60,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.DoubleConverter;
-import org.apache.wicket.validation.validator.MinimumValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -752,7 +752,7 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 
 		// Initial BioTransaction detail
 		bioTransactionQuantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioTransaction.quantity.required", this, new Model<String>("Name")));
-		MinimumValidator<Double> minQuantityValidator = new MinimumValidator<Double>(new Double(0.0));
+		RangeValidator<Double> minQuantityValidator = new RangeValidator<>(0.0, null);
 		bioTransactionQuantityTxtFld.add(minQuantityValidator);
 		unitDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.unit.required", this, new Model<String>("Name")));
 		treatmentTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.treatmentType.required", this, new Model<String>("Name")));

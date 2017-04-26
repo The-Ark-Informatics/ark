@@ -55,7 +55,6 @@ import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
-import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -66,7 +65,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldGroupVO;
-import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
@@ -742,7 +740,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenoDataCount(phenoCollection,phenoDataSetCategory);
 	}
 
-	public List<PhenoDataSetData> getPhenoDataList(PhenoDataSetCollection phenoCollection,PhenoDataSetCategory phenoDataSetCategory,int first, int count) {
+	public List<PhenoDataSetData> getPhenoDataList(PhenoDataSetCollection phenoCollection, PhenoDataSetCategory phenoDataSetCategory, long first, long count) {
 		List<PhenoDataSetData> resultsList = phenotypicDao.getPhenoDataList(phenoCollection,phenoDataSetCategory, first, count);
 		return resultsList;
 	}
@@ -780,7 +778,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenoCollectionCount(criteria);
 	}
 
-	public List<PhenoDataSetCollection> searchPageablePhenoCollections(	PhenoDataCollectionVO criteria, int first, int count) {
+	public List<PhenoDataSetCollection> searchPageablePhenoCollections(PhenoDataCollectionVO criteria, long first, long count) {
 		return phenotypicDao.searchPageablePhenoCollection(criteria, first,	count);
 	}
 	
@@ -815,7 +813,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	}
 
-	public Collection<PhenoDataSetFieldDisplay> getCFDLinkedToQuestionnaire(PhenoDataSetGroup phenoDataSetGroup, int first, int count) {
+	public Collection<PhenoDataSetFieldDisplay> getCFDLinkedToQuestionnaire(PhenoDataSetGroup phenoDataSetGroup, long first, long count) {
 		return phenotypicDao.getCFDLinkedToQuestionnaire(phenoDataSetGroup,first, count);
 	}
 
@@ -988,7 +986,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 
 	@Override
-	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, int first,int count) {
+	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, long first, long count) {
 		return phenotypicDao.searchPageablePhenoDataSetCategories(phenoDataSetCategoryCriteria, first, count);
 	}
 
@@ -1078,7 +1076,7 @@ try {
 	/**
 	 * 
 	 */
-	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count){
+	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, long first, long count){
 		return phenotypicDao.searchPageablePhenoFields(phenoDataSetCriteria,first,count);
 	}
 	public List<PhenoDataSetCategory> getAvailableAllCategoryListInStudy(Study study, ArkFunction arkFunction)throws ArkSystemException{
@@ -1314,8 +1312,7 @@ try {
 	}
 
 	@Override
-	public List<PhenoDataSetGroup> getPhenoDataSetGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count) {
-		
+	public List<PhenoDataSetGroup> getPhenoDataSetGroups(PhenoDataSetGroup phenoDataSetGroup, long first, long count) {
 		return phenotypicDao.getPhenoDataSetGroups(phenoDataSetGroup, first, count);
 	}
 

@@ -1,21 +1,14 @@
 package au.org.theark.lims.web.component.inventory.tree.nestedtree;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.wicket.Component;
-import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
+import org.apache.wicket.extensions.markup.html.repeater.tree.NestedTree;
+import org.apache.wicket.extensions.markup.html.repeater.tree.theme.WindowsTheme;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.resource.ResourceReference;
 
-import wickettree.ITreeProvider;
-import wickettree.NestedTree;
-import wickettree.theme.HumanTheme;
-import wickettree.theme.WindowsTheme;
+import java.util.Set;
 
 public class NestedTreePanel<T> extends Panel {
 
@@ -45,25 +38,9 @@ public class NestedTreePanel<T> extends Panel {
 				return new Label(id, model);
 			}
 		};
-		
-		tree.add(new Behavior()
-		{
 
-			private static final long	serialVersionUID	= 1L;
+		tree.add(new WindowsTheme());
 
-			@Override
-			public void renderHead(Component component, IHeaderResponse response) {
-				ResourceReference theme;
-				List<ResourceReference> themes = new ArrayList<ResourceReference>();
-
-				themes.add(new WindowsTheme());
-				themes.add(new HumanTheme());
-
-				theme = themes.get(0);
-				response.renderCSSReference(theme);
-			}
-		});
-		
 		add(tree);
 	}
 

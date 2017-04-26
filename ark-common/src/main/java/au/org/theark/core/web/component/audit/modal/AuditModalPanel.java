@@ -1,19 +1,17 @@
 package au.org.theark.core.web.component.audit.modal;
 
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.regex.Pattern;
-
+import au.org.theark.core.Constants;
+import au.org.theark.core.audit.UsernameRevisionEntity;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.pheno.entity.*;
+import au.org.theark.core.model.study.entity.*;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.service.IAuditService;
+import au.org.theark.core.vo.*;
+import au.org.theark.core.web.component.ArkDataProvider;
+import jxl.write.DateFormat;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -36,30 +34,10 @@ import org.hibernate.envers.query.AuditQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.audit.UsernameRevisionEntity;
-import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
-import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.service.IAuditService;
-import au.org.theark.core.vo.CustomFieldVO;
-import au.org.theark.core.vo.FamilyCustomDataVO;
-import au.org.theark.core.vo.LimsVO;
-import au.org.theark.core.vo.PhenoDataCollectionVO;
-import au.org.theark.core.vo.PhenoDataSetFieldVO;
-import au.org.theark.core.vo.SubjectCustomDataVO;
-import au.org.theark.core.web.component.ArkDataProvider;
-import jxl.write.DateFormat;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 
 
@@ -499,12 +477,12 @@ public class AuditModalPanel extends Panel implements Serializable {
 
 			@Override
 			public Iterator<? extends AuditRow> iterator(
-					int first, int count) {
-				return revisionEntities.subList(first, first + count).listIterator();
+					long first, long count) {
+				return revisionEntities.subList(Math.toIntExact(first), Math.toIntExact(first + count)).listIterator();
 			}
 
 			@Override
-			public int size() {
+			public long size() {
 				return revisionEntities.size();
 			}
 			

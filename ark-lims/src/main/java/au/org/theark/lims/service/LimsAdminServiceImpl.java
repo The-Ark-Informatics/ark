@@ -452,7 +452,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		return iLimsAdminDao.searchBiospecimenUidTemplate(biospecimenUidTemplate);
 	}
 
-	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count) {
+	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, long first, long count) {
 		return iLimsAdminDao.searchPageableBiospecimenUidTemplates(object, first, count);
 	}
 
@@ -484,7 +484,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		return iLimsAdminDao.getBarcodeLabelCount(object, studyListForUser);
 	}
 
-	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count, List<Study> studyListForUser) {
+	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, long first, long count, List<Study> studyListForUser) {
 		return iLimsAdminDao.searchPageableBarcodeLabels(object, first, count, studyListForUser);
 	}
 }

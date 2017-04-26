@@ -19,21 +19,13 @@
 package au.org.theark.core.web.component.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
+import org.apache.wicket.ajax.attributes.IAjaxCallListener;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
-import org.apache.wicket.extensions.wizard.CancelButton;
-import org.apache.wicket.extensions.wizard.FinishButton;
-import org.apache.wicket.extensions.wizard.IDefaultButtonProvider;
-import org.apache.wicket.extensions.wizard.IWizardModel;
-import org.apache.wicket.extensions.wizard.LastButton;
-import org.apache.wicket.extensions.wizard.NextButton;
-import org.apache.wicket.extensions.wizard.PreviousButton;
-import org.apache.wicket.extensions.wizard.WizardButton;
-import org.apache.wicket.extensions.wizard.WizardButtonBar;
+import org.apache.wicket.extensions.wizard.*;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.IFormSubmittingComponent;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.util.string.AppendingStringBuffer;
 
 /**
  * A bar of buttons for wizards utilizing {@link AjaxFormSubmitBehavior}.
@@ -84,18 +76,13 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 		button.add(new AjaxFormSubmitBehavior("onclick") {
 			private static final long	serialVersionUID	= 1L;
 
-			@Override
+			/*@Override
 			protected CharSequence getEventHandler() {
 				AppendingStringBuffer handler = new AppendingStringBuffer();
 				handler.append(super.getEventHandler());
 				handler.append("; return false;");
 				return handler;
-			}
-
-			@Override
-			protected IAjaxCallDecorator getAjaxCallDecorator() {
-				return AjaxWizardButtonBar.this.getAjaxCallDecorator();
-			}
+			}*/
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target) {
@@ -115,18 +102,13 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 		button.add(new AjaxFormSubmitBehavior("onclick") {
 			private static final long	serialVersionUID	= 1L;
 
-			@Override
+			/*@Override
 			protected CharSequence getEventHandler() {
 				AppendingStringBuffer handler = new AppendingStringBuffer();
 				handler.append(super.getEventHandler());
 				handler.append("; return false;");
 				return handler;
-			}
-
-			@Override
-			protected IAjaxCallDecorator getAjaxCallDecorator() {
-				return AjaxWizardButtonBar.this.getAjaxCallDecorator();
-			}
+			}*/
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target) {
@@ -160,17 +142,17 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected CharSequence getEventHandler() {
-				AppendingStringBuffer handler = new AppendingStringBuffer();
-				handler.append(super.getEventHandler());
-				handler.append("; return false;");
-				return handler;
+			protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+				super.updateAjaxAttributes(attributes);
+				attributes.getAjaxCallListeners().add(AjaxWizardButtonBar.this.getAjaxCallListener());
 			}
 
+			/*
 			@Override
 			protected IAjaxCallDecorator getAjaxCallDecorator() {
 				return AjaxWizardButtonBar.this.getAjaxCallDecorator();
 			}
+			*/
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target) {
@@ -195,6 +177,7 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 		add(button);
 	}
 
+
 	/**
 	 * @see org.apache.wicket.extensions.wizard.IDefaultButtonProvider#getDefaultButton(org.apache.wicket.extensions.wizard.IWizardModel)
 	 */
@@ -215,9 +198,11 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 	 * 
 	 * @return call decorator to use or null if none
 	 */
-	protected IAjaxCallDecorator getAjaxCallDecorator() {
+	/*protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return null;
-	}
+	}*/
+
+	private IAjaxCallListener getAjaxCallListener() { return null; }
 
 	public void finishWizard(AjaxRequestTarget target) {
 

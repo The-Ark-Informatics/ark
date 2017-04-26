@@ -43,7 +43,7 @@ public class DoubleMinimumToMaximumValidator  extends AbstractFormValidator{
 	        	ValidationError ve = new ValidationError();
 	        	ve.setVariable("min",labComp1);
 	        	ve.setVariable("max",labComp2);
-	        	ve.addMessageKey("doubleMinValueAndMaxValue.range");
+	        	ve.addKey("doubleMinValueAndMaxValue.range");
 	        	components[0].error((IValidationError) ve);
 	        }
        }

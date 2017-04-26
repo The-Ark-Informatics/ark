@@ -1,19 +1,7 @@
 package au.org.theark.disease.service;
 
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.disease.entity.Affection;
-import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
-import au.org.theark.core.model.disease.entity.AffectionStatus;
-import au.org.theark.core.model.disease.entity.Disease;
-import au.org.theark.core.model.disease.entity.Gene;
-import au.org.theark.core.model.disease.entity.Position;
+import au.org.theark.core.model.disease.entity.*;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.disease.dao.IDiseaseDao;
@@ -21,6 +9,11 @@ import au.org.theark.disease.vo.AffectionListVO;
 import au.org.theark.disease.vo.AffectionVO;
 import au.org.theark.disease.vo.DiseaseVO;
 import au.org.theark.disease.vo.GeneVO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional
 @Service(Constants.ARK_DISEASE_SERVICE)
@@ -41,7 +34,7 @@ public class ArkDiseaseServiceImpl implements IArkDiseaseService {
 		return diseaseDao.getDiseaseCount(diseaseVO);
 	}
 
-	public List searchPageableDiseases(DiseaseVO diseaseVO, int first, int count) {
+	public List searchPageableDiseases(DiseaseVO diseaseVO, long first, long count) {
 		return diseaseDao.searchPageableDiseases(diseaseVO, first, count);
 	}
 
@@ -61,7 +54,7 @@ public class ArkDiseaseServiceImpl implements IArkDiseaseService {
 		return diseaseDao.getGeneCount(geneVO);
 	}
 
-	public List<GeneVO> searchPageableGenes(GeneVO object, int first, int count) {
+	public List<GeneVO> searchPageableGenes(GeneVO object, long first, long count) {
 		return diseaseDao.searchPageableGenes(object, first, count);
 	}
 
@@ -77,7 +70,7 @@ public class ArkDiseaseServiceImpl implements IArkDiseaseService {
 		return diseaseDao.getAffectionCount(affectionVO);
 	}
 
-	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, int first, int count) {
+	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, long first, long count) {
 		return diseaseDao.searchPageableAffections(affectionVO, first, count);
 	}
 

@@ -146,10 +146,10 @@ public class ArkSettingDao extends HibernateSessionDao implements IArkSettingDao
     }
 
     @Override
-    public List<Setting> searchPageableSettings(Setting setting, int first, int count) {
+    public List<Setting> searchPageableSettings(Setting setting, long first, long count) {
         Criteria criteria = buildSettingCriteria(setting);
-        criteria.setFirstResult(first);
-        criteria.setMaxResults(count);
+        criteria.setFirstResult(Math.toIntExact(first));
+        criteria.setMaxResults(Math.toIntExact(count));
 
         return (List<Setting>) criteria.list();
     }
