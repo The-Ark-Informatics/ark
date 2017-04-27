@@ -422,8 +422,8 @@
 		</plugins>
 	</build>
 	<properties>
-		<!-- <wicket.version>6.26.0</wicket.version> -->
-		<wicket.version>7.6.0</wicket.version>
+		<wicket.version>6.26.0</wicket.version>
+		<!-- <wicket.version>7.6.0</wicket.version> -->
 		<jetty.version>6.1.4</jetty.version>
 		<shiro.version>1.2.3</shiro.version>
 		<hibernate.version>4.2.21.Final</hibernate.version>

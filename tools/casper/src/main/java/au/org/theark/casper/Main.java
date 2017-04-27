@@ -209,21 +209,39 @@ public class Main {
 	
 	public void migrateSubjectFiles(Connection con)throws Exception{
 		int id = 0;
+		int previousId=0;
 		PreparedStatement selectPS = con.prepareStatement(Main.SELECT_FILE_ATTACHMENT);
 		PreparedStatement updatePS = con.prepareStatement(Main.UPDATE_FILE_ATTACHMENT);
-		migrate(id, selectPS, updatePS, Main.ARK_SUBJECT_ATTACHEMENT_DIR);
+		while(true){
+			previousId =id;
+			id = migrate(id, selectPS, updatePS, Main.ARK_SUBJECT_ATTACHEMENT_DIR);
+			if(previousId != id){
+				continue;
+			}else{
+				break;
+			}
+		}
 	}
 	
 	public void migrateCorrespondenceFiles(Connection con)throws Exception{
 		int id = 0;
+		int previousId=0;
 		PreparedStatement selectPS = con.prepareStatement(Main.SELECT_CORRESPONDANCE_ATTACHMENT);
 		PreparedStatement updatePS = con.prepareStatement(Main.UPDATE_CORRESPONDANCE_ATTACHMENT);
-		migrate(id, selectPS, updatePS, Main.ARK_SUBJECT_CORRESPONDENCE_DIR);
+		while(true){
+			previousId =id;
+			id = migrate(id, selectPS, updatePS, Main.ARK_SUBJECT_CORRESPONDENCE_DIR);
+			if(previousId != id){
+				continue;
+			}else{
+				break;
+			}
+		}
 	}
 
-	private void migrate(int id, PreparedStatement selectPS, PreparedStatement updatePS, String baseDir) throws Exception {
+	private int migrate(int id, PreparedStatement selectPS, PreparedStatement updatePS, String baseDir) throws Exception {
 		
-		int previousId = id;
+//		int previousId = id;
 		String fileName = null;
 		long studyId = 0;
 		String subjectUID=null;
@@ -261,15 +279,16 @@ public class Main {
 			payload = null;
 			
 		}
-		if(previousId != id){
-			migrate(id, selectPS, updatePS,baseDir);
-		}
+//		if(previousId != id){
+//			migrate(id, selectPS, updatePS,baseDir);
+//		}
+		return id;
 	}
 	
 	private void saveArkFileAttachment(final long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) {
 
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
-		System.out.println("about to output to " + directoryName); 
+		log.info("about to output to " + directoryName); 
 		File fileDir = new File(directoryName);
 
 		if (!fileDir.exists()) {
@@ -314,7 +333,7 @@ public class Main {
 	}
 	
 	private String generateArkFileId(String fileName) {
-		return System.currentTimeMillis() + "_" + UUID.randomUUID() + "_" + fileName;
+		return System.currentTimeMillis() + "_" + UUID.randomUUID() + "_" + (fileName != null ? fileName.replaceAll("\\s", "_"):null);
 	}
 	
 }
