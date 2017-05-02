@@ -159,6 +159,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				arkSettingsDataViewPanel.save(target, form);
 				onSave(target);
 			}
 
