@@ -338,16 +338,26 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+				
+				LinkSubjectStudy linkSubjectStudy=null;
 
 				try {
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 					Person subject = iStudyService.getPerson(sessionPersonId);
+					if(sessionPersonId!=null){
+						linkSubjectStudy = iStudyService.getSubjectLinkedToStudy(sessionPersonId, study);
+					}else{
+						throw new EntityNotFoundException("The subject in context does not exist in system.");
+					}
 					boolean isConsented = iArkCommonService.isSubjectConsentedToComponent(studyComponentChoice.getModelObject(), subject, study);
 					processErrors(target);
 					if (isConsented) {
 						StringBuffer sb = new StringBuffer();
-						sb.append("Please choose another component. The Subject has already consented to Component: ");
-						sb.append(studyComponentChoice.getModelObject().getName());
+						
+						//sb.append("Please choose another component. The Subject has already consented to Component: ");
+						//sb.append(studyComponentChoice.getModelObject().getName());
+						sb.append("A study component of this type already exists for subject(UID) ");
+						sb.append(linkSubjectStudy.getSubjectUID());
 						containerForm.error(sb.toString());
 						//Stopping save with exsisting components.
 						arkCrudContainerVO.getEditButtonContainer().get("save").setEnabled(false);
