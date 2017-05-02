@@ -6,11 +6,7 @@ import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.IResourceStream;
 
-/**
- * @author Sven Meier
- * @author Ernesto Reinaldo Barreiro (reiern70@gmail.com)
- * @author Jordi Deu-Pons (jordi@jordeu.net)
- */
+
 public abstract class AJAXDownload extends AbstractAjaxBehavior
 {
         private boolean addAntiCache;
