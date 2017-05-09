@@ -184,7 +184,7 @@ public class SearchResultListPanel extends Panel {
 					String fileId = subjectFile.getFileId();
 					String checksum = subjectFile.getChecksum();
 					
-					data = arkCommonService.retriveArkFileAttachmentByteArray(studyId,subjectUID,au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR,fileId,checksum);
+					data = arkCommonService.retriveArkFileAttachmentByteArray(studyId,subjectUID,isConsentFile(subjectFile)? au.org.theark.study.web.Constants.ARK_SUBJECT_CONSENT_DIR: au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR,fileId,checksum);
 
 					if (data != null) {
 						InputStream inputStream = new ByteArrayInputStream(data);
@@ -253,7 +253,7 @@ public class SearchResultListPanel extends Panel {
 				boolean success=false;
 				if (subjectFile.getId() != null) {
 					try {
-						studyService.delete(subjectFile,au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+						studyService.delete(subjectFile,isConsentFile(subjectFile)? au.org.theark.study.web.Constants.ARK_SUBJECT_CONSENT_DIR: au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
 						success=true;
 					}
 					catch (ArkSystemException e) {
@@ -299,5 +299,9 @@ public class SearchResultListPanel extends Panel {
 
 		ajaxButton.setDefaultFormProcessing(false);
 		return ajaxButton;
+	}
+	
+	private boolean isConsentFile(SubjectFile subjectFile){
+		return subjectFile.getIsConsentFile();
 	}
 }

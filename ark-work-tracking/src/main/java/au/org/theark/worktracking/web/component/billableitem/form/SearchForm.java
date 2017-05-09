@@ -69,6 +69,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 	private DropDownChoice<Researcher>		 		 		workRequestResearchers;
 	
 	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
+	
 
 	/**
 	 * 
@@ -171,6 +172,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		else{
 			invoiceButton.setVisible(false);
 		}
+		setInvoiceButtonState();
 	}
 	
 	private void initDataPicker(DateTextField dateTextField){
@@ -323,8 +325,11 @@ private void initBillableItemTypeDropDown() {
 			if(resultList != null && resultList.size() == 0){
 				this.info("Billable Item with the specified criteria does not exist in the system.");
 				target.add(feedbackPanel);
+				invoiceButton.setEnabled(false);
+			}else{
+				invoiceButton.setEnabled(true);
 			}
-			
+			target.add(invoiceButton);
 			getModelObject().setBillableItemList(resultList);
 			listView.removeAll();
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
@@ -334,4 +339,14 @@ private void initBillableItemTypeDropDown() {
 	private BillableItemVo getFormModelObject(){
 		return getModelObject();
 	}
+	
+	private void setInvoiceButtonState(){
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		getModelObject().getBillableItem().setStudyId(studyId);
+		List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getFormModelObject());
+		if(resultList!=null){
+			invoiceButton.setEnabled(resultList.size() > 0);
+		}
+	}
+
 }

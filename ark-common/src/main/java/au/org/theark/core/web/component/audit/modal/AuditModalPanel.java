@@ -203,7 +203,7 @@ public class AuditModalPanel extends Panel implements Serializable {
 				log.info("Comp:"+component.getId());
 			}
 		}
-		//Handling the history of pheno data set.
+		//Handling the history of pheno dataset.
 		if(entity instanceof PhenoDataCollectionVO){
 			PhenoDataCollectionVO phenoDataCollectionVO=((PhenoDataCollectionVO)entity);
 			PhenoDataSetCollection phenoDataSetCollection = null;
@@ -498,7 +498,7 @@ public class AuditModalPanel extends Panel implements Serializable {
 				item.add(new Label("rev", new Integer(ure.getId()).toString()));
 				item.add(new Label("revDate", new DateFormat(Constants.DD_MM_YYYY_HH_MM_SS).getDateFormat().format(ure.getRevisionDate())));
 				item.add(new Label("revBy", ure.getUsername()));
-				//Add the new modifier for the extra space when data set available
+				//Add the new modifier for the extra space when dataset available
 				item.add(new Label("fieldName", item.getModelObject().getFieldName()));
 				item.add(new Label("value", iAuditService.getEntityValue(entity)));
 				item.add(new Label("revType", type.toString()));

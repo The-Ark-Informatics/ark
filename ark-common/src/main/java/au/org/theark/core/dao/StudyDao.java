@@ -2943,7 +2943,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 
 	/**
-	 * This will get all the pheno data for the given subjects FOR THIS ONE CustomFieldGroup aka questionaire (aka data set)
+	 * This will get all the pheno data for the given subjects FOR THIS ONE CustomFieldGroup aka questionaire (aka dataset)
 	 * 
 	 * @param allTheData
 	 * @param search
@@ -4271,7 +4271,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	/**
-	 * get pheno filters  FOR THIS ONE CustomFieldGroup aka questionaire (aka data set)
+	 * get pheno filters  FOR THIS ONE CustomFieldGroup aka questionaire (aka dataset)
 	 * @param search
 	 * @param THIS
 	 * @return

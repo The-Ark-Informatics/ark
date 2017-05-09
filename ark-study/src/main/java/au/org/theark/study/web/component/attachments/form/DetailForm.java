@@ -90,9 +90,17 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// Initialise Drop Down Choices
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study studyInContext = iArkCommonService.getStudy(studyId);
-		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(studyInContext);
-		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
-		studyComponentChoice = new DropDownChoice<StudyComp>(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
+		//List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(studyInContext);
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		List<StudyComp> studyCompList;
+		try {
+			studyCompList = iStudyService.getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(studyInContext,iArkCommonService.getSubject(sessionPersonId, studyInContext));
+			ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
+			studyComponentChoice = new DropDownChoice<StudyComp>(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
+		} catch (EntityNotFoundException e) {
+			this.error("The record you tried to update is no longer available in the system");
+		}
+		
 	}
 
 	public void initialiseDetailForm() {
@@ -152,6 +160,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 					containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 					containerForm.getModelObject().getSubjectFile().setUserId(userId);
+					containerForm.getModelObject().getSubjectFile().setIsConsentFile(false);
 	
 					// Save
 					iStudyService.create(containerForm.getModelObject().getSubjectFile(),Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
@@ -174,6 +183,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					//containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 					containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 					containerForm.getModelObject().getSubjectFile().setUserId(userId);
+					containerForm.getModelObject().getSubjectFile().setIsConsentFile(false);
 					
 					// Update
 					try {

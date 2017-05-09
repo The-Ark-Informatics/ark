@@ -102,7 +102,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	protected AbstractDetailModalWindow					modalWindow;
 	private WebMarkupContainer arkContextMarkup;
 
-	private Label												idLblFld;
+	//private Label												idLblFld;
 	private Label												nameLblFld;
 	private Label												studyLblFld;
 	private Label												subjectUidLblFld;
@@ -303,7 +303,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					
 				};
 
-				idLblFld = new Label("biospecimen.id", String.valueOf(biospecimen.getId()));
+				//idLblFld = new Label("biospecimen.id", String.valueOf(biospecimen.getId()));
 
 				nameLblFld = new Label("biospecimen.biospecimenUid", biospecimen.getBiospecimenUid());
 				listDetailsLink.add(nameLblFld);
@@ -379,7 +379,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					log.error(e.getMessage());
 				}
 
-				item.add(idLblFld);
+				//item.add(idLblFld);
 				item.add(rowDetailsWMC);
 				item.add(studyLblFld);
 				item.add(subjectUidLblFld);

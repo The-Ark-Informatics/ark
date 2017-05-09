@@ -191,7 +191,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 					File file = null;
 					IResourceStream resStream =null;
 						try {
-							file=iArkCommonService.retriveArkFileAttachmentAsFile(studyId,subjectUID,au.org.theark.study.web.Constants.ARK_SUBJECT_CONSENT_DIR,fileId,checksum);
+							file=iArkCommonService.retriveArkFileAttachmentAsFile(studyId,subjectUID,isConsentFile(subjectFile)?au.org.theark.study.web.Constants.ARK_SUBJECT_CONSENT_DIR:au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR,fileId,checksum);
 							resStream = new FileResourceStream(file);
 							if(resStream==null){
 								containerForm.error("Unexpected error: Download request could not be fulfilled.");
@@ -242,7 +242,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 			try {
-				iStudyService.delete(containerForm.getModelObject().getSubjectFile(),Constants.ARK_SUBJECT_CONSENT_DIR);
+				iStudyService.delete(containerForm.getModelObject().getSubjectFile(),isConsentFile(containerForm.getModelObject().getSubjectFile())?Constants.ARK_SUBJECT_CONSENT_DIR:Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
 				containerForm.info("The file has been deleted successfully.");
 				containerForm.getModelObject().getSubjectFile().setFilename(null);
 			 }catch (EntityNotFoundException e) {
@@ -509,16 +509,18 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 */
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		try {
+	try{
 			iStudyService.delete(containerForm.getModelObject().getConsent());
 			containerForm.info("The Consent has been deleted successfully.");
+			iStudyService.delete(containerForm.getModelObject().getSubjectFile(),isConsentFile(containerForm.getModelObject().getSubjectFile())?Constants.ARK_SUBJECT_CONSENT_DIR:Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
 			editCancelProcess(target);
-		}
-		catch (EntityNotFoundException entityNotFoundException) {
+		}catch (EntityNotFoundException entityNotFoundException) {
 			this.error("The consent you tried to delete does not exist");
-		}
-		catch (ArkSystemException e) {
+		}catch (ArkSystemException e) {
 			this.error("A system exception has occured during delete operation of the Consent");
+		}
+		catch (ArkFileNotFoundException e) {
+			 containerForm.error("File not found:"+e.getMessage());
 		}
 		ConsentVO consentVO = new ConsentVO();
 		containerForm.setModelObject(consentVO);
@@ -625,7 +627,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 				containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 				containerForm.getModelObject().getSubjectFile().setUserId(SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString());
-		
+				//Specify this is a consent file.
+				containerForm.getModelObject().getSubjectFile().setIsConsentFile(true);
 				// Save
 				iStudyService.create(containerForm.getModelObject().getSubjectFile(),Constants.ARK_SUBJECT_CONSENT_DIR);
 				this.info("Consent file: " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
@@ -735,6 +738,14 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 */
 	private boolean isNewFileAttached(){
 		return (fileUploadField.getFileUpload()!=null);
+	}
+	/**
+	 * 
+	 * @param subjectFile
+	 * @return
+	 */
+	private boolean isConsentFile(SubjectFile subjectFile){
+		return subjectFile.getIsConsentFile();
 	}
 	
 }

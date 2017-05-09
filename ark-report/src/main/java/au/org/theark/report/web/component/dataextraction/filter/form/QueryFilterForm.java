@@ -101,7 +101,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	private DropDownChoice								fieldDdc;
 	private DropDownChoice								operatorDdc;
 	private QueryFilterVO								queryFilterVoToCopy = new QueryFilterVO();
-	private Boolean										copyQueryFilter = false;
+	//private Boolean										copyQueryFilter = false;
 	private Boolean 									isMissingValueExsist=false;
 	//private TextField<Number>							concentrationTxtFld;
 	
@@ -166,7 +166,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				QueryFilterVO filter= new QueryFilterVO();
-				copyQueryFilter = false;
+				//copyQueryFilter = false;
 				listEditor.addItem(filter);
 				listEditor.updateModel();
 				target.add(form);
@@ -236,13 +236,12 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			protected void onPopulateItem(final ListItem<QueryFilterVO> item) {
 				item.setOutputMarkupId(true);
 				item.add(new Label("row", ""+(item.getIndex()+1)));
-				
-				if(copyQueryFilter) {
+				/*if(copyQueryFilter) {
 					item.getModelObject().setFieldCategory(queryFilterVoToCopy.getFieldCategory());
 					item.getModelObject().setQueryFilter(queryFilterVoToCopy.getQueryFilter());
 					item.getModelObject().getQueryFilter().setValue(queryFilterVoToCopy.getQueryFilter().getValue());
 					item.getModelObject().getQueryFilter().setSecondValue(queryFilterVoToCopy.getQueryFilter().getSecondValue());
-				}
+				}*/
 				initFieldCategoryDdc(item);
 				initFieldDdc(item);
 				initOperatorDdc(item,false,null);
@@ -261,11 +260,12 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						
 						try {
 							PropertyUtils.copyProperties(queryFilterVO, getItem().getModelObject());
-							PropertyUtils.copyProperties(queryFilterVoToCopy, getItem().getModelObject());
-							queryFilterVoToCopy.getQueryFilter().setId(null);
+							//PropertyUtils.copyProperties(queryFilterVoToCopy, getItem().getModelObject());
+							//queryFilterVoToCopy.getQueryFilter().setId(null);
 							queryFilterVO.getQueryFilter().setId(null);
-							copyQueryFilter = true;
+							//copyQueryFilter = true;
 							listEditor.addItem(queryFilterVO);
+							listEditor.updateModel();
 							target.add(form);
 						}
 						catch (IllegalAccessException e) {
@@ -279,6 +279,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						}
 					}
 				}.setDefaultFormProcessing(false));
+				
 				item.add(new AjaxEditorButton(Constants.DELETE) {
 					private static final long	serialVersionUID	= 1L;
 					@Override

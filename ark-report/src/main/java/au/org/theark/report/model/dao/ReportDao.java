@@ -48,6 +48,7 @@ import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
@@ -872,15 +873,17 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			 * Following query returns customFields whether or not they are
 			 * associated with a customFieldGroups (via customFieldDisplay)
 			 */
-			Criteria criteria = getSession().createCriteria(PhenoDataSetField.class, "pf");
+			Criteria criteria = getSession().createCriteria(PhenoDataSetFieldDisplay.class, "pdfd");
+			//Criteria criteria = getSession().createCriteria(PhenoDataSetField.class, "pf");
+			criteria.createAlias("phenoDataSetField", "pf", JoinType.LEFT_OUTER_JOIN);	// Left join to CustomFieldDisplay
 			/*On 2016-08-30 found out this criteria can not have a property type call phenoDatasetFieldDisplay.there is a bug here but didn't fix this 
 			/*Caused by: org.hibernate.QueryException: could not resolve property: phenoDatasetFieldDisplay of: au.org.theark.core.model.pheno.entity.PhenoDataSetField*/
-			criteria.createAlias("phenoDatasetFieldDisplay", "pdfd", JoinType.LEFT_OUTER_JOIN);	// Left join to CustomFieldDisplay
-			criteria.createAlias("pdfd.phenoDatasetFieldGroup", "pdfg", JoinType.LEFT_OUTER_JOIN); // Left join to CustomFieldGroup
-			criteria.createAlias("fieldType", "ft", JoinType.LEFT_OUTER_JOIN); // Left join to FieldType
-			criteria.createAlias("unitType", "ut", JoinType.LEFT_OUTER_JOIN); // Left join to UnitType
+			//criteria.createAlias("phenoDatasetFieldDisplay", "pdfd", JoinType.LEFT_OUTER_JOIN);	// Left join to CustomFieldDisplay
+			criteria.createAlias("pdfd.phenoDataSetGroup", "pdfg", JoinType.LEFT_OUTER_JOIN); // Left join to CustomFieldGroup
+			criteria.createAlias("pf.fieldType", "ft", JoinType.LEFT_OUTER_JOIN); // Left join to FieldType
+			criteria.createAlias("pf.unitType", "ut", JoinType.LEFT_OUTER_JOIN); // Left join to UnitType
 			criteria.add(Restrictions.eq("pf.study", reportVO.getStudy()));
-			ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+			ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 			criteria.add(Restrictions.eq("pf.arkFunction", function));
 
 			if (reportVO.getPhenoDataSetFieldDisplay().getPhenoDataSetGroup() != null) {
@@ -889,8 +892,8 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			if (reportVO.getFieldDataAvailable()) {
 				DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoDataSetData.class, "pd");
 				// Join CustomFieldDisplay and PhenoData on ID FK
-				fieldDataCriteria.add(Property.forName("pdfd.id").eqProperty("pd." + "phenoDatasetFieldDisplay.id"));
-				criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("pd.phenoDatasetFieldDisplay"))));
+				fieldDataCriteria.add(Property.forName("pdfd.id").eqProperty("pd." + "phenoDataSetFieldDisplay.id"));
+				criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("pd.phenoDataSetFieldDisplay"))));
 			}
 
 			ProjectionList projectionList = Projections.projectionList();
@@ -907,7 +910,8 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			criteria.setProjection(projectionList); // only return fields required for report
 			criteria.setResultTransformer(Transformers.aliasToBean(PhenoDataSetFieldDetailsDataRow.class));
 			criteria.addOrder(Order.asc("pdfg.id"));
-			criteria.addOrder(Order.asc("pdfd.sequence"));
+			criteria.addOrder(Order.asc("pdfd.phenoDataSetCategoryOrderNumber"));
+			criteria.addOrder(Order.asc("pdfd.phenoDataSetFiledOrderNumber"));
 			results = criteria.list();
 		}
 

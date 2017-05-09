@@ -314,7 +314,7 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD = "SUBJECT_CUSTOM_FIELD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA = "SUBJECT_CUSTOM_DATA";
 	
-	//Add on 2015-11-05 to categories the data set
+	//Add on 2015-11-05 to categories the dataset
 	public static final String FUNCTION_KEY_VALUE_DATA_CATEGORY = "DATASET_CATEGORY";//(1)
 	public static final String FUNCTION_KEY_VALUE_DATA_CATEGORY_UPLOAD = "DATASET_CATEGORY_UPLOAD";//(2)
 	public static final String FUNCTION_KEY_VALUE_DATA_DICTIONARY = "DATA_DICTIONARY";//(3)
@@ -716,7 +716,7 @@ public class Constants {
 	
 	public static final String MESSAGE_NO_STUDY_IN_CONTEXT="There is no study in context. Please select a study";
 	
-	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY = "Pheno Data Set Category";
+	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY = "Pheno Dataset Category";
 	
 	public static final String ENTITY_TYPE_PHENO_DATASET_FIELD = "PhenoDataSet Field";
 	

@@ -1000,7 +1000,7 @@ try {
 			phenotypicDao.createPhenoDataSetCategory(phenoDataSetCategoryvo.getPhenoDataSetCategory());
 			// PhenoDataSet Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-			ah.setComment("Created phono Data Set category " + phenoDataSetCategoryvo.getPhenoDataSetCategory().getName());
+			ah.setComment("Created phono Dataset category " + phenoDataSetCategoryvo.getPhenoDataSetCategory().getName());
 			ah.setEntityId(phenoDataSetCategoryvo.getPhenoDataSetCategory().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_CATEGORY);
 			phenotypicDao.createAuditHistory(ah,null,null);

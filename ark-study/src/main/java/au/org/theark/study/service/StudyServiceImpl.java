@@ -2337,4 +2337,9 @@ public class StudyServiceImpl implements IStudyService {
 	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy, StudyComp studyComp) {
 		return iStudyDao.getSubjectFileParticularConsent(linkSubjectStudy, studyComp);
 	}
+
+	@Override
+	public List<StudyComp> getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(Study study,LinkSubjectStudy linkSubjectStudy) {
+		return iStudyDao.getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(study, linkSubjectStudy);
+	}
 }

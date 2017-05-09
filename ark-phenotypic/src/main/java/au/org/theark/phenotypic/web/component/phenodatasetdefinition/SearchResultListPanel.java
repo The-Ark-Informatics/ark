@@ -198,7 +198,7 @@ public class SearchResultListPanel extends Panel {
 			try {
 				iPhenotypicService.createPickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
 			} catch (ArkSystemException | ArkRunTimeUniqueException| ArkRunTimeException | EntityExistsException |LazyInitializationException e) {
-				error("Problem occurs during the data set initialisation(save category)please try again.");
+				error("Problem occurs during the dataset initialisation(save category)please try again.");
 				target.add(feedbackPanel);
 			}
 		}
@@ -215,7 +215,7 @@ public class SearchResultListPanel extends Panel {
 			try {
 				iPhenotypicService.createLinkPhenoDataSetCategoryField(linkPhenoDataSetCategoryField);
 			} catch (ArkSystemException| ArkRunTimeUniqueException| ArkRunTimeException| EntityExistsException |LazyInitializationException e ) {
-				error("Problem occurs during the data set initialisation(save field)please try again.");
+				error("Problem occurs during the dataset initialisation(save field)please try again.");
 				target.add(feedbackPanel);
 			}
 	}

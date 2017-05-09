@@ -18,23 +18,30 @@
  ******************************************************************************/
 package au.org.theark.study.model.dao;
 
-import au.org.theark.core.dao.ArkUidGenerator;
-import au.org.theark.core.dao.HibernateSessionDao;
-import au.org.theark.core.dao.IArkAuthorisation;
-import au.org.theark.core.dao.IAuditDao;
-import au.org.theark.core.exception.*;
-import au.org.theark.core.model.audit.entity.LssConsentHistory;
-import au.org.theark.core.model.study.entity.*;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.vo.ConsentVO;
-import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.study.model.vo.RelationshipVo;
-import au.org.theark.study.model.vo.StudyCalendarVo;
-import au.org.theark.study.service.Constants;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.*;
-import org.hibernate.criterion.*;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.StatelessSession;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
@@ -42,9 +49,78 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import au.org.theark.core.dao.ArkUidGenerator;
+import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.dao.IArkAuthorisation;
+import au.org.theark.core.dao.IAuditDao;
+import au.org.theark.core.exception.ArkSubjectInsertException;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.CannotRemoveArkModuleException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.audit.entity.LssConsentHistory;
+import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
+import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
+import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
+import au.org.theark.core.model.study.entity.CorrespondenceModeDirectionOutcome;
+import au.org.theark.core.model.study.entity.CorrespondenceModeType;
+import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
+import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
+import au.org.theark.core.model.study.entity.LinkCalendarCustomField;
+import au.org.theark.core.model.study.entity.LinkStudyArkModule;
+import au.org.theark.core.model.study.entity.LinkStudySubstudy;
+import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectTwin;
+import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
+import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneStatus;
+import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCalendar;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.model.study.entity.SubjectFile;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.SubjectUidSequence;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.TwinType;
+import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.ConsentVO;
+import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.model.vo.StudyCalendarVo;
+import au.org.theark.study.service.Constants;
 
 @Repository("studyDao")
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
@@ -2731,4 +2807,31 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.setMaxResults(1);
 		return (SubjectFile)criteria.uniqueResult();
 	}
+	
+	@Override
+	public List<SubjectFile> getSubjectFileForLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		Criteria criteria = getSession().createCriteria(SubjectFile.class);
+		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		return (List<SubjectFile>)criteria.list();
+	}
+	
+	@Override
+	public List<StudyComp> getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(Study study,LinkSubjectStudy linkSubjectStudy) {
+		List<SubjectFile> subjectFileLst=getSubjectFileForLinkSubjectStudy(linkSubjectStudy);//Study components having file attachments. 
+		List<Long> studyCompList=new ArrayList<Long>();
+		if(subjectFileLst!=null){
+			for (SubjectFile subjectFile : subjectFileLst) {
+				if(subjectFile.getStudyComp()!=null){
+					studyCompList.add(subjectFile.getStudyComp().getId());
+				}
+			}
+		}
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		criteria.add(Restrictions.eq("study", study));
+		if(!studyCompList.isEmpty()) {
+			criteria.add(Restrictions.not(Restrictions.in("id", studyCompList)));
+		}
+		return (List<StudyComp>)criteria.list();
+	}
+	
 }

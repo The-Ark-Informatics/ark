@@ -51,6 +51,7 @@ public class SubjectFile implements java.io.Serializable {
 	private String userId;
 	private String comments;
 	private String fileId;
+	private Boolean isConsentFile;
 
 	public SubjectFile() {
 	}
@@ -171,5 +172,15 @@ public class SubjectFile implements java.io.Serializable {
 	public void setFileId(String fileId) {
 		this.fileId = fileId;
 	}
+	
+	@Column(name = "IS_CONSENT_FILE", precision = 1, scale = 0)
+	public Boolean getIsConsentFile() {
+		return isConsentFile;
+	}
 
+	public void setIsConsentFile(Boolean isConsentFile) {
+		this.isConsentFile = isConsentFile;
+	}
+
+	
 }

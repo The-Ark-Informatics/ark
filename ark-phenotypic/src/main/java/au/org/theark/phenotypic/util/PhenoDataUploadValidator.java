@@ -383,7 +383,7 @@ public class PhenoDataUploadValidator {
 					fileValidationMessages.add("The column name \"RECORD_DATE_TIME\" must exist as the header of the second column.\n");
 				}
 				for (String badHeader : badHeaders) {
-					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing custom field assigned to the data set: " + phenoDataSetGroup.getName() + "\n");
+					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing custom field assigned to the dataset: " + phenoDataSetGroup.getName() + "\n");
 				}
 				log.warn("failed header validation");
 			}
