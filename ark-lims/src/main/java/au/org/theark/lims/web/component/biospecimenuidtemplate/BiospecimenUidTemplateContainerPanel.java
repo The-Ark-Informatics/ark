@@ -134,11 +134,11 @@ public class BiospecimenUidTemplateContainerPanel extends AbstractContainerPanel
 
 			private static final long	serialVersionUID	= 1L;
 
-			public long size() {
-				return service.getBiospecimenUidTemplateCount(model.getObject());
+			public int size() {
+				return (int) service.getBiospecimenUidTemplateCount(model.getObject());
 			}
 
-			public Iterator<BiospecimenUidTemplate> iterator(long first, long count) {
+			public Iterator<BiospecimenUidTemplate> iterator(int first, int count) {
 				List<BiospecimenUidTemplate> listCollection = new ArrayList<BiospecimenUidTemplate>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					listCollection = service.searchPageableBiospecimenUidTemplates(model.getObject(), first, count);

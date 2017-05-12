@@ -253,7 +253,7 @@ public interface IPhenotypicDao {
 
 	public long getPhenoDataCount(PhenoDataSetCollection phenoCollection,PhenoDataSetCategory phenoDataSetCategory);
 
-	public List<PhenoDataSetData> getPhenoDataList(PhenoDataSetCollection phenoCollection, PhenoDataSetCategory phenoDataSetCategory, long first, long count);
+	public List<PhenoDataSetData> getPhenoDataList(PhenoDataSetCollection phenoCollection,PhenoDataSetCategory phenoDataSetCategory, int first, int count);
 	
 	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException, ArkSystemException;
 	
@@ -263,13 +263,13 @@ public interface IPhenotypicDao {
 
 	public long getPhenoCollectionCount(PhenoDataCollectionVO criteria);
 	
-	public List<PhenoDataSetCollection> searchPageablePhenoCollection(PhenoDataCollectionVO collectionCriteria, long first, long count);
+	public List<PhenoDataSetCollection> searchPageablePhenoCollection(PhenoDataCollectionVO collectionCriteria, int first, int count);
 	
 	public List<PhenoDataSetField> getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroup);
 
 	public List<QuestionnaireStatus> getPhenoCollectionStatusList();
 	
-	public Collection<PhenoDataSetFieldDisplay> getCFDLinkedToQuestionnaire(PhenoDataSetGroup phenoDataSetGroup, long first, long count);
+	public Collection<PhenoDataSetFieldDisplay> getCFDLinkedToQuestionnaire(PhenoDataSetGroup phenoDataSetGroup, int first, int count);
 	
 	public long getCFDLinkedToQuestionnaireCount(PhenoDataSetGroup customFieldGroup);
 
@@ -354,7 +354,7 @@ public interface IPhenotypicDao {
 	 * @param count
 	 * @return
 	 */
-	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, long first, long count);
+	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, int first, int count);
 	/**
 	 * Create Pheno Dataset category
 	 * @throws ArkSystemException
@@ -425,7 +425,7 @@ public interface IPhenotypicDao {
 	 * @param count
 	 * @return
 	 */
-	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, long first, long count);
+	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count);
 	/**
 	 * searchPageablePhenoFields
 	 * 
@@ -523,7 +523,7 @@ public interface IPhenotypicDao {
 	
 	public List<PhenoDataSetField> getPhenoDataSetFieldList(PhenoDataSetField phenoDataSetFieldCriteria);
 	
-	public List<PhenoDataSetGroup> getPhenoDataSetGroups(PhenoDataSetGroup phenoDataSetGroup, long first, long count);
+	public List<PhenoDataSetGroup> getPhenoDataSetGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count);
 	
 	public void createPickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory) throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException,EntityExistsException;
 	

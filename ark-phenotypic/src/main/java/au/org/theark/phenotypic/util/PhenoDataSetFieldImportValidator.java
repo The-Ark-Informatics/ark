@@ -804,14 +804,15 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		}
 		//Character field type
 		//if Encoded value has been introduced check the default value has one of the encoded value occupied.
-		if (field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_CHARACTER)) {
+		//ARK-1357 -This Default value validation has to be removed-[2017-05-11-Sanjay].
+		/*if (field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_CHARACTER)) {
 			if(iPhenotypicService.isEncodedValue(field, field.getDefaultValue())){
 				isValid=true;
 			}else{
 				errorMessages.add(PhenoDataSetFieldValidationMessage.fieldDefaultValueNotINEncodedLst(field));
 				isValid=false;
 			}
-		}
+		}*/
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_NUMBER)) {
 			try {

@@ -18,10 +18,9 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.button;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.attributes.AjaxCallListener;
-import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
@@ -49,19 +48,6 @@ public abstract class AjaxConfirmButton extends AjaxButton {
 	}
 
 	@Override
-	protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
-		super.updateAjaxAttributes(attributes);
-		attributes.getAjaxCallListeners().add(new AjaxCallListener(){
-
-			@Override
-			public CharSequence getPrecondition(Component component) {
-				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "};";
-			}
-
-		});
-	}
-
-	/*@Override
 	protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
 			private static final long	serialVersionUID	= 7495281332320552876L;
@@ -73,7 +59,7 @@ public abstract class AjaxConfirmButton extends AjaxButton {
 				// (patched the code to remove the "else" statement because it shouldn't return true)
 			}
 		};
-	}*/
+	}
 
 	@Override
 	protected abstract void onSubmit(AjaxRequestTarget target, Form<?> form);

@@ -48,6 +48,6 @@ public interface ILimsSubjectDao {
 	 * @param count
 	 * @return
 	 */
-	public abstract List<LinkSubjectStudy> searchPageableSubjects(LimsVO limsVoCriteria, List<Study> studyList, long first, long count);
+	public abstract List<LinkSubjectStudy> searchPageableSubjects(LimsVO limsVoCriteria, List<Study> studyList, int first, int count);
 
 }

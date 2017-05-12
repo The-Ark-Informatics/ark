@@ -18,16 +18,10 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodatadictionary;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.PhenoDataSetFieldVO;
-import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.phenodatadictionary.form.ContainerForm;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -41,9 +35,16 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.PhenoDataSetFieldVO;
+import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.web.component.phenodatadictionary.form.ContainerForm;
 
 
 /**
@@ -134,11 +135,11 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Ph
 
 			private static final long serialVersionUID = 1L;
 
-			public long size() {
-					return iPhenotypicService.getPhenoFieldCount(criteriaModel.getObject());
+			public int size() {
+					return (int) iPhenotypicService.getPhenoFieldCount(criteriaModel.getObject());
 			}
 
-			public Iterator<PhenoDataSetField> iterator(long first, long count) {
+			public Iterator<PhenoDataSetField> iterator(int first, int count) {
 				List<PhenoDataSetField> listCustomFields = new ArrayList<PhenoDataSetField>();
 				if (isActionPermitted()) {
 						listCustomFields = iPhenotypicService.searchPageablePhenoFields(criteriaModel.getObject(), first, count);

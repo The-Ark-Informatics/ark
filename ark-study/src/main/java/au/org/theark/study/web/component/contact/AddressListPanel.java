@@ -18,21 +18,11 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.contact;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.Address;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.AddressSubjectVO;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkCRUDHelper;
-import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.core.web.component.export.ExportToolbar;
-import au.org.theark.core.web.component.export.ExportableTextColumn;
-import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.contact.form.ContainerForm;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -51,10 +41,21 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.AddressSubjectVO;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.export.ExportToolbar;
+import au.org.theark.core.web.component.export.ExportableTextColumn;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.contact.form.ContainerForm;
 
 /**
  * @author nivedann
@@ -97,7 +98,7 @@ public class AddressListPanel extends Panel {
 			private List<Address>		listAddress;
 			private List<Address>		listAddressForSize;
 
-			public long size() {
+			public int size() {
 				try {
 					if (sessionPersonId != null) {
 						person = studyService.getPerson(sessionPersonId);
@@ -120,7 +121,7 @@ public class AddressListPanel extends Panel {
 				}
 			}
 
-			public Iterator<? extends Address> iterator(long first, long count) {
+			public Iterator<? extends Address> iterator(int first, int count) {
 				listAddress = studyService.pageablePersonAddressList(sessionPersonId, containerForm.getModelObject().getAddressVo().getAddress(), first, count);
 				return listAddress.iterator();
 			}
@@ -133,7 +134,7 @@ public class AddressListPanel extends Panel {
 			private List<Address>		listAddress;
 			private List<Address>		listAddressForSize;
 
-			public long size() {
+			public int size() {
 				try {
 					if (sessionPersonId != null) {
 						person = studyService.getPerson(sessionPersonId);
@@ -156,7 +157,7 @@ public class AddressListPanel extends Panel {
 				}
 			}
 
-			public Iterator<? extends AddressSubjectVO> iterator(long first, long count) {
+			public Iterator<? extends AddressSubjectVO> iterator(int first, int count) {
 				listAddress = studyService.pageablePersonAddressList(sessionPersonId, containerForm.getModelObject().getAddressVo().getAddress(), first, count);
 				List<AddressSubjectVO> addressVoList = new ArrayList<AddressSubjectVO>();
 				for (Address address : listAddress) {
@@ -174,16 +175,16 @@ public class AddressListPanel extends Panel {
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("addressNavigator", dataViewAddress);
 		add(pageNavigator);
 
-		List<IColumn<AddressSubjectVO, String>> columns = new ArrayList<>();
-		columns.add(new ExportableTextColumn<AddressSubjectVO, String>(Model.of("Subjetc UID"), "subjectUID"));
-		columns.add(new ExportableTextColumn<AddressSubjectVO, String>(Model.of("Street Address"), "streetAddress"));
-		columns.add(new ExportableTextColumn<AddressSubjectVO, String>(Model.of("City"), "city"));
-		columns.add(new ExportableTextColumn<AddressSubjectVO, String>(Model.of("State"), "state.name"));
-		columns.add(new ExportableTextColumn<AddressSubjectVO, String>(Model.of("Post Code"), "postCode"));
-		columns.add(new ExportableTextColumn<AddressSubjectVO, String>(Model.of("Country"), "country.name"));
-		columns.add(new ExportableTextColumn<AddressSubjectVO, String>(Model.of("Address Type"), "addressType.name"));
-		columns.add(new ExportableTextColumn<AddressSubjectVO, String>(Model.of("DateReceived"), "dateReceived"));
-		columns.add(new ExportableTextColumn<AddressSubjectVO, String>(Model.of("Preferred Mailing Address"), "preferredMailingAddress"));
+		List<IColumn<AddressSubjectVO>> columns = new ArrayList<IColumn<AddressSubjectVO>>();
+		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("Subjetc UID"), "subjectUID"));
+		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("Street Address"), "streetAddress"));
+		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("City"), "city"));
+		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("State"), "state.name"));
+		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("Post Code"), "postCode"));
+		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("Country"), "country.name"));
+		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("Address Type"), "addressType.name"));
+		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("DateReceived"), "dateReceived"));
+		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("Preferred Mailing Address"), "preferredMailingAddress"));
 
 		DataTable table = new DataTable("datatable", columns, dataViewAddressSubjectVO.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);

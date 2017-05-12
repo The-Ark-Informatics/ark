@@ -202,11 +202,11 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			e.printStackTrace();
 		}
 		ArkDataProvider dataProvider = new ArkDataProvider<Setting, IArkSettingService>(iArkSettingService) {
-			public long size() {
+			public int size() {
 				return service.getSettingsCount(model.getObject());
 			}
 
-			public Iterator<Setting> iterator(long first, long count) {
+			public Iterator<Setting> iterator(int first, int count) {
 				List<Setting> listCollection = new ArrayList<Setting>();
 				listCollection = service.searchPageableSettings(model.getObject(), first, count);
 

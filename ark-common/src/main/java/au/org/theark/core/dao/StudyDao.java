@@ -45,6 +45,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.DetachedCriteria;
@@ -928,10 +929,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria;
 	}
 
-	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, long first, long count) {
+	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, int first, int count) {		
 		Criteria criteria = buildGeneralSubjectCriteria(subjectVoCriteria);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 
 		List<Long> longs = criteria.list();
 

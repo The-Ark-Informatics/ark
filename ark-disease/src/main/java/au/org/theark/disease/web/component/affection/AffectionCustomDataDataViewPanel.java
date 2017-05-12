@@ -18,11 +18,9 @@
  ******************************************************************************/
 package au.org.theark.disease.web.component.affection;
 
-import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
-import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
-import au.org.theark.disease.service.IArkDiseaseService;
-import au.org.theark.disease.vo.AffectionCustomDataVO;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -32,7 +30,16 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
+import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
+import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
+import au.org.theark.disease.service.IArkDiseaseService;
+import au.org.theark.disease.vo.AffectionCustomDataVO;
 
 
 /**
@@ -73,11 +80,11 @@ public class AffectionCustomDataDataViewPanel extends Panel {
 	private void initialiseDataView() {
 		scdDataProvider = new ArkDataProvider2<AffectionCustomDataVO, AffectionCustomFieldData>() {
 
-			public long size() {
+			public int size() {
 				return cpModel.getObject().getCustomFieldDataList().size();
 			}
 
-			public Iterator<AffectionCustomFieldData> iterator(long first, long count) {
+			public Iterator<AffectionCustomFieldData> iterator(int first, int count) {
 				return cpModel.getObject().getCustomFieldDataList().iterator();
 			}
 		};

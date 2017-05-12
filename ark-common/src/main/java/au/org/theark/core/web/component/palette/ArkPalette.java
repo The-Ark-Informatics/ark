@@ -18,15 +18,14 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.palette;
 
-import org.apache.wicket.extensions.markup.html.form.palette.Palette;
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.resource.CssResourceReference;
-
 import java.util.Collection;
 import java.util.List;
+
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 
 /**
  * Implementation of Wicket Palette class, overriding the default CSS
@@ -74,8 +73,7 @@ public class ArkPalette<T> extends Palette<T> {
 	}
 
 	@Override
-	public void renderHead(IHeaderResponse response) {
-		super.renderHead(response);
-		response.render(CssHeaderItem.forReference(new CssResourceReference(ArkPalette.class, "arkPalette.css")));
+	protected ResourceReference getCSS() {
+		return new PackageResourceReference(ArkPalette.class, "arkPalette.css");
 	}
 }

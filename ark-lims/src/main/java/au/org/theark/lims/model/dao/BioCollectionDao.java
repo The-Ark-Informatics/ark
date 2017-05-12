@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.service.IArkCommonService;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
@@ -46,7 +47,9 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioSampletype;
+import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
@@ -285,10 +288,10 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return totalCount;
 	}
 
-	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, long first, long count) {
+	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count) {
 		Criteria criteria = buildBioCollectionCriteria(bioCollectionCriteria);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		List<BioCollection> list = criteria.list();
 
 		return list;
@@ -351,7 +354,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return (Long) criteria.uniqueResult();
 	}
 	
-	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count) {
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 		List<BioCollectionCustomFieldData> bioCollectionCustomFieldDataList = new ArrayList<BioCollectionCustomFieldData>();
 	
 		StringBuffer sb = new StringBuffer();
@@ -386,8 +389,8 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 			query.setParameter("customFieldCategotyId", customFieldCategory.getId());
 		}
 		query.setParameter("type", customFieldType.getName());
-		query.setFirstResult(Math.toIntExact(first));
-		query.setMaxResults(Math.toIntExact(count));
+		query.setFirstResult(first);
+		query.setMaxResults(count);
 		
 		List<Object[]> listOfObjects = query.list();
 		for (Object[] objects : listOfObjects) {

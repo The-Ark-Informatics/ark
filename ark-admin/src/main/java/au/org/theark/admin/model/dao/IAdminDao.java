@@ -92,15 +92,15 @@ public interface IAdminDao {
 
 	public long getArkModuleCount(ArkModule arkModuleCriteria);
 
-	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, long first, long count);
+	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, int first, int count);
 
 	public long getArkFunctionCount(ArkFunction arkFunctionCriteria);
 
-	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, long first, long count);
+	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, int first, int count);
 
 	public long getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria);
 
-	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, long first, long count);
+	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count);
 	
 	public ArkRole getArkRoleByName(String name);
 
@@ -112,7 +112,7 @@ public interface IAdminDao {
 
 	public long getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria);
 	
-	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, long first, long count);
+	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, int first, int count);
 
 	public ArkModuleFunction getArkModuleFunction(Long id);
 
@@ -124,7 +124,7 @@ public interface IAdminDao {
 	
 	public long getArkRoleCount(ArkRole arkRoleCriteria);
 
-	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, long first, long count);
+	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count);
 	
 	public void createOrUpdateArkRole(ArkRole arkRole);
 	
@@ -134,7 +134,7 @@ public interface IAdminDao {
 	
 	public long getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria);
 	
-	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, long first, long count);
+	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count);
 
 	public void createArkModuleRole(ArkModule arkModule, Collection<ArkRole> selectedArkRoles);
 	

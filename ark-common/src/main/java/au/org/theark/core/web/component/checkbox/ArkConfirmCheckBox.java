@@ -1,10 +1,9 @@
 package au.org.theark.core.web.component.checkbox;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
-import org.apache.wicket.ajax.attributes.AjaxCallListener;
-import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
+import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxIndicatorAppender;
 import org.apache.wicket.model.IModel;
@@ -38,20 +37,25 @@ public abstract class ArkConfirmCheckBox extends AjaxCheckBox implements IAjaxIn
 		// TODO Auto-generated method stub
 		return indicatorAppender.getMarkupId();
 	}
-
+	
 	@Override
-	protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
-		super.updateAjaxAttributes(attributes);
-		attributes.getAjaxCallListeners().add(new AjaxCallListener(){
+	protected IAjaxCallDecorator getAjaxCallDecorator() {
+		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			public CharSequence getSuccessHandler(Component component) {
-				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};";
-			}
-
-		});
+			public CharSequence preDecorateScript(CharSequence script) {
+				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};" + script;
+			}			
+			
+		};
 	}
 
 	@Override
 	protected abstract void onUpdate(AjaxRequestTarget target);
+	
+	
+	
+	
+	
 }

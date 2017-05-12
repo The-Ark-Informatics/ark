@@ -194,7 +194,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 					
 					detailsPanel.addOrReplace(containerForm.getContextUpdateLimsWMC());
 					containerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
-					AjaxRequestTarget target = getRequestCycle().find(AjaxRequestTarget.class);
+					AjaxRequestTarget target = AjaxRequestTarget.get();
 					target.add(detailsPanel);
 				}
 			}
@@ -224,7 +224,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 
 			private static final long	serialVersionUID	= 1L;
 
-			public long size() {
+			public int size() {
 
 			// Restrict search if Study selected in Search form
 				List<Study> studyList = new ArrayList<Study>(0);
@@ -253,7 +253,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				return iLimsSubjectService.getSubjectCount(criteriaModel.getObject(), studyList);
 			}
 
-			public Iterator<LinkSubjectStudy> iterator(long first, long count) {
+			public Iterator<LinkSubjectStudy> iterator(int first, int count) {
 				List<LinkSubjectStudy> listSubjects = new ArrayList<LinkSubjectStudy>(0);
 
 				// Restrict search if Study selected in Search form

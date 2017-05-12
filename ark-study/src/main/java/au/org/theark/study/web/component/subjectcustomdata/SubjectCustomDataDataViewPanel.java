@@ -18,14 +18,9 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectcustomdata;
 
-import au.org.theark.core.model.study.entity.*;
-import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.SubjectCustomDataVO;
-import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -35,8 +30,18 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.List;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.SubjectCustomDataVO;
+import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
 
 /**
  * @author elam
@@ -80,12 +85,12 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 			// Data provider to get pageable results from backend
 			scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData>() {
 			
-				public long size() {
+				public int size() {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-					return studyService.getSubjectCustomFieldDataCount(lss, arkFunction);
+					return (int) studyService.getSubjectCustomFieldDataCount(lss, arkFunction);
 				}
-				public Iterator<SubjectCustomFieldData> iterator(long first, long count) {
+				public Iterator<SubjectCustomFieldData> iterator(int first, int count) {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 					CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT);
@@ -103,11 +108,11 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 			// returns nothing
 			scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData>() {
 
-				public Iterator<? extends SubjectCustomFieldData> iterator(long first, long count) {
+				public Iterator<? extends SubjectCustomFieldData> iterator(int first, int count) {
 					return null;
 				}
 
-				public long size() {
+				public int size() {
 					return 0;
 				}
 			};

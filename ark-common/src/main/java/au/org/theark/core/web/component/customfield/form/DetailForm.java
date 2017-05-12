@@ -18,13 +18,54 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.form;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.StringValidator;
+
 import au.org.theark.core.exception.ArkNotAllowedToUpdateException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.model.study.entity.*;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.*;
+import au.org.theark.core.util.CharacterDefaultMissingAndEncodedValueValidator;
+import au.org.theark.core.util.DateFromToValidator;
+import au.org.theark.core.util.DefaultMissingValueDateRangeValidator;
+import au.org.theark.core.util.DefaultMissingValueDoubleRangeValidator;
+import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -35,24 +76,6 @@ import au.org.theark.core.web.component.customfield.dataentry.NumberDataEntryPan
 import au.org.theark.core.web.component.customfield.dataentry.StringDateModel;
 import au.org.theark.core.web.component.customfield.dataentry.TextDataEntryPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
-import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.datetime.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.*;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.*;
-import org.apache.wicket.model.util.ListModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.PatternValidator;
-import org.apache.wicket.validation.validator.StringValidator;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 /**
  * CustomField's DetailForm
@@ -542,14 +565,14 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			// Save the Field
 			try {
 				iArkCommonService.createCustomField(getModelObject());
-				this.info(new StringResourceModel("info.createSuccessMsg", this, getModel()));
+				this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
 			}
 			catch (ArkUniqueException e) {
-				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, getModel()));
+				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 			}
 			processErrors(target);
 		}
@@ -557,16 +580,16 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			// Update the Field
 			try {
 				iArkCommonService.updateCustomField(getModelObject());
-				this.info(new StringResourceModel("info.updateSuccessMsg", this, getModel()));
+				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
 			}
 			catch (ArkUniqueException e) {
-				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, getModel()));
+				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 			} catch (ArkNotAllowedToUpdateException e) {
-				this.error(new StringResourceModel("error.nonUpdatedCFMsg", this, getModel()));
+				this.error(new StringResourceModel("error.nonUpdatedCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 			}
 			processErrors(target);
 		}

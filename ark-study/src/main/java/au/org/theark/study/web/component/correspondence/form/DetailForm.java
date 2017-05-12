@@ -20,7 +20,9 @@ package au.org.theark.study.web.component.correspondence.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -105,7 +107,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	private WebMarkupContainer										workTrackingContainer;
 	private HistoryButtonPanel										historyButtonPanel;
-	private  WebMarkupContainer						categoryPanel;
+	private  WebMarkupContainer										categoryPanelDirectionType;
+	private  WebMarkupContainer										categoryPanelOutCome;
 
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
@@ -128,6 +131,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		dateFld.add(datePicker);
 
 		timeTxtFld = new TextField<String>("correspondence.time");
+		initCategoryPanels();
 		initialiseModeTypeDropDown();
 		initialiseDirectionTypeDropDown();
 		initialiseOutcomeTypeDropDown();
@@ -223,14 +227,26 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		modeTypeChoice = new DropDownChoice<CorrespondenceModeType>("correspondence.correspondenceModeType", list, defaultRenderer);
 		modeTypeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             protected void onUpdate(AjaxRequestTarget target) {
-            	List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypesForModeAndDirection(modeTypeChoice.getModelObject(),directionTypeChoice.getModelObject() );
-            	categoryPanel.remove(outcomeTypeChoice);
-            	ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
-            	outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
-        		outcomeTypeChoice.setOutputMarkupId(true);
-				categoryPanel.add(outcomeTypeChoice);
-		    	target.add(outcomeTypeChoice);
-		    	target.add(categoryPanel);
+            	List<CorrespondenceDirectionType> list = studyService.getCorrespondenceDirectionForMode(modeTypeChoice.getModelObject());
+            	categoryPanelDirectionType.remove(directionTypeChoice);
+            	ChoiceRenderer<CorrespondenceDirectionType> defaultRenderer = new ChoiceRenderer<CorrespondenceDirectionType>("name", "id");
+            	directionTypeChoice = new DropDownChoice<CorrespondenceDirectionType>("correspondence.correspondenceDirectionType", list, defaultRenderer);
+            	directionTypeChoice.setOutputMarkupId(true);
+            	directionTypeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+                    protected void onUpdate(AjaxRequestTarget target) {
+                    	List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypesForModeAndDirection(modeTypeChoice.getModelObject(),directionTypeChoice.getModelObject() );
+                    	categoryPanelOutCome.remove(outcomeTypeChoice);
+                    	ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
+                    	outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
+                		outcomeTypeChoice.setOutputMarkupId(true);
+                		categoryPanelOutCome.addOrReplace(outcomeTypeChoice);
+        		    	target.add(outcomeTypeChoice);
+        		    	target.add(categoryPanelOutCome);
+                    }
+                    });
+            	categoryPanelDirectionType.addOrReplace(directionTypeChoice);
+		    	target.add(directionTypeChoice);
+		    	target.add(categoryPanelDirectionType);
             }
             });
 	}
@@ -239,27 +255,11 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		List<CorrespondenceDirectionType> list = studyService.getCorrespondenceDirectionTypes();
 		ChoiceRenderer<CorrespondenceDirectionType> defaultRenderer = new ChoiceRenderer<CorrespondenceDirectionType>("name", "id");
 		directionTypeChoice = new DropDownChoice<CorrespondenceDirectionType>("correspondence.correspondenceDirectionType", list, defaultRenderer);
-		directionTypeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-            protected void onUpdate(AjaxRequestTarget target) {
-            	List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypesForModeAndDirection(modeTypeChoice.getModelObject(),directionTypeChoice.getModelObject() );
-            	categoryPanel.remove(outcomeTypeChoice);
-            	ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
-            	outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
-        		outcomeTypeChoice.setOutputMarkupId(true);
-				categoryPanel.add(outcomeTypeChoice);
-		    	target.add(outcomeTypeChoice);
-		    	target.add(categoryPanel);
-            }
-            });
+		directionTypeChoice.setOutputMarkupId(true);
 	}
 
 	private void initialiseOutcomeTypeDropDown() {
-		//This method is replaced with new studyservice method which only filtered the corresponding outcome types.
-		//List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypes();
-		//On 2016-07-12
-		categoryPanel = new WebMarkupContainer("categoryPanel");
-		categoryPanel.setOutputMarkupId(true);
-		List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypesForModeAndDirection(modeTypeChoice.getModelObject(),directionTypeChoice.getModelObject() );
+		List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypes();
 		ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
 		outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
 		outcomeTypeChoice.setOutputMarkupId(true);
@@ -305,9 +305,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(timeTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(modeTypeChoice);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(directionTypeChoice);
-		categoryPanel.add(outcomeTypeChoice);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(categoryPanel);
+		//--panel adding for dynamic behavior.
+		categoryPanelDirectionType.add(directionTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(categoryPanelDirectionType);
+		categoryPanelOutCome.add(outcomeTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(categoryPanelOutCome);
+		//---
 		arkCrudContainerVO.getDetailPanelFormContainer().add(reasonTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(detailsTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
@@ -502,4 +505,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			return false;
 		}
 	}
+	private void initCategoryPanels(){
+		categoryPanelDirectionType=new WebMarkupContainer("categoryPanelDirectionType");
+		categoryPanelDirectionType.setOutputMarkupId(true);
+		categoryPanelOutCome=new WebMarkupContainer("categoryPanelOutCome");
+		categoryPanelOutCome.setOutputMarkupId(true);
+		
+	}
+	
 }

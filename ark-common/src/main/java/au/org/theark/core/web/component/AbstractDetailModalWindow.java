@@ -66,14 +66,14 @@ public abstract class AbstractDetailModalWindow extends ModalWindow {
 	}
 
 	@Override
-	public void close(AjaxRequestTarget target) {
+	public void close(final AjaxRequestTarget target) {
 		super.close(target);
 		onCloseModalWindow(target);
 		if(component != null) {
 			target.add(component);
 		}
 	}
-
+	
 	/**
 	 * What component to repaint after modalWindow is closed
 	 * @param component

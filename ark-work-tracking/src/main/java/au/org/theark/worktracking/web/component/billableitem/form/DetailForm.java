@@ -1,18 +1,11 @@
 package au.org.theark.worktracking.web.component.billableitem.form;
 
-import au.org.theark.core.model.worktracking.entity.BillableItem;
-import au.org.theark.core.model.worktracking.entity.BillableItemType;
-import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
-import au.org.theark.core.model.worktracking.entity.WorkRequest;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.worktracking.model.vo.BillableItemVo;
-import au.org.theark.worktracking.service.IWorkTrackingService;
-import au.org.theark.worktracking.util.BillableItemCostCalculator;
-import au.org.theark.worktracking.util.Constants;
-import au.org.theark.worktracking.util.NumberValidatable;
-import au.org.theark.worktracking.util.ValidatableItemType;
+import java.io.Serializable;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -21,7 +14,12 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -35,11 +33,19 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import java.io.Serializable;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import au.org.theark.core.model.worktracking.entity.BillableItem;
+import au.org.theark.core.model.worktracking.entity.BillableItemType;
+import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
+import au.org.theark.core.model.worktracking.entity.WorkRequest;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.worktracking.model.vo.BillableItemVo;
+import au.org.theark.worktracking.service.IWorkTrackingService;
+import au.org.theark.worktracking.util.BillableItemCostCalculator;
+import au.org.theark.worktracking.util.Constants;
+import au.org.theark.worktracking.util.NumberValidatable;
+import au.org.theark.worktracking.util.ValidatableItemType;
 
 public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	
@@ -383,8 +389,8 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void validate(IValidatable<String> validatable) {
-				super.validate(new NumberValidatable(validatable,ValidatableItemType.UNIT_QUANTITY));
+			protected void onValidate(IValidatable<String> validatable) {
+				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.UNIT_QUANTITY));
 			}
 		});	
 	}

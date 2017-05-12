@@ -1,19 +1,22 @@
 package au.org.theark.core.web.component.export;
 
-import au.org.theark.core.util.CsvWriter;
-import com.itextpdf.text.pdf.PdfPTable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import jxl.write.WritableSheet;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
+
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import au.org.theark.core.util.CsvWriter;
 
-public class ExportableDateColumn<T, S> extends PropertyColumn<T, S> implements ExportableColumn<T> {
+import com.itextpdf.text.pdf.PdfPTable;
+
+public class ExportableDateColumn<T> extends PropertyColumn<T> implements ExportableColumn<T> {
 	private static final long	serialVersionUID	= 1L;
 	private final String			format;
 
@@ -23,18 +26,18 @@ public class ExportableDateColumn<T, S> extends PropertyColumn<T, S> implements 
 	}
 
 	public ExportableDateColumn(IModel<String> displayModel, String sortProperty, String propertyExpression, String format) {
-		super(displayModel, (S) sortProperty, propertyExpression);
+		super(displayModel, sortProperty, propertyExpression);
 		this.format = format;
 	}
 	
 	@Override
-	public IModel<Object> getDataModel(IModel<T> iModel)
-	{
-		return new DateModel(super.getDataModel(iModel));
-	}
+   protected IModel<T> createLabelModel(IModel<T> iModel)
+   {
+       return new DateModel(super.createLabelModel(iModel));
+   } 
 	
 	public void exportCsv(final T object, CsvWriter writer) {
-		IModel<?> textModel = getDataModel(new AbstractReadOnlyModel<T>() {
+		IModel<?> textModel = createLabelModel(new AbstractReadOnlyModel<T>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -47,7 +50,7 @@ public class ExportableDateColumn<T, S> extends PropertyColumn<T, S> implements 
 	}
 
 	public void exportXls(final T object, WritableSheet writer, int col, int row) {
-		IModel<?> textModel = getDataModel(new AbstractReadOnlyModel<T>() {
+		IModel<?> textModel = createLabelModel(new AbstractReadOnlyModel<T>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -71,7 +74,7 @@ public class ExportableDateColumn<T, S> extends PropertyColumn<T, S> implements 
 	}
 
 	public void exportPdf(final T object, PdfPTable writer) {
-		IModel<?> textModel = getDataModel(new AbstractReadOnlyModel<T>() {
+		IModel<?> textModel = createLabelModel(new AbstractReadOnlyModel<T>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -4,11 +4,9 @@ import net.sf.json.JSONObject;
 
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
-import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebComponent;
-import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.util.value.IValueMap;
 import org.apache.wicket.util.value.ValueMap;
@@ -258,9 +256,9 @@ public class DeployJava extends WebComponent implements IHeaderContributor {
      */
     public void renderHead(IHeaderResponse response) {
         if (useJavascriptResource) {
-            response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(DeployJava.class, "deployJava.js")));
+            response.renderJavaScriptReference(new PackageResourceReference(DeployJava.class, "deployJava.js"));
         } else {
-            response.render(JavaScriptHeaderItem.forUrl(JAVASCRIPT_URL));
+            response.renderJavaScriptReference(JAVASCRIPT_URL);
         }
     }
 }

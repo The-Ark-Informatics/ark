@@ -88,13 +88,13 @@ public class BioCollectionCustomDataDataViewPanel extends Panel {
 			// Data provider to get pageable results from backend
 			scdDataProvider = new ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData>() {
 				private static final long	serialVersionUID	= 1L;
-				public long size() {
+				public int size() {
 					BioCollection bc = criteriaModel.getObject().getBioCollection();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-					return iLimsService.getBioCollectionCustomFieldDataCount(bc, arkFunction);
+					return (int)iLimsService.getBioCollectionCustomFieldDataCount(bc, arkFunction);
 				}
 	
-				public Iterator<BioCollectionCustomFieldData> iterator(long first, long count) {
+				public Iterator<BioCollectionCustomFieldData> iterator(int first, int count) {
 					BioCollection bc = criteriaModel.getObject().getBioCollection();
 					//Change the ark function according to the custom field inserted ark function to get all related details.
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
@@ -112,11 +112,11 @@ public class BioCollectionCustomDataDataViewPanel extends Panel {
 			// Since module is not accessible, create a dummy dataProvider that returns nothing
 			scdDataProvider = new ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData>() {
 				
-				public Iterator<? extends BioCollectionCustomFieldData> iterator(long first, long count) {
+				public Iterator<? extends BioCollectionCustomFieldData> iterator(int first, int count) {
 					return null;
 				}
 
-				public long size() {
+				public int size() {
 					return 0;
 				}
 			};

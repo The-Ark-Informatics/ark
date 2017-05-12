@@ -18,11 +18,8 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.panel.box;
 
-import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.lims.web.component.inventory.form.BoxAllocationDetailForm;
-import au.org.theark.lims.web.component.inventory.form.ContainerForm;
-import au.org.theark.lims.web.component.inventory.panel.box.display.GridBoxPanel;
-import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -30,7 +27,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.lims.web.component.inventory.form.BoxAllocationDetailForm;
+import au.org.theark.lims.web.component.inventory.form.ContainerForm;
+import au.org.theark.lims.web.component.inventory.panel.box.display.GridBoxPanel;
+import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 /**
  * 

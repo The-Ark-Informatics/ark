@@ -6,18 +6,25 @@
  */
 package au.org.theark.core.dao;
 
-import au.org.theark.core.model.geno.entity.*;
-import au.org.theark.core.model.geno.entity.Process;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.Study;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import au.org.theark.core.model.geno.entity.Beam;
+import au.org.theark.core.model.geno.entity.Command;
+import au.org.theark.core.model.geno.entity.Data;
+import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.geno.entity.Process;
+import au.org.theark.core.model.geno.entity.ProcessInput;
+import au.org.theark.core.model.geno.entity.ProcessOutput;
+import au.org.theark.core.model.geno.entity.Row;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 
 /**
  * @author nivedann
@@ -49,11 +56,11 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 		return totalCount.intValue();
 	}
 
-	public List<Pipeline> searchPageablePipelines(Pipeline p, long first,
-                                                  long count) {
+	public List<Pipeline> searchPageablePipelines(Pipeline p, int first,
+			int count) {
 		Criteria criteria = buildGeneralPipelineCriteria(p);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		List<Pipeline> list = criteria.list();
 		return list;
 	}
@@ -111,14 +118,14 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 		return totalCount.intValue();
 	}
 
-	public List searchPageableProcesses(Process p, long first, long count) {
+	public List searchPageableProcesses(Process p, int first, int count) {
 		List<Pipeline> list = new ArrayList();
 		if(p !=null && p.getPipeline().getId() == null) {
 			return list;
 		}
 		Criteria criteria = buildGeneralProcessCriteria(p);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		list = criteria.list();
 		return list;
 	}

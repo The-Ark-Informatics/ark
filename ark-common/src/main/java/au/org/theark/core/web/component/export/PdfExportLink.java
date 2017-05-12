@@ -1,11 +1,13 @@
 package au.org.theark.core.web.component.export;
 
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
@@ -24,19 +26,18 @@ import org.apache.wicket.util.resource.IResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class PdfExportLink<T> extends Link<Void> {
 
 	private static final long	serialVersionUID	= 1L;
 	private transient Logger	log					= LoggerFactory.getLogger(PdfExportLink.class);
-	private final DataTable<T, String>	table;
+	private final DataTable<T>	table;
 	private List<String>			headers				= new ArrayList<String>(0);
 	private String filename = "export.pdf";
 
@@ -47,7 +48,7 @@ public class PdfExportLink<T> extends Link<Void> {
 	 * @param headers
 	 * @param filename
 	 */
-	public PdfExportLink(String id, DataTable<T, String> table, List<String> headers, String filename) {
+	public PdfExportLink(String id, DataTable<T> table, List<String> headers, String filename) {
 		super(id);
 		this.table = table;
 		this.headers = headers;
@@ -146,7 +147,7 @@ public class PdfExportLink<T> extends Link<Void> {
 	@SuppressWarnings("unchecked")
 	private List<ExportableColumn<T>> getExportableColumns() {
 		List<ExportableColumn<T>> exportable = new ArrayList<ExportableColumn<T>>(table.getColumns().size());
-		for (IColumn<T, String> column : table.getColumns()) {
+		for (IColumn<T> column : table.getColumns()) {
 			if (column instanceof ExportableColumn<?>) {
 				exportable.add((ExportableColumn<T>) column);
 			}

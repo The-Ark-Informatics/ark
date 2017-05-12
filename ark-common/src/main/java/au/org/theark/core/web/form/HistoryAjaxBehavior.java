@@ -21,12 +21,9 @@ package au.org.theark.core.web.form;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.resource.CssResourceReference;
-import org.apache.wicket.request.resource.JavaScriptResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.util.string.StringValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,21 +47,15 @@ public abstract class HistoryAjaxBehavior extends AbstractDefaultAjaxBehavior {
 
 	@Override
 	public void renderHead(Component component, final IHeaderResponse response) {
-		//response.renderCSSReference(new PackageResourceReference(HistoryAjaxBehavior.class, "history-manager-iframe.css"));
+		response.renderCSSReference(new PackageResourceReference(HistoryAjaxBehavior.class, "history-manager-iframe.css"));
 		// conflicts with the jquery imported by the base page
 		// response.renderJavascriptReference(new ResourceReference(HistoryAjaxBehavior.class, "jquery.js"));
-		//response.renderJavaScriptReference(new PackageResourceReference(HistoryAjaxBehavior.class, "history-manager.js"));
+		response.renderJavaScriptReference(new PackageResourceReference(HistoryAjaxBehavior.class, "history-manager.js"));
 
 		/*
 		 * Save the callback URL to this behavior to call it on back/forward button clicks
 		 */
-		//response.renderJavaScript("var notifyBackButton = function() { wicketAjaxGet('" + getCallbackUrl() + ", null, null, function() {return true;}.bind(this)); }", "history-manager-url");
-
-		response.render(CssHeaderItem.forReference(new CssResourceReference(HistoryAjaxBehavior.class, "history-manager-iframe.css")));
-		response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(HistoryAjaxBehavior.class, "history-manager.js")));
-		response.render(JavaScriptHeaderItem.forScript("var notifyBackButton = function() { wicketAjaxGet('" + getCallbackUrl() + ", null, null, function() {return true;}.bind(this)); }", "history-manager-url"));
-
-
+		response.renderJavaScript("var notifyBackButton = function() { wicketAjaxGet('" + getCallbackUrl() + ", null, null, function() {return true;}.bind(this)); }", "history-manager-url");
 	}
 
 	@Override

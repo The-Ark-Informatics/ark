@@ -163,7 +163,7 @@ public class SearchResultListPanel extends Panel {
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				//Added on 2016-05-26 to stop showing the previous feed back message when deleting or updating in the form.
 				//This will clear the feedback message.
-				Session.get().getFeedbackMessages().clear();
+				Session.get().cleanupFeedbackMessages();
 				target.add(feedbackPanel);
 
 			}
@@ -179,12 +179,12 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private void addToolbars(DataView<CustomFieldCategory> customFieldCategoryDataView) {
-		ArrayList<IColumn<CustomFieldCategory, String>> columns = new ArrayList<>();
-		columns.add(new ExportableTextColumn<CustomFieldCategory, String>(Model.of("name"), "name"));
-		columns.add(new ExportableTextColumn<CustomFieldCategory, String>(Model.of("customFieldType"), "customFieldType.name"));
-		columns.add(new ExportableTextColumn<CustomFieldCategory, String>(Model.of("description"), "description"));
-		columns.add(new ExportableTextColumn<CustomFieldCategory, String>(Model.of("parentCategory"), "parentCategory.name"));
-		columns.add(new ExportableTextColumn<CustomFieldCategory, String>(Model.of("orderNumber"), "orderNumber"));
+		List<IColumn<CustomFieldCategory>> columns = new ArrayList<IColumn<CustomFieldCategory>>();
+		columns.add(new ExportableTextColumn<CustomFieldCategory>(Model.of("name"), "name"));
+		columns.add(new ExportableTextColumn<CustomFieldCategory>(Model.of("customFieldType"), "customFieldType.name"));
+		columns.add(new ExportableTextColumn<CustomFieldCategory>(Model.of("description"), "description"));
+		columns.add(new ExportableTextColumn<CustomFieldCategory>(Model.of("parentCategory"), "parentCategory.name"));
+		columns.add(new ExportableTextColumn<CustomFieldCategory>(Model.of("orderNumber"), "orderNumber"));
 		
 		DataTable table = new DataTable("datatable", columns, customFieldCategoryDataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);

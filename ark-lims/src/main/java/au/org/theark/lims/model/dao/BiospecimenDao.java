@@ -333,10 +333,10 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		return criteria;
 	}
 
-	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, long first, long count) {
+	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count) {
 		Criteria criteria = buildBiospecimenCriteria(limsVo);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		List<Biospecimen> list = criteria.list();
 
 		return list;
@@ -359,7 +359,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		return  (Long)criteria.uniqueResult();
 	}
 
-	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count) {
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 		List<BiospecimenCustomFieldData> biospecimenCustomFieldDataList = new ArrayList<BiospecimenCustomFieldData>();
 		
 		StringBuffer sb = new StringBuffer();
@@ -392,8 +392,8 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			query.setParameter("customFieldCategotyId", customFieldCategory.getId());
 		}
 		query.setParameter("type", customFieldType.getName());
-		query.setFirstResult(Math.toIntExact(first));
-		query.setMaxResults(Math.toIntExact(count));
+		query.setFirstResult(first);
+		query.setMaxResults(count);
 		
 		List<Object[]> listOfObjects = query.list();
 		for (Object[] objects : listOfObjects) {

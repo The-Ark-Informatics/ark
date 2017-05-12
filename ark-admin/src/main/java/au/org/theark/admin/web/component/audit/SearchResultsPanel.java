@@ -87,12 +87,12 @@ public class SearchResultsPanel extends Panel {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public Iterator<?> iterator(long first, long count) {
+					public Iterator<?> iterator(int first, int count) {
 						return service.getAllEntitiesForClass(containerForm.getModelObject(), first, count).iterator();
 					}
 
 					@Override
-					public long size() {
+					public int size() {
 						return service.getAllEntitiesCountForClass(containerForm.getModelObject()).intValue();
 					}
 				};
@@ -169,12 +169,12 @@ public class SearchResultsPanel extends Panel {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					public Iterator<?> iterator(long first, long count) {
+					public Iterator<?> iterator(int first, int count) {
 						return service.getAllEntitiesForClass(containerForm.getModelObject(), first, count).iterator();
 					}
 
 					@Override
-					public long size() {
+					public int size() {
 						return service.getAllEntitiesCountForClass(containerForm.getModelObject()).intValue();
 					}
 				};

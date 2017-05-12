@@ -1,14 +1,8 @@
 package au.org.theark.study.web.component.familycustomdata;
 
-import au.org.theark.core.model.study.entity.*;
-import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.FamilyCustomDataVO;
-import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataDataViewPanel;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -18,8 +12,19 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.List;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.FamilyCustomDataVO;
+import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataDataViewPanel;
 
 public class FamilyCustomDataDataViewPanel extends Panel {
 	private static final long serialVersionUID = -1L;
@@ -58,14 +63,14 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 			// Data provider to get pageable results from backend
 			scdDataProvider = new ArkDataProvider2<FamilyCustomDataVO, FamilyCustomFieldData>() {
 
-				public long size() {
+				public int size() {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-					return studyService.getFamilyCustomFieldDataCount(lss, arkFunction);// TODO
+					return (int) studyService.getFamilyCustomFieldDataCount(lss, arkFunction);// TODO
 																								// safeintconversion
 				}
 
-				public Iterator<FamilyCustomFieldData> iterator(long first, long count) {
+				public Iterator<FamilyCustomFieldData> iterator(int first, int count) {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 //					String familyUId=criteriaModel.getObject().getFamilyUId();
@@ -83,11 +88,11 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 			// returns nothing
 			scdDataProvider = new ArkDataProvider2<FamilyCustomDataVO, FamilyCustomFieldData>() {
 
-				public Iterator<? extends FamilyCustomFieldData> iterator(long first, long count) {
+				public Iterator<? extends FamilyCustomFieldData> iterator(int first, int count) {
 					return null;
 				}
 
-				public long size() {
+				public int size() {
 					return 0;
 				}
 			};

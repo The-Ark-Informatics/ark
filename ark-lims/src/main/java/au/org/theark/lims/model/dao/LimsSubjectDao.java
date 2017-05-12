@@ -119,10 +119,10 @@ public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectD
 	 * @see au.org.theark.lims.model.dao.ILimsSubjectDao#searchPageableSubjects(au.org.theark.core.vo.LimsVO, java.util.List, int, int)
 	 */
 	@SuppressWarnings("unchecked")
-	public List<LinkSubjectStudy> searchPageableSubjects(LimsVO limsVoCriteria, List<Study> studyList, long first, long count) {
+	public List<LinkSubjectStudy> searchPageableSubjects(LimsVO limsVoCriteria, List<Study> studyList, int first, int count) {
 		Criteria criteria = buildGeneralSubjectCriteria(limsVoCriteria, studyList);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		List<LinkSubjectStudy> subjectList = criteria.list();
 		return subjectList;
 	}

@@ -171,7 +171,7 @@ public class InventoryTreePanel extends Panel {
 				if (invCellList.size() != cells) {
 					this.error("The Box with ID: " + invBox.getId() + " is missing cell information. Please contact support.");
 					detailPanel.setEnabled(false);
-					AjaxRequestTarget target = getRequestCycle().find(AjaxRequestTarget.class);
+					AjaxRequestTarget target = AjaxRequestTarget.get();
 					target.add(feedbackPanel);
 				}
 

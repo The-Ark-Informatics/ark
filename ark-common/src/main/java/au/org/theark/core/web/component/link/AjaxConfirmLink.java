@@ -18,9 +18,8 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.link;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.attributes.AjaxCallListener;
-import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.model.IModel;
 
@@ -39,15 +38,15 @@ public abstract class AjaxConfirmLink<T> extends AjaxLink<T> {
 	}
 
 	@Override
-	protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
-		super.updateAjaxAttributes(attributes);
-		attributes.getAjaxCallListeners().add(new AjaxCallListener(){
+	protected IAjaxCallDecorator getAjaxCallDecorator() {
+		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
+			private static final long	serialVersionUID	= 7495281332320552876L;
 
 			@Override
-			public CharSequence getSuccessHandler(Component component) {
-				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "}; ";
+			public CharSequence preDecorateScript(CharSequence script) {
+				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "}; " + script;
 			}
-
-		});
+		};
 	}
+
 }

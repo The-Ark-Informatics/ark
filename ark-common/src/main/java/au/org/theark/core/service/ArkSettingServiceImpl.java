@@ -58,7 +58,7 @@ public class ArkSettingServiceImpl implements IArkSettingService {
     }
 
     @Override
-    public List<Setting> searchPageableSettings(Setting setting, long first, long count) {
+    public List<Setting> searchPageableSettings(Setting setting, int first, int count) {
         return iArkSettingDao.searchPageableSettings(setting, first, count);
     }
 

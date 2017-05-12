@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.study.entity.*;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -50,6 +51,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -58,6 +60,7 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
@@ -437,7 +440,7 @@ public interface IStudyDao {
 	 * 
 	 * @return Collection of SubjectVO
 	 */
-	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, long first, long count);
+	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, int first, int count);
 
 	/**
 	 * A generic interface that will return count of the subjects in the study

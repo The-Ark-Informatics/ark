@@ -112,11 +112,11 @@ public class FunctionContainerPanel extends AbstractContainerPanel<AdminVO> {
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<ArkFunction, IAdminService>(iAdminService) {
-			public long size() {
-				return service.getArkFunctionCount(model.getObject());
+			public int size() {
+				return (int)service.getArkFunctionCount(model.getObject());
 			}
 
-			public Iterator<ArkFunction> iterator(long first, long count) {
+			public Iterator<ArkFunction> iterator(int first, int count) {
 				List<ArkFunction> listCollection = new ArrayList<ArkFunction>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					listCollection = service.searchPageableArkFunctions(model.getObject(), first, count);

@@ -17,6 +17,7 @@ import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.UploadLevel;
+import au.org.theark.core.vo.CustomFieldCategoryVO;
 
 public interface ICustomFieldDao {
 
@@ -151,7 +152,7 @@ public interface ICustomFieldDao {
 	 * @param count
 	 * @return
 	 */
-	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, long first, long count);
+	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
 
 	/**
 	 * Search for CustomFields based on the criteria provided, limiting to the pageable amounts first and count
@@ -245,7 +246,7 @@ public interface ICustomFieldDao {
 	 * @param count
 	 * @return
 	 */
-	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, long first, long count);
+	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, int first, int count);
 	
 	/**
 	 * Category list By custom field Type.

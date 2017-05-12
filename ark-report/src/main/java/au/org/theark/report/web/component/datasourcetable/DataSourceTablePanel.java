@@ -1,17 +1,18 @@
 package au.org.theark.report.web.component.datasourcetable;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.web.component.export.ExportToolbar;
-import au.org.theark.core.web.component.export.ExportableTextColumn;
-import au.org.theark.core.web.component.export.ResultSetDataProvider;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
-import java.util.ArrayList;
-import java.util.List;
+import au.org.theark.core.Constants;
+import au.org.theark.core.web.component.export.ExportToolbar;
+import au.org.theark.core.web.component.export.ExportableTextColumn;
+import au.org.theark.core.web.component.export.ResultSetDataProvider;
 
 public class DataSourceTablePanel extends Panel {
 
@@ -32,12 +33,12 @@ public class DataSourceTablePanel extends Panel {
 		ResultSetDataProvider prov = new ResultSetDataProvider(dbName, query);
 		prov.setQuery(query);
 
-		List<IColumn> cols = new ArrayList<>();
+		List<IColumn<?>> cols = new ArrayList<IColumn<?>>();
 
 		for (int i = 0; i < prov.getColumnCount(); i++) {
 			//cols.add(new MetaDataColumn(prov, i));
 			//TODO: check this still works...
-			cols.add(new ExportableTextColumn<>(Model.of(prov.getColNames().get(i)), prov.getColNames().get(i)));
+			cols.add(new ExportableTextColumn<Void>(Model.of(prov.getColNames().get(i)), prov.getColNames().get(i)));
 		}
 
 		DataTable table = new DataTable("dataTable", cols, prov, Constants.ROWS_PER_PAGE);

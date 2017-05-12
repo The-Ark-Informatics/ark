@@ -70,4 +70,5 @@ public class AbstractArkTabPanel extends Panel {
 		arkLdapRealm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 		aafRealm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 	}
+
 }

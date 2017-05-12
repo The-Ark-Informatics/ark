@@ -110,14 +110,13 @@ public interface IBioCollectionDao {
 	 * 
 	 * @param BioCollection
 	 *           criteria
-	 * @param first
-     *@param count @return Collection of SubjectVO
+	 * @return Collection of SubjectVO
 	 */
-	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, long first, long count);
+	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count);
 
 	public long getBioCollectionCustomFieldDataCount(BioCollection bioCollectionCriteria, ArkFunction arkFunction);
 	
-	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count);
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 
 	public void createBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCFData);
 

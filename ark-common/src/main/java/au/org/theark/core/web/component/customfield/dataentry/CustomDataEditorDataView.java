@@ -38,7 +38,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.RangeValidator;
+import org.apache.wicket.validation.validator.MaximumValidator;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -220,7 +221,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 						IConverter<Double> doubleConverter = numberDataEntryPanel.getNumberConverter();
 						try {
 							Double minNumber = (Double) doubleConverter.convertToObject(cf.getMinValue(), getLocale());
-							numberDataEntryPanel.addValidator(new RangeValidator<>(minNumber, null));
+							numberDataEntryPanel.addValidator(new MinimumValidator<Double>(minNumber));
 						}
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
@@ -233,7 +234,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 						IConverter<Double> doubleConverter = numberDataEntryPanel.getNumberConverter();
 						try {
 							Double maxNumber = (Double) doubleConverter.convertToObject(cf.getMaxValue(), getLocale());
-							numberDataEntryPanel.addValidator(new RangeValidator<>(null, maxNumber));
+							numberDataEntryPanel.addValidator(new MaximumValidator<Double>(maxNumber));
 						}
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database

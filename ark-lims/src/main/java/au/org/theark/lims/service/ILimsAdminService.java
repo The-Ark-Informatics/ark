@@ -144,7 +144,7 @@ public interface ILimsAdminService {
 
 	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars();
 
-	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, long first, long count);
+	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count);
 
 	public BiospecimenUidTemplate searchBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
 	
@@ -191,5 +191,5 @@ public interface ILimsAdminService {
 
 	public Long getBarcodeLabelCount(BarcodeLabel object, List<Study> studyListForUser);
 
-	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, long first, long count, List<Study> studyListForUser);
+	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count, List<Study> studyListForUser);
 }

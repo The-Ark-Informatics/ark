@@ -35,6 +35,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
@@ -62,7 +63,6 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
-import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -1853,7 +1853,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * then applies the restrictions on study and module.
 	 * </p>
 	 */
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count) {
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 
 		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
 
@@ -1886,8 +1886,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			query.setParameter("customFieldCategotyId", customFieldCategory.getId());
 		}
 		query.setParameter("type", customFieldType.getName());
-		query.setFirstResult(Math.toIntExact(first));
-		query.setMaxResults(Math.toIntExact(count));
+		query.setFirstResult(first);
+		query.setMaxResults(count);
 
 		List<Object[]> listOfObjects = query.list();
 		for (Object[] objects : listOfObjects) {
@@ -1916,7 +1916,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * then applies the restrictions on study and module.
 	 * </p>
 	 */
-	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count) {
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 
 		List<FamilyCustomFieldData> familyCustomFieldDataList = new ArrayList<FamilyCustomFieldData>();
 
@@ -1950,8 +1950,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			query.setParameter("customFieldCategotyId", customFieldCategory.getId());
 		}
 		query.setParameter("type", customFieldType.getName());
-		query.setFirstResult(Math.toIntExact(first));
-		query.setMaxResults(Math.toIntExact(count));
+		query.setFirstResult(first);
+		query.setMaxResults(count);
 
 		List<Object[]> listOfObjects = query.list();
 		for (Object[] objects : listOfObjects) {
@@ -2541,10 +2541,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * Pageable person phone list.
 	 */
-	public List<Phone> pageablePersonPhoneLst(Long personId, Phone phoneCriteria, long first, long count) {
+	public List<Phone> pageablePersonPhoneLst(Long personId,Phone phoneCriteria, int first, int count) {
 		Criteria criteria = buildGeneralPhoneCriteria(personId,phoneCriteria);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		List<Phone> personPhoneList = criteria.list();
 		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 		if (personPhoneList.isEmpty()) {
@@ -2589,10 +2589,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return phoneCriteria;
 	}
 
-	public List<Address> pageablePersonAddressLst(Long personId, Address addressCriteria, long first, long count) {
+	public List<Address> pageablePersonAddressLst(Long personId, Address addressCriteria, int first, int count) {
 		Criteria criteria = buildGeneralAddressCriteria(personId,addressCriteria);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		List<Address> personAddressList = criteria.list();
 		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 		if (personAddressList.isEmpty()) {
@@ -2776,6 +2776,21 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (consents.size() > 0);
 		
 	}
+	
+	@Override
+	public List<CorrespondenceDirectionType> getCorrespondenceDirectionForMode(CorrespondenceModeType correspondenceModeType) {
+		List<CorrespondenceDirectionType> correspondenceDirectionTypes=new ArrayList<CorrespondenceDirectionType>();
+		Criteria criteria = getSession().createCriteria(CorrespondenceModeDirectionOutcome.class);
+		criteria.add(Restrictions.eq("correspondenceModeType", correspondenceModeType));
+		List<CorrespondenceModeDirectionOutcome> lst=(List<CorrespondenceModeDirectionOutcome>)criteria.list();
+		List<CorrespondenceModeDirectionOutcome> unqueLst= lst;
+		for (CorrespondenceModeDirectionOutcome correspondenceModeDirectionOutcome : unqueLst) {
+			correspondenceDirectionTypes.add(correspondenceModeDirectionOutcome.getCorrespondenceDirectionType());
+		}
+		return removeDuplicates(correspondenceDirectionTypes);
+	}
+	
+	@Override
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType) {
 		
 		List<CorrespondenceOutcomeType> correspondenceOutcomeTypes=new ArrayList<CorrespondenceOutcomeType>();
@@ -2832,6 +2847,12 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			criteria.add(Restrictions.not(Restrictions.in("id", studyCompList)));
 		}
 		return (List<StudyComp>)criteria.list();
+	}
+	
+	private List<CorrespondenceDirectionType>  removeDuplicates(List<CorrespondenceDirectionType> list){
+		Set<CorrespondenceDirectionType> setOfCorrespondenseDirectionTypes=new HashSet<CorrespondenceDirectionType>();
+		setOfCorrespondenseDirectionTypes.addAll(list);
+		return new ArrayList<CorrespondenceDirectionType>(setOfCorrespondenseDirectionTypes);
 	}
 	
 }

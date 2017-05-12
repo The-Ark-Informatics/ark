@@ -116,11 +116,11 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<ArkRoleModuleFunctionVO, IAdminService>(iAdminService) {
-			public long size() {
-				return service.getArkRoleModuleFunctionVOCount(model.getObject());
+			public int size() {
+				return (int)service.getArkRoleModuleFunctionVOCount(model.getObject());
 			}
 
-			public Iterator<ArkRoleModuleFunctionVO> iterator(long first, long count) {
+			public Iterator<ArkRoleModuleFunctionVO> iterator(int first, int count) {
 				List<ArkRoleModuleFunctionVO> listCollection = new ArrayList<ArkRoleModuleFunctionVO>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					listCollection = service.searchPageableArkRoleModuleFunctionVO(model.getObject(), first, count);

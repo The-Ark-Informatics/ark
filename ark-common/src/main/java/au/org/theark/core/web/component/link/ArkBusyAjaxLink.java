@@ -18,6 +18,9 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.link;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 
 /**
@@ -52,9 +55,7 @@ private String					setBusyIndicatorOff	= "";
 		setOutputMarkupPlaceholderTag(true);
 	}
 
-
-	//Commented out because the indicator strings above don't actually contain anything..
-/*	@Override
+	@Override
 	protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
 			private static final long	serialVersionUID	= 1L;
@@ -74,5 +75,5 @@ private String					setBusyIndicatorOff	= "";
 				return script + setBusyIndicatorOff;
 			}
 		};
-	}*/
+	}
 }

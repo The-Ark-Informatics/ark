@@ -126,11 +126,11 @@ public interface IBiospecimenDao {
 	 * @param count
 	 * @return
 	 */
-	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, long first, long count);
+	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count);
 
 	public long getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction);
 	
-	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count);
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory,CustomFieldType customFieldType,int first, int count);
 
 	public void createBiospecimenCustomFieldData(BiospecimenCustomFieldData biospecimanCFData);
 

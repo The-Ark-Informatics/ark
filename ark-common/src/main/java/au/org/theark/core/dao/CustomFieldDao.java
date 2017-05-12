@@ -309,10 +309,10 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, long first, long count) {
+	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count) {
 		Criteria criteria = buildGeneralCustomFieldCritera(customFieldCriteria);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		// Return fields ordered alphabetically
 		criteria.addOrder(Order.asc("name"));
 		List<CustomField> customFieldList = (List<CustomField>) criteria.list();
@@ -630,10 +630,10 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	@Override
-	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, long first, long count) {
+	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, int first, int count) {
 		Criteria criteria = buildGeneralCustomFieldCategoryCritera(customFieldCategoryCriteria);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		criteria.addOrder(Order.asc("name"));
 		List<CustomFieldCategory> customFieldCategoryList = (List<CustomFieldCategory>) criteria.list();
 		return customFieldCategoryList;

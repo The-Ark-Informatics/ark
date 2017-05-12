@@ -18,21 +18,11 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.contact;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.PhoneSubjectVO;
-import au.org.theark.core.web.component.ArkCRUDHelper;
-import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.core.web.component.export.ExportToolbar;
-import au.org.theark.core.web.component.export.ExportableTextColumn;
-import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.contact.form.ContainerForm;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -52,10 +42,21 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.PhoneSubjectVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.export.ExportToolbar;
+import au.org.theark.core.web.component.export.ExportableTextColumn;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.contact.form.ContainerForm;
 
 /**
  * @author nivedann
@@ -108,7 +109,7 @@ public class PhoneListPanel extends Panel {
 			private List<Phone>			listPhoneForSize;
 			private List<Phone>			listPhone;
 
-			public long size() {
+			public int size() {
 				try {
 					if (sessionPersonId != null) {
 						person = studyService.getPerson(sessionPersonId);
@@ -130,7 +131,7 @@ public class PhoneListPanel extends Panel {
 				}
 			}
 
-			public Iterator<Phone> iterator(long first, long count) {
+			public Iterator<Phone> iterator(int first, int count) {
 				listPhone = studyService.pageablePersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhoneVo().getPhone(), first, count);
 				return listPhone.iterator();
 			}
@@ -143,7 +144,7 @@ public class PhoneListPanel extends Panel {
 			private List<Phone>			listPhoneForSize;
 			private List<Phone>			listPhone;
 
-			public long size() {
+			public int size() {
 				try {
 					if (sessionPersonId != null) {
 						person = studyService.getPerson(sessionPersonId);
@@ -165,7 +166,7 @@ public class PhoneListPanel extends Panel {
 				}
 			}
 
-			public Iterator<PhoneSubjectVO> iterator(long first, long count) {
+			public Iterator<PhoneSubjectVO> iterator(int first, int count) {
 				listPhone = studyService.pageablePersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhoneVo().getPhone(), first, count);
 				List<PhoneSubjectVO> phoneVoList = new ArrayList<PhoneSubjectVO>();
 				for (Phone phone : listPhone) {
@@ -189,15 +190,15 @@ public class PhoneListPanel extends Panel {
 		};
 		dataContainer.add(pageNavigator);
 
-		List<IColumn<PhoneSubjectVO, String>> exportColumns = new ArrayList<>();
-		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO, String>(Model.of("Subject UID"), "subjectUID"));
-		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO, String>(Model.of("ID"), "id"));
-		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO, String>(Model.of("Area Code"), "areaCode"));
-		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO, String>(Model.of("Phone Number"), "phoneNumber"));
-		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO, String>(Model.of("Phone Type"), "phone.phoneType.name"));
-		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO, String>(Model.of("Phone Status"), "phone.phoneStatus.name"));
-		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO, String>(Model.of("Phone Valid From"), "validFrom"));
-		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO, String>(Model.of("Phone Valid To"), "validTo"));
+		List<IColumn<PhoneSubjectVO>> exportColumns = new ArrayList<IColumn<PhoneSubjectVO>>();
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Subject UID"), "subjectUID"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("ID"), "id"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Area Code"), "areaCode"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Number"), "phoneNumber"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Type"), "phone.phoneType.name"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Status"), "phone.phoneStatus.name"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Valid From"), "validFrom"));
+		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Valid To"), "validTo"));
 		
 		DataTable exportTable = new DataTable("datatable", exportColumns, dataViewPhoneSubject.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);

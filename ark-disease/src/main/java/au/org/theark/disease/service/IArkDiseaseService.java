@@ -1,6 +1,7 @@
 package au.org.theark.disease.service;
 
 import java.util.List;
+import java.util.Set;
 
 import au.org.theark.core.model.disease.entity.Affection;
 import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
@@ -19,11 +20,11 @@ public interface IArkDiseaseService {
 	
 	public int getDiseaseCount(DiseaseVO diseaseVO);
 
-	public List<DiseaseVO> searchPageableDiseases(DiseaseVO object, long first, long count);
+	public List<DiseaseVO> searchPageableDiseases(DiseaseVO object, int first, int count);
 
 	public int getGeneCount(GeneVO geneVO);
 
-	public List<GeneVO> searchPageableGenes(GeneVO object, long first, long count);
+	public List<GeneVO> searchPageableGenes(GeneVO object, int first, int count);
 	
 	public void save(Object object);
 	
@@ -37,7 +38,7 @@ public interface IArkDiseaseService {
 
 	public int getAffectionCount(AffectionVO affectionVO);
 
-	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, long first, long count);
+	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, int first, int count);
 
 	public List<AffectionStatus> getAffectionStatus();
 

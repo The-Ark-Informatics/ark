@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction;
 
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;

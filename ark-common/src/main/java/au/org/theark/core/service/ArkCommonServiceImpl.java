@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Blob;
@@ -38,7 +40,9 @@ import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.model.config.entity.SettingFile;
+import au.org.theark.core.model.study.entity.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -53,11 +57,13 @@ import org.apache.wicket.markup.html.image.NonCachingImage;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.resource.DynamicImageResource;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.ldap.NameNotFoundException;
 import org.springframework.ldap.core.ContextMapper;
@@ -102,6 +108,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -123,6 +130,7 @@ import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -687,7 +695,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getStudySubjectCount(subjectVoCriteria);
 	}
 
-	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, long first, long count) {
+	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, int first, int count) {
 		return studyDao.searchPageableSubjects(subjectVoCriteria, first, count);
 	}
 
@@ -745,7 +753,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao.getCustomFieldCount(customFieldCriteria);
 	}
 
-	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, long first, long count) {
+	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count) {
 		return customFieldDao.searchPageableCustomFields(customFieldCriteria, first, count);
 	}
 
@@ -1570,7 +1578,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return genoDao.getPipelineCount(p);
 	}
 
-	public List<Pipeline> searchPageablePipelines(Pipeline p, long first, long count) {
+	public List<Pipeline> searchPageablePipelines(Pipeline p, int first, int count) {
 		return genoDao.searchPageablePipelines(p, first, count);
 	}
 
@@ -1582,7 +1590,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return genoDao.getProcessCount(p);
 	}
 
-	public List searchPageableProcesses(Process p, long first, long count) {
+	public List searchPageableProcesses(Process p, int first, int count) {
 		return genoDao.searchPageableProcesses(p, first, count);
 	}
 
@@ -1983,7 +1991,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@Override
-	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, long first, long count) {
+	public List<CustomFieldCategory> searchPageableCustomFieldCategories(CustomFieldCategory customFieldCategoryCriteria, int first, int count) {
 		return customFieldDao.searchPageableCustomFieldCategories(customFieldCategoryCriteria, first, count);
 	}
 

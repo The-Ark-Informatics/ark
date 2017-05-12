@@ -1,21 +1,10 @@
 package au.org.theark.phenotypic.web.component.phenodatasetdefinition;
 
-import au.org.theark.core.exception.ArkRunTimeException;
-import au.org.theark.core.exception.ArkRunTimeUniqueException;
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityExistsException;
-import au.org.theark.core.model.pheno.entity.*;
-import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
-import au.org.theark.core.web.component.ArkCRUDHelper;
-import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
-import au.org.theark.phenotypic.service.Constants;
-import au.org.theark.phenotypic.service.IPhenotypicService;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -32,10 +21,26 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.LazyInitializationException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import au.org.theark.core.exception.ArkRunTimeException;
+import au.org.theark.core.exception.ArkRunTimeUniqueException;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
+import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
+import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.phenotypic.service.Constants;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 
 /**
  * @author nivedann
@@ -153,10 +158,10 @@ public class SearchResultListPanel extends Panel {
 				// Data provider to paginate a list of CustomFieldDisplays linked to the CustomFieldGroup
 				cfdArkDataProvider = new ArkDataProvider2<PhenoDataSetFieldDisplay, PhenoDataSetFieldDisplay>() {
 					private static final long serialVersionUID = 1L;
-					public long size() {
-						return iPhenotypicService.getCFDLinkedToQuestionnaireCount(itemSelected);
+					public int size() {
+						return (int)iPhenotypicService.getCFDLinkedToQuestionnaireCount(itemSelected);
 					}
-					public Iterator<PhenoDataSetFieldDisplay> iterator(long first, long count) {
+					public Iterator<PhenoDataSetFieldDisplay> iterator(int first, int count) {
 
 						Collection<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplayList = new ArrayList<PhenoDataSetFieldDisplay>();
 						phenoDataSetFieldDisplayList = iPhenotypicService.getCFDLinkedToQuestionnaire(itemSelected, first, count);

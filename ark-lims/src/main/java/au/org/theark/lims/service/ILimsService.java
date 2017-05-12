@@ -167,10 +167,9 @@ public interface ILimsService {
 	 * Look up a List of LIMS BioTransaction(s) based on the supplied bioTransaction criteria
 	 * 
 	 * @param bioTransactionCriteria
-	 * @param first
-	 *@param count @return List<au.org.theark.core.model.lims.entity.BioTransaction>
+	 * @return List<au.org.theark.core.model.lims.entity.BioTransaction>
 	 */
-	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransactionCriteria, long first, long count);
+	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransactionCriteria, int first, int count);
 
 	/**
 	 * Create a LIMS bioTransaction based on the supplied LimsVO
@@ -231,10 +230,9 @@ public interface ILimsService {
 	 * 
 	 * @param BioCollection
 	 *           criteria
-	 * @param first
-	 *@param count @return Collection of BioCollection
+	 * @return Collection of BioCollection
 	 */
-	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollection, long first, long count);
+	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollection, int first, int count);
 
 	/**
 	 * Get count of the Biospecimens given the criteria
@@ -264,7 +262,7 @@ public interface ILimsService {
 
 	public long getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction);
 	
-	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count);
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 	
 	/**
 	 * Allows to Save(Insert) or Update  BioCollectionCustomFieldData. If there are BioCollectionCustomFieldData
@@ -288,11 +286,11 @@ public interface ILimsService {
 	 * @param count
 	 * @return
 	 */
-	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, long first, long count);
+	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count);
 
 	public long getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction);
 
-	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count);
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 	
 	/**
 	 * Allows to Save(Insert) or Update  BiospecimenCustomFieldData. If there are BiospecimenCustomFieldData

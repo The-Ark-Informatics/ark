@@ -1,18 +1,22 @@
 package au.org.theark.core.web.component.export;
 
-import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.util.ListModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ResultSetDataProvider extends SortableDataProvider<List<? extends String>, String> {
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ResultSetDataProvider extends SortableDataProvider<List<? extends String>> {
 
 	private static final long							serialVersionUID	= 1L;
 	private transient Logger							log					= LoggerFactory.getLogger(ResultSetDataProvider.class);
@@ -129,9 +133,9 @@ public class ResultSetDataProvider extends SortableDataProvider<List<? extends S
 		return query;
 	}
 
-	public Iterator<List<? extends String>> iterator(long first, long count) {
+	public Iterator<List<? extends String>> iterator(int first, int count) {
 
-		long boundsSafeCount = count;
+		int boundsSafeCount = count;
 
 		if (first + count > size) {
 			boundsSafeCount = first - size;
@@ -142,16 +146,15 @@ public class ResultSetDataProvider extends SortableDataProvider<List<? extends S
 
 		log.info("size:" + size + " - boundSafe:" + boundsSafeCount);
 
-		return dataModel.getObject().subList(Math.toIntExact(first), Math.toIntExact(first + boundsSafeCount)).iterator();
+		return dataModel.getObject().subList(first, first + boundsSafeCount).iterator();
 	}
 
-	public long size() {
+	public int size() {
 		return size;
 	}
 
-	@Override
 	public IModel<List<? extends String>> model(List<? extends String> object) {
-	    return new ListModel(object);
+		return Model.<String> ofList(object);
 	}
 
 	@Override

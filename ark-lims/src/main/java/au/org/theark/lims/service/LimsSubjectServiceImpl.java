@@ -59,7 +59,7 @@ public class LimsSubjectServiceImpl implements ILimsSubjectService  {
 	/* (non-Javadoc)
 	 * @see au.org.theark.lims.service.ILimsSubjectService#searchPageableSubjects(au.org.theark.core.vo.SubjectVO, java.util.List, int, int)
 	 */
-	public List<LinkSubjectStudy> searchPageableSubjects(LimsVO limsVoCriteria, List<Study> studyList, long first, long count) {
+	public List<LinkSubjectStudy> searchPageableSubjects(LimsVO limsVoCriteria, List<Study> studyList, int first, int count) {
 		return iLimsSubjectDao.searchPageableSubjects(limsVoCriteria, studyList, first, count);
 	}
 }

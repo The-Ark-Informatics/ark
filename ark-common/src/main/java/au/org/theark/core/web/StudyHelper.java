@@ -18,7 +18,9 @@
  ******************************************************************************/
 package au.org.theark.core.web;
 
-import au.org.theark.core.model.study.entity.Study;
+import java.io.Serializable;
+import java.sql.Blob;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -28,8 +30,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.image.resource.BlobImageResource;
 import org.apache.wicket.model.Model;
 
-import java.io.Serializable;
-import java.sql.Blob;
+import au.org.theark.core.model.study.entity.Study;
 
 public class StudyHelper implements Serializable {
 
@@ -69,7 +70,7 @@ public class StudyHelper implements Serializable {
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
-					protected Blob getBlob(Attributes attributes) {
+					protected Blob getBlob() {
 						return studyLogoBlob;
 					}
 				};

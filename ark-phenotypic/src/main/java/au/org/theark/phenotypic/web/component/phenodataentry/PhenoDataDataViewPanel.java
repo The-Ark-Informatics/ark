@@ -18,15 +18,9 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodataentry;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.vo.PhenoDataCollectionVO;
-import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.phenotypic.service.Constants;
-import au.org.theark.phenotypic.service.IPhenotypicService;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -36,8 +30,15 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.List;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
+import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.vo.PhenoDataCollectionVO;
+import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.phenotypic.service.Constants;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 
 /**
  * @author elam
@@ -79,12 +80,12 @@ public class PhenoDataDataViewPanel extends Panel {
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 		// Data provider to get pageable results from backend
 			scdDataProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetData>() {
-				public long size() {
+				public int size() {
 					PhenoDataSetCollection phenoCollection = criteriaModel.getObject().getPhenoDataSetCollection();
 //					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-					return iPhenotypicService.getPhenoDataCount(phenoCollection,phenoDataSetCategory);
+					return (int)iPhenotypicService.getPhenoDataCount(phenoCollection,phenoDataSetCategory);
 				}
-				public Iterator<PhenoDataSetData> iterator(long first, long count) {
+				public Iterator<PhenoDataSetData> iterator(int first, int count) {
 					PhenoDataSetCollection phenoCollection = criteriaModel.getObject().getPhenoDataSetCollection();
 //					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 					List<PhenoDataSetData> phenoDataList = iPhenotypicService.getPhenoDataList(phenoCollection,phenoDataSetCategory, first, count);
@@ -99,11 +100,11 @@ public class PhenoDataDataViewPanel extends Panel {
 			// Since module is not accessible, create a dummy dataProvider that returns nothing
 			scdDataProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetData>() {
 				
-				public Iterator<? extends PhenoDataSetData> iterator(long first, long count) {
+				public Iterator<? extends PhenoDataSetData> iterator(int first, int count) {
 					return null;
 				}
 
-				public long size() {
+				public int size() {
 					return 0;
 				}
 			};

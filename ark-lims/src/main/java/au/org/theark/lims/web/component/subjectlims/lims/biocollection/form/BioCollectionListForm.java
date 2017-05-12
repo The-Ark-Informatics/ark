@@ -146,11 +146,11 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 			private static final long	serialVersionUID	= 1L;
 
-			public long size() {
-				return service.getBioCollectionCount(model.getObject());
+			public int size() {
+				return (int) service.getBioCollectionCount(model.getObject());
 			}
 
-			public Iterator<BioCollection> iterator(long first, long count) {
+			public Iterator<BioCollection> iterator(int first, int count) {
 				List<BioCollection> listCollection = new ArrayList<BioCollection>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					listCollection = service.searchPageableBioCollections(model.getObject(), first, count);

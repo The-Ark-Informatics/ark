@@ -24,7 +24,7 @@ public class ExportToolbar<T> extends AbstractToolbar {
 	 * @param headers
 	 * @param filename
 	 */
-	public ExportToolbar(final DataTable<T, String> table, List<String> headers, String filename) {
+	public ExportToolbar(final DataTable<T> table, List<String> headers, String filename) {
 		super(table);
 		WebMarkupContainer span = new WebMarkupContainer("span") {
 

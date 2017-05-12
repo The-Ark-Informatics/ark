@@ -18,9 +18,13 @@
  ******************************************************************************/
 package au.org.theark.study.model.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -362,7 +366,7 @@ public interface IStudyDao {
 	public long getFamilyCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
 
 	//public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 
 	/**
 	 * Create a single record of type SubjectCustomFieldData
@@ -482,15 +486,15 @@ public interface IStudyDao {
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 	
-	public List<Phone> pageablePersonPhoneLst(Long personID, final Phone phoneCriteria, long first, long count);
+	public List<Phone> pageablePersonPhoneLst(Long personID,final Phone phoneCriteria,int first,int count);
 	
-	public List<Address> pageablePersonAddressLst(Long personID, final Address addressCriteria, long first, long count);
+	public List<Address> pageablePersonAddressLst(Long personID,final Address addressCriteria,int first,int count);
 	
 	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles);
 	
 	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
-	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, long first, long count);
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
 
 	public String getSubjectFamilyId(Long studyId, String subjectUID);
 	
@@ -511,6 +515,8 @@ public interface IStudyDao {
 	public boolean isStudyComponentBeingUsedInConsent(StudyComp studyComp);
 
 	public void delete(OtherID otherID);
+	
+	public List<CorrespondenceDirectionType> getCorrespondenceDirectionForMode(CorrespondenceModeType correspondenceModeType);
 	
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType);
 	

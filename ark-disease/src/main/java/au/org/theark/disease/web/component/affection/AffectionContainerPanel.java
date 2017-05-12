@@ -1,15 +1,8 @@
 package au.org.theark.disease.web.component.affection;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.disease.service.IArkDiseaseService;
-import au.org.theark.disease.vo.AffectionVO;
-import au.org.theark.disease.web.component.affection.form.ContainerForm;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -21,8 +14,17 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.List;
+import au.org.theark.core.Constants;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.disease.service.IArkDiseaseService;
+import au.org.theark.disease.vo.AffectionVO;
+import au.org.theark.disease.web.component.affection.form.ContainerForm;
 
 public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO> {
 
@@ -124,12 +126,12 @@ public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO>
 		affectionProvider = new ArkDataProvider<AffectionVO, IArkDiseaseService>(iArkDiseaseService) {
 			private static final long serialVersionUID = 1L;
 			
-			public long size() {
-				long count = service.getAffectionCount(containerForm.getModelObject());
+			public int size() {
+				int count = service.getAffectionCount(containerForm.getModelObject());
 				return count;
 			}
 
-			public Iterator<? extends AffectionVO> iterator(long first, long count) {
+			public Iterator<? extends AffectionVO> iterator(int first, int count) {
 				List<AffectionVO> affectionVOs = service.searchPageableAffections(containerForm.getModelObject(), first, count);
 				return affectionVOs.iterator();
 			}

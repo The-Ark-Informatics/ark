@@ -1,6 +1,7 @@
 package au.org.theark.disease.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import au.org.theark.core.model.disease.entity.Affection;
 import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
@@ -10,6 +11,7 @@ import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.disease.entity.Position;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.disease.vo.AffectionListVO;
 import au.org.theark.disease.vo.AffectionVO;
 import au.org.theark.disease.vo.DiseaseVO;
@@ -19,11 +21,11 @@ public interface IDiseaseDao {
 	
 	public int getDiseaseCount(DiseaseVO diseaseVO);
 	
-	public List<DiseaseVO> searchPageableDiseases(DiseaseVO object, long first, long count);
+	public List<DiseaseVO> searchPageableDiseases(DiseaseVO object, int first, int count);
 	
 	public int getGeneCount(GeneVO geneVO);
 
-	public List<GeneVO> searchPageableGenes(GeneVO object, long first, long count);
+	public List<GeneVO> searchPageableGenes(GeneVO object, int first, int count);
 	
 	public void save(Object object);
 	
@@ -37,7 +39,7 @@ public interface IDiseaseDao {
 
 	public int getAffectionCount(AffectionVO affectionVO);
 
-	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, long first, long count);
+	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, int first, int count);
 	
 	public List<AffectionStatus> getAffectionStatus();
 

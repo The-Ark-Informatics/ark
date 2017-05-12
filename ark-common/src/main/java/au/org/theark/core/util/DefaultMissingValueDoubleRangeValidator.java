@@ -2,6 +2,8 @@ package au.org.theark.core.util;
 
 
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
@@ -61,7 +63,7 @@ public class DefaultMissingValueDoubleRangeValidator  extends AbstractFormValida
 		        	ve.setVariable("min",labComp1);
 		        	ve.setVariable("max",labComp2);
 		        	ve.setVariable("missingvValueDouble",labComp3);
-		        	ve.addKey("missingValueDoubleValidate.range");
+		        	ve.addMessageKey("missingValueDoubleValidate.range");
 		        	components[2].error((IValidationError) ve);
 		        }
 	       }	
@@ -75,7 +77,7 @@ public class DefaultMissingValueDoubleRangeValidator  extends AbstractFormValida
 		        	ve1.setVariable("min",labComp1);
 		        	ve1.setVariable("max",labComp2);
 		        	ve1.setVariable("defaultValueDouble",labComp4);
-		        	ve1.addKey("defaultValueDoubleValidate.range");
+		        	ve1.addMessageKey("defaultValueDoubleValidate.range");
 		        	components[2].error((IValidationError) ve1);
 		        }
 	       }
@@ -84,7 +86,7 @@ public class DefaultMissingValueDoubleRangeValidator  extends AbstractFormValida
 		if(defaultValueString!=null && !defaultValueString.isEmpty() && !isDouble(defaultValueString)){
 			ValidationError ve2 = new ValidationError();
         	ve2.setVariable("defaultValueDouble",labComp4);
-        	ve2.addKey("defaultValueDoubleValidate.notDouble");
+        	ve2.addMessageKey("defaultValueDoubleValidate.notDouble");
         	components[2].error((IValidationError) ve2);
 		}
 	}

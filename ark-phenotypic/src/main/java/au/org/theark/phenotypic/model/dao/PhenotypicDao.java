@@ -1346,7 +1346,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return count.intValue();
 	}
 
-	public List<PhenoDataSetData> getPhenoDataList(PhenoDataSetCollection phenoCollection, PhenoDataSetCategory phenoDataSetCategory, long first, long count) {
+	public List<PhenoDataSetData> getPhenoDataList(PhenoDataSetCollection phenoCollection,PhenoDataSetCategory phenoDataSetCategory, int first, int count) {
 		
 		List<PhenoDataSetData> phenoDataList = new ArrayList<PhenoDataSetData>();
 
@@ -1396,8 +1396,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		if(phenoDataSetCategory!=null){
 			query.setParameter("phenoDataSetCategory", phenoDataSetCategory);
 		}
-		query.setFirstResult(Math.toIntExact(first));
-		query.setMaxResults(Math.toIntExact(count));
+		query.setFirstResult(first);
+		query.setMaxResults(count);
 		
 		List<Object[]> listOfObjects = query.list();
 		for (Object[] objects : listOfObjects) {
@@ -1455,7 +1455,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return count;
 	}
 
-	public List<PhenoDataSetCollection> searchPageablePhenoCollection(PhenoDataCollectionVO collectionCriteria, long first, long count) {
+	public List<PhenoDataSetCollection> searchPageablePhenoCollection(PhenoDataCollectionVO collectionCriteria, int first, int count) {
 		
 		//List<PhenoDataSetCollection> resultList = new ArrayList<PhenoDataSetCollection>();
 		/*StringBuffer sb = new StringBuffer();
@@ -1497,8 +1497,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenoDataSetCollection().getLinkSubjectStudy()));
 		// Just a precaution (PhenoCollection to should always map to a CustomFieldGroup where the ArkFunction will correspond to Pheno) 
 		//criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.groupProperty("id"), "id");
 		projectionList.add(Projections.groupProperty("questionnaire"), "questionnaire");
@@ -1640,11 +1640,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return customFieldDisplayToRemove;
 	}
 	
-	public Collection<PhenoDataSetFieldDisplay> getCFDLinkedToQuestionnaire(PhenoDataSetGroup phenoDataSetGroup, long first, long count){
+	public Collection<PhenoDataSetFieldDisplay> getCFDLinkedToQuestionnaire(PhenoDataSetGroup phenoDataSetGroup, int first, int count){
 		Criteria criteria = getSession().createCriteria(PhenoDataSetFieldDisplay.class);
 		criteria.add(Restrictions.eq("phenoDataSetGroup",phenoDataSetGroup));
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		criteria.addOrder(Order.asc("phenoDataSetFiledOrderNumber"));
 		return criteria.list();
 		
@@ -2039,10 +2039,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	}
 
 	@Override
-	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, long first, long count) {
+	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, int first,int count) {
 		Criteria criteria = buildGeneralPhenoDataSetCategoryCritera(phenoDataSetCategoryCriteria);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		criteria.addOrder(Order.asc("name"));
 		List<PhenoDataSetCategory> phenoDataSetCategoryList = (List<PhenoDataSetCategory>) criteria.list();
 		return phenoDataSetCategoryList;
@@ -2240,10 +2240,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return phenoDataSetCategories;
 	}
 	@SuppressWarnings("unchecked")
-	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, long first, long count) {
+	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count) {
 		Criteria criteria = buildGeneralPhenoFieldCritera(phenoDataSetCriteria);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		criteria.addOrder(Order.asc("name"));
 		List<PhenoDataSetField> phenoDataSetList = (List<PhenoDataSetField>) criteria.list();
 		return phenoDataSetList;
@@ -2559,10 +2559,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	}
 
 	@Override
-	public List<PhenoDataSetGroup> getPhenoDataSetGroups(PhenoDataSetGroup phenoDataSetGroup, long first, long count) {
+	public List<PhenoDataSetGroup> getPhenoDataSetGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count) {
 		Criteria criteria = buildGenericPhenoDataSetFieldGroupCriteria(phenoDataSetGroup);
-		criteria.setFirstResult(Math.toIntExact(first));
-		criteria.setMaxResults(Math.toIntExact(count));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		List<PhenoDataSetGroup> list = (List<PhenoDataSetGroup>)criteria.list();
 		return list;	
 	}

@@ -90,7 +90,7 @@ public abstract class AbstractDataEntryPanel<T> extends Panel {
 	 */
 	public void setErrorDataValueModel(IModel<String> errorDataStringModel) {
 		if (errorDataStringModel != null && errorDataStringModel.getObject() != null && !errorDataStringModel.getObject().isEmpty()) {
-			errorDataLabelModel = new StringResourceModel(getValidationErrorResourceKey(), this, errorDataStringModel);
+			errorDataLabelModel = new StringResourceModel(getValidationErrorResourceKey(), this, null, new Object[] { errorDataStringModel.getObject() });
 		}
 		else {
 			errorDataLabelModel = new Model<String>("");
