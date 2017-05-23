@@ -1,112 +1,40 @@
 <wicket:panel>
-	<div class="searchPanelBreaker">
-		&nbsp;
-	</div>
+	<div class="searchPanelBreaker">&nbsp;</div>
 	<table width="0%" cellspacing="0">
 	</table>
 	<table width="100%" cellspacing="0" class="dataview">
 		<tr>
-			<th width="2%">
-				&nbsp;
-			</th>
-			<th width="5%">
-				<wicket:message	key="phenoDataSetField.id">
-					Field ID:
-				</wicket:message>
-			</th>
-			<th width="15%">
-				<wicket:message	key="phenoDataSetField.name">
-					Field Name:
-				</wicket:message>
-			</th>
-			<th width="15%">
-				<wicket:message	key="phenoDataSetField.fieldType">
-					Field Type:
-				</wicket:message>
-			</th>
-			<th width="20%">
-				<wicket:message	key="phenoDataSetField.fieldLabel">
-					Field Label:
-				</wicket:message>
-			</th>
-			<th width="20%">
-				<wicket:message	key="phenoDataSetField.defaultValue">
-					Default Value:
-				</wicket:message>
-			</th>
-			<th width="20%">
-				<wicket:message	key="phenoDataSetField.missingValue">
-					Missing Value:
-				</wicket:message>
-			</th>
-			<!-- <th width="15%">
-				<wicket:message	key="phenoDataSetField.fieldRequired">
-					Field Required:
-				</wicket:message>
-			</th> -->
-			 <th width="2%">
-				&nbsp;
-			</th> 
+			<th width="2%">&nbsp;</th>
+			<th width="6%"><wicket:message key="phenoDataSetField.id">Field ID:	</wicket:message></th>
+			<th width="15%"><wicket:message key="phenoDataSetField.name">Field Name:</wicket:message></th>
+			<th width="15%"><wicket:message	key="phenoDataSetField.fieldType">Field Type:</wicket:message></th>
+			<th width="30%"><wicket:message	key="phenoDataSetField.fieldLabel">Field Label:</wicket:message></th>
+			<th width="15%"><wicket:message	key="phenoDataSetField.defaultValue">Default Value:	</wicket:message></th>
+			<th width="15%"><wicket:message	key="phenoDataSetField.missingValue">Missing Value:</wicket:message></th>
+			<th width="2%" colspan="2">&nbsp;</th>
 		</tr>
 		<!--	The Data Result Set -->
 		<tr wicket:id="phenoDataSetFieldLst">
-			<td width="2%">
-				&nbsp;
-			</td>
-			<td width="5%">
-				<span wicket:id="id">
-					100
-				</span>
-			</td>
+			<td width="2%">&nbsp;</td>
+			<td width="6%"><span wicket:id="id"> 100 </span></td>
 			<td width="15%">
 				<div wicket:id="phenoDataSetfieldLinkWMC">
-					<a href="#"wicket:id="name">
-						<span wicket:id="nameLbl">
-							Name
-						</span>
+					<a href="#" wicket:id="name"> <span wicket:id="nameLbl">
+							Name </span>
 					</a>
 				</div>
 			</td>
-			<td width="15%">
-				<span wicket:id="fieldType">
-					Field Type
-				</span>
-			</td>
-			<td width="20%">
-				<span wicket:id="fieldLabel">
-					Question/Label
-				</span>
-			</td>
-			<td width="20%">
-				<span wicket:id="defaultValue">
-					Default value
-				</span>
-			</td>
-			<td width="20%">
-				<span wicket:id="missingValue">
-					missing value
-				</span>
-			</td>
-			<!-- <td width="15%">
-				<img wicket:id="required"/>
-			</td>
-			-->
-			<td width="2%">
-				&nbsp;
-			</td> 
+			<td width="15%"><span wicket:id="fieldType"> Field Type </span>	</td>
+			<td width="30%"><span wicket:id="fieldLabel">Question/Label </span></td>
+			<td width="15%"><span wicket:id="defaultValue"> Default	value </span></td>
+			<td width="15%"><span wicket:id="missingValue"> missing	value </span></td>
+			<td width="2%" colspan="2">&nbsp;</td>
 		</tr>
 		<tfoot>
 			<tr>
-				<td width="2%">
-					&nbsp;
-				</td>
-				<td width="96%" colspan="7">
-					<span wicket:id="navigator" class="a">
-					</span>
-				</td>
-				<td width="2%">
-					&nbsp;
-				</td>
+				<td width="2%">&nbsp;</td>
+				<td width="96%" colspan="7"><span wicket:id="navigator"	class="a"> </span></td>
+				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>
 	</table>

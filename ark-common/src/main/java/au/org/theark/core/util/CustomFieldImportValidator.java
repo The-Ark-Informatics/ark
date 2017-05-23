@@ -1138,6 +1138,11 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 				}
 			} 
 		}
+		//Allow custom field category to be kept empty. 
+		//ARK-1781
+		if(fieldType ==null || fieldType.isEmpty()){
+			isValid=true;
+		}
 			if(isValid==false){
 				errorMessages.add(CustomFieldValidationMessage.invalidCategory(fieldName, fieldType));
 			}

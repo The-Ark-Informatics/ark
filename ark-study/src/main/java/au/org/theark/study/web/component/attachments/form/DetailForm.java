@@ -21,6 +21,7 @@ package au.org.theark.study.web.component.attachments.form;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -92,9 +94,13 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		Study studyInContext = iArkCommonService.getStudy(studyId);
 		//List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(studyInContext);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		List<StudyComp> studyCompList;
+		LinkSubjectStudy linkSubjectStudy;
+		List<StudyComp> studyCompList=new ArrayList<StudyComp>();
 		try {
-			studyCompList = iStudyService.getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(studyInContext,iArkCommonService.getSubject(sessionPersonId, studyInContext));
+			if(sessionPersonId!=null){
+				linkSubjectStudy=iArkCommonService.getSubject(sessionPersonId, studyInContext);
+				studyCompList = iStudyService.getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(studyInContext,linkSubjectStudy);
+			}
 			ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
 			studyComponentChoice = new DropDownChoice<StudyComp>(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
 		} catch (EntityNotFoundException e) {
@@ -160,10 +166,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 					containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 					containerForm.getModelObject().getSubjectFile().setUserId(userId);
-					containerForm.getModelObject().getSubjectFile().setIsConsentFile(false);
-	
+					//if subject component assigned to attachment we consider it as a consent
+					containerForm.getModelObject().getSubjectFile().setIsConsentFile(isStudyCompAssignedToSubjectFile());
 					// Save
-					iStudyService.create(containerForm.getModelObject().getSubjectFile(),Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+					iStudyService.create(containerForm.getModelObject().getSubjectFile(),isStudyCompAssignedToSubjectFile() ? Constants.ARK_SUBJECT_CONSENT_DIR : Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
 					this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
 	//				processErrors(target);
 			}else{
@@ -283,5 +289,13 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// add(ajaxSimpleConsentFileForm);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 
+	}
+	
+	private boolean isStudyCompAssignedToSubjectFile(){
+		if(containerForm.getModelObject().getSubjectFile().getStudyComp()!=null){
+			return !(containerForm.getModelObject().getSubjectFile().getStudyComp().getId() == null);
+		}else{
+			return false;
+		}
 	}
 }

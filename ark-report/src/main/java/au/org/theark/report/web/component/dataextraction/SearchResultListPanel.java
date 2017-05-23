@@ -35,6 +35,7 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
@@ -71,6 +72,7 @@ public class SearchResultListPanel extends Panel {
 	@SpringBean(name = Constants.ARK_PHENO_DATA_SERVICE)
 	private IPhenotypicService 				iPhenoService;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
+
 	
 	/**
 	 * 
@@ -267,9 +269,15 @@ public class SearchResultListPanel extends Panel {
 				containerForm.getModelObject().setAvailableBiospecimenCustomFieldDisplays(availableBiospecimenCustomFieldDisplays);
 				Collection<CustomFieldDisplay> selectedBiospecimenCustomFieldDisplays =iArkCommonService.getSelectedBiospecimenCustomFieldDisplaysForSearch(search);//, true);
 				containerForm.getModelObject().setSelectedBiospecimenCustomFieldDisplays(selectedBiospecimenCustomFieldDisplays);
-
+				
+				//Update the Create Filter button.
+				AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getDetailPanelFormContainer().get("createFilters");
+				ajaxButton.add(new AttributeModifier("value", new Model<String>(iArkCommonService.isAnyFilterAddedForSearch(search)?"Edit Filters":"Create Filters")));
+				target.add(ajaxButton);
+				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+				
 				// Render the UI
-				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);	
 			}
 		};
 

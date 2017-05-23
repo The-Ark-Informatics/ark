@@ -256,6 +256,9 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		ChoiceRenderer<CorrespondenceDirectionType> defaultRenderer = new ChoiceRenderer<CorrespondenceDirectionType>("name", "id");
 		directionTypeChoice = new DropDownChoice<CorrespondenceDirectionType>("correspondence.correspondenceDirectionType", list, defaultRenderer);
 		directionTypeChoice.setOutputMarkupId(true);
+		if(!isNew()){
+			directionTypeChoice.setModelObject(getModelObject().getCorrespondence().getCorrespondenceDirectionType());
+		}
 	}
 
 	private void initialiseOutcomeTypeDropDown() {
@@ -263,6 +266,9 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
 		outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
 		outcomeTypeChoice.setOutputMarkupId(true);
+		if(!isNew()){
+			outcomeTypeChoice.setModelObject(getModelObject().getCorrespondence().getCorrespondenceOutcomeType());
+		}
 	}
 
 	private void initBillableItemTypeDropDown() {
@@ -497,13 +503,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	@Override
 	protected boolean isNew() {
-
-		if (containerForm.getModelObject().getCorrespondence().getId() == null) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return (containerForm.getModelObject().getCorrespondence().getId() == null);
 	}
 	private void initCategoryPanels(){
 		categoryPanelDirectionType=new WebMarkupContainer("categoryPanelDirectionType");

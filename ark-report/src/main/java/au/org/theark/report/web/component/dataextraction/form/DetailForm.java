@@ -18,14 +18,9 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction.form;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.phenotypic.service.IPhenotypicService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -53,8 +48,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.dao.StudyDao;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -71,8 +66,8 @@ import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.report.web.component.dataextraction.filter.QueryFilterPanel;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author nivedann
@@ -103,12 +98,13 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private Palette<ConsentStatusField> consentStatusFieldsToReturnPalette;
 
 	private FileUploadField subjectListFileUploadField;
-	private String subjectFileUpload;
 
 	private AjaxButton clearButton;
 
 	@SpringBean(name = Constants.ARK_PHENO_DATA_SERVICE)
 	private IPhenotypicService iPhenoService;
+	
+	
 
 	/**
 	 * 
@@ -199,11 +195,18 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		IModel model = new Model<QueryFilterListVO>(new QueryFilterListVO(searchVO));
 
 		// handles for auto-gen biospecimenUid or manual entry
-		modalContentPanel = new QueryFilterPanel("content", feedBackPanel, model, modalWindow);
+		modalContentPanel = new QueryFilterPanel("content", feedBackPanel, model, modalWindow,arkCrudContainerVO);
 
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Create Basic Filters");
 		modalWindow.setContent(modalContentPanel);
+		/*modalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback(){
+			@Override
+			public void onClose(AjaxRequestTarget arg0) {
+			
+				
+			}
+		});*/
 		modalWindow.show(target);
 		// refresh the feedback messages
 		target.add(feedBackPanel);
@@ -211,12 +214,13 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(new AjaxButton("createFilters") {
-
+			
 			private static final long serialVersionUID = 1L;
-
 			protected void onSubmit(AjaxRequestTarget target, org.apache.wicket.markup.html.form.Form<?> form) {
+			
 				onCreateFilters(target, containerForm.getModelObject());
 				target.add(feedBackPanel);
+				target.add(this);
 			};
 
 			protected void onError(AjaxRequestTarget target, org.apache.wicket.markup.html.form.Form<?> form) {
@@ -231,8 +235,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 				return containerForm.getModelObject().getSearch().getId() != null;
 			};
 
-		}.setDefaultFormProcessing(false));
-
+		}.setDefaultFormProcessing(false)).add(new AttributeModifier("value", new Model<String>("Create Filters")));
+		
 		/*
 		 * item.add(new AttributeModifier(Constants.CLASS, new
 		 * AbstractReadOnlyModel() {
