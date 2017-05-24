@@ -275,5 +275,5 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// add(ajaxSimpleConsentFileForm);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 
-	}
+	}	
 }
