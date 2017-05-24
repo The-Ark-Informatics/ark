@@ -203,7 +203,7 @@ public class SearchResultListPanel extends Panel {
 					getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, correspondences.getAttachmentFilename()));
 				}
 				catch (ArkSystemException e) {
-					containerForm.error("Unexpected error: Download request could not be fulfilled.");
+					containerForm.error("An unexpected error occurred. The download request could not be fulfilled.");
 					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 					target.add(containerForm);
 					log.error(e.getMessage());
@@ -218,7 +218,7 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				log.error("Error Downloading File: " + correspondences.getAttachmentFilename());
-				containerForm.error("There was an error while downloading file. Please contact Administrator");
+				containerForm.error("There was an error while downloading file. Please contact the system administrator.");
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 				target.add(containerForm);
 			};
@@ -256,7 +256,7 @@ public class SearchResultListPanel extends Panel {
 					}
 				}
 
-				containerForm.info("Correspondence attachment " + filename + " was deleted successfully.");
+				containerForm.info("Correspondence attachment " + filename + " was successfully deleted.");
 
 				// Update the result panel
 				// target.add(searchResultContainer);
@@ -276,7 +276,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Delete request could not be fulfilled.");
+				this.error("An unexpected error occurred. The delete request could not be fulfilled.");
 			}
 		};
 

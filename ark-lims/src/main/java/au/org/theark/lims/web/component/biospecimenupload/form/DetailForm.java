@@ -145,18 +145,19 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			try {
 				iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 			} catch (Exception e) {
-				error("There is a problem during the upload process.");
+				error("There was a problem during the upload process.");
 				processErrors(target);
 			}
-
-			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
+			this.saveInformation();
+			//this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
 			processErrors(target);
 		}
 		else {
 			// Update
 			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
 			iArkCommonService.updateUpload(containerForm.getModelObject().getUpload());
-			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
+			this.updateInformation();
+			//this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
 			processErrors(target);
 		}
 

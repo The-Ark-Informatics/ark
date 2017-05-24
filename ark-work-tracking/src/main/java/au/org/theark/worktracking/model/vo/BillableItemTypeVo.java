@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
+import au.org.theark.core.vo.ArkVo;
 
-public class BillableItemTypeVo implements Serializable {
+public class BillableItemTypeVo implements ArkVo, Serializable {
 	/**
 	 * 
 	 */
@@ -45,5 +46,10 @@ public class BillableItemTypeVo implements Serializable {
 
 	public void setMode(int mode) {
 		this.mode = mode;
+	}
+	
+	@Override
+	public String getArkVoName(){
+		return "Billable Item Type";
 	}
 }

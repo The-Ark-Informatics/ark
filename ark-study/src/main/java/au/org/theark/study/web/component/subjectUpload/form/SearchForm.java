@@ -64,7 +64,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		initialiseFieldForm();
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -107,7 +107,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		java.util.Collection<Upload> uploadCollection = iArkCommonService.searchUploads(searchUpload);
 
 		if (uploadCollection != null && uploadCollection.size() == 0) {
-			this.info("Uploads with the specified criteria does not exist in the system.");
+			this.info("Uploads with the specified search criteria do not exist in the system.");
 			target.add(feedbackPanel);
 		}
 

@@ -421,7 +421,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		long existingItemCount=iWorkTrackingService.getBillableItemCount(containerForm.getModelObject().getBillableItem());
 		if(existingItemCount>0)
 		{
-			this.error("Work summary must be unique within each work request");
+			this.error("Work summary must be unique within each work request.");
 			processErrors(target);
 			return;
 		}
@@ -446,19 +446,21 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 				containerForm.getModelObject().getBillableItem().setType(Constants.BILLABLE_ITEM_MANUAL);
 				
 				iWorkTrackingService.createBillableItem(containerForm.getModelObject().getBillableItem());
-				this.info("Billable Item " + containerForm.getModelObject().getBillableItem().getDescription()  + " was created successfully");
+				this.saveInformation();
+				//this.info("Billable Item " + containerForm.getModelObject().getBillableItem().getDescription()  + " was created successfully");
 				processErrors(target);
 			}
 			else {
 				iWorkTrackingService.updateBillableItem(containerForm.getModelObject().getBillableItem());
-				this.info("Billable Item " + containerForm.getModelObject().getBillableItem().getDescription() + " was updated successfully");
+				this.updateInformation();
+				//this.info("Billable Item " + containerForm.getModelObject().getBillableItem().getDescription() + " was updated successfully");
 				processErrors(target);
 			}
 
 			this.billableItemOnSavePostProcess( target, containerForm.getModelObject());
 		}
 		catch (Exception e) {
-			this.error("A System error occured, we will have someone contact you.");
+			this.error("A system error occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 
@@ -468,12 +470,12 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		boolean result=true;
 		WorkRequest workRequest= containerForm.getModelObject().getBillableItem().getWorkRequest();
 		if("Not Commenced".equalsIgnoreCase(workRequest.getRequestStatus().getName())){
-			this.error("Selected work request has not yet commenced");
+			this.error("Selected work request has not yet commenced.");
 			processErrors(target);
 			result=false;
 		}
 		else if("Completed".equalsIgnoreCase(workRequest.getRequestStatus().getName())){
-			this.error("Selected work request has completed");
+			this.error("Selected work request has been completed.");
 			processErrors(target);
 			result=false;
 		}
@@ -520,11 +522,12 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 				iWorkTrackingService.deleteBillableItem(containerForm.getModelObject().getBillableItem());
-				containerForm.info("The Billable Item was deleted successfully.");
+				this.deleteInformation();
+				//containerForm.info("The Billable Item was deleted successfully.");
 				editCancelProcess(target);
 		}
 		catch (Exception e) {
-			containerForm.error("A System Error has occured please contact support.");
+			containerForm.error("A system error has occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}

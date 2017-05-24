@@ -9,8 +9,9 @@ import java.util.List;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
+import au.org.theark.core.vo.ArkVo;
 
-public class BillableItemVo implements Serializable {
+public class BillableItemVo implements ArkVo, Serializable {
 	/**
 	 * 
 	 */
@@ -125,6 +126,11 @@ public class BillableItemVo implements Serializable {
 			return this.format.format(this.billableItem.getWorkRequest().getGst());
 		}
 		return billableItemGst;
+	}
+	
+	@Override
+	public String getArkVoName(){
+		return "Billable Item";
 	}
 	
 }

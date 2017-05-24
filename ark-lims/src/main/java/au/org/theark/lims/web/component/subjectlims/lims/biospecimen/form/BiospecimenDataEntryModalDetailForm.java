@@ -873,7 +873,7 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 							parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
 							iLimsService.createBioTransaction(parentLimsVo);
 
-							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
+							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was successfully created.");
 							setQuantityLabel();
 						}
 					}
@@ -920,7 +920,7 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 							parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
 							iLimsService.createBioTransaction(parentLimsVo);
 
-							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
+							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was successfully created.");
 							setQuantityLabel();
 						}
 					}
@@ -943,7 +943,7 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 				// Update biospecimen
 				iLimsService.updateBiospecimen(cpModel.getObject());
 
-				this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
+				this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was successfully updated.");
 
 				// Hide/show barcode image
 				barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());

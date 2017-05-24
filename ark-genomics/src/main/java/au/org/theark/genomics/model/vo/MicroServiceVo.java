@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.org.theark.core.model.spark.entity.MicroService;
+import au.org.theark.core.vo.ArkVo;
 
 
-
-public class MicroServiceVo implements Serializable {
+public class MicroServiceVo implements ArkVo, Serializable {
 
 	/**
 	 * 
@@ -49,4 +49,9 @@ public class MicroServiceVo implements Serializable {
 	public void setMode(int mode) {
 		this.mode = mode;
 	}	
+	
+	@Override
+	public String getArkVoName(){
+		return "Microservice";
+	}
 }

@@ -308,7 +308,7 @@ public interface IPhenotypicDao {
 	public PhenoDataSetCategory getPhenoDataSetCategory(Long id) throws EntityNotFoundException;
 	
 	/**
-	 * Get available all Pheno dataset category.
+	 * Get available all Pheno data set category.
 	 * 
 	 * @param study
 	 * @param arkFunction
@@ -348,7 +348,7 @@ public interface IPhenotypicDao {
 	 */
 	public List<PhenoDataSetCategory> getAvailableAllCategoryListExceptThis(Study study,ArkFunction arkFunction,PhenoDataSetCategory thisPhenoDataSetCategory) throws ArkSystemException;
 	/**
-	 * Search pageable pheno dataset categories.
+	 * Search pageable pheno data set categories.
 	 * @param customFieldCategoryCriteria
 	 * @param first
 	 * @param count
@@ -356,19 +356,19 @@ public interface IPhenotypicDao {
 	 */
 	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, int first, int count);
 	/**
-	 * Create Pheno Dataset category
+	 * Create Pheno Data set category
 	 * @throws ArkSystemException
 	 * @throws ArkUniqueException
 	 */
 	public void createPhenoDataSetCategory(PhenoDataSetCategory phenoDataSetCategory) throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException;
 	/**
-	 * Update  Pheno Dataset category
+	 * Update  Pheno Data set category
 	 * @throws ArkSystemException
 	 * @throws ArkUniqueException
 	 */
 	public void updatePhenoDataSetCategory(PhenoDataSetCategory phenoDataSetCategory) throws ArkSystemException, ArkUniqueException;
 	/**
-	 * Delete Pheno Dataset category
+	 * Delete Pheno Data set category
 	 * @throws ArkSystemException
 	 * @throws EntityCannotBeRemoved
 	 */
@@ -395,7 +395,7 @@ public interface IPhenotypicDao {
 	 */
 	public boolean isPhenoDataSetCategoryAlreadyUsed(PhenoDataSetCategory phenoDataSetCategory);
 	/**
-	 * Get Pheno field dataset by Id,
+	 * Get Pheno field data set by Id,
 	 * @param id
 	 * @return
 	 */

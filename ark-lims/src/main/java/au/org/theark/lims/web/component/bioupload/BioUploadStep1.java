@@ -162,7 +162,7 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 		try {
 			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 		} catch (Exception e) {
-			error("There is a problem during the upload process.");
+			error("There was a problem during the upload process.");
 			getWizardForm().onError(target, null);
 		}
 	}

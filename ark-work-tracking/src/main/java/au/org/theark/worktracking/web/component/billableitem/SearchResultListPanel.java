@@ -232,7 +232,7 @@ public class SearchResultListPanel extends Panel {
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				// TODO: log!
 				System.err.println(" Error Downloading File ");
-				this.error("There was an error while downloading file.  Please contact Administrator");
+				this.error("There was an error while downloading the file. Please contact the system administrator.");
 			};
 		};
 

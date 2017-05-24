@@ -3035,7 +3035,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		try{
 			 results = q.list();
 		}catch(HibernateException hiberEx){ 
-			throw new ArkRunTimeException("Problem finding the phono dataset fields.");
+			throw new ArkRunTimeException("Problem finding the phono data set fields.");
 		}
 		if(results.size()>0){
 			return (PhenoDataSetField)results.get(0);

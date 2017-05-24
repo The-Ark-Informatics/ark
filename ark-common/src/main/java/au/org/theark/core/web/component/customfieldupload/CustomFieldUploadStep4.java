@@ -96,7 +96,7 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		}
 		else {
 			// Stop progress because of missing temp file
-			error("Unexpected error: Can not proceed due to missing temporary file.");
+			error("An unexpected error occurred. Can not proceed due to missing temporary file.");
 			form.getNextButton().setEnabled(false);
 		}
 	}

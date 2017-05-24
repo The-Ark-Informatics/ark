@@ -87,7 +87,7 @@ public class FamilyCustomDataContainerPanel extends Panel {
 		}
 		else {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
-			this.error("You do not have sufficient permissions to access this function");
+			this.error("You do not have sufficient permissions to access this function.");
 		}
 		customDataEditorWMC.add(dataEditorPanel);
 		return customDataEditorWMC;

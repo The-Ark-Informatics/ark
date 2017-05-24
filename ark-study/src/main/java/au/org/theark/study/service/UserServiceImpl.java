@@ -111,7 +111,7 @@ public class UserServiceImpl implements IUserService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated User (in LDAP) " + userVO.getUserName());
+		ah.setComment("User (in LDAP) " + userVO.getUserName()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
 		iArkCommonService.createAuditHistory(ah);
 	}
@@ -148,7 +148,7 @@ public class UserServiceImpl implements IUserService {
 			
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-			ah.setComment("Created User (in LDAP) " + arkUserVO.getUserName());
+			ah.setComment("User (in LDAP) " + arkUserVO.getUserName()+" was successfully created.");
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
 			iArkCommonService.createAuditHistory(ah);
 		}
@@ -164,7 +164,7 @@ public class UserServiceImpl implements IUserService {
 		iArkAuthorisationService.updateArkUser(arkUserVO);
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Ark User (in LDAP) " + arkUserVO.getUserName());
+		ah.setComment("User (in LDAP) " + arkUserVO.getUserName()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
 		iArkCommonService.createAuditHistory(ah);
 	}
@@ -206,7 +206,7 @@ public class UserServiceImpl implements IUserService {
 		iArkAuthorisationService.deleteArkUser(arkUserVO);
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted Ark User (in LDAP) " + arkUserVO.getUserName());
+		ah.setComment("User (in LDAP) " + arkUserVO.getUserName()+" was successfully deleted.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
 		iArkCommonService.createAuditHistory(ah);
 	}
@@ -266,7 +266,7 @@ public class UserServiceImpl implements IUserService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created User (in LDAP) " + arkUserVo.getUserName());
+		ah.setComment("User (in LDAP) " + arkUserVo.getUserName()+" was successfully created.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
 		iArkCommonService.createAuditHistory(ah);
 	}
@@ -276,7 +276,7 @@ public class UserServiceImpl implements IUserService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created ArkUserRole for " + arkUserRole.getArkUser().getLdapUserName());
+		ah.setComment("ArkUserRole for " + arkUserRole.getArkUser().getLdapUserName()+" was successfully created.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
 		iArkCommonService.createAuditHistory(ah);
 	}

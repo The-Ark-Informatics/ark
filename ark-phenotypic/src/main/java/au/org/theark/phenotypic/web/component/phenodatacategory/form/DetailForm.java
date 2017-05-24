@@ -165,7 +165,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 			// Save the Category
 			try {
 				iPhenotypicService.createPhenoDataSetCategory(getModelObject());
-				this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetCategory().getName() }).getString());
+				this.saveInformation();
+				//this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetCategory().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkRunTimeException e) {
@@ -188,7 +189,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 			// Update the Category
 			try {
 				iPhenotypicService.updatePhenoDataSetCategory(getModelObject());
-				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetCategory().getName() }).getString());
+				this.updateInformation();
+				//this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetCategory().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
@@ -215,7 +217,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetCategoryVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iPhenotypicService.deletePhenoDataSetCategory(getModelObject());
-			this.info("Field " + getModelObject().getPhenoDataSetCategory().getName() + " was deleted successfully");
+			this.deleteInformation();
+			//this.info("Field " + getModelObject().getPhenoDataSetCategory().getName() + " was deleted successfully");
 		}
 		catch (ArkSystemException e) {
 			this.error(e.getMessage());

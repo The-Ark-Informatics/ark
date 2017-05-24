@@ -227,14 +227,14 @@ public class BioCollectionSpecimenUploader {
 			}
 		}
 		catch (IOException ioe) {
-			uploadReport.append("Unexpected I/O exception whilst reading the biospecimen data file\n");
+			uploadReport.append("An unexpected I/O exception occurred whilst reading the biospecimen data file.\n");
 			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the biospecimen data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the biospecimen data file.");
 		}
 		catch (Exception ex) {
-			uploadReport.append("Unexpected exception whilst reading the biospecimen data file\n");
+			uploadReport.append("An unexpected exception occurred whilst reading the biospecimen data file.\n");
 			log.error("processMatrixBiospecimenFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process biospecimen data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process biospecimen data file.");
 		}
 		finally {
 			// Clean up the IO objects
@@ -419,14 +419,14 @@ public class BioCollectionSpecimenUploader {
 			}
 		}
 		catch (IOException ioe) {
-			uploadReport.append("Unexpected I/O exception whilst reading the biospecimen data file\n");
+			uploadReport.append("An unexpected I/O exception occurred whilst reading the biospecimen data file.\n");
 			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the biospecimen data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the biospecimen data file.");
 		}
 		catch (Exception ex) {
-			uploadReport.append("Unexpected exception whilst reading the biospecimen data file\n");
+			uploadReport.append("An unexpected exception occurred whilst reading the biospecimen data file\n");
 			log.error("processMatrixBiospecimenFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process biospecimen data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process biospecimen data file.");
 		}
 		finally {
 			// Clean up the IO objects
@@ -647,14 +647,14 @@ public class BioCollectionSpecimenUploader {
 			}
 		}
 		catch (IOException ioe) {
-			uploadReport.append("Unexpected I/O exception whilst reading the biospecimen data file\n");
+			uploadReport.append("An unexpected I/O exception occurred whilst reading the biospecimen data file.\n");
 			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the biospecimen data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the biospecimen data file.");
 		}
 		catch (Exception ex) {
-			uploadReport.append("Unexpected exception whilst reading the biospecimen data file\n");
+			uploadReport.append("An unexpected exception occurred whilst reading the biospecimen data file.\n");
 			log.error("processMatrixBiospecimenFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process biospecimen data file");
+			throw new ArkSystemException("An unexpected exception occurred occurred when trying to process biospecimen data file.");
 		}
 		finally {
 			// Clean up the IO objects

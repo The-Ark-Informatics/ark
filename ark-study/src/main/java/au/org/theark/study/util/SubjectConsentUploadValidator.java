@@ -238,13 +238,13 @@ public class SubjectConsentUploadValidator {
 				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
 					nonExistantUIDs.add(row);
 					errorCells.add(new ArkGridCell(0, row));
-					dataValidationMessages.add("Please check the Subject UID again it is not available in the study.");
+					dataValidationMessages.add("The Subject UID is not available in the study. Please check it again.");
 				}else{
 					LinkSubjectStudy linkSubjectStudy=iArkCommonService.getSubjectByUID(subjectUID, study);
 					StudyComp studyComp=iArkCommonService.getStudyCompByNameAndStudy(study, sudyComp);
 					if(studyComp==null){
 						errorCells.add(new ArkGridCell(0, row));
-						dataValidationMessages.add("Please check the study component  again. it is not available in the study.");
+						dataValidationMessages.add("The Subject UID is not available in the study. Please check the study component  again.");
 					}	
 					if(iArkCommonService.isConsentExsistByStudySublectUIDAndStudyComp(study, linkSubjectStudy, studyComp)){//Check for insert or update.Here we have to deal with the existing "consent" table with study component
 						updateRows.add(row);
@@ -286,7 +286,7 @@ public class SubjectConsentUploadValidator {
 						errorCells.add(new ArkGridCell(csvReader.getIndex("RECEIVED_DATE"), row));
 						errorCells.add(new ArkGridCell(csvReader.getIndex("REQUESTED_DATE"), row));
 						errorCells.add(new ArkGridCell(csvReader.getIndex("COMPLETED_DATE"), row));
-						dataValidationMessages.add("Please include exact required study component status date.Only accepetd one of either requested, received or completed date only.");
+						dataValidationMessages.add("Please include exact required study component status date. Only accepetd one of either requested, received or completed date only.");
 					}
 					String consentDate=csvReader.get("CONSENT_DATE");
 					if(consentDate!=null && consentDate.trim().length()>0){
@@ -304,11 +304,11 @@ public class SubjectConsentUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the subject data file");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process subject data file");
 		}
 		finally {
 			if (csvReader != null) {
@@ -343,18 +343,18 @@ public class SubjectConsentUploadValidator {
 				List<String>  values = existingItemMap.get(uid);
 				if( values != null && values.contains(cellValue.toUpperCase().trim())){
 					errorCells.add(new ArkGridCell(col, row));
-					dataValidationMessages.add(cellValue +" is already exist in the uploading list");
+					dataValidationMessages.add(cellValue +" already exists in the upload list.");
 				}
 				else{
 					existingItemMap.addValue(uid, cellValue.toUpperCase().trim());
 				}
 			}else{
 				errorCells.add(new ArkGridCell(col, row));
-				dataValidationMessages.add(cellValue +" is not exist in the system");
+				dataValidationMessages.add(cellValue +" does not exist in the system.");
 			}
 		}else{
 			errorCells.add(new ArkGridCell(col, row));
-			dataValidationMessages.add(field+ " is required to upload subject consent");
+			dataValidationMessages.add(field+ " is required to upload subject consent.");
 		}
 	}
 	
@@ -362,11 +362,11 @@ public class SubjectConsentUploadValidator {
 		if(cellValue != null && cellValue.trim().length()>0){	
 			if(map.get(cellValue.toUpperCase().trim())==null){
 				errorCells.add(new ArkGridCell(col, row));
-				dataValidationMessages.add(cellValue +" is not exist in the system");	
+				dataValidationMessages.add(cellValue +" does not exist in the system.");	
 			}
 		}else{
 			errorCells.add(new ArkGridCell(col, row));
-			dataValidationMessages.add(field+ " is required to upload subject consent");
+			dataValidationMessages.add(field+ " is required to upload subject consent.");
 		}
 	}
 
@@ -467,10 +467,10 @@ public class SubjectConsentUploadValidator {
 				fileValidationMessages.add(sb.toString());
 				for(String diffColumn:diffColumnList){
 					if(requiredheaderColumnList.contains(diffColumn)){
-						fileValidationMessages.add("Error: the column name " + diffColumn + " is not specified.");
+						fileValidationMessages.add("Error: The column name " + diffColumn + " is not specified.");
 					}
 					else{
-						fileValidationMessages.add("Error: the column name " + diffColumn + " is not a valid column name.");
+						fileValidationMessages.add("Error: The column name " + diffColumn + " is not a valid column name.");
 					}
 				}
 			}
@@ -478,11 +478,11 @@ public class SubjectConsentUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the subject data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process subject data file.");
 		}
 		finally {
 

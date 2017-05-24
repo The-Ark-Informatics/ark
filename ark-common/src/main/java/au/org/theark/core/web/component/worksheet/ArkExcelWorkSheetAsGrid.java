@@ -758,7 +758,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("An error occured while downloading. Please contact Administrator");
+				this.error("An unexpected error occurred while downloading. Please contact the system administrator.");
 			};
 		};
 

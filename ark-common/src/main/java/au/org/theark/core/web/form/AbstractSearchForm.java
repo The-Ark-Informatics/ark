@@ -106,7 +106,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 			}
 		};
 
-		newButton = new ArkBusyAjaxButton(Constants.NEW) {
+		newButton = new AjaxButton(Constants.NEW) {
 
 			private static final long	serialVersionUID	= 1666656098281624401L;
 
@@ -175,7 +175,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
 				//Add this line to avoid showing more than one error message. Now user knows exactly the functional error message.
 				//earlier there is message shows below the details form error message.
-				getSession().cleanupFeedbackMessages();
+                getSession().getFeedbackMessages().clear();
 				this.error(errorMessage);
 			}
 			else {

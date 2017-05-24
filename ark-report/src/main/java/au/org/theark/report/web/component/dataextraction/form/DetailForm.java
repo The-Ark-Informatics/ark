@@ -309,14 +309,16 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 				iArkCommonService.create(containerForm.getModelObject());
 				iArkCommonService.createSearchSubjects(containerForm.getModelObject().getSearch(), selectedSubjects);
-				this.info("Search " + containerForm.getModelObject().getSearch().getName() + " was created successfully");
+				this.saveInformation();
+				//this.info("Search " + containerForm.getModelObject().getSearch().getName() + " was created successfully");
 				processErrors(target);
 
 			} else {
 
 				iArkCommonService.update(containerForm.getModelObject());
 				iArkCommonService.createSearchSubjects(containerForm.getModelObject().getSearch(), selectedSubjects);
-				this.info("Search " + containerForm.getModelObject().getSearch().getName() + " was updated successfully");
+				this.updateInformation();
+				//this.info("Search " + containerForm.getModelObject().getSearch().getName() + " was updated successfully");
 				processErrors(target);
 
 			}
@@ -345,7 +347,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		iArkCommonService.delete(containerForm.getModelObject().getSearch());
-		containerForm.info("The search was deleted successfully.");
+		this.deleteInformation();
+		//containerForm.info("The search was deleted successfully.");
 		/*
 		 * try { //
 		 * iStudyService.delete(containerForm.getModelObject().getStudyComponent

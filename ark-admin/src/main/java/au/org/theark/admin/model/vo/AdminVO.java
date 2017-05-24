@@ -29,12 +29,14 @@ import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.vo.ArkVo;
+
 
 /**
  * @author cellis
  * 
  */
-public class AdminVO implements Serializable {
+public class AdminVO implements ArkVo, Serializable {
 
 	private static final long					serialVersionUID	= -3939245546324873647L;
 
@@ -350,5 +352,10 @@ public class AdminVO implements Serializable {
 
 	public void setSelectedArkRoles(List<ArkRole> selectedArkRoles) {
 		this.selectedArkRoles = selectedArkRoles;
+	}
+	
+	@Override
+	public String getArkVoName(){
+		return "Admin Item";
 	}
 }

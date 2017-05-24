@@ -357,16 +357,16 @@ public class DataUploader {
 
 				if (!isAutoGen && (subjectUID == null || subjectUID.isEmpty())) {
 					if (!hasSomeData) {
-						uploadReport.append("Warning/Info: Row " + rowCount + ":  There appeared to be no data on this row, so we ignored this line");
+						uploadReport.append("Row " + rowCount + ":  This line was ignored because no data was found.");
 					}
 					else {
 						// THIS SHOULD NEVER EVER HAPPEN IF VALIDATION IS CORRECT
-						uploadReport.append("Error: Row " + rowCount + ":  There is no subject UID on this row, "
+						uploadReport.append("Row " + rowCount + ":  There is no subject UID on this row, "
 								+ "yet the study is not set up to auto generate subject UIDs.  This line was ignored.  Please remove this line or provide an ID");
 					}
 				}
 				else if (isAutoGen && (subjectUID == null || subjectUID.isEmpty()) && !hasSomeData) {
-					uploadReport.append("Warning/Info: Row " + rowCount + ":  There appeared to be no data on this row, so we ignored this line");
+					uploadReport.append("Row " + rowCount + ":  This line was ignored because no data was found.");
 				}
 				else {
 
@@ -765,7 +765,7 @@ public class DataUploader {
 								// State state = findState(statesPossible, stateString, country);
 								State state = findStateWithinThisCountry(stateString, country);
 								if (state == null) {
-									uploadReport.append("Warning/Info: could not find a state named '" + stateString + "' in " + country.getName() + " for row " + rowCount + ", but will proceed.\n");
+									uploadReport.append("Could not find a state named '" + stateString + "' in " + country.getName() + " for row " + rowCount + ". The upload will proceed.\n");
 									addressToAttachToPerson.setOtherState(stateString);
 								}
 								else {
@@ -773,7 +773,7 @@ public class DataUploader {
 								}
 							}
 							else {
-								uploadReport.append("Warning/Info:  Could not find country '" + countryString + " for row " + rowCount + ", but will proceed.\n");
+								uploadReport.append("Could not find country '" + countryString + " for row " + rowCount + ". The upload will proceed.\n");
 							}
 
 							String addressSource = stringLineArray[addressSourceIndex];
@@ -813,14 +813,14 @@ public class DataUploader {
 							}
 
 							if (usingDefaultStatus && usingDefaultType) {
-								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() + "' and the default type '" + defaultAddressType.getName() + " for row " + rowCount
-										+ ", but will proceed.\n");
+								uploadReport.append("Using the default status '" + defaultAddressStatus.getName() + "' and the default type '" + defaultAddressType.getName() + " for row " + rowCount
+										+ "\n");
 							}
 							else if (usingDefaultType) {
-								uploadReport.append("Info:  Using the default type '" + defaultAddressType.getName() + "' for row " + rowCount + ", but will proceed.\n");
+								uploadReport.append("Using the default type '" + defaultAddressType.getName() + "' for row " + rowCount + "\n");
 							}
 							else if (usingDefaultStatus) {
-								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() + " for row " + rowCount + ", but will proceed.\n");
+								uploadReport.append("Using the default status '" + defaultAddressStatus.getName() + " for row " + rowCount + "\n");
 							}
 
 							if (addressSource != null && !addressSource.isEmpty())
@@ -923,14 +923,14 @@ public class DataUploader {
 								phoneToAttachToPerson.setSource(phoneSource);
 
 							if (usingDefaultStatus && usingDefaultType) {
-								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() + "' and the default type '" + defaultAddressType.getName() + " for row " + rowCount
-										+ ", but will proceed.\n");
+								uploadReport.append("Using the default status '" + defaultAddressStatus.getName() + "' and the default type '" + defaultAddressType.getName() + " for row " + rowCount
+										+ "\n");
 							}
 							else if (usingDefaultType) {
-								uploadReport.append("Info:  Using the default type '" + defaultAddressType.getName() + "' for row " + rowCount + ", but will proceed.\n");
+								uploadReport.append("Using the default type '" + defaultAddressType.getName() + "' for row " + rowCount + "\n");
 							}
 							else if (usingDefaultStatus) {
-								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() + " for row " + rowCount + ", but will proceed.\n");
+								uploadReport.append("Using the default status '" + defaultAddressStatus.getName() + " for row " + rowCount + "\n");
 							}
 
 							if (!updatePhones) {
@@ -1025,14 +1025,14 @@ public class DataUploader {
 			}
 		}
 		catch (IOException ioe) {
-			uploadReport.append("System Error:   Unexpected I/O exception whilst reading the subject data file\n");
+			uploadReport.append("An unexpected I/O exception occurred whilst reading the subject data file.\n");
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the subject data file");
 		}
 		catch (Exception ex) {
-			uploadReport.append("System Error:  Unexpected exception whilst reading the subject data file\n");
+			uploadReport.append("An unexpected exception occurred whilst reading the subject data file.\n");
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process subject data file");
 		}
 		finally {
 			uploadReport.append("Total file size: ");
@@ -1281,14 +1281,14 @@ public class DataUploader {
 					+ insertFieldsCount + "  or  \ncustomFieldsToInsert.size = " + customFieldsToInsert.size() + "   amount of empty scells =" + emptyDataCount);
 		}
 		catch (IOException ioe) {
-			uploadReport.append("SYSTEM ERROR:   Unexpected I/O exception whilst reading the subject data file\n");
+			uploadReport.append("An unexpected I/O exception occurred whilst reading the subject data file.\n");
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the subject data file.");
 		}
 		catch (Exception ex) {
-			uploadReport.append("SYSTEM ERROR:   Unexpected exception whilst reading the subject data file\n");
+			uploadReport.append("An unexpected exception occurred whilst reading the subject data file.\n");
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process subject data file.");
 		}
 		finally {
 			uploadReport.append("Total file size: ");
@@ -1437,14 +1437,14 @@ public class DataUploader {
 					+ insertFieldsCount + "  or  \ncustomFieldsToInsert.size = " + customFieldsToInsert.size() + "   amount of empty scells =" + emptyDataCount);
 		}
 		catch (IOException ioe) {
-			uploadReport.append("SYSTEM ERROR:   Unexpected I/O exception whilst reading the family data file\n");
+			uploadReport.append("An unexpected I/O exception occurred whilst reading the family data file.\n");
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the family data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the family data file.");
 		}
 		catch (Exception ex) {
-			uploadReport.append("SYSTEM ERROR:   Unexpected exception whilst reading the family data file\n");
+			uploadReport.append("An unexpected exception occurred whilst reading the family data file.\n");
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process family data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process family data file.");
 		}
 		finally {
 			uploadReport.append("Total file size: ");

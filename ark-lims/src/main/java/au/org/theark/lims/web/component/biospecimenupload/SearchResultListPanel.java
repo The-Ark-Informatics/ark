@@ -80,21 +80,21 @@ public class SearchResultListPanel extends Panel {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download biocollection template.");
+				this.error("An unexpected error occurred. Could not proceed with downloading the biocollection template.");
 			}
 		};
-		ArkDownloadTemplateButton downloadBiospecimanInventoryTemplate = new ArkDownloadTemplateButton("downloadBiospecimanInventoryTemplate", "BiospecimenInventoryUpload", Constants.BIOSPECIMEN_INVENTORY_TEMPLATE_CELLS) {
+		ArkDownloadTemplateButton downloadBiospecimanInventoryTemplate = new ArkDownloadTemplateButton("downloadBiospecimanInventoryTemplate", "BiospecimenInventaryUpload", Constants.BIOSPECIMEN_INVENTORY_TEMPLATE_CELLS) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download biocollection template.");
+				this.error("An unexpected error occurred. Could not proceed with downloading the biocollection template.");
 			}
 		};
-		ArkDownloadTemplateButton downloadBiospecimanTemplate = new ArkDownloadTemplateButton("downloadBiospecimanTemplate", "BiospecimenUpload", Constants.BIOSPECIMEN_TEMPLATE_CELLS) {
+		ArkDownloadTemplateButton downloadBiospecimanTemplate = new ArkDownloadTemplateButton("downloadBiospecimanTemplate", "BiospecimanUpload", Constants.BIOSPECIMEN_TEMPLATE_CELLS) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download biocollection template.");
+				this.error("An unexpected error occurred. Could not proceed with downloading the biocollection template.");
 			}
 		};
 		initConfirmModel();
@@ -234,7 +234,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download request");
+				this.error("An unexpected error occurred. Could not process the download request.");
 			};
 		};
 
@@ -277,7 +277,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download upload report request");				
+				this.error("An unexpected error occurred. Could not process the download upload report request.");				
 			};
 		};
 

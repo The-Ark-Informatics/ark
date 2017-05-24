@@ -102,7 +102,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download of the template.");
+				this.error("An unexpected error occurred. The system could not proceed with download of the template.");
 			}
 
 		};
@@ -111,7 +111,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download of the template.");
+				this.error("An unexpected error occurred. The system could not proceed with download of the template.");
 			}
 
 		};
@@ -121,7 +121,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download of the template.");
+				this.error("An unexpected error occurred. The system could not proceed with download of the template.");
 				
 			}
 
@@ -169,7 +169,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download of the template.");
+				this.error("An unexpected error occurred. The system could not proceed with download of the template.");
 			}
 		};
 		
@@ -178,7 +178,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download of the template.");
+				this.error("An unexpected error occurred. The system could not proceed with download of the template.");
 			}
 		};				
 		initConfirmModel();
@@ -319,7 +319,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download request");
+				this.error("An unexpected error occurred. The system could not process download request");
 			};
 		};
 
@@ -372,7 +372,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download upload report request");
+				this.error("An unexpected error occurred. The system could not process download upload report request.");
 			};
 		};
 

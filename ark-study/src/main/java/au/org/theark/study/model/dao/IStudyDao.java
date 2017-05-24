@@ -486,15 +486,15 @@ public interface IStudyDao {
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 	
-	public List<Phone> pageablePersonPhoneLst(Long personID,final Phone phoneCriteria,int first,int count);
+	public List<Phone> pageablePersonPhoneLst(Long personID,final Phone phoneCriteria,int first, int count);
 	
-	public List<Address> pageablePersonAddressLst(Long personID,final Address addressCriteria,int first,int count);
+	public List<Address> pageablePersonAddressLst(Long personID,final Address addressCriteria, int first, int count);
 	
 	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles);
 	
 	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
-	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, int first, int count);
 
 	public String getSubjectFamilyId(Long studyId, String subjectUID);
 	

@@ -74,7 +74,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	protected void addSearchComponentsToForm() {
@@ -190,7 +190,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 			List<Researcher> resultList = iWorkTrackingService.searchResearcher(getModelObject().getResearcher());
 
 			if (resultList != null && resultList.size() == 0) {
-				this.info("Researcher with the specified criteria does not exist in the system.");
+				this.info("Researcher with the specified search criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
 

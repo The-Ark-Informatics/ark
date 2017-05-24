@@ -178,7 +178,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 					executor.run();
 
 				} catch (Exception e) {
-					this.error("Execution failled");
+					this.error("An unexpected error occurred. Execution failed.");
 					e.printStackTrace();
 				}
 
@@ -202,7 +202,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 					}
 					getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, output));
 				} catch (Exception e) {
-					this.error("Results download failled");
+					this.error("An unexpected error occurred. Results download failed.");
 					e.printStackTrace();
 				}
 				target.add(feedBackPanel);
@@ -236,7 +236,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 					iGenomicService.saveOrUpdate(analysis);
 
 				} catch (Exception e) {
-					this.error("Execution failled");
+					this.error("An unexpected error occurred. Execution failed.");
 					e.printStackTrace();
 				}
 
@@ -260,7 +260,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 					executor.run();
 
 				} catch (Exception e) {
-					this.error("Analysis Execution failled");
+					this.error("An unexpected error occurred. Analysis execution failed.");
 					e.printStackTrace();
 				}
 
@@ -358,7 +358,8 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 				}
 
 				this.iGenomicService.save(containerForm.getModelObject().getAnalysis(), uploadData);
-				this.info("Computation " + containerForm.getModelObject().getAnalysis().getName() + " was created successfully");
+				this.saveInformation();
+				//this.info("Computation " + containerForm.getModelObject().getAnalysis().getName() + " was created successfully");
 			} else {
 
 				String checksum = null;
@@ -375,7 +376,8 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 				}
 
 				iGenomicService.update(containerForm.getModelObject().getAnalysis(), uploadData, checksum);
-				this.info("Computation " + containerForm.getModelObject().getAnalysis().getName() + " was updated successfully");
+				this.updateInformation();
+				//this.info("Computation " + containerForm.getModelObject().getAnalysis().getName() + " was updated successfully");
 			}
 			target.add(queueButton);
 			processErrors(target);
@@ -383,7 +385,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 			target.add(arkCrudContainerVO.getEditButtonContainer());
 		} catch (Exception e) {
 			log.error("Error in saving micro service entity ", e);
-			this.error("A System error occured, we will have someone contact you.");
+			this.error("A system error occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}
@@ -393,10 +395,11 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 		Analysis analysis = containerForm.getModelObject().getAnalysis();
 		if (Constants.STATUS_UNDEFINED.equals(analysis.getStatus())) {
 			iGenomicService.delete(analysis);
-			containerForm.info("Analysis was deleted successfully.");
+			this.deleteInformation();
+			//containerForm.info("Analysis was deleted successfully.");
 			editCancelProcess(target);
 		} else {
-			containerForm.error("Unable to delete analysis submitted to process");
+			containerForm.error("An unexpected error occurred. Unable to delete analysis submitted to process.");
 			processErrors(target);
 		}
 

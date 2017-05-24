@@ -105,10 +105,12 @@ public class SourceForm extends AbstractDetailForm<DataSourceVo> {
 	protected void onSave(Form<DataSourceVo> containerForm, AjaxRequestTarget target) {
 		if (cpModel.getObject().getDataSource().getId() == null) {
 			iGenomicService.saveOrUpdate(cpModel.getObject().getDataSource());
-			this.info("Data source was created successfully");
+			this.saveInformation();
+			//this.info("Data source was created successfully");
 		} else {
 			iGenomicService.saveOrUpdate(cpModel.getObject().getDataSource());
-			this.info("Data source was updated successfully");
+			this.updateInformation();
+			//this.info("Data source was updated successfully");
 		}
 
 		processErrors(target);

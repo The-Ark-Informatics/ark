@@ -38,7 +38,7 @@ public class SearchForm extends AbstractSearchForm<GeneVO> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 	
 	

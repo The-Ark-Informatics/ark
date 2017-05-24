@@ -1,22 +1,16 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
 	<form wicket:id="yesNoForm" action="">
 		<span wicket:id="message">Are you sure?</span>
-		<div class="detailPanel">
-			<table width="100%" cellspacing="0" class="dataview" border="0">
-				<tr>
-        			<td align="center">
-						<input type="submit" wicket:id="yesButton" value="Yes" />
-					</td>
-					<td align="center">
-            			<input type="submit" wicket:id="noButton" value="No" />
-					</td>
-				</tr>	
-				<tr>
-        			<td style="padding-bottom: 10px">
-					</td>
-				</tr>
-			</table>
-		</div>
-		<br>
+		
+		<table align="center">
+        	<tr>
+            	<td align="center">
+            		<input type="submit" wicket:id="noButton" value="No" />
+				</td>
+				<td align="center">
+					<input type="submit" wicket:id="yesButton" value="Yes" />
+				</td>
+			</tr>
+		</table>
 	</form>
 </wicket:panel>

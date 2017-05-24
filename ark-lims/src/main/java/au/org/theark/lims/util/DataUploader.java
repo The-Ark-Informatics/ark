@@ -198,14 +198,14 @@ public class DataUploader {
 					"\n     inserts = " + insertFieldsCount + "  or  \ncustomFieldsToInsert.size = " + customFieldsToInsert.size() + "   amount of empty scells =" + emptyDataCount );
 		}
 		catch (IOException ioe) {
-			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
+			uploadReport.append("An unexpected I/O exception occurred whilst reading the subject data file.\n");
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the subject data file.");
 		}
 		catch (Exception ex) {
-			uploadReport.append("Unexpected exception whilst reading the subject data file\n");
+			uploadReport.append("An unexpected exception occurred whilst reading the subject data file.\n");
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process subject data file.");
 		}
 		finally {
 			uploadReport.append("Total file size: ");
