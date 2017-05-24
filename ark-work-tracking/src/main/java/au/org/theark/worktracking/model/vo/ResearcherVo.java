@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.org.theark.core.model.worktracking.entity.Researcher;
+import au.org.theark.core.vo.ArkVo;
 
-public class ResearcherVo implements Serializable {
+public class ResearcherVo implements ArkVo, Serializable {
 
 	/**
 	 * 
@@ -46,6 +47,11 @@ public class ResearcherVo implements Serializable {
 
 	public void setMode(int mode) {
 		this.mode = mode;
+	}
+	
+	@Override
+	public String getArkVoName(){
+		return "Researcher";
 	}
 	
 }

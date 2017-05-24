@@ -6,8 +6,9 @@ import java.util.List;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.vo.BaseVO;
+import au.org.theark.core.vo.ArkVo;
 
-public class GeneVO extends BaseVO {
+public class GeneVO extends BaseVO implements ArkVo{
 
 	private Gene gene;
 	private List<Disease> selectedDiseases = new ArrayList<Disease>();
@@ -44,4 +45,9 @@ public class GeneVO extends BaseVO {
 	public void setAvailableDiseases(List<Disease> availableDiseases) {
 		this.availableDiseases = availableDiseases;
 	}	
+	
+	@Override
+	public String getArkVoName(){
+		return "Gene";
+	}
 }

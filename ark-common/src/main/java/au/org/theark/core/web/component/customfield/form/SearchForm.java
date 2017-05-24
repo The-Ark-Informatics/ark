@@ -106,7 +106,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		//this.subjectCustomField = subjectCustomField;
 		initialiseFieldForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study");
 	}
 
 	private void initFieldTypeDdc() {
@@ -260,7 +260,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 
 		long count = iArkCommonService.getCustomFieldCount(getModelObject().getCustomField());
 		if (count <= 0L) {
-			this.info("No records match the specified criteria.");
+			this.info("No records match the specified search criteria.");
 			target.add(feedbackPanel);
 		}
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);

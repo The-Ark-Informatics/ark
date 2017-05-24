@@ -74,7 +74,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	protected void addSearchComponentsToForm() {
@@ -117,7 +117,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 			List<StudyComp> resultList = studyService.searchStudyComp(getModelObject().getStudyComponent());
 
 			if (resultList != null && resultList.size() == 0) {
-				this.info("Study Component with the specified criteria does not exist in the system.");
+				this.info("Study component with the specified search criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
 
@@ -128,7 +128,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (ArkSystemException arkEx) {
-			this.error("A system error has occured. Please try after sometime.");
+			this.error("A system error has occurred. Please contact the system administrator.");
 		}
 
 	}

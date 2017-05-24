@@ -370,7 +370,7 @@ public class SubjectUploadValidator {
 					fileValidationMessages.add(stringBuffer.toString());
 				for (int i = 0; i < fileHeaderColumnArray.length; i++) {
 					if (!Arrays.asList(requiredHeaderColumnArray).contains(fileHeaderColumnArray[i])) {
-						fileValidationMessages.add("Error: the column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
+						fileValidationMessages.add("Error: The column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
 					}
 				}
 			}
@@ -378,11 +378,11 @@ public class SubjectUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the subject data file");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process subject data file");
 		}
 		finally {
 
@@ -700,7 +700,7 @@ public class SubjectUploadValidator {
 							}
 							
 							if(!validData) {
-								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option.");
 								errorCells.add(new ArkGridCell(col, row));
 							}
 						}
@@ -782,11 +782,11 @@ public class SubjectUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the subject data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process subject data file.");
 		}
 		finally {
 			if (csvReader != null) {

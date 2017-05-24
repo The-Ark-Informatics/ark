@@ -206,7 +206,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Site button");
+				this.error("An unexpected error occurred. Unable to process Add Site button.");
 			}
 
 		};
@@ -228,7 +228,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Freezer button");
+				this.error("An unexpected error occurred. Unable to process Add Freezer button.");
 			}
 
 		};
@@ -250,7 +250,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Enabling of all empty cells");
+				this.error("An unexpected error occurred. Unable to process Enabling of all empty cells.");
 			}
 
 		};
@@ -273,7 +273,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Rack button");
+				this.error("An unexpected error occurred. Unable to process Add Rack button.");
 			}
 
 		};
@@ -295,7 +295,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Box button");
+				this.error("An unexpected error occurred. Unable to process Add Box button.");
 			}
 
 		};

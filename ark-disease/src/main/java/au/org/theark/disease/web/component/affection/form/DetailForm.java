@@ -459,7 +459,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
 			// No study in context
-			this.error("There is no study in Context. Please select a study to manage diseases.");
+			this.error("There is no study selected. Please select a study to manage diseases.");
 			processErrors(target);
 		}
 		else {
@@ -498,7 +498,8 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 
 	protected void deleteCompleted(String feedback, boolean successful) {
 		if(successful) { 
-			this.info(feedback);
+			this.deleteInformation();
+			//this.info(feedback);
 		} else {
 			this.error(feedback);
 		}

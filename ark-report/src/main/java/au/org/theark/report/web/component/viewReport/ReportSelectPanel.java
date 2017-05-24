@@ -105,13 +105,13 @@ public class ReportSelectPanel extends Panel {
 			List<ReportTemplate> resultList = reportService.getReportsAvailableList(null, study);
 
 			if (resultList == null || (resultList != null && resultList.size() == 0)) {
-				this.info("No reports are available to you under your current role (NB: roles may depend on the study in context)");
+				this.info("No reports are available to you under your current role (NB: roles may depend on the study selected.)");
 			}
 			reportSelectCPM.getObject().setReportsAvailableList(resultList);
 		}
 		catch (EntityNotFoundException e) {
 			log.error("ReportSelectPanel.initialisePanel() could not load the ArkUser based on username in context.  This should not happen.");
-			this.error("A system error has occured. Please notify support if this happens after trying again.");
+			this.error("A system error has occurred. Please notify the system administrator if this happens again.");
 		}
 
 		iModel = new LoadableDetachableModel<Object>() {
@@ -240,11 +240,11 @@ public class ReportSelectPanel extends Panel {
 				}
 
 				if (securityCheckOk == false) {
-					this.error("You do not have enough privileges to access this report.  If you believe this is incorrect, then please contact your administrator.");
+					this.error("You have insufficient privileges to access this report.  If you believe this is incorrect, then please contact the system administrator.");
 				}
 				else if (reportTemplate.getName().equals(Constants.STUDY_SUMMARY_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
+						this.error("This report requires a study to be selected. Please select a study.");
 					}
 					else {
 						StudySummaryReportContainer selectedReportPanel = new StudySummaryReportContainer("selectedReportContainerPanel");
@@ -259,7 +259,7 @@ public class ReportSelectPanel extends Panel {
 				}
 				else if (reportTemplate.getName().equals(Constants.STUDY_LEVEL_CONSENT_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
+						this.error("This report requires a study to be selected. Please select a study.");
 					}
 					else {
 						StudyLevelConsentReportContainer selectedReportPanel = new StudyLevelConsentReportContainer("selectedReportContainerPanel");
@@ -274,7 +274,7 @@ public class ReportSelectPanel extends Panel {
 				}
 				else if (reportTemplate.getName().equals(Constants.STUDY_COMP_CONSENT_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
+						this.error("This report requires a study to be selected. Please select a study.");
 					}
 					else {
 						ConsentDetailsReportContainer selectedReportPanel = new ConsentDetailsReportContainer("selectedReportContainerPanel");
@@ -289,7 +289,7 @@ public class ReportSelectPanel extends Panel {
 				}
 				else if (reportTemplate.getName().equals(Constants.PHENO_FIELD_DETAILS_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
+						this.error("This report requires a study to be selected. Please select a study.");
 					}
 					else {
 						PhenoFieldDetailsReportContainer selectedReportPanel = new PhenoFieldDetailsReportContainer("selectedReportContainerPanel");
@@ -304,7 +304,7 @@ public class ReportSelectPanel extends Panel {
 				}
 				else if (reportTemplate.getName().equals(Constants.STUDY_USER_ROLE_PERMISSIONS)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
+						this.error("This report requires a study to be selected. Please select a study.");
 					}
 					else {
 						StudyUserRolePermissionsReportContainer selectedReportPanel = new StudyUserRolePermissionsReportContainer("selectedReportContainerPanel");
@@ -319,7 +319,7 @@ public class ReportSelectPanel extends Panel {
 				}
 				else if(reportTemplate.getName().equals(Constants.WORK_RESEARCHER_COST_REPORT_NAME)){
 					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
+						this.error("This report requires a study to be selected. Please select a study.");
 					}
 					else {
 						WorkResearcherCostReportContainer selectedReportPanel = new WorkResearcherCostReportContainer("selectedReportContainerPanel");
@@ -334,7 +334,7 @@ public class ReportSelectPanel extends Panel {
 				}
 				else if(reportTemplate.getName().equals(Constants.WORK_RESEARCHER_DETAIL_COST_REPORT_NAME)){
 					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
+						this.error("This report requires a study to be selected. Please select a study.");
 					}
 					else {
 						WorkResearcherDetailCostReportContainer selectedReportPanel = new WorkResearcherDetailCostReportContainer("selectedReportContainerPanel");
@@ -349,7 +349,7 @@ public class ReportSelectPanel extends Panel {
 				}
 				else if(reportTemplate.getName().equals(Constants.WORK_STUDY_DETAIL_COST_REPORT_NAME)){
 					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
+						this.error("This report requires a study to be selected. Please select a study.");
 					}
 					else {
 						StudyCostReportContainer selectedReportPanel = new StudyCostReportContainer("selectedReportContainerPanel");
@@ -386,7 +386,7 @@ public class ReportSelectPanel extends Panel {
 				}
 				else if(reportTemplate.getName().equals(Constants.STUDY_COMP_REPORT_NAME)){
 					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
+						this.error("This report requires a study to be selected. Please select a study.");
 					}
 					else {
 						StudyComponentReportContainer selectedReportPanel = new StudyComponentReportContainer("selectedReportContainerPanel");

@@ -53,7 +53,7 @@ public class GenomicServiceImpl implements IGenomicService {
 	@Autowired
 	IArkCommonService iArkCommonService;
 
-	@Value("${service.auth.header}")
+	//@Value("${service.auth.header}")
 	private String authHeader;
 
 	Logger log = LoggerFactory.getLogger(GenomicServiceImpl.class);

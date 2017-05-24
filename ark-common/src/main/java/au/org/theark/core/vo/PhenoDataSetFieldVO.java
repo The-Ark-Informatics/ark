@@ -7,8 +7,9 @@ import java.util.List;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
+import au.org.theark.core.vo.ArkVo;
 
-public class PhenoDataSetFieldVO implements Serializable {
+public class PhenoDataSetFieldVO implements ArkVo, Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private PhenoDataSetField phenoDataSetField;
@@ -42,4 +43,8 @@ public class PhenoDataSetFieldVO implements Serializable {
 	public void setUsePhenoDataSetFieldDisplay(boolean usePhenoDataSetFieldDisplay) {
 		this.usePhenoDataSetFieldDisplay = usePhenoDataSetFieldDisplay;
 	}*/
+	@Override
+	public String getArkVoName(){
+		return "Pheno Dataset Field";
+	}
 }

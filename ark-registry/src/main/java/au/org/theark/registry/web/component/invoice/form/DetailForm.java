@@ -173,7 +173,8 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 //			e.printStackTrace();
 //		}
 		iArkCommonService.deletePipeline(containerForm.getModelObject());
-		this.info("Pipeline deleted");
+		this.deleteInformation();
+		//this.info("Pipeline deleted");
 		onCancel(target);
 	}
 
@@ -192,11 +193,13 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 		if(containerForm.getModelObject()!=null && containerForm.getModelObject().getId()==null){
 			
 			iArkCommonService.createPipeline(containerForm.getModelObject());
-			this.info("Pipeline saved");
+			this.saveInformation();
+			//this.info("Pipeline saved");
 		}
 		else {
 			iArkCommonService.updatePipeline(containerForm.getModelObject());
-			this.info("Pipeline updated");
+			this.updateInformation();
+			//this.info("Pipeline updated");
 		}
 		
 		target.add(feedBackPanel);

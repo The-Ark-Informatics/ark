@@ -94,7 +94,7 @@ public class CustomFieldCategoryContainerPanel extends AbstractContainerPanel<Cu
 		add(containerForm);
 
 		if (associatedPrimaryFn == null) {
-			this.error("An internal error occurred.  Please report this to your System Administrator.");
+			this.error("An internal error occurred.  Please contact the system administrator.");
 			log.error("Internal error: associatedPrimaryFn should never be null");
 			containerForm.setEnabled(false);
 		}

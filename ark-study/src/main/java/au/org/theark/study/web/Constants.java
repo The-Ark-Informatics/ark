@@ -369,7 +369,7 @@ public class Constants {
 			{ "", "SUBJECTUID OR FAMILYUID", "YOUR_FIRST_CUSTOM_FIELD_NAME_HERE", "YOUR_SECOND_CUSTOM_FIELD_NAME_HERE", "AND SO ON"},
 			{ "DESCRIPTION", "The unique identifier assigned for this subject or family.", "Value for first custom field","Value for second field", "AND SO ON" },
 			{ "NOTE: This is the common template to upload the Subject or the Family custom field data.", "This must match the subjectUID in the database or if it's a FAMILYUID it should be the valid FAMILYUID of a SUBJECT", "" , "", "" },
-			{ "		 Please make sure to use either one of a data set.", "", "" , "", "" },
+			{ "		 Please make sure to use either one of a dataset.", "", "" , "", "" },
 			{ "		 Removed this first column, and replace row 2 with your actual custom field names (the headers only appear once, row 3 will have your next subject or family and his/her values", "", "" , "", "" } };
 
 	public static final String[][]	SUBJECT_CONSENT_FIELD_TEMPLATE_CELLS										= {

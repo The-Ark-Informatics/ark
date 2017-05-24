@@ -9,8 +9,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IArkSettingService;
 import au.org.theark.core.util.EventPayload;
-import au.org.theark.core.web.component.ArkDataProvider;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -23,7 +21,6 @@ import org.apache.wicket.feedback.FeedbackMessages;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -36,8 +33,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,6 +47,7 @@ import java.util.List;
 public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
     private static final long	serialVersionUID	= 1L;
 
+    private List<AjaxButton> saveButtons;
     private Class<T> teir;
     private FeedbackPanel feedbackPanel;
 
@@ -61,6 +60,7 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
     public ArkSettingDataView(String id, IDataProvider<Setting> dataProvider, Class<T> teir) {
         super(id, dataProvider);
         this.teir = teir;
+        saveButtons = new ArrayList<>();
     }
 
     public ArkSettingDataView(String id, IDataProvider<Setting> dataProvider, Class teir, FeedbackPanel feedbackPanel) {
@@ -190,12 +190,16 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
                 }
                 target.add(this);
                 target.add(finalValuePanel);
-                this.send(getWebPage(), Broadcast.DEPTH, new EventPayload(Constants.EVENT_RELOAD_LOGO_IMAGES, target));
                 super.onSubmit(target, form);
+                this.send(getWebPage(), Broadcast.DEPTH, new EventPayload(Constants.EVENT_RELOAD_LOGO_IMAGES, target));
             }
         };
         saveButton.setDefaultFormProcessing(false);
         item.add(saveButton);
+        saveButtons.add(saveButton);
+        if(teir == UserSpecificSetting.class) {
+            saveButton.setVisible(false);
+        }
 
         item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
             private static final long	serialVersionUID	= 5761909841047153853L;
@@ -311,5 +315,26 @@ public class ArkSettingDataView<T extends Setting> extends DataView<Setting> {
             }
         }
         return true;
+    }
+
+    public void save(AjaxRequestTarget target, Form<?> form) {
+
+        for(AjaxButton button: saveButtons) {
+            Class clazz = button.getClass();
+            Method onSubmit = null;
+            try {
+                onSubmit = clazz.getDeclaredMethod("onSubmit", AjaxRequestTarget.class, Form.class);
+                onSubmit.invoke(button, target, form);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        this.send(getWebPage(), Broadcast.DEPTH, new EventPayload(Constants.EVENT_RELOAD_LOGO_IMAGES, target));
     }
 }

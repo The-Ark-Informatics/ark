@@ -121,7 +121,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 			private void error(IValidatable<String> validatable, String errorKey) {
 				ValidationError error = new ValidationError();
 				error.addKey(getClass().getSimpleName() + "." + errorKey);
-				error.setMessage("Subject UID is not exist in the study");
+				error.setMessage("Subject UID does not exist in the study.");
 				validatable.error(error);
 			}
 		
@@ -280,7 +280,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
 					log.error("Unexpected error: customfield.minValue is not in the DD/MM/YYYY date format");
-					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
+					this.error("An unexpected error occurred while loading the field validators from database.  Please contact the system administrator.");
 					getParent().setEnabled(false);
 				}
 			}
@@ -293,7 +293,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
 					log.error("Unexpected error: customfield.maxValue is not in the DD/MM/YYYY date format");
-					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
+					this.error("An unexpected error occurred loading the field validators from database.  Please contact the system administrator.");
 					getParent().setEnabled(false);
 				}
 			}
@@ -395,7 +395,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
 							log.error("Unexpected error: customfield.maxValue is not in a valid number format");
-							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
+							this.error("An unexpected error occurred loading the field validators from database. Please contact the system administrator.");
 //							getParentContainer().setEnabled(false);
 							getParent().setEnabled(false);
 						}
@@ -409,7 +409,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
 							log.error("Unexpected error: customfield.maxValue is not in a valid number format");
-							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
+							this.error("An unexpected error occurred loading the field validators from database. Please contact the system administrator.");
 							getParent().setEnabled(false);
 						}
 					}

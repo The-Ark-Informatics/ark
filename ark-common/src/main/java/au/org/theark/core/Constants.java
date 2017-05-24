@@ -381,8 +381,8 @@ public class Constants {
 	public static final String DEFAULT_FILE_FORMAT = "CSV";
 
 	public static final String STUDY = "study";
-	public static final String NO_STUDY_IN_CONTEXT_MESSAGE = "There is no study in context. Please select a Study.";
-	public static final String MODULE_NOT_ACCESSIBLE_MESSAGE = "You do not have the required security privileges to work with this function. Please see your Administrator.";
+	public static final String NO_STUDY_IN_CONTEXT_MESSAGE = "There is no study selected. Please select a Study.";
+	public static final String MODULE_NOT_ACCESSIBLE_MESSAGE = "You do not have the required security privileges to access this function. Please contact the system administrator.";
 
 	/* Session Objects */
 	public static final String SESSION_STUDY_KEY = "SESSION_STUDY";
@@ -712,9 +712,9 @@ public class Constants {
 	public static final String CONFIG_ROWS_PER_PAGE = "ROWS_PER_PAGE";
 	public static final String CONFIG_CUSTOM_FIELDS_PER_PAGE = "CUSTOM_FIELDS_PER_PAGE";
 	
-	public static final String MESSAGE_NO_SUBJECT_IN_CONTEXT="There is no subject in context. Please bring a subject into context via the subject tab.";
+	public static final String MESSAGE_NO_SUBJECT_IN_CONTEXT="There is no subject selected. Please select a subject from the subject tab.";
 	
-	public static final String MESSAGE_NO_STUDY_IN_CONTEXT="There is no study in context. Please select a study";
+	public static final String MESSAGE_NO_STUDY_IN_CONTEXT="There is no study selected. Please select a study.";
 	
 	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY = "Pheno Data Set Category";
 	

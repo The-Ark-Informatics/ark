@@ -333,7 +333,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		if (containerForm.getModelObject().getInvBox().getId() == null) {
 			// Save
 			iInventoryService.createInvBox(containerForm.getModelObject());
-			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was created successfully");
+			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was successfully created.");
 			processErrors(target);
 			
 			if(node != null) {
@@ -347,7 +347,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		else {
 			// Update
 			iInventoryService.updateInvBox(containerForm.getModelObject());
-			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was updated successfully");
+			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was successfully updated.");
 			processErrors(target);
 		}
 
@@ -378,7 +378,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target) {
 		iInventoryService.deleteInvBox(containerForm.getModelObject());
-		this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was deleted successfully");
+		this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was successfully deleted.");
 		// Display delete confirmation message
 		target.add(feedbackPanel);
 	}

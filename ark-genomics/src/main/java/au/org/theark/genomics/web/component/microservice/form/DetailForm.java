@@ -77,10 +77,12 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				containerForm.getModelObject().getMicroService().setStudyId(studyId);
 				iGenomicService.saveOrUpdate(containerForm.getModelObject().getMicroService());
-				this.info("Micro Service " + containerForm.getModelObject().getMicroService().getName() + " was created successfully");
+				this.saveInformation();
+				//this.info("Micro Service " + containerForm.getModelObject().getMicroService().getName() + " was created successfully");
 			} else {
 				iGenomicService.saveOrUpdate(containerForm.getModelObject().getMicroService());
-				this.info("Micro Service " + containerForm.getModelObject().getMicroService().getName() + " was updated successfully");
+				this.updateInformation();
+				//this.info("Micro Service " + containerForm.getModelObject().getMicroService().getName() + " was updated successfully");
 			}
 			processErrors(target);
 			onSavePostProcess(target);
@@ -96,7 +98,7 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 			
 		} catch (Exception e) {
 			log.error("Error in saving micro service entity ",e);
-			this.error("A System error occured, we will have someone contact you.");
+			this.error("A system error occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}
@@ -108,11 +110,12 @@ public class DetailForm extends AbstractDetailForm<MicroServiceVo> {
 			iGenomicService.delete(containerForm.getModelObject().getMicroService());
 			MicroServiceVo researcherVo = new MicroServiceVo();
 			containerForm.setModelObject(researcherVo);
-			containerForm.info("Micro Service was deleted successfully.");
+			this.deleteInformation();
+			//containerForm.info("Micro Service was deleted successfully.");
 			editCancelProcess(target);
 
 		} catch (Exception e) {
-			containerForm.error("A System Error has occured please contact support.");
+			containerForm.error("A system error has occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 

@@ -67,14 +67,14 @@ public class SearchResultListPanel extends Panel {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Download custom field template request could not be processed");
+				this.error("An unexpected error occurred. The download custom field template request could not be processed.");
 			}
 		};
 		ArkDownloadTemplateButton downloadCategoryTemplateButton = new ArkDownloadTemplateButton("downloadTemplateCategory", "CustomFieldCategoryUpload", au.org.theark.core.Constants.CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Download custom field category request could not be processed");
+				this.error("An unexpected error occurred. The download custom field category request could not be processed.");
 			}
 		};
 		initConfirmModel();

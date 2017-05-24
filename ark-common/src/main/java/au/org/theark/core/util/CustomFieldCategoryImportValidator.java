@@ -239,7 +239,7 @@ public java.util.Collection<String> validateMatrixFileFormat(InputStream fileInp
 			}
 			for (int i = 0; i < fileHeaderColumnArray.length; i++) {
 				if (!requiredHeaders.contains(fileHeaderColumnArray[i])) {
-					fileValidationMessages.add("Error: the column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
+					fileValidationMessages.add("Error: The column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
 				}
 			}
 
@@ -277,11 +277,11 @@ public java.util.Collection<String> validateMatrixFileFormat(InputStream fileInp
 	}
 	catch (IOException ioe) {
 		log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
-		throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
+		throw new CustomFieldSystemException("An unexpected I/O exception occurred whilst reading the phenotypic data file.");
 	}
 	catch (Exception ex) {
 		log.error("processMatrixPhenoFile Exception stacktrace:", ex);
-		throw new CustomFieldSystemException("Unexpected exception occurred when trying to process phenotypic data file");
+		throw new CustomFieldSystemException("An unexpected exception occurred when trying to process phenotypic data file.");
 	}
 	finally {
 		if (csvReader != null) {
@@ -508,11 +508,11 @@ private java.util.Collection<String> validateDataDictionaryFileData(InputStream 
 	}
 	catch (IOException ioe) {
 		log.error("processMatrixFile IOException stacktrace:", ioe);
-		throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the data file");
+		throw new CustomFieldSystemException("An unexpected I/O exception occurred whilst reading the data file.");
 	}
 	catch (Exception ex) {
 		log.error("processMatrixFile Exception stacktrace:", ex);
-		throw new CustomFieldSystemException("Unexpected exception occurred when trying to process data file");
+		throw new CustomFieldSystemException("An unexpected exception occurred when trying to process the data file.");
 	}
 	finally {
 		// Clean up the IO objects

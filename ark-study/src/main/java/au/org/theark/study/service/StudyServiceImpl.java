@@ -160,7 +160,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Study " + studyModelVo.getStudy().getName());
+		ah.setComment("Study " + studyModelVo.getStudy().getName()+" was successfully created.");
 		ah.setEntityId(studyModelVo.getStudy().getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
 		iArkCommonService.createAuditHistory(ah);
@@ -195,7 +195,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Study " + studyModelVo.getStudy().getName());
+		ah.setComment("Study " + studyModelVo.getStudy().getName()+" was successfully created.");
 		ah.setEntityId(studyModelVo.getStudy().getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
 		iArkCommonService.createAuditHistory(ah);
@@ -234,7 +234,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Study " + studyModelVo.getStudy().getName());
+		ah.setComment("Study " + studyModelVo.getStudy().getName()+" was successfully updated.");
 		ah.setEntityId(studyModelVo.getStudy().getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
 		iArkCommonService.createAuditHistory(ah);
@@ -252,7 +252,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Archived Study " + studyEntity.getName());
+		ah.setComment("Study " + studyEntity.getName()+" was successfully archived.");
 		ah.setEntityId(studyEntity.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
 		iArkCommonService.createAuditHistory(ah);
@@ -269,19 +269,19 @@ public class StudyServiceImpl implements IStudyService {
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 
-			ah.setComment("Created Study Component " + studyComponent.getName());
+			ah.setComment("Study Component " + studyComponent.getName()+" was successfully created.");
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
 			ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
 			ah.setEntityId(studyComponent.getId());
 			iArkCommonService.createAuditHistory(ah);
 		}
 		catch (ConstraintViolationException cvex) {
-			log.error("Study Component already exists.: " + cvex);
-			throw new EntityExistsException("A Study Component already exits.");
+			log.error("Study Component already exists: " + cvex);
+			throw new EntityExistsException("A Study Component already exists.");
 		}
 		catch (Exception ex) {
-			log.error("Problem creating Study Component: " + ex);
-			throw new ArkSystemException("Problem creating Study Component: " + ex.getMessage());
+			log.error("A problem occured when creating Study Component: " + ex);
+			throw new ArkSystemException("A problem occured when creating Study Component: " + ex.getMessage());
 		}
 	}
 
@@ -292,19 +292,19 @@ public class StudyServiceImpl implements IStudyService {
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 
-			ah.setComment("Updated Study Component " + studyComponent.getName());
+			ah.setComment("Study Component " + studyComponent.getName()+" was successfully updated.");
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
 			ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
 			ah.setEntityId(studyComponent.getId());
 			iArkCommonService.createAuditHistory(ah);
 		}
 		catch (ConstraintViolationException cvex) {
-			log.error("Study Component already exists.: " + cvex);
+			log.error("Study Component already exists: " + cvex);
 			throw new EntityExistsException("A Study Component already exists.");
 		}
 		catch (Exception ex) {
-			log.error("Problem updating Study Component: " + ex);
-			throw new ArkSystemException("Problem updating Study Component: " + ex.getMessage());
+			log.error("A problem occured when updating Study Component: " + ex);
+			throw new ArkSystemException("A problem occured when updating Study Component: " + ex.getMessage());
 		}
 	}
 
@@ -315,18 +315,18 @@ public class StudyServiceImpl implements IStudyService {
 			iStudyDao.create(phone);
 		}
 		catch (ConstraintViolationException cvex) {
-			log.error("Problem creating phone record: " + cvex);
+			log.error("A problem occured when creating phone record: " + cvex);
 			// the following ArkUniqueException message will be shown to the user
-			throw new ArkUniqueException("Failed saving: New phone number is not unique for this person");
+			throw new ArkUniqueException("Saving phone number failed: The new phone number is not unique for this person.");
 		}
 		catch (Exception ex) {
-			log.error("Problem creating phone record: " + ex);
-			throw new ArkSystemException("Problem creating phone record: " + ex.getMessage());
+			log.error("A problem occured when creating the phone record: " + ex);
+			throw new ArkSystemException("A problem occured when creating the phone record: " + ex.getMessage());
 		}
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Phone " + phone.getPhoneNumber());
+		ah.setComment("Phone " + phone.getPhoneNumber()+" was successfully created.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHONE);
 		ah.setEntityId(phone.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -338,19 +338,19 @@ public class StudyServiceImpl implements IStudyService {
 			iStudyDao.update(phone);
 		}
 		catch (ConstraintViolationException cvex) {
-			log.error("Problem updating phone record: " + cvex);
+			log.error("A problem occured when updating the phone record: " + cvex);
 			// the following ArkUniqueException message will be shown to the user
-			throw new ArkUniqueException("Failed saving: Phone number already exists for this person");
+			throw new ArkUniqueException("A problem occured when saving: Phone number already exists for this person");
 		}
 		catch (Exception ex) {
 			log.error("Problem updating phone record: " + ex);
-			throw new ArkSystemException("Problem updating phone record: " + ex.getMessage());
+			throw new ArkSystemException("A problem occured when updating the phone record: " + ex.getMessage());
 		}
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 
-		ah.setComment("Updated Phone " + phone.getPhoneNumber());
+		ah.setComment("Phone " + phone.getPhoneNumber()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHONE);
 		ah.setEntityId(phone.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -368,7 +368,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted Phone " + phone.getId());
+		ah.setComment("Phone " + phone.getId()+" was successfully deleted.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHONE);
 		ah.setEntityId(phone.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -387,7 +387,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Subject " + subjectVO.getLinkSubjectStudy().getSubjectUID());
+		ah.setComment("Subject " + subjectVO.getLinkSubjectStudy().getSubjectUID()+" was successfully created.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
 		ah.setEntityId(subjectVO.getLinkSubjectStudy().getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -407,7 +407,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Subject " + subjectVO.getLinkSubjectStudy().getSubjectUID());
+		ah.setComment("Subject " + subjectVO.getLinkSubjectStudy().getSubjectUID()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
 		ah.setEntityId(subjectVO.getLinkSubjectStudy().getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -530,7 +530,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Address " + address.getId());
+		ah.setComment("Address " + address.getId()+" was successfully created.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_ADDRESS);
 		ah.setEntityId(address.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -541,7 +541,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Address " + address.getId());
+		ah.setComment("Address " + address.getId()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_ADDRESS);
 		ah.setEntityId(address.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -553,7 +553,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted Address " + address.getStreetAddress());
+		ah.setComment("Address " + address.getStreetAddress()+" was successfully deleted.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_ADDRESS);
 		ah.setEntityId(address.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -565,7 +565,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Consent " + consent.getId());
+		ah.setComment("Consent " + consent.getId()+" was successfully created.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT);
 		ah.setEntityId(consent.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -586,7 +586,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Consent " + consent.getId());
+		ah.setComment("Consent " + consent.getId()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT);
 		ah.setEntityId(consent.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -603,7 +603,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Consent " + consent.getId());
+		ah.setComment("Consent " + consent.getId()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT);
 		ah.setEntityId(consent.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -640,7 +640,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted Consent " + consent.getId());
+		ah.setComment("Consent " + consent.getId()+" was successfully deleted.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT);
 		ah.setEntityId(consent.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -785,7 +785,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created ConsentFile " + consentFile.getId());
+		ah.setComment("ConsentFile " + consentFile.getId()+" was successfully created.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT_FILE);
 		ah.setEntityId(consentFile.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -796,7 +796,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated ConsentFile " + consentFile.getId());
+		ah.setComment("ConsentFile " + consentFile.getId()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT_FILE);
 		ah.setEntityId(consentFile.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -807,7 +807,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted ConsentFile " + consentFile.getId());
+		ah.setComment("ConsentFile " + consentFile.getId()+" was successfully deleted.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT_FILE);
 		ah.setEntityId(consentFile.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -876,7 +876,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created subjectFile " + subjectFile.getId());
+		ah.setComment("SubjectFile " + subjectFile.getId()+" was successfully created.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
 		ah.setEntityId(subjectFile.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -886,7 +886,7 @@ public class StudyServiceImpl implements IStudyService {
 		iStudyDao.update(subjectFile);
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated subjectFile " + subjectFile.getId());
+		ah.setComment("SubjectFile " + subjectFile.getId()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
 		ah.setEntityId(subjectFile.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -922,7 +922,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated subjectFile " + subjectFile.getId());
+		ah.setComment("SubjectFile " + subjectFile.getId()+" was successfully updated.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
 		ah.setEntityId(subjectFile.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -937,7 +937,7 @@ public class StudyServiceImpl implements IStudyService {
 					iStudyDao.delete(subjectFile);
 					AuditHistory ah = new AuditHistory();
 					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-					ah.setComment("Deleted subjectFile " + subjectFile.getId());
+					ah.setComment("SubjectFile " + subjectFile.getId()+" was successfully deleted.");
 					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
 					ah.setEntityId(subjectFile.getId());
 					iArkCommonService.createAuditHistory(ah);
@@ -956,7 +956,7 @@ public class StudyServiceImpl implements IStudyService {
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
 
-		ah.setComment("Deleted Study Component " + studyComp.getName());
+		ah.setComment("Study Component " + studyComp.getName()+" was successfully deleted.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
 		ah.setStudyStatus(studyComp.getStudy().getStudyStatus());
 		ah.setEntityId(studyComp.getId());
@@ -1456,7 +1456,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Cloned Subject " + linkSubjectStudy.getSubjectUID());
+		ah.setComment("Subject " + linkSubjectStudy.getSubjectUID()+" was successfully cloned.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
 		ah.setEntityId(linkSubjectStudy.getId());
 		iArkCommonService.createAuditHistory(ah);
@@ -2336,5 +2336,12 @@ public class StudyServiceImpl implements IStudyService {
 	@Override
 	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy, StudyComp studyComp) {
 		return iStudyDao.getSubjectFileParticularConsent(linkSubjectStudy, studyComp);
+	}
+
+	@Override
+	public List<StudyComp> getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(Study study,
+			LinkSubjectStudy linkSubjectStudy) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -518,4 +518,8 @@ public interface IStudyDao {
 	
 	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
 	
+	public List<SubjectFile> getSubjectFileForLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy);
+	
+	public List<StudyComp> getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(Study study,LinkSubjectStudy linkSubjectStudy);
+	
 }

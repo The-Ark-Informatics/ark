@@ -26,11 +26,12 @@ import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.SubjectFile;
 
+
 /**
  * @author nivedann
  * 
  */
-public class ConsentVO implements Serializable {
+public class ConsentVO implements ArkVo, Serializable {
 
 	private static final long				serialVersionUID	= -3717906790802004376L;
 	protected Consent							consent;
@@ -104,6 +105,11 @@ public class ConsentVO implements Serializable {
 
 	public void setFile(String file) {
 		this.file = file;
+	}
+	
+	@Override
+	public String getArkVoName(){
+		return "Consent";
 	}
 	
 }

@@ -229,14 +229,16 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 			if (containerForm.getModelObject().getStudyCalendar().getId() == null) {
 
 				iStudyService.saveOrUpdate(containerForm.getModelObject());
-				this.info("Study Calendar " + containerForm.getModelObject().getStudyCalendar().getName() + " was created successfully");
+				this.saveInformation();
+				//this.info("Study Calendar " + containerForm.getModelObject().getStudyCalendar().getName() + " was created successfully");
 				processErrors(target);
 
 			}
 			else {
 
 				iStudyService.saveOrUpdate(containerForm.getModelObject());
-				this.info("Study Calendar " + containerForm.getModelObject().getStudyCalendar().getName() + " was updated successfully");
+				this.updateInformation();
+				//this.info("Study Calendar " + containerForm.getModelObject().getStudyCalendar().getName() + " was updated successfully");
 				processErrors(target);
 
 			}
@@ -262,7 +264,8 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 			iStudyService.delete(containerForm.getModelObject().getStudyCalendar());
 			StudyCalendarVo studyCalendarVo = new StudyCalendarVo();
 			containerForm.setModelObject(studyCalendarVo);
-			containerForm.info("The Study Component was deleted successfully.");
+			//containerForm.info("The Study Component was deleted successfully.");
+			this.deleteInformation();
 			editCancelProcess(target);		
 	}
 

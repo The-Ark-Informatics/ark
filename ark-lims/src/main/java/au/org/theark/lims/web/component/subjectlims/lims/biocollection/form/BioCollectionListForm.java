@@ -209,7 +209,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to proceed with New BioCollection");
+				this.error("An unexpected error occurred. Unable to proceed with New BioCollection.");
 			}
 		};
 		newButton.setDefaultFormProcessing(false);

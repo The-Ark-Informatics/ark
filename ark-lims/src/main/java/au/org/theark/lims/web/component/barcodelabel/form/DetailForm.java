@@ -282,7 +282,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		iLimsAdminService.deleteBarcodeLabel(containerForm.getModelObject());
-		containerForm.info("The Barcode label record was deleted successfully.");
+		containerForm.info("The Barcode label record was successfully deleted.");
 		editCancelProcess(target);
 		onCancel(target);
 	}
@@ -332,7 +332,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 
 				try {
 					iLimsAdminService.createBarcodeLabel(containerForm.getModelObject());
-					this.info("Barcode label: " + containerForm.getModelObject().getName() + " was created successfully.");
+					this.info("Barcode label: " + containerForm.getModelObject().getName() + " was successfully created.");
 				} catch (ConstraintViolationException e) {
 					e.printStackTrace();
 					this.error("A Barcode Label named \"" + containerForm.getModelObject().getName() + "\" already exists for this study.");
@@ -340,7 +340,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			}
 			else {
 				iLimsAdminService.updateBarcodeLabel(containerForm.getModelObject());
-				this.info("Barcode label: " + containerForm.getModelObject().getName() + " was updated successfully.");
+				this.info("Barcode label: " + containerForm.getModelObject().getName() + " was successfully updated.");
 			}
 		}
 		target.add(feedBackPanel);

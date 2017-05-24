@@ -49,7 +49,7 @@ public class FamilyCustomDataEditorForm extends AbstractCustomDataEditorForm<Fam
 				}
 			}
 		} else {
-			this.info("Successfully saved all edits");
+			this.info("All edits were successfully saved.");
 		}
 		/*
 		 * Need to update the dataView, which forces a refresh of the model

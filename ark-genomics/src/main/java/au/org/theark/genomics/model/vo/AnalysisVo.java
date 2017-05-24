@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.org.theark.core.model.spark.entity.Analysis;
+import au.org.theark.core.vo.ArkVo;
 
-public class AnalysisVo implements Serializable {
+public class AnalysisVo implements ArkVo, Serializable {
 
 	/**
 	 * 
@@ -46,6 +47,11 @@ public class AnalysisVo implements Serializable {
 
 	public void setFile(String file) {
 		this.file = file;
+	}
+	
+	@Override
+	public String getArkVoName(){
+		return "Analysis";
 	}
 
 }

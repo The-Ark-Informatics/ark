@@ -422,7 +422,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					// check no biospecimens exist
 					long count = iLimsService.getBiospecimenCount(biospecimenCriteria);
 					if(count >0) {
-						error("You cannot archive this subject as there are Biospecimens associated ");
+						error("You cannot archive this subject as there are Biospecimens associated with it.");
 						target.focusComponent(subjectStatusDdc);
 					}
 				}
@@ -708,7 +708,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				}
 
 				onSavePostProcess(target);
-				this.info(sb.toString());
+				this.saveInformation();
+				//this.info(sb.toString());
 
 				// Set new Subject into context
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectVO.getLinkSubjectStudy().getSubjectUID());
@@ -732,7 +733,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				// check no biospecimens exist
 				long count = iLimsService.getBiospecimenCount(biospecimenCriteria);
 				if(count >0) {
-					error("You cannot archive this subject as there are Biospecimens associated ");
+					error("You cannot archive this subject as there are Biospecimens associated with it.");
 					target.focusComponent(subjectStatusDdc);
 					errorFlag = true;
 				}
@@ -746,13 +747,14 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					sb.append(" has been updated successfully and linked to the study in context ");
 					sb.append(study.getName());
 					onSavePostProcess(target);
-					this.info(sb.toString());
+					this.updateInformation();
+					//this.info(sb.toString());
 				}
 				catch (ArkUniqueException e) {
 					this.error("Subject UID must be unique.");
 				}
 				catch(EntityNotFoundException enf){
-					this.error("Cannot found the selected Subject.");
+					this.error("Cannot find the selected Subject.");
 				}
 			}
 		}
@@ -773,7 +775,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
 			// No study in context
-			this.error("There is no study in Context. Please select a study to manage a subject.");
+			this.error("There is no study selected. Please select a study to manage a subject.");
 			processErrors(target);
 		}else {
 			//create warning messages for date data month >12 day > 31 ...etc 
@@ -813,7 +815,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		
 		if(bday!=null && dateOfDeathDay!=null && 
 				(getYearsBetweenDates(bday, dateOfDeathDay) > Constants.MAXIMUM_ACCEPTABLE_AGE || getYearsBetweenDates(bday, dateOfDeathDay) < 0 )){
-			this.warn("Warning: the difference between the date of death and date of birth exceeds 125 years.");
+			this.warn("Warning: The difference between the date of death and date of birth is greater than 125 years.");
 			processErrors(target);
 		}
 	}
@@ -827,7 +829,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private void createWarningForUnformattedDate(AjaxRequestTarget target,Date date ,String dateTextFieldInput) {
 		if(dateTextFieldInput!=null && !dateTextFieldInput.isEmpty() && !isDateValid(dateTextFieldInput)){
 			DateFormat dff=new SimpleDateFormat("dd/MM/yyyy");
-			this.warn("Warning: the specified date"+ dateTextFieldInput+" has been transformed to"+dff.format(date));
+			this.warn("Warning: The specified date"+ dateTextFieldInput+" has been transformed to"+dff.format(date));
 			processErrors(target);
 		}
 	}

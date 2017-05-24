@@ -145,7 +145,7 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 					}
 				}
 				catch (ArkSystemException e) {
-					containerForm.error("A System Exception has occured please contact support.");
+					containerForm.error("A system exception has occurred. Please contact the system administrator.");
 				}
 				listView.removeAll();
 				return addressList;

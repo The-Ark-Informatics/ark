@@ -218,7 +218,7 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		if (containerForm.getModelObject().getInvRack().getId() == null) {
 			// Save
 			iInventoryService.createInvRack(containerForm.getModelObject());
-			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was created successfully");
+			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was successfully created.");
 			processErrors(target);
 			
 			if(node != null) {
@@ -232,7 +232,7 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		else {
 			// Update
 			iInventoryService.updateInvRack(containerForm.getModelObject());
-			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was updated successfully");
+			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was successfully updated.");
 			processErrors(target);
 		}
 

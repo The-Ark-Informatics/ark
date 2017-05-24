@@ -121,7 +121,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		phenotypicDao.createPhenoCollection(col);
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Pheno Collection " + col.getDescription());
+		ah.setComment("Collection " + col.getDescription()+" was successfully created.");
 		ah.setEntityId(col.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -198,7 +198,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Pheno Collection " + colEntity.getDescription());
+		ah.setComment("Pheno Collection " + colEntity.getDescription()+" was successfully updated.");
 		ah.setEntityId(colEntity.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -217,7 +217,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted Pheno Collection " + collection.getDescription());
+		ah.setComment("Pheno Collection " + collection.getDescription()+" was successfully deleted.");
 		ah.setEntityId(collection.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -234,7 +234,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created PhenoUpload for File " + upload.getFilename());
+		ah.setComment("PhenoUpload for File " + upload.getFilename()+" was successfully created.");
 		ah.setEntityId(upload.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_UPLOAD);
 		iArkCommonService.createAuditHistory(ah);
@@ -756,8 +756,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 			phenotypicDao.createCustomFieldGroup(customFieldGroupVO);
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-			ah.setComment("Created Custom Field Group "
-					+ customFieldGroupVO.getCustomFieldGroup().getName());
+			ah.setComment("Custom Field Group "
+					+ customFieldGroupVO.getCustomFieldGroup().getName()+" was successfully created.");
 			ah.setEntityId(customFieldGroupVO.getCustomFieldGroup().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_GROUP);
 			iArkCommonService.createAuditHistory(ah);
@@ -765,7 +765,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 			log.error("A Questionnaire with this name for the given study  exists.: "
 					+ cvex);
 			throw new EntityExistsException(
-					"A Questionnaire with that name already exits.");
+					"A Questionnaire with that name already exists.");
 		} catch (Exception ex) {
 			log.error("Problem creating Questionnaire: " + ex);
 			throw new ArkSystemException("Problem creating Questionnaire: "
@@ -795,8 +795,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 			phenotypicDao.updateCustomFieldGroup(customFieldGroupVO);
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-			ah.setComment("Updated Custom Field Group "
-					+ customFieldGroupVO.getCustomFieldGroup().getName());
+			ah.setComment("Custom Field Group "
+					+ customFieldGroupVO.getCustomFieldGroup().getName()+" was successfully updated.");
 			ah.setEntityId(customFieldGroupVO.getCustomFieldGroup().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_GROUP);
 			iArkCommonService.createAuditHistory(ah);
@@ -804,7 +804,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 			log.error("A Questionnaire with this name for the given study  exists.: "
 					+ cvex);
 			throw new EntityExistsException(
-					"A Questionnaire with that name already exits.");
+					"A Questionnaire with that name already exists.");
 		} catch (Exception ex) {
 			log.error("Problem creating Questionnaire: " + ex);
 			throw new ArkSystemException("Problem creating Questionnaire: "
@@ -830,8 +830,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created PhenoCollection "
-				+ phenoCollection.getDescription());
+		ah.setComment("PhenoCollection "
+				+ phenoCollection.getDescription()+" was successfully created.");
 		ah.setEntityId(phenoCollection.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -842,8 +842,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated PhenoCollection "
-				+ phenoCollection.getDescription());
+		ah.setComment("PhenoCollection "
+				+ phenoCollection.getDescription()+" was successfully updated.");
 		ah.setEntityId(phenoCollection.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -854,8 +854,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted PhenoCollection "
-				+ phenoCollection.getDescription());
+		ah.setComment("PhenoCollection "
+				+ phenoCollection.getDescription()+" was successfully deleted.");
 		ah.setEntityId(phenoCollection.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -867,8 +867,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Upload for File "
-				+ uploadVo.getUpload().getFilename());
+		ah.setComment("Upload for File "
+				+ uploadVo.getUpload().getFilename()+" was successfully created.");
 		ah.setEntityId(uploadVo.getUpload().getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
 		iArkCommonService.createAuditHistory(ah);
@@ -1000,7 +1000,7 @@ try {
 			phenotypicDao.createPhenoDataSetCategory(phenoDataSetCategoryvo.getPhenoDataSetCategory());
 			// PhenoDataSet Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-			ah.setComment("Created phono Data Set category " + phenoDataSetCategoryvo.getPhenoDataSetCategory().getName());
+			ah.setComment("Pheno Data Set category " + phenoDataSetCategoryvo.getPhenoDataSetCategory().getName()+" was successfully created.");
 			ah.setEntityId(phenoDataSetCategoryvo.getPhenoDataSetCategory().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_CATEGORY);
 			phenotypicDao.createAuditHistory(ah,null,null);
@@ -1008,10 +1008,10 @@ try {
 			log.error("Pheno DataSet Category Constrain violation" + cvex);
 			if(cvex.getMessage().contains("Duplicate entry")){
 				log.error("Pheno DataSet Category Duplicates" + cvex);
-				throw new ArkRunTimeUniqueException("A Pheno DataSet Category duplicate value violation");
+				throw new ArkRunTimeUniqueException("A Pheno DataSet Category duplicate value violation error occurred.");
 			}else if(cvex.getMessage().contains("cannot be null")){
 				log.error("Pheno DataSet Category field cannot be null" + cvex);
-				throw new ArkRunTimeException("A Pheno DataSet Category null violation");
+				throw new ArkRunTimeException("A Pheno DataSet Category null violation error occurred.");
 			}
 		} catch (Exception ex) {
 			log.error("Problem creating Pheno DataSet Category: " + ex);
@@ -1031,13 +1031,13 @@ try {
 			// Pheno DataSet History
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-			ah.setComment("Updated Pheno DataSet Category" + phenoDataSetCategoryvo.getPhenoDataSetCategory().getName());
+			ah.setComment("Pheno DataSet Category" + phenoDataSetCategoryvo.getPhenoDataSetCategory().getName()+" was successfully updated.");
 			ah.setEntityId(phenoDataSetCategoryvo.getPhenoDataSetCategory().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_CATEGORY);
 			phenotypicDao.createAuditHistory(ah,null,null);
 		} catch (ConstraintViolationException cvex) {
 			log.error("Pheno DataSet Category Already Exists.: " + cvex);
-			throw new ArkUniqueException("A Pheno DataSet Category already exits.");
+			throw new ArkUniqueException("A Pheno DataSet Category already exists.");
 		} catch (Exception ex) {
 			log.error("Problem updating Pheno DataSet: " + ex);
 			throw new ArkSystemException("Problem updating Pheno DataSet Category: " + ex.getMessage());
@@ -1049,13 +1049,13 @@ try {
 	public void deletePhenoDataSetCategory(PhenoDataSetCategoryVO phenoDataSetCategoryvo)throws ArkSystemException, EntityCannotBeRemoved, QueryException {
 		String fieldName = phenoDataSetCategoryvo.getPhenoDataSetCategory().getName();
 		if(phenotypicDao.isPhenoDataSetCategoryAlreadyUsed(phenoDataSetCategoryvo.getPhenoDataSetCategory())){
-					throw new EntityCannotBeRemoved("Can not delete Pheno DataSet Category which already being used.");
+					throw new EntityCannotBeRemoved("You cannot delete a Pheno DataSet Category which already in use.");
 		}else{
 			phenotypicDao.deletePhenoDataSetCategory(phenoDataSetCategoryvo.getPhenoDataSetCategory());
 					// History for Pheno DataSet Category
 					AuditHistory ah = new AuditHistory();
 					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-					ah.setComment("Deleted Pheno DataSet Category " + fieldName);
+					ah.setComment("Pheno DataSet Category " + fieldName+" was successfully deleted.");
 					ah.setEntityId(phenoDataSetCategoryvo.getPhenoDataSetCategory().getId());
 					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_CATEGORY);
 					phenotypicDao.createAuditHistory(ah,null,null);
@@ -1093,7 +1093,7 @@ try {
 		boolean isUnique = phenotypicDao.isPhenoDataSetFieldUnqiue(phenoDataSetFieldVO.getPhenoDataSetField().getName(), phenoDataSetFieldVO.getPhenoDataSetField().getStudy(), phenoDataSetFieldVO.getPhenoDataSetField());
 		if (!isUnique) {
 			log.error("Pheno Field of this name Already Exists.: ");
-			throw new ArkUniqueException("A Pheno Field of this name already exists.");
+			throw new ArkUniqueException("A Pheno Field with this name already exists.");
 		}
 		try {
 			// Remove any encoded values if DATE or NUMBER
@@ -1105,7 +1105,7 @@ try {
 			// PhenoDataSet Field History
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-			ah.setComment("Updated PhenoDataSet Field " + phenoDataSetFieldVO.getPhenoDataSetField().getName());
+			ah.setComment("PhenoDataSet Field " + phenoDataSetFieldVO.getPhenoDataSetField().getName()+" was successfully updated.");
 			ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD);
 			createAuditHistory(ah);
@@ -1125,7 +1125,7 @@ try {
 
 		} catch (ConstraintViolationException cvex) {
 			log.error("PhenoDataSet Field Already Exists.: " + cvex);
-			throw new ArkUniqueException("A PhenoDataSet Field already exits.");
+			throw new ArkUniqueException("A PhenoDataSet Field already exists.");
 		} catch (Exception ex) {
 			log.error("Problem updating PhenoDataSet Field: " + ex);
 			throw new ArkSystemException("Problem updating PhenoDataSet Field: " + ex.getMessage());
@@ -1174,7 +1174,7 @@ try {
 
 			// PhenoDataSet Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-			ah.setComment("Created PhenoDataSet " + phenoDataSetFieldVO.getPhenoDataSetField().getName());
+			ah.setComment("PhenoDataSet " + phenoDataSetFieldVO.getPhenoDataSetField().getName()+" was successfully created.");
 			ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD);
 
@@ -1200,7 +1200,7 @@ try {
 			}*/
 		} catch (ConstraintViolationException cvex) {
 			log.error("PhenoDataSet Field Already Exists.: " + cvex);
-			throw new ArkUniqueException("A PhenoDataSet Field already exits.");
+			throw new ArkUniqueException("A PhenoDataSet Field already exists.");
 		} catch (Exception ex) {
 			log.error("Problem creating PhenoDataSet Field: " + ex);
 			throw new ArkSystemException("Problem creating PhenoDataSet Field: " + ex.getMessage());
@@ -1257,7 +1257,7 @@ try {
 			log.error("A Questionnaire with this name for the given study  exists.: "
 					+ cvex);
 			throw new EntityExistsException(
-					"A Questionnaire with that name already exits.");
+					"A Questionnaire with that name already exists.");
 		} catch (Exception ex) {
 			log.error("Problem creating Questionnaire: " + ex);
 			throw new ArkSystemException("Problem creating Questionnaire: "
@@ -1282,7 +1282,7 @@ try {
 			log.error("A Questionnaire with this name for the given study  exists.: "
 					+ cvex);
 			throw new EntityExistsException(
-					"A Questionnaire with that name already exits.");
+					"A Questionnaire with that name already exists.");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			log.error("Problem creating Questionnaire: " + ex);

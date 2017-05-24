@@ -30,12 +30,13 @@ import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.vo.ArkVo;
 
 /**
  * @author cellis and travis
  * 
  */
-public class SearchVO implements Serializable {
+public class SearchVO implements ArkVo, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Search search;
@@ -275,5 +276,8 @@ public class SearchVO implements Serializable {
 		this.selectedBiocollectionCustomFieldDisplays = selectedBiocollectionCustomFieldDisplays;
 	}
 
-	
+	@Override
+	public String getArkVoName(){
+		return "Search";
+	}
 }

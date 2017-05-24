@@ -161,7 +161,7 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 			}
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to proceed with New");
+				this.error("An unexpected error occurred. Unable to proceed with new.");
 			}
 		};
 		newPhoneButton.setDefaultFormProcessing(false);
@@ -188,7 +188,7 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 			}
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to proceed with New");
+				this.error("An unexpected error occurred. Unable to proceed with new.");
 			}
 		};
 		newAddressButton.setDefaultFormProcessing(false);

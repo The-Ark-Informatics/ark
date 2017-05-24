@@ -2,8 +2,9 @@ package au.org.theark.disease.vo;
 
 import au.org.theark.core.model.disease.entity.Affection;
 import au.org.theark.core.vo.BaseVO;
+import au.org.theark.core.vo.ArkVo;
 
-public class AffectionVO extends BaseVO{
+public class AffectionVO extends BaseVO implements ArkVo{
 	
 	private Affection affection;
 	
@@ -21,5 +22,11 @@ public class AffectionVO extends BaseVO{
 
 	public void setAffection(Affection affection) {
 		this.affection = affection;
-	}	
+	}
+	
+	@Override
+	public String getArkVoName(){
+		return "Affection";
+	}
+
 }

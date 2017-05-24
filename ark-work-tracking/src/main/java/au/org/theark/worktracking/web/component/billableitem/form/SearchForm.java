@@ -91,7 +91,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	protected void addSearchComponentsToForm() {		
@@ -156,7 +156,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 				}catch(Exception ex){
-					this.error("A System error occured in invoice update");
+					this.error("A system error occurred in the invoice update.");
 				}
 			}
 			@Override
@@ -321,7 +321,7 @@ private void initBillableItemTypeDropDown() {
 			List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getModelObject());
 			
 			if(resultList != null && resultList.size() == 0){
-				this.info("Billable Item with the specified criteria does not exist in the system.");
+				this.info("Billable Item with the specified search criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
 			

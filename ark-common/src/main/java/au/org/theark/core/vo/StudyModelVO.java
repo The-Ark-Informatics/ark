@@ -29,9 +29,10 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.vo.ArkVo;
 
 @SuppressWarnings("serial")
-public class StudyModelVO implements Serializable {
+public class StudyModelVO implements ArkVo, Serializable {
 
 	private Study						study;
 	private Set<String>				lmcAvailableApps;
@@ -305,5 +306,10 @@ public class StudyModelVO implements Serializable {
 	 */
 	public long getTotalSubjectsOfParent() {
 		return totalSubjectsOfParent;
+	}
+	
+	@Override
+	public String getArkVoName(){
+		return "Study Model";
 	}
 }

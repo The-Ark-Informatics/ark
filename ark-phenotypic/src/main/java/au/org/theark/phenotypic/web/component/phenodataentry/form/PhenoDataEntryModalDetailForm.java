@@ -123,7 +123,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			pc = iPhenotypicService.getPhenoCollection(pc.getId());
 			cpModel.getObject().setPhenoDataSetCollection(pc);
 			if (pc == null) {
-				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
+				this.error("Cannot edit this record - it has been invalidated (e.g. deleted)");
 			}
 		}
 	}
@@ -366,14 +366,14 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		if (cpModel.getObject().getPhenoDataSetCollection().getId() == null) {
 			// Save
 			iPhenotypicService.createCollection(cpModel.getObject().getPhenoDataSetCollection());
-			this.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getId() + " was created successfully");
+			this.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getId() + " was successfully created.");
 			processErrors(target);
 
 		}
 		else {
 			// Update
 			iPhenotypicService.updateCollection(cpModel.getObject().getPhenoDataSetCollection());
-			this.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getId() + " was updated successfully");
+			this.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getId() + " was successfully updated.");
 			processErrors(target);
 			
 		}
@@ -402,7 +402,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 		// Base containerForm for pheno data entry unfortunately way up the chain...thus a lot of getParent() calls. Not the neatest method by any means		
 		PhenoCollectionDataEntryContainerPanel containerPanel = (PhenoCollectionDataEntryContainerPanel) this.getParent().getParent().getParent().getParent().getParent().getParent();
-		containerPanel.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire().getName() + " was deleted successfully");
+		containerPanel.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire().getName() + " was successfully deleted.");
 		target.add(containerPanel.getFeedbackPanel());
 		onClose(target);
 		processErrors(target);

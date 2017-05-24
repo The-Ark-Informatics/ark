@@ -111,7 +111,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
 					getLog().error("Unexpected error: customfield.minValue is not in the DD/MM/YYYY date format");
-					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
+					this.error("An unexpected error occurred loading the field validators from database.  Please contact the system administrator.");
 					getParentContainer().setEnabled(false);
 				}
 			}
@@ -124,7 +124,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
 					getLog().error("Unexpected error: customfield.maxValue is not in the DD/MM/YYYY date format");
-					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
+					this.error("An unexpected error occurred loading the field validators from database.  Please contact the system administrator.");
 					getParentContainer().setEnabled(false);
 				}
 			}
@@ -225,7 +225,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
 							getLog().error("Unexpected error: customfield.maxValue is not in a valid number format");
-							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
+							this.error("An unexpected error occurred loading the field validators from database. Please contact the system administrator.");
 							getParentContainer().setEnabled(false);
 						}
 					}
@@ -238,7 +238,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
 							getLog().error("Unexpected error: customfield.maxValue is not in a valid number format");
-							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
+							this.error("An unexpected error occurred loading the field validators from database. Please contact the system administrator.");
 							getParentContainer().setEnabled(false);
 						}
 					}

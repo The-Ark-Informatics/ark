@@ -256,7 +256,7 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		if (containerForm.getModelObject().getInvFreezer().getId() == null) {
 			// Save
 			iInventoryService.createInvFreezer(containerForm.getModelObject());
-			this.info("Freezer " + containerForm.getModelObject().getInvFreezer().getName() + " was created successfully");
+			this.info("Freezer " + containerForm.getModelObject().getInvFreezer().getName() + " was successfully created.");
 			processErrors(target);
 			
 			if(node != null) {
@@ -270,7 +270,7 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		else {
 			// Update
 			iInventoryService.updateInvFreezer(containerForm.getModelObject());
-			this.info("Freezer " + containerForm.getModelObject().getInvFreezer().getName() + " was updated successfully");
+			this.info("Freezer " + containerForm.getModelObject().getInvFreezer().getName() + " was successfully updated.");
 			processErrors(target);
 		}
 
@@ -298,7 +298,7 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target) {
 		iInventoryService.deleteInvFreezer(containerForm.getModelObject());
-		this.info("Freezer " + containerForm.getModelObject().getInvFreezer().getName() + " was deleted successfully");
+		this.info("Freezer " + containerForm.getModelObject().getInvFreezer().getName() + " was successfully deleted.");
 
 		// Display delete confirmation message
 		target.add(feedbackPanel);
