@@ -131,7 +131,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 		phoneTypeChoice.add(new ArkDefaultFormFocusBehavior());
 		addDetailFormComponents();
 		attachValidators();
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 
 	public void addDetailFormComponents() {

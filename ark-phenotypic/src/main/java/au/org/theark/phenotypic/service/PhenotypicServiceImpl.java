@@ -109,16 +109,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 *            the collection object to be created
 	 */
 	public void createCollection(PhenoDataSetCollection col) {
-		// Subject currentUser = SecurityUtils.getSubject();
-		// studyId = (Long)
-		// currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-		// Newly created collections must start with a Created status
-		// atus status =
-		// phenotypicDao.getStatusByName(Constants.STATUS_CREATED);
-
-		// col.setStatus(status);
-		// /col.setStudy(iArkCommonService.getStudy(studyId));
+	
 
 		phenotypicDao.createPhenoCollection(col);
 		AuditHistory ah = new AuditHistory();
@@ -128,73 +119,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
 	}
-
-	/**
-	 * A Phenotypic collection is the data storage or grouping of a particular
-	 * set set of data, containing subjects with fields with field data values
-	 * for a particular date collected
-	 * 
-	 * @param phenoVo
-	 *            the collectionVo object to be created
-	 *
-	 *            public void createCollection(PhenoCollectionVO phenoVo) {
-	 *            phenotypicDao.createPhenoCollection(phenoVo);
-	 * 
-	 *            AuditHistory ah = new AuditHistory();
-	 *            ah.setActionType(au.org.theark
-	 *            .core.Constants.ACTION_TYPE_CREATED);
-	 *            ah.setComment("Created Pheno Collection " +
-	 *            phenoVo.getPhenoCollection().getName());
-	 *            ah.setEntityId(phenoVo.getPhenoCollection().getId());
-	 *            ah.setEntityType
-	 *            (au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
-	 *            iArkCommonService.createAuditHistory(ah); } public void
-	 *            deleteCollection(PhenoCollectionVO phenoVo) {
-	 *            phenotypicDao.deletePhenoCollection(phenoVo);
-	 * 
-	 *            AuditHistory ah = new AuditHistory();
-	 *            ah.setActionType(au.org.theark
-	 *            .core.Constants.ACTION_TYPE_DELETED);
-	 *            ah.setComment("Deleted Pheno Collection " +
-	 *            phenoVo.getPhenoCollection().getName());
-	 *            ah.setEntityId(phenoVo.getPhenoCollection().getId());
-	 *            ah.setEntityType
-	 *            (au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
-	 *            iArkCommonService.createAuditHistory(ah); }
-	 * 
-	 *            public void updateCollection(PhenoCollectionVO phenoVo) {
-	 *            phenotypicDao.updatePhenoCollection(phenoVo);
-	 * 
-	 *            AuditHistory ah = new AuditHistory();
-	 *            ah.setActionType(au.org.theark
-	 *            .core.Constants.ACTION_TYPE_UPDATED);
-	 *            ah.setComment("Updated Pheno Collection " +
-	 *            phenoVo.getPhenoCollection().getName());
-	 *            ah.setEntityId(phenoVo.getPhenoCollection().getId());
-	 *            ah.setEntityType
-	 *            (au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
-	 *            iArkCommonService.createAuditHistory(ah); }
-	 */
-	/**
-	 * A Phenotypic collection import is the job that runs to import the data
-	 * into the database. It contains relevant metadata about the import, such
-	 * as start time and finish time
-	 * 
-	 * @param colImport
-	 *            the collection import object to be created
-	 *
-	 *            public void createCollectionImport(PhenoCollectionUpload
-	 *            colImport) { phenotypicDao.createCollectionUpload(colImport);
-	 * 
-	 *            AuditHistory ah = new AuditHistory();
-	 *            ah.setActionType(au.org.theark
-	 *            .core.Constants.ACTION_TYPE_CREATED);
-	 *            ah.setComment("Created Pheno Collection Upload " +
-	 *            colImport.getId()); ah.setEntityId(colImport.getId());
-	 *            ah.setEntityType(au.org.theark.core.Constants.
-	 *            ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
-	 *            iArkCommonService.createAuditHistory(ah); }
-	 */
 	public void updateCollection(PhenoDataSetCollection colEntity) {
 		phenotypicDao.updatePhenoCollection(colEntity);
 
@@ -206,10 +130,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	/*
-	 * public PhenoCollectionVO getPhenoCollectionAndFields(Long id) { return
-	 * phenotypicDao.getPhenoCollectionAndFields(id); }
-	 */
 	public Collection<PhenoDataSetCollection> getPhenoCollectionByStudy(Study study) {
 		return phenotypicDao.getPhenoCollectionByStudy(study);
 	}
@@ -225,11 +145,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	/*
-	 * public java.util.Collection<PhenoCollection>
-	 * searchPhenoCollection(PhenoCollection phenoCollection) { return
-	 * phenotypicDao.searchPhenoCollection(phenoCollection); }
-	 */
 
 	public void createUpload(Upload upload) {
 		phenotypicDao.createUpload(upload);
@@ -242,114 +157,15 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	/*
-	 * public void createUpload(UploadVO uploadVo) {
-	 * phenotypicDao.createUpload(uploadVo);
-	 * 
-	 * AuditHistory ah = new AuditHistory();
-	 * ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-	 * ah.setComment("Created PhenoUpload for File " +
-	 * uploadVo.getUpload().getFilename());
-	 * ah.setEntityId(uploadVo.getUpload().getId());
-	 * ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_UPLOAD);
-	 * iArkCommonService.createAuditHistory(ah); }
-	 */
-	/*
-	 * public void updateUpload(PhenoUpload upload) {
-	 * phenotypicDao.updateUpload(upload);
-	 * 
-	 * AuditHistory ah = new AuditHistory();
-	 * ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-	 * ah.setComment("Created PhenoUpload for File " + upload.getFilename());
-	 * ah.setEntityId(upload.getId());
-	 * ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_UPLOAD);
-	 * iArkCommonService.createAuditHistory(ah); }
-	 * 
-	 * public void deleteUpload(PhenoUpload upload) throws ArkSystemException,
-	 * EntityCannotBeRemoved { phenotypicDao.deleteUpload(upload);
-	 * 
-	 * AuditHistory ah = new AuditHistory();
-	 * ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-	 * ah.setComment("Deleted PhenoUpload " + upload.getFilename());
-	 * ah.setEntityId(upload.getId());
-	 * ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_UPLOAD);
-	 * iArkCommonService.createAuditHistory(ah); }
-	 */
 	public Collection<FileFormat> getFileFormats() {
 		return phenotypicDao.getFileFormats();
 	}
 
-	/*
-	 * public PhenoCollectionVO getPhenoCollectionAndUploads(Long id) { return
-	 * phenotypicDao.getPhenoCollectionAndUploads(id); }
-	 * 
-	 * public PhenoCollectionVO getPhenoCollectionAndUploads(PhenoCollection
-	 * phenoCollection) { return
-	 * phenotypicDao.getPhenoCollectionAndUploads(phenoCollection); }
-	 * 
-	 * public PhenoUpload getUpload(Long id) { return
-	 * phenotypicDao.getUpload(id); }
-	 * 
-	 * public Collection<PhenoUpload> searchUpload(PhenoUpload upload) { return
-	 * phenotypicDao.searchUpload(upload); }
-	 */
 
 	public Collection<DelimiterType> getDelimiterTypes() {
 		return phenotypicDao.getDelimiterTypes();
 	}
 
-	/*
-	 * public Collection<PhenoUpload> searchUploadByCollection(PhenoCollection
-	 * phenoCollection) { return
-	 * phenotypicDao.searchUploadByCollection(phenoCollection); }
-	 * 
-	 * public void createPhenoCollectionUpload(PhenoCollectionUpload
-	 * phenoCollectionUpload) {
-	 * phenotypicDao.createCollectionUpload(phenoCollectionUpload);
-	 * 
-	 * AuditHistory ah = new AuditHistory();
-	 * ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-	 * ah.setComment("Created PhenoCollectionUpload " +
-	 * phenoCollectionUpload.getId());
-	 * ah.setEntityId(phenoCollectionUpload.getId());
-	 * ah.setEntityType(au.org.theark
-	 * .core.Constants.ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
-	 * iArkCommonService.createAuditHistory(ah); }
-	 * 
-	 * public void deletePhenoCollectionUpload(PhenoCollectionUpload
-	 * phenoCollectionUpload) {
-	 * phenotypicDao.deleteCollectionUpload(phenoCollectionUpload);
-	 * 
-	 * AuditHistory ah = new AuditHistory();
-	 * ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-	 * ah.setComment("Deleted PhenoCollectionUpload " +
-	 * phenoCollectionUpload.getId());
-	 * ah.setEntityId(phenoCollectionUpload.getId());
-	 * ah.setEntityType(au.org.theark
-	 * .core.Constants.ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
-	 * iArkCommonService.createAuditHistory(ah); }
-	 * 
-	 * public PhenoCollectionUpload getPhenoCollectionUpload(Long id) { return
-	 * phenotypicDao.getPhenoCollectionUpload(id); }
-	 * 
-	 * public Collection<PhenoCollectionUpload>
-	 * searchPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
-	 * { return
-	 * phenotypicDao.searchPhenoCollectionUpload(phenoCollectionUpload); }
-	 * 
-	 * public void updatePhenoCollectionUpload(PhenoCollectionUpload
-	 * phenoCollectionUpload) {
-	 * phenotypicDao.updateCollectionUpload(phenoCollectionUpload);
-	 * 
-	 * AuditHistory ah = new AuditHistory();
-	 * ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-	 * ah.setComment("Updated PhenoCollectionUpload " +
-	 * phenoCollectionUpload.getId());
-	 * ah.setEntityId(phenoCollectionUpload.getId());
-	 * ah.setEntityType(au.org.theark
-	 * .core.Constants.ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
-	 * iArkCommonService.createAuditHistory(ah); }
-	 */
 
 	public long getCountOfFieldsInStudy(Study study) {
 		return phenotypicDao.getCountOfFieldsInStudy(study);
@@ -359,172 +175,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getCountOfFieldsWithDataInStudy(study);
 	}
 
-	/*
-	 * public void uploadPhenotypicDataFile(org.apache.wicket.util.file.File
-	 * file, String fileFormat, char delimiterChar) { Subject currentUser =
-	 * SecurityUtils.getSubject(); studyId = (Long)
-	 * currentUser.getSession().getAttribute
-	 * (au.org.theark.core.Constants.STUDY_CONTEXT_ID); study =
-	 * iArkCommonService.getStudy(studyId);
-	 * 
-	 * Long sessionCollectionId = (Long)
-	 * SecurityUtils.getSubject().getSession().
-	 * getAttribute(au.org.theark.phenotypic
-	 * .web.Constants.SESSION_PHENO_COLLECTION_ID); PhenoCollection
-	 * phenoCollection = phenotypicDao.getPhenoCollection(sessionCollectionId);
-	 * PhenoDataUploader pi = new PhenoDataUploader(this, study,
-	 * phenoCollection, iArkCommonService, fileFormat, delimiterChar); ;
-	 * 
-	 * try { InputStream is = new FileInputStream(file);
-	 * 
-	 * log.debug("Importing file"); pi.uploadMatrixFieldDataFile(is,
-	 * file.length()); } catch (IOException ioe) {
-	 * log.error(Constants.IO_EXCEPTION + ioe); } catch (FileFormatException
-	 * ffe) { log.error(Constants.FILE_FORMAT_EXCEPTION + ffe); } catch
-	 * (PhenotypicSystemException pse) {
-	 * log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse); } }
-	 * 
-	 * public StringBuffer
-	 * uploadAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file,
-	 * String fileFormat, char delimiterChar) { StringBuffer importReport =
-	 * null; Subject currentUser = SecurityUtils.getSubject(); studyId = (Long)
-	 * currentUser
-	 * .getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID
-	 * ); study = iArkCommonService.getStudy(studyId);
-	 * 
-	 * Long sessionCollectionId = (Long)
-	 * SecurityUtils.getSubject().getSession().
-	 * getAttribute(au.org.theark.phenotypic
-	 * .web.Constants.SESSION_PHENO_COLLECTION_ID); PhenoCollection
-	 * phenoCollection = phenotypicDao.getPhenoCollection(sessionCollectionId);
-	 * PhenoDataUploader pi = new PhenoDataUploader(this, study,
-	 * phenoCollection, iArkCommonService, fileFormat, delimiterChar);
-	 * 
-	 * try { InputStream inputStream = new FileInputStream(file);
-	 * 
-	 * log.debug("Importing file"); if (fileFormat.equalsIgnoreCase("XLS")) {
-	 * Workbook w; try { w = Workbook.getWorkbook(inputStream); inputStream =
-	 * pi.convertXlsToCsv(w); inputStream.reset(); } catch (BiffException e) {
-	 * log.error(e.getMessage()); } catch (IOException e) {
-	 * log.error(e.getMessage()); } } importReport =
-	 * pi.uploadAndReportMatrixFieldDataFile(inputStream, file.length()); }
-	 * catch (IOException ioe) { log.error(Constants.IO_EXCEPTION + ioe); }
-	 * catch (FileFormatException ffe) {
-	 * log.error(Constants.FILE_FORMAT_EXCEPTION + ffe); } catch
-	 * (PhenotypicSystemException pse) {
-	 * log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse); } return
-	 * importReport; }
-	 * 
-	 * public void uploadPhenotypicDataFile(InputStream inputStream, String
-	 * fileFormat, char delimiterChar) { Subject currentUser =
-	 * SecurityUtils.getSubject(); studyId = (Long)
-	 * currentUser.getSession().getAttribute
-	 * (au.org.theark.core.Constants.STUDY_CONTEXT_ID); study =
-	 * iArkCommonService.getStudy(studyId);
-	 * 
-	 * Long sessionCollectionId = (Long)
-	 * SecurityUtils.getSubject().getSession().
-	 * getAttribute(au.org.theark.phenotypic
-	 * .web.Constants.SESSION_PHENO_COLLECTION_ID); PhenoCollection
-	 * phenoCollection = phenotypicDao.getPhenoCollection(sessionCollectionId);
-	 * PhenoDataUploader pi = new PhenoDataUploader(this, study,
-	 * phenoCollection, iArkCommonService, fileFormat, delimiterChar);
-	 * 
-	 * try { log.debug("Importing pheno data file"); if
-	 * (fileFormat.equalsIgnoreCase("XLS")) { Workbook w; try { w =
-	 * Workbook.getWorkbook(inputStream); inputStream = pi.convertXlsToCsv(w);
-	 * inputStream.reset(); } catch (BiffException e) {
-	 * log.error(e.getMessage()); } catch (IOException e) {
-	 * log.error(e.getMessage()); } } pi.uploadMatrixFieldDataFile(inputStream,
-	 * inputStream.toString().length()); } catch (FileFormatException ffe) {
-	 * log.error(Constants.FILE_FORMAT_EXCEPTION + ffe); } catch
-	 * (PhenotypicSystemException pse) {
-	 * log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse); } }
-	 * 
-	 * public StringBuffer uploadAndReportPhenotypicDataFile(InputStream
-	 * inputStream, String fileFormat, char delimiterChar) { StringBuffer
-	 * uploadReport = null; Subject currentUser = SecurityUtils.getSubject();
-	 * studyId = (Long)
-	 * currentUser.getSession().getAttribute(au.org.theark.core.
-	 * Constants.STUDY_CONTEXT_ID); study = iArkCommonService.getStudy(studyId);
-	 * 
-	 * Long sessionCollectionId = (Long)
-	 * SecurityUtils.getSubject().getSession().
-	 * getAttribute(au.org.theark.phenotypic
-	 * .web.Constants.SESSION_PHENO_COLLECTION_ID); PhenoCollection
-	 * phenoCollection = phenotypicDao.getPhenoCollection(sessionCollectionId);
-	 * PhenoDataUploader pi = new PhenoDataUploader(this, study,
-	 * phenoCollection, iArkCommonService, fileFormat, delimiterChar);
-	 * 
-	 * try { log.info("Importing pheno file"); if
-	 * (fileFormat.equalsIgnoreCase("XLS")) { Workbook w; try { w =
-	 * Workbook.getWorkbook(inputStream); inputStream = pi.convertXlsToCsv(w);
-	 * inputStream.reset(); } catch (BiffException e) {
-	 * log.error(e.getMessage()); } catch (IOException e) {
-	 * log.error(e.getMessage()); } } uploadReport =
-	 * pi.uploadAndReportMatrixFieldDataFile(inputStream,
-	 * inputStream.toString().length()); } catch (FileFormatException ffe) {
-	 * log.error(Constants.FILE_FORMAT_EXCEPTION + ffe); } catch
-	 * (PhenotypicSystemException pse) {
-	 * log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse); } return
-	 * uploadReport; }
-	 */
-	/*
-	 * public StringBuffer uploadAndReportPhenotypicDataFile(UploadVO uploadVo)
-	 * { StringBuffer uploadReport = null; Subject currentUser =
-	 * SecurityUtils.getSubject(); studyId = (Long)
-	 * currentUser.getSession().getAttribute
-	 * (au.org.theark.core.Constants.STUDY_CONTEXT_ID); study =
-	 * iArkCommonService.getStudy(studyId); String filename =
-	 * uploadVo.getFileUpload().getClientFileName(); String fileFormat =
-	 * filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
-	 * FileFormat fileFormatObj = new FileFormat();
-	 * fileFormatObj.setName(fileFormat);
-	 * uploadVo.getUpload().setFileFormat(fileFormatObj);
-	 * 
-	 * Long sessionCollectionId = (Long)
-	 * SecurityUtils.getSubject().getSession().
-	 * getAttribute(au.org.theark.phenotypic
-	 * .web.Constants.SESSION_PHENO_COLLECTION_ID); PhenoCollection
-	 * phenoCollection = null;
-	 * 
-	 * if (sessionCollectionId == null) { phenoCollection =
-	 * uploadVo.getPhenoCollection(); } else { phenoCollection =
-	 * phenotypicDao.getPhenoCollection(sessionCollectionId); }
-	 * 
-	 * PhenoDataUploader pi = new PhenoDataUploader(this, study,
-	 * phenoCollection, iArkCommonService, fileFormat,
-	 * uploadVo.getUpload().getDelimiterType().getDelimiterCharacter());
-	 * 
-	 * try { log.info("Importing pheno file"); InputStream inputStream =
-	 * uploadVo.getFileUpload().getInputStream(); if
-	 * (uploadVo.getUpload().getFileFormat().getName().equalsIgnoreCase("XLS"))
-	 * { Workbook w; try { w = Workbook.getWorkbook(inputStream); inputStream =
-	 * pi.convertXlsToCsv(w); inputStream.reset(); } catch (BiffException e) {
-	 * log.error(e.getMessage()); } catch (IOException e) {
-	 * log.error(e.getMessage()); } }
-	 * 
-	 * uploadReport = pi.uploadAndReportMatrixFieldDataFile(inputStream,
-	 * uploadVo.getFileUpload().getSize()); } catch (FileFormatException ffe) {
-	 * log.error(Constants.FILE_FORMAT_EXCEPTION + ffe); } catch
-	 * (PhenotypicSystemException pse) {
-	 * log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse); } catch
-	 * (IOException e) { log.error(Constants.IO_EXCEPTION + e); } return
-	 * uploadReport; }
-	 * 
-	 * public Collection<FieldData>
-	 * searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy
-	 * linkSubjectStudy, java.util.Date dateCollected) { return
-	 * phenotypicDao.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy,
-	 * dateCollected); }
-	 * 
-	 * public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload)
-	 * { return phenotypicDao.searchFieldUpload(phenoUpload); }
-	 * 
-	 * public Collection<FieldPhenoCollection>
-	 * getFieldPhenoCollection(PhenoCollection phenoCollection) { return
-	 * phenotypicDao.getFieldPhenoCollection(phenoCollection); }
-	 */
 	public long getCountOfCollectionsInStudy(Study study) {
 		return phenotypicDao.getCountOfCollectionsInStudy(study);
 	}
@@ -533,59 +183,15 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getCountOfCollectionsWithDataInStudy(study);
 	}
 
-	/*
-	 * public void createFieldPhenoCollection(FieldPhenoCollection
-	 * fieldPhenoCollection) {
-	 * phenotypicDao.createFieldPhenoCollection(fieldPhenoCollection); }
-	 * 
-	 * public void updateFieldPhenoCollection(FieldPhenoCollection
-	 * fieldPhenoCollection) {
-	 * phenotypicDao.updateFieldPhenoCollection(fieldPhenoCollection); }
-	 * 
-	 * public FieldPhenoCollection getFieldPhenoCollection(FieldPhenoCollection
-	 * fieldPhenoCollection) { return
-	 * phenotypicDao.getFieldPhenoCollection(fieldPhenoCollection); }
-	 * 
-	 * public long getStudyFieldDataCount(PhenoCollectionVO
-	 * phenoCollectionVoCriteria) { return
-	 * phenotypicDao.getStudyFieldDataCount(phenoCollectionVoCriteria); }
-	 * 
-	 * public List<PhenoCollectionVO> searchPageableFieldData(PhenoCollectionVO
-	 * phenoCollectionVoCriteria, int first, int count) { return
-	 * phenotypicDao.searchPageableFieldData(phenoCollectionVoCriteria, first,
-	 * count); }
-	 */
+	
 	public DelimiterType getDelimiterType(Long id) {
 		return phenotypicDao.getDelimiterType(id);
 	}
-
-	/*
-	 * public int clearPhenoCollection(PhenoCollection phenoCollection) { int
-	 * rowsDeleted = phenotypicDao.clearPhenoCollection(phenoCollection);
-	 * AuditHistory ah = new AuditHistory();
-	 * ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-	 * ah.setComment("Cleared PhenoCollection " + phenoCollection.getId() + " "
-	 * + rowsDeleted + " field data rows deleted");
-	 * ah.setEntityId(phenoCollection.getId());
-	 * ah.setEntityType(au.org.theark.core
-	 * .Constants.ENTITY_TYPE_PHENO_COLLECTION);
-	 * iArkCommonService.createAuditHistory(ah); return rowsDeleted; }
-	 */
-	/*
-	 * public List<BarChartResult> getFieldsWithDataResults(Study study) {
-	 * return phenotypicDao.getFieldsWithDataResults(study); }
-	 * 
-	 * public boolean fieldHasData(Field field) { return
-	 * phenotypicDao.fieldHasData(field); }
-	 */
+	
 	public boolean phenoCollectionHasData(PhenoDataSetCollection phenoCollection) {
 		return phenoCollectionHasData(phenoCollection);
 	}
 
-	/*
-	 * public PhenoCollection getPhenoCollectionByUpload(PhenoUpload upload) {
-	 * return phenotypicDao.getPhenoCollectionByUpload(upload); }
-	 */
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr) {
 		return phenotypicDao
 				.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
@@ -1112,18 +718,6 @@ try {
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD);
 			createAuditHistory(ah);
 
-			// Only Update PhenoDataSetFieldDisplay when it is allowed
-			/*if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
-				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
-				phenotypicDao.updatePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
-				// PhenoDataSet Field Display History
-				ah = new AuditHistory();
-				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-				ah.setComment("Updated PhenoDataSet Field Display " + phenoDataSetFieldVO.getPhenoDataSetField().getName());
-				ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
-				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD);
-				createAuditHistory(ah);
-			}*/
 
 		} catch (ConstraintViolationException cvex) {
 			log.error("PhenoDataSet Field Already Exists.: " + cvex);
@@ -1136,24 +730,11 @@ try {
 	public void createAuditHistory(AuditHistory auditHistory) {
 		studyDao.createAuditHistory(auditHistory);
 	}
-	/*public List getSiblingList(Study study, ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory) {
-		return phenotypicDao.getSiblingList(study, arkFunction, phenoDataSetCategory);
-	}*/
+
 	public void mergePhenoDataSetFieldCategory(PhenoDataSetCategory phenoDataSetCategory)throws ArkSystemException{
 		 phenotypicDao.mergePhenoDataSetFieldCategory(phenoDataSetCategory);
 		
 	}
-	/*@Override
-	public List getAllChildrenCategoriedBelongToThisParent(Study study,ArkFunction arkFunction,PhenoDataSetCategory parentCategory, List allChildrenLst) {
-		List<PhenoDataSetCategory> immediateSubCategories=phenotypicDao.getAllSubCategoriesOfThisCategory(study,arkFunction,parentCategory);
-		if(!immediateSubCategories.isEmpty()){
-			allChildrenLst.addAll(immediateSubCategories);
-				for (PhenoDataSetCategory customFieldCategory : immediateSubCategories) {
-					allChildrenLst.addAll(getAllChildrenCategoriedBelongToThisParent(study, arkFunction, customFieldCategory,allChildrenLst));
-				}
-		}
-		return allChildrenLst;
-	}*/
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void createPhenoDataSetField(PhenoDataSetFieldVO phenoDataSetFieldVO) throws ArkSystemException, ArkUniqueException {
@@ -1181,25 +762,6 @@ try {
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD);
 
 			createAuditHistory(ah);
-			// Create PhenoDataSetFieldDisplay only if allowed
-			/*if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
-				// Set the PhenoDataSetField this PhenoDataSetFieldDisplay entity is linked
-				// to
-				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
-				PhenoDataSetFieldDisplay phenoDataSetFieldDisplay=phenoDataSetFieldVO.getPhenoDataSetFieldDisplay();
-				phenotypicDao.createPhenoDataSetFieldDisplay(phenoDataSetFieldDisplay);
-				// Put in the sequence based on the ID
-				phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().setPhenoDataSetFiledOrderNumber(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());
-				phenotypicDao.updatePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
-
-				// PhenoDataSet Field Display History
-				ah = new AuditHistory();
-				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-				ah.setComment("Created PhenoDataSet Field Display" + phenoDataSetFieldVO.getPhenoDataSetField().getName());
-				ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetField().getId());
-				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY);
-				createAuditHistory(ah);
-			}*/
 		} catch (ConstraintViolationException cvex) {
 			log.error("PhenoDataSet Field Already Exists.: " + cvex);
 			throw new ArkUniqueException("A PhenoDataSet Field already exits.");
@@ -1214,18 +776,7 @@ try {
 		try {
 			if (!phenoDataSetFieldVO.getPhenoDataSetField().getPhenoFieldHasData()) {
 				String fieldName = phenoDataSetFieldVO.getPhenoDataSetField().getName();
-
-				/*if (phenoDataSetFieldVO.isUsePhenoDataSetFieldDisplay()) {
-					phenotypicDao.deletePhenoDataSetFieldDisplay(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay());
-
-					// History for PhenoDataSet Field Display
-					AuditHistory ah = new AuditHistory();
-					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-					ah.setComment("Deleted PhenoDataSet Display Field For PhenoDataSet Field " + fieldName);
-					ah.setEntityId(phenoDataSetFieldVO.getPhenoDataSetFieldDisplay().getId());
-					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_DATASET_FIELD_DISPLAY);
-					createAuditHistory(ah);
-				}*/
+				
 				phenotypicDao.deletePhenoDataSetField(phenoDataSetFieldVO.getPhenoDataSetField());
 
 				// History for PhenoDataSet Field
@@ -1540,6 +1091,12 @@ try {
 	public boolean isSameNameFieldGroupExsistsForTheStudy(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO) {
 		return phenotypicDao.isSameNameFieldGroupExsistsForTheStudy(phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getName(),phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getStudy()
 				,phenoDataSetFieldGroupVO.getPhenoDataSetGroup().getArkFunction());
+	}
+
+	@Override
+	public void deletePhenoDatasetData(PhenoDataSetCollection phenoDataSetCollection) {
+		phenotypicDao.deletePhenoDatasetData(phenoDataSetCollection);
+		
 	}
 	
 

@@ -134,7 +134,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		otherState = new TextField<String>("addressVo.address.otherState");
 		sourceTxtFld = new TextField<String>("addressVo.address.source");
 		addressLineOneTxtFld = new TextField<String>("addressVo.address.addressLineOne");
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();

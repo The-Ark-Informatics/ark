@@ -501,7 +501,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			}
 		};
 
-		historyButtonPanel = new HistoryButtonPanel(containerForm, studyCrudVO.getEditButtonContainer(), studyCrudVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, studyCrudVO.getEditButtonContainer(), studyCrudVO.getDetailPanelFormContainer(),feedBackPanel);
 		
 		attachValidators();
 		addComponents();

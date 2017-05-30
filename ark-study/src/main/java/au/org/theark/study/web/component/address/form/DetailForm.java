@@ -136,7 +136,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		initialiseDatePicker();
 		attachValidators();
 		addDetailFormComponents();
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 
 	public void addDetailFormComponents() {

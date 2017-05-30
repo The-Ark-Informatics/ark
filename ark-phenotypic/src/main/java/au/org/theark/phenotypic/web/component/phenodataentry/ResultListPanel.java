@@ -35,27 +35,21 @@ public class ResultListPanel extends Panel {
 
 	protected FeedbackPanel							feedbackPanel;
 	private PhenoCollectionListForm		listDetailForm;
+	private AbstractDetailModalWindow detailModalWindow;
+	private AbstractDetailModalWindow datasetValueModalWindow;
+	
 
 	public ResultListPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = cpModel;
 		setOutputMarkupPlaceholderTag(true);
+		initModalwindowDatasetDetails();
+		initModalwindowClinicalDatasetValues();
 	}
 
 	public ResultListPanel initialisePanel() {
-		final ResultListPanel panelToRepaint = this;
-		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onCloseModalWindow(AjaxRequestTarget target) {
-				target.add(panelToRepaint);
-			}
-
-		};
-		listDetailForm = new PhenoCollectionListForm("PhenoDataSetCollectionListForm", feedbackPanel, modalWindow, cpModel);
+		listDetailForm = new PhenoCollectionListForm("PhenoDataSetCollectionListForm", feedbackPanel, detailModalWindow, datasetValueModalWindow,cpModel);
 		listDetailForm.initialiseForm();
 		add(listDetailForm);
 		return this;
@@ -87,5 +81,32 @@ public class ResultListPanel extends Panel {
 	 */
 	public void setListDetailForm(PhenoCollectionListForm listDetailForm) {
 		this.listDetailForm = listDetailForm;
+	}
+	
+	private void initModalwindowDatasetDetails(){
+		final ResultListPanel panelToRepaint = this;
+		detailModalWindow = new AbstractDetailModalWindow("detailModalWindow") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				target.add(panelToRepaint);
+			}
+
+		};
+	}
+	private void initModalwindowClinicalDatasetValues(){
+		final ResultListPanel panelToRepaint = this;
+		datasetValueModalWindow = new AbstractDetailModalWindow("datasetValueModalWindow") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				target.add(panelToRepaint);
+			}
+
+		};
 	}
 }

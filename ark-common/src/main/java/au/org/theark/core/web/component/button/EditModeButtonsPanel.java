@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
@@ -44,13 +45,13 @@ public class EditModeButtonsPanel extends Panel {
 	protected Button cancelButton;
 	protected Button deleteButton;
 	protected IEditModeEventHandler eventHandler;
-	
 	private Panel historyButtonPanel;
+	private FeedbackPanel feedbackPanel;
 
-	public EditModeButtonsPanel(String id, IEditModeEventHandler eventHandler) {
+	public EditModeButtonsPanel(String id, IEditModeEventHandler eventHandler,FeedbackPanel feedbackPanel) {
 		super(id);
 		this.eventHandler = eventHandler;
-		
+		this.feedbackPanel=feedbackPanel;
 		setOutputMarkupPlaceholderTag(true);
 		initialisePanel();
 	}
@@ -194,6 +195,6 @@ public class EditModeButtonsPanel extends Panel {
 	}
 	
 	public void createHistoryButtonPanel(ArkCrudContainerVO arkContainerVO) {
-		historyButtonPanel = new HistoryButtonPanel((Form<?>)eventHandler, (WebMarkupContainer)this, arkContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel((Form<?>)eventHandler, (WebMarkupContainer)this, arkContainerVO.getDetailPanelFormContainer(),feedbackPanel);
 	}
 }

@@ -425,7 +425,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 
 		initMinMaxValuePnls();
 		
-		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		
 		
 	}

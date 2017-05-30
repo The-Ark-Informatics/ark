@@ -152,7 +152,7 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		ChoiceRenderer<PhoneType> defaultChoiceRenderer = new ChoiceRenderer<PhoneType>(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice<PhoneType>("phoneVo.phone.phoneType", phoneTypeList, defaultChoiceRenderer);
 		phoneTypeChoice.add(new ArkDefaultFormFocusBehavior());
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		addDetailFormComponents();
 		attachValidators();
 	}

@@ -171,7 +171,7 @@ public class SearchResultListPanel extends Panel {
 
 				DataDictionaryGroupDetailPanel detailPanel = new DataDictionaryGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO, newModel, cfdArkDataProvider, true);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
-				TextField<String> questionnaireName = (TextField<String>) arkCrudContainerVO.getDetailPanelFormContainer().get("phenoDataSetGroup.name");
+				TextField<String> questionnaireName = (TextField<String>) arkCrudContainerVO.getDetailPanelFormContainer().get("headerWMC").get("phenoDataSetGroup.name");
 				questionnaireName.setEnabled(false);
 
 				// The list of CFD must be displayed on the Detail form

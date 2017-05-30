@@ -73,10 +73,10 @@ import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataDataViewPa
  * 
  * @author elam
  */
-public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<PhenoDataCollectionVO> {
+public class PhenoClinicalDataValueEntryModalDetailForm extends AbstractModalDetailForm<PhenoDataCollectionVO> {
 
 	private static final long					serialVersionUID	= 2727419197330261916L;
-	private static final Logger				log					= LoggerFactory.getLogger(PhenoDataEntryModalDetailForm.class);
+	private static final Logger				log					= LoggerFactory.getLogger(PhenoClinicalDataValueEntryModalDetailForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
@@ -84,14 +84,22 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 		private IPhenotypicService								     iPhenotypicService;               
 		private TextField<String>						             idTxtFld;                         
+	//	private TextField<String>								   	 nameTxtFld;                           
 		private DropDownChoice<PhenoDataSetGroup>		             questionnaireDdc;                 
 		private DropDownChoice<QuestionnaireStatus>		             statusDdc;                        
 		private TextArea<String>						             descriptionTxtAreaFld;            
 		private DateTextField							             recordDateTxtFld;                 
 		private DropDownChoice<ArkUser>					             reviewedByDdc;                    
 		private DateTextField							             reviewedDateTxtFld;               
+		private Panel									             phenoCollectionDataEntryPanel;    
 		private ModalWindow								             modalWindow;                      
+		private AjaxPagingNavigator						             dataEntryNavigator;               
+		private WebMarkupContainer						             dataEntryWMC;                     
 		protected Label									             jQueryLabel;                      
+		private DropDownChoice<PickedPhenoDataSetCategory>           pickedPhenoDataSetCategoryDdc;
+		private WebMarkupContainer 									 categoryPanel;
+		private WebMarkupContainer 									 categoryWithdataEntryWMC;
+		private WebMarkupContainer 									 datasetDetailWMC;
 
 	/**
 	 * Constructor
@@ -102,11 +110,12 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	 * @param cpModel
 	 * @param jQueryLabel
 	 */
-	public PhenoDataEntryModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel, Label jQueryLabel) {
+	public PhenoClinicalDataValueEntryModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel, Label jQueryLabel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
 		refreshEntityFromBackend();
 		this.jQueryLabel = jQueryLabel;
+		initialisePhenoCollectionDataEntry(null);
 	}
 
 	protected void refreshEntityFromBackend() {
@@ -119,6 +128,41 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
 			}
 		}
+	}
+	private void initPhenoDataSetFieldCategoryDdc(PhenoDataSetGroup phenoDataSetGroup){
+		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=sortLst(remeoveDuplicates(populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(phenoDataSetGroup)));
+		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategoriesHierachical=PhenoDataSetCategoryOrderingHelper.getInstance().orderHierarchicalyphenoDatasetCategories(pickedPhenoDataSetCategories);
+		ChoiceRenderer renderer = new ChoiceRenderer("phenoDataSetCategory.name", "phenoDataSetCategory.id"){
+			@Override
+			public Object getDisplayValue(Object object) {
+			PickedPhenoDataSetCategory pickedCat=(PickedPhenoDataSetCategory)object;
+				return PhenoDataSetCategoryOrderingHelper.getInstance().preTextDecider(pickedCat)+ super.getDisplayValue(object);
+			}
+		};
+		pickedPhenoDataSetCategoryDdc = new DropDownChoice<PickedPhenoDataSetCategory>("pickedPhenoDataSetCategory", new PropertyModel<PickedPhenoDataSetCategory>(cpModel, "pickedPhenoDataSetCategory"), pickedPhenoDataSetCategoriesHierachical,renderer);
+		pickedPhenoDataSetCategoryDdc.setOutputMarkupId(true);
+		pickedPhenoDataSetCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//Remove
+				dataEntryWMC.remove(phenoCollectionDataEntryPanel);
+				dataEntryWMC.remove(dataEntryNavigator);
+				categoryWithdataEntryWMC.remove(dataEntryWMC);
+				
+				//Create
+				if(pickedPhenoDataSetCategoryDdc.getModelObject()!=null){
+					initialisePhenoCollectionDataEntry(pickedPhenoDataSetCategoryDdc.getModelObject().getPhenoDataSetCategory());
+				}
+				//Add
+				dataEntryWMC.add(phenoCollectionDataEntryPanel);
+				dataEntryWMC.add(dataEntryNavigator);
+				categoryWithdataEntryWMC.add(dataEntryWMC);
+				//target
+				target.add(phenoCollectionDataEntryPanel);
+				target.add(dataEntryNavigator);
+				target.add(dataEntryWMC);
+			}
+		});
 	}
 	private List<PickedPhenoDataSetCategory> populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(PhenoDataSetGroup phenoDataSetGroup){
 		List<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplays=iPhenotypicService.getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroupOrderByPhenoDataSetCategory(phenoDataSetGroup);
@@ -175,6 +219,23 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		phenoDataSetCategoriesNew.addAll(phenoDataSetCategoriesSet);
 				return phenoDataSetCategoriesNew;
 	}
+
+	private void initialisePhenoCollectionDataEntry(PhenoDataSetCategory phenoDataSetCategory) {
+			PhenoDataDataViewPanel phenoCFDataEntryPanel;
+			if(phenoDataSetCategory!=null){
+				phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), phenoDataSetCategory);
+			}else{
+				 phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", cpModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage(), null);
+			}
+			dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
+				private static final long	serialVersionUID	= 1L;
+				@Override
+				protected void onAjaxEvent(AjaxRequestTarget target) {
+					target.add(dataEntryWMC);
+				}
+			};
+			phenoCollectionDataEntryPanel = phenoCFDataEntryPanel;
+	}
 	
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("phenoDataSetCollection.id");
@@ -194,6 +255,30 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		initQuestionnaireDdc();
 		initStatusDdc();
 		initReviewedByDdc();
+		categoryWithdataEntryWMC=new WebMarkupContainer("categoryWithdataEntryWMC");
+		categoryWithdataEntryWMC.setOutputMarkupId(true);
+		categoryWithdataEntryWMC.setVisible(!isNew());
+		//Add category panel
+		categoryPanel=new WebMarkupContainer("categoryPanel");
+		categoryPanel.setOutputMarkupId(true);
+		dataEntryWMC = new WebMarkupContainer("dataEntryWMC");
+		dataEntryWMC.setOutputMarkupId(true);
+		
+		datasetDetailWMC=new WebMarkupContainer("datasetDetailWMC");
+		datasetDetailWMC.setOutputMarkupId(true);
+		
+		
+		initPhenoDataSetFieldCategoryDdc(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire());
+
+		List<PickedPhenoDataSetCategory> pickedPhenoDataSetCategories=populatePickedPhenoDataSetCategoriesFromdisplayListForPhenoDataSetGroup(cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire());
+		PhenoDataSetCategory phenoDataSetCategory = null;
+		if(pickedPhenoDataSetCategories.size() == 1) {
+			PickedPhenoDataSetCategory pickedPhenoDataSetCategory = pickedPhenoDataSetCategories.get(0);
+			phenoDataSetCategory = pickedPhenoDataSetCategory.getPhenoDataSetCategory();
+			pickedPhenoDataSetCategoryDdc.setModelObject(pickedPhenoDataSetCategory);
+		}
+
+		initialisePhenoCollectionDataEntry(phenoDataSetCategory);
 		attachValidators();
 		addComponents();
 
@@ -214,6 +299,16 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		//List<CustomFieldGroup> questionnaireList = iArkCommonService.getCustomFieldGroups(pfgForStudyCriteria, 0, Integer.MAX_VALUE);
 		ChoiceRenderer<PhenoDataSetGroup> choiceRenderer = new ChoiceRenderer<PhenoDataSetGroup>(Constants.PHENO_COLLECTION_NAME, Constants.PHENO_COLLECTION_ID);
 		questionnaireDdc = new DropDownChoice<PhenoDataSetGroup>("phenoDataSetCollection.questionnaire", (List<PhenoDataSetGroup>) questionnaireList, choiceRenderer);
+		questionnaireDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				categoryPanel.remove(pickedPhenoDataSetCategoryDdc);
+				initPhenoDataSetFieldCategoryDdc(questionnaireDdc.getModelObject());
+				categoryPanel.add(pickedPhenoDataSetCategoryDdc);
+		    	target.add(pickedPhenoDataSetCategoryDdc);
+		    	target.add(categoryPanel);
+			}
+		});
 		if (!isNew()) {
 			questionnaireDdc.setEnabled(false);	//can't change questionnaire after creating the phenoCollection
 			
@@ -250,14 +345,22 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	}
 
 	private void addComponents() {
-		arkCrudContainerVo.getDetailPanelFormContainer().add(idTxtFld);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(questionnaireDdc);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(recordDateTxtFld);
-//		arkCrudContainerVo.getDetailPanelFormContainer().add(nameTxtFld);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(descriptionTxtAreaFld);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(statusDdc);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(reviewedByDdc);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(reviewedDateTxtFld);
+		datasetDetailWMC.add(idTxtFld);
+		datasetDetailWMC.add(questionnaireDdc);
+		datasetDetailWMC.add(recordDateTxtFld);
+		datasetDetailWMC.add(descriptionTxtAreaFld);
+		datasetDetailWMC.add(statusDdc);
+		datasetDetailWMC.add(reviewedByDdc);
+		datasetDetailWMC.add(reviewedDateTxtFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(datasetDetailWMC.setEnabled(false));
+		
+		categoryPanel.add(pickedPhenoDataSetCategoryDdc);
+		categoryWithdataEntryWMC.add(categoryPanel);
+		dataEntryWMC.add(phenoCollectionDataEntryPanel);
+		dataEntryWMC.add(dataEntryNavigator);
+		categoryWithdataEntryWMC.add(dataEntryWMC);
+		
+		arkCrudContainerVo.getDetailPanelFormContainer().add(categoryWithdataEntryWMC);
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
@@ -277,6 +380,15 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			processErrors(target);
 			
 		}
+		// Allow the PheotyocCollection data to be saved any time save is performed
+		if (phenoCollectionDataEntryPanel instanceof PhenoDataDataViewPanel) {
+			((PhenoDataDataViewPanel) phenoCollectionDataEntryPanel).savePhenoData();
+		}
+		// refresh the CF data entry panel (if necessary)
+		//if (initialisePhenoCollectionDataEntry() == true) {
+			dataEntryWMC.addOrReplace(phenoCollectionDataEntryPanel);
+			dataEntryWMC.addOrReplace(dataEntryNavigator);
+		//}
 
 		onSavePostProcess(target);
 	}
@@ -289,11 +401,11 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target) {
-		iPhenotypicService.deletePhenoCollection(cpModel.getObject().getPhenoDataSetCollection());
+		iPhenotypicService.deletePhenoDatasetData(cpModel.getObject().getPhenoDataSetCollection());
 
 		// Base containerForm for pheno data entry unfortunately way up the chain...thus a lot of getParent() calls. Not the neatest method by any means		
 		PhenoCollectionDataEntryContainerPanel containerPanel = (PhenoCollectionDataEntryContainerPanel) this.getParent().getParent().getParent().getParent().getParent().getParent();
-		containerPanel.info("Subject Dataset with dataset values" + cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire().getName() + " was deleted successfully");
+		containerPanel.info("Subject Dataset data values" + cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire().getName() + " were deleted successfully");
 		target.add(containerPanel.getFeedbackPanel());
 		onClose(target);
 		processErrors(target);
