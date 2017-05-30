@@ -110,7 +110,7 @@ public class StudyComponentFilterForm extends AbstractReportFilterForm<StudyComp
 		}
 		catch (JRException e) {
 			//reportFile = null;
-			this.error("Please contact the system administrator there is problem during the report creation.");
+			this.error("A system error has occurred when creating the report. Please contact the system administrator.");
 			onErrorProcess(target);
 			e.printStackTrace();
 		}
@@ -133,7 +133,7 @@ public class StudyComponentFilterForm extends AbstractReportFilterForm<StudyComp
 		try {
 			reportDS = new StudyComponentReportDataSource(reportService, getModelObject());
 		} catch (ArkSystemException | EntityNotFoundException e) {
-			this.error("Please contact the system administrator there is problem during the report creation.");
+			this.error("A system error has occurred when creating the report. Please contact the system administrator.");
 			onErrorProcess(target);
 			e.printStackTrace();
 		}

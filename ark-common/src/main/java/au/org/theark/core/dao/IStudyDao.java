@@ -773,6 +773,4 @@ public interface IStudyDao {
 	
 	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study,LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
 	
-	public boolean isAnyFilterAddedForSearch(Search search);
-	
 }

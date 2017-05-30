@@ -131,7 +131,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 			subjectFile.setLinkSubjectStudy(linkSubjectStudy);
 		}
 		catch (EntityNotFoundException e1) {
-			this.error("There is no subject in context.");
+			this.error("There is no subject selected.");
 			target.add(feedbackPanel);
 		}
 
@@ -140,7 +140,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 			subjectFileList = iStudyService.searchSubjectFile(subjectFile);
 
 			if (subjectFileList != null && subjectFileList.size() == 0) {
-				this.info("There are no subject files for the specified criteria.");
+				this.info("There are no subject files for the specified search criteria.");
 				target.add(feedbackPanel);
 			}
 

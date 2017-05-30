@@ -162,7 +162,7 @@ public class SearchResultListPanel extends Panel {
 					ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				}
 				catch (ArkSystemException e) {
-					containerForm.error("A System Error has occured please contact Support");
+					containerForm.error("A system error has occurred. Please contact the system administrator.");
 				}
 			}
 		};

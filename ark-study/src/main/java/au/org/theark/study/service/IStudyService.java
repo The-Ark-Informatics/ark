@@ -480,17 +480,17 @@ public interface IStudyService {
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 	
-	public List<Phone> pageablePersonPhoneList(Long personId,Phone phoneCriteria, int first, int count);
+	public List<Phone> pageablePersonPhoneList(Long personId, Phone phoneCriteria, int first, int count);
 	
-	public List<Address> pageablePersonAddressList(Long personId,Address addressCriteria, int first, int count);
+	public List<Address> pageablePersonAddressList(Long personId, Address addressCriteria, int first, int count);
 	
 	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
-	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, int first, int count);
 
 	public String getSubjectFamilyId(Long studyId, String subjectUID);
 	
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, int first, int count);
 	
 	public void setPreferredPhoneNumberToFalse(Person person);
 

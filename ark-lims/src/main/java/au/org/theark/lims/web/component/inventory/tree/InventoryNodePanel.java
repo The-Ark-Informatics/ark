@@ -249,7 +249,7 @@ public class InventoryNodePanel extends LinkIconPanel {
 				invCellList = iInventoryService.getCellAndBiospecimenListByBox(invBox);
 			}
 			if (invCellList.size() != cells) {
-				this.error("The Box with ID: " + invBox.getId() + " is missing cell information. Please contact support.");
+				this.error("The Box with ID: " + invBox.getId() + " is missing cell information. Please contact the system administrator.");
 				detailPanel.setEnabled(false);
 				target.add(feedbackPanel);
 			}

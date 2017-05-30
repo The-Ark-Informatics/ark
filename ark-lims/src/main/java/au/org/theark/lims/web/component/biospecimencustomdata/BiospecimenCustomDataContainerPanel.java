@@ -94,7 +94,7 @@ public class BiospecimenCustomDataContainerPanel extends Panel {
 		}
 		else if (!contextLoaded) {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
-			this.error("A study and LIMS biospecimen in context are required to proceed.");
+			this.error("A study and LIMS biospecimen need to be selected to proceed.");
 		}
 		else {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");

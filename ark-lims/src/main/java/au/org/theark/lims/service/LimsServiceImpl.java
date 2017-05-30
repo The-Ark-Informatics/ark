@@ -903,12 +903,5 @@ public class LimsServiceImpl implements ILimsService {
 	public void deleteBioCollection(BioCollection bioCollection) {
 		iBioCollectionDao.deleteBioCollection(bioCollection);
 	}
-
-	public List<BiospecimenCustomFieldData> getBiospecimenHasFieldDataForBiospecimen(Biospecimen biospecimen) {
-		return iBiospecimenDao.getBiospecimenHasFieldDataForBiospecimen(biospecimen);
-	}
-
-	public void deleteBiospecimenCustomFieldDataForBiospecimen(Biospecimen biospecimen) {
-		iBiospecimenDao.deleteBiospecimenCustomFieldDataForBiospecimen(biospecimen);
-	}	
+	
 }

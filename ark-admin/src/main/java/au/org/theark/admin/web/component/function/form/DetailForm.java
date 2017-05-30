@@ -140,7 +140,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		// Save or update
 		iAdminService.createOrUpdateArkFunction(containerForm.getModelObject());
 		onSavePostProcess(target);
-		this.info("Ark Function: " + containerForm.getModelObject().getArkFunction().getName() + " was created/updated successfully.");
+		this.saveInformation();
+		//this.info("Ark Function: " + containerForm.getModelObject().getArkFunction().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
 	}
 
@@ -151,8 +152,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// Delete
 		iAdminService.deleteArkFunction(containerForm.getModelObject());
-
-		this.info("Ark Function: " + containerForm.getModelObject().getArkFunction().getName() + " was deleted successfully.");
+		this.deleteInformation();
+		//this.info("Ark Function: " + containerForm.getModelObject().getArkFunction().getName() + " was deleted successfully.");
 		editCancelProcess(target);
 	}
 

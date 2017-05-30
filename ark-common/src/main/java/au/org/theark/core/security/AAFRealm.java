@@ -58,7 +58,7 @@ import au.org.theark.core.vo.ArkUserVO;
 @Component
 public class AAFRealm extends AuthorizingRealm {
 	static final Logger	log	= LoggerFactory.getLogger(AAFRealm.class);
-	private static final String	UNKNOWN_ACCOUNT	= "The user is not registered with the Ark Application. Please see your administrator";
+	private static final String	UNKNOWN_ACCOUNT	= "The user is not registered with the Ark Application. Please contact the system administrator.";
 	/* Interface to Core */
 	protected IArkCommonService	iArkCommonService;
 

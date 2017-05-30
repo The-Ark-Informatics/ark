@@ -256,9 +256,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		ChoiceRenderer<CorrespondenceDirectionType> defaultRenderer = new ChoiceRenderer<CorrespondenceDirectionType>("name", "id");
 		directionTypeChoice = new DropDownChoice<CorrespondenceDirectionType>("correspondence.correspondenceDirectionType", list, defaultRenderer);
 		directionTypeChoice.setOutputMarkupId(true);
-		if(!isNew()){
-			directionTypeChoice.setModelObject(getModelObject().getCorrespondence().getCorrespondenceDirectionType());
-		}
 	}
 
 	private void initialiseOutcomeTypeDropDown() {
@@ -266,9 +263,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
 		outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
 		outcomeTypeChoice.setOutputMarkupId(true);
-		if(!isNew()){
-			outcomeTypeChoice.setModelObject(getModelObject().getCorrespondence().getCorrespondenceOutcomeType());
-		}
 	}
 
 	private void initBillableItemTypeDropDown() {
@@ -354,11 +348,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 		try {
 			studyService.delete(containerForm.getModelObject().getCorrespondence());
-			containerForm.info("The correspondence has been deleted successfully.");
+			this.deleteInformation();
+			//containerForm.info("The correspondence has been deleted successfully.");
 			editCancelProcess(target);
 		}
 		catch (Exception ex) {
-			this.error("An error occurred while processing the correspondence delete operation.");
+			this.error("A system error occurred while processing the correspondence delete operation.");
 			ex.printStackTrace();
 		}
 		onCancel(target);
@@ -418,7 +413,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 				// save
 				studyService.create(containerForm.getModelObject().getCorrespondence());
-				this.info("Correspondence was successfully added and linked to subject: " + lss.getSubjectUID());
+				this.saveInformation();
+				//this.info("Correspondence was successfully added and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}
 			else {
@@ -439,9 +435,10 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				try {
 					studyService.update(containerForm.getModelObject().getCorrespondence(),checksum);
 				} catch (ArkFileNotFoundException e) {
-					this.error("Couldn't find the file.");;
+					this.error("The file could not be found.");;
 				}
-				this.info("Correspondence was successfully updated and linked to subject: " + lss.getSubjectUID());
+				this.updateInformation();
+				//this.info("Correspondence was successfully updated and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}
 			// invoke backend to persist the correspondence
@@ -503,8 +500,15 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	@Override
 	protected boolean isNew() {
-		return (containerForm.getModelObject().getCorrespondence().getId() == null);
+
+		if (containerForm.getModelObject().getCorrespondence().getId() == null) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
+	
 	private void initCategoryPanels(){
 		categoryPanelDirectionType=new WebMarkupContainer("categoryPanelDirectionType");
 		categoryPanelDirectionType.setOutputMarkupId(true);
@@ -512,5 +516,4 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		categoryPanelOutCome.setOutputMarkupId(true);
 		
 	}
-	
 }

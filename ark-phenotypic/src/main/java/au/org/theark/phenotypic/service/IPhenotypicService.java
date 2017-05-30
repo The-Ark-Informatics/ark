@@ -156,7 +156,7 @@ public interface IPhenotypicService {
 	public PhenoDataSetCategory getPhenoDataSetCategory(Long id) throws EntityNotFoundException;
 	
 	/**
-	 * Get available all Pheno dataset category.
+	 * Get available all Pheno data set category.
 	 * 
 	 * @param study
 	 * @param arkFunction
@@ -196,7 +196,7 @@ public interface IPhenotypicService {
 	 */
 	public List<PhenoDataSetCategory> getAvailableAllCategoryListExceptThis(Study study,ArkFunction arkFunction,PhenoDataSetCategory thisPhenoDataSetCategory) throws ArkSystemException;
 	/**
-	 * Search pageable pheno dataset categories.
+	 * Search pageable pheno data set categories.
 	 * @param customFieldCategoryCriteria
 	 * @param first
 	 * @param count
@@ -204,19 +204,19 @@ public interface IPhenotypicService {
 	 */
 	public List<PhenoDataSetCategory> searchPageablePhenoDataSetCategories(PhenoDataSetCategory phenoDataSetCategoryCriteria, int first, int count);
 	/**
-	 * Create Pheno Dataset category
+	 * Create Pheno Data set category
 	 * @throws ArkSystemException
 	 * @throws ArkUniqueException
 	 */
 	public void createPhenoDataSetCategory(PhenoDataSetCategoryVO phenoDataSetCategoryvo) throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException;
 	/**
-	 * Update  Pheno Dataset category
+	 * Update  Pheno Data set category
 	 * @throws ArkSystemException
 	 * @throws ArkUniqueException
 	 */
 	public void updatePhenoDataSetCategory(PhenoDataSetCategoryVO phenoDataSetCategoryvo) throws ArkSystemException, ArkUniqueException;
 	/**
-	 * Delete Pheno Dataset category
+	 * Delete Pheno Data set category
 	 * @throws ArkSystemException
 	 * @throws EntityCannotBeRemoved
 	 */

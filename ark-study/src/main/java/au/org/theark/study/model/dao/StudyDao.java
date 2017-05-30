@@ -836,11 +836,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Integer result;
 		if (study == null) {
 			log.error("Error in Subject insertion - Study was null");
-			throw new ArkSubjectInsertException("Error in Subject insertion - Study not in context");
+			throw new ArkSubjectInsertException("Error in Subject insertion - Study not selected.");
 		}
 		if (study.getName() == null) {
 			log.error("Error in Subject insertion - Study name was null");
-			throw new ArkSubjectInsertException("Error in Subject insertion - Empty study name");
+			throw new ArkSubjectInsertException("Error in Subject insertion - Empty study name.");
 		}
 		//log.warn("Ark uid generator nnull??? " + (arkUidGenerator == null));
 		// arkUidGenerator.
@@ -2854,5 +2854,4 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		setOfCorrespondenseDirectionTypes.addAll(list);
 		return new ArrayList<CorrespondenceDirectionType>(setOfCorrespondenseDirectionTypes);
 	}
-	
 }

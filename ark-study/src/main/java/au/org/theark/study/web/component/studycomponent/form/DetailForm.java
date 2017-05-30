@@ -183,7 +183,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 
 		}
 		catch (EntityExistsException e) {
-			this.error("A Study Component with the same name already exists for this study.");
+			this.error("A study component with the same name already exists in this study.");
 			processErrors(target);
 		}
 		catch (UnAuthorizedOperation e) {
@@ -191,7 +191,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 			processErrors(target);
 		}
 		catch (ArkSystemException e) {
-			this.error("A System error occured, we will have someone contact you.");
+			this.error("A system error occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 
@@ -222,11 +222,11 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 			processErrors(target);
 		}
 		catch (EntityCannotBeRemoved cannotRemoveException) {
-			containerForm.error("Cannot Delete this Study Component. This component is associated with a Subject");
+			containerForm.error("Cannot delete this study component. This component is associated with a subject");
 			processErrors(target);
 		}
 		catch (ArkSystemException e) {
-			containerForm.error("A System Error has occured please contact support.");
+			containerForm.error("A system error has occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}

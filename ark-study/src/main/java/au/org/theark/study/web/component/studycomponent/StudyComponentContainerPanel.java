@@ -99,7 +99,7 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 
 				}
 				catch (ArkSystemException e) {
-					containerForm.error("A System Exception has occured please contact Support");
+					containerForm.error("A system exception has occurred. Please contact the system administrator.");
 				}
 				pageableListView.removeAll();
 				return containerForm.getModelObject().getStudyCompList();
@@ -135,7 +135,7 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 			}
 		}
 		catch (ArkSystemException e) {
-			this.error("A System error occured  while initializing Search Panel");
+			this.error("A system error occurred  while initializing Search Panel");
 		}
 
 		cpModel.getObject().setStudyCompList(resultList);

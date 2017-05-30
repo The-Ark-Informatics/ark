@@ -235,28 +235,30 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 					workRequest.setStudyId(studyId);
 					//Check for work request for exsistance.
 					if(iWorkTrackingService.isWorkRequestExsistForStudy(studyId,workRequest )){
-						this.error("A work request with this name already exists.");
+						this.error("Work request " + workRequest.getName()  + " already exists in this study.");
 					}else{	
 						iWorkTrackingService.createWorkRequest(workRequest);
-						this.info("Work Request " + workRequest.getName() + " was created successfully");
+						this.saveInformation();
+						//this.info("Work Request " + workRequest.getName() + " was created successfully");
 					}
 					processErrors(target);
 				} else {
 					WorkRequestBillableItemVo workBillableItemVo = iWorkTrackingService.getWorkRequestBillableItem(workRequest);
 					if (workBillableItemVo != null && workBillableItemVo.getBillableItemCount() > 0 && (!ObjectUtils.equals(workBillableItemVo.getGstAllow(), workRequest.getGstAllow()) || !ObjectUtils.equals(workBillableItemVo.getGst(), workRequest.getGst()))) {
-						this.error("Cannot change GST value since a billable item has been recorded for this work request.");
+						this.error("Cannot change GST value because a billable item has been recorded for this work request.");
 						processErrors(target);
 					}
 					iWorkTrackingService.updateWorkRequest(containerForm.getModelObject().getWorkRequest());
-					this.info("Work Request " + containerForm.getModelObject().getWorkRequest().getName() + " was updated successfully");
+					this.updateInformation();
+					//this.info("Work Request " + containerForm.getModelObject().getWorkRequest().getName() + " was updated successfully");
 					processErrors(target);
 				}
 				onSavePostProcess(target);
 			} catch (Exception e) {
 				if(e.getMessage().contains("Duplicate entry")){
-					this.error("A work request with this name already exists.");
+					this.error("Work request " + workRequest.getName()  + " already exists in this study.");
 				}else{
-					this.error("A System error occured, we will have someone contact you.");
+					this.error("A system error occured. Please contact the system administrator.");
 				}
 				processErrors(target);
 			}
@@ -323,14 +325,15 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 			Long count = iWorkTrackingService.getBillableItemCount(containerForm.getModelObject().getWorkRequest());
 			if (count == 0) {
 				iWorkTrackingService.deleteWorkRequest(containerForm.getModelObject().getWorkRequest());
-				containerForm.info("The Work Request was deleted successfully.");
+				this.deleteInformation();
+				//containerForm.info("The Work Request was deleted successfully.");
 				editCancelProcess(target);
 			} else {
-				containerForm.error("Cannot Delete this Work Request Component. This Work Request is associated with existing Billable Items ");
+				containerForm.error("Cannot Delete this work request component. This work request is associated with existing billable items.");
 				processErrors(target);
 			}
 		} catch (Exception e) {
-			containerForm.error("A System Error has occured please contact support.");
+			containerForm.error("A system error has occured. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}

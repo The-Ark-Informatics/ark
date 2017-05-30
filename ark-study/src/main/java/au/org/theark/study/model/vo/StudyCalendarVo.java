@@ -7,8 +7,9 @@ import java.util.List;
 
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.StudyCalendar;
+import au.org.theark.core.vo.ArkVo;
 
-public class StudyCalendarVo implements Serializable {
+public class StudyCalendarVo implements ArkVo, Serializable {
 	
 	private static final long	serialVersionUID	= 1L;
 	private StudyCalendar				studyCalendar;
@@ -65,5 +66,9 @@ public class StudyCalendarVo implements Serializable {
 		this.availableCustomFields = availableCustomFields;
 	}
 
+	@Override
+	public String getArkVoName(){
+		return "Study Calendar";
+	}	
 	
 }

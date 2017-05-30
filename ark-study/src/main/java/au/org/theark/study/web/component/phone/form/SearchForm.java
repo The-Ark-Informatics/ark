@@ -78,7 +78,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 		searchButton.setVisible(false);
 		// initialiseSearchForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
+		disableSearchForm(sessionPersonId, "There is no subject selected. Please select a subject or contact.");
 	}
 
 	protected void initialiseSearchForm() {
@@ -116,7 +116,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 
 			Collection<Phone> phones = studyService.getPersonPhoneList(sessionPersonId, getModelObject().getPhone());
 			if (phones != null && phones.size() == 0) {
-				this.info("No records match the specified criteria.");
+				this.info("No records match the specified search criteria.");
 				target.add(feedbackPanel);
 			}
 
@@ -126,7 +126,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
-			this.warn("There are no phone items available for the specified criteria.");
+			this.warn("There are no phone items available for the specified searcg criteria.");
 			target.add(feedbackPanel);
 
 		}

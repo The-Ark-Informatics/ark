@@ -95,7 +95,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study.");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (ArkSystemException e) {
-			this.error("A System Error has occured. Please contact support");
+			this.error("A system error occurred. Please contact the system administrator.");
 		}
 	}
 

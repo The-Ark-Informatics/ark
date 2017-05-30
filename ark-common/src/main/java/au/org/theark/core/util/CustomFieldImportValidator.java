@@ -305,7 +305,7 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 				}
 				for (int i = 0; i < fileHeaderColumnArray.length; i++) {
 					if (!requiredHeaders.contains(fileHeaderColumnArray[i])) {
-						fileValidationMessages.add("Error: the column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
+						fileValidationMessages.add("Error: The column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
 					}
 				}
 
@@ -343,11 +343,11 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
-			throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
+			throw new CustomFieldSystemException("An unexpected I/O exception occurred whilst reading the phenotypic data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixPhenoFile Exception stacktrace:", ex);
-			throw new CustomFieldSystemException("Unexpected exception occurred when trying to process phenotypic data file");
+			throw new CustomFieldSystemException("An unexpected exception occurred when trying to process phenotypic data file.");
 		}
 		finally {
 			// Clean up the IO objects
@@ -650,11 +650,11 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixFile IOException stacktrace:", ioe);
-			throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the data file");
+			throw new CustomFieldSystemException("An unexpected I/O exception occurred whilst reading the data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixFile Exception stacktrace:", ex);
-			throw new CustomFieldSystemException("Unexpected exception occurred when trying to process data file");
+			throw new CustomFieldSystemException("An unexpected exception occurred when trying to process data file.");
 		}
 		finally {
 			// Clean up the IO objects
@@ -686,7 +686,7 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 		if (errorCells.isEmpty()) {
 			for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
 				Integer i = (Integer) iterator.next();
-				dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
+				dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update.");
 			}
 		}
 
@@ -907,15 +907,14 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 		}
 		//Character field type
 		//if Encoded value has been introduced check the default value has one of the encoded value occupied.
-		//ARK-1357 -This Default value validation has to be removed-[2017-05-11-Sanjay].
-		/*if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
 			if(iArkCommonService.isEncodedValue(field, field.getDefaultValue())){
 				isValid=true;
 			}else{
 				errorMessages.add(CustomFieldValidationMessage.fieldDefaultValueNotINEncodedLst(field));
 				isValid=false;
 			}
-		}*/
+		}
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			try {
@@ -1137,11 +1136,6 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 					break;
 				}
 			} 
-		}
-		//Allow custom field category to be kept empty. 
-		//ARK-1781
-		if(fieldType ==null || fieldType.isEmpty()){
-			isValid=true;
 		}
 			if(isValid==false){
 				errorMessages.add(CustomFieldValidationMessage.invalidCategory(fieldName, fieldType));

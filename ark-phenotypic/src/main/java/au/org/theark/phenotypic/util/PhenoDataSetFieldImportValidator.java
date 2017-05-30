@@ -170,7 +170,7 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 
 			//csvReader.readHeaders();
 			if(!csvReader.readHeaders()){
-				fileValidationMessages.add("Header reading is not successful.Please check the file format again.");
+				fileValidationMessages.add("Header reading was unsuccessful. Please check the file format again.");
 			}
 
 			// Set field list (note 2th column to Nth column)
@@ -296,11 +296,11 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
-			throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
+			throw new CustomFieldSystemException("An unexpected I/O exception occurred whilst reading the phenotypic data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixPhenoFile Exception stacktrace:", ex);
-			throw new CustomFieldSystemException("Unexpected exception occurred when trying to process phenotypic data file");
+			throw new CustomFieldSystemException("An unexpected exception occurred when trying to process phenotypic data file.");
 		}
 		finally {
 			// Clean up the IO objects
@@ -550,11 +550,11 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixFile IOException stacktrace:", ioe);
-			throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the data file");
+			throw new CustomFieldSystemException("An unexpected I/O exception occurred whilst reading the data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixFile Exception stacktrace:", ex);
-			throw new CustomFieldSystemException("Unexpected exception occurred when trying to process data file");
+			throw new CustomFieldSystemException("An unexpected exception occurred when trying to process data file.");
 		}
 		finally {
 			// Clean up the IO objects

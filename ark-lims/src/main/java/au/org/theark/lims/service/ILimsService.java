@@ -392,10 +392,5 @@ public interface ILimsService {
 	public void updateBioCollection(BioCollection bioCollection) throws ArkSystemException;
 	
 	public void deleteBioCollection(BioCollection bioCollection);
-	
-	public List<BiospecimenCustomFieldData> getBiospecimenHasFieldDataForBiospecimen(Biospecimen biospecimen);
-	
-	public void deleteBiospecimenCustomFieldDataForBiospecimen(Biospecimen biospecimen);
-	
 
 }

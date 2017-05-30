@@ -37,27 +37,10 @@ public class Constants {
 	public static final String			N																= "N";
 	
 	public static final String TWO_DECIMAL_PATTERN 														= "\\d*||\\d*.\\d{1,2}";
-	public static final String FOUR_DECIMAL_PATTERN 													= "\\d*||\\d*.\\d{1,4}";
+	public static final String FOUR_DECIMAL_PATTERN 														= "\\d*||\\d*.\\d{1,4}";
 	public static final String FULL_NUMBER_PATTERN 														= "[0-9]+";
 	public static final String PHONE_NUMBER_PATTERN 													= "[0-9+\\s]+";
-	//public static final String NON_NEGATIVE_PATTERN 													= "[+]?\\d+\\.\\d+";
-	public static final String NON_NEGATIVE_PATTERN 													= "^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$";
-	/**
-	 * ^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$                                 
-		Explanation:                                                        
-					^            # Start of string                                              
-					\s*          # Optional whitespace                                          
-					(?=.*[1-9])  # Assert that at least one digit > 0 is present in the string  
-					\d*          # integer part (optional)                                      
-					(?:          # decimal part:                                                
-					 \.          # dot                                                          
-					 \d{1,2}     # plus one or two decimal digits                               
-					)?           # (optional)                                                   
-					\s*          # Optional whitespace                                          
-					$            # End of string
-			Further to test the pattern use http://regexr.com/		                                                
-	 */
-	
+	public static final String NON_NEGATIVE_PATTERN 													= "[+]?\\d+\\.\\d+";
 	
 	/* Researcher Constants */	
 	public static final String			FIRST_NAME														= "firstName";

@@ -41,7 +41,6 @@ public class SearchVO implements Serializable {
 	private Search search;
 	private List<Search> listOfSearchesForResultList = new ArrayList<Search>();
 	private String subjectFileUpload;
-	
 
 
 	// would be better if pallette could point to search.getDemographicFieldsToReturn 

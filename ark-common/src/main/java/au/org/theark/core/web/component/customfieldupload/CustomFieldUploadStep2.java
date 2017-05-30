@@ -62,7 +62,7 @@ public class CustomFieldUploadStep2 extends AbstractWizardStepPanel {
 																					private static final long	serialVersionUID	= 1L;
 																					@Override
 																					protected void onError(AjaxRequestTarget target, Form<?> form) {
-																						this.error("Unexpected Error: Download request could not be processed");
+																						this.error("An unexpected error occurred. The download request could not be processed.");
 																					}
 																				};
 
@@ -146,7 +146,7 @@ public class CustomFieldUploadStep2 extends AbstractWizardStepPanel {
 						private static final long	serialVersionUID	= 1L;
 						@Override
 						protected void onError(AjaxRequestTarget target, Form<?> form) {
-							this.error("Unexpected Error: Download request could not be processed");
+							this.error("An unexpected error occurred. The download request could not be processed.");
 						}
 					};
 					addOrReplace(downloadValMsgButton);
@@ -198,7 +198,7 @@ public class CustomFieldUploadStep2 extends AbstractWizardStepPanel {
 		}
 		else {
 			// Stop progress because of missing temp file
-			error("Unexpected erorr: Can not proceed due to missing temporary file.");
+			error("An unexpected error occurred. Can not proceed due to missing temporary file.");
 			form.getNextButton().setEnabled(false);
 		}
 	}

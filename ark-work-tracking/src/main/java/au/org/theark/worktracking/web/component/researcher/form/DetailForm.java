@@ -365,18 +365,20 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				containerForm.getModelObject().getResearcher().setStudyId(studyId);
 				iWorkTrackingService.createResearcher(containerForm.getModelObject().getResearcher());
-				this.info("Researcher " + containerForm.getModelObject().getResearcher().getFirstName() + " " + containerForm.getModelObject().getResearcher().getLastName() + " was created successfully");
+				this.saveInformation();
+				//this.info("Researcher " + containerForm.getModelObject().getResearcher().getFirstName() + " " + containerForm.getModelObject().getResearcher().getLastName() + " was created successfully");
 				processErrors(target);
 			}
 			else {
 				iWorkTrackingService.updateResearcher(containerForm.getModelObject().getResearcher());
-				this.info("Researcher " + containerForm.getModelObject().getResearcher().getFirstName() + " " + containerForm.getModelObject().getResearcher().getLastName() + " was updated successfully");
+				this.updateInformation();
+				//this.info("Researcher " + containerForm.getModelObject().getResearcher().getFirstName() + " " + containerForm.getModelObject().getResearcher().getLastName() + " was updated successfully");
 				processErrors(target);
 			}
 			onSavePostProcess(target);
 		}
 		catch (Exception e) {
-			this.error("A System error occured, we will have someone contact you.");
+			this.error("A system error occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}
@@ -429,15 +431,16 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 				iWorkTrackingService.deleteResearcher(containerForm.getModelObject().getResearcher());
 				ResearcherVo researcherVo = new ResearcherVo();
 				containerForm.setModelObject(researcherVo);
-				containerForm.info("The Researcher was deleted successfully.");
+				this.deleteInformation();
+				//containerForm.info("The Researcher was deleted successfully.");
 				editCancelProcess(target);
 			}else{
-				containerForm.error("Cannot Delete this Researcher Component. This researcher is associated with existing Work Requests ");
+				containerForm.error("Researcher Component could not be deleted. This researcher is associated with existing work requests.");
 				processErrors(target);
 			}
 		}
 		catch (Exception e) {
-			containerForm.error("A System Error has occured please contact support.");
+			containerForm.error("A system error has occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}

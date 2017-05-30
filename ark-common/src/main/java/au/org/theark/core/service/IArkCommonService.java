@@ -1316,6 +1316,4 @@ public interface IArkCommonService<T> {
 	public int getRowsPerPage();
 	public int getCustomFieldsPerPage();
 	public String getFileAttachmentDir() throws NullPointerException;
-	
-	public boolean isAnyFilterAddedForSearch(Search search);
 }

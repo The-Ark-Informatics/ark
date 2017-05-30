@@ -186,7 +186,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 			Collection<Consent> consentList = studyService.searchConsent(getModelObject());
 
 			if (consentList != null && consentList.size() == 0) {
-				this.info("There are no consents for the specified criteria.");
+				this.info("There are no consents for the specified search criteria.");
 				target.add(feedbackPanel);
 			}
 

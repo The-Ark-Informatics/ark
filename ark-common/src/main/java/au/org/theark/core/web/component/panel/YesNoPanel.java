@@ -31,11 +31,9 @@ public class YesNoPanel extends Panel {
 		modalWindow.setTitle(title);
 
 		modalWindow.setResizable(false);
-		modalWindow.setAutoSize(true);
-		
-		//modalWindow.setUseInitialHeight(true);
-		modalWindow.setInitialWidth(60);
-		//modalWindow.setInitialHeight(50);
+		modalWindow.setUseInitialHeight(true);
+		modalWindow.setInitialWidth(30);
+		modalWindow.setInitialHeight(15);
 		modalWindow.setWidthUnit("em");
 		modalWindow.setHeightUnit("em");
 

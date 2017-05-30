@@ -1196,7 +1196,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			log.error(e.getMessage());
 		}
 		catch (EntityCannotBeRemoved e) {
-			this.error("The Study cannot be removed from the system.There are participants linked to the study");
+			this.error("The Study cannot be removed from the system.There are participants linked to the study.");
 			log.error(e.getMessage());
 		}
 		catch (IOException e) {
@@ -1212,7 +1212,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			log.error(e.getMessage());
 		}
 		catch (CannotRemoveArkModuleException e) {
-			this.error("You cannot remove the modules as part of the update. There are System Users who are associated with this study and modules.");
+			this.error("You cannot remove the modules as part of the update. There are system Users who are associated with this study and modules.");
 			log.error(e.getMessage());
 		}
 	}
@@ -1243,12 +1243,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			if (!arkUserVo.getUserName().isEmpty()) {
 				// Create new study and assign the current user
 				iStudyService.createStudy(studyModel, arkUserVo);
-				this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved with default Administrator roles to the modules selected.");
+				this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " was saved successfully.");
 			}
 			else {
 				// Create new study by default, without assignment of user
 				iStudyService.createStudy(studyModel);
-				this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
+				this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved successfully.");
 			}
 
 			subjectUidExampleTxt = getSubjectUidExample();
@@ -1263,7 +1263,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.add(subjectUidExampleLbl);
 
-			this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was successful.");
+			this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " was updated successfully.");
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);
 		}

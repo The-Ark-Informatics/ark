@@ -127,7 +127,7 @@ public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailFo
 				cpModel.getObject().setBioCollection(iLimsService.getBioCollection(bioCollection.getId()));
 			}
 			catch (EntityNotFoundException e) {
-				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
+				this.error("Can not edit this record; it has been invalidated (e.g. deleted).");
 				log.error(e.getMessage());
 			}
 		}		
@@ -289,13 +289,13 @@ public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailFo
 				
 				iLimsService.createBioCollection(cpModel.getObject());
 				
-				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getBiocollectionUid() + " was created successfully");
+				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getBiocollectionUid() + " was created successfully.");
 				
 			}
 			else {
 				// Update
 				iLimsService.updateBioCollection(cpModel.getObject());
-				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getBiocollectionUid() + " was updated successfully");
+				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getBiocollectionUid() + " was updated successfully.");
 				
 			}
 			if (bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel) {
@@ -321,7 +321,7 @@ public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailFo
 	}
 
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
 		BioCollection bioCollection=cpModel.getObject().getBioCollection();
 		//Ark-1606 bug fix for deleting bio-collection which has already data.  
 		if(iLimsService.hasBiocllectionGotCustomFieldData(bioCollection)){

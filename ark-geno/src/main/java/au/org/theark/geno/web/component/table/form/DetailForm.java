@@ -98,7 +98,7 @@ public class DetailForm extends AbstractDetailForm<RowListVO>{
 		} catch (ArkSystemException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
-			this.error("No subject in context. Please select a subject.");
+			this.error("There is no subject selected. Please select a subject.");
 		}
 		
 		SecurityManager securityManager = ThreadContext.getSecurityManager();

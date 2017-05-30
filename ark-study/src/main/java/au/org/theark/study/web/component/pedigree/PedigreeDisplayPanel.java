@@ -92,7 +92,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 		super.onBeforeRender();
 		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 		if (subjectUID == null) {
-			this.error("There is no subject in context. Please select a Subject");
+			this.error("There is no subject selected. Please select a subject.");
 			DynamicImageResource emptyImageRes = new DynamicImageResource("png") {
 				private static final long	serialVersionUID	= 1L;
 

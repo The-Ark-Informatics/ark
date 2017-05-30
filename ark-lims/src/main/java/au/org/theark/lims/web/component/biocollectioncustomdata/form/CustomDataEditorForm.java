@@ -61,7 +61,7 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<BioCollec
 			}
 		}
 		else {
-			this.info("Successfully saved all edits");
+			this.info("All edits were successfuly saved.");
 		}
 		/*
 		 * Need to update the dataView, which forces a refresh of the model objects from backend.

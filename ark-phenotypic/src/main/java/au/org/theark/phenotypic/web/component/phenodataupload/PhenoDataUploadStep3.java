@@ -144,7 +144,7 @@ public class PhenoDataUploadStep3 extends AbstractWizardStepPanel  {
 				//this is not the best way to do this fix TODO
 				List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
 	
-				if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(iArkCommonService.getCustomFieldDataUploadType().getName())){//    "Custom Datasets")){
+				if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(iArkCommonService.getCustomFieldDataUploadType().getName())){//    "Custom Data Sets")){
 					PhenoDataUploadValidator phenoDataUploadValidator = new PhenoDataUploadValidator(iArkCommonService, iPhenotypicService);
 					
 					try {

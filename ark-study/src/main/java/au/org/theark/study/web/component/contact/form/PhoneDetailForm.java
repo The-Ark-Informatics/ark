@@ -214,11 +214,12 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			studyService.delete(containerForm.getModelObject().getPhoneVo().getPhone());
-			containerForm.info("The Phone record was deleted successfully.");
+			this.deleteInformation();
+			//containerForm.info("The Phone record was deleted successfully.");
 			editCancelProcess(target);
 		}
 		catch (ArkSystemException e) {
-			this.error("An error occured while processing your delete. Please contact Support");
+			this.error("An error occured while processing your delete request. Please contact the system administrator.");
 			// TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to
 			// admin
 		}
@@ -253,14 +254,16 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 							studyService.setPreferredPhoneNumberToFalse(person);
 						}
 						studyService.create(containerForm.getModelObject().getPhoneVo().getPhone());
-						this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
+						this.saveInformation();
+						//this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
 					}else {
 						if(containerForm.getModelObject().getPhoneVo().getPhone().getPreferredPhoneNumber()){
 							// Update any other preferredMailingAddresses to false
 							studyService.setPreferredPhoneNumberToFalse(person);
 						}
 						studyService.update(containerForm.getModelObject().getPhoneVo().getPhone());
-						this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
+						this.updateInformation();
+						//this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
 						}
 				}else if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)) {
 					// TODO: Contact Interface implementation
@@ -276,10 +279,10 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 			this.error(aue.getMessage());
 		}
 		catch (EntityNotFoundException e) {
-			this.error("The Subject/Participant is not available in the system anymore");
+			this.error("The Subject/Participant is no longer available in the system.");
 		}
 		catch (ArkSystemException e) {
-			this.error("A System Exception has occured please contact Support.");
+			this.error("A system exception has occurred. Please contact the system administrator.");
 		}
 	}
 

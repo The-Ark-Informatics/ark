@@ -52,12 +52,7 @@ public class SearchResultListPanel extends Panel {
 	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
 	private ModalWindow 			confirmModal;
 	private ConfirmationAnswer		confirmationAnswer;
-	private final String modalText = "<p align='center'>You are about to delete the uploaded file <b>*.</b></p>"
-			+ "</br>"
-			+ "<p align='center'> Data that were uploaded from this file will remain in The Ark; only the record of the upload process will be deleted.</p>"
-			+ "</br>"
-			+ "<p align='center'>Do you wish to continue?</p>"
-			+ "</br>";
+	private final String modalText = "<p>You are about to delete this record of</p><p><b>*.</b></p></p><p> But it will never delete the data imported to the Ark from this file previously.</p>";
 	private SearchResultListPanel me;
 	
 	/**
@@ -72,14 +67,14 @@ public class SearchResultListPanel extends Panel {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Download custom field template request could not be processed");
+				this.error("An unexpected error occurred. The download custom field template request could not be processed.");
 			}
 		};
 		ArkDownloadTemplateButton downloadCategoryTemplateButton = new ArkDownloadTemplateButton("downloadTemplateCategory", "CustomFieldCategoryUpload", au.org.theark.core.Constants.CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Download custom field category request could not be processed");
+				this.error("An unexpected error occurred. The download custom field category request could not be processed.");
 			}
 		};
 		initConfirmModel();
@@ -256,7 +251,7 @@ public class SearchResultListPanel extends Panel {
 	 * @param upload
 	 */
 	private void updateModelAndVarifyForDeleteUpload(Upload upload) {
-		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText.replace("*"," ["+upload.getId()+"] "+upload.getFilename()),"Warning", confirmModal, confirmationAnswer));
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText.replace("*"," ["+upload.getId()+"] "+upload.getFilename()),"Delete upload record.", confirmModal, confirmationAnswer));
 		confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
 		private static final long serialVersionUID = 1L;
 			public void onClose(AjaxRequestTarget target) {
@@ -274,7 +269,7 @@ public class SearchResultListPanel extends Panel {
 		confirmationAnswer = new ConfirmationAnswer(false);
 		confirmModal = new ModalWindow("confirmModal");
 		confirmModal.setCookieName("yesNoPanel");
-		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText,"Warning", confirmModal, confirmationAnswer));
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText,"Delete upload record.", confirmModal, confirmationAnswer));
 		addOrReplace(confirmModal);
 	}
 	

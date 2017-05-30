@@ -774,22 +774,4 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		List<Biospecimen> list = criteria.list();
 		return list;
 	}
-
-	public List<BiospecimenCustomFieldData> getBiospecimenHasFieldDataForBiospecimen(Biospecimen biospecimen) {
-		Criteria criteria = getSession().createCriteria(BiospecimenCustomFieldData.class);
-		criteria.add(Restrictions.eq("biospecimen", biospecimen));
-		return (List<BiospecimenCustomFieldData>)criteria.list();
-		
-	}
-	
-	public void deleteBiospecimenCustomFieldDataForBiospecimen(Biospecimen biospecimen){
-		Criteria criteria = getSession().createCriteria(BiospecimenCustomFieldData.class);
-		criteria.add(Restrictions.eq("biospecimen", biospecimen));
-		List<BiospecimenCustomFieldData> list = criteria.list();
-		for (BiospecimenCustomFieldData biospecimenCustomFieldData : list) {
-			deleteBiospecimenCustomFieldData(biospecimenCustomFieldData);
-		}
-	}
-	
-	
 }

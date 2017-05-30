@@ -251,22 +251,24 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 					}
 					//Check for billable item type for exsistance.
 					if(iWorkTrackingService.isBillableItemTypeExsistForStudy(studyId, containerForm.getModelObject().getBillableItemType())){
-						this.error("A billable item type with this name already exists.");
+						this.error("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName()  + " already exists in this study.");
 					}else{	
 						iWorkTrackingService.createBillableItemType(containerForm.getModelObject().getBillableItemType());
-						this.info("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName()  + " was created successfully");
+						this.saveInformation();
+						//this.info("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName()  + " was created successfully");
 					}
 				}else {
 					iWorkTrackingService.updateBillableItemType(containerForm.getModelObject().getBillableItemType());
-					this.info("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName() + " was updated successfully");
+					this.updateInformation();
+					//this.info("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName() + " was updated successfully");
 				}
 				onSavePostProcess(target);
 			}
 			catch (Exception e) {
 				if(e.getMessage().contains("Duplicate entry")){
-					this.error("A billable item type with this name already exists.");
+					this.error("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName()  + " already exists in this study.");
 				}else{
-					this.error("A System error occured, we will have someone contact you.");
+					this.error("A system error occurred. Please contact the system administrator.");
 				}
 			}
 		processErrors(target);
@@ -297,15 +299,16 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 			}
 			
 			iWorkTrackingService.updateBillableItemType(containerForm.getModelObject().getBillableItemType());
-			containerForm.info("The Billable Item type was deleted successfully.");
+			this.deleteInformation();
+			//containerForm.info("The Billable Item type was deleted successfully.");
 			editCancelProcess(target);
 		}else{
-			containerForm.error("Cannot Delete this Billable Item type. This Billable Item type is associated with existing billable Itemes");
+			containerForm.error("The billable item type could not be deleted. This billable item type is associated with existing billable items.");
 			processErrors(target);
 		}	
 		}
 		catch (Exception e) {
-			containerForm.error("A System Error has occured please contact support.");
+			containerForm.error("A system error has occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}

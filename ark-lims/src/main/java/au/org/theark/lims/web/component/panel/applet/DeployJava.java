@@ -256,9 +256,9 @@ public class DeployJava extends WebComponent implements IHeaderContributor {
      */
     public void renderHead(IHeaderResponse response) {
         if (useJavascriptResource) {
-            response.renderJavaScriptReference(new PackageResourceReference(DeployJava.class, "deployJava.js"));
+        	response.renderJavaScriptReference(new PackageResourceReference(DeployJava.class, "deployJava.js"));
         } else {
-            response.renderJavaScriptReference(JAVASCRIPT_URL);
+        	response.renderJavaScriptReference(JAVASCRIPT_URL);
         }
     }
 }

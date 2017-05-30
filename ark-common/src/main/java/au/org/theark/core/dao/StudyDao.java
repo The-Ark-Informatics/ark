@@ -5360,11 +5360,4 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (consent!=null);
 		
 	}
-	@Override
-	public boolean isAnyFilterAddedForSearch(Search search){
-		Criteria criteria = getSession().createCriteria(QueryFilter.class);
-		criteria.add(Restrictions.eq("search", search));
-		List<QueryFilter> queryFilters=criteria.list();
-		return (queryFilters.size() > 0); 
-	}
 }

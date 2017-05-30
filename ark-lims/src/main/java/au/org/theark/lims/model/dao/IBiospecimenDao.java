@@ -183,9 +183,5 @@ public interface IBiospecimenDao {
 
 	public List<Biospecimen> getRootBiospecimensForBiocollection(BioCollection bc);
 	
-	public List<BiospecimenCustomFieldData> getBiospecimenHasFieldDataForBiospecimen(Biospecimen biospecimen);
-	
-	public void deleteBiospecimenCustomFieldDataForBiospecimen(Biospecimen biospecimen);
-	
 }
 

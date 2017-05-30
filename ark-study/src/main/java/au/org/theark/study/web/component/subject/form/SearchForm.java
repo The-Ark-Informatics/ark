@@ -115,7 +115,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	protected void addSearchComponentsToForm() {
@@ -284,7 +284,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		}
 		long count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
 		if (count == 0L) {
-			this.info("There are no subjects with the specified criteria.");
+			this.info("There are no subjects with the specified search criteria.");
 			target.add(feedbackPanel);
 		}
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);

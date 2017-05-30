@@ -27,12 +27,9 @@ import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -40,9 +37,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +50,6 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.pheno.entity.PickedPhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
@@ -63,10 +57,8 @@ import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.util.PhenoDataSetCategoryOrderingHelper;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
-import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataDataViewPanel;
 
 /**
  * Detail form for Phenotypic Collection, as displayed within a modal window
@@ -116,7 +108,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			pc = iPhenotypicService.getPhenoCollection(pc.getId());
 			cpModel.getObject().setPhenoDataSetCollection(pc);
 			if (pc == null) {
-				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
+				this.error("Cannot edit this record - it has been invalidated (e.g. deleted)");
 			}
 		}
 	}
@@ -266,14 +258,14 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		if (cpModel.getObject().getPhenoDataSetCollection().getId() == null) {
 			// Save
 			iPhenotypicService.createCollection(cpModel.getObject().getPhenoDataSetCollection());
-			this.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getId() + " was created successfully");
+			this.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getId() + " was successfully created.");
 			processErrors(target);
 
 		}
 		else {
 			// Update
 			iPhenotypicService.updateCollection(cpModel.getObject().getPhenoDataSetCollection());
-			this.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getId() + " was updated successfully");
+			this.info("Subject Dataset " + cpModel.getObject().getPhenoDataSetCollection().getId() + " was successfully updated.");
 			processErrors(target);
 			
 		}
@@ -288,12 +280,12 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	}
 
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
 		iPhenotypicService.deletePhenoCollection(cpModel.getObject().getPhenoDataSetCollection());
 
 		// Base containerForm for pheno data entry unfortunately way up the chain...thus a lot of getParent() calls. Not the neatest method by any means		
 		PhenoCollectionDataEntryContainerPanel containerPanel = (PhenoCollectionDataEntryContainerPanel) this.getParent().getParent().getParent().getParent().getParent().getParent();
-		containerPanel.info("Subject Dataset with dataset values" + cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire().getName() + " was deleted successfully");
+		containerPanel.info("Subject Dataset with dataset values" + cpModel.getObject().getPhenoDataSetCollection().getQuestionnaire().getName() + " was successfully deleted.");
 		target.add(containerPanel.getFeedbackPanel());
 		onClose(target);
 		processErrors(target);
