@@ -21,6 +21,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 
 public class Main {
+
+	private static final String ARK_STUDY_DIR="study";
 		
 	private  static final String ARK_SUBJECT_ATTACHEMENT_DIR="attachments";
 	
@@ -28,10 +30,16 @@ public class Main {
 	
 	private static final String DB_SCHEMA="study";
 	
+	private static final String STUDY_TABLE="study";
+
 	private static final String SUBJECT_FILE_TABLE="subject_file";
 
 	private static final String CORRESPONDENCE_TABLE="correspondences";
+
+	private static final String STUDY_LOGO_FILE_ID_COLUMN="STUDY_LOGO_FILE_ID";
 	
+	private static final String STUDY_LOGO_CHECKSUM_COLUMN="STUDY_LOGO_CHECKSUM";
+
 	private static final String FILE_ID_COLUMN="FILE_ID";
 
 	private static final String FILE_PAYLOAD_COLUMN="PAYLOAD";
@@ -39,6 +47,7 @@ public class Main {
 	private static final String ATTACHEMENT_FILE_ID_COLUMN="ATTACHMENT_FILE_ID";
 	
 	private static final String ATTACHEMENT_CHECKSUM_COLUMN="ATTACHMENT_CHECKSUM";
+
 	
 	private static final String ADD_FILE_ID="ALTER TABLE `study`.`subject_file` \n" + 
 			"ADD COLUMN `FILE_ID` VARCHAR(1000) NULL";
@@ -51,7 +60,24 @@ public class Main {
 
 	private static final String ADD_ATTACHEMENT_CHECKSUM="ALTER TABLE `study`.`correspondences` \n" + 
 			"ADD COLUMN `ATTACHMENT_CHECKSUM` VARCHAR(50) NULL";
+	
+	private static final String ADD_STUDY_LOGO_FILE_ID="ALTER TABLE `study`.`study` \n" + 
+			"ADD COLUMN `STUDY_LOGO_FILE_ID` VARCHAR(1000) NULL";
+
+	private static final String ADD_STUDY_LOGO_CHECKSUM="ALTER TABLE `study`.`study` \n" + 
+			"ADD COLUMN `STUDY_LOGO_CHECKSUM` VARCHAR(50) NULL";
 		
+	private static final String SELECT_STUDY_LOGO_ATTACHMENT ="select st.ID, st.FILENAME, st.ID, NULL as SUBJECT_UID, st.STUDY_LOGO \n" + 
+			"from study.study st \n" +  
+			"where st.ID > ? \n" + 
+			"	and st.STUDY_LOGO is not null \n" + 
+			"order by st.ID limit 1"; 
+	
+	private static final String UPDATE_STUDY_LOGO_ATTACHMENT = "update study.study st \n" + 
+			"set st.STUDY_LOGO_FILE_ID = ?, \n" +
+			"st.STUDY_LOGO_CHECKSUM= ? \n" +
+			"where st.id = ? ";
+	
 	private static final String SELECT_FILE_ATTACHMENT ="select sf.ID, sf.FILENAME, lss.STUDY_ID, lss.SUBJECT_UID,sf.PAYLOAD \n" + 
 			"from study.subject_file sf \n" + 
 			"	inner join study.link_subject_study lss on lss.ID = sf.LINK_SUBJECT_STUDY_ID \n" + 
@@ -90,6 +116,7 @@ public class Main {
 		Main m = new Main();	
 		Connection con =getConnection();
 		m.setup(con);
+		m.migrateStudyLogoFiles(con);;
 		m.migrateSubjectFiles(con);
 		m.migrateCorrespondenceFiles(con);
 		closeConnection(con);
@@ -184,6 +211,16 @@ public class Main {
 			ps=con.prepareStatement(Main.ADD_ATTACHEMENT_CHECKSUM);
 			ps.execute();
 		}
+		
+		if(!isColumnExists(con,Main.DB_SCHEMA,Main.STUDY_TABLE,Main.STUDY_LOGO_FILE_ID_COLUMN)){
+			ps=con.prepareStatement(Main.ADD_STUDY_LOGO_FILE_ID);
+			ps.execute();
+		}
+		
+		if(!isColumnExists(con,Main.DB_SCHEMA,Main.STUDY_TABLE,Main.STUDY_LOGO_CHECKSUM_COLUMN)){
+			ps=con.prepareStatement(Main.ADD_STUDY_LOGO_CHECKSUM);
+			ps.execute();
+		}
 	}
 	
 	private boolean isColumnExists(Connection con,String schema,String tableName,String columnName) throws Exception{
@@ -206,6 +243,21 @@ public class Main {
 		return isAllowed;
 	}
 	
+	public void migrateStudyLogoFiles(Connection con)throws Exception{
+		int id = 0;
+		int previousId=0;
+		PreparedStatement selectPS = con.prepareStatement(Main.SELECT_STUDY_LOGO_ATTACHMENT);
+		PreparedStatement updatePS = con.prepareStatement(Main.UPDATE_STUDY_LOGO_ATTACHMENT);
+		while(true){
+			previousId =id;
+			id = migrate(id, selectPS, updatePS, Main.ARK_STUDY_DIR);
+			if(previousId != id){
+				continue;
+			}else{
+				break;
+			}
+		}
+	}
 	
 	public void migrateSubjectFiles(Connection con)throws Exception{
 		int id = 0;
@@ -328,7 +380,7 @@ public class Main {
 	}
 		
 	private String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType) {
-		String directoryName = this.fileAttachmentDir + File.separator + studyId + java.io.File.separator + directoryType +  File.separator + subjectUID ;
+		String directoryName = this.fileAttachmentDir + File.separator + studyId + java.io.File.separator + directoryType +  (subjectUID !=null ? (File.separator + subjectUID):"");
 		return directoryName;
 	}
 	

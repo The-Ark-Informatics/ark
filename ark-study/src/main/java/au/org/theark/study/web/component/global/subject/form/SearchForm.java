@@ -191,14 +191,14 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 					ContextHelper contextHelper = new ContextHelper();
 					contextHelper.resetContextLabel(target, arkContextMarkup);
 					StudyHelper studyHelper = new StudyHelper();
-					studyHelper.setStudyLogo(new Study(), target, studyNameMarkup, studyLogoMarkup);
+					studyHelper.setStudyLogo(new Study(), target, studyNameMarkup, studyLogoMarkup,iArkCommonService);
 				} else {
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, study.getId());
 					ContextHelper contextHelper = new ContextHelper();
 					contextHelper.resetContextLabel(target, arkContextMarkup);
 					contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkup);
 					StudyHelper studyHelper = new StudyHelper();
-					studyHelper.setStudyLogo(study, target, studyNameMarkup, studyLogoMarkup);
+					studyHelper.setStudyLogo(study, target, studyNameMarkup, studyLogoMarkup,iArkCommonService);
 				}
 				target.add(SearchForm.this);
 			}

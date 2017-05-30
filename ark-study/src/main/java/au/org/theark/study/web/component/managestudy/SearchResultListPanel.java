@@ -18,11 +18,13 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.managestudy;
 
+import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
 
 import au.org.theark.core.util.EventPayload;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.AttributeModifier;
@@ -259,8 +261,8 @@ public class SearchResultListPanel extends Panel {
 
 				// Set Study Logo
 				studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(searchStudy, target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
-
+				studyHelper.setStudyLogo(study, target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup(),iArkCommonService);
+				
 				// Set Context items
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());

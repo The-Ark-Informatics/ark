@@ -187,7 +187,7 @@ public class SearchResultListPanel extends Panel {
 				
 				// Set Study Logo
 				StudyHelper studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup);
+				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup, iArkCommonService);
 				
 				//Refresh relationship list
 				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("father").setEnabled(true);

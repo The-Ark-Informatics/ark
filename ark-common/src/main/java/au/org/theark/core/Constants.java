@@ -776,4 +776,6 @@ public class Constants {
 	public static final String MAIL_SETTING_PASSWORD = "MAIL_SETTING_PASSWORD";
 	public static final String MAIL_SETTING_PROPERTIES_AUTH = "MAIL_SETTING_PROPERTIES_AUTH";
 	public static final String MAIL_SETTING_PROPERTIES_STARTTLS = "MAIL_SETTING_PROPERTIES_STARTTLS";
+	
+	public static final String ARK_STUDY_DIR="study";
 }

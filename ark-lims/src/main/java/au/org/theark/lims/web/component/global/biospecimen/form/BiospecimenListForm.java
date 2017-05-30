@@ -589,7 +589,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		
 		// Set Study Logo
 		StudyHelper studyHelper = new StudyHelper();
-		studyHelper.setStudyLogo(linkSubjectStudy.getStudy(), target,  studyNameMarkup, studyLogoMarkup);
+		studyHelper.setStudyLogo(linkSubjectStudy.getStudy(), target,  studyNameMarkup, studyLogoMarkup, iArkCommonService);
 	}
 
 	/**
