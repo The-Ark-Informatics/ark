@@ -290,8 +290,8 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 
 	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count) {
 		Criteria criteria = buildBioCollectionCriteria(bioCollectionCriteria);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
+		criteria.setFirstResult(Math.toIntExact(first));
+		criteria.setMaxResults(Math.toIntExact(count));
 		List<BioCollection> list = criteria.list();
 
 		return list;
@@ -354,7 +354,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return (Long) criteria.uniqueResult();
 	}
 	
-	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, int first, int count) {
 		List<BioCollectionCustomFieldData> bioCollectionCustomFieldDataList = new ArrayList<BioCollectionCustomFieldData>();
 	
 		StringBuffer sb = new StringBuffer();

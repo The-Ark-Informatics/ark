@@ -103,7 +103,7 @@ public class ProcessDetailForm extends AbstractDetailForm<Process> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 
 		iArkCommonService.deleteProcess(containerForm.getModelObject());
-		this.info("Process deleted");
+		this.info("Process was successfully deleted.");
 		onCancel(target);
 	}
 
@@ -120,11 +120,11 @@ public class ProcessDetailForm extends AbstractDetailForm<Process> {
 		if(containerForm.getModelObject()!=null && containerForm.getModelObject() .getId()==null){
 			
 			iArkCommonService.createProcess(containerForm.getModelObject());
-			this.info("Process saved");
+			this.info("Process was successfully saved.");
 		}
 		else {
 			iArkCommonService.updateProcess(containerForm.getModelObject());
-			this.info("Process updated");
+			this.info("Process was successfully updated.");
 		}
 		
 		target.add(feedBackPanel);

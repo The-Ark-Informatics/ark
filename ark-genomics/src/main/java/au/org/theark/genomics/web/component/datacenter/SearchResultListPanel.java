@@ -98,10 +98,10 @@ public class SearchResultListPanel extends Panel {
 					MicroService microService = dataCenterVo.getMicroService();
 
 					if (microService == null || dataCenter == null) {
-						this.error("Need to select a service and data centre prior to make a search.");
+						this.error("You need to select a service and data centre prior to performing a search.");
 					} else {
 //						this.info(getModelObject().getName() + " cannot be reach in the " + getModelObject().getMicroService().getName() + " Service");
-						this.info("Cannot find any directories or files in the search location");
+						this.info("Cannot find any directories or files in the search location.");
 					}
 					target.add(feedbackPanel);
 

@@ -131,7 +131,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 		phoneTypeChoice.add(new ArkDefaultFormFocusBehavior());
 		addDetailFormComponents();
 		attachValidators();
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 
 	public void addDetailFormComponents() {
@@ -182,11 +182,12 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			studyService.delete(containerForm.getModelObject().getPhone());
-			containerForm.info("The Phone record was deleted successfully.");
+			//containerForm.info("The Phone record was deleted successfully.");
+			this.deleteInformation();
 			editCancelProcess(target);
 		}
 		catch (ArkSystemException e) {
-			this.error("An error occured while processing your delete. Please contact Support");
+			this.error("An error occurred while processing your delete request. Please contact the system administrator.");
 			// TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to
 			// admin
 		}
@@ -232,11 +233,13 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 					// message along with the Subject UID or Contact ID
 					if (containerForm.getModelObject().getPhone().getId() == null) {
 						studyService.create(containerForm.getModelObject().getPhone());
-						this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
+						this.saveInformation();
+						//this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
 					}
 					else {
 						studyService.update(containerForm.getModelObject().getPhone());
-						this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
+						this.updateInformation();
+						//this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
 					}
 				}
 				else if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)) {
@@ -256,10 +259,10 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 			this.error(aue.getMessage());
 		}
 		catch (EntityNotFoundException e) {
-			this.error("The Subject/Participant is not available in the system anymore");
+			this.error("The subject/participant is no lobger available in the system.");
 		}
 		catch (ArkSystemException e) {
-			this.error("A System Exception has occured please contact Support.");
+			this.error("A system exception has occurred. Please contact the system administrator.");
 		}
 	}
 

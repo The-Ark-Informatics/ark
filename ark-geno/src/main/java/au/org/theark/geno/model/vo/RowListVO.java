@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import au.org.theark.core.vo.BaseVO;
+import au.org.theark.core.vo.ArkVo;
 
-public class RowListVO extends BaseVO {
+public class RowListVO extends BaseVO implements ArkVo{
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,5 +33,10 @@ public class RowListVO extends BaseVO {
 	@Override
 	public String toString() {
 		return "RowListVO [rows=" + rows + "]";
+	}
+	
+	@Override
+	public String getArkVoName(){
+		return "Row";
 	}
 }

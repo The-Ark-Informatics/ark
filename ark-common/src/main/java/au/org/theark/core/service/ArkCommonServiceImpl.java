@@ -346,7 +346,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			userVO = (ArkUserVO) ldapDataContextSource.getLdapTemplate().lookup(nameObj, new PersonContextMapper());
 
 		} catch (InvalidNameException ne) {
-			throw new ArkSystemException("A System error has occured");
+			throw new ArkSystemException("A System error has occurred. Please contact the system administrator.");
 		} catch (NameNotFoundException ex) {
 			log.error(username + " not found in LDAP");
 			throw new EntityNotFoundException();
@@ -802,7 +802,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 			// Custom Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-			ah.setComment("Created Custom " + customFieldVO.getCustomField().getName());
+			ah.setComment("Custom " + customFieldVO.getCustomField().getName()+" was created successfully.");
 			ah.setEntityId(customFieldVO.getCustomField().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
 
@@ -820,7 +820,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				// Custom Field Display History
 				ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-				ah.setComment("Created Custom Field Display" + customFieldVO.getCustomField().getName());
+				ah.setComment("Custom Field Display" + customFieldVO.getCustomField().getName()+" was created successfully.");
 				ah.setEntityId(customFieldVO.getCustomField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 				createAuditHistory(ah);
@@ -856,7 +856,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				// Custom Field History
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-				ah.setComment("Updated Custom Field " + fieldName);
+				ah.setComment("Custom Field " + fieldName+" was updated successfully.");
 				ah.setEntityId(customFieldVO.getCustomField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
 				createAuditHistory(ah);
@@ -867,7 +867,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 					// Custom Field Display History
 					ah = new AuditHistory();
 					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-					ah.setComment("Updated Custom Field Display " + fieldName);
+					ah.setComment("Custom Field Display " + fieldName+" was updated successfully.");
 					ah.setEntityId(customFieldVO.getCustomField().getId());
 					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 					createAuditHistory(ah);
@@ -877,7 +877,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				throw new ArkSystemException("Problem updating Custom Field: " + ex.getMessage());
 			}
 		} else {
-			throw new ArkNotAllowedToUpdateException("Custom Field cannot be updated, it is used in the system");
+			throw new ArkNotAllowedToUpdateException("Custom Field could not be updated; it is in use in the system.");
 		}
 	}
 
@@ -891,7 +891,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 					// History for Custom Field Display
 					AuditHistory ah = new AuditHistory();
 					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-					ah.setComment("Deleted Custom Display Field For Custom Field " + fieldName);
+					ah.setComment("Custom Display Field For Custom Field " + fieldName+" was deleted successfully.");
 					ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
 					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 					createAuditHistory(ah);
@@ -900,7 +900,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				// History for Custom Field
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-				ah.setComment("Deleted Custom Field " + fieldName);
+				ah.setComment("Custom Field " + fieldName+" was deleted successfully.");
 				ah.setEntityId(customFieldVO.getCustomField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
 				createAuditHistory(ah);
@@ -909,7 +909,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				throw new ArkSystemException("Unable to delete Custom Field: " + ex.getMessage());
 			}
 		} else {
-			throw new EntityCannotBeRemoved("Custom Field cannot be removed, it is used in the system");
+			throw new EntityCannotBeRemoved("Custom field cannot be removed. It is  in use in the system");
 		}
 	}
 
@@ -986,7 +986,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			mailSender.setPassword(password);
 		} catch (NullPointerException npe) {
 			npe.getStackTrace();
-			throw new MailSendException("Failed to retrieve mail connection settings. Please contact your system administrator");
+			throw new MailSendException("Failed to retrieve mail connection settings. Please contact the system administrator.");
 		}
 
 		int port = 587;
@@ -997,7 +997,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			System.out.println("Unable to read number format, using default");
 		} catch (NullPointerException npe) {
 			npe.getStackTrace();
-			throw new MailSendException("Failed to retrieve mail connection settings. Please contact your system administrator");
+			throw new MailSendException("Failed to retrieve mail connection settings. Please contact the system administrator.");
 		}
 		mailSender.setPort(port);
 
@@ -1139,7 +1139,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created studyUpload " + studyUpload.getId());
+		ah.setComment("StudyUpload " + studyUpload.getId()+" was created successfully.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
 		ah.setEntityId(studyUpload.getId());
 		this.createAuditHistory(ah);
@@ -1151,7 +1151,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		String userId = studyUpload.getUserId();
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated studyUpload " + studyUpload.getId());
+		ah.setComment("StudyUpload " + studyUpload.getId()+" was updated successfully.");
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
 		ah.setEntityId(studyUpload.getId());
 		this.createAuditHistory(ah, userId, studyUpload.getStudy());
@@ -1535,7 +1535,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		AuditHistory ah = new AuditHistory();
 		// Custom Field History
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted Search " + search.getName());
+		ah.setComment("Search " + search.getName()+" was deleted successfully.");
 		ah.setEntityId(search.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SEARCH);
 		this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), search.getStudy());
@@ -1679,8 +1679,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				}
 			}
 		} catch (NullPointerException npe) {
-			log.error("File Attachment Directory not set. Contact your system administrator.");
-			throw new ArkSystemException(npe.getMessage() + " File Attachment Directory not set. Contact your system administrator.");
+			log.error("File Attachment Directory not set. Contact the system administrator.");
+			throw new ArkSystemException(npe.getMessage() + " File Attachment Directory not set. Contact the system administrator.");
 		}
 		return directoryName.toString();
 	}
@@ -1730,7 +1730,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				data = FileUtils.readFileToByteArray(new File(fileName));
 			} else {
 				log.error("MD5 Hashes are not matching");
-				throw new ArkCheckSumNotSameException("MD5 Hashes are not matching");
+				throw new ArkCheckSumNotSameException("MD5 Hashes are not matching.");
 			}
 		} catch (Exception e) {
 			log.error("Error", e);
@@ -1741,7 +1741,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 					md5input.close();
 				}
 			} catch (IOException e) {
-				throw new ArkSystemException("exception while closing stream. " + e.getMessage());
+				throw new ArkSystemException("Exception while closing stream. " + e.getMessage());
 			}
 		}
 		return data;
@@ -1768,10 +1768,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				if (delete = file.delete()) {
 					log.info("File deleted successfully");
 				} else {
-					throw new ArkFileNotFoundException("Could not find the attachment");
+					throw new ArkFileNotFoundException("Could not find the attachment.");
 				}
 			} else {
-				throw new ArkCheckSumNotSameException("Attachment hash value mismatch");
+				throw new ArkCheckSumNotSameException("Attachment hash value mismatch.");
 			}
 		} catch (Exception e) {
 			throw new ArkFileNotFoundException(e.getMessage());
@@ -1836,7 +1836,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			return convertByteArrayToHexString(hashedBytes);
 		} catch (NoSuchAlgorithmException | IOException ex) {
 			log.error("Error", ex);
-			throw new ArkSystemException("Could not generate hash from file");
+			throw new ArkSystemException("Could not generate hash from file.");
 		}
 	}
 
@@ -1874,7 +1874,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 			// Custom Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-			ah.setComment("Created Custom " + CustomFieldCategoryVO.getCustomFieldCategory().getName());
+			ah.setComment("Custom " + CustomFieldCategoryVO.getCustomFieldCategory().getName()+" was created successfully.");
 			ah.setEntityId(CustomFieldCategoryVO.getCustomFieldCategory().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_CATEGORY);
 
@@ -1902,10 +1902,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			log.error("Custom Field Category Constrain violation" + cvex);
 			if (cvex.getMessage().contains("Duplicate entry")) {
 				log.error("Custom Field Category Duplicates" + cvex);
-				throw new ArkRunTimeUniqueException("A Custom Field Category duplicate value violation");
+				throw new ArkRunTimeUniqueException("A Custom Field Category duplicate value violation.");
 			} else if (cvex.getMessage().contains("cannot be null")) {
 				log.error("Custom Field Category field cannot be null" + cvex);
-				throw new ArkRunTimeException("A Custom Field Category null violation");
+				throw new ArkRunTimeException("A Custom Field Category null violation.");
 			}
 		} catch (Exception ex) {
 			log.error("Problem creating Custom Field Category: " + ex);
@@ -1980,7 +1980,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			// History for Custom Field Category
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-			ah.setComment("Deleted Custom Field Category " + fieldName);
+			ah.setComment("Custom Field Category " + fieldName+" was deleted successfully.");
 			ah.setEntityId(customFieldCategoryVO.getCustomFieldCategory().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_CATEGORY);
 			createAuditHistory(ah);
@@ -2186,9 +2186,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			md5input = new FileInputStream(file);
 			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
 			} else {
-				log.error("MD5 Hashes are not matching");
+				log.error("MD5 Hashes are not matching.");
 				System.out.println(checksum + " " + DigestUtils.md5Hex(md5input));
-				throw new ArkCheckSumNotSameException("MD5 Hashes are not matching");
+				throw new ArkCheckSumNotSameException("MD5 Hashes are not matching.");
 			}
 		} catch (Exception e) {
 			log.error("Error", e);
@@ -2199,7 +2199,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 					md5input.close();
 				}
 			} catch (IOException e) {
-				throw new ArkSystemException("exception while closing stream. " + e.getMessage());
+				throw new ArkSystemException("Exception while closing stream. " + e.getMessage());
 			}
 		}
 		return file;
@@ -2234,7 +2234,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void deleteUpload(Upload upload) {
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted Upload " + upload.getFilename());
+		ah.setComment("Upload " + upload.getFilename()+" was deleted successfully.");
 		ah.setEntityId(upload.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
 		this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), upload.getStudy());

@@ -195,7 +195,8 @@ public class AuditModalPanel extends Panel implements Serializable {
 								List<Number> revisionNumbers = reader.getRevisions(current.getClass(), primaryKey);
 								String fieldName = (s.equalsIgnoreCase("id") ? "ID" : iAuditService.getFieldName(current.getClass(), s));
 								if(fieldName==null){
-									this.error("Please contact system administrator need to add audit field "+s+" to table(Audit.audit_field) In Entity : "+current.getClass());
+									this.error("Please contact the system administrator; auditing for some fields("+s+") on this screen has not been properly configured.");
+									log.error("Please contact system administrator need to add audit field "+s+" to table(Audit.audit_field) In Entity : "+current.getClass());
 									setFeedbackPanel(feedbackPanel);
 								}
 								for(Number revision : revisionNumbers) {

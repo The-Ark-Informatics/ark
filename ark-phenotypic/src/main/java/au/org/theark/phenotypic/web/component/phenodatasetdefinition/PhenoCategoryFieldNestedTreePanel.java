@@ -82,4 +82,13 @@ public class PhenoCategoryFieldNestedTreePanel extends Panel {
 	public ITreeProvider<Object> getProvider() {
 		return provider;
 	}
+
+	public AbstractTree<Object> getTree() {
+		return tree;
+	}
+
+	public void setTree(AbstractTree<Object> tree) {
+		this.tree = tree;
+	}
+	
 }

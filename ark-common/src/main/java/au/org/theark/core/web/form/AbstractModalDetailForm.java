@@ -71,7 +71,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 
 
 	private void initialiseEditButtonsPanel(boolean isNew) {
-		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this,feedbackPanel);
 		if (isNew) {
 			buttonsPanel.setDeleteButtonVisible(false);
 			buttonsPanel.setDeleteButtonEnabled(false);
@@ -81,7 +81,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 	}
 	
 	private void initialiseEditButtonsPanelForReadOnlyUser(){
-		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this,feedbackPanel);
 		buttonsPanel.setDeleteButtonVisible(false);
 		buttonsPanel.setDeleteButtonEnabled(false);
 		buttonsPanel.setSaveButtonVisible(false);

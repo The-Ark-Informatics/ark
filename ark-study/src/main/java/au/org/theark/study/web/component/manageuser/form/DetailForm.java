@@ -202,10 +202,10 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 								}
 							});
 						} catch (ArkSystemException e) {
-							getParent().error("System error:User not deleted properly.");
+							getParent().error("A system error occurred. User not deleted properly.");
 							
 						} catch (EntityNotFoundException e) {
-							getParent().error("User not found.");
+							getParent().error("User could not be found.");
 						}
 					} else {
 					}
@@ -213,7 +213,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		});
 		ldapSuccessModal = new ModalWindow("ldapSuccessModalWindow");
 		ldapSuccessModal.setCookieName("okPanel");
-		ldapSuccessModal.setContent(new SuccessFullyDone(ldapDeleteConfirmModal.getContentId(), "The exsisting user deleted sucessfully from the system.","Successfully deleted." ,ldapSuccessModal));
+		ldapSuccessModal.setContent(new SuccessFullyDone(ldapDeleteConfirmModal.getContentId(), "The existing user was deleted sucessfully from the system.","Successfully deleted." ,ldapSuccessModal));
 		initChildStudyPalette();
 		attachValidators();
 		addDetailFormComponents();
@@ -460,7 +460,8 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			}else{
 				// Remove the Ark User from the Ark Database and his roles.
 				iUserService.deleteArkUserRolesForStudy(containerForm.getModelObject().getStudy(), containerForm.getModelObject().getArkUserEntity());
-				this.info(new StringResourceModel("user.removed", this, null).getString());
+				this.deleteInformation();
+				//this.info(new StringResourceModel("user.removed", this, null).getString());
 				editCancelProcess(target);
 				onCancel(target);
 			}

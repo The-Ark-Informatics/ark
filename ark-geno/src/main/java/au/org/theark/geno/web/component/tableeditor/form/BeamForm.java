@@ -197,7 +197,8 @@ public class BeamForm extends AbstractDetailForm<BeamListVO>{
 
 	protected void deleteCompleted(String feedback, boolean successful) {
 		if(successful) { 
-			this.info(feedback);
+			this.deleteInformation();
+			//this.info(feedback);
 		} else {
 			this.error(feedback);
 		}
@@ -231,7 +232,8 @@ public class BeamForm extends AbstractDetailForm<BeamListVO>{
 		}
 		if(!BeamList.isEmpty() && BeamList.size() == getModelObject().getBeams().size()) {
 			iArkGenoService.createOrUpdateBeams(BeamList);
-			this.info("Columns updated successfully. New Column IDs won't appear until page has been reloaded.");
+			this.updateInformation();
+			//this.info("Columns updated successfully. New Column IDs won't appear until page has been reloaded.");
 		}
 		target.add(feedBackPanel);
 	}

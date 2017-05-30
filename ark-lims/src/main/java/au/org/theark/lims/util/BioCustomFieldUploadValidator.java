@@ -367,7 +367,7 @@ public class BioCustomFieldUploadValidator {
 					fileValidationMessages.add("The column name \"BIOSPECIMENUID\" must exist as the header of the first column.\n");
 				}
 				for (String badHeader : badHeaders) {
-					fileValidationMessages.add("The column name " + badHeader + " does not with an existing biospecimen-specific custom field.\n");
+					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing biospecimen-specific custom field.\n");
 				}
 				log.warn("failed header validation");
 			}
@@ -378,11 +378,11 @@ public class BioCustomFieldUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the bio custom data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the bio custom data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process bio custom data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process bio custom data file.");
 		}
 		finally {
 			if (csvReader != null) {
@@ -469,7 +469,7 @@ public class BioCustomFieldUploadValidator {
 					fileValidationMessages.add("The column name \"BIOCOLLECTIONUID\" must exist as the header of the first column.\n");
 				}
 				for (String badHeader : badHeaders) {
-					fileValidationMessages.add("The column name " + badHeader + " does not with an existing biocollection-specific custom field.\n");
+					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing biocollection-specific custom field.\n");
 				}
 				log.warn("failed header validation");
 			}
@@ -480,11 +480,11 @@ public class BioCustomFieldUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the bio custom data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the bio custom data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process bio custom data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process bio custom data file.");
 		}
 		finally {
 			if (csvReader != null) {
@@ -739,11 +739,11 @@ public class BioCustomFieldUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the biocustom  data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the biocustom  data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process bio custom data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process bio custom data file.");
 		}
 		finally {
 			if (csvReader != null) {

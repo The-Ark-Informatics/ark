@@ -127,7 +127,7 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		try {
 			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 		} catch (Exception e) {
-			error("There is a problem during the upload process.");
+			error("There was a problem during the upload process.");
 			wizardForm.onError(target, null);
 		}
 	}

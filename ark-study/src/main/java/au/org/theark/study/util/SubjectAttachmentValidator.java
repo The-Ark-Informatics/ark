@@ -290,7 +290,7 @@ public class SubjectAttachmentValidator {
 		if (cellValue != null && cellValue.trim().length() > 0) {
 			if (!compNameList.contains(cellValue)) {
 				errorCells.add(new ArkGridCell(col, row));
-				dataValidationMessages.add(cellValue + " study component is not exist in the study in context");
+				dataValidationMessages.add(cellValue + " study component does not exist in the study selected");
 			}
 		}
 	}

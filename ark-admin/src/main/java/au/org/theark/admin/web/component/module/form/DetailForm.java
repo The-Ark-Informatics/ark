@@ -115,7 +115,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		// Save or update
 		iAdminService.createOrUpdateArkModule(containerForm.getModelObject());
 		onSavePostProcess(target);
-		this.info("Ark Module: " + containerForm.getModelObject().getArkModule().getName() + " was created/updated successfully.");
+		this.saveInformation();
+		//this.info("Ark Module: " + containerForm.getModelObject().getArkModule().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
 	}
 
@@ -126,8 +127,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selectionO) {
 		// Delete
 		iAdminService.deleteArkModule(containerForm.getModelObject());
-
-		this.info("Ark Module: " + containerForm.getModelObject().getArkModule().getName() + " was deleted successfully.");
+		this.deleteInformation();
+		//this.info("Ark Module: " + containerForm.getModelObject().getArkModule().getName() + " was deleted successfully.");
 		target.add(feedBackPanel);
 		editCancelProcess(target);
 	}

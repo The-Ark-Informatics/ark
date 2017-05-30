@@ -207,7 +207,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		addDetailFormComponents();
 		attachValidators();
 
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 
 	private void initialiseOperatorDropDown() {
@@ -348,11 +348,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 		try {
 			studyService.delete(containerForm.getModelObject().getCorrespondence());
-			containerForm.info("The correspondence has been deleted successfully.");
+			this.deleteInformation();
+			//containerForm.info("The correspondence has been deleted successfully.");
 			editCancelProcess(target);
 		}
 		catch (Exception ex) {
-			this.error("An error occurred while processing the correspondence delete operation.");
+			this.error("A system error occurred while processing the correspondence delete operation.");
 			ex.printStackTrace();
 		}
 		onCancel(target);
@@ -412,7 +413,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 				// save
 				studyService.create(containerForm.getModelObject().getCorrespondence());
-				this.info("Correspondence was successfully added and linked to subject: " + lss.getSubjectUID());
+				this.saveInformation();
+				//this.info("Correspondence was successfully added and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}
 			else {
@@ -433,9 +435,10 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				try {
 					studyService.update(containerForm.getModelObject().getCorrespondence(),checksum);
 				} catch (ArkFileNotFoundException e) {
-					this.error("Couldn't find the file.");;
+					this.error("The file could not be found.");;
 				}
-				this.info("Correspondence was successfully updated and linked to subject: " + lss.getSubjectUID());
+				this.updateInformation();
+				//this.info("Correspondence was successfully updated and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}
 			// invoke backend to persist the correspondence
@@ -505,6 +508,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			return false;
 		}
 	}
+	
 	private void initCategoryPanels(){
 		categoryPanelDirectionType=new WebMarkupContainer("categoryPanelDirectionType");
 		categoryPanelDirectionType.setOutputMarkupId(true);
@@ -512,5 +516,4 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		categoryPanelOutCome.setOutputMarkupId(true);
 		
 	}
-	
 }

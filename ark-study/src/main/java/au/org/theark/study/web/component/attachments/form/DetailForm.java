@@ -90,17 +90,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// Initialise Drop Down Choices
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study studyInContext = iArkCommonService.getStudy(studyId);
-		//List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(studyInContext);
-		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		List<StudyComp> studyCompList;
-		try {
-			studyCompList = iStudyService.getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(studyInContext,iArkCommonService.getSubject(sessionPersonId, studyInContext));
-			ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
-			studyComponentChoice = new DropDownChoice<StudyComp>(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
-		} catch (EntityNotFoundException e) {
-			this.error("The record you tried to update is no longer available in the system");
-		}
-		
+		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(studyInContext);
+		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
+		studyComponentChoice = new DropDownChoice<StudyComp>(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
 	}
 
 	public void initialiseDetailForm() {
@@ -160,12 +152,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 					containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 					containerForm.getModelObject().getSubjectFile().setUserId(userId);
-					containerForm.getModelObject().getSubjectFile().setIsConsentFile(false);
 	
 					// Save
 					iStudyService.create(containerForm.getModelObject().getSubjectFile(),Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
-					this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
-	//				processErrors(target);
+					//this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
+					this.saveInformation();
+					//processErrors(target);
 			}else{
 					//FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
 	
@@ -183,7 +175,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					//containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 					containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 					containerForm.getModelObject().getSubjectFile().setUserId(userId);
-					containerForm.getModelObject().getSubjectFile().setIsConsentFile(false);
 					
 					// Update
 					try {
@@ -191,19 +182,20 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					} catch (ArkFileNotFoundException e) {
 						this.error("Couldn't find the file.");
 					}
-					this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
+					this.updateInformation();
+					//this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
 				}
 				}else{
-					this.error("The file size is larger than the maximum permissible size. Maximum permissible size ="+ (int)(au.org.theark.core.Constants.MAXIMUM_PERMISSABLE_FILE_SIZE/Math.pow(10, 6))+ 
-							   " MB and you try to upload "+(int)(fileSubjectFile.getSize()/Math.pow(10, 6))+ " MB");
+					this.error("The file size is larger than the maximum allowed size. Maximum allowed size ="+ (int)(au.org.theark.core.Constants.MAXIMUM_PERMISSABLE_FILE_SIZE/Math.pow(10, 6))+ 
+							   " MB and the file you tried to upload is "+(int)(fileSubjectFile.getSize()/Math.pow(10, 6))+ " MB");
 				}	
 			//processErrors(target);
 			}
 			catch (EntityNotFoundException e) {
-				this.error("The record you tried to update is no longer available in the system");
+				this.error("The record you tried to update is no longer available in the system.");
 			}
 			catch (ArkSystemException e) {
-				this.error("Saving the file attachment failed. Please contact The Ark administrator.");
+				this.error("An error occurred while saving the file attachment. Please contact the system administrator.");
 			}finally {
 				processErrors(target);
 				onSavePostProcess(target);
@@ -222,7 +214,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
 		}
 		catch (EntityNotFoundException e) {
-			this.error("The Person/Subject in context does not exist in the system. Please contact support.");
+			this.error("The Person/Subject selected does not exist in the system. Please contact the system administrator.");
 		}
 		subjectVo.setLinkSubjectStudy(linkSubjectStudy);
 		containerForm.setModelObject(subjectVo);
@@ -283,5 +275,5 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// add(ajaxSimpleConsentFileForm);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 
-	}
+	}	
 }

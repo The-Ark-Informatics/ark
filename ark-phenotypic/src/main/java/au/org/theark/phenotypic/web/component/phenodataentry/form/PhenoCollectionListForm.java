@@ -63,6 +63,7 @@ import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldCategoryOrderingHelper;
@@ -74,6 +75,7 @@ import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.panel.table.DataTablePanel;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.util.PhenoDataSetCategoryOrderingHelper;
+import au.org.theark.phenotypic.web.component.phenodataentry.PhenoClinicalDataValueEntryModalDetailPanel;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataEntryModalDetailPanel;
 
@@ -94,7 +96,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	private IPhenotypicService											iPhenotypicService;
 	protected CompoundPropertyModel<PhenoDataCollectionVO>				cpModel;
 	protected FeedbackPanel												feedbackPanel;
-	protected AbstractDetailModalWindow									modalWindow;
+	protected AbstractDetailModalWindow									modalWindowDataSetDetail;
 	private Label														idLbl;
 	private Label														questionnaireLbl;
 	private Label														descriptionLbl;
@@ -111,12 +113,14 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	private WebMarkupContainer categoryPanel;
 	private DropDownChoice<PickedPhenoDataSetCategory>                  pickedPhenoDataSetCategoryDdc;
 	private WebMarkupContainer											phenoDataView;
+	protected AbstractDetailModalWindow									modalWindowClinicalDataSetValues;
 
-	public PhenoCollectionListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
+	public PhenoCollectionListForm(String id, FeedbackPanel feedbackPanel,AbstractDetailModalWindow detailModalWindow, AbstractDetailModalWindow datasetValueModalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id, cpModel);
 		this.cpModel = cpModel;
 		this.feedbackPanel = feedbackPanel;
-		this.modalWindow = modalWindow;
+		this.modalWindowDataSetDetail = detailModalWindow;
+		this.modalWindowClinicalDataSetValues=datasetValueModalWindow;
 	}
 	
 	public void initialiseForm() {
@@ -136,7 +140,8 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		phenoDataView.setOutputMarkupPlaceholderTag(true);
 		add(phenoDataView);
 		initialiseGetDataButton();
-		add(modalWindow);		
+		add(modalWindowDataSetDetail);	
+		add(modalWindowClinicalDataSetValues);
 	}
 
 	private void initPhenoFieldGroupDdc() {
@@ -313,7 +318,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				if(phenoDataSetFieldGroupDdc.getValue().isEmpty() || pickedPhenoDataSetCategoryDdc.getValue().isEmpty()) {
-					error("Please select the Dataset and Category first");	
+					error("Please select the Data Set and Category first");	
 				}
 				else {
 					LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy();
@@ -369,7 +374,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 						PhenoDataSetCollection phenoDataSetCollection= (PhenoDataSetCollection) (getParent().getDefaultModelObject());
 						CompoundPropertyModel<PhenoDataCollectionVO> newModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 						newModel.getObject().setPhenoDataSetCollection(phenoDataSetCollection);
-						showModalWindow(target, newModel);
+						showModalWindowDatasetDetail(target, newModel);
 					}
 				};
 				link.add(questionnaireLbl);
@@ -391,11 +396,11 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 				item.add(idLbl);
 				item.add(link);
-//				item.add(nameLbl);
 				item.add(descriptionLbl);
 				item.add(statusLbl);
 				item.add(recordDateLbl);
 				item.add(reviewedDateLbl);
+				item.add(buildmodalWindowClinicalDataSetValuesButton());
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 
 					private static final long	serialVersionUID	= 1L;
@@ -413,23 +418,15 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	}
 
 	protected void onNew(AjaxRequestTarget target) {
-		// Needs CREATE permission AND at least one published CustomFieldGroup (Questionnaire) to select from
+		
 		boolean hasQuestionnaires = false;
-		/*henoDataSetGroup questionnaire=new 
-		questionnaire.setArkFunction(cpModel.getObject().getArkFunction());
-		questionnaire.setStudy(cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy().getStudy());
-		questionnaire.setPublished(true);*/
-		//hasQuestionnaires = (iArkCommonService.getCustomFieldGroupCount(questionnaire) > 0);
 		hasQuestionnaires = (iPhenotypicService.getPhenoFieldGroupCount(cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy().getStudy(),
 				cpModel.getObject().getArkFunction(),true) > 0);
 		if (hasQuestionnaires) {
 			// Set new Biospecimen into model, then show modalWindow to save
 			CompoundPropertyModel<PhenoDataCollectionVO> newModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 			newModel.getObject().getPhenoDataSetCollection().setLinkSubjectStudy(cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy());
-			// the following should be replaced by a real "Questionnaire" selection when the new form is presented
-			//newModel.getObject().getPhenoDataSetCollection().setQuestionnaire(questionnaire);
-			//newModel.getObject().setPhenoDataSetGroup(questionnaire);
-			showModalWindow(target, newModel); // listDetailsForm);
+			showModalWindowDatasetDetail(target, newModel);
 		}
 		else {
 			this.error("No published Questionnaires exist. Please create and publish at least one Questionnaire for the study.");
@@ -438,16 +435,15 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		target.add(feedbackPanel);
 	}
 
-	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
+	protected void showModalWindowDatasetDetail(AjaxRequestTarget target, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
-		modalContentPanel = new PhenoDataEntryModalDetailPanel("content", modalWindow, cpModel);
-
+		modalContentPanel = new PhenoDataEntryModalDetailPanel("content", modalWindowDataSetDetail, cpModel);
 		// Set the modalWindow title and content
-		modalWindow.setTitle("Pheno Dataset Details");
-		modalWindow.setContent(modalContentPanel);
-		modalWindow.repaintComponent(getDataButton);
+		modalWindowDataSetDetail.setTitle("Dataset Details");
+		modalWindowDataSetDetail.setContent(modalContentPanel);
+		modalWindowDataSetDetail.repaintComponent(getDataButton);
 		// 2015-09-29 set windows call back
-		modalWindow.setWindowClosedCallback(new WindowClosedCallback() {
+		modalWindowDataSetDetail.setWindowClosedCallback(new WindowClosedCallback() {
 			private static final long serialVersionUID = 1L; 
                 @Override 
                 public void onClose(AjaxRequestTarget target) 
@@ -456,7 +452,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
                     target.add(phenoDataSetFieldGroupDdc); 
                 } 
         });
-		modalWindow.show(target);
+		modalWindowDataSetDetail.show(target);
 	}
 
 	/**
@@ -522,5 +518,49 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		phenoDataSetCategoriesSet.addAll(phenoDataSetCategories);
 		phenoDataSetCategoriesNew.addAll(phenoDataSetCategoriesSet);
 				return phenoDataSetCategoriesNew;
+	}
+	
+	/**
+	 * 
+	 * @param upload
+	 * @return
+	 */
+	private AjaxButton buildmodalWindowClinicalDataSetValuesButton(){
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.core.Constants.EDIT){
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				PhenoDataSetCollection phenoDataSetCollection= (PhenoDataSetCollection) (getParent().getDefaultModelObject());
+				CompoundPropertyModel<PhenoDataCollectionVO> newModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
+				newModel.getObject().setPhenoDataSetCollection(phenoDataSetCollection);
+				showModalWindowClinicalDatasetValueDetail(target, newModel);
+				modalWindowClinicalDataSetValues.show(target);
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("onError called when clinical data set value button pressed");
+			};
+		};
+		ajaxButton.setDefaultFormProcessing(false);
+		return ajaxButton;
+	}
+	protected void showModalWindowClinicalDatasetValueDetail(AjaxRequestTarget target, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
+		cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
+		modalContentPanel = new PhenoClinicalDataValueEntryModalDetailPanel("content", modalWindowClinicalDataSetValues, cpModel);
+		// Set the modalWindow title and content
+		modalWindowClinicalDataSetValues.setTitle("Clinical Dataset Values");
+		modalWindowClinicalDataSetValues.setContent(modalContentPanel);
+		modalWindowClinicalDataSetValues.repaintComponent(getDataButton);
+		// 2015-09-29 set windows call back
+		modalWindowClinicalDataSetValues.setWindowClosedCallback(new WindowClosedCallback() {
+			private static final long serialVersionUID = 1L; 
+                @Override 
+                public void onClose(AjaxRequestTarget target) 
+                { 
+                	initPhenoFieldGroupDdc();
+                    target.add(phenoDataSetFieldGroupDdc); 
+                } 
+        });
+		modalWindowClinicalDataSetValues.show(target);
 	}
 }

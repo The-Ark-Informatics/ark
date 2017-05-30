@@ -90,7 +90,7 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 		buttonsPanelWMC = new WebMarkupContainer("buttonsPanelWMC");
 		buttonsPanelWMC.setOutputMarkupPlaceholderTag(true);
 		
-		EditModeButtonsPanel	buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		EditModeButtonsPanel	buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this,feedbackPanel);
 		//Set the history button panel if someone need it.
 		if(includeHistoryButtonPanel){
 			buttonsPanel.createHistoryButtonPanel(new ArkCrudContainerVO());

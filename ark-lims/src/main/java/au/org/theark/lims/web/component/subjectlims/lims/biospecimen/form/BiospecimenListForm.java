@@ -259,7 +259,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to proceed with New Biospecimen");
+				this.error("An unexpected error occurred. Unable to proceed with New Biospecimen.");
 			}
 		};
 		newButton.setDefaultFormProcessing(false);
@@ -289,7 +289,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to proceed with Batch Crreate Biospecimen");
+				this.error("An unexpected error occurred. Unable to proceed with Batch Crreate Biospecimen.");
 			}
 		};
 		batchCreateButton.setDefaultFormProcessing(false);

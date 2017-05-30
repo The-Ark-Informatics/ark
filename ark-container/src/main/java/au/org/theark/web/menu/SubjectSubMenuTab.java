@@ -109,12 +109,6 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA)) {
 						panelToReturn = new SubjectCustomDataContainerPanel(panelId).initialisePanel();
 					}
-					/*else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHONE)) {
-						panelToReturn = new PhoneContainerPanel(panelId);
-					}
-					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ADDRESS)) {
-						panelToReturn = new AddressContainerPanel(panelId);
-					}*/
 					//Add Contact Panel
 					else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONTACT)) {
 						panelToReturn = new  ContactContainerPanel (panelId);
@@ -128,18 +122,6 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE)) {
 						panelToReturn = new CorrespondenceContainerPanel(panelId);
 					}
-					/* Moved these three tabs into study sub-menu
-					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
-						panelToReturn = new SubjectUploadContainerPanel(panelId, arkFunction);
-					}
-					
-					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
-						// useCustomFieldDisplay = true
-						panelToReturn = new CustomFieldContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
-					}
-					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_UPLOAD)) {
-						panelToReturn = new CustomFieldUploadContainerPanel(panelId, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
-					}*/
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
 						// Clear cache to determine permissions
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC, arkFunction);

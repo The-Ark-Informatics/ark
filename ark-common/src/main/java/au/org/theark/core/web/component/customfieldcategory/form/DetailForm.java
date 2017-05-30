@@ -18,18 +18,20 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfieldcategory.form;
 
-import java.util.Collection;
-import java.util.List;
-
+import au.org.theark.core.exception.*;
+import au.org.theark.core.model.study.entity.*;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.CustomFieldCategoryVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
+import au.org.theark.core.web.component.customfieldcategory.Constants;
+import au.org.theark.core.web.form.AbstractDetailForm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -38,26 +40,8 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import au.org.theark.core.exception.ArkAlreadyBeingUsedException;
-import au.org.theark.core.exception.ArkNotAllowedToUpdateException;
-import au.org.theark.core.exception.ArkRunTimeException;
-import au.org.theark.core.exception.ArkRunTimeUniqueException;
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.ArkUniqueException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
-import au.org.theark.core.model.study.entity.CustomFieldType;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.CustomFieldCategoryVO;
-import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
-import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
-import au.org.theark.core.web.component.customfieldcategory.Constants;
-import au.org.theark.core.web.form.AbstractDetailForm;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * CustomField's DetailForm
@@ -136,7 +120,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 		addDetailFormComponents();
 		attachValidators();
 
-		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 	/**
 	 * initialize Custom Filed Types.
@@ -263,14 +247,14 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 			// Save the Category
 			try {
 				iArkCommonService.createCustomFieldCategory(getModelObject());
-				this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
+				this.info(new StringResourceModel("info.createSuccessMsg", this, getModel()));
 				onSavePostProcess(target);
 			}
 			catch (ArkRunTimeException e) {
-				this.error(new StringResourceModel("error.nonCFMsg", this, null, new Object[] { getModelObject().getCustomFieldCategory().getOrderNumber()}).getString());
+				this.error(new StringResourceModel("error.nonCFMsd", this, getModel()));
 			}
 			catch (ArkRunTimeUniqueException e) {
-				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
+			    this.error(new StringResourceModel("error.nonUniqueCFMsg", this, getModel()));
 			}
 			catch (ArkSystemException e) {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
@@ -283,7 +267,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 			// Update the Category
 			try {
 				iArkCommonService.updateCustomFieldCategory(getModelObject());
-				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
+				this.info(new StringResourceModel("info.updateSuccessMsg", this, getModel()));
 				onSavePostProcess(target);
 			}
 			catch(ArkAlreadyBeingUsedException e){
@@ -296,7 +280,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
 			}
 			catch (ArkUniqueException e) {
-				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
+				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, getModel()));
 			}
 			processErrors(target);
 		}

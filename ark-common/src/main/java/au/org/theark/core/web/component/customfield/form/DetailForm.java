@@ -508,7 +508,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 		initMinMaxValuePnls();
 		
-		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 	
 	/**

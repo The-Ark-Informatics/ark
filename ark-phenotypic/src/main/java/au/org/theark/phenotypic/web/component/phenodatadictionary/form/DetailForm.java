@@ -425,7 +425,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 
 		initMinMaxValuePnls();
 		
-		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		
 		
 	}
@@ -453,7 +453,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 			// Save the Field
 			try {
 				iPhenotypicService.createPhenoDataSetField(getModelObject());
-				this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
+				this.saveInformation();
+				//this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
@@ -470,7 +471,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 			// Update the Field
 			try {
 				iPhenotypicService.updatePhenoDataSetField(getModelObject());
-				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
+				this.updateInformation();
+				//this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
@@ -497,7 +499,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iPhenotypicService.deletePhenoDataSetField(getModelObject());
-			this.info("Field " + getModelObject().getPhenoDataSetField().getName() + " was deleted successfully");
+			this.deleteInformation();
+			//this.info("Field " + getModelObject().getPhenoDataSetField().getName() + " was deleted successfully");
 		}
 		catch (ArkSystemException e) {
 			this.error(e.getMessage());

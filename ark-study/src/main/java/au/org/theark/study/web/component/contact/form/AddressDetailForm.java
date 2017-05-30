@@ -134,7 +134,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		otherState = new TextField<String>("addressVo.address.otherState");
 		sourceTxtFld = new TextField<String>("addressVo.address.source");
 		addressLineOneTxtFld = new TextField<String>("addressVo.address.addressLineOne");
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();
@@ -344,11 +344,12 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iStudyService.delete(containerForm.getModelObject().getAddressVo().getAddress());
-			this.info("The Address has been deleted successfully.");
+			this.deleteInformation();
+			//this.info("The Address has been deleted successfully.");
 			editCancelProcess(target);
 		}
 		catch (ArkSystemException e) {
-			this.error("An error occured while processing your delete. Please contact Support");
+			this.error("An error occured while processing your delete request. Please contact the system administrator.");
 			// TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to
 			// admin
 			e.printStackTrace();
@@ -389,7 +390,8 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 				}
 				
 				iStudyService.create(containerForm.getModelObject().getAddressVo().getAddress());
-				feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
+				this.saveInformation();
+				//feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
 			}
 			else {
 				if(containerForm.getModelObject().getAddressVo().getAddress().getPreferredMailingAddress()){
@@ -398,7 +400,8 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 				}
 				
 				iStudyService.update(containerForm.getModelObject().getAddressVo().getAddress());
-				feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
+				this.updateInformation();
+				//feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
 			}
 
 			if (person.getFirstName() != null && person.getLastName() != null) {
@@ -416,10 +419,10 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 			// Invoke backend to persist the AddressVO
 		}
 		catch (EntityNotFoundException e) {
-			this.error("The Specified subject is not available any more in the system. Please re-do the operation");
+			this.error("The specified subject is not available any more in the system. Please re-do the operation.");
 		}
 		catch (ArkSystemException e) {
-			this.error("A system error has occured, Pleas contact support.");
+			this.error("A system error has occurred. Please contact the system administrator.");
 		}
 	}
 

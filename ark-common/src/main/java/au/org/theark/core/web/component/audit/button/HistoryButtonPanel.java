@@ -5,6 +5,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.web.component.audit.modal.AuditModalPanel;
@@ -16,10 +17,9 @@ public class HistoryButtonPanel extends Panel{
 	private ModalWindow modalWindow;
 	private AjaxButton historyButton;
 	
-	public HistoryButtonPanel(Form<?> containerForm, WebMarkupContainer parentContainer, WebMarkupContainer auditContainer) {
+	public HistoryButtonPanel(Form<?> containerForm, WebMarkupContainer parentContainer, WebMarkupContainer auditContainer,FeedbackPanel feedbackPanel) {
 		super("history");
 		modalWindow = new ModalWindow("historyModalWindow");
-	
 		historyButton = new AjaxButton("historyButton") {
 			
 			@Override
@@ -33,6 +33,11 @@ public class HistoryButtonPanel extends Panel{
 				modalWindow.show(target);
 				target.add(historyPanel.getFeedbackPanel());
 				super.onSubmit(target, form);
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedbackPanel);
+				super.onError(target, form);
 			}
 		};
 		

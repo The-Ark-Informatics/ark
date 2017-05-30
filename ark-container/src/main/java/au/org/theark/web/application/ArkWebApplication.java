@@ -38,23 +38,23 @@ public class ArkWebApplication extends BaseApplication{
 		super.init();
 		getComponentInstantiationListeners().add(new SpringComponentInjector(this,context(),true));
 		SecurePackageResourceGuard guard = new SecurePackageResourceGuard();
-      guard.addPattern("+*.js");
-      guard.addPattern("+*.jar");
+		guard.addPattern("+*.js");
+	    guard.addPattern("+*.jar");
 
-      getResourceSettings().setPackageResourceGuard(guard); 
+	    getResourceSettings().setPackageResourceGuard(guard);
 	}
-	
+
 	@Override
 	public Class<? extends Page> getHomePage() {
-		
+
 		return LoginPage.class;
 	}
-	
+
 	public ApplicationContext context(){
-		
+
 		return WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 	}
-	
+
 	@Override
 	public Session newSession(Request request, Response response) {
 		// TODO Auto-generated method stub

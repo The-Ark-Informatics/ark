@@ -75,20 +75,20 @@ public class MyDetails extends Panel {
 
 				try {
 					userService.updateArkUser(arkUser);
-					this.info("Details for user: " + arkUser.getUserName() + " updated");
+					this.info("Details for user: " + arkUser.getUserName() + " were successfully updated.");
 					processFeedback(target, feedBackPanel);
 				}
 				catch (ArkSystemException arkSystemException) {
-					log.error("Exception occured while performing an update on the user details in LDAP " + arkSystemException.getMessage());
-					this.error("An error has occured, cannot update user details. Please contact support.");
+					log.error("Exception occurred while performing an update on the user details in LDAP " + arkSystemException.getMessage());
+					this.error("An error has occurred. The user details could not be updated. Please contact the system administrator.");
 					processFeedback(target, feedBackPanel);
 					// add custom error message to feedback panel.
 				}
 				catch (Exception ex) {
 					// Handle all other type of exceptions
-					this.error("An error has occured while saving user details. Please contact support.");
+					this.error("An error has occurred while saving the user details. Please contact the system administrator.");
 					processFeedback(target, feedBackPanel);
-					log.error("Exception occured when saving user details " + ex.getMessage());
+					log.error("An exception occurred when saving user details " + ex.getMessage());
 				}
 			}
 

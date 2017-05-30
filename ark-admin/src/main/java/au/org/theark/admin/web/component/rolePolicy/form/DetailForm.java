@@ -215,8 +215,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
 			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
 		}
-
-		this.info("Ark Role Policy for Function: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction().getName() + " was created/updated successfully.");
+		this.saveInformation();
+		//this.info("Ark Role Policy for Function: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
 	}
 
@@ -227,8 +227,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// Delete
 		iAdminService.deleteArkRolePolicyTemplate(containerForm.getModelObject());
-
-		this.info("Ark Role Policy for Function: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction().getName() + " was deleted successfully.");
+		this.deleteInformation();
+		//this.info("Ark Role Policy for Function: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction().getName() + " was deleted successfully.");
 		target.add(feedBackPanel);
 		editCancelProcess(target);
 		

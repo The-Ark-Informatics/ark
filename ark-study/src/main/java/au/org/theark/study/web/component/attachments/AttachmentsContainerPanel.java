@@ -145,10 +145,10 @@ public class AttachmentsContainerPanel extends AbstractContainerPanel<SubjectVO>
 					}
 				}
 				catch (EntityNotFoundException e) {
-					containerForm.error("The person ID/Subject in context does not exist in the system.");
+					containerForm.error("The person ID/Subject selected does not exist in the system.");
 				}
 				catch (ArkSystemException e) {
-					containerForm.error("A System error has occured. Please contact Support");
+					containerForm.error("A system error has occurred. Please contact the system administrator.");
 				}
 
 				pageableListView.removeAll();

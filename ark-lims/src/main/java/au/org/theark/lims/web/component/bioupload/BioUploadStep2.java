@@ -60,7 +60,7 @@ public class BioUploadStep2 extends AbstractWizardStepPanel {
 												private static final long	serialVersionUID	= 1L;
 												@Override
 												protected void onError(AjaxRequestTarget target, Form<?> form) {
-													this.error("Unexpected Error: Download request could not be processed");
+													this.error("An unexpected error occurred. The download request could not be processed.");
 												}
 											};
 
@@ -144,7 +144,7 @@ public class BioUploadStep2 extends AbstractWizardStepPanel {
 					private static final long	serialVersionUID	= 1L;
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {
-						this.error("Unexpected Error: Download request could not be processed");
+						this.error("An unexpected error occurred. The download request could not be processed.");
 					}
 				};
 				addOrReplace(downloadValMsgButton);

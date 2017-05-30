@@ -136,7 +136,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		initialiseDatePicker();
 		attachValidators();
 		addDetailFormComponents();
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 
 	public void addDetailFormComponents() {
@@ -308,11 +308,12 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iStudyService.delete(containerForm.getModelObject().getAddress());
-			this.info("The Address has been deleted successfully.");
+			//this.info("The Address has been deleted successfully.");
+			this.deleteInformation();
 			editCancelProcess(target);
 		}
 		catch (ArkSystemException e) {
-			this.error("An error occured while processing your delete. Please contact Support");
+			this.error("An error occured while processing your delete request. Please contact the system administrator.");
 			// TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to
 			// admin
 			e.printStackTrace();
@@ -353,7 +354,8 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				}
 				
 				iStudyService.create(containerForm.getModelObject().getAddress());
-				feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
+				//feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
+				this.saveInformation();
 			}
 			else {
 				if(containerForm.getModelObject().getAddress().getPreferredMailingAddress()){
@@ -362,7 +364,8 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				}
 				
 				iStudyService.update(containerForm.getModelObject().getAddress());
-				feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
+				//feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
+				this.updateInformation();
 			}
 
 			if (person.getFirstName() != null && person.getLastName() != null) {
@@ -380,10 +383,10 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 			// Invoke backend to persist the AddressVO
 		}
 		catch (EntityNotFoundException e) {
-			this.error("The Specified subject is not available any more in the system. Please re-do the operation");
+			this.error("The specified subject is not longer available in the system. Please try the operation again.");
 		}
 		catch (ArkSystemException e) {
-			this.error("A system error has occured, Pleas contact support.");
+			this.error("A system error has occured. Please contact the system administrator.");
 		}
 	}
 

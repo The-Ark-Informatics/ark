@@ -104,7 +104,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download request");
+				this.error("A system error occurred. Could not process download request");
 			};
 		};
 
@@ -298,7 +298,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download request");
+				this.error("A system error occurred. Could not process download request");
 			};
 			
 			@Override
@@ -345,7 +345,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download request");
+				this.error("A system error occurred. Could not process download request");
 			};
 			
 			@Override

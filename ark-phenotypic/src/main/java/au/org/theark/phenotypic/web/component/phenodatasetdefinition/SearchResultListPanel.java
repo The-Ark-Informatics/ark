@@ -171,7 +171,7 @@ public class SearchResultListPanel extends Panel {
 
 				DataDictionaryGroupDetailPanel detailPanel = new DataDictionaryGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO, newModel, cfdArkDataProvider, true);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
-				TextField<String> questionnaireName = (TextField<String>) arkCrudContainerVO.getDetailPanelFormContainer().get("phenoDataSetGroup.name");
+				TextField<String> questionnaireName = (TextField<String>) arkCrudContainerVO.getDetailPanelFormContainer().get("headerWMC").get("phenoDataSetGroup.name");
 				questionnaireName.setEnabled(false);
 
 				// The list of CFD must be displayed on the Detail form
@@ -203,7 +203,7 @@ public class SearchResultListPanel extends Panel {
 			try {
 				iPhenotypicService.createPickedPhenoDataSetCategory(pickedPhenoDataSetCategory);
 			} catch (ArkSystemException | ArkRunTimeUniqueException| ArkRunTimeException | EntityExistsException |LazyInitializationException e) {
-				error("Problem occurs during the dataset initialisation(save category)please try again.");
+				error("Problem occurs during the data set initialisation(save category)please try again.");
 				target.add(feedbackPanel);
 			}
 		}
@@ -220,7 +220,7 @@ public class SearchResultListPanel extends Panel {
 			try {
 				iPhenotypicService.createLinkPhenoDataSetCategoryField(linkPhenoDataSetCategoryField);
 			} catch (ArkSystemException| ArkRunTimeUniqueException| ArkRunTimeException| EntityExistsException |LazyInitializationException e ) {
-				error("Problem occurs during the dataset initialisation(save field)please try again.");
+				error("Problem occurs during the data set initialisation(save field)please try again.");
 				target.add(feedbackPanel);
 			}
 	}
