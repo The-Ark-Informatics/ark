@@ -204,9 +204,14 @@ public class StudyServiceImpl implements IStudyService {
 		this.iCustomFieldDao = iCustomFieldDao;
 	}
 
-	public void createStudy(StudyModelVO studyModelVo) {
+	public void createStudy(StudyModelVO studyModelVo) throws Exception{
 		// Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
 		iStudyDao.create(studyModelVo.getStudy(), studyModelVo.getSelectedArkModules(), studyModelVo.getStudy().getParentStudy());
+		
+		Study  study = studyModelVo.getStudy();
+		
+		createStudyLogoAttachment(study);
+		
 		BiospecimenUidTemplate template = studyModelVo.getBiospecimenUidTemplate();
 		if (template != null && template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null) {
 			template.setStudy(studyModelVo.getStudy());
@@ -239,9 +244,14 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void createStudy(StudyModelVO studyModelVo, ArkUserVO arkUserVo) {
+	public void createStudy(StudyModelVO studyModelVo, ArkUserVO arkUserVo) throws Exception{
 		// Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
 		iStudyDao.create(studyModelVo.getStudy(), arkUserVo, studyModelVo.getSelectedArkModules());
+		
+		Study  study = studyModelVo.getStudy();
+		
+		createStudyLogoAttachment(study);
+		
 		BiospecimenUidTemplate template = studyModelVo.getBiospecimenUidTemplate();
 		if (template != null && template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null) {
 			template.setStudy(studyModelVo.getStudy());
@@ -272,6 +282,32 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityId(studyModelVo.getStudy().getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
 		iArkCommonService.createAuditHistory(ah);
+	}
+	
+	
+	private void createStudyLogoAttachment(Study study) throws Exception{
+		
+		if (study.getStudyLogoBlob() != null) {
+			Long studyId = study.getId();
+			String fileName = study.getFilename();
+//			int blobLength = (int) study.getStudyLogoBlob().length();  
+//			byte[] payload = study.getStudyLogoBlob().getBytes(1, blobLength);
+			byte[] payload = study.getStudyLogoBlob();
+
+			// Generate unique file id for given file name
+			String fileId = iArkCommonService.generateArkFileId(fileName);
+
+			// Set unique subject file id
+			study.setStudyLogoFileId(fileId);
+
+			// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+			iArkCommonService.saveArkFileAttachment(studyId, null, Constants.ARK_STUDY_DIR, fileName, payload, fileId);
+
+			// Remove the attachment
+			//study.setStudyLogoBlob(null);
+			
+			iStudyDao.updateStudy(study);
+		}
 	}
 
 	public void updateStudy(StudyModelVO studyModelVo) throws CannotRemoveArkModuleException {
@@ -313,6 +349,109 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 
 	}
+		
+	public void updateStudy(StudyModelVO studyModelVo, String checksum) throws CannotRemoveArkModuleException, Exception {
+
+		updateStudyLogoAttachment(studyModelVo.getStudy(), checksum);
+		
+		iStudyDao.updateStudy(studyModelVo.getStudy(), studyModelVo.getSelectedArkModules());
+
+		if (!iArkCommonService.studyHasBiospecimen(studyModelVo.getStudy())) {
+			// Defensive check to make sure no biospecimens are attached to the study
+			BiospecimenUidTemplate template = studyModelVo.getBiospecimenUidTemplate();
+			if (template != null && template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null) {
+				template.setStudy(studyModelVo.getStudy());
+				iArkCommonService.updateBiospecimenUidTemplate(template);
+			}
+		}
+
+		if (!iArkCommonService.studyHasBioCollection(studyModelVo.getStudy())) {
+			BioCollectionUidTemplate bioCollectionUidTemplate = studyModelVo.getBioCollectionUidTemplate();
+			if (bioCollectionUidTemplate != null && bioCollectionUidTemplate.getBioCollectionUidPadChar() != null && bioCollectionUidTemplate.getBioCollectionUidToken() != null) {
+				bioCollectionUidTemplate.setStudy(studyModelVo.getStudy());
+				iArkCommonService.updateBioCollectionUidTemplate(bioCollectionUidTemplate);
+			}
+		}
+
+		Collection<SubjectVO> selectedSubjects = studyModelVo.getSelectedSubjects();
+		for (SubjectVO subjectVO : selectedSubjects) {
+			LinkSubjectStudy lss = new LinkSubjectStudy();
+			lss.setStudy(studyModelVo.getStudy());// Current Study
+			lss.setPerson(subjectVO.getLinkSubjectStudy().getPerson());
+			lss.setSubjectUID(subjectVO.getLinkSubjectStudy().getSubjectUID());
+			lss.setSubjectStatus(subjectVO.getLinkSubjectStudy().getSubjectStatus());
+			cloneSubjectForSubStudy(lss);
+		}
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Study " + studyModelVo.getStudy().getName());
+		ah.setEntityId(studyModelVo.getStudy().getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
+		iArkCommonService.createAuditHistory(ah);
+
+	}
+	
+	private void updateStudyLogoAttachment(Study study, String checksum) throws Exception{
+		Long studyId = study.getId();
+		String fileName = study.getFilename();
+//		int blobLength = (int) study.getStudyLogoBlob().length();  
+//		byte[] payload = study.getStudyLogoBlob().getBytes(1, blobLength);
+		byte[] payload = study.getStudyLogoBlob();
+		String prevChecksum = study.getStudyLogoChecksum();
+
+		String fileId = null;
+		if (study.getStudyLogoBlob() != null) {
+
+			if (study.getStudyLogoFileId() != null) {
+
+				// Get existing file Id
+				fileId = study.getStudyLogoFileId();
+
+				// Delete existing attachment
+				iArkCommonService.deleteArkFileAttachment(studyId, null, fileId, Constants.ARK_STUDY_DIR,prevChecksum);
+
+				// Generate unique file id for given file name
+				fileId = iArkCommonService.generateArkFileId(fileName);
+
+				// Set unique subject file id
+				study.setStudyLogoFileId(fileId);
+
+				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+				iArkCommonService.saveArkFileAttachment(studyId, null, Constants.ARK_STUDY_DIR, fileName, payload, fileId);
+			}
+			else {
+				// Generate unique file id for given file name
+				fileId = iArkCommonService.generateArkFileId(fileName);
+
+				// Set unique subject file id
+				study.setStudyLogoFileId(fileId);
+
+				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+				iArkCommonService.saveArkFileAttachment(studyId, null, Constants.ARK_STUDY_DIR, fileName, payload, fileId);
+			}
+			//Set new file checksum
+			study.setStudyLogoChecksum(checksum);
+		}
+		else {
+			if (study.getStudyLogoFileId() != null) {
+				// Get existing file Id
+				fileId = study.getStudyLogoFileId();
+
+				// Delete existing attachment
+				iArkCommonService.deleteArkFileAttachment(studyId, null, fileId, Constants.ARK_STUDY_DIR,prevChecksum);
+				
+				//remove existing attachment file id and checksum
+				study.setStudyLogoFileId(null);
+				study.setStudyLogoChecksum(null);
+			}
+		}
+		// Remove the attachment
+         study.setStudyLogoBlob(null);
+		
+	}
+
+
 
 	/**
 	 * This will mark the study as archived.

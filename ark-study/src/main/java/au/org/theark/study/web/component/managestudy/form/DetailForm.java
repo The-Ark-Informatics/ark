@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -869,7 +870,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		setMaxSize(Bytes.kilobytes(Constants.STUDY_LOGO_FILESIZE_KB));
 
 		if (containerForm.getModelObject().getStudy() != null && containerForm.getModelObject().getStudy().getStudyLogoBlob() != null) {
-			final java.sql.Blob studyLogoBlob = containerForm.getModelObject().getStudy().getStudyLogoBlob();
+			final byte[] studyLogoBlob = containerForm.getModelObject().getStudy().getStudyLogoBlob();
 
 			if (studyLogoBlob != null) {
 				BlobImageResource blobImageResource = new BlobImageResource() {
@@ -877,11 +878,37 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 					@Override
 					protected Blob getBlob() {
-						return studyLogoBlob;
+						Blob blob=null;
+						try{
+							blob = new javax.sql.rowset.serial.SerialBlob(studyLogoBlob);
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+						return blob;
 					}
 				};
 
 				studyLogoImage = new NonCachingImage("study.studyLogoImage", blobImageResource);
+			}
+		}else if(containerForm.getModelObject().getStudy() != null && containerForm.getModelObject().getStudy().getStudyLogoFileId() != null){
+			try{
+				byte[] data = iArkCommonService.retriveArkFileAttachmentByteArray(containerForm.getModelObject().getStudy().getId(),null,au.org.theark.study.web.Constants.ARK_STUDY_DIR,containerForm.getModelObject().getStudy().getStudyLogoFileId(),containerForm.getModelObject().getStudy().getStudyLogoChecksum());
+				final java.sql.Blob studyLogoBlob = new javax.sql.rowset.serial.SerialBlob(data);
+				if (studyLogoBlob != null) {
+					BlobImageResource blobImageResource = new BlobImageResource() {
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						protected Blob getBlob() {
+						return studyLogoBlob;
+						}
+					};
+
+					studyLogoImage = new NonCachingImage("study.studyLogoImage", blobImageResource);
+				}
+			}catch(Exception e){
+				studyLogoImage = new NonCachingImage("study.studyLogoImage", NO_STUDY_LOGO);
+				e.printStackTrace();
 			}
 		}
 		else {
@@ -1164,17 +1191,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						message, target);
 			}
 
-			// Store Study logo image
-			if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
-				// Retrieve file and store as Blob in databasse
-				FileUpload fileUpload = fileUploadField.getFileUpload();
-
-				// Copy file to Blob object
-				Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
-				containerForm.getModelObject().getStudy().setStudyLogoBlob(payload);
-				containerForm.getModelObject().getStudy().setFilename(fileUpload.getClientFileName());
-			}
-
 			if (subjectFileUploadField != null && subjectFileUploadField.getFileUpload() != null) {
 				FileUpload subjectFileUpload = subjectFileUploadField.getFileUpload();
 				Collection<SubjectVO> selectedSubjects = iArkCommonService.matchSubjectsFromInputFile(subjectFileUpload, containerForm.getModelObject().getStudy().getParentStudy());
@@ -1214,11 +1230,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		catch (CannotRemoveArkModuleException e) {
 			this.error("You cannot remove the modules as part of the update. There are system Users who are associated with this study and modules.");
 			log.error(e.getMessage());
+		}catch(Exception e){
+			this.error("There is an error in saving the current study");
+			log.error(e.getMessage());
 		}
 	}
 
 	private void processSaveUpdate(StudyModelVO studyModel, AjaxRequestTarget target) throws EntityExistsException, UnAuthorizedOperation, ArkSystemException, EntityCannotBeRemoved,
-			CannotRemoveArkModuleException {
+			CannotRemoveArkModuleException, IOException, Exception {
 		Collection<ModuleVO> moduleVoCollection = studyModel.getModulesSelected();
 		// Convert to Set<String> this can be removed later by changing the interface
 		Set<String> moduleList = new HashSet<String>();
@@ -1228,6 +1247,21 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyModel.setLmcSelectedApps(moduleList);
 
 		if (studyModel.getStudy() != null && studyModel.getStudy().getId() == null) {
+			
+			// Store Study logo image
+			if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
+				// Retrieve file and store as Blob in databasse
+				FileUpload fileUpload = fileUploadField.getFileUpload();
+				
+				byte[] byteArray = fileUpload.getMD5();
+				String checksum = getHex(byteArray);
+
+				// Copy file to Blob object
+				studyModel.getStudy().setStudyLogoBlob(IOUtils.toByteArray((fileUpload.getInputStream())));
+				studyModel.getStudy().setFilename(fileUpload.getClientFileName());
+				studyModel.getStudy().setStudyLogoChecksum(checksum);
+			}
+			
 			Set<String> moduleNames = new HashSet<String>();
 			for (ArkModule arkModule : studyModel.getSelectedArkModules()) {
 				moduleNames.add(arkModule.getName());
@@ -1259,7 +1293,23 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		}
 		else {
 			// Update
-			iStudyService.updateStudy(studyModel);
+			
+			String checksum=null;
+			
+			if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
+				// Retrieve file and store as Blob in databasse
+				FileUpload fileUpload = fileUploadField.getFileUpload();
+				
+				byte[] byteArray = fileUpload.getMD5();
+				checksum = getHex(byteArray);
+
+				// Copy file to Blob object
+				studyModel.getStudy().setStudyLogoBlob(IOUtils.toByteArray(fileUpload.getInputStream()));
+				studyModel.getStudy().setFilename(fileUpload.getClientFileName());
+
+			}
+			
+			iStudyService.updateStudy(studyModel,checksum);
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.add(subjectUidExampleLbl);
 
@@ -1280,7 +1330,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 		// Refresh Study Logo in header
 		studyHelper = new StudyHelper();
-		studyHelper.setStudyLogo(studyModel.getStudy(), target, studyCrudVO.getStudyNameMarkup(), studyCrudVO.getStudyLogoMarkup());
+		studyHelper.setStudyLogo(studyModel.getStudy(), target, studyCrudVO.getStudyNameMarkup(), studyCrudVO.getStudyLogoMarkup(),iArkCommonService);
 
 		target.add(studyCrudVO.getDetailPanelContainer());
 		target.add(studyCrudVO.getStudyLogoMarkup());

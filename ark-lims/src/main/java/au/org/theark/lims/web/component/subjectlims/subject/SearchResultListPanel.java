@@ -221,7 +221,7 @@ public class SearchResultListPanel extends Panel {
 				StudyCrudContainerVO studyCrudContainerVO = new StudyCrudContainerVO();
 				studyCrudContainerVO.setStudyNameMarkup(studyNameMarkup);
 				studyCrudContainerVO.setStudyLogoMarkup(studyLogoMarkup);
-				studyHelper.setStudyLogo(subjectFromBackend.getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
+				studyHelper.setStudyLogo(subjectFromBackend.getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup(),iArkCommonService);
 			}
 		};
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getSubjectUID());

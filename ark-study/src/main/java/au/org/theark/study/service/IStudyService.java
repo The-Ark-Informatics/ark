@@ -102,7 +102,7 @@ public interface IStudyService {
 	 * 
 	 * @param studyModelVo
 	 */
-	public void createStudy(StudyModelVO studyModelVo);
+	public void createStudy(StudyModelVO studyModelVo) throws Exception;
 
 	/**
 	 * Create a new study and assign the specified user
@@ -110,9 +110,11 @@ public interface IStudyService {
 	 * @param studyModelVo
 	 * @param arkUserVo
 	 */
-	public void createStudy(StudyModelVO studyModelVo, ArkUserVO arkUserVo);
+	public void createStudy(StudyModelVO studyModelVo, ArkUserVO arkUserVo) throws Exception;
 
 	public void updateStudy(StudyModelVO studyModelVo) throws CannotRemoveArkModuleException;
+	
+	public void updateStudy(StudyModelVO studyModelVo, String checksum) throws CannotRemoveArkModuleException, Exception;
 
 	public void archiveStudy(Study studyEntity) throws UnAuthorizedOperation, StatusNotAvailableException, ArkSystemException;
 

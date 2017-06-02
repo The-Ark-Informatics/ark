@@ -192,7 +192,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 				contextHelper.resetContextLabel(target, arkContextMarkup);
 				contextHelper.setStudyContextLabel(target, studyDdc.getModelObject().getName(), arkContextMarkup);
 				StudyHelper studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(studyDdc.getModelObject(), target, studyNameMarkup, studyLogoMarkup);
+				studyHelper.setStudyLogo(studyDdc.getModelObject(), target, studyNameMarkup, studyLogoMarkup,iArkCommonService);
 				target.add(SearchForm.this);
 			}
 		});

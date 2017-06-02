@@ -31,6 +31,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -71,9 +72,11 @@ public class Study implements java.io.Serializable {
 	private String ldapGroupName;
 	private Boolean autoConsent;
 	private String subStudyBiospecimenPrefix;
-	// TODO may want to consider byte[] + @Lob annotation
-	private Blob studyLogoBlob;
+
+	private byte[] studyLogoBlob;
 	private String filename;
+	private String studyLogoChecksum;
+	private String studyLogoFileId;
 
 	// SubjectUID autogeneration parameters
 	private Boolean autoGenerateSubjectUid;
@@ -307,12 +310,13 @@ public class Study implements java.io.Serializable {
 		return this.subStudyBiospecimenPrefix;
 	}
 
-	public void setStudyLogoBlob(Blob studyLogoBlob) {
+	public void setStudyLogoBlob(byte[] studyLogoBlob) {
 		this.studyLogoBlob = studyLogoBlob;
 	}
 
+	@Lob
 	@Column(name = "STUDY_LOGO")
-	public Blob getStudyLogoBlob() {
+	public byte[] getStudyLogoBlob() {
 		return studyLogoBlob;
 	}
 
@@ -535,6 +539,24 @@ public class Study implements java.io.Serializable {
 	public void setAutoGenerateBiocollectionUid(
 			Boolean autoGenerateBiocollectionUid) {
 		this.autoGenerateBiocollectionUid = autoGenerateBiocollectionUid;
+	}
+
+	@Column(name = "STUDY_LOGO_CHECKSUM")
+	public String getStudyLogoChecksum() {
+		return studyLogoChecksum;
+	}
+
+	public void setStudyLogoChecksum(String studyLogoChecksum) {
+		this.studyLogoChecksum = studyLogoChecksum;
+	}
+
+	@Column(name = "STUDY_LOGO_FILE_ID")
+	public String getStudyLogoFileId() {
+		return studyLogoFileId;
+	}
+
+	public void setStudyLogoFileId(String studyLogoFileId) {
+		this.studyLogoFileId = studyLogoFileId;
 	}
 
 	/*@Transient

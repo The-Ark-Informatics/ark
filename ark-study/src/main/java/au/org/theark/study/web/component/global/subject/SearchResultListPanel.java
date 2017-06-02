@@ -370,7 +370,7 @@ public class SearchResultListPanel extends Panel {
 
 				// Set Study Logo
 				StudyHelper studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup);
+				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup,iArkCommonService);
 				
 				//Move to subject Tab
 				ListIterator<ITab> lIter = mainTabs.getTabs().listIterator();

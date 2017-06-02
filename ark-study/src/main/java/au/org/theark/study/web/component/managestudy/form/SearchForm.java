@@ -222,7 +222,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		studyCrudContainerVO.getStudyLogoUploadContainer().setVisible(true);
 
 		StudyHelper studyHelper = new StudyHelper();
-		studyHelper.setStudyLogo(containerForm.getModelObject().getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
+		studyHelper.setStudyLogo(containerForm.getModelObject().getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup(),iArkCommonService);
 
 		target.add(studyCrudContainerVO.getStudyLogoMarkup());
 		target.add(studyCrudContainerVO.getStudyLogoUploadContainer());

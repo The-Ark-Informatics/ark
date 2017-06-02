@@ -507,6 +507,7 @@ public class Constants {
 	public static final String ARK_SUBJECT_ATTACHEMENT_DIR="attachments";
 	public static final String ARK_SUBJECT_CORRESPONDENCE_DIR="correspondence";
 	public static final String ARK_STUDY_COMPONENT_DIR="studycomponent";
+	public static final String ARK_STUDY_DIR="study";
 	
 	public static final String PHONE_DETAIL_PANEL="phoneDetailPanel";
 	public static final String ADDRESS_DETAIL_PANEL="addressDetailPanel";

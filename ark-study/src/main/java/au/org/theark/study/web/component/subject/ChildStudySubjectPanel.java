@@ -188,6 +188,6 @@ public class ChildStudySubjectPanel extends Panel {
 		au.org.theark.study.web.component.subject.form.DetailForm detailForm = (au.org.theark.study.web.component.subject.form.DetailForm) wmc.getParent();
 		au.org.theark.study.web.component.subject.DetailPanel detailPanel = (au.org.theark.study.web.component.subject.DetailPanel) detailForm.getParent();
 		
-		studyHelper.setStudyLogo(study, target, detailPanel.studyNameMarkup, detailPanel.studyLogoMarkup);
+		studyHelper.setStudyLogo(study, target, detailPanel.studyNameMarkup, detailPanel.studyLogoMarkup, iArkCommonService);
 	}
 }

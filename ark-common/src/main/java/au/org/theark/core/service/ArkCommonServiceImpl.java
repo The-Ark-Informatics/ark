@@ -1673,8 +1673,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				directoryName.append(studyId);
 				directoryName.append(File.separator);
 				directoryName.append(directoryType);
-				directoryName.append(File.separator);
-				directoryName.append(subjectUID);
+				if(subjectUID != null){
+					directoryName.append(File.separator);
+					directoryName.append(subjectUID);
+				}
 			}
 		} catch (NullPointerException npe) {
 			log.error("File Attachment Directory not set. Contact the system administrator.");
