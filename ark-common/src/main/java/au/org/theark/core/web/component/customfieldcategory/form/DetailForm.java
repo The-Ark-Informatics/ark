@@ -247,17 +247,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 			// Save the Category
 			try {
 				iArkCommonService.createCustomFieldCategory(getModelObject());
-				this.info(new StringResourceModel("info.createSuccessMsg", this, getModel()));
+				this.info(new StringResourceModel("info.createSuccessMsg",this,null,new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkRunTimeException e) {
-				this.error(new StringResourceModel("error.nonCFMsd", this, getModel()));
+				this.error(new StringResourceModel("error.nonCFMsd",this,getModel()));
 			}
 			catch (ArkRunTimeUniqueException e) {
-			    this.error(new StringResourceModel("error.nonUniqueCFMsg", this, getModel()));
+			    this.error(new StringResourceModel("error.nonUniqueCFMsg",this,null, new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
 			}
 			catch (ArkSystemException e) {
-				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
+				this.error(new StringResourceModel("error.internalErrorMsg",this, null, new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
 			}
 			
 			
@@ -267,7 +267,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 			// Update the Category
 			try {
 				iArkCommonService.updateCustomFieldCategory(getModelObject());
-				this.info(new StringResourceModel("info.updateSuccessMsg", this, getModel()));
+				this.info(new StringResourceModel("info.updateSuccessMsg",this,null,new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch(ArkAlreadyBeingUsedException e){
@@ -277,10 +277,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldCategoryVO> {
 				this.error(e.getMessage());
 			}
 			catch (ArkSystemException e) {
-				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
+				this.error(new StringResourceModel("error.internalErrorMsg",this,null,new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
 			}
 			catch (ArkUniqueException e) {
-				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, getModel()));
+				this.error(new StringResourceModel("error.nonUniqueCFMsg",this,null,new Object[] { getModelObject().getCustomFieldCategory().getName() }).getString());
 			}
 			processErrors(target);
 		}

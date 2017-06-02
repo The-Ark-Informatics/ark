@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -109,6 +110,8 @@ public class SubjectCustomDataEditorPanel extends Panel {
 				target.add(dataViewPanel);
 				target.add(pageNavigator);
 				target.add(customDataEditorForm.getDataViewWMC());
+				Session.get().cleanupFeedbackMessages(); 
+				target.add(feedbackPanel);
 				
 			}
 		});

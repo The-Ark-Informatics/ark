@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConsentDetailsReport" pageWidth="1224" pageHeight="865" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1157" leftMargin="32" rightMargin="35" topMargin="50" bottomMargin="50">
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2017-06-02T14:14:06 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConsentDetailsReport" pageWidth="1224" pageHeight="865" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1157" leftMargin="32" rightMargin="35" topMargin="50" bottomMargin="50" uuid="8f1ca1de-e683-476b-bc8e-e80fb461378b">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Sans_Bold" fontName="DejaVu Sans" fontSize="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Sans_Italic" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false"/>
@@ -11,6 +14,9 @@
 	<parameter name="BaseDir" class="java.io.File"/>
 	<parameter name="UserName" class="java.lang.String"/>
 	<field name="Questionnaire" class="java.lang.String"/>
+	<field name="Category" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="FieldName" class="java.lang.String"/>
 	<field name="Description" class="java.lang.String"/>
 	<field name="MinValue" class="java.lang.String"/>
@@ -23,33 +29,35 @@
 		<initialValueExpression><![CDATA[($V{SectionNumber} != null)?(new Integer($V{SectionNumber}.intValue() + 1)):(new Integer(1))]]></initialValueExpression>
 	</variable>
 	<group name="SectionGroup" minHeightToStartNewPage="60">
-		<groupExpression><![CDATA[$F{Questionnaire}]]></groupExpression>
+		<groupExpression><![CDATA[$F{Questionnaire}+$F{Category}]]></groupExpression>
 		<groupHeader>
-			<band height="20">
+			<band height="21">
 				<textField>
-					<reportElement style="Sans_Bold" mode="Opaque" x="0" y="4" width="1157" height="15" backcolor="#C0C0C0"/>
+					<reportElement style="Sans_Bold" mode="Transparent" x="0" y="4" width="1157" height="15" backcolor="#C0C0C0" uuid="4a6cb1c9-46d2-4999-bbb2-b14de1f65432"/>
 					<box>
 						<bottomPen lineWidth="1.0"/>
 					</box>
-					<textElement/>
-					<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{SectionNumber}) + ". " + $F{Questionnaire}]]></textFieldExpression>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + String.valueOf($V{SectionNumber}) + ". " +$F{Category}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="21">
 				<line>
-					<reportElement x="0" y="-1" width="1157" height="1"/>
+					<reportElement x="0" y="-1" width="1157" height="1" uuid="1ab776f7-11da-4ad4-9ffb-3cefdc5247df"/>
 				</line>
 				<staticText>
-					<reportElement style="Sans_Bold" x="968" y="6" width="118" height="15"/>
+					<reportElement style="Sans_Bold" x="968" y="6" width="118" height="15" uuid="46c60fc3-b22a-48c3-8521-f7aad159f897"/>
 					<textElement textAlignment="Right"/>
 					<text><![CDATA[Sub-total count:]]></text>
 				</staticText>
 				<textField>
-					<reportElement style="Sans_Bold" x="1086" y="6" width="71" height="15"/>
+					<reportElement style="Sans_Bold" x="1086" y="6" width="71" height="15" uuid="5f216f5d-2548-4476-8453-7f2d3d23980d"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression class="java.lang.Number"><![CDATA[$V{SectionGroup_COUNT}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{SectionGroup_COUNT}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -57,20 +65,20 @@
 	<title>
 		<band height="60">
 			<frame>
-				<reportElement x="0" y="0" width="1157" height="60" backcolor="#E0E0E0"/>
+				<reportElement x="0" y="0" width="1157" height="60" backcolor="#E0E0E0" uuid="a602b6f8-cac9-4737-a08b-2475acd687db"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 				</box>
 				<image scaleImage="RetainShape">
-					<reportElement x="8" y="5" width="110" height="50"/>
-					<imageExpression class="java.io.File"><![CDATA[new File($P{BaseDir}, "product_image.gif")]]></imageExpression>
+					<reportElement x="8" y="5" width="110" height="50" uuid="cb5ecf0c-e4b6-4e39-acd4-795211c44bf9"/>
+					<imageExpression><![CDATA[new File($P{BaseDir}, "product_image.gif")]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement x="118" y="5" width="1032" height="50"/>
-					<textElement textAlignment="Right">
+					<reportElement x="118" y="5" width="1032" height="50" uuid="0fcaa80d-68e6-4df9-8631-ef2d0e56d9ea"/>
+					<textElement textAlignment="Center">
 						<font size="22"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$P{ReportTitle}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{ReportTitle}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
@@ -78,56 +86,56 @@
 	<pageHeader>
 		<band height="20">
 			<staticText>
-				<reportElement style="pageHeader" mode="Opaque" x="0" y="5" width="169" height="15"/>
+				<reportElement style="pageHeader" mode="Opaque" x="0" y="5" width="169" height="15" uuid="41026b33-97c9-4f53-a97c-01787fad8a98"/>
 				<textElement textAlignment="Left">
 					<font size="11"/>
 				</textElement>
 				<text><![CDATA[Field Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="pageHeader" mode="Opaque" x="169" y="5" width="240" height="15"/>
+				<reportElement style="pageHeader" mode="Opaque" x="169" y="5" width="240" height="15" uuid="5b83c63d-fe43-4921-aefb-0080e45c6abe"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<text><![CDATA[Description]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="pageHeader" mode="Opaque" x="409" y="5" width="94" height="15"/>
+				<reportElement style="pageHeader" mode="Opaque" x="409" y="5" width="94" height="15" uuid="ae018828-6852-4334-b3dc-277158c1975c"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<text><![CDATA[Min Value]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="pageHeader" mode="Opaque" x="503" y="5" width="94" height="15"/>
+				<reportElement style="pageHeader" mode="Opaque" x="503" y="5" width="94" height="15" uuid="b6eae56d-6571-491e-9a19-0cd5f7975f0a"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<text><![CDATA[Max Value]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="pageHeader" mode="Opaque" x="597" y="5" width="240" height="15"/>
+				<reportElement style="pageHeader" mode="Opaque" x="597" y="5" width="240" height="15" uuid="0f5f60ba-d607-4f26-9232-0c3d24c35d43"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<text><![CDATA[Encoded Values]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="pageHeader" mode="Opaque" x="837" y="5" width="94" height="15"/>
+				<reportElement style="pageHeader" mode="Opaque" x="837" y="5" width="94" height="15" uuid="1c5949f9-f7d7-41a8-b51a-4fcadad77474"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<text><![CDATA[Missing Value]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="pageHeader" mode="Opaque" x="931" y="5" width="125" height="15"/>
+				<reportElement style="pageHeader" mode="Opaque" x="931" y="5" width="125" height="15" uuid="b7046ce2-48be-410a-a5d0-3573b8b6ccdb"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
 				<text><![CDATA[Units]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="pageHeader" mode="Opaque" x="1056" y="5" width="101" height="15"/>
+				<reportElement style="pageHeader" mode="Opaque" x="1056" y="5" width="101" height="15" uuid="1929a22a-b1dc-4734-95c9-e791d10a3017"/>
 				<textElement>
 					<font size="11"/>
 				</textElement>
@@ -136,137 +144,135 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="25">
+		<band height="22">
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="5" width="169" height="15"/>
+				<reportElement positionType="Float" x="0" y="5" width="169" height="15" uuid="2b7ed78b-0934-4b70-810e-4d7403b7d267"/>
 				<textElement verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{FieldName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{FieldName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="409" y="5" width="94" height="15"/>
+				<reportElement positionType="Float" x="409" y="5" width="94" height="15" uuid="cb2c3f90-2a94-45d8-97c9-9e52d5539aa5"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{MinValue}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MinValue}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="503" y="5" width="94" height="15"/>
+				<reportElement positionType="Float" x="503" y="5" width="94" height="15" uuid="9a3ebf3a-0e24-4a2f-9967-d82ad07c342a"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{MaxValue}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MaxValue}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="597" y="5" width="240" height="15"/>
+				<reportElement positionType="Float" x="597" y="5" width="240" height="15" uuid="60bd2c71-dd25-4706-80e7-c1cba6babcb9"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{EncodedValues}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{EncodedValues}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="837" y="5" width="94" height="15"/>
+				<reportElement positionType="Float" x="837" y="5" width="94" height="15" uuid="ad621394-056b-4fce-9161-a9b74bba8e26"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{MissingValue}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MissingValue}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="931" y="5" width="125" height="15"/>
+				<reportElement positionType="Float" x="931" y="5" width="125" height="15" uuid="a03d96e9-f422-46ba-ae5c-472023da96e5"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{Units}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{Units}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="1056" y="5" width="101" height="15"/>
+				<reportElement positionType="Float" x="1056" y="5" width="101" height="15" uuid="56eef48b-94c8-4a01-aaf7-0a8aa4481f04"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{Type}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{Type}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="1157" height="1" forecolor="#808080"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="1157" height="1" forecolor="#808080" uuid="4fe93ac2-7bb6-45fb-a9f4-6c26fd9e8c84"/>
 			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="169" y="5" width="240" height="15"/>
+				<reportElement positionType="Float" x="169" y="5" width="240" height="15" uuid="36a5e561-921c-426f-9b14-a271eda203cd"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{Description}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{Description}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<pageFooter>
 		<band height="28">
 			<line>
-				<reportElement x="0" y="5" width="1157" height="1"/>
+				<reportElement x="0" y="5" width="1157" height="1" uuid="abe9ed72-5e6c-4f3a-8885-fccf2b748e98"/>
 			</line>
 			<textField>
-				<reportElement x="533" y="13" width="80" height="15"/>
+				<reportElement x="533" y="13" width="80" height="15" uuid="df71c439-4bf2-4c03-bff8-d346265e1508"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="613" y="13" width="75" height="15"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
+				<reportElement x="613" y="13" width="75" height="15" uuid="4534e0db-51a6-4853-be20-77b9c15adc61"/>
+				<textFieldExpression><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" pattern="dd MMMMM yyyy h.mm a">
-				<reportElement x="0" y="13" width="169" height="15"/>
+				<reportElement x="0" y="13" width="169" height="15" uuid="a910acd3-f13b-4097-a055-736e106a19ae"/>
 				<textElement textAlignment="Left">
 					<font size="10" isBold="false"/>
 				</textElement>
-				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="180" y="13" width="169" height="15"/>
+				<reportElement x="180" y="13" width="169" height="15" uuid="73da18c0-319d-43be-a607-51bfe9368250"/>
 				<textElement textAlignment="Left">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{UserName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{UserName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
 	<lastPageFooter>
 		<band height="27">
 			<staticText>
-				<reportElement style="Sans_Bold" x="968" y="12" width="118" height="15"/>
+				<reportElement style="Sans_Bold" x="968" y="12" width="118" height="15" uuid="928f6e66-c34b-48ad-a4f2-a5f09be3b1eb"/>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Total count:]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="Sans_Bold" x="1086" y="12" width="71" height="15"/>
+				<reportElement style="Sans_Bold" x="1086" y="12" width="71" height="15" uuid="5d456a53-6b0b-435e-b034-63add39e52b2"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.Number"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="533" y="12" width="80" height="15"/>
+				<reportElement x="533" y="12" width="80" height="15" uuid="24169be5-69b2-4fdd-816f-8fc7049ddaef"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="613" y="12" width="75" height="15"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
+				<reportElement x="613" y="12" width="75" height="15" uuid="753dad6a-1024-468f-9928-742fe037ff43"/>
+				<textFieldExpression><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="4" width="1157" height="1"/>
+				<reportElement x="0" y="4" width="1157" height="1" uuid="cf3a125b-845b-4d02-b1ca-cdd3ad03cdd6"/>
 			</line>
 			<textField>
-				<reportElement x="180" y="12" width="169" height="15"/>
+				<reportElement x="180" y="12" width="169" height="15" uuid="d248c245-d2a7-4e9c-8db0-e3b26865d18b"/>
 				<textElement textAlignment="Left">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{UserName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{UserName}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" pattern="dd MMMMM yyyy h.mm a">
-				<reportElement x="0" y="12" width="169" height="15"/>
+				<reportElement x="0" y="12" width="169" height="15" uuid="6d457101-4a58-46e6-b2cc-114432ecedc2"/>
 				<textElement textAlignment="Left">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</lastPageFooter>

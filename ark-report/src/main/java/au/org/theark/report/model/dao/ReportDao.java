@@ -880,6 +880,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			/*Caused by: org.hibernate.QueryException: could not resolve property: phenoDatasetFieldDisplay of: au.org.theark.core.model.pheno.entity.PhenoDataSetField*/
 			//criteria.createAlias("phenoDatasetFieldDisplay", "pdfd", JoinType.LEFT_OUTER_JOIN);	// Left join to CustomFieldDisplay
 			criteria.createAlias("pdfd.phenoDataSetGroup", "pdfg", JoinType.LEFT_OUTER_JOIN); // Left join to CustomFieldGroup
+			criteria.createAlias("pdfd.phenoDataSetCategory","pdfc" ,JoinType.LEFT_OUTER_JOIN);
 			criteria.createAlias("pf.fieldType", "ft", JoinType.LEFT_OUTER_JOIN); // Left join to FieldType
 			criteria.createAlias("pf.unitType", "ut", JoinType.LEFT_OUTER_JOIN); // Left join to UnitType
 			criteria.add(Restrictions.eq("pf.study", reportVO.getStudy()));
@@ -898,6 +899,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 
 			ProjectionList projectionList = Projections.projectionList();
 			projectionList.add(Projections.property("pdfg.name"), "questionnaire");
+			projectionList.add(Projections.property("pdfc.name"), "category");
 			projectionList.add(Projections.property("pf.name"), "fieldName");
 			projectionList.add(Projections.property("pf.description"), "description");
 			projectionList.add(Projections.property("pf.minValue"), "minValue");

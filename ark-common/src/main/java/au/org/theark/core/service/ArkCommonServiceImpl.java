@@ -1904,6 +1904,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			} else if (cvex.getMessage().contains("cannot be null")) {
 				log.error("Custom Field Category field cannot be null" + cvex);
 				throw new ArkRunTimeException("A Custom Field Category null violation.");
+			}else{
+				throw new ArkRunTimeUniqueException("A Custom Field Category may be already exists.");
 			}
 		} catch (Exception ex) {
 			log.error("Problem creating Custom Field Category: " + ex);

@@ -21,9 +21,9 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 
 @Entity
@@ -54,7 +54,8 @@ public class PhenoDataSetGroup  implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
+	@ArkAuditDisplay
 	@Column(name = "NAME", length = 100)
 	public String getName() {
 		return name;
@@ -115,10 +116,7 @@ public class PhenoDataSetGroup  implements Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((arkFunction == null) ? 0 : arkFunction.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((study == null) ? 0 : study.hashCode());
 		return result;
 	}
 	@Override
@@ -130,32 +128,13 @@ public class PhenoDataSetGroup  implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		PhenoDataSetGroup other = (PhenoDataSetGroup) obj;
-		if (arkFunction == null) {
-			if (other.arkFunction != null)
-				return false;
-		} else if (!arkFunction.equals(other.arkFunction))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (study == null) {
-			if (other.study != null)
-				return false;
-		} else if (!study.equals(other.study))
-			return false;
 		return true;
 	}
-	
-	
-	
-
 	
 
 }

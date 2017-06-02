@@ -13,8 +13,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -183,7 +185,8 @@ public class AuditModalPanel extends Panel implements Serializable {
 			Object current = entity;
 			//we can capture the PhenoDataSet Data and the Custom Field Data from the component name
 			//which does not include the . for properties.
-			if(component.getId().contains(".")){
+			//ARK-1791 We must ignore the nested properties like the category order number here.
+			if(component.getId().contains(".") && StringUtils.countMatches(component.getId(), ".")==1){
 				for(String s : component.getId().split(Pattern.quote("."))) {
 					try { 
 						PropertyUtilsBean propertyBean = new PropertyUtilsBean();
@@ -229,12 +232,11 @@ public class AuditModalPanel extends Panel implements Serializable {
 		//Handling the history of pheno dataset.
 		if(entity instanceof PhenoDataCollectionVO){
 			PhenoDataCollectionVO phenoDataCollectionVO=((PhenoDataCollectionVO)entity);
-			PhenoDataSetCollection phenoDataSetCollection = null;
 			PhenoDataSetCategory phenoDataSetCategory=null;
 			Set<Object> primaryKeyLst= new HashSet<Object>();
 			if(phenoDataCollectionVO.getPhenoDataSetCollection()!=null){
-				 phenoDataSetCollection=phenoDataCollectionVO.getPhenoDataSetCollection();
-				 Set<PhenoDataSetData> phenoDataSetDatas=phenoDataSetCollection.getPhenoDataSetData();
+				 //Set<PhenoDataSetData> phenoDataSetDatas=phenoDataSetCollection.getPhenoDataSetData();
+				 List<PhenoDataSetData> phenoDataSetDatas=phenoDataCollectionVO.getPhenoFieldDataList();
 					for (PhenoDataSetData phenoDataSetData : phenoDataSetDatas) {
 							if(phenoDataSetData.getId()!=null){
 								primaryKeyLst.add(phenoDataSetData.getId());
@@ -244,14 +246,6 @@ public class AuditModalPanel extends Panel implements Serializable {
 			if(phenoDataCollectionVO.getPickedPhenoDataSetCategory()!=null && phenoDataCollectionVO.getPickedPhenoDataSetCategory().getPhenoDataSetCategory()!=null){
 				phenoDataSetCategory=phenoDataCollectionVO.getPickedPhenoDataSetCategory().getPhenoDataSetCategory();
 			}
-			/*AuditQuery auditQuery = reader.createQuery().forRevisionsOfEntity(PhenoDataSetData.class, true, false)
-					.add(AuditEntity.property("phenoDataSetCollection").eq(phenoDataSetCollection));
-			List<Object> objects= auditQuery.getResultList();
-			//Assigning to a set will automatically remove the duplicates.
-			Set<Object> primaryKeyLst= new HashSet<Object>();
-			for (Object object : objects) {
-				primaryKeyLst.add(((PhenoDataSetData)object).getId());
-			}*/
 			for (Object pKey : primaryKeyLst) {
 				if(reader.isEntityClassAudited(PhenoDataSetData.class)) {
 					List<Number> revisionNumbers = reader.getRevisions(PhenoDataSetData.class, pKey);
@@ -620,4 +614,5 @@ public class AuditModalPanel extends Panel implements Serializable {
 	public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
 		this.feedbackPanel = feedbackPanel;
 	}
+
 }
