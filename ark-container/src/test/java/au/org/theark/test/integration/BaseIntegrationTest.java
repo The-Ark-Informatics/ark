@@ -194,7 +194,8 @@ public class BaseIntegrationTest extends TestCase {
 
     public void loginAsSuperUser() {
         String superUserName = "arksuperuser@ark.org.au";
-        String superUserPassword = "Password_1";
+       String superUserPassword = "Password_1";
+       
 
         if (System.getenv("ARK_USERNAME") != null) {
             superUserName = System.getenv("ARK_USERNAME");

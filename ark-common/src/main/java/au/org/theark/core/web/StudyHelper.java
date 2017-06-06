@@ -48,6 +48,7 @@ public class StudyHelper implements Serializable {
 		// Set the study logo
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (sessionStudyId != null && (study.getStudyLogoFileId() !=null || study.getStudyLogoBlob() != null)) {
+		
 			
 			setStudyLogoImage(study, "studyLogoImage", studyLogoMarkup);
 			studyNameMarkup.setVisible(false);
@@ -69,7 +70,6 @@ public class StudyHelper implements Serializable {
 	private void setStudyLogoImage(final Study study, String id, WebMarkupContainer studyLogoImageContainer) {
 		// Set the study logo
 		if (study != null && (study.getStudyLogoFileId() != null || study.getStudyLogoBlob() != null)) {
-
 			byte[] studyLogo = null;
 			
 			if(study.getStudyLogoFileId() != null){

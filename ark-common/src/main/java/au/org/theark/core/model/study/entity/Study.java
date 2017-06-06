@@ -18,7 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.model.study.entity;
 
-import java.sql.Blob;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +31,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -39,10 +38,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
@@ -314,8 +313,9 @@ public class Study implements java.io.Serializable {
 		this.studyLogoBlob = studyLogoBlob;
 	}
 
-	@Lob
-	@Column(name = "STUDY_LOGO")
+	/*@Lob
+	@Column(name = "STUDY_LOGO")*/
+	@Transient
 	public byte[] getStudyLogoBlob() {
 		return studyLogoBlob;
 	}

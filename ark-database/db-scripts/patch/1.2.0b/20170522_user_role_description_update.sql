@@ -1,10 +1,10 @@
 /**
-Please copy the role-descriptions.csv file to server /var/lib/mysql-files/ directory which is the "secure_file_priv" key in sql. 
+Please copy the 20170522_user_role_description_update_role-descriptions.csv file to server /var/lib/mysql-files/ directory which is the "secure_file_priv" key in sql. 
 **/
 use study;
 
 CREATE TEMPORARY TABLE temp_update_table LIKE ark_role;
-LOAD DATA INFILE '/var/lib/mysql-files/role-descriptions.csv'
+LOAD DATA INFILE '/var/lib/mysql-files/20170522_user_role_description_update_role-descriptions.csv'
 INTO TABLE temp_update_table FIELDS TERMINATED BY ',' (id, name, description); 
 
 UPDATE ark_role

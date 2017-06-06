@@ -18,19 +18,15 @@
  ******************************************************************************/
 package au.org.theark.test.integration.container;
 
-import au.org.theark.core.selenium.utilities.WicketBy;
-import au.org.theark.test.integration.BaseIntegrationTest;
-import junit.framework.TestCase;
-
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.web.pages.login.LoginPage;
+import au.org.theark.core.selenium.utilities.WicketBy;
+import au.org.theark.test.integration.BaseIntegrationTest;
+import junit.framework.TestCase;
 
 public class ITestLoginPage extends BaseIntegrationTest {
 		
