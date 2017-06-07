@@ -379,7 +379,7 @@ public class Main {
 		}
 	}
 		
-	private String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType) {
+	private String getArkFileDirName(final long studyId, final String subjectUID, final String directoryType) {
 		String directoryName = this.fileAttachmentDir + File.separator + studyId + java.io.File.separator + directoryType +  (subjectUID !=null ? (File.separator + subjectUID):"");
 		return directoryName;
 	}
