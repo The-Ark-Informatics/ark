@@ -125,6 +125,6 @@ public class Constants {
 	{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "", "", "", "", "",""
 	}};
 	
-	public static final String			UPLOAD_TYPE_CUSTOM_DATA_SETS	= "Custom Data Sets";
+	public static final String			UPLOAD_TYPE_CUSTOM_DATA_SETS	= "Custom Datasets";
 
 }

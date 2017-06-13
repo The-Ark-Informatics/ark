@@ -280,7 +280,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	}
 
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target) {
 		iPhenotypicService.deletePhenoCollection(cpModel.getObject().getPhenoDataSetCollection());
 
 		// Base containerForm for pheno data entry unfortunately way up the chain...thus a lot of getParent() calls. Not the neatest method by any means		

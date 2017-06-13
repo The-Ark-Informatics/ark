@@ -716,7 +716,7 @@ public class Constants {
 	
 	public static final String MESSAGE_NO_STUDY_IN_CONTEXT="There is no study selected. Please select a study.";
 	
-	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY = "Pheno Data Set Category";
+	public static final String ENTITY_TYPE_PHENO_DATASET_CATEGORY = "Pheno Dataset Category";
 	
 	public static final String ENTITY_TYPE_PHENO_DATASET_FIELD = "PhenoDataSet Field";
 	

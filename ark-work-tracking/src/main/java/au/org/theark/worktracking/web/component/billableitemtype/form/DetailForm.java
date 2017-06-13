@@ -251,7 +251,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 					}
 					//Check for billable item type for exsistance.
 					if(iWorkTrackingService.isBillableItemTypeExsistForStudy(studyId, containerForm.getModelObject().getBillableItemType())){
-						this.error("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName()  + " already exists in this study.");
+						this.error("A billable item type with this name already exists.");
 					}else{	
 						iWorkTrackingService.createBillableItemType(containerForm.getModelObject().getBillableItemType());
 						this.saveInformation();
@@ -266,7 +266,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 			}
 			catch (Exception e) {
 				if(e.getMessage().contains("Duplicate entry")){
-					this.error("Billable Item Type " + containerForm.getModelObject().getBillableItemType().getItemName()  + " already exists in this study.");
+					this.error("A billable item type with this name already exists.");
 				}else{
 					this.error("A system error occurred. Please contact the system administrator.");
 				}

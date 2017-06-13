@@ -235,7 +235,7 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 					workRequest.setStudyId(studyId);
 					//Check for work request for exsistance.
 					if(iWorkTrackingService.isWorkRequestExsistForStudy(studyId,workRequest )){
-						this.error("Work request " + workRequest.getName()  + " already exists in this study.");
+						this.error("A work request with this name already exists.");
 					}else{	
 						iWorkTrackingService.createWorkRequest(workRequest);
 						this.saveInformation();
@@ -256,7 +256,7 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 				onSavePostProcess(target);
 			} catch (Exception e) {
 				if(e.getMessage().contains("Duplicate entry")){
-					this.error("Work request " + workRequest.getName()  + " already exists in this study.");
+					this.error("A work request with this name already exists.");
 				}else{
 					this.error("A system error occured. Please contact the system administrator.");
 				}

@@ -41,6 +41,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -60,6 +61,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.QueryFilterListVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
@@ -106,8 +108,11 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	//private TextField<Number>							concentrationTxtFld;
 	
 	protected ModalWindow 									modalWindow;
+	
+	private IModel<QueryFilterListVO>    classModel;
+	private ArkCrudContainerVO arkCrudContainerVO;
 
-	public QueryFilterForm(String id, IModel<QueryFilterListVO> model, ModalWindow modalWindow) {
+	public QueryFilterForm(String id, IModel<QueryFilterListVO> model, ModalWindow modalWindow,ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, model);
 		Long studySessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		final Study study = iArkCommonService.getStudy(studySessionId);
@@ -119,6 +124,8 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 		feedbackPanel.setOutputMarkupId(true);
 		setMultiPart(true);
 		this.modalWindow = modalWindow;
+		this.classModel=model;
+		this.arkCrudContainerVO=arkCrudContainerVO;
 		add(feedbackPanel);
 	}
 
@@ -179,6 +186,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(target);
+				textChangeCreateFilterButton(target);
 				target.add(feedbackPanel);
 			}
 
@@ -194,6 +202,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				if(onSave(target)) {
+					textChangeCreateFilterButton(target);
 					modalWindow.close(target);
 				}
 				else{
@@ -581,8 +590,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 		
 		
 		List<FieldCategory> fieldCategoryList = Arrays.asList(FieldCategory.values()); 
-		fieldCategoryDdc = new DropDownChoice<FieldCategory>("fieldCategory", 
-				new PropertyModel(item.getModelObject(), "fieldCategory"), 
+		fieldCategoryDdc = new DropDownChoice<FieldCategory>("fieldCategory",new PropertyModel(item.getModelObject(), "fieldCategory"),
 				(List<FieldCategory>) fieldCategoryList, new EnumChoiceRenderer<FieldCategory>(QueryFilterForm.this));
 		fieldCategoryDdc.setNullValid(false);
 		if(item.getModelObject()==null || item.getModelObject().getFieldCategory()==null){
@@ -961,4 +969,14 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				
 		return ok;
 	}
+	/**
+ 	 * 
+ 	 * @param target
+ 	 */
+ private void textChangeCreateFilterButton(AjaxRequestTarget target) {
+ 		AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getDetailPanelFormContainer().get("createFilters");
+ 		ajaxButton.add(new AttributeModifier("value", new Model<String>(iArkCommonService.isAnyFilterAddedForSearch(classModel.getObject().getSearch())?"Edit Filters":"Create Filters")));
+ 		target.add(ajaxButton);
+ 		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+ }
 }

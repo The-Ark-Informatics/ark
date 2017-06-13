@@ -321,7 +321,7 @@ public class BioCollectionDataEntryModalDetailForm extends AbstractModalDetailFo
 	}
 
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target) {
 		BioCollection bioCollection=cpModel.getObject().getBioCollection();
 		//Ark-1606 bug fix for deleting bio-collection which has already data.  
 		if(iLimsService.hasBiocllectionGotCustomFieldData(bioCollection)){

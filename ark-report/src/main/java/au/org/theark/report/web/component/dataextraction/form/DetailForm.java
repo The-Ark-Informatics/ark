@@ -199,7 +199,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		IModel model = new Model<QueryFilterListVO>(new QueryFilterListVO(searchVO));
 
 		// handles for auto-gen biospecimenUid or manual entry
-		modalContentPanel = new QueryFilterPanel("content", feedBackPanel, model, modalWindow);
+		modalContentPanel = new QueryFilterPanel("content", feedBackPanel, model, modalWindow,arkCrudContainerVO);
 
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Create Basic Filters");
@@ -217,6 +217,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 			protected void onSubmit(AjaxRequestTarget target, org.apache.wicket.markup.html.form.Form<?> form) {
 				onCreateFilters(target, containerForm.getModelObject());
 				target.add(feedBackPanel);
+				target.add(this);
+				
 			};
 
 			protected void onError(AjaxRequestTarget target, org.apache.wicket.markup.html.form.Form<?> form) {
@@ -231,7 +233,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 				return containerForm.getModelObject().getSearch().getId() != null;
 			};
 
-		}.setDefaultFormProcessing(false));
+		}.setDefaultFormProcessing(false).add(new AttributeModifier("value", new Model<String>("Create Filters"))));
 
 		/*
 		 * item.add(new AttributeModifier(Constants.CLASS, new

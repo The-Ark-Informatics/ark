@@ -35,6 +35,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
@@ -72,6 +73,7 @@ import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenGrade;
 import au.org.theark.core.model.lims.entity.BiospecimenProtocol;
 import au.org.theark.core.model.lims.entity.BiospecimenQuality;
@@ -164,9 +166,12 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 	private AjaxLink<Date>									useCollectionDate;
 	private ModalWindow										confirmModal;
 	private ConfirmationAnswer 								answer;
-	private String 								    		modalText ="<p><font color=\"blue\">Deleting this biospecimen will also delete number biospecimen linked as transaction(s).</font></p>"
-															+ "<p></p>"
-															+ "<p><font color=\"red\">[Txid(s)(txs).]</font></p>";
+	private String 								    		modalText ="<p align='center'>Deleting this biospecimen (and its cfdn custom field data) will also delete bsn biospecimen(s) linked as transactions.</p>"
+															/*+ "</br>"
+															+ "<p align='center'>[Txid(s)(txs).]</p>"*/
+															+ "</br>"
+															+ "<p align='center'>Do you wish to continue?</p>"
+															+ "</br>";
 	private BiospecimenDataEntryModalDetailForm 			me;
 	private Panel											biospecimenCFDataEntryPanel;
 	private WebMarkupContainer								dataEntryWMC;  
@@ -189,6 +194,7 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 		bioTransactionDetailWmc = new WebMarkupContainer("bioTransactionDetailWmc");
 		bioTransactionDetailWmc.setOutputMarkupPlaceholderTag(true);
 		bioTransactionDetailWmc.setEnabled(cpModel.getObject().getBiospecimen().getId() == null);
+		replaceDeleteButton();
 	}
 
 	public void onBeforeRender() {
@@ -571,7 +577,6 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 		initialiseBiospecimenLocationPanel();
 		initialiseBiospecimenButtonsPanel();
 		initDeleteModelWindow();
-		
 		Collection<CustomFieldCategory> customFieldCategoryCollection=getOnlyAssignedCategoryListInStudyByCustomFieldType();
 		List<CustomFieldCategory> customFieldCatLst=CustomFieldCategoryOrderingHelper.getInstance().orderHierarchicalyCustomFieldCategories((List<CustomFieldCategory>)customFieldCategoryCollection);
 		ChoiceRenderer customfieldCategoryRenderer = new ChoiceRenderer(Constants.CUSTOMFIELDCATEGORY_NAME, Constants.CUSTOMFIELDCATEGORY_ID){
@@ -873,7 +878,7 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 							parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
 							iLimsService.createBioTransaction(parentLimsVo);
 
-							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was successfully created.");
+							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 							setQuantityLabel();
 						}
 					}
@@ -920,7 +925,7 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 							parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
 							iLimsService.createBioTransaction(parentLimsVo);
 
-							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was successfully created.");
+							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 							setQuantityLabel();
 						}
 					}
@@ -943,7 +948,7 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 				// Update biospecimen
 				iLimsService.updateBiospecimen(cpModel.getObject());
 
-				this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was successfully updated.");
+				this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
 
 				// Hide/show barcode image
 				barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
@@ -993,6 +998,9 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 				parentQuantityTxtFld.setVisible(false);
 				target.add(parentQuantityTxtFld);
 				onSavePostProcess(target);
+				//Replace the new button to 
+				replaceDeleteButton();
+				
 			}
 		}
 		catch (ArkSystemException e) {
@@ -1007,11 +1015,20 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 		modalWindow.close(target);
 	}
 
-	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
-		confirmModal.show(target);
-		//onClose(target);
-	}
+	/*@Override
+	protected void onDeleteConfirmed(AjaxRequestTarget target) {
+		List<BioTransaction> 	bioTransactions=iLimsService.getAllBiotransactionForBiospecimen(cpModel.getObject().getBiospecimen());
+		List<BiospecimenCustomFieldData> 	biospecimenCustomFieldDatas= iLimsService.getBiospecimenHasFieldDataForBiospecimen(cpModel.getObject().getBiospecimen());
+		if(bioTransactions.size()>0 || biospecimenCustomFieldDatas.size()>0 ){
+			confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(),buildModelText(bioTransactions, biospecimenCustomFieldDatas),"Warning",confirmModal, answer));
+			confirmModal.show(target);
+		}else{
+			iLimsService.deleteBiospecimen(cpModel.getObject());
+       		getSession().getFeedbackMessages().info(me, "Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully.");
+       		target.add(feedbackPanel);
+       		onClose(target);
+		}
+	}*/
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
@@ -1299,33 +1316,25 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 		answer = new ConfirmationAnswer(false);
 		confirmModal =  new ModalWindow("modal");
 		confirmModal.setCookieName("yesNoPanel");
-		if(!isNew()){
-			List<BioTransaction> bioTransactions=iLimsService.getAllBiotransactionForBiospecimen(cpModel.getObject().getBiospecimen());
-			StringBuffer bioTxID=new StringBuffer();
-			for (BioTransaction bioTransaction : bioTransactions) {
-				bioTxID.append(bioTransaction.getId()).append(",");
-			}
-			if(bioTxID.length()>0){
-				bioTxID.deleteCharAt(bioTxID.length()-1);
-				String modelTextReplce1=modalText.replaceAll("number", Integer.toString(bioTransactions.size()));
-				String modeltextReplace2=modelTextReplce1.replaceAll("txs", bioTxID.toString());
-				confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modeltextReplace2,"Warning",confirmModal, answer));
-				confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
-					private static final long serialVersionUID = 1L;
-					public void onClose(AjaxRequestTarget target) {
-			            if (answer.isAnswer()) {
-			           	 	iLimsService.deleteBiospecimen(cpModel.getObject());
-			           		getSession().getFeedbackMessages().info(me, "Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
-			               } else {
-			               		EditModeButtonsPanel editModeButtonsPanel=((EditModeButtonsPanel)buttonsPanelWMC.get("buttonsPanel"));
-			               		editModeButtonsPanel.setDeleteButtonEnabled(true);
-			               		target.add(editModeButtonsPanel);
-			              }
-			        target.add(feedbackPanel);
-			     }
-			    });
-			}	
-		}
+		//confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(),modalText,"Warning",confirmModal, answer));
+		confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+			private static final long serialVersionUID = 1L;
+			public void onClose(AjaxRequestTarget target) {
+	            if (answer.isAnswer()) {
+	            	//first delete the biospecimen custom field data
+	            	iLimsService.deleteBiospecimenCustomFieldDataForBiospecimen(cpModel.getObject().getBiospecimen());
+	            	//then delete biospecimen
+	           	 	iLimsService.deleteBiospecimen(cpModel.getObject());
+	           		getSession().getFeedbackMessages().info(me, "Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
+	           		me.onClose(target);
+	               } else {
+	               		EditModeButtonsPanel editModeButtonsPanel=((EditModeButtonsPanel)buttonsPanelWMC.get("buttonsPanel"));
+	               		editModeButtonsPanel.setDeleteButtonEnabled(true);
+	               		target.add(editModeButtonsPanel);
+	              }
+	        target.add(feedbackPanel);
+	     }
+	    });
 	}
 
 	public CheckBox getBarcodedChkBox() {
@@ -1343,4 +1352,70 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 	public void setBarcodeImage(NonCachingImage barcodeImage) {
 		this.barcodeImage = barcodeImage;
 	}
+	/**
+	 * 
+	 * @param transactions
+	 * @param biospecimenCustomFieldDatas
+	 * @return
+	 */
+	private String buildModelText(List<BioTransaction> transactions,List<BiospecimenCustomFieldData> biospecimenCustomFieldDatas){
+			String modelTextReplace = null;
+		if(!isNew()){
+			StringBuffer bioTxID=new StringBuffer();
+			for (BioTransaction bioTransaction : transactions) {
+				bioTxID.append(bioTransaction.getId()).append(",");
+			}
+			if(bioTxID.length()>0){
+				bioTxID.deleteCharAt(bioTxID.length()-1);
+				modelTextReplace=modalText.replaceAll("bsn", Integer.toString(transactions.size()));
+				modelTextReplace=modelTextReplace.replaceAll("txs", bioTxID.toString());
+			}
+			modelTextReplace=modelTextReplace.replaceAll("cfdn", Integer.toString(biospecimenCustomFieldDatas.size()));
+			
+		}
+		return modelTextReplace;
+	}
+	private void replaceDeleteButton() {
+		EditModeButtonsPanel editModeButtonsPanel=((EditModeButtonsPanel)buttonsPanelWMC.get("buttonsPanel"));
+		editModeButtonsPanel.addOrReplace(buildDeleteButton());
+		buttonsPanelWMC.add(editModeButtonsPanel);
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	private AjaxButton buildDeleteButton(){
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.core.Constants.DELETE){
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				List<BioTransaction> 	bioTransactions=iLimsService.getAllBiotransactionForBiospecimen(cpModel.getObject().getBiospecimen());
+				List<BiospecimenCustomFieldData> 	biospecimenCustomFieldDatas= iLimsService.getBiospecimenHasFieldDataForBiospecimen(cpModel.getObject().getBiospecimen());
+				if(bioTransactions.size()>0 || biospecimenCustomFieldDatas.size()>0 ){
+					confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(),buildModelText(bioTransactions, biospecimenCustomFieldDatas),"Warning",confirmModal, answer));
+					confirmModal.show(target);
+				}else{
+					iLimsService.deleteBiospecimen(cpModel.getObject());
+		       		getSession().getFeedbackMessages().info(me, "Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully.");
+		       		target.add(feedbackPanel);
+		       		onClose(target);
+				}
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("onError called when buildDeleteUploadButton pressed");
+			};
+		};
+		ajaxButton.setDefaultFormProcessing(false);
+		return ajaxButton;
+	}
+	
+	
+
+	@Override
+	protected void onDeleteConfirmed(AjaxRequestTarget target) {
+		
+		
+	}
+	
 }

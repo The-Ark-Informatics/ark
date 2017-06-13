@@ -212,7 +212,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 
 	abstract protected void onClose(AjaxRequestTarget target);
 
-	abstract protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form);
+	abstract protected void onDeleteConfirmed(AjaxRequestTarget target);//, Form<?> form);
 
 	abstract protected void processErrors(AjaxRequestTarget target);
 
@@ -246,7 +246,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 	 * org.apache.wicket.markup.html.form.Form)
 	 */
 	public void onEditDelete(AjaxRequestTarget target, Form<?> form) {
-		onDeleteConfirmed(target, form);
+		onDeleteConfirmed(target);
 	}
 
 	/*

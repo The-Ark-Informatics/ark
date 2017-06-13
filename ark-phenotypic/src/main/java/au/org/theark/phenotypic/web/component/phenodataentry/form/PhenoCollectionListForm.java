@@ -318,7 +318,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				if(phenoDataSetFieldGroupDdc.getValue().isEmpty() || pickedPhenoDataSetCategoryDdc.getValue().isEmpty()) {
-					error("Please select the Data Set and Category first");	
+					error("Please select the Dataset and Category first");	
 				}
 				else {
 					LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy();

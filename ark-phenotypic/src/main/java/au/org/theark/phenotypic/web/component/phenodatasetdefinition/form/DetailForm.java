@@ -169,7 +169,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				// Check what was selected and then toggle
 				if (publishedStatusCb.getModelObject().booleanValue()) {
-					error("Pheno DataSet Category/Fields may not be added or removed once the Data Set is published.");
+					error("Pheno DataSet Category/Fields may not be added or removed once the Dataset is published.");
 					target.add(feedBackPanel);
 				}
 				else {
@@ -306,11 +306,11 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 		if (allowDelete) {
 			cpModel.getObject().setArkUser(arkUser);
 			iPhenotypicService.deletePhenoFieldDataSetGroup(cpModel.getObject());
-			this.info("Data Set has been deleted successfully.");
+			this.info("Dataset has been deleted successfully.");
 			editCancelProcess(target);
 		}
 		else {
-			this.error("This Data Set cannot be deleted.");
+			this.error("This Dataset cannot be deleted.");
 		}
 	}
 
@@ -331,13 +331,13 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 				 if(!iPhenotypicService.isSameNameFieldGroupExsistsForTheStudy(getModelObject())){
 					 iPhenotypicService.createPhenoFieldDataSetGroup(getModelObject());
 					//initCustomFieldDataListPanel();
-					info("Data Set has been created successfully.");
+					info("Dataset has been created successfully.");
 				 }else{
-					error("A Data Set with the same name already exisits. Please choose a unique one.");
+					error("A Dataset with the same name already exisits. Please choose a unique one.");
 				 }
 			}
 			catch (EntityExistsException e) {
-				error("A Data Set with the same name already exisits. Please choose a unique one.");
+				error("A Dataset with the same name already exisits. Please choose a unique one.");
 			}
 			catch (ArkSystemException e) {
 				error("A System error occured. Please contact Administrator.");
@@ -347,10 +347,10 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldGroupVO> {
 			
 			try {
 				 iPhenotypicService.updatePhenoFieldDataSetGroup(getModelObject());
-				 info("Data Set has been updated successfully.");
+				 info("Dataset has been updated successfully.");
 			}
 			catch (EntityExistsException e) {
-				error("A Data Set with the same name already exisits. Please choose a unique one.");
+				error("A Dataset with the same name already exisits. Please choose a unique one.");
 				e.printStackTrace();
 			}
 			catch (ArkSystemException e) {
