@@ -77,9 +77,11 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 	private byte[]					pngOutPutArray;
 
-	private DownloadLink			downloadLink;
+	private DownloadLink			pngLink;
 
 	private DownloadLink			pdfLink;
+
+	private DownloadLink			svgLink;
 
 	public PedigreeDisplayPanel(String id) {
 		super(id);
@@ -251,7 +253,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 		addOrReplace(new Image("pedigreeImg", svgImageRes));
 
-		downloadLink = new DownloadLink("imgLink", new AbstractReadOnlyModel<File>() {
+		pngLink = new DownloadLink("pngLink", new AbstractReadOnlyModel<File>() {
 
 			@Override
 			public File getObject() {
@@ -273,9 +275,9 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				return tempFile;
 			}
 		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
-		downloadLink.setOutputMarkupId(true);
+		pngLink.setOutputMarkupId(true);
 
-		downloadLink.add(new Behavior() {
+		pngLink.add(new Behavior() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -284,7 +286,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 			}
 		});
 
-		addOrReplace(downloadLink);
+		addOrReplace(pngLink);
 
 		pdfLink = new DownloadLink("pdfLink", new AbstractReadOnlyModel<File>() {
 
@@ -327,6 +329,43 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 		});
 
 		addOrReplace(pdfLink);
+		
+		svgLink = new DownloadLink("svgLink", new AbstractReadOnlyModel<File>() {
+
+			@Override
+			public File getObject() {
+				File tempFile = null;
+				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				try {
+					String tmpDir = System.getProperty("java.io.tmpdir");
+					String pedFileName = "Ark_" + subjectUID + ".svg";
+					tempFile = new File(tmpDir, pedFileName);					
+					InputStream data = new ByteArrayInputStream(sb.toString().getBytes());
+					Files.writeTo(tempFile, data);
+				}
+				catch (IOException io) {
+					io.printStackTrace();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				return tempFile;
+			}
+		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
+
+		svgLink.setOutputMarkupId(true);
+
+		svgLink.add(new Behavior() {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void onComponentTag(Component component, ComponentTag tag) {
+				tag.put("title", "Export to SVG");
+			}
+		});
+
+		addOrReplace(svgLink);
+ 
 
 	}
 
