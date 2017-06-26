@@ -111,7 +111,7 @@ public class SearchForm extends AbstractSearchForm<StudyCalendarVo> {
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
 		getModelObject().setMode(Constants.MODE_NEW);
-		getModelObject().getStudyCalendar().setId(null);
+		//getModelObject().getStudyCalendar().setId(null);
 		preProcessDetailPanel(target);
 	}
 

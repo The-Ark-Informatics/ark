@@ -266,48 +266,10 @@
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
-				
-				<!--  
-				<div class="fldLabel">
-					<div class="label"> 
-						<input wicket:id="createFilters" type="submit" value="Create Filters" />
-
-						<div wicket:id="detailModalWindow">
-							&nbsp;
-						</div>
-					</div>
-					<div class="note">
-						<wicket:message	key="createFilters.note">
-							[Note replaced from properties]
-						</wicket:message>
-					</div>
-
-					<br>
-
-					<div>
-						<wicket:message	key="subjectFileUploadLabel">
-							[Link Subjects from a list:]
-						</wicket:message>
-					</div>
-
-					<div class="fldControl">
-						<input wicket:id="subjectFileUpload" type="file" />
-						<a href="#" wicket:id="clearButton"><img  src="images/icons/editclear.png" onmouseover="Clear Attachement"/></a>
-					</div>
-					<div class="note">
-						<wicket:message	key="subjectFileUploadLabel.note">
-							[Note replaced from properties]
-						</wicket:message>
-					</div>
-					<span wicket:id="downloadSubjectList"></span>
-				</div>
-				-->
-				
 				<div class="fldLabel">
 					<div class="label"> 
 						<label for="applicationModules">
 							<input wicket:id="createFilters" type="submit" />
-
 							<div wicket:id="detailModalWindow">
 								&nbsp;
 							</div>
@@ -318,43 +280,31 @@
 							</div>
 							<div>
 								<wicket:message	key="subjectFileUploadLabel">
-								[Link Subjects from a list:]
+									[Link Subjects from a list:]
 								</wicket:message>
 								<input wicket:id="subjectFileUpload" type="file" />
 								<a href="#" wicket:id="clearButton"><img  src="images/icons/editclear.png" onmouseover="Clear Attachement"/></a>
-							</div>	
+								<br>
+								<a href="#" wicket:id="subjectFile.link">
+									<b>
+										<span wicket:id="searchFile.filename">File Name</span>
+									</b>
+								</a>
+									<a href="#" wicket:id="deleteButton"><img  src="images/icons/delete.png" /></a>
+							</div>
 							<div class="note">
 								<wicket:message	key="subjectFileUploadLabel.note">
 								[Note replaced from properties]
 								</wicket:message>
 							</div>
-							<span wicket:id="downloadSubjectList"></span>							
+						<!-- 	<span wicket:id="downloadSubjectList"></span>	 -->						
 						</label>
 					</div>
 				</div>
-				
-				
-				<!--
-					div class="fldLabel"> <div class="label"> <label for="applicationModules"> <wicket:message key="search.phenoCustomFieldDisplaysToReturn">
-					pheno custom Fields To Return </wicket:message> <span wicket:id="selectedPhenoCustomFieldDisplays"> [Palette] </span> </label> </div> </div>
-					<div class="fldControl"> &nbsp; </div>
-				-->
-				<!--	end row 5-->
-
 
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
-
-
-				<!--
-					<div class="panelContentLeft">&nbsp;</div> <div class="fldLabel"> <div class="label"> <label for="studyKey"> <wicket:message
-					key="study.component.description">Description:</wicket:message> </label> </div> </div> <div class="fldControl"> <div class="label">
-					<textarea wicket:id="studyComponent.description" cols="25"></textarea> </div> </div> <div class="panelMargin">&nbsp;</div> <div
-					class="fldLabel"> <div class="label"> <label for="componentKeyword"><wicket:message
-					key="study.component.keyword">Keyword:</wicket:message></label> </div> </div> <div class="fldControl"> <div class="label" > <textarea
-					wicket:id="studyComponent.keyword" cols="25"></textarea> </div> </div>
-				-->
 
 				<div class="detailPanelBreaker">
 					&nbsp;

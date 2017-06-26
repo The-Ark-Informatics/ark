@@ -26,30 +26,31 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
-import au.org.theark.report.model.vo.*;
-import au.org.theark.report.model.vo.report.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
+import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.report.entity.SearchFile;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentStatus;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
@@ -58,12 +59,28 @@ import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.report.model.dao.IReportDao;
+import au.org.theark.report.model.vo.BiospecimenDetailsReportVO;
+import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.model.vo.FieldDetailsReportVO;
+import au.org.theark.report.model.vo.PhenoDataSetFieldDetailsReportVO;
+import au.org.theark.report.model.vo.ResearcherCostResportVO;
+import au.org.theark.report.model.vo.StudyComponentReportVO;
+import au.org.theark.report.model.vo.report.BiospecimenDetailsDataRow;
+import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
+import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
+import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.PhenoDataSetFieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
+import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
+import au.org.theark.report.model.vo.report.StudyComponentDetailsDataRow;
+import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
 @Transactional
 @Service(Constants.REPORT_SERVICE)
 public class ReportServiceImpl implements IReportService {
 
-//	private static Logger		log	= LoggerFactory.getLogger(ReportServiceImpl.class);
+	private static Logger		log	= LoggerFactory.getLogger(ReportServiceImpl.class);
 
 	private IArkCommonService	arkCommonService;
 	private IStudyDao				studyDao;
@@ -532,6 +549,65 @@ public class ReportServiceImpl implements IReportService {
 			return null;
 		}	
 		
+	}
+	
+	@Override
+	public void delete(SearchFile searchFile, String directoryType)throws ArkSystemException, EntityNotFoundException, ArkFileNotFoundException {
+		Long studyId = searchFile.getStudy().getId();
+		Long searchId=searchFile.getSearch().getId();
+		String fileId = searchFile.getFileId();
+		String checksum=searchFile.getChecksum();
+				if (arkCommonService.deleteArkFileAttachment(studyId, searchId.toString(), fileId, directoryType, checksum)) {
+					reportDao.delete(searchFile);
+				}
+				else {
+					log.error("Could not find the file - "+fileId);
+				}
+	}
+
+	@Override
+	public void create(SearchFile searchFile) throws ArkSystemException {
+		reportDao.create(searchFile);
+	}
+
+	@Override
+	public void update(SearchFile searchFile) throws ArkSystemException, EntityNotFoundException {
+		reportDao.update(searchFile);
+	}
+	@Override
+	public void create(SearchFile searchFile, String directoryType) throws ArkSystemException {
+		
+		Long studyId = searchFile.getStudy().getId();
+		Long searchId=searchFile.getSearch().getId();
+		String fileName = searchFile.getFilename();
+		byte[] payload = searchFile.getPayload();
+
+		// Generate unique file id for given file name
+		String fileId = arkCommonService.generateArkFileId(fileName);
+
+		// Set unique subject file id
+		searchFile.setFileId(fileId);
+
+		// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+		arkCommonService.saveArkFileAttachment(studyId, searchId.toString(), directoryType, fileName, payload, fileId);
+
+		// Remove the attachment
+		searchFile.setPayload(null);
+
+		// Save attachment meta information in relational tables
+		reportDao.create(searchFile);
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Studyfile " + searchFile.getId()+" was successfully created.");
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
+		ah.setEntityId(searchFile.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+
+	@Override
+	public SearchFile getSearchFileByStudyAndSearch(Study study, Search search) {
+		return reportDao.getSearchFileByStudyAndSearch(study, search);
 	}
 	
 	

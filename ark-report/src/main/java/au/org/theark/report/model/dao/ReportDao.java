@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -43,15 +45,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
+import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.report.entity.SearchFile;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -1168,6 +1172,49 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.setResultTransformer(Transformers.aliasToBean(StudyComponentDetailsDataRow.class));
 		results=(criteria.list());
 		return results;
+	}
+	
+	@Override
+	public void create(SearchFile studytFile) throws ArkSystemException {
+		getSession().save(studytFile);
+		
+	}
+
+	@Override
+	public void update(SearchFile studytFile) throws ArkSystemException, EntityNotFoundException {
+		getSession().update(studytFile);
+		
+	}
+
+	@Override
+	public void delete(SearchFile studytFile) throws ArkSystemException, EntityNotFoundException {
+		try {
+			Session session = getSession();
+			studytFile = (SearchFile) session.get(SearchFile.class, studytFile.getId());
+			if (studytFile != null) {
+				getSession().delete(studytFile);
+			}
+			else {
+				throw new EntityNotFoundException("The study file record you tried to remove does not exist in the Ark System");
+			}
+
+		}
+		catch (HibernateException someHibernateException) {
+			log.error("An Exception occured while trying to delete this studyt file " + someHibernateException.getStackTrace());
+		}
+		catch (Exception e) {
+			log.error("An Exception occured while trying to delete this studyt file " + e.getStackTrace());
+			throw new ArkSystemException("A System Error has occured. We wil have someone contact you regarding this issue");
+		}
+	}
+
+	@Override
+	public SearchFile getSearchFileByStudyAndSearch(Study study, Search search) {
+		Criteria criteria = getSession().createCriteria(SearchFile.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("search", search));
+		criteria.setMaxResults(1);
+		return (SearchFile) criteria.uniqueResult();
 	}
 	
 }

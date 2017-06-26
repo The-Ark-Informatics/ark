@@ -206,9 +206,12 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 	 */
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
-
 		StudyCalendarVo studyCalendarVo = new StudyCalendarVo();
 		containerForm.setModelObject(studyCalendarVo);
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Collection<CustomField> availableCustomFields = iStudyService.getStudySubjectCustomFieldList(studyId);
+		containerForm.getModelObject().setAvailableCustomFields(availableCustomFields);
+		
 	}
 
 	/*

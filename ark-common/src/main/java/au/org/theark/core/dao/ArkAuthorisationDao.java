@@ -686,9 +686,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.addOrder(Order.asc("module.id"));
 
 		// Restrict by Study if NOT Super Administrator
-		if (!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+		//if (!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 			criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
-		}
+		//}
 
 		try {
 			arkUserRoleList = criteria.list();

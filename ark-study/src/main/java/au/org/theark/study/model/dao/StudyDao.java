@@ -31,12 +31,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
@@ -2855,4 +2853,5 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		setOfCorrespondenseDirectionTypes.addAll(list);
 		return new ArrayList<CorrespondenceDirectionType>(setOfCorrespondenseDirectionTypes);
 	}
+		
 }

@@ -29,6 +29,7 @@ import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.report.entity.SearchFile;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
 /**
@@ -40,8 +41,8 @@ public class SearchVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Search search;
 	private List<Search> listOfSearchesForResultList = new ArrayList<Search>();
-	private String subjectFileUpload;
-
+	private String 							subjectFileUpload;
+	private SearchFile 						searchFile;
 
 	// would be better if pallette could point to search.getDemographicFieldsToReturn 
 	private Collection<DemographicField>	availableDemographicFields = new ArrayList<DemographicField>();
@@ -68,10 +69,11 @@ public class SearchVO implements Serializable {
 	private Collection<ConsentStatusField> availableConsentStatusFields = new ArrayList<ConsentStatusField>();
 	private Collection<ConsentStatusField> selectedConsentStatusFields = new ArrayList<ConsentStatusField>();
 	
+	
 	public SearchVO() {
 		search = new Search();
+		searchFile=new SearchFile();
 	}
-
 
 	public Search getSearch() {
 		return search;
@@ -209,11 +211,9 @@ public class SearchVO implements Serializable {
 		this.selectedPhenoDataSetFieldDisplays = selectedPhenoDataSetFieldDisplays;
 	}
 
-
 	public Collection<CustomFieldDisplay> getAvailableBiospecimenCustomFieldDisplays() {
 		return availableBiospecimenCustomFieldDisplays;
 	}
-
 
 	public void setAvailableBiospecimenCustomFieldDisplays(
 			Collection<CustomFieldDisplay> availableBiospecimenCustomFieldDisplays) {
@@ -274,6 +274,12 @@ public class SearchVO implements Serializable {
 			Collection<CustomFieldDisplay> selectedBiocollectionCustomFieldDisplays) {
 		this.selectedBiocollectionCustomFieldDisplays = selectedBiocollectionCustomFieldDisplays;
 	}
+	public SearchFile getSearchFile() {
+		return searchFile;
+	}
 
-	
+	public void setSearchFile(SearchFile searchFile) {
+		this.searchFile = searchFile;
+	}
+
 }

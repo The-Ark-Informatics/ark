@@ -167,8 +167,6 @@ public class BiospecimenDataEntryModalDetailForm extends AbstractModalDetailForm
 	private ModalWindow										confirmModal;
 	private ConfirmationAnswer 								answer;
 	private String 								    		modalText ="<p align='center'>Deleting this biospecimen (and its cfdn custom field data) will also delete bsn biospecimen(s) linked as transactions.</p>"
-															/*+ "</br>"
-															+ "<p align='center'>[Txid(s)(txs).]</p>"*/
 															+ "</br>"
 															+ "<p align='center'>Do you wish to continue?</p>"
 															+ "</br>";

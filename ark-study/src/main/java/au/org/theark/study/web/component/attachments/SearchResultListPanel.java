@@ -184,7 +184,7 @@ public class SearchResultListPanel extends Panel {
 					String fileId = subjectFile.getFileId();
 					String checksum = subjectFile.getChecksum();
 					
-					data = arkCommonService.retriveArkFileAttachmentByteArray(studyId,subjectUID,au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR,fileId,checksum);
+					data = arkCommonService.retriveArkFileAttachmentByteArray(studyId,subjectUID,(subjectFile.getIsConsentFile()?au.org.theark.study.web.Constants.ARK_SUBJECT_CONSENT_DIR:au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR),fileId,checksum);
 
 					if (data != null) {
 						InputStream inputStream = new ByteArrayInputStream(data);

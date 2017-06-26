@@ -18,20 +18,17 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction.form;
 
-import java.io.Serializable;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.phenotypic.service.IPhenotypicService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
@@ -48,31 +45,44 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IOUtils;
+import org.apache.wicket.util.resource.FileResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.dao.StudyDao;
+import au.org.theark.core.exception.ArkCheckSumNotSameException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.report.entity.SearchFile;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.util.AJAXDownload;
+import au.org.theark.core.util.ArkFileExtensionValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.QueryFilterListVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.report.service.IReportService;
 import au.org.theark.report.web.component.dataextraction.filter.QueryFilterPanel;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author nivedann
@@ -102,13 +112,19 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	private Palette<ConsentStatusField> consentStatusFieldsToReturnPalette;
 
-	private FileUploadField subjectListFileUploadField;
-	private String subjectFileUpload;
-
+	private FileUploadField fileUploadField;
+	private Label			fileNameLbl;
+	private ArkBusyAjaxLink<String>  				fileNameLnk;
+	private AJAXDownload                            ajaxDownload;
 	private AjaxButton clearButton;
 
 	@SpringBean(name = Constants.ARK_PHENO_DATA_SERVICE)
 	private IPhenotypicService iPhenoService;
+	
+	@SpringBean(name = au.org.theark.report.service.Constants.REPORT_SERVICE)
+	private IReportService							reportService;
+	
+	
 
 	/**
 	 * 
@@ -124,7 +140,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		this.feedBackPanel = feedBackPanel;
 		this.modalWindow = modalWindow;
 
-		subjectListFileUploadField = new FileUploadField("subjectFileUpload");
+		fileUploadField = new FileUploadField("subjectFileUpload");
+		
 	}
 
 	public void onBeforeRender() {
@@ -165,32 +182,109 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		initBiospecimenCustomFieldDisplaysModulePalette();
 		initBiocollectionCustomFieldDisplaysModulePalette();
 		initConsentStatusFieldsModulePalette();
-		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectListFileUploadField);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(new AjaxLink("downloadSubjectList") {
-
-			@Override
-			public void onClick(AjaxRequestTarget target) {
-				// TODO Auto-generated method stub
-				target.appendJavaScript("alert('Link clicked');");
-			}
-
-		});
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
 		
+		fileNameLbl = new Label("searchFile.filename");
+		fileNameLbl.setOutputMarkupId(true);
+		ajaxDownload = new AJAXDownload()
+		{
+			 @Override
+	            protected IResourceStream getResourceStream()
+	            {     
+				 	SearchFile searchFile=containerForm.getModelObject().getSearchFile();
+					Long studyId =searchFile.getStudy().getId();
+					Long searchId=searchFile.getSearch().getId();
+					String fileId = searchFile.getFileId();
+					String checksum = searchFile.getChecksum();
+					File file = null;
+					IResourceStream resStream =null;
+						try {
+							file=iArkCommonService.retriveArkFileAttachmentAsFile(studyId,searchId.toString(),au.org.theark.report.web.Constants.REPORT_DATA_EXTRACTION_SUBJECT_UID_RESTRICT_FILE,fileId,checksum);
+							resStream = new FileResourceStream(file);
+							if(resStream==null){
+								containerForm.error("An unexpected error occurred. Download request could not be fulfilled.");
+							}
+						} catch (ArkSystemException e) {
+							containerForm.error("An unexpected error occurred. Download request could not be fulfilled.");
+							log.error(e.getMessage());
+						} catch (ArkFileNotFoundException e) {
+							containerForm.error("File not found:"+e.getMessage());
+							log.error(e.getMessage());
+						} catch (ArkCheckSumNotSameException e) {
+							containerForm.error("Check sum error:"+e.getMessage());
+							log.error(e.getMessage());
+						}
+						return resStream;
+		        }
+	            @Override
+	            protected String getFileName() {
+	                return containerForm.getModelObject().getSearchFile().getFilename();
+	            }
+		};
+		fileNameLnk=new ArkBusyAjaxLink<String>(au.org.theark.report.web.Constants.SUBJECT_FILE_FILENAMELINK) {
+		@Override
+		public void onClick(AjaxRequestTarget target) {
+			ajaxDownload.initiate(target);
+			processErrors(target);
+		}
+			
+		};
+		fileNameLnk.add(fileNameLbl);
 		clearButton = new AjaxButton("clearButton") {			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				subjectListFileUploadField.clearInput();
-				target.add(subjectListFileUploadField);
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
 			}
 			
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				subjectListFileUploadField.clearInput();
-				target.add(subjectListFileUploadField);
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
 			}
 		};
 		clearButton.add(new AttributeModifier("title", new Model<String>("Clear Attachment")));
-		
+		deleteButton = new AjaxButton("deleteButton") {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			try {
+				reportService.delete(containerForm.getModelObject().getSearchFile(),au.org.theark.report.web.Constants.REPORT_DATA_EXTRACTION_SUBJECT_UID_RESTRICT_FILE);
+				containerForm.info("The file has been successfully deleted.");
+				containerForm.getModelObject().getSearchFile().setFilename(null);
+			 }catch (EntityNotFoundException e) {
+					containerForm.error("The subject consent attachment no longer exists in the system.Please re-do the operation.");
+			 }catch (ArkSystemException e) {
+					containerForm.error("System error occure:"+e.getMessage());
+			 } catch (ArkFileNotFoundException e) {
+				 containerForm.error("File not found:"+e.getMessage());
+			}finally{
+				 //containerForm.getModelObject().getSubjectFile().setFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLnk);
+				target.add(this);
+				processErrors(target);
+			 }
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().getSearchFile().setPayload(null);
+				containerForm.getModelObject().getSearchFile().setFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLnk);
+				target.add(this);
+				containerForm.error("Error occurred during the file deletion process.");
+				processErrors(target);
+			}
+			
+			@Override
+			public boolean isVisible() {
+				return (containerForm.getModelObject().getSearchFile()!=null && containerForm.getModelObject().getSearchFile().getFilename() != null) && !containerForm.getModelObject().getSearchFile().getFilename().isEmpty();
+			}
+		};
+		deleteButton.add(new AttributeModifier("title", new Model<String>("Delete Attachment")));
+		deleteButton.setOutputMarkupId(true);
 		addDetailFormComponents();
 		attachValidators();
 	}
@@ -256,6 +350,10 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biocollectionCustomFieldDisplaysToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentStatusFieldsToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(clearButton);
+		//arkCrudContainerVO.getDetailPanelFormContainer().add(fileNameLbl);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(deleteButton);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileNameLnk);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(ajaxDownload);
 	}
 
 	/*
@@ -267,6 +365,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	protected void attachValidators() {
 		searchNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.search.name.required", searchNameTxtFld, new Model<String>("Search Name")));
 		searchNameTxtFld.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("error.search.name.length", searchNameTxtFld, new Model<String>("Search Name")));
+		fileUploadField.add(new ArkFileExtensionValidator(".csv","valid.file.extension"));
 	}
 
 	/*
@@ -304,21 +403,21 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 			//Add to fix bug  ARK-1581 
 			containerForm.getModelObject().getSearch().setIncludeGeno(false);
 
-			FileUpload subjectFileUpload = subjectListFileUploadField.getFileUpload();
+			FileUpload subjectFileUpload = fileUploadField.getFileUpload();
 			List<SubjectVO> selectedSubjects = iArkCommonService.matchSubjectsFromInputFile(subjectFileUpload, study);
 
 			if (containerForm.getModelObject().getSearch().getId() == null) {
-
 				iArkCommonService.create(containerForm.getModelObject());
 				iArkCommonService.createSearchSubjects(containerForm.getModelObject().getSearch(), selectedSubjects);
+				createSearchFile();
 				this.saveInformation();
 				//this.info("Search " + containerForm.getModelObject().getSearch().getName() + " was created successfully");
 				processErrors(target);
 
 			} else {
-
 				iArkCommonService.update(containerForm.getModelObject());
 				iArkCommonService.createSearchSubjects(containerForm.getModelObject().getSearch(), selectedSubjects);
+				createSearchFile();
 				this.updateInformation();
 				//this.info("Search " + containerForm.getModelObject().getSearch().getName() + " was updated successfully");
 				processErrors(target);
@@ -350,24 +449,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		iArkCommonService.delete(containerForm.getModelObject().getSearch());
 		this.deleteInformation();
-		//containerForm.info("The search was deleted successfully.");
-		/*
-		 * try { //
-		 * iStudyService.delete(containerForm.getModelObject().getStudyComponent
-		 * ()); SearchVO studyCompVo = new SearchVO();
-		 * containerForm.setModelObject(studyCompVo);
-		 * containerForm.info("The Study Component was deleted successfully.");
-		 * editCancelProcess(target); } catch (UnAuthorizedOperation
-		 * unAuthorisedexception) { containerForm.error(
-		 * "You are not authorised to delete this study component.");
-		 * processErrors(target); } catch (EntityCannotBeRemoved
-		 * cannotRemoveException) { containerForm.error(
-		 * "Cannot Delete this Study Component. This component is associated with a Subject"
-		 * ); processErrors(target); } catch (ArkSystemException e) {
-		 * containerForm
-		 * .error("A System Error has occured please contact support.");
-		 * processErrors(target); }
-		 */
 		processErrors(target);
 		editCancelProcess(target);
 	}
@@ -470,12 +551,13 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		PropertyModel<Collection<CustomFieldDisplay>> selectedBiospecimenCustomFieldDisplaysPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "selectedBiospecimenCustomFieldDisplays");// "selectedDemographicFields");
 
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(studyId); // Long arkFunctionId
-															// = (Long)
-															// SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
-		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN);
+		Study study = iArkCommonService.getStudy(studyId); 
+		
+		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
+		
+		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOSPECIMEN);
 
-		Collection<CustomFieldDisplay> availableBiospecimenCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunction);
+		Collection<CustomFieldDisplay> availableBiospecimenCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysInLIMS(study, arkFunction,customFieldType);
 		containerForm.getModelObject().setAvailableBiospecimenCustomFieldDisplays(availableBiospecimenCustomFieldDisplays);
 
 		PropertyModel<Collection<CustomFieldDisplay>> availableBiospecimenCustomFieldDisplayPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "availableBiospecimenCustomFieldDisplays");
@@ -492,13 +574,13 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		PropertyModel<Collection<CustomFieldDisplay>> selectedBiocollectionCustomFieldDisplaysPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "selectedBiocollectionCustomFieldDisplays");// "selectedDemographicFields");
 
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(studyId); // Long arkFunctionId
-															// = (Long)
-															// SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
-		//ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+		Study study = iArkCommonService.getStudy(studyId);
+		
 		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_CUSTOM_FIELD);
+		
+		CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.BIOCOLLECTION);
 
-		Collection<CustomFieldDisplay> availableBiocollectionCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunction);
+		Collection<CustomFieldDisplay> availableBiocollectionCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysInLIMS(study, arkFunction,customFieldType);
 		containerForm.getModelObject().setAvailableBiocollectionCustomFieldDisplays(availableBiocollectionCustomFieldDisplays);
 
 		PropertyModel<Collection<CustomFieldDisplay>> availableBiocollectionCustomFieldDisplayPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "availableBiocollectionCustomFieldDisplays");
@@ -520,6 +602,42 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		PropertyModel<Collection<ConsentStatusField>> availableConsentStatusFieldsPm = new PropertyModel<Collection<ConsentStatusField>>(searchCPM, "availableConsentStatusFields");
 		consentStatusFieldsToReturnPalette = new ArkPalette("selectedConsentStatusFields", selectedConsentStatusFieldsPm, availableConsentStatusFieldsPm, renderer, PALETTE_ROWS, false);
 		consentStatusFieldsToReturnPalette.setOutputMarkupId(true);
+	}
+	
+	private void createSearchFile(){
+	
+		FileUpload fileSubjectFile = fileUploadField.getFileUpload();
+		if(fileSubjectFile != null) {
+			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = iArkCommonService.getStudy(studyId);
+			try {
+				if(containerForm.getModelObject().getSearchFile()==null){
+					containerForm.getModelObject().setSearchFile(new SearchFile());
+				}
+				// store search file attachment
+				if (fileSubjectFile != null) {
+					byte[] byteArray = fileSubjectFile.getMD5();
+					String checksum = getHex(byteArray);
+					containerForm.getModelObject().getSearchFile().setStudy(study);
+					containerForm.getModelObject().getSearchFile().setSearch(containerForm.getModelObject().getSearch());
+					containerForm.getModelObject().getSearchFile().setPayload(IOUtils.toByteArray(fileSubjectFile.getInputStream()));
+					containerForm.getModelObject().getSearchFile().setFilename(fileSubjectFile.getClientFileName());
+					containerForm.getModelObject().getSearchFile().setChecksum(checksum);
+					containerForm.getModelObject().getSearchFile().setFileId(iArkCommonService.generateArkFileId(fileSubjectFile.getClientFileName()));
+					containerForm.getModelObject().getSearchFile().setUserId(SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString());
+				}
+				// Save
+				reportService.create(containerForm.getModelObject().getSearchFile(),au.org.theark.report.web.Constants.REPORT_DATA_EXTRACTION_SUBJECT_UID_RESTRICT_FILE);
+				
+			}
+			catch (IOException ioe) {
+				log.error("Failed to save the uploaded file: " + ioe);
+			}
+			catch (ArkSystemException e) {
+				log.error("Failed to save the uploaded file: " + e);
+			}
+		}
+		
 	}
 
 }

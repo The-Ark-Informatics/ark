@@ -92,9 +92,9 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	private static final long						serialVersionUID	= 1L;
 	private transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	protected IArkCommonService					iArkCommonService;
+	protected IArkCommonService					iArkCommonService;*/
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	protected IStudyService							iStudyService;
@@ -356,7 +356,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 						
 						//sb.append("Please choose another component. The Subject has already consented to Component: ");
 						//sb.append(studyComponentChoice.getModelObject().getName());
-						sb.append("A study component of this type already exists for subject(UID) ");
+						sb.append("A study component of this type already exists for subject ");
 						sb.append(linkSubjectStudy.getSubjectUID());
 						containerForm.error(sb.toString());
 						//Stopping save with exsisting components.
@@ -630,6 +630,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 				containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 				containerForm.getModelObject().getSubjectFile().setUserId(SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString());
+				containerForm.getModelObject().getSubjectFile().setIsConsentFile(true);
 		
 				// Save
 				iStudyService.create(containerForm.getModelObject().getSubjectFile(),Constants.ARK_SUBJECT_CONSENT_DIR);

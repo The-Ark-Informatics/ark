@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenProtocol;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.component.listeditor.AjaxEditorButton;
@@ -89,6 +90,8 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 	protected ModalWindow 										modalWindow;
 	private boolean												copyBiospecimen = false;
 	protected Biospecimen										biospecimenToCopy = new Biospecimen();
+	private DropDownChoice<BiospecimenProtocol>					protocolTypeDdc;
+	private TextField<Double>									purityTxtFld;
 
 	public BatchAliquotBiospecimenForm(String id, IModel<BatchBiospecimenAliquotsVO> model, ModalWindow modalWindow) {
 		super(id, model);
@@ -295,6 +298,10 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				
 				initTreatmentTypeDdc(item);
 				concentrationTxtFld = new TextField<Number>("concentration", new PropertyModel(item.getModelObject(), "concentration"));
+				
+				//Add protocol and purity here.
+				initBiospecimenProtocolTypeDdc(item);
+				purityTxtFld = new TextField<Double>("purity", new PropertyModel(item.getModelObject(), "purity"));
 
 				item.add(biospecimenUidTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    @Override
@@ -304,7 +311,7 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 							String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
 							Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUid, item.getModelObject().getStudy());
 							if (biospecimen != null && biospecimen.getId() != null) {
-								error("Biospecimen UID must be unique. Please try again.");
+								error("Biospecimen UID must be unique within a study");
 								target.focusComponent(getComponent());
 							}
 				   	}
@@ -343,7 +350,21 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				   	 item.getModelObject().setConcentration((Double) getComponent().getDefaultModelObject());
 				    } 
 				}));
-
+				item.add(protocolTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				   	 biospecimenToCopy.setBiospecimenProtocol((BiospecimenProtocol) getComponent().getDefaultModelObject());
+				   	 item.getModelObject().setBiospecimenProtocol((BiospecimenProtocol) getComponent().getDefaultModelObject());
+				    } 
+				}));
+				item.add(purityTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				   	 biospecimenToCopy.setPurity((Double) getComponent().getDefaultModelObject());
+				   	 item.getModelObject().setPurity((Double) getComponent().getDefaultModelObject());
+				    } 
+				}));
+	
 				// Copy button allows entire row details to be copied
 				item.add(new AjaxEditorButton(Constants.COPY) {
 					private static final long	serialVersionUID	= 1L;
@@ -566,5 +587,12 @@ now replacing with this from George;
 			ok = false;
 		}
 		return ok;
+	}
+	
+	private void initBiospecimenProtocolTypeDdc(ListItem<Biospecimen> item) {
+		List<BiospecimenProtocol> treatmentTypeList = iLimsService.getBiospecimenProtocolList();
+		ChoiceRenderer<BiospecimenProtocol> choiceRenderer = new ChoiceRenderer<BiospecimenProtocol>(Constants.NAME, Constants.ID);
+		protocolTypeDdc = new DropDownChoice<BiospecimenProtocol>("biospecimenProtocol", new PropertyModel(item.getModelObject(), "biospecimenProtocol"), (List<BiospecimenProtocol>) treatmentTypeList, choiceRenderer);
+		protocolTypeDdc.setNullValid(false);
 	}
 }

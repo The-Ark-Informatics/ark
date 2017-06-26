@@ -163,11 +163,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					containerForm.getModelObject().getSubjectFile().setIsConsentFile(isStudyCompAssignedToSubjectFile());
 					// Save
 					iStudyService.create(containerForm.getModelObject().getSubjectFile(),isStudyCompAssignedToSubjectFile() ? Constants.ARK_SUBJECT_CONSENT_DIR : Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
-					this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
-					
-					// Save
-					iStudyService.create(containerForm.getModelObject().getSubjectFile(),Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
-					//this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
+			
 					this.saveInformation();
 					//processErrors(target);
 			}else{

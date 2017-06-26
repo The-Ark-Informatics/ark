@@ -18,13 +18,9 @@
  ******************************************************************************/
 package au.org.theark.study.model.dao;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;

@@ -84,6 +84,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	
 	@SpringBean(name = Constants.VALIDATION_MESSAGES)
 	private ValidationMessages validationMsg;
+	
 
 	/**
 	 * 
@@ -472,7 +473,13 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	
 	private String getComponentName(){
 		String name = "";
-		Object modelObject = containerForm.getModelObject();
+		Object modelObject=null;
+		if(containerForm!=null){
+			modelObject = containerForm.getModelObject();
+			
+		}else{
+			modelObject=cpModel.getObject();
+		}
 		if(modelObject instanceof ArkVo){
 			name= ((ArkVo)modelObject).getArkVoName();
 		}

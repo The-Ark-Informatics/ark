@@ -19,7 +19,6 @@
 package au.org.theark.study.service;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -2559,4 +2558,5 @@ public class StudyServiceImpl implements IStudyService {
 	public List<CorrespondenceDirectionType> getCorrespondenceDirectionForMode(CorrespondenceModeType correspondenceModeType) {
 		return iStudyDao.getCorrespondenceDirectionForMode(correspondenceModeType);
 	}
+
 }

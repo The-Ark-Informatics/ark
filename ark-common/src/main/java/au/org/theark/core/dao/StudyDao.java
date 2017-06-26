@@ -47,6 +47,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
@@ -5366,5 +5367,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("search", search));
 		List<QueryFilter> queryFilters=criteria.list();
 		return (queryFilters.size() > 0); 
+	}
+	@Override
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInLIMS(Study study, ArkFunction arkFunction,CustomFieldType customFieldType) {
+		String queryString = "select cfd " + " from CustomFieldDisplay cfd " + 
+							" where customField.id in ( " + " SELECT id from CustomField cf " + 
+															" where cf.study =:study "
+															+ " and cf.arkFunction =:arkFunction and cf.customFieldType =:customFieldType )";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		query.setParameter("arkFunction", arkFunction);
+		query.setParameter("customFieldType", customFieldType);
+		return query.list();
 	}
 }

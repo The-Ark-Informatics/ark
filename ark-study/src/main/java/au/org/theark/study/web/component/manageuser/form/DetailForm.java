@@ -156,7 +156,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 				item.add(new Label("moduleName", arkModule.getName()));// arkModule within ArkUserRole
 				item.add(ddc);
-
 			}
 		};
 

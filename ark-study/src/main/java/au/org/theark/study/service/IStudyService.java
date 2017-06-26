@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.study.service;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
@@ -523,4 +522,5 @@ public interface IStudyService {
 	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy, StudyComp studyComp);
 	
 	public List<StudyComp> getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(Study study,LinkSubjectStudy linkSubjectStudy);
+	
 }
