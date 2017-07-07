@@ -32,6 +32,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
@@ -77,6 +78,8 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 	private DropDownChoice<StudyComp> calendarStudyCompDDL;
 	private DateTextField studyCalendarStartDateFld;
 	private DateTextField studyCalendarEndDateFld;
+	private CheckBox overLappingBooking;
+	
 	
 	private Palette<CustomField>	customFieldPalette;
 
@@ -109,6 +112,9 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 	}	
 
 	public void onBeforeRender() {
+		// Disable overlapping if it has aleady been set
+		boolean enabled = (isNew());
+		overLappingBooking.setEnabled(enabled);
 		super.onBeforeRender();
 	}
 
@@ -137,6 +143,8 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 		endDatePicker.bind(studyCalendarEndDateFld);
 		studyCalendarEndDateFld.add(endDatePicker);
 		
+		overLappingBooking = new CheckBox("studyCalendar.allowOverlapping");
+		
 		initCustomFieldPalette();
 		
 		addDetailFormComponents();
@@ -151,7 +159,8 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(studyCalendarStartDateFld);		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(studyCalendarEndDateFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldPalette);
-
+		arkCrudContainerVO.getDetailPanelFormContainer().add(overLappingBooking);
+		
 	}
 	
 	private void initCustomFieldPalette() {
@@ -206,12 +215,9 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 	 */
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
+
 		StudyCalendarVo studyCalendarVo = new StudyCalendarVo();
 		containerForm.setModelObject(studyCalendarVo);
-		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Collection<CustomField> availableCustomFields = iStudyService.getStudySubjectCustomFieldList(studyId);
-		containerForm.getModelObject().setAvailableCustomFields(availableCustomFields);
-		
 	}
 
 	/*

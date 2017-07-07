@@ -89,8 +89,9 @@ public class SignIn2Session extends AuthenticatedWebSession {
 					String cn = attrs.get("cn").toString().split(":")[1].trim();
 					// String cn=namingEnum.nextElement().toString();
 
+					System.out.println(cn);
 					if (username.equalsIgnoreCase(cn)) {
-						env.put(Context.SECURITY_PRINCIPAL, "cn=" + username + ",ou=" + System.getProperty("ldap.basePeopleDn") + "," + System.getProperty("ldap.base"));
+						env.put(Context.SECURITY_PRINCIPAL, "cn=" + username + "," + System.getProperty("ldap.basePeopleDn") + "," + System.getProperty("ldap.base"));
 						env.put(Context.SECURITY_CREDENTIALS, new Sha256Hash(password).toHex());
 						new InitialDirContext(env);
 						user = username;

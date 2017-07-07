@@ -1,7 +1,9 @@
 package au.org.theark.arkcalendar.dao;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,8 @@ import au.org.theark.arkcalendar.data.ArkCalendarEvent;
 import au.org.theark.arkcalendar.data.ArkCalendarEvent.Category;
 import au.org.theark.arkcalendar.data.ArkCalendarVo;
 import au.org.theark.arkcalendar.data.CalendarCustomFieldData;
+
+import java.sql.Timestamp;
 
 public class ArkCalendarDao {
 	
@@ -122,13 +126,15 @@ public class ArkCalendarDao {
 
 	public static void addEvent(ArkCalendarEvent event) {
 		if (event != null) {
-			String sql = "insert into calendar.calendar_event ( STUDY_CALENDAR_ID, SUBJECT_UID, TITLE, START_TIME, END_TIME, CATEGORY, ALL_DAY ) values ( :val1,:val2,:val3,:val4,:val5,:val6,:val7  )";
-
-			try (Connection con = sql2o.open()) {
-				long insertedId = (long) con.createQuery(sql, true).addParameter("val1", event.getCalenderId()).addParameter("val2", event.getSubjectUID()).addParameter("val3", event.getTitle()).addParameter("val4", formatDateTime(event.getStart())).addParameter("val5", formatDateTime(event.getEnd())).addParameter("val6", event.getCategory()).addParameter("val7", event.isAllDay()).executeUpdate().getKey();
-
-				event.setId((int) insertedId);
-			}
+			//if(isEventOverlapping(event) && !ArkCalendarDao.allowOverlapping(event.getCalenderId())){
+				String sql = "insert into calendar.calendar_event ( STUDY_CALENDAR_ID, SUBJECT_UID, TITLE, START_TIME, END_TIME, CATEGORY, ALL_DAY ) values ( :val1,:val2,:val3,:val4,:val5,:val6,:val7  )";
+	
+				try (Connection con = sql2o.open()) {
+					long insertedId = (long) con.createQuery(sql, true).addParameter("val1", event.getCalenderId()).addParameter("val2", event.getSubjectUID()).addParameter("val3", event.getTitle()).addParameter("val4", formatDateTime(event.getStart())).addParameter("val5", formatDateTime(event.getEnd())).addParameter("val6", event.getCategory()).addParameter("val7", event.isAllDay()).executeUpdate().getKey();
+	
+					event.setId((int) insertedId);
+				}
+			//}
 		}
 
 	}
@@ -347,6 +353,36 @@ public class ArkCalendarDao {
 		}	
 		
 		return exists;
+	}
+	
+	public static boolean allowOverlapping(int calendarId){
+		boolean allowOverlapping = false;
+		
+		String sql = "SELECT ALLOW_OVERLAPPING FROM study.study_calendar WHERE ID= :calendarId";
+		try (Connection con = ArkCalendarDao.sql2o.open()) {
+			List<Long> results  =  con.createQuery(sql).addParameter("calendarId", calendarId).executeAndFetch(Long.class);
+
+			if(results.get(0)==0)
+				allowOverlapping = true;
+			
+		}
+		return allowOverlapping;
+	}
+	
+	public static boolean isEventOverlapping(LocalDateTime date){
+		boolean isOverlapping = false;
+		
+		String sql = "SELECT ID FROM calendar.calendar_event WHERE START_TIME<='"+formatDateTime(date)+"' AND END_TIME>='"+formatDateTime(date)+"'";
+		
+		try (Connection con = ArkCalendarDao.sql2o.open()) {
+		
+			List<ArkCalendarEvent> results  =  con.createQuery(sql).executeAndFetch(ArkCalendarEvent.class);
+			if(results.size() > 0){
+				isOverlapping = true;
+			}
+			
+		}
+		return isOverlapping;
 	}
 	
 }
