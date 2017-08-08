@@ -404,8 +404,8 @@ public class AddressListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				containerForm.getModelObject().getAddressVo().setAddress(address);
-				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsWhenTwoTypesForms(target, arkCrudContainerVO, au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL,
-						au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsForMultiplePanels(target, arkCrudContainerVO, au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL,
+						au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL,au.org.theark.study.web.Constants.EMAIL_DETAIL_PANEL);
 			}
 		};
 		String add1 = address.getAddressLineOne() != null ? address.getAddressLineOne() : "";

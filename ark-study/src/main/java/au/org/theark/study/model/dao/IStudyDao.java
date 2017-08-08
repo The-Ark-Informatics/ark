@@ -48,6 +48,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.EmailAccount;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -234,6 +235,15 @@ public interface IStudyDao {
 	 * @throws ArkSystemException
 	 */
 	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException;
+	
+	/**
+	 *Looks up the email accounts linked to a person.
+	 * 
+	 * @param personId
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<EmailAccount> getPersonEmailAccountList(Long personId) throws ArkSystemException;
 
 	/**
 	 * 
@@ -255,6 +265,33 @@ public interface IStudyDao {
 	 * @throws ArkSystemException
 	 */
 	public void delete(Address address) throws ArkSystemException;
+	
+	
+	/**
+	 * Create Email Account.
+	 * 
+	 * @param emailAccount
+	 * @throws ArkSystemException
+	 */
+	public void create(EmailAccount emailAccount) throws ArkSystemException;
+	
+	/**
+	 * Update Email Account.
+	 * 
+	 * @param emailAccount
+	 * @throws ArkSystemException
+	 */
+	public void update(EmailAccount emailAccount) throws ArkSystemException;
+	
+	/**
+	 * Delete Email Account.
+	 * 
+	 * @param emailAccount
+	 * @throws ArkSystemException
+	 */
+	public void delete(EmailAccount emailAccount) throws ArkSystemException;
+	
+	
 
 	/**
 	 * 
@@ -483,6 +520,8 @@ public interface IStudyDao {
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 	
 	public List<Phone> pageablePersonPhoneLst(Long personID,final Phone phoneCriteria,int first, int count);
+	
+	public List<EmailAccount> pageablePersonEmailLst(Long personId,int first, int count);
 	
 	public List<Address> pageablePersonAddressLst(Long personID,final Address addressCriteria, int first, int count);
 	

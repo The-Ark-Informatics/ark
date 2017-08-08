@@ -54,6 +54,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.EmailAccount;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -186,12 +187,46 @@ public interface IStudyService {
 	 * @throws ArkSystemException
 	 */
 	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException;
+	
+	/**
+	 * Looks up the Email addresses linked to a person.
+	 * 
+	 * @param personId
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<EmailAccount> getPersonEmailAccountList(Long personId) throws ArkSystemException;
 
 	public void create(Address address) throws ArkSystemException;
 
 	public void update(Address address) throws ArkSystemException;
 
 	public void delete(Address address) throws ArkSystemException;
+	
+	/**
+	 * Create Email Account.
+	 * 
+	 * @param emailAccount
+	 * @throws ArkSystemException
+	 */
+	public void create(EmailAccount emailAccount) throws ArkSystemException;
+	
+	/**
+	 * Update Email Account.
+	 * 
+	 * @param emailAccount
+	 * @throws ArkSystemException
+	 */
+	public void update(EmailAccount emailAccount) throws ArkSystemException;
+	
+	/**
+	 * Delete Email Account.
+	 * 
+	 * @param emailAccount
+	 * @throws ArkSystemException
+	 */
+	public void delete(EmailAccount emailAccount) throws ArkSystemException;
+	
 
 	public void create(Consent consent) throws ArkSystemException;
 
@@ -484,6 +519,8 @@ public interface IStudyService {
 	public List<Phone> pageablePersonPhoneList(Long personId, Phone phoneCriteria, int first, int count);
 	
 	public List<Address> pageablePersonAddressList(Long personId, Address addressCriteria, int first, int count);
+	
+	public List<EmailAccount> pageablePersonEmailLst(Long personId,int first, int count);
 	
 	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	

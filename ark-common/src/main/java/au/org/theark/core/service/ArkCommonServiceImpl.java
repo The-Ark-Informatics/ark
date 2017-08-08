@@ -43,6 +43,7 @@ import javax.naming.ldap.Rdn;
 import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.model.config.entity.SettingFile;
 import au.org.theark.core.model.study.entity.*;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -1320,6 +1321,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public Collection<EmailStatus> getAllEmailStatuses() {
 		return studyDao.getAllEmailStatuses();
+	}
+	
+	public List<EmailAccountType> getEmailAccountTypes(){
+		return studyDao.getEmailAccountTypes();
 	}
 
 	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser) {
