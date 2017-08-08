@@ -370,8 +370,8 @@ public class PhoneListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				containerForm.getModelObject().getPhoneVo().setPhone(phone);
-				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsWhenTwoTypesForms(target, arkCrudContainerVO, au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL,
-						au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsForMultiplePanels(target, arkCrudContainerVO, au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL,
+						au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL,au.org.theark.study.web.Constants.EMAIL_DETAIL_PANEL);
 			}
 		};
 		Label nameLinkLabel = new Label(Constants.PHONE_NUMBER_VALUE, phone.getPhoneNumber());

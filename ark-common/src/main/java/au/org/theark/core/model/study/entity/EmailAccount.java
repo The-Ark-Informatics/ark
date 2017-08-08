@@ -21,17 +21,24 @@ package au.org.theark.core.model.study.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
 
 /**
  * EmailAccount entity. @author MyEclipse Persistence Tools
  */
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @Entity
 @Table(name = "EMAIL_ACCOUNT", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class EmailAccount implements java.io.Serializable {
@@ -41,7 +48,8 @@ public class EmailAccount implements java.io.Serializable {
 	private EmailAccountType emailAccountType;
 	private String name;
 	private boolean primaryAccount;
-	private Long personId;
+	private Person person;
+	private EmailStatus emailStatus;
 
 	public EmailAccount() {
 	}
@@ -50,22 +58,24 @@ public class EmailAccount implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public EmailAccount(Long id, EmailAccountType emailAccountType,
-			String name, boolean primaryAccount, Long personId) {
+	public EmailAccount(Long id, EmailAccountType emailAccountType, String name, boolean primaryAccount, Person person, EmailStatus emailStatus) {
 		this.id = id;
 		this.emailAccountType = emailAccountType;
 		this.name = name;
 		this.primaryAccount = primaryAccount;
-		this.personId = personId;
+		this.person = person;
+		this.emailStatus = emailStatus;
 	}
 
 	@Id
+	@SequenceGenerator(name = "email_account_generator", sequenceName = "email_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "email_account_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getid() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setid(Long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -97,13 +107,23 @@ public class EmailAccount implements java.io.Serializable {
 		this.primaryAccount = primaryAccount;
 	}
 
-	@Column(name = "PERSON_ID", precision = 22, scale = 0)
-	public Long getPersonId() {
-		return this.personId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PERSON_ID")
+	public Person getPerson() {
+		return this.person;
 	}
 
-	public void setPersonId(Long personId) {
-		this.personId = personId;
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "EMAIL_STATUS_ID")
+	public EmailStatus getEmailStatus() {
+		return emailStatus;
+	}
+
+	public void setEmailStatus(EmailStatus emailStatus) {
+		this.emailStatus = emailStatus;
+	}
 }

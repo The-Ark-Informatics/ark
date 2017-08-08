@@ -122,6 +122,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		boolean enabled = !(isNew() && containerForm.getModelObject().getAddressVo().getAddresses().size() == 0);
 		preferredMailingAddressChkBox.setEnabled(enabled);
 		historyButtonPanel.setVisible(!isNew());
+		this.containerForm.getModelObject().setObjectId("Address");
 		super.onBeforeRender();
 	}
 
@@ -378,7 +379,8 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 				containerForm.getModelObject().getAddressVo().getAddress().setOtherState(null);
 			}
 //			otherStateInvalidError.setVisible(false);
-			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+//			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelContainer().get("addressDetailPanel").get("addressDetailsForm").get("addressDetailFormContainer").get(Constants.STATE_SELECTOR_WMC);
 			Label otherStateInvalidError = (Label) wmcStateSelector.get("addressVo.address.otherStateInvalidError");
 			otherStateInvalidError.setVisible(false);
 			

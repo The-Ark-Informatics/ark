@@ -23,6 +23,7 @@ import java.util.List;
 
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.study.entity.*;
+
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -614,6 +615,8 @@ public interface IStudyDao {
 	public YesNo getNo();
 
 	public List<EmailStatus> getAllEmailStatuses();
+	
+	public List<EmailAccountType> getEmailAccountTypes();
 	
 	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser);
 

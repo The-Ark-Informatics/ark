@@ -464,6 +464,7 @@ public class Constants {
 	
 	public static final String PHONE_DETAIL_PANEL="phoneDetailPanel";
 	public static final String ADDRESS_DETAIL_PANEL="addressDetailPanel";
+	public static final String EMAIL_DETAIL_PANEL="emailDetailPanel";
 	
 	public static final String INBREED_ALLOWED="inbreedAllowed";
 	

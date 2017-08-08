@@ -82,6 +82,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.EmailAccount;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -735,6 +736,13 @@ public class StudyServiceImpl implements IStudyService {
 	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException {
 		return iStudyDao.getPersonAddressList(personId, address);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<EmailAccount> getPersonEmailAccountList(Long personId) throws ArkSystemException{
+		return iStudyDao.getPersonEmailAccountList(personId);
+	}
 
 	public void create(Address address) throws ArkSystemException {
 		iStudyDao.create(address);
@@ -770,6 +778,41 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
+	
+	public void create(EmailAccount emailAccount) throws ArkSystemException {
+		iStudyDao.create(emailAccount);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Email " + emailAccount.getId()+" was successfully created.");
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_ADDRESS);
+		ah.setEntityId(emailAccount.getId());
+		iArkCommonService.createAuditHistory(ah);
+	}
+	
+	public void update(EmailAccount emailAccount) throws ArkSystemException {
+		iStudyDao.update(emailAccount);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Email " + emailAccount.getId()+" was successfully updated.");
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_ADDRESS);
+		ah.setEntityId(emailAccount.getId());
+		iArkCommonService.createAuditHistory(ah);
+	}
+	
+	public void delete(EmailAccount emailAccount) throws ArkSystemException {
+		// Add business rules to check if this address is in use/active and referred elsewhere
+		iStudyDao.delete(emailAccount);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Email " + emailAccount.getName()+" was successfully deleted.");
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_ADDRESS);
+		ah.setEntityId(emailAccount.getId());
+		iArkCommonService.createAuditHistory(ah);
+	}
+	
 	public void create(Consent consent) throws ArkSystemException {
 		iStudyDao.create(consent);
 		createConsentHistory(consent);
@@ -2473,8 +2516,13 @@ public class StudyServiceImpl implements IStudyService {
 	public List<Phone> pageablePersonPhoneList(Long personId, Phone phoneCriteria, int first, int count) {
 		return iStudyDao.pageablePersonPhoneLst(personId,phoneCriteria, first, count);
 	}
+	
 	public List<Address> pageablePersonAddressList(Long personId, Address adressCriteria, int first, int count) {
 		return iStudyDao.pageablePersonAddressLst(personId,adressCriteria, first, count);
+	}
+	
+	public List<EmailAccount> pageablePersonEmailLst(Long personId,int first, int count){
+		return iStudyDao.pageablePersonEmailLst(personId, first, count);
 	}
 	
 	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId){

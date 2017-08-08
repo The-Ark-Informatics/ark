@@ -342,7 +342,8 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				containerForm.getModelObject().getAddress().setOtherState(null);
 			}
 //			otherStateInvalidError.setVisible(false);
-			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+//			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelContainer().get("addressDetailPanel").get("addressDetailsForm").get("addressDetailFormContainer").get(Constants.STATE_SELECTOR_WMC);
 			Label otherStateInvalidError = (Label) wmcStateSelector.get("address.otherStateInvalidError");
 			otherStateInvalidError.setVisible(false);
 			

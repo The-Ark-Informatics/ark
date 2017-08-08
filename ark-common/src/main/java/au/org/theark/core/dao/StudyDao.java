@@ -311,8 +311,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public List<EmailStatus> getAllEmailStatuses() {
 		Example example = Example.create(new EmailStatus());
 		Criteria criteria = getSession().createCriteria(EmailStatus.class).add(example);
+		criteria.addOrder(Order.asc("name"));
 		return criteria.list();
 	}
+	
+	public List<EmailAccountType> getEmailAccountTypes(){
+		Criteria criteria = getSession().createCriteria(EmailAccountType.class);
+		criteria.addOrder(Order.asc("name"));
+		return criteria.list();
+	}
+
 
 	/**
 	 * Look up the Link Subject Study for subjects linked to a study
@@ -5380,4 +5388,5 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("customFieldType", customFieldType);
 		return query.list();
 	}
+
 }

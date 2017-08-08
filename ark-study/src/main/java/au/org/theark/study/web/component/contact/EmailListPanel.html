@@ -1,0 +1,105 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">
+		&nbsp;
+	</div>
+	<div wicket:id="dataContainer">
+	<table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="10%">
+				<label for="emailAccountId">
+					<wicket:message	key="emailAccountId">
+						ID:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="50%">
+				<label for="emailAccountName">
+					<wicket:message	key="emailAccountName">
+					Email:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="emailAccountType">
+					<wicket:message	key="emailAccountType">
+						Email Type:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="emailAccountStatus">
+					<wicket:message	key="emailAccountStatus">
+						Email Status:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="emailPrimaryAccount">
+					<wicket:message	key="emailPrimaryAccount">
+						Prefered Email:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<!--	The Data Result Set -->
+		<tr wicket:id="emailList">
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="10%">
+				<span wicket:id="emailAccount.id">
+					100
+				</span>
+			</td>
+			<td width="50%">
+				<a href="#"wicket:id="emailAccount.name">
+					<span wicket:id="email">
+						92568489
+					</span>
+				</a>
+			</td>
+			<td width="15%">
+				<span wicket:id="emailAccount.accountType.name">
+					Work
+				</span>
+			</td>
+			<td width="15%">
+				<span wicket:id="emailAccount.accountStatus.name">
+					Work
+				</span>
+			</td>
+			<td width="10%">
+				<img wicket:id="emailAccount.primaryAccount"/>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">
+					&nbsp;
+				</td>
+				<td width="96%" colspan="5">
+					<span wicket:id="emailNavigator" class="a"></span>
+				</td>
+				<td width="2%">
+					&nbsp;
+				</td>
+			</tr>
+		</tfoot>
+		 <table width="0%" cellspacing="0">
+			<wicket:container wicket:id="toolbars"></wicket:container>
+		</table>
+	</table>
+	<table width="0%" cellspacing="0">
+	</table>
+	</div>
+</wicket:panel>

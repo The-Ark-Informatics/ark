@@ -113,6 +113,7 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		boolean enabled = !(isNew() && containerForm.getModelObject().getPhoneVo().getPhoneList().size() == 0);
 		preferredPhoneNumberChkBox.setEnabled(enabled);
 		historyButtonPanel.setVisible(!isNew());
+		this.containerForm.getModelObject().setObjectId("Phone");
 		super.onBeforeRender();
 	}
 

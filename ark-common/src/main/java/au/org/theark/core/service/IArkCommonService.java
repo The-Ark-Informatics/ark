@@ -28,6 +28,7 @@ import java.util.Set;
 
 import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.model.study.entity.*;
+
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -136,6 +137,8 @@ public interface IArkCommonService<T> {
 	public Collection<MaritalStatus> getMaritalStatus();
 
 	public Collection<EmailStatus> getAllEmailStatuses();
+	
+	public List<EmailAccountType> getEmailAccountTypes();
 
 	public List<Country> getCountries();
 

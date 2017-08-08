@@ -83,6 +83,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.EmailAccount;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -1050,6 +1051,23 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		// }
 		return personAddressList;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public List<EmailAccount> getPersonEmailAccountList(Long personId) throws ArkSystemException {
+
+		Criteria emailAccountCriteria = getSession().createCriteria(EmailAccount.class);
+
+		if (personId != null) {
+			emailAccountCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+	
+		List<EmailAccount> emailAccountList = emailAccountCriteria.list();
+		return emailAccountList;
+	}
+
 
 	public void create(Address address) throws ArkSystemException {
 		Session session = getSession();
@@ -1065,6 +1083,28 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		getSession().delete(address);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void create(EmailAccount emailAccount) throws ArkSystemException {
+		getSession().save(emailAccount);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void update(EmailAccount emailAccount) throws ArkSystemException {
+		getSession().update(emailAccount);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void delete(EmailAccount emailAccount) throws ArkSystemException {
+		getSession().delete(emailAccount);
+	}
+
 
 	public void create(OtherID otherID) throws ArkSystemException {
 		Session session = getSession();
@@ -2552,6 +2592,27 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		return personPhoneList;
 	}
+	
+	/**
+	 * Pageable person Email list.
+	 */
+	public List<EmailAccount> pageablePersonEmailLst(Long personId,int first, int count) {
+		Criteria criteria = getSession().createCriteria(EmailAccount.class);
+		if (personId != null) {
+			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<EmailAccount> emailAccountList = criteria.list();
+		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
+		if (emailAccountList.isEmpty()) {
+			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+			log.info(" personId " + personId + " had no Emails");
+		}
+		return emailAccountList;
+	}
+	
+	
 	/**
 	 * Genenal Phone search.
 	 * @param personId
