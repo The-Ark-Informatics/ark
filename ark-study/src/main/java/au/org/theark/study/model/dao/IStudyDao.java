@@ -49,6 +49,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailAccount;
+import au.org.theark.core.model.study.entity.EmailAccountType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -466,6 +467,8 @@ public interface IStudyDao {
 	public ConsentStatus getConsentStatusByName(String name);
 
 	public void setPreferredMailingAdressToFalse(Person person);
+	
+	public void setPreferredEmailAccountToFalse(Person person);
 
 	public AddressType getDefaultAddressType();
 	
@@ -476,6 +479,8 @@ public interface IStudyDao {
 	public PhoneStatus getDefaultPhoneStatus();
 
 	public EmailStatus getDefaultEmailStatus();
+	
+	public EmailAccountType getDefaultEmailAccountType();
 
 	public List<ConsentOption> getConsentOptions();
 

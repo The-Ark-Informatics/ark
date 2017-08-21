@@ -30,6 +30,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -641,6 +644,34 @@ public class SubjectUploadValidator {
 							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
 									+ Constants.DD_MM_YYYY.toLowerCase());
 							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+					
+					if (csvReader.getIndex("EMAIL") > 0) {
+						col = csvReader.getIndex("EMAIL");
+						cellValue = csvReader.get("EMAIL");
+						try {
+							if (cellValue != null && cellValue.length() > 0){
+								InternetAddress emailAddr = new InternetAddress(cellValue);
+						        emailAddr.validate();
+							} 
+						}
+						catch (AddressException ae) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid email format of: local@domain.com");
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+					
+					if (csvReader.getIndex("EMAIL_IS_PREFERRED") > 0) {
+						col = csvReader.getIndex("EMAIL_IS_PREFERRED");
+						cellValue = csvReader.get("EMAIL_IS_PREFERRED");
+						String prefer = cellValue;
+						if (prefer != null && !prefer.isEmpty()) {// if null or empty just ignore...if invalid flag
+							if (prefer != null && !DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)) {
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue
+										+ " is not a valid boolean value. Please use true or false for this column.");
+								errorCells.add(new ArkGridCell(col, row));
+							}
 						}
 					}
 					

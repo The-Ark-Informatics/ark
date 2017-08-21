@@ -55,6 +55,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailAccount;
+import au.org.theark.core.model.study.entity.EmailAccountType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -436,6 +437,8 @@ public interface IStudyService {
 
 	public void setPreferredMailingAdressToFalse(Person person);
 	
+	public void setPreferredEmailAccountToFalse(Person person);
+	
 	public void processBatch(List<LinkSubjectStudy> subjectsToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate);
 
 	public void processFieldsBatch(List<? extends ICustomFieldData> fieldDataList, Study study, List<? extends ICustomFieldData> fieldDataToInsert);
@@ -475,6 +478,8 @@ public interface IStudyService {
 	public PhoneStatus getDefaultPhoneStatus();
 
 	public EmailStatus getDefaultEmailStatus();
+	
+	public EmailAccountType getDefaultEmailAccountType();
 
 	public List<ConsentOption> getConsentOptions();
 

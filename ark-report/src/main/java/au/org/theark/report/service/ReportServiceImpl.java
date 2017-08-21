@@ -203,9 +203,9 @@ public class ReportServiceImpl implements IReportService {
 				homePhone.append(aPhone.getPhoneNumber());
 			}
 			String email = "-NA-";
-			if (p.getPreferredEmail() != null) {
-				email = p.getPreferredEmail();
-			}
+//			if (p.getPreferredEmail() != null) {
+//				email = p.getPreferredEmail();
+//			}
 			String sex = p.getGenderType().getName().substring(0, 1);
 			Date consentDate = subject.getConsentDate();
 			consentDetailsList.add(new ConsentDetailsDataRow(subjectUID, otherID_Source, otherID, consentStatus, subjectStatus, title, firstName, lastName, streetAddress, suburb, state, postcode, country, workPhone.toString(), homePhone.toString(),
@@ -350,9 +350,9 @@ public class ReportServiceImpl implements IReportService {
 			//Address a = reportDao.getBestAddress(subject);
 			Address a = reportDao.getBestAddressWithOutNewQueries(subject);
 /*  */
-			if (p.getPreferredEmail() != null) {
-				email = p.getPreferredEmail();
-			}
+//			if (p.getPreferredEmail() != null) {
+//				email = p.getPreferredEmail();
+//			}
 			String sex = p.getGenderType().getName().substring(0, 1);
 			consentRow.setSex(sex); 
 

@@ -84,6 +84,7 @@ import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailAccount;
+import au.org.theark.core.model.study.entity.EmailAccountType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -2245,9 +2246,20 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("person", person);
 		query.executeUpdate();
 	}
+	
+	public void setPreferredEmailAccountToFalse(Person person) {
+		String queryString = "UPDATE EmailAccount SET primaryAccount = 0 WHERE person = :person";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("person", person);
+		query.executeUpdate();
+	}
 
 	public EmailStatus getDefaultEmailStatus() {
 		return (EmailStatus) (getSession().get(EmailStatus.class, 0L));// TODO hardcode removal
+	}
+	
+	public EmailAccountType getDefaultEmailAccountType() {
+		return (EmailAccountType) (getSession().get(EmailAccountType.class, 1L));// TODO hardcode removal
 	}
 
 	public List<ConsentOption> getConsentOptions() {

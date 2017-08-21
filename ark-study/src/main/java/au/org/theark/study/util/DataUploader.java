@@ -58,6 +58,8 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.EmailAccount;
+import au.org.theark.core.model.study.entity.EmailAccountType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -198,7 +200,8 @@ public class DataUploader {
 			// much better to call this once than each one n times in the for loop...plus each ones default is n times
 			// should save 200,000-250,000 selects for a 17K insert. may still wish to evaluate whats best here
 			Collection<MaritalStatus> maritalStatiiPossible = iArkCommonService.getMaritalStatus();
-			Collection<EmailStatus> emailStatiiPossible = iArkCommonService.getAllEmailStatuses();
+			Collection<EmailStatus> emailStatusPossible = iArkCommonService.getAllEmailStatuses();
+			Collection<EmailAccountType> emailTypesPossible = iArkCommonService.getEmailAccountTypes();
 			Collection<SubjectStatus> subjectStatiiPossible = iArkCommonService.getSubjectStatus();
 			Collection<GenderType> genderTypesPossible = iArkCommonService.getGenderTypes();
 			Collection<TitleType> titleTypesPossible = iArkCommonService.getTitleType();
@@ -251,6 +254,7 @@ public class DataUploader {
 			VitalStatus defaultVitalStatus = iStudyService.getDefaultVitalStatus();
 			MaritalStatus defaultMaritalStatus = iStudyService.getDefaultMaritalStatus();
 			EmailStatus defaultEmailStatus = iStudyService.getDefaultEmailStatus();
+			EmailAccountType defaultEmailType = iStudyService.getDefaultEmailAccountType();
 			ConsentOption concentOptionOfYes = iStudyService.getConsentOptionForBoolean(true);// sounds a lot like boolean blah = true????
 			ConsentStatus consentStatusOfConsented = iStudyService.getConsentStatusByName("Consented");
 			ConsentType consentTypeOfElectronic = iStudyService.getConsentTypeByName("Electronic");
@@ -285,10 +289,6 @@ public class DataUploader {
 			int lastNameIndex = csvReader.getIndex("LAST_NAME");
 			int previousLastNameIndex = csvReader.getIndex("PREVIOUS_LAST_NAME");
 			int preferredNameIndex = csvReader.getIndex("PREFERRED_NAME");
-			int preferredEmailIndex = csvReader.getIndex("EMAIL");
-			int preferredEmailStatusIndex = csvReader.getIndex("EMAIL_STATUS");
-			int otherEmailIndex = csvReader.getIndex("OTHER_EMAIL");
-			int otherEmailStatusIndex = csvReader.getIndex("OTHER_EMAIL_STATUS");
 			int heardAboutStudyIndex = csvReader.getIndex("HEARD_ABOUT_STUDY");
 			int commentsIndex = csvReader.getIndex("COMMENTS");
 			int titleIndex = csvReader.getIndex("TITLE");
@@ -319,6 +319,11 @@ public class DataUploader {
 			int phoneSilentIndex = csvReader.getIndex("PHONE_SILENT");
 			int phoneIsPreferredIndex = csvReader.getIndex("PHONE_IS_PREFERRED");
 			int familyIdIndex = csvReader.getIndex("FAMILY_ID");
+			
+			int emailIndex = csvReader.getIndex("EMAIL");
+			int emailTypeIndex = csvReader.getIndex("EMAIL_TYPE");
+			int emailStatusIndex = csvReader.getIndex("EMAIL_STATUS");
+			int emailIsPreferredEmailIndex = csvReader.getIndex("EMAIL_IS_PREFERRED");
 
 
 			// if(PERSON_CONTACT_METHOD is in headers, use it,
@@ -504,44 +509,6 @@ public class DataUploader {
 					}
 					if (person.getVitalStatus() == null) {
 						person.setVitalStatus(defaultVitalStatus);
-					}
-
-					if (preferredEmailIndex > 0) {
-						person.setPreferredEmail(stringLineArray[preferredEmailIndex]);
-					}
-
-					if (otherEmailIndex > 0) {
-						person.setOtherEmail(stringLineArray[otherEmailIndex]);
-					}
-
-					if (preferredEmailStatusIndex > 0) {
-						String preferredEmailStatusStr = (stringLineArray[preferredEmailStatusIndex]);
-						for (EmailStatus possibleEmailStat : emailStatiiPossible) {
-							if (possibleEmailStat.getName().equalsIgnoreCase(preferredEmailStatusStr)) {
-								person.setPreferredEmailStatus(possibleEmailStat);
-							}
-						}
-						if (person.getPreferredEmailStatus() == null || StringUtils.isBlank(person.getPreferredEmailStatus().getName())) {
-							person.setPreferredEmailStatus(defaultEmailStatus);
-						}
-					}
-					if (person.getPreferredEmailStatus() == null) {
-						person.setPreferredEmailStatus(defaultEmailStatus);
-					}
-
-					if (otherEmailStatusIndex > 0) {
-						String OtherEmailStatusStr = (stringLineArray[otherEmailStatusIndex]);
-						for (EmailStatus possibleEmailStat : emailStatiiPossible) {
-							if (possibleEmailStat.getName().equalsIgnoreCase(OtherEmailStatusStr)) {
-								person.setOtherEmailStatus(possibleEmailStat);
-							}
-						}
-						if (person.getOtherEmailStatus() == null || StringUtils.isBlank(person.getOtherEmailStatus().getName())) {
-							person.setOtherEmailStatus(defaultEmailStatus);
-						}
-					}
-					if (person.getOtherEmailStatus() == null) {
-						person.setOtherEmailStatus(defaultEmailStatus);
 					}
 
 					if (titleIndex > 0) {
@@ -940,6 +907,85 @@ public class DataUploader {
 							}
 						}
 					}
+					
+					if(emailIndex > 0){
+						boolean updateEmails = false;
+						boolean usingDefaultType = false;
+						boolean usingDefaultStatus = false;
+						String emailString = stringLineArray[emailIndex];
+
+						if (emailString == null || StringUtils.isBlank(emailString)) {
+							// then lets just jump out as there is no phone to validate. lay down to user that they must have data if they want an update
+						}
+						else {
+							EmailAccount emailAccountToAttachToPerson = null;
+							if (thisSubjectAlreadyExists) {
+								String typeString = null;
+								String statusString = null;
+
+								if (emailTypeIndex > 0) {
+									typeString = stringLineArray[emailTypeIndex];
+									if (typeString == null || typeString.isEmpty()) {
+										typeString = defaultEmailType.getName();
+										usingDefaultType = true;
+									}
+								}
+								if (emailStatusIndex > 0) {
+									statusString = stringLineArray[emailStatusIndex];
+									if (statusString == null || statusString.isEmpty()) {
+										statusString = defaultEmailStatus.getName();
+										usingDefaultStatus = true;
+									}
+								}
+								for (EmailAccount email : person.getEmailAccounts()) {
+									if (email.getEmailStatus().getName().equalsIgnoreCase(statusString) && email.getEmailAccountType().getName().equalsIgnoreCase(typeString)) {
+										emailAccountToAttachToPerson = email;
+										updateEmails = true;
+									}
+								}
+							}
+							if (emailAccountToAttachToPerson == null) {
+								emailAccountToAttachToPerson = new EmailAccount();
+							}
+							
+							EmailAccountType type = findEmailAccountTypeOrSetDefault((List<EmailAccountType>)emailTypesPossible, defaultEmailType, stringLineArray[emailTypeIndex]);
+							EmailStatus status = findEmailStatusOrSetDefault((List<EmailStatus>)emailStatusPossible, defaultEmailStatus, stringLineArray[emailStatusIndex]);
+							
+							String email = stringLineArray[emailIndex];
+							String emailIsPreffered = stringLineArray[emailIsPreferredEmailIndex];
+							
+							emailAccountToAttachToPerson.setName(email);
+							emailAccountToAttachToPerson.setEmailAccountType(type);
+							emailAccountToAttachToPerson.setEmailStatus(status);
+							
+							if (DataConversionAndManipulationHelper.isSomethingLikeABoolean(emailIsPreffered)) {
+								if (DataConversionAndManipulationHelper.isSomethingLikeTrue(emailIsPreffered)) {
+									emailAccountToAttachToPerson.setPrimaryAccount(true);
+								}
+								else {
+									emailAccountToAttachToPerson.setPrimaryAccount(false);
+								}
+							}
+							
+							if (usingDefaultStatus && usingDefaultType) {
+								uploadReport.append("Using the default status '" + defaultEmailStatus.getName() + "' and the default type '" + defaultEmailType.getName() + " for row " + rowCount
+										+ "\n");
+							}
+							else if (usingDefaultType) {
+								uploadReport.append("Using the default type '" + defaultEmailType.getName() + "' for row " + rowCount + "\n");
+							}
+							else if (usingDefaultStatus) {
+								uploadReport.append("Using the default status '" + defaultEmailStatus.getName() + " for row " + rowCount + "\n");
+							}
+							
+							if (!updateEmails) {
+								// TODO check this works in all cases
+								emailAccountToAttachToPerson.setPerson(person);
+								person.getEmailAccounts().add(emailAccountToAttachToPerson);
+							}
+						}
+
+					}
 
 					/*
 					 * 
@@ -1162,6 +1208,28 @@ public class DataUploader {
 			}
 		}
 		return defaultPhoneType;
+	}
+	
+	private EmailStatus findEmailStatusOrSetDefault(List<EmailStatus> statusAlreadyExisting, EmailStatus defaultEmailStatus, String stringRepresentingTheStatusWeWant) {
+		if (stringRepresentingTheStatusWeWant != null && !StringUtils.isBlank(stringRepresentingTheStatusWeWant)) {
+			for (EmailStatus nextStatus : statusAlreadyExisting) {
+				if (nextStatus.getName().equalsIgnoreCase(stringRepresentingTheStatusWeWant)) {
+					return nextStatus;
+				}
+			}
+		}
+		return defaultEmailStatus;
+	}
+
+	private EmailAccountType findEmailAccountTypeOrSetDefault(List<EmailAccountType> typesAlreadyExisting, EmailAccountType defaultEmailAccountType, String stringRepresentingTheTypeWeWant) {
+		if (stringRepresentingTheTypeWeWant != null && !StringUtils.isBlank(stringRepresentingTheTypeWeWant)) {
+			for (EmailAccountType nextType : typesAlreadyExisting) {
+				if (nextType.getName().equalsIgnoreCase(stringRepresentingTheTypeWeWant)) {
+					return nextType;
+				}
+			}
+		}
+		return defaultEmailAccountType;
 	}
 
 	/**

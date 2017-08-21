@@ -30,6 +30,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.validator.EmailValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
+import au.org.theark.core.vo.EmailAccountVo;
 import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -89,7 +90,6 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		this.emailStatusChoice = new DropDownChoice<EmailStatus>("emailAccountVo.emailAccount.emailStatus", emailStatusList, emailStatusRenderer);
 		
 		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
-
 		addDetailFormComponents();
 		
 		attachValidators();
@@ -117,8 +117,12 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		// Get the person and set it on the AddressVO.
 		try {
 			Person person = iStudyService.getPerson(personSessionId);
-			
 			containerForm.getModelObject().getEmailAccountVo().getEmailAccount().setPerson(person);
+			
+			if(containerForm.getModelObject().getEmailAccountVo().getEmailAccount().getPrimaryAccount()){
+				iStudyService.setPreferredEmailAccountToFalse(person);
+			}
+			
 			if (containerForm.getModelObject().getEmailAccountVo().getEmailAccount().getId() == null) {
 				iStudyService.create(containerForm.getModelObject().getEmailAccountVo().getEmailAccount());
 				this.saveInformation();

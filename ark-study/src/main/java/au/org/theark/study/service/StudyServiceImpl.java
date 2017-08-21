@@ -83,6 +83,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.EmailAccount;
+import au.org.theark.core.model.study.entity.EmailAccountType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -1747,6 +1748,10 @@ public class StudyServiceImpl implements IStudyService {
 	public void setPreferredMailingAdressToFalse(Person person) {
 		iStudyDao.setPreferredMailingAdressToFalse(person);
 	}
+	
+	public void setPreferredEmailAccountToFalse(Person person) {
+		iStudyDao.setPreferredEmailAccountToFalse(person);
+	}
 
 	public MaritalStatus getDefaultMaritalStatus() {
 		return iStudyDao.getDefaultMaritalStatus();
@@ -1790,6 +1795,10 @@ public class StudyServiceImpl implements IStudyService {
 
 	public EmailStatus getDefaultEmailStatus() {
 		return iStudyDao.getDefaultEmailStatus();
+	}
+	
+	public EmailAccountType getDefaultEmailAccountType() {
+		return iStudyDao.getDefaultEmailAccountType();
 	}
 
 	public List<ConsentOption> getConsentOptions() {
