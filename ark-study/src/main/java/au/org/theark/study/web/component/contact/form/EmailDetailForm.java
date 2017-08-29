@@ -89,7 +89,10 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		ChoiceRenderer<EmailStatus> emailStatusRenderer = new ChoiceRenderer<EmailStatus>(Constants.NAME, Constants.ID);
 		this.emailStatusChoice = new DropDownChoice<EmailStatus>("emailAccountVo.emailAccount.emailStatus", emailStatusList, emailStatusRenderer);
 		
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
+		CompoundPropertyModel<EmailAccountVo> auditModel = new CompoundPropertyModel<EmailAccountVo>(containerForm.getModelObject().getEmailAccountVo());
+		Form auditForm= new Form<EmailAccountVo>("auditForm", auditModel);
+//		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
+		historyButtonPanel = new HistoryButtonPanel(auditForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		addDetailFormComponents();
 		
 		attachValidators();
