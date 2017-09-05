@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -23,11 +21,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.EmailAccountType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.PhoneStatus;
-import au.org.theark.core.model.study.entity.State;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.validator.EmailValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
 import au.org.theark.core.vo.EmailAccountVo;
@@ -71,12 +65,14 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		// Disable preferred phone for new phone and if no others exist
 		boolean enabled = !(isNew() && containerForm.getModelObject().getEmailAccountVo().getEmailAccountList().size() == 0);
 		preferredEmailChkBox.setEnabled(enabled);
-		historyButtonPanel.setVisible(!isNew());
+		deleteButton.setEnabled(!isNew());
+		addOrReplaceHistoryPanel(!isNew());
 		this.containerForm.getModelObject().setObjectId(containerForm.getModelObject().getEmailAccountVo().getArkVoName());
 		super.onBeforeRender();
 	}
 	
 	public void initialiseDetailForm() {
+		this.setOutputMarkupId(true);
 		this.emailIdTxtFld = new TextField<String>("emailAccountVo.emailAccount.id");
 		this.emailTxtFld = new TextField<String>("emailAccountVo.emailAccount.name");
 		this.preferredEmailChkBox = new CheckBox("emailAccountVo.emailAccount.primaryAccount");
@@ -89,13 +85,19 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		ChoiceRenderer<EmailStatus> emailStatusRenderer = new ChoiceRenderer<EmailStatus>(Constants.NAME, Constants.ID);
 		this.emailStatusChoice = new DropDownChoice<EmailStatus>("emailAccountVo.emailAccount.emailStatus", emailStatusList, emailStatusRenderer);
 		
+		addOrReplaceHistoryPanel(!isNew());
+		addDetailFormComponents();
+		attachValidators();
+	}
+	
+	public void addOrReplaceHistoryPanel(boolean visible){
 		CompoundPropertyModel<EmailAccountVo> auditModel = new CompoundPropertyModel<EmailAccountVo>(containerForm.getModelObject().getEmailAccountVo());
 		Form auditForm= new Form<EmailAccountVo>("auditForm", auditModel);
-//		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		historyButtonPanel = new HistoryButtonPanel(auditForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
-		addDetailFormComponents();
-		
-		attachValidators();
+		historyButtonPanel.setOutputMarkupId(true);
+		historyButtonPanel.setOutputMarkupPlaceholderTag(true);
+		historyButtonPanel.setVisible(visible);
+		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyButtonPanel);
 	}
 
 	@Override
@@ -136,7 +138,7 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 				this.updateInformation();
 			}
 
-			
+			addOrReplaceHistoryPanel(!isNew());
 			processErrors(target);
 			onSavePostProcess(target);
 			// Invoke backend to persist the AddressVO
@@ -192,7 +194,7 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(emailStatusChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(preferredEmailChkBox);
 		
-		arkCrudContainerVO.getEditButtonContainer().add(historyButtonPanel);
+//		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyButtonPanel);
 		
 	}
 

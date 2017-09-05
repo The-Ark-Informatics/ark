@@ -115,7 +115,7 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 * @return
 	 */
 	private void initialiseSearchAddressResults() {
-		 addressResultPanel = new AddressListPanel("addressResults", arkCrudContainerVO, containerForm);
+		 addressResultPanel = new AddressListPanel("addressResults", arkCrudContainerVO, containerForm, feedBackPanel);
 		 addressResultPanel.setOutputMarkupId(true);
 		 arkCrudContainerVO.getSearchResultPanelContainer().add(addressResultPanel);
 	}
@@ -125,13 +125,13 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 * @return
 	 */
 	private void initialiseSearchPhoneResults() {
-		phoneResultPanel = new PhoneListPanel("phoneResults", arkCrudContainerVO, containerForm);
+		phoneResultPanel = new PhoneListPanel("phoneResults", arkCrudContainerVO, containerForm, feedBackPanel);
 		phoneResultPanel.setOutputMarkupId(true);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(phoneResultPanel);
 	}
 	
 	private void initialiseSearchEmailResults() {
-		emailResultPanel = new EmailListPanel("emailResults", arkCrudContainerVO, containerForm);
+		emailResultPanel = new EmailListPanel("emailResults", arkCrudContainerVO, containerForm, feedBackPanel);
 		emailResultPanel.setOutputMarkupId(true);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(emailResultPanel);
 	}

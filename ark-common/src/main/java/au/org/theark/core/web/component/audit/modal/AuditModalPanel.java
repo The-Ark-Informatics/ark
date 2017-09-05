@@ -495,12 +495,16 @@ public class AuditModalPanel extends Panel implements Serializable {
 			if(elements.length > 1){
 				componentId= elements[elements.length - 2] +"."+elements[elements.length - 1];
 			}
-			
 			if(componentId.contains(".") && StringUtils.countMatches(componentId, ".")==1){
 				for(String s : componentId.split(Pattern.quote("."))) {
 					try { 
 						PropertyUtilsBean propertyBean = new PropertyUtilsBean();
 						Object property = propertyBean.getNestedProperty(current, s);
+						
+						//TODO Should remove after ARK-1450 testing
+						log.info("------------------------------------------- "+s);
+						log.info("------------------------------------------- "+current.toString());
+						
 						//if(property != null && !reader.isEntityClassAudited(property.getClass())) {
 						if(property != null ){
 							Object primaryKey = iAuditService.getEntityPrimaryKey(current);
@@ -524,6 +528,8 @@ public class AuditModalPanel extends Panel implements Serializable {
 									revisionEntities.add(new AuditRow(ure, revProperty, type, fieldName));
 								}
 							}
+						}else{
+							log.error("----------------------------- Property value not specified ------------------------" + s);
 						}
 						//property becomes a current entity.
 						current = property;
@@ -671,5 +677,5 @@ public class AuditModalPanel extends Panel implements Serializable {
 	public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
 		this.feedbackPanel = feedbackPanel;
 	}
-
+	
 }

@@ -38,6 +38,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -55,8 +56,10 @@ import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.DateFromToValidator;
+import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
+import au.org.theark.core.vo.EmailAccountVo;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
@@ -121,12 +124,14 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		// Disable preferred mailing for new address and no others exist
 		boolean enabled = !(isNew() && containerForm.getModelObject().getAddressVo().getAddresses().size() == 0);
 		preferredMailingAddressChkBox.setEnabled(enabled);
-		historyButtonPanel.setVisible(!isNew());
 		this.containerForm.getModelObject().setObjectId("Address");
+		deleteButton.setEnabled(!isNew());
+		addOrReplaceHistoryPanel(!isNew());
 		super.onBeforeRender();
 	}
 
 	public void initialiseDetailForm() {
+		this.setOutputMarkupId(true);
 		streetAddressTxtFld = new TextField<String>("addressVo.address.streetAddress");
 		streetAddressTxtFld.add(new ArkDefaultFormFocusBehavior());
 		cityTxtFld = new TextField<String>("addressVo.address.city");
@@ -135,8 +140,9 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		otherState = new TextField<String>("addressVo.address.otherState");
 		sourceTxtFld = new TextField<String>("addressVo.address.source");
 		addressLineOneTxtFld = new TextField<String>("addressVo.address.addressLineOne");
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		
+		addOrReplaceHistoryPanel(!isNew());
+
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();
 		initialiseStateSelector();
@@ -146,6 +152,16 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		initialiseDatePicker();
 		attachValidators();
 		addDetailFormComponents();
+	}
+	
+	public void addOrReplaceHistoryPanel(boolean visible){
+		CompoundPropertyModel<AddressVO> auditModel = new CompoundPropertyModel<AddressVO>(containerForm.getModelObject().getAddressVo());
+		Form auditForm= new Form<AddressVO>("auditForm", auditModel);
+		historyButtonPanel = new HistoryButtonPanel(auditForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
+		historyButtonPanel.setOutputMarkupId(true);
+		historyButtonPanel.setOutputMarkupPlaceholderTag(true);
+		historyButtonPanel.setVisible(visible);
+		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyButtonPanel);
 	}
 
 	public void addDetailFormComponents() {
@@ -163,7 +179,6 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(addressLineOneTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
-		arkCrudContainerVO.getEditButtonContainer().add(historyButtonPanel);
 		this.add(new DateFromToValidator(dateValidFrom, dateValidTo,"Valid from date","Valid to date"));
 	}
 
@@ -417,6 +432,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 			}
 			this.info(feedBackMessageStr.toString());
 			processErrors(target);
+			addOrReplaceHistoryPanel(!isNew());
 			onSavePostProcess(target);
 			// Invoke backend to persist the AddressVO
 		}
