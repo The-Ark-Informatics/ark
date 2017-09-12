@@ -97,14 +97,17 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	protected WebMarkupContainer initialiseDetailPanel() {
 		phoneDetailPanel = new PhoneDetailPanel("phoneDetailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		phoneDetailPanel.setOutputMarkupId(true);
+		phoneDetailPanel.setOutputMarkupPlaceholderTag(true);
 		phoneDetailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(phoneDetailPanel);
 		addressDetailPanel = new AddressDetailPanel("addressDetailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		addressDetailPanel.setOutputMarkupId(true);
+		addressDetailPanel.setOutputMarkupPlaceholderTag(true);
 		addressDetailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(addressDetailPanel);
 		emailDetailPanel = new EmailDetailPanel("emailDetailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		emailDetailPanel.setOutputMarkupId(true);
+		emailDetailPanel.setOutputMarkupPlaceholderTag(true);
 		emailDetailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(emailDetailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();

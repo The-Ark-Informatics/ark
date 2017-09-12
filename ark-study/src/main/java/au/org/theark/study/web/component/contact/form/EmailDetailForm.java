@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -26,6 +29,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
 import au.org.theark.core.vo.EmailAccountVo;
 import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
+import au.org.theark.core.web.component.audit.modal.AuditModalPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -47,6 +51,9 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 	private ArkCrudContainerVO 				arkCrudContainerVO;
 	private HistoryButtonPanel              historyButtonPanel;
 	
+	private ModalWindow modalWindow;
+	private AjaxButton historyButton;
+	
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
@@ -66,7 +73,11 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		boolean enabled = !(isNew() && containerForm.getModelObject().getEmailAccountVo().getEmailAccountList().size() == 0);
 		preferredEmailChkBox.setEnabled(enabled);
 		deleteButton.setEnabled(!isNew());
-		addOrReplaceHistoryPanel(!isNew());
+//		addOrReplaceHistoryPanel(!isNew());
+//		System.out.println("----------------- History button ----------------"+(!isNew()));
+//		historyButtonPanel.get("historyButton").setEnabled(!isNew());
+//		historyButtonPanel.setEnabled(!isNew());
+		historyButton.setVisible(!isNew());
 		this.containerForm.getModelObject().setObjectId(containerForm.getModelObject().getEmailAccountVo().getArkVoName());
 		super.onBeforeRender();
 	}
@@ -85,9 +96,35 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		ChoiceRenderer<EmailStatus> emailStatusRenderer = new ChoiceRenderer<EmailStatus>(Constants.NAME, Constants.ID);
 		this.emailStatusChoice = new DropDownChoice<EmailStatus>("emailAccountVo.emailAccount.emailStatus", emailStatusList, emailStatusRenderer);
 		
-		addOrReplaceHistoryPanel(!isNew());
+//		addOrReplaceHistoryPanel(!isNew());
+		initializeHistoryButton();
 		addDetailFormComponents();
 		attachValidators();
+	}
+	
+	private void initializeHistoryButton(){
+		modalWindow = new ModalWindow("historyModalWindow");
+		historyButton = new AjaxButton("historyButton") {
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				AuditModalPanel historyPanel = new AuditModalPanel("content", containerForm.getModelObject().getEmailAccountVo(), (WebMarkupContainer)arkCrudContainerVO.getDetailPanelContainer().get("emailDetailPanel").get("emailDetailsForm"));
+				modalWindow.setTitle("Entity History");
+				modalWindow.setAutoSize(true);
+				modalWindow.setMinimalWidth(950);
+				modalWindow.setContent(historyPanel);
+				target.add(modalWindow);
+				modalWindow.show(target);
+				target.add(historyPanel.getFeedbackPanel());
+				super.onSubmit(target, form);
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedBackPanel);
+				super.onError(target, form);
+			}
+		};
+		historyButton.setOutputMarkupId(true);
 	}
 	
 	public void addOrReplaceHistoryPanel(boolean visible){
@@ -96,7 +133,7 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		historyButtonPanel = new HistoryButtonPanel(auditForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		historyButtonPanel.setOutputMarkupId(true);
 		historyButtonPanel.setOutputMarkupPlaceholderTag(true);
-		historyButtonPanel.setVisible(visible);
+//		historyButtonPanel.setVisible(visible);
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyButtonPanel);
 	}
 
@@ -138,7 +175,7 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 				this.updateInformation();
 			}
 
-			addOrReplaceHistoryPanel(!isNew());
+//			addOrReplaceHistoryPanel(!isNew());
 			processErrors(target);
 			onSavePostProcess(target);
 			// Invoke backend to persist the AddressVO
@@ -193,6 +230,9 @@ public class EmailDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(emailTypeChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(emailStatusChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(preferredEmailChkBox);
+		
+		arkCrudContainerVO.getEditButtonContainer().add(historyButton);
+		arkCrudContainerVO.getEditButtonContainer().add(modalWindow);
 		
 //		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyButtonPanel);
 		

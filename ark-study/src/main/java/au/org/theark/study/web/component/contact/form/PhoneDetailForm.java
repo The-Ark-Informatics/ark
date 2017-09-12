@@ -23,8 +23,11 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -32,7 +35,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -52,10 +54,9 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
-import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
+import au.org.theark.core.web.component.audit.modal.AuditModalPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -65,7 +66,7 @@ import au.org.theark.study.web.Constants;
  * @author cellis
  * 
  */
-public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
+public class PhoneDetailForm extends AbstractDetailForm<ContactVO>{
 
 
 	private static final long				serialVersionUID	= -5784184438113767249L;
@@ -92,8 +93,10 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 	
 	private DateTextField 					dateValidFrom;
 	private DateTextField 					dateValidTo;
-	private HistoryButtonPanel historyButtonPanel;
-
+	
+	private ModalWindow modalWindow;
+	private AjaxButton historyButton;
+	
 	/**
 	 * /**
 	 * 
@@ -115,7 +118,7 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		boolean enabled = !(isNew() && containerForm.getModelObject().getPhoneVo().getPhoneList().size() == 0);
 		preferredPhoneNumberChkBox.setEnabled(enabled);
 		deleteButton.setEnabled(!isNew());
-		addOrReplaceHistoryPanel(!isNew());
+		historyButton.setVisible(!isNew());
 		super.onBeforeRender();
 	}
 
@@ -156,25 +159,36 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		ChoiceRenderer<PhoneType> defaultChoiceRenderer = new ChoiceRenderer<PhoneType>(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice<PhoneType>("phoneVo.phone.phoneType", phoneTypeList, defaultChoiceRenderer);
 		phoneTypeChoice.add(new ArkDefaultFormFocusBehavior());
-//		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
-//		CompoundPropertyModel<PhoneVO> auditModel = new CompoundPropertyModel<PhoneVO>(containerForm.getModelObject().getPhoneVo());
-//		Form auditForm= new Form<PhoneVO>("auditForm", auditModel);
-//		historyButtonPanel = new HistoryButtonPanel(auditForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
-		addOrReplaceHistoryPanel(!isNew());
+		initializeHistoryButton();
 		addDetailFormComponents();
 		attachValidators();
 	}
 	
-	public void addOrReplaceHistoryPanel(boolean visible){
-		CompoundPropertyModel<PhoneVO> auditModel = new CompoundPropertyModel<PhoneVO>(containerForm.getModelObject().getPhoneVo());
-		Form auditForm= new Form<PhoneVO>("auditForm", auditModel);
-		historyButtonPanel = new HistoryButtonPanel(auditForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
-		historyButtonPanel.setOutputMarkupId(true);
-		historyButtonPanel.setOutputMarkupPlaceholderTag(true);
-		historyButtonPanel.setVisibilityAllowed(visible);
-		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyButtonPanel);
+	private void initializeHistoryButton(){
+		modalWindow = new ModalWindow("historyModalWindow");
+		historyButton = new AjaxButton("historyButton") {
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				AuditModalPanel historyPanel = new AuditModalPanel("content", containerForm.getModelObject().getPhoneVo(), (WebMarkupContainer)arkCrudContainerVO.getDetailPanelContainer().get("phoneDetailPanel").get("phoneDetailsForm"));
+				modalWindow.setTitle("Entity History");
+				modalWindow.setAutoSize(true);
+				modalWindow.setMinimalWidth(950);
+				modalWindow.setContent(historyPanel);
+				target.add(modalWindow);
+				modalWindow.show(target);
+				target.add(historyPanel.getFeedbackPanel());
+				super.onSubmit(target, form);
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedBackPanel);
+				super.onError(target, form);
+			}
+		};
+		historyButton.setOutputMarkupId(true);
 	}
-
+	
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneIdTxtFld.setEnabled(false));
 		arkCrudContainerVO.getDetailPanelFormContainer().add(areaCodeTxtFld);
@@ -188,7 +202,8 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(source);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
-//		arkCrudContainerVO.getEditButtonContainer().addOrReplace(historyButtonPanel);
+		arkCrudContainerVO.getEditButtonContainer().add(historyButton);
+		arkCrudContainerVO.getEditButtonContainer().add(modalWindow);
 		this.add(new DateFromToValidator(dateValidFrom, dateValidTo,"Valid from date","Valid to date"));
 	}
 
@@ -286,7 +301,6 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 				}else if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)) {
 					// TODO: Contact Interface implementation
 				}
-				addOrReplaceHistoryPanel(!isNew());
 				processErrors(target);
 				onSavePostProcess(target);
 			//}
@@ -329,6 +343,5 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 			return false;
 		}
 	}
-
 	
 }

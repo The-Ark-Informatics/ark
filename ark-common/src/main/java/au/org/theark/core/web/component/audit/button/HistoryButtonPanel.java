@@ -2,6 +2,7 @@ package au.org.theark.core.web.component.audit.button;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
@@ -40,10 +41,12 @@ public class HistoryButtonPanel extends Panel{
 				super.onError(target, form);
 			}
 		};
+		historyButton.setOutputMarkupId(true);
 		
 		this.add(historyButton);
 		this.add(modalWindow);
 		
 		parentContainer.addOrReplace(this);
-	}
+	}	
+	
 }
