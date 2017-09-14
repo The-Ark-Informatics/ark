@@ -25,9 +25,11 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -59,7 +61,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
+import au.org.theark.core.web.component.audit.modal.AuditModalPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -101,7 +103,9 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	private ArkCrudContainerVO 				arkCrudContainerVO;
 	private DateTextField 					dateValidFrom;
 	private DateTextField 					dateValidTo;
-	private HistoryButtonPanel historyButtonPanel;
+	
+	private ModalWindow modalWindow;
+	private AjaxButton historyButton;
 
 	/**
 	 * 
@@ -121,12 +125,14 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		// Disable preferred mailing for new address and no others exist
 		boolean enabled = !(isNew() && containerForm.getModelObject().getAddressVo().getAddresses().size() == 0);
 		preferredMailingAddressChkBox.setEnabled(enabled);
-		historyButtonPanel.setVisible(!isNew());
 		this.containerForm.getModelObject().setObjectId("Address");
+		deleteButton.setEnabled(!isNew());
+		historyButton.setVisible(!isNew());
 		super.onBeforeRender();
 	}
 
 	public void initialiseDetailForm() {
+		this.setOutputMarkupId(true);
 		streetAddressTxtFld = new TextField<String>("addressVo.address.streetAddress");
 		streetAddressTxtFld.add(new ArkDefaultFormFocusBehavior());
 		cityTxtFld = new TextField<String>("addressVo.address.city");
@@ -135,8 +141,8 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		otherState = new TextField<String>("addressVo.address.otherState");
 		sourceTxtFld = new TextField<String>("addressVo.address.source");
 		addressLineOneTxtFld = new TextField<String>("addressVo.address.addressLineOne");
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 		
+		initializeHistoryButton();
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();
 		initialiseStateSelector();
@@ -147,7 +153,32 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		attachValidators();
 		addDetailFormComponents();
 	}
-
+	
+	private void initializeHistoryButton(){
+		modalWindow = new ModalWindow("historyModalWindow");
+		historyButton = new AjaxButton("historyButton") {
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				AuditModalPanel historyPanel = new AuditModalPanel("content", containerForm.getModelObject().getAddressVo(), (WebMarkupContainer)arkCrudContainerVO.getDetailPanelContainer().get("addressDetailPanel").get("addressDetailsForm"));
+				modalWindow.setTitle("Entity History");
+				modalWindow.setAutoSize(true);
+				modalWindow.setMinimalWidth(950);
+				modalWindow.setContent(historyPanel);
+				target.add(modalWindow);
+				modalWindow.show(target);
+				target.add(historyPanel.getFeedbackPanel());
+				super.onSubmit(target, form);
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedBackPanel);
+				super.onError(target, form);
+			}
+		};
+		historyButton.setOutputMarkupId(true);
+	}
+	
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(streetAddressTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(cityTxtFld);
@@ -163,7 +194,10 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(addressLineOneTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
-		arkCrudContainerVO.getEditButtonContainer().add(historyButtonPanel);
+		
+		arkCrudContainerVO.getEditButtonContainer().add(historyButton);
+		arkCrudContainerVO.getEditButtonContainer().add(modalWindow);
+		
 		this.add(new DateFromToValidator(dateValidFrom, dateValidTo,"Valid from date","Valid to date"));
 	}
 
@@ -329,8 +363,6 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	 */
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
-		//AddressVO addressVO = new AddressVO();
-		//containerForm.setModelObject(addressVO);
 		ContactVO contactVO=new ContactVO();
 		containerForm.setModelObject(contactVO);
 	}
@@ -378,8 +410,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 			else{
 				containerForm.getModelObject().getAddressVo().getAddress().setOtherState(null);
 			}
-//			otherStateInvalidError.setVisible(false);
-//			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+
 			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelContainer().get("addressDetailPanel").get("addressDetailsForm").get("addressDetailFormContainer").get(Constants.STATE_SELECTOR_WMC);
 			Label otherStateInvalidError = (Label) wmcStateSelector.get("addressVo.address.otherStateInvalidError");
 			otherStateInvalidError.setVisible(false);
@@ -474,4 +505,5 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		// Add the Country State Dropdown into the WebMarkupContainer - countrySelector
 		stateSelector.add(stateChoice);
 	}
+	
 }

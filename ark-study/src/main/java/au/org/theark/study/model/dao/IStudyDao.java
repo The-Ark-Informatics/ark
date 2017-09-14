@@ -568,4 +568,8 @@ public interface IStudyDao {
 	
 	public List<StudyComp> getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(Study study,LinkSubjectStudy linkSubjectStudy);
 	
+	public boolean isSubjectUIDUnique(String subjectUID, Long studyId, String action);
+	
+	public LinkSubjectStudy getLinkSubjectStudyBySubjectUidAndStudy(String subjectUid, Study study);
+	
 }

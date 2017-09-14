@@ -1,15 +1,11 @@
 ALTER TABLE `study`.`email_account` 
 DROP FOREIGN KEY `email_account_ibfk_1`,
-DROP FOREIGN KEY `FK8641D44A104DA269`;
+DROP FOREIGN KEY `email_account_ibfk_2`;
 
 ALTER TABLE `study`.`email_account` 
 DROP INDEX `EMAIL_ACCOUNT_EMA_FK1` ;
 
 ALTER TABLE `study`.`email_account_type` 
-CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT ;
-
-
-ALTER TABLE `study`.`email_status` 
 CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT ;
 
 ALTER TABLE `study`.`person` 
@@ -19,6 +15,10 @@ DROP FOREIGN KEY `fk_person_other_email_status`;
 ALTER TABLE `study`.`person` 
 DROP INDEX `fk_person_preferred_email_status` ,
 DROP INDEX `fk_person_other_email_status` ;
+
+
+ALTER TABLE `study`.`email_status` 
+CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT ;
 
 
 ALTER TABLE `study`.`email_account` 

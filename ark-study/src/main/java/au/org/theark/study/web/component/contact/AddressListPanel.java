@@ -33,6 +33,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -77,11 +78,13 @@ public class AddressListPanel extends Panel {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService												studyService;
 	private Person															person;
+	private FeedbackPanel 					feedBackPanel;
 
-	public AddressListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public AddressListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm, FeedbackPanel feedBackPanel) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
+		this.feedBackPanel =feedBackPanel;
 		initialiseDataview();
 	}
 

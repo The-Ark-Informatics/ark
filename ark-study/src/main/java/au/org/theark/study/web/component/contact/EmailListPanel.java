@@ -15,6 +15,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -54,6 +55,8 @@ public class EmailListPanel extends Panel {
 	private IStudyService												studyService;
 	private Person														person;
 	private WebMarkupContainer											dataContainer;
+	
+	private FeedbackPanel 					feedBackPanel;
 
 	/**
 	 * Constructor
@@ -62,10 +65,11 @@ public class EmailListPanel extends Panel {
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public EmailListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public EmailListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm, FeedbackPanel feedbackPanel) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
+		this.feedBackPanel = feedbackPanel;
 		initialiseDataview();
 
 	}
@@ -332,6 +336,7 @@ public class EmailListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				containerForm.getModelObject().getEmailAccountVo().setEmailAccount(email);
+				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsForMultiplePanels(target, arkCrudContainerVO, au.org.theark.study.web.Constants.EMAIL_DETAIL_PANEL,
 						au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL, au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL);
 			}

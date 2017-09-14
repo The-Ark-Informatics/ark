@@ -565,4 +565,10 @@ public interface IStudyService {
 	
 	public List<StudyComp> getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(Study study,LinkSubjectStudy linkSubjectStudy);
 	
+	public Boolean isSubjectUIDUnique(Study study,String subjectUid,String action);
+	
+	public Study getStudy(Long studyId);
+	
+	public LinkSubjectStudy getLinkSubjectStudyBySubjectUidAndStudy(String subjectUid, Study study);
+	
 }

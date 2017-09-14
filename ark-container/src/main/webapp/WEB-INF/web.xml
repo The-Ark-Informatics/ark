@@ -24,7 +24,7 @@
 		<param-value>classpath:applicationContext.xml</param-value>
 	</context-param>
 	
-	<listener>
+	 <listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
@@ -57,7 +57,7 @@
 			<param-value>wicketApplication</param-value>
 		</init-param>
 
-		<init-param>
+		 <init-param>
 			<param-name>applicationFactoryClassName</param-name>
 			<param-value>org.apache.wicket.spring.SpringWebApplicationFactory</param-value>
 		</init-param>
@@ -77,4 +77,44 @@
 		<filter-name>WicketShiroApplicationFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	<!-- Jersey mapping --> 
+	<!-- <servlet>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>org.kaoushik.javabrains.messenger</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <url-pattern>/webapi/*</url-pattern>
+    </servlet-mapping> -->
+    <!-- <filter>
+        <filter-name>SessionFilter</filter-name>
+        <filter-class>org.apache.wicket.protocol.http.servlet.WicketSessionFilter</filter-class>
+        <init-param>
+            <param-name>filterName</param-name>
+            <param-value>WicketShiroApplicationFilter</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>SessionFilter</filter-name>
+        <url-pattern>/rest/*</url-pattern>
+        <url-pattern>/</url-pattern>
+    </filter-mapping> -->
+
+    <servlet>
+            <servlet-name>mvc-dispatcher</servlet-name>
+            <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+            <servlet-name>mvc-dispatcher</servlet-name>
+            <url-pattern>/rest/*</url-pattern>
+            <!-- <url-pattern>/</url-pattern> -->
+    </servlet-mapping>
 </web-app>

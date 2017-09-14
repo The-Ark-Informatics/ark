@@ -32,7 +32,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.iterator.ComponentHierarchyIterator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -97,14 +96,17 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	protected WebMarkupContainer initialiseDetailPanel() {
 		phoneDetailPanel = new PhoneDetailPanel("phoneDetailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		phoneDetailPanel.setOutputMarkupId(true);
+		phoneDetailPanel.setOutputMarkupPlaceholderTag(true);
 		phoneDetailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(phoneDetailPanel);
 		addressDetailPanel = new AddressDetailPanel("addressDetailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		addressDetailPanel.setOutputMarkupId(true);
+		addressDetailPanel.setOutputMarkupPlaceholderTag(true);
 		addressDetailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(addressDetailPanel);
 		emailDetailPanel = new EmailDetailPanel("emailDetailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		emailDetailPanel.setOutputMarkupId(true);
+		emailDetailPanel.setOutputMarkupPlaceholderTag(true);
 		emailDetailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(emailDetailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
@@ -115,7 +117,7 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 * @return
 	 */
 	private void initialiseSearchAddressResults() {
-		 addressResultPanel = new AddressListPanel("addressResults", arkCrudContainerVO, containerForm);
+		 addressResultPanel = new AddressListPanel("addressResults", arkCrudContainerVO, containerForm, feedBackPanel);
 		 addressResultPanel.setOutputMarkupId(true);
 		 arkCrudContainerVO.getSearchResultPanelContainer().add(addressResultPanel);
 	}
@@ -125,13 +127,13 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 	 * @return
 	 */
 	private void initialiseSearchPhoneResults() {
-		phoneResultPanel = new PhoneListPanel("phoneResults", arkCrudContainerVO, containerForm);
+		phoneResultPanel = new PhoneListPanel("phoneResults", arkCrudContainerVO, containerForm, feedBackPanel);
 		phoneResultPanel.setOutputMarkupId(true);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(phoneResultPanel);
 	}
 	
 	private void initialiseSearchEmailResults() {
-		emailResultPanel = new EmailListPanel("emailResults", arkCrudContainerVO, containerForm);
+		emailResultPanel = new EmailListPanel("emailResults", arkCrudContainerVO, containerForm, feedBackPanel);
 		emailResultPanel.setOutputMarkupId(true);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(emailResultPanel);
 	}

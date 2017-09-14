@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.ArkUidGenerator;
 import au.org.theark.core.dao.HibernateSessionDao;
@@ -536,6 +537,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
+	@Transactional
 	public void createSubject(SubjectVO subjectVo) throws ArkUniqueException, ArkSubjectInsertException {
 		Study study = subjectVo.getLinkSubjectStudy().getStudy();
 		if (study.getAutoGenerateSubjectUid()) {
@@ -1416,7 +1418,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return list;
 	}
 
-	private boolean isSubjectUIDUnique(String subjectUID, Long studyId, String action) {
+	public boolean isSubjectUIDUnique(String subjectUID, Long studyId, String action) {
 		boolean isUnique = true;
 		Session session = getSession();
 		Criteria criteria = session.createCriteria(LinkSubjectStudy.class);
@@ -2925,6 +2927,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Set<CorrespondenceDirectionType> setOfCorrespondenseDirectionTypes=new HashSet<CorrespondenceDirectionType>();
 		setOfCorrespondenseDirectionTypes.addAll(list);
 		return new ArrayList<CorrespondenceDirectionType>(setOfCorrespondenseDirectionTypes);
+	}
+
+	@Override
+	public LinkSubjectStudy getLinkSubjectStudyBySubjectUidAndStudy(String subjectUid, Study study) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.add(Restrictions.eq("subjectUID", subjectUid));
+		criteria.add(Restrictions.eq("study",study));
+		criteria.setMaxResults(1);
+		return (LinkSubjectStudy)criteria.uniqueResult();
 	}
 		
 }

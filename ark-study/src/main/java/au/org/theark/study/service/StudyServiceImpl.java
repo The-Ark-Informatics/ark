@@ -2616,4 +2616,21 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getCorrespondenceDirectionForMode(correspondenceModeType);
 	}
 
+	@Override
+	public Boolean isSubjectUIDUnique(Study study, String subjectUid,String action) {
+		return iStudyDao.isSubjectUIDUnique(subjectUid, study.getId(), action);
+	}
+
+	@Override
+	public Study getStudy(Long studyId) {
+		return iStudyDao.getStudy(studyId);
+	}
+
+	@Override
+	public LinkSubjectStudy getLinkSubjectStudyBySubjectUidAndStudy(String subjectUid, Study study) {
+		return iStudyDao.getLinkSubjectStudyBySubjectUidAndStudy(subjectUid, study);
+	}
+
+	
+
 }

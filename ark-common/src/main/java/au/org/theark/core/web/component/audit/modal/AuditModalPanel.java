@@ -181,54 +181,56 @@ public class AuditModalPanel extends Panel implements Serializable {
 			}
 		}
 		
-		for(Component component : list) {
-			Object current = entity;
-			//we can capture the PhenoDataSet Data and the Custom Field Data from the component name
-			//which does not include the . for properties.
-			//ARK-1791 We must ignore the nested properties like the category order number here.
-			if(component.getId().contains(".") && StringUtils.countMatches(component.getId(), ".")==1){
-				for(String s : component.getId().split(Pattern.quote("."))) {
-					try { 
-						PropertyUtilsBean propertyBean = new PropertyUtilsBean();
-						Object property = propertyBean.getNestedProperty(current, s);
-						//if(property != null && !reader.isEntityClassAudited(property.getClass())) {
-						if(property != null ){
-							Object primaryKey = iAuditService.getEntityPrimaryKey(current);
-							if(primaryKey != null && reader.isEntityClassAudited(current.getClass())) {
-								List<Number> revisionNumbers = reader.getRevisions(current.getClass(), primaryKey);
-								String fieldName = (s.equalsIgnoreCase("id") ? "ID" : iAuditService.getFieldName(current.getClass(), s));
-								if(fieldName==null){
-									this.error("Please contact the system administrator; auditing for some fields("+s+") on this screen has not been properly configured.");
-									log.error("Please contact system administrator need to add audit field "+s+" to table(Audit.audit_field) In Entity : "+current.getClass());
-									setFeedbackPanel(feedbackPanel);
-								}
-								for(Number revision : revisionNumbers) {
-									Object rev =reader.find(current.getClass(), primaryKey, revision);
-									Object revProperty = propertyBean.getProperty(rev, s);
-									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(current.getClass(), false, true)
-													.add(AuditEntity.revisionNumber().eq(revision))
-													.add(AuditEntity.id().eq(primaryKey))
-													.getSingleResult();
-									RevisionType type = (RevisionType) result[2];
-									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
-									revisionEntities.add(new AuditRow(ure, revProperty, type, fieldName));
-								}
-							}
-						}
-						//property becomes a current entity.
-						current = property;
-					} catch(NoSuchMethodException nsme) {
-						//The current entity has no property named "s", move on to next "s"
-						//TODO: find better way to catch this (i.e. use a if instead)
-						nsme.printStackTrace();
-					}catch(Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}else{
-				log.info("Comp:"+component.getId());
-			}
-		}
+		//Move to else statement to accept nested properties and select only the last two property values.
+//		for(Component component : list) {
+//			Object current = entity;
+//			//we can capture the PhenoDataSet Data and the Custom Field Data from the component name
+//			//which does not include the . for properties.
+//			//ARK-1791 We must ignore the nested properties like the category order number here.
+//			if(component.getId().contains(".") && StringUtils.countMatches(component.getId(), ".")==1){
+//				for(String s : component.getId().split(Pattern.quote("."))) {
+//					try { 
+//						PropertyUtilsBean propertyBean = new PropertyUtilsBean();
+//						Object property = propertyBean.getNestedProperty(current, s);
+//						//if(property != null && !reader.isEntityClassAudited(property.getClass())) {
+//						if(property != null ){
+//							Object primaryKey = iAuditService.getEntityPrimaryKey(current);
+//							if(primaryKey != null && reader.isEntityClassAudited(current.getClass())) {
+//								List<Number> revisionNumbers = reader.getRevisions(current.getClass(), primaryKey);
+//								String fieldName = (s.equalsIgnoreCase("id") ? "ID" : iAuditService.getFieldName(current.getClass(), s));
+//								if(fieldName==null){
+//									this.error("Please contact the system administrator; auditing for some fields("+s+") on this screen has not been properly configured.");
+//									log.error("Please contact system administrator need to add audit field "+s+" to table(Audit.audit_field) In Entity : "+current.getClass());
+//									setFeedbackPanel(feedbackPanel);
+//								}
+//								for(Number revision : revisionNumbers) {
+//									Object rev =reader.find(current.getClass(), primaryKey, revision);
+//									Object revProperty = propertyBean.getProperty(rev, s);
+//									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(current.getClass(), false, true)
+//													.add(AuditEntity.revisionNumber().eq(revision))
+//													.add(AuditEntity.id().eq(primaryKey))
+//													.getSingleResult();
+//									RevisionType type = (RevisionType) result[2];
+//									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+//									revisionEntities.add(new AuditRow(ure, revProperty, type, fieldName));
+//								}
+//							}
+//						}
+//						//property becomes a current entity.
+//						current = property;
+//					} catch(NoSuchMethodException nsme) {
+//						//The current entity has no property named "s", move on to next "s"
+//						//TODO: find better way to catch this (i.e. use a if instead)
+//						nsme.printStackTrace();
+//					}catch(Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}else{
+//				log.info("Comp:"+component.getId());
+//			}
+//		}
+		
 		//Handling the history of pheno dataset.
 		if(entity instanceof PhenoDataCollectionVO){
 			PhenoDataCollectionVO phenoDataCollectionVO=((PhenoDataCollectionVO)entity);
@@ -482,6 +484,67 @@ public class AuditModalPanel extends Panel implements Serializable {
 				}
 			}
 		}
+	}else{
+		for(Component component : list) {
+			Object current = entity;
+			
+			String componentId="";
+			
+			String[] elements=component.getId().split(Pattern.quote("."));
+			
+			if(elements.length > 1){
+				componentId= elements[elements.length - 2] +"."+elements[elements.length - 1];
+			}
+			if(componentId.contains(".") && StringUtils.countMatches(componentId, ".")==1){
+				for(String s : componentId.split(Pattern.quote("."))) {
+					try { 
+						PropertyUtilsBean propertyBean = new PropertyUtilsBean();
+						Object property = propertyBean.getNestedProperty(current, s);
+						
+						//TODO Should remove after ARK-1450 testing
+						log.info("------------------------------------------- "+s);
+						log.info("------------------------------------------- "+current.toString());
+						
+						//if(property != null && !reader.isEntityClassAudited(property.getClass())) {
+						if(property != null ){
+							Object primaryKey = iAuditService.getEntityPrimaryKey(current);
+							if(primaryKey != null && reader.isEntityClassAudited(current.getClass())) {
+								List<Number> revisionNumbers = reader.getRevisions(current.getClass(), primaryKey);
+								String fieldName = (s.equalsIgnoreCase("id") ? "ID" : iAuditService.getFieldName(current.getClass(), s));
+								if(fieldName==null){
+									this.error("Please contact the system administrator; auditing for some fields("+s+") on this screen has not been properly configured.");
+									log.error("Please contact system administrator need to add audit field "+s+" to table(Audit.audit_field) In Entity : "+current.getClass());
+									setFeedbackPanel(feedbackPanel);
+								}
+								for(Number revision : revisionNumbers) {
+									Object rev =reader.find(current.getClass(), primaryKey, revision);
+									Object revProperty = propertyBean.getProperty(rev, s);
+									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(current.getClass(), false, true)
+													.add(AuditEntity.revisionNumber().eq(revision))
+													.add(AuditEntity.id().eq(primaryKey))
+													.getSingleResult();
+									RevisionType type = (RevisionType) result[2];
+									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+									revisionEntities.add(new AuditRow(ure, revProperty, type, fieldName));
+								}
+							}
+						}else{
+							log.error("----------------------------- Property value not specified ------------------------" + s);
+						}
+						//property becomes a current entity.
+						current = property;
+					} catch(NoSuchMethodException nsme) {
+						//The current entity has no property named "s", move on to next "s"
+						//TODO: find better way to catch this (i.e. use a if instead)
+						nsme.printStackTrace();
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}else{
+				log.info("Comp:"+component.getId());
+			}
+		}
 	}
 		Collections.sort(revisionEntities, new Comparator<AuditRow>() {
 			@Override
@@ -614,5 +677,5 @@ public class AuditModalPanel extends Panel implements Serializable {
 	public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
 		this.feedbackPanel = feedbackPanel;
 	}
-
+	
 }
