@@ -34,36 +34,40 @@ import org.xml.sax.InputSource;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSubjectInsertException;
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.jni.ArkMadelineProxy;
+import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.TwinType;
+import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.PedigreeUploadValidator;
+import au.org.theark.web.rest.model.CreateRelationShipRequest;
+import au.org.theark.web.rest.model.CreateSubjectRequest;
+import au.org.theark.web.rest.model.GetSubjectRequest;
+import au.org.theark.web.rest.model.ValidationType;
 
 @Service("pedigreeService")
 @Transactional
 public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 	
-	private IStudyService iStudyService;
-
-	public IStudyService getiStudyService() {
-		return iStudyService;
-	}
 	@Autowired
-	public void setiStudyService(IStudyService iStudyService) {
-		this.iStudyService = iStudyService;
-	}
+	private IStudyService iStudyService;
+	
+	@Autowired
+	private  IArkCommonService		iArkCommonService;
+	
 	@Override
 	public Boolean createSubject(SubjectVO subjectVO) {
 		try {
@@ -74,14 +78,6 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 			return false;
 			
 		}
-	}
-	@Override
-	public Boolean isSubjectUIDExist(Study study,String subjectUid) {
-		return iStudyService.isSubjectUIDUnique( study,subjectUid,"insert");
-	}
-	@Override
-	public Boolean isStudyExist(Study study) {
-		return (iStudyService.getStudy(study.getId())!=null);
 	}
 	@Override
 	public Boolean generatePedigree(SubjectVO subjectVO) {
@@ -256,7 +252,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 				return !(circularUIDs.size() > 0);
 	}
 	@Override
-	public File getPedigreeView(String subjectUid, Long studyId) {
+	public StringBuffer getPedigreeView(String subjectUid, Long studyId) {
 		final StringBuffer sb = new StringBuffer();
 		sb.setLength(0);
 
@@ -370,18 +366,154 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		else {
 			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<svg width=\"640\" height=\"480\" xmlns=\"http://www.w3.org/2000/svg\">\r\n <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->\r\n <g>\r\n  <title>Layer 1</title>\r\n  <text transform=\"rotate(-0.0100589, 317.008, 97.5)\" xml:space=\"preserve\" text-anchor=\"middle\" font-family=\"serif\" font-size=\"24\" id=\"svg_3\" y=\"106\" x=\"317\" stroke-width=\"0\" stroke=\"#000000\" fill=\"#000000\">No Pedigree History</text>\r\n </g>\r\n</svg>");
 		}
-		File tempFile = null;
-		String tmpDir = System.getProperty("java.io.tmpdir");
-		String pedFileName = "Ark_" + subjectUid + ".svg";
-		tempFile = new File(tmpDir, pedFileName);					
-		InputStream data = new ByteArrayInputStream(sb.toString().getBytes());
-		try {
+		//File tempFile = null;
+		//String tmpDir = System.getProperty("java.io.tmpdir");
+		//String pedFileName = "Ark_" + subjectUid + ".svg";
+		//tempFile = new File(tmpDir, pedFileName);					
+		//InputStream data = new ByteArrayInputStream(sb.toString().getBytes());
+		/*try {
 			Files.writeTo(tempFile, data);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		return tempFile;
+		}*/
+		return sb;
 
 	}
+	@Override
+	public  SubjectVO mapSubjectRequestToBusinessSubjectVO(CreateSubjectRequest subjectRequest){
+		SubjectVO subjectVO=new SubjectVO();
+		LinkSubjectStudy linkSubjectStudy=new LinkSubjectStudy();
+		
+		linkSubjectStudy.setStudy(iArkCommonService.getStudy(subjectRequest.getStudyId()));
+		
+		Person person=new Person();
+		
+		person.setFirstName(subjectRequest.getFirstName());
+		person.setLastName(subjectRequest.getLastName());
+		person.setDateOfBirth(subjectRequest.getDateOfBirth());
+		person.setGenderType(iArkCommonService.getGenderType(subjectRequest.getGenderTypeName()));
+		person.setVitalStatus(iArkCommonService.getVitalStatus(subjectRequest.getVitalStatusName()));
+		linkSubjectStudy.setPerson(person);
+		
+		linkSubjectStudy.setSubjectUID(subjectRequest.getSubjectUID());
+		
+		subjectVO.setLinkSubjectStudy(linkSubjectStudy);
+		return subjectVO;
+	}
+	
+	public ValidationType validateEntireSubjectRequest(CreateSubjectRequest subjectRequest){
+		Study study;
+		GenderType genderType;
+		VitalStatus vitalStatus;
+		//Check for valid(not null) study id.
+		if(subjectRequest.getStudyId()!=null ){
+			study=iArkCommonService.getStudy(subjectRequest.getStudyId());
+		}else{
+			return ValidationType.INVALID_STUDY_ID;
+		}
+		
+		//Check for valid study(already created)
+		if(study==null ||study.getId()==null){
+			return ValidationType.NOT_EXSISTING_STUDY;
+		}
+		
+		//Check for unique subject uid for the study.
+		if(!iStudyService.isSubjectUIDUnique(study,subjectRequest.getSubjectUID(),"insert")){
+			return ValidationType.SUBJECT_UID_ALREADY_EXISTS; 
+		}
+		
+		//Check for the valid gender type.
+		if(subjectRequest.getGenderTypeName()!=null){
+			genderType=iArkCommonService.getGenderType(subjectRequest.getGenderTypeName());
+		}else{
+			return ValidationType.NO_GENDERTYPE;
+		}
+		if(genderType==null || genderType.getId()==null){
+			return ValidationType.INVALID_GENDER_TYPE;
+		}
+		
+		//Check for the valid vital status.
+		if(subjectRequest.getVitalStatusName()!=null){
+			vitalStatus=iArkCommonService.getVitalStatus(subjectRequest.getVitalStatusName());
+		}else{
+			return ValidationType.NO_VITALTYPE;
+		}
+		if(vitalStatus==null || vitalStatus.getId()==null){
+			return ValidationType.INVALID_VITAL_TYPE;
+		}
+		return ValidationType.SUCCESSFULLY_VALIDATED;
+		
+	}
+	
+	public ValidationType validateForSubjectUIDForStudy(GetSubjectRequest getSubjectRequest ){
+		Study study;
+		//Check for valid(not null) study id.
+		if(getSubjectRequest.getStudyId()!=null ){
+			study=iArkCommonService.getStudy(getSubjectRequest.getStudyId());
+		}else{
+			return ValidationType.INVALID_STUDY_ID;
+		}
+		
+		//Check for valid study(already created)
+		if(study==null || study.getId()==null){
+			return ValidationType.NOT_EXSISTING_STUDY;
+		}
+		return ValidationType.SUCCESSFULLY_VALIDATED;
+	}
+	@Override
+	public ValidationType validateRelationShipForStudy(CreateRelationShipRequest createRelationShipRequest) {
+		Study study;
+		Relationship relationship;
+		TwinType twinType;
+		//Check for valid(not null) study id.
+		if(createRelationShipRequest.getStudyId()!=null ){
+			study=iArkCommonService.getStudy(createRelationShipRequest.getStudyId());
+		}else{
+			return ValidationType.INVALID_STUDY_ID;
+		}
+		
+		//Check for valid study(already created)
+		if(study==null || study.getId()==null){
+			return ValidationType.NOT_EXSISTING_STUDY;
+		}
+		
+		//Check subject uid exists.
+		LinkSubjectStudy linkSubjectStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createRelationShipRequest.getSubjectUID(),study);
+		if(linkSubjectStudy==null || linkSubjectStudy.getId()==null){
+			return ValidationType.SUBJECT_UID_NOT_EXISTS;
+		}
+		LinkSubjectStudy linkRelativeStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createRelationShipRequest.getRelativeUID(),study);
+		if(linkRelativeStudy==null || linkRelativeStudy.getId()==null){
+			return ValidationType.RELATIVE_SUBJECT_UID_NOT_EXISTS;
+		}
+		if(createRelationShipRequest.getRelationType()!=null && createRelationShipRequest.getRelationShip()!=null){
+			if(createRelationShipRequest.getRelationType().equals(au.org.theark.web.rest.util.Constants.PARENT)){
+				relationship=iArkCommonService.getRelationShipByname(createRelationShipRequest.getRelationShip());
+				if(relationship==null || relationship.getId()==null){
+					return ValidationType.INVALID_RELATION_TYPE;
+				}
+			}else if(createRelationShipRequest.getRelationType().equals(au.org.theark.web.rest.util.Constants.TWIN)){
+				twinType=iArkCommonService.getTwinTypeByname(createRelationShipRequest.getRelationShip());
+				if(twinType==null || twinType.getId()==null){
+					return ValidationType.INVALID_RELATION_TYPE;
+				}
+			}else{
+				return ValidationType.NO_RELATION_TYPE;
+			}
+		}else{
+			return ValidationType.NO_RELATION_TYPE;
+		}
+		return ValidationType.SUCCESSFULLY_VALIDATED;
+		
+	}
+	@Override
+	public Relationship getRelationShipByname(String name) {
+		return iArkCommonService.getRelationShipByname(name);
+	}
+	@Override
+	public TwinType getTwinTypeByname(String name) {
+		return iArkCommonService.getTwinTypeByname(name);
+	}
+	
 
 }

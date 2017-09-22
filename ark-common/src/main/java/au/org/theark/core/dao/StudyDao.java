@@ -5388,5 +5388,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("customFieldType", customFieldType);
 		return query.list();
 	}
+	
+	@Override
+	public Relationship getRelationShipByname(String name) {
+		Criteria criteria = getSession().createCriteria(Relationship.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.setMaxResults(1);
+		return (Relationship)criteria.uniqueResult();
+	}
+
+	@Override
+	public TwinType getTwinTypeByname(String name) {
+		Criteria criteria = getSession().createCriteria(TwinType.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.setMaxResults(1);
+		return (TwinType)criteria.uniqueResult();
+	}
 
 }

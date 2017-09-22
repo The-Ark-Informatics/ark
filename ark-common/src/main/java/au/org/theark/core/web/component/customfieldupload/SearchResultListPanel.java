@@ -70,8 +70,7 @@ public class SearchResultListPanel extends Panel {
 		
 		//Refer ARK-1386 programmatically pick the header details according to the module.     
 		ArkDownloadTemplateButton downloadFieldTemplateButton = new ArkDownloadTemplateButton("downloadTemplateField",
-				(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_LIMS))?"LIMSCustomFieldUpload":"SubjectCustomFieldUpload",
-						changeCustomFieldHeaderWithModuleName(arkModule, au.org.theark.core.Constants.CUSTOM_FIELD_UPLOAD_HEADER)) {
+				(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_LIMS))?"LIMSCustomFieldUpload":"SubjectCustomFieldUpload",changeCustomFieldHeaderWithModuleName(arkModule, au.org.theark.core.Constants.CUSTOM_FIELD_UPLOAD_HEADER)) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {

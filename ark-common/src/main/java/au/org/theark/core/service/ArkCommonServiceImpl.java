@@ -2346,4 +2346,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getCustomFieldDisplaysInLIMS(study, arkFunction, customFieldType);
 	}
 
+	@Override
+	public Relationship getRelationShipByname(String name) {
+		return  studyDao.getRelationShipByname(name);
+	}
+
+	@Override
+	public TwinType getTwinTypeByname(String name) {
+		return studyDao.getTwinTypeByname(name);
+	}
+
 }

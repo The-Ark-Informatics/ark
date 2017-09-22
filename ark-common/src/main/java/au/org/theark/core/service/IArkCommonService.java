@@ -1270,4 +1270,8 @@ public interface IArkCommonService<T> {
 	
 	public List<CustomFieldDisplay> getCustomFieldDisplaysInLIMS(Study study, ArkFunction arkFunction,CustomFieldType customFieldType);
 	
+	public Relationship getRelationShipByname(String name);
+	
+	public TwinType getTwinTypeByname(String name);
+	
 }

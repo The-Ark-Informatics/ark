@@ -1,13 +1,5 @@
 package au.org.theark.web.rest.controller;
 
-import java.io.File;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,182 +13,213 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Relationship;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.vo.RelationWrapperVo;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.vo.SubjectWrapperVO;
-import au.org.theark.core.vo.TwinWrapperVO;
+import au.org.theark.web.rest.model.CreateRelationShipRequest;
+import au.org.theark.web.rest.model.CreateSubjectRequest;
+import au.org.theark.web.rest.model.GetSubjectRequest;
+import au.org.theark.web.rest.model.ValidationType;
+import au.org.theark.web.rest.service.ILoginWebServiceRest;
 import au.org.theark.web.rest.service.IPedigreeWebServiceRest;
+import au.org.theark.web.rest.util.Constants;
+
 
 @RestController
 public class PedigreeRestController {
+
 	
+
 	public static final Logger logger = LoggerFactory.getLogger(PedigreeRestController.class);
 
 	@Autowired
 	IPedigreeWebServiceRest iPedWebSerRest;
+	
+	@Autowired
+	ILoginWebServiceRest iLoginWebServiceRest;
+	
+	private String message;
 
 	//1-Create subject.
 	@RequestMapping(value = "/subject/", method = RequestMethod.POST)
-	public ResponseEntity<Void> createSubject(@RequestBody SubjectWrapperVO subjectWrapperVO, UriComponentsBuilder ucBuilder) {
-		 SubjectVO subjectvo=subjectWrapperVO.getSubjectVO();
-			if(authenticate(subjectWrapperVO.getArkUserVO())){
-				System.out.println("Creating the subject: " + subjectvo.getSubjectFullName());
-				if (!iPedWebSerRest.isStudyExist(subjectvo.getLinkSubjectStudy().getStudy())) {
-					System.out.println("No study specified for subject.");
-					return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-				} else if (!iPedWebSerRest.isSubjectUIDExist(subjectvo.getLinkSubjectStudy().getStudy(),
-						subjectvo.getLinkSubjectStudy().getSubjectUID())) {
-					System.out.println("A Subjectr with name " + subjectvo.getSubjectFullName() + " already exist");
-					return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-				} else {
+	public ResponseEntity<String> createSubject(@RequestBody CreateSubjectRequest createSubjectRequest, UriComponentsBuilder ucBuilder) {
+		
+			if(isLoginAndCreatePermissionAllow(createArkUserinsideUntilFindItFromHeader())){
+				ValidationType validateCode=iPedWebSerRest.validateEntireSubjectRequest(createSubjectRequest);
+				if(validateCode.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+					SubjectVO subjectvo=iPedWebSerRest.mapSubjectRequestToBusinessSubjectVO(createSubjectRequest);
 					iPedWebSerRest.createSubject(subjectvo);
 					HttpHeaders headers = new HttpHeaders();
 					headers.setLocation(ucBuilder.path("/subject/{id}").buildAndExpand(subjectvo.getLinkSubjectStudy().getId()).toUri());
-					return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+					message="Subject created successfuly.";
+					return new ResponseEntity<String>(message,headers, HttpStatus.CREATED);
+				}else{
+					return getResponseEntityForValidationCode(validateCode);
 				}
 			}else{
-					return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
+					message="Unauthorised user.Please check the credentials.";
+					return new ResponseEntity<String>(message,HttpStatus.UNAUTHORIZED);
 			}
 	}
-	
-	//2-Get Subject
-	/*@RequestMapping(value = "/getsubject/{subjectUid}/{studyid}", method = RequestMethod.GET)
-    public ResponseEntity<Long> getLinkSubjectStudy(@PathVariable String subjectUid,@PathVariable Long studyid) {
-	//public ResponseEntity<LinkSubjectStudy> getLinkSubjectStudy(@RequestParam(value="subjectUid") String subjectUid, @RequestParam(value="studyId") Long studyid) {
-        logger.info("Fetching LinkSubjectStudy with SubjectUid {}", subjectUid);
-        LinkSubjectStudy linkSubjectStudy = iPedWebSerRest.getLinkSubjectStudyBySubjectUidAndStudy(subjectUid, iPedWebSerRest.getStudyByID(studyid));
-        if (linkSubjectStudy== null) {
-            logger.error("LinkSubjectStudy with SubjectUid {} not found.", subjectUid);
-            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<Long>(linkSubjectStudy.getId(), HttpStatus.OK);
-    }*/
 	
 	//2-Get Subject
 	@RequestMapping(value = "/getsubject/", method = RequestMethod.POST)
-    public ResponseEntity<Long> getLinkSubjectStudy(@RequestBody SubjectWrapperVO subjectWrapperVO) {
-		 String subjectUid=subjectWrapperVO.getSubjectVO().getLinkSubjectStudy().getSubjectUID();
-		 if(authenticate(subjectWrapperVO.getArkUserVO())){ 
-	        logger.info("Fetching LinkSubjectStudy with SubjectUid {}", subjectUid);
-	        LinkSubjectStudy linkSubjectStudy = iPedWebSerRest.getLinkSubjectStudyBySubjectUidAndStudy(subjectUid, iPedWebSerRest.getStudyByID(subjectWrapperVO.getSubjectVO().getLinkSubjectStudy().getStudy().getId()));
-	        if (linkSubjectStudy== null) {
-	            logger.error("LinkSubjectStudy with SubjectUid {} not found.", subjectUid);
-	            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
-	        }
-	        return new ResponseEntity<Long>(linkSubjectStudy.getId(), HttpStatus.OK);
+    public ResponseEntity<String> getLinkSubjectStudy(@RequestBody  GetSubjectRequest getSubjectRequest) {
+		
+		 if(isLoginAndCreatePermissionAllow(createArkUserinsideUntilFindItFromHeader())){ 
+			 ValidationType validateCode=iPedWebSerRest.validateForSubjectUIDForStudy(getSubjectRequest);
+			 if(validateCode.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+			        LinkSubjectStudy linkSubjectStudy = iPedWebSerRest.getLinkSubjectStudyBySubjectUidAndStudy(getSubjectRequest.getSubjectUID(), iPedWebSerRest.getStudyByID(getSubjectRequest.getStudyId()));
+			        if (linkSubjectStudy== null || linkSubjectStudy.getId()==null) {
+			        	message="Can not find a subject for this subjectuid.";
+			            return new ResponseEntity<String>(message,HttpStatus.NOT_FOUND);
+			        }
+			        return new ResponseEntity<String>(linkSubjectStudy.getId().toString(), HttpStatus.OK);
+			 }else{
+				 return getResponseEntityForValidationCode(validateCode);
+			 }   
 		 }else{
-				return new ResponseEntity<Long>(HttpStatus.UNAUTHORIZED);
+			 	message="Unauthorised user.Please check the credentials.";
+				return new ResponseEntity<String>(message,HttpStatus.UNAUTHORIZED);
 		}
     }
 	
-	//3-Set Mother or Father
+	//3-Set Mother or Father or Twins
 	@RequestMapping(value = "/createRelationShip/", method = RequestMethod.POST)
-	public ResponseEntity<Void> createRelationShip(@RequestBody RelationWrapperVo relationWrapperVo,UriComponentsBuilder ucBuilder) {
-		Boolean result;
+	public ResponseEntity<String> createRelationShip(@RequestBody CreateRelationShipRequest createRelationShipRequest,UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
-		if(authenticate(relationWrapperVo.getArkUserVO())){
-			result=iPedWebSerRest.isCircularValidationSuccessful(relationWrapperVo.getSubjectVO(),relationWrapperVo.getRelativeVO());
-			if(result){
-				iPedWebSerRest.createRelationShip(relationWrapperVo.getSubjectVO(),relationWrapperVo.getRelativeVO(),relationWrapperVo.getRelationship());
-				headers.setLocation(ucBuilder.path("/createRelationShip/{id}").buildAndExpand(relationWrapperVo.getSubjectVO().getLinkSubjectStudy().getId()).toUri());
-				return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-			}else{
-				return new ResponseEntity<Void>(headers, HttpStatus.CONFLICT);
-			}
+		if(isLoginAndCreatePermissionAllow(createArkUserinsideUntilFindItFromHeader())){
+			 ValidationType validateCode=iPedWebSerRest.validateRelationShipForStudy(createRelationShipRequest);
+			 Study study=iPedWebSerRest.getStudyByID(createRelationShipRequest.getStudyId());
+			 if(validateCode.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+				 LinkSubjectStudy subject = iPedWebSerRest.getLinkSubjectStudyBySubjectUidAndStudy(createRelationShipRequest.getSubjectUID(), study);
+				 SubjectVO subjectVO=new SubjectVO();
+				 subjectVO.setLinkSubjectStudy(subject);
+				 LinkSubjectStudy relative = iPedWebSerRest.getLinkSubjectStudyBySubjectUidAndStudy(createRelationShipRequest.getRelativeUID(), study);
+				 SubjectVO relativeVO=new SubjectVO();
+				 relativeVO.setLinkSubjectStudy(relative);
+					 if(createRelationShipRequest.getRelationType().equals(Constants.PARENT)){	
+						 	if(iPedWebSerRest.isCircularValidationSuccessful(subjectVO,relativeVO)){
+								Relationship relationship=iPedWebSerRest.getRelationShipByname(createRelationShipRequest.getRelationShip());
+								iPedWebSerRest.createRelationShip(subjectVO,relativeVO,relationship);
+						 	}else{
+						 		return getResponseEntityForValidationCode(ValidationType.CIRCULAR_VALIDATION_UNSUCCESSFUL);	
+						 	}	
+					}else if(createRelationShipRequest.getRelationType().equals(Constants.TWIN)){
+							TwinType twinType=iPedWebSerRest.getTwinTypeByname(createRelationShipRequest.getRelationShip());
+							iPedWebSerRest.createTwin(subjectVO, relativeVO, twinType);
+					}	
+							headers.setLocation(ucBuilder.path("/createRelationShip/{id}").buildAndExpand(subject.getId()).toUri());
+							return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+			 	}else{
+				 return getResponseEntityForValidationCode(validateCode);
+			 }   
 		}else{
-			return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
 		}
 	}
-	
-	//4-Create twins
-	@RequestMapping(value = "/createTwin/", method = RequestMethod.POST)
-	public ResponseEntity<Void> createTwin(@RequestBody TwinWrapperVO twinWrapperVO,UriComponentsBuilder ucBuilder) {
-		Boolean result;
-		HttpHeaders headers = new HttpHeaders();
-		if(authenticate(twinWrapperVO.getArkUserVO())){
-			result=iPedWebSerRest.createTwin(twinWrapperVO.getSubjectVO(),twinWrapperVO.getRelativeVO(),twinWrapperVO.getTwinType());
-			if(result){
-				headers.setLocation(ucBuilder.path("/createTwin/{id}").buildAndExpand(twinWrapperVO.getSubjectVO().getLinkSubjectStudy().getId()).toUri());
-				return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-			}else{
-				return new ResponseEntity<Void>(headers, HttpStatus.BAD_REQUEST);
-			}
-		}else{
-			return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
-		}
-	}
-	
-/*	//5-Generate Pedigree-No need this time.
-	@RequestMapping(value = "/generatePedigree/", method = RequestMethod.POST)
-	public ResponseEntity<Void> generateRelationships(@RequestBody SubjectWrapperVO subjectWrapperVO,UriComponentsBuilder ucBuilder) {
-		Boolean result;
-		HttpHeaders headers = new HttpHeaders();
-		SubjectVO subjectvo=subjectWrapperVO.getSubjectVO();
-		if(authenticate(subjectWrapperVO.getArkUserVO())){ 
-			result=iPedWebSerRest.generatePedigree(subjectvo);
-			if(result){
-				headers.setLocation(ucBuilder.path("/generatePedigree/{id}").buildAndExpand(subjectvo.getLinkSubjectStudy().getId()).toUri());
-				return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-			}else{
-				return new ResponseEntity<Void>(headers, HttpStatus.EXPECTATION_FAILED);
-			}
-		}else{
-			return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
-		}
-	}*/
-	
-	//7-Get Pedigree view as a file
-		/*@RequestMapping(value = "/getPedigreeView/{subjectUid}/{studyid}", method = RequestMethod.GET)
-	    public ResponseEntity<File> getPedigreeView(@PathVariable String subjectUid,@PathVariable Long studyid) {
-			File pedigreeFile=iPedWebSerRest.getPedigreeView(subjectUid, studyid);
-	        if (pedigreeFile== null) {
-	            return new ResponseEntity<File>(HttpStatus.NOT_FOUND);
-	        }
-	        return new ResponseEntity<File>(pedigreeFile, HttpStatus.OK);
-	    }*/
 		
 	//7-Get Pedigree view as a file
 		@RequestMapping(value = "/getPedigreeView/", method = RequestMethod.POST)
-	    public ResponseEntity<File> getPedigreeView(@RequestBody SubjectWrapperVO subjectWrapperVO) {
-			 String subjectUid=subjectWrapperVO.getSubjectVO().getLinkSubjectStudy().getSubjectUID();
-			 if(authenticate(subjectWrapperVO.getArkUserVO())){ 
-				 File pedigreeFile=iPedWebSerRest.getPedigreeView(subjectUid,subjectWrapperVO.getSubjectVO().getLinkSubjectStudy().getStudy().getId());
+	    public ResponseEntity<StringBuffer> getPedigreeView(@RequestBody GetSubjectRequest getSubjectRequest) {
+			 if(isLoginAndCreatePermissionAllow(createArkUserinsideUntilFindItFromHeader())){
+				 ValidationType validateCode=iPedWebSerRest.validateForSubjectUIDForStudy(getSubjectRequest);
+				 if(validateCode.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+				 StringBuffer pedigreeFile=iPedWebSerRest.getPedigreeView(getSubjectRequest.getSubjectUID(),getSubjectRequest.getStudyId());
 		         if (pedigreeFile== null) {
-			           return new ResponseEntity<File>(HttpStatus.NOT_FOUND);
+			           return new ResponseEntity<StringBuffer>(HttpStatus.NOT_FOUND);
 			      }
-		         	return new ResponseEntity<File>(pedigreeFile, HttpStatus.OK);
+		         	return new ResponseEntity<StringBuffer>(pedigreeFile, HttpStatus.CREATED);
+				 }else{
+					 return getResponseEntityFileForValidationCode(validateCode);
+				 }	
 			 }else{
-					return new ResponseEntity<File>(HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity<StringBuffer>(HttpStatus.UNAUTHORIZED);
 			}
 	    }
-
-	/**
-	 * 
-	 * @param user
-	 * @return
-	 */
-	private final boolean authenticate(ArkUserVO user) {
-		Subject subject = SecurityUtils.getSubject();
-		// Disable Remember me
-		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword(),	false);
-		// This will propagate to the Realm
-		try {
-			subject.login(usernamePasswordToken);
-			return true;
-		} catch (IncorrectCredentialsException e) {
-			logger.error("Password is incorrect.");
-
-		} catch (UnknownAccountException e) {
-			logger.error("User account not found.");
+		/**
+		 * 
+		 * @param arkUserVO
+		 * @return
+		 */
+		private boolean isLoginAndCreatePermissionAllow(ArkUserVO arkUserVO){
+			return iLoginWebServiceRest.authenticate(arkUserVO) && iLoginWebServiceRest.hasRightSimilarToSubjectAdministrator();
 			
-		} catch (AuthenticationException e) {
-			logger.error("Invalid username and/or password.");
-			
-		} catch (Exception e) {
-			logger.error("Login Failed.");
 		}
-		return false;
-	}
+		/**
+		 * Delete this method once finalized the way to get it from the http header authentication.
+		 * @return
+		 */
+		private ArkUserVO createArkUserinsideUntilFindItFromHeader(){
+			ArkUserVO arkUserVO=new ArkUserVO();
+			arkUserVO.setUserName("arksuperuser@ark.org.au");
+			arkUserVO.setPassword("sanjaya123");
+			return arkUserVO;
+			
+		}
+		/**
+		 * 
+		 * @param validationCode
+		 * @return
+		 */
+		private ResponseEntity<String> getResponseEntityForValidationCode(ValidationType validationType){
+			String message = validationType.getName();
+			HttpStatus httpStatus = null;
+		
+			switch (validationType) {
+            case INVALID_STUDY_ID:   
+            					httpStatus=HttpStatus.OK;	
+            					break;
+            case SUBJECT_UID_ALREADY_EXISTS:   
+            					httpStatus=HttpStatus.OK;
+            					break;
+            case NOT_EXSISTING_STUDY:   
+								httpStatus=HttpStatus.OK;	
+								break;
+            case NO_GENDERTYPE:   
+								httpStatus=HttpStatus.OK;	
+								break;
+            case INVALID_GENDER_TYPE:   
+								httpStatus=HttpStatus.OK;	
+								break;
+            case NO_VITALTYPE:   
+								httpStatus=HttpStatus.OK;	
+								break;
+            case INVALID_VITAL_TYPE:   
+								httpStatus=HttpStatus.OK;	
+								break;	
+            case SUCCESSFULLY_VALIDATED:	
+				            	httpStatus=HttpStatus.OK;	
+								break;
+			default:
+				break;	
+			}
+			return new ResponseEntity<String>(message,httpStatus);
+		}
+		
+		private ResponseEntity<StringBuffer> getResponseEntityFileForValidationCode(ValidationType validationType){
+			StringBuffer stringBuffer=new StringBuffer();
+			HttpStatus httpStatus = null;
+		
+			switch (validationType) {
+            case INVALID_STUDY_ID:   
+            					httpStatus=HttpStatus.OK;	
+            					break;
+            case SUBJECT_UID_ALREADY_EXISTS:   
+            					httpStatus=HttpStatus.OK;
+            					break;
+            case NOT_EXSISTING_STUDY:   
+								httpStatus=HttpStatus.OK;	
+								break;
+            case SUCCESSFULLY_VALIDATED:	
+				            	httpStatus=HttpStatus.OK;	
+								break;
+			default:
+				break;	
+			}
+			return new ResponseEntity<StringBuffer>(stringBuffer,httpStatus);
+		}
 
 }

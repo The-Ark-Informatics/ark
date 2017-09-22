@@ -442,7 +442,7 @@ public class Constants {
 		{
 				"VALID VALUES",
 				"Maximum 50 characters", 
-				"Subject,Family", 
+				"Subject, Family", 
 				"", 
 				"Character, Number, Date",
 				"Maximum 255 characters", 

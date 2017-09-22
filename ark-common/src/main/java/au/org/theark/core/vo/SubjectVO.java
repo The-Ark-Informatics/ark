@@ -40,13 +40,13 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 @SuppressWarnings("serial")
 public class SubjectVO implements Serializable {
 	protected String										subjectFullName;
-	protected SubjectStatus								subjectStatus;
-	protected LinkSubjectStudy							linkSubjectStudy;
-	protected Collection<SubjectVO>					subjectList;
-	protected SubjectFile								subjectFile;
-	protected ConsentAnswer								consentAnswerSelect;
+	protected SubjectStatus									subjectStatus;
+	protected LinkSubjectStudy								linkSubjectStudy;
+	protected Collection<SubjectVO>							subjectList;
+	protected SubjectFile									subjectFile;
+	protected ConsentAnswer									consentAnswerSelect;
 	protected String										subjectPreviousLastname;
-	protected String subjectUID;
+	protected String 										subjectUID;
 
 	/** A List of phone numbers linked to this person/subject */
 	protected Collection<Phone>						phoneList;
