@@ -5405,4 +5405,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (TwinType)criteria.uniqueResult();
 	}
 
+	@Override
+	public List<LinkSubjectStudy> getListofLinkSubjectStudiesForStudy(Study study) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.add(Restrictions.eq("study",study));
+		List<LinkSubjectStudy> fieldsList = criteria.list();
+		return fieldsList;
+		
+	}
+
 }

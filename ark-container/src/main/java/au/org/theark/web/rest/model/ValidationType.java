@@ -27,7 +27,9 @@ public enum ValidationType {
 	
 	INVALID_RELATION_TYPE("Invalid relation type assigned."),
 	
-	CIRCULAR_VALIDATION_UNSUCCESSFUL("Circular validation Unsuccessful.");
+	CIRCULAR_VALIDATION_UNSUCCESSFUL("Circular validation Unsuccessful."),
+	
+	NOT_A_SIBLING("Relative not recognise as a sibling.");
 	
 	private final String name;
 

@@ -735,4 +735,6 @@ public interface IStudyDao {
 	
 	public TwinType getTwinTypeByname(String name);
 	
+	public List<LinkSubjectStudy> getListofLinkSubjectStudiesForStudy(Study study);
+	
 }

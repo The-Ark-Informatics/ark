@@ -1,6 +1,6 @@
 package au.org.theark.web.rest.model;
 
-public class CreateRelationShipRequest {
+public class CreateTwinRequest {
 	
 	private String subjectUID;
 	
@@ -8,9 +8,8 @@ public class CreateRelationShipRequest {
 	
 	private Long studyId;
 	
-	private String parentType;
-	
-	
+	private String twinType;
+
 	public String getSubjectUID() {
 		return subjectUID;
 	}
@@ -35,13 +34,12 @@ public class CreateRelationShipRequest {
 		this.studyId = studyId;
 	}
 
-	public String getParentType() {
-		return parentType;
+	public String getTwinType() {
+		return twinType;
 	}
 
-	public void setParentType(String parentType) {
-		this.parentType = parentType;
+	public void setTwinType(String twinType) {
+		this.twinType = twinType;
 	}
-	
 
 }

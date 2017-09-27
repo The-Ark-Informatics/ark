@@ -1,5 +1,7 @@
 package au.org.theark.web.rest.service;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -14,8 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 
@@ -65,9 +70,28 @@ public class LoginWebServiceRest implements ILoginWebServiceRest {
 	}
 
 	@Override
-	public boolean hasRightSimilarToSubjectAdministrator() {
+	public boolean hasPermissionForStudy(Long studyId) {
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
+		ArkUser arkUser = null;
+		try {
+			arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		ArkUserVO arkUserVo = new ArkUserVO();
+		arkUserVo.setArkUserEntity(arkUser);
+		arkUserVo.setStudy(iArkCommonService.getStudy(studyId));
+		List<Study> studyListForUser= iArkCommonService.getStudyListForUser(arkUserVo);
+		return (studyListForUser.size() > 0) && hasPermissionToCreateSubjectsForStudy(securityManager, currentUser);
+	}
+	/**
+	 * 
+	 * @param securityManager
+	 * @param currentUser
+	 * @return
+	 */
+	private boolean hasPermissionToCreateSubjectsForStudy(SecurityManager securityManager,Subject currentUser){
 		if(securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)||
 				securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_STUDY_ADMINISTATOR)||
 				securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUBJECT_ADMINISTATOR)){

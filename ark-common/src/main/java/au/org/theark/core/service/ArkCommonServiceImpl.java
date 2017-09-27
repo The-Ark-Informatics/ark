@@ -2356,4 +2356,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getTwinTypeByname(name);
 	}
 
+	@Override
+	public List<LinkSubjectStudy> getListofLinkSubjectStudiesForStudy(Study study) {
+		return studyDao.getListofLinkSubjectStudiesForStudy(study);
+	}
+
 }

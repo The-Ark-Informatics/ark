@@ -1274,4 +1274,6 @@ public interface IArkCommonService<T> {
 	
 	public TwinType getTwinTypeByname(String name);
 	
+	public List<LinkSubjectStudy> getListofLinkSubjectStudiesForStudy(Study study);
+	
 }

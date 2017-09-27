@@ -6,6 +6,6 @@ public interface ILoginWebServiceRest {
 	
 	public boolean authenticate(ArkUserVO user);
 	
-	public boolean hasRightSimilarToSubjectAdministrator();
+	public boolean hasPermissionForStudy(Long studyId);
 
 }
