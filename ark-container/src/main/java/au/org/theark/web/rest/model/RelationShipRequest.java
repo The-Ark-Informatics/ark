@@ -1,6 +1,8 @@
 package au.org.theark.web.rest.model;
 
-public class CreateRelationShipRequest {
+public class RelationShipRequest {
+	
+	private Long id;
 	
 	private String subjectUID;
 	
@@ -11,6 +13,14 @@ public class CreateRelationShipRequest {
 	private String parentType;
 	
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getSubjectUID() {
 		return subjectUID;
 	}

@@ -30,16 +30,20 @@ import org.xml.sax.InputSource;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.jni.ArkMadelineProxy;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
+import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
@@ -48,10 +52,9 @@ import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.PedigreeUploadValidator;
-import au.org.theark.web.rest.model.CreateRelationShipRequest;
-import au.org.theark.web.rest.model.CreateSubjectRequest;
-import au.org.theark.web.rest.model.CreateTwinRequest;
-import au.org.theark.web.rest.model.GetSubjectRequest;
+import au.org.theark.web.rest.model.RelationShipRequest;
+import au.org.theark.web.rest.model.SubjectRequest;
+import au.org.theark.web.rest.model.TwinRequest;
 import au.org.theark.web.rest.model.ValidationType;
 
 @Service("pedigreeService")
@@ -63,6 +66,8 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 	
 	@Autowired
 	private  IArkCommonService		iArkCommonService;
+	
+	private static final String ACTIVE_SUBJECT_STATUS="Subject";
 	
 	@Override
 	public Boolean createSubject(SubjectVO subjectVO) {
@@ -102,18 +107,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		Long studyId=subjectVO.getLinkSubjectStudy().getStudy().getId();
 		String subjectUid=subjectVO.getLinkSubjectStudy().getSubjectUID();
 		String relativeSubjectUid=relativeVO.getLinkSubjectStudy().getSubjectUID();
-		Boolean isSetRelativeASiblings=false;
-		//Check for the siblings are currently exists before assign as twins.
-		List<RelationshipVo> relationshipVos=iStudyService.getSubjectPedigreeTwinList(subjectUid, studyId);
-		
-		for (RelationshipVo relationshipVo : relationshipVos) {
-			if(relationshipVo.getIndividualId().equals(relativeSubjectUid)){
-				isSetRelativeASiblings=true;
-				break;
-			}
-		}
-		if(isSetRelativeASiblings){
-			RelationshipVo relationshipVo=new RelationshipVo();
+		RelationshipVo relationshipVo=new RelationshipVo();
 			if(twinType.getName().equals("MZ")){
 				relationshipVo.setMz("MZ");
 			}else if(twinType.getName().equals("DZ")){
@@ -122,11 +116,6 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 			relationshipVo.setIndividualId(relativeSubjectUid);
 			iStudyService.processPedigreeTwinRelationship(relationshipVo,subjectUid,studyId);
 			return true;
-		}else{
-			return false;
-		}
-		
-		
 	}
 	@Override
 	public Boolean isCircularValidationSuccessful(SubjectVO subjectVO, SubjectVO relativeVO) {
@@ -366,33 +355,55 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 
 	}
 	@Override
-	public  SubjectVO mapSubjectRequestToBusinessSubjectVO(CreateSubjectRequest subjectRequest){
+	public  SubjectVO mapSubjectRequestToBusinessSubjectVO(SubjectRequest subjectRequestInsert){
 		SubjectVO subjectVO=new SubjectVO();
 		LinkSubjectStudy linkSubjectStudy=new LinkSubjectStudy();
 		
-		linkSubjectStudy.setStudy(iArkCommonService.getStudy(subjectRequest.getStudyId()));
+		linkSubjectStudy.setStudy(iArkCommonService.getStudy(subjectRequestInsert.getStudyId()));
 		
 		Person person=new Person();
 		
-		person.setFirstName(subjectRequest.getFirstName());
-		person.setLastName(subjectRequest.getLastName());
-		person.setDateOfBirth(subjectRequest.getDateOfBirth());
-		person.setGenderType(iArkCommonService.getGenderType(subjectRequest.getGenderTypeName()));
-		person.setVitalStatus(iArkCommonService.getVitalStatus(subjectRequest.getVitalStatusName()));
+		person.setFirstName(subjectRequestInsert.getFirstName());
+		person.setLastName(subjectRequestInsert.getLastName());
+		person.setDateOfBirth(subjectRequestInsert.getDateOfBirth());
+		person.setGenderType(iArkCommonService.getGenderType(subjectRequestInsert.getGenderTypeName()));
+		person.setVitalStatus(iArkCommonService.getVitalStatus(subjectRequestInsert.getVitalStatusName()));
 		linkSubjectStudy.setPerson(person);
 		
-		linkSubjectStudy.setSubjectUID(subjectRequest.getSubjectUID());
+		linkSubjectStudy.setSubjectStatus(iArkCommonService.getSubjectStatus(subjectRequestInsert.getSubjectStatusName()));
+		linkSubjectStudy.setSubjectUID(subjectRequestInsert.getSubjectUID());
 		
 		subjectVO.setLinkSubjectStudy(linkSubjectStudy);
 		return subjectVO;
 	}
 	
 	@Override
-	public ValidationType validateForSubjectUIDForStudy(GetSubjectRequest getSubjectRequest) {
+	public SubjectVO mapUpdateSubjectRequestToBusinessSubjectVO(SubjectRequest subjectRequestUpdate) {
+		SubjectVO subjectVO=new SubjectVO();
+		Study study=iArkCommonService.getStudy(subjectRequestUpdate.getStudyId());
+		LinkSubjectStudy linkSubjectStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(subjectRequestUpdate.getSubjectUID(),study);
+		Person person=linkSubjectStudy.getPerson();
+		person.setFirstName(subjectRequestUpdate.getFirstName());
+		person.setLastName(subjectRequestUpdate.getLastName());
+		person.setDateOfBirth(subjectRequestUpdate.getDateOfBirth());
+		person.setGenderType(iArkCommonService.getGenderType(subjectRequestUpdate.getGenderTypeName()));
+		person.setVitalStatus(iArkCommonService.getVitalStatus(subjectRequestUpdate.getVitalStatusName()));
+		linkSubjectStudy.setPerson(person);
+		linkSubjectStudy.setSubjectStatus(iArkCommonService.getSubjectStatus(subjectRequestUpdate.getSubjectStatusName()));
+		//linkSubjectStudy.setSubjectUID(subjectRequestUpdate.getSubjectUID());
+		
+		subjectVO.setLinkSubjectStudy(linkSubjectStudy);
+		return subjectVO;
+		
+	}
+	
+	
+	@Override
+	public ValidationType validateForSubjectUIDForStudy(Long studyId,String uid) {
 		Study study;
 		//Check for valid(not null) study id.
-		if(getSubjectRequest.getStudyId()!=null ){
-			study=iArkCommonService.getStudy(getSubjectRequest.getStudyId());
+		if(studyId!=null ){
+			study=iArkCommonService.getStudy(studyId);
 		}else{
 			return ValidationType.INVALID_STUDY_ID;
 		}
@@ -403,7 +414,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		}
 		
 		//Check subject uid exists.
-		LinkSubjectStudy linkSubjectStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(getSubjectRequest.getSubjectUID(),study);
+		LinkSubjectStudy linkSubjectStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(uid,study);
 		if(linkSubjectStudy==null || linkSubjectStudy.getId()==null){
 			return ValidationType.SUBJECT_UID_NOT_EXISTS;
 		}
@@ -425,10 +436,11 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		return ValidationType.SUCCESSFULLY_VALIDATED;
 	}
 	@Override
-	public ValidationType validateEntireSubjectRequest(CreateSubjectRequest subjectRequest){
+	public ValidationType validateEntireSubjectRequest(SubjectRequest subjectRequest,String action){
 		Study study;
 		GenderType genderType;
 		VitalStatus vitalStatus;
+		SubjectStatus subjectStatus;
 		//Check for valid(not null) study id.
 		if(subjectRequest.getStudyId()!=null ){
 			study=iArkCommonService.getStudy(subjectRequest.getStudyId());
@@ -441,11 +453,19 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 			return ValidationType.NOT_EXSISTING_STUDY;
 		}
 		
-		//Check for unique subject uid for the study.
-		if(!iStudyService.isSubjectUIDUnique(study,subjectRequest.getSubjectUID(),"insert")){
-			return ValidationType.SUBJECT_UID_ALREADY_EXISTS; 
+		if(action.equals(Constants.ACTION_INSERT)){
+			//Check for unique subject uid for the study.
+			if(!iStudyService.isSubjectUIDUnique(study,subjectRequest.getSubjectUID(),action)){
+				return ValidationType.SUBJECT_UID_ALREADY_EXISTS; 
+			}
+		}else if(action.equals(Constants.ACTION_UPDATE)){
+			LinkSubjectStudy linkSubjectStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(subjectRequest.getSubjectUID(), study);
+			if(linkSubjectStudy==null ||linkSubjectStudy.getId()==null){
+				return ValidationType.SUBJECT_UID_NOT_EXISTS;
+			}else if(!linkSubjectStudy.getId().equals(subjectRequest.getId())){
+				return ValidationType.MISMATCH_SUBJECT_UID_WITH_SUBJECT_ID;
+			}
 		}
-		
 		//Check for the valid gender type.
 		if(subjectRequest.getGenderTypeName()!=null){
 			genderType=iArkCommonService.getGenderType(subjectRequest.getGenderTypeName());
@@ -465,11 +485,22 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		if(vitalStatus==null || vitalStatus.getId()==null){
 			return ValidationType.INVALID_VITAL_TYPE;
 		}
+		
+		//Check for the valid subject Status
+		if(subjectRequest.getSubjectStatusName()!=null){
+			subjectStatus=iArkCommonService.getSubjectStatus(subjectRequest.getSubjectStatusName());
+		}else{
+			return ValidationType.NO_SUBJECT_STATUS;
+		}
+		if(subjectStatus==null || subjectStatus.getId()==null){
+			return ValidationType.INVALID_SUBJECT_STATUS;
+		}
+		
 		return ValidationType.SUCCESSFULLY_VALIDATED;
 		
 	}
 	@Override
-	public ValidationType validateRelationShipForStudy(CreateRelationShipRequest createRelationShipRequest) {
+	public ValidationType validateRelationShipForStudy(RelationShipRequest createRelationShipRequest) {
 		Study study;
 		Relationship relationship;
 		//Check for valid(not null) study id.
@@ -484,26 +515,36 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		}
 		
 		//Check subject uid exists.
-		LinkSubjectStudy linkSubjectStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createRelationShipRequest.getSubjectUID(),study);
-		if(linkSubjectStudy==null || linkSubjectStudy.getId()==null){
+		LinkSubjectStudy subject=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createRelationShipRequest.getSubjectUID(),study);
+		if(subject==null || subject.getId()==null){
 			return ValidationType.SUBJECT_UID_NOT_EXISTS;
+		}else if(!subject.getSubjectStatus().getName().equalsIgnoreCase(ACTIVE_SUBJECT_STATUS)){
+			return ValidationType.SUBJECT_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP;
 		}
-		LinkSubjectStudy linkRelativeStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createRelationShipRequest.getRelativeUID(),study);
-		if(linkRelativeStudy==null || linkRelativeStudy.getId()==null){
+		LinkSubjectStudy relative=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createRelationShipRequest.getRelativeUID(),study);
+		if(relative==null || relative.getId()==null){
 			return ValidationType.RELATIVE_SUBJECT_UID_NOT_EXISTS;
+		}else if (!relative.getSubjectStatus().getName().equalsIgnoreCase(ACTIVE_SUBJECT_STATUS)){
+			return ValidationType.RELATION_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP;
 		}
 		if(createRelationShipRequest.getParentType()!=null){
 			relationship=iArkCommonService.getRelationShipByname(createRelationShipRequest.getParentType());
 				if(relationship==null || relationship.getId()==null){
-					return ValidationType.INVALID_RELATION_TYPE;
+					return ValidationType.INVALID_PARENT_TYPE;
 				}
 		}else{
-				return ValidationType.NO_RELATION_TYPE;
+				return ValidationType.NO_PARENT_TYPE;
+		}
+		
+		LinkSubjectPedigree linkSubjectPedigree=iStudyService.getParentRelationShipByLinkSubjectStudies(subject, relative);
+		
+		if(linkSubjectPedigree!=null && linkSubjectPedigree.getId()!=null){
+			return ValidationType.PARENT_RELATION_SHIP_ALREADY_EXISTS;
 		}
 		return ValidationType.SUCCESSFULLY_VALIDATED;
 	}
 	@Override
-	public ValidationType validateTwinTypeForStudy(CreateTwinRequest createTwinRequest) {
+	public ValidationType validateTwinTypeForStudy(TwinRequest createTwinRequest) {
 		Study study;
 		TwinType twinType;
 		//Check for valid(not null) study id.
@@ -518,23 +559,52 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		}
 		
 		//Check subject uid exists.
-		LinkSubjectStudy linkSubjectStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createTwinRequest.getSubjectUID(),study);
-		if(linkSubjectStudy==null || linkSubjectStudy.getId()==null){
+		LinkSubjectStudy subject=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createTwinRequest.getSubjectUID(),study);
+		if(subject==null || subject.getId()==null){
 			return ValidationType.SUBJECT_UID_NOT_EXISTS;
+		}else if(!subject.getSubjectStatus().getName().equalsIgnoreCase(ACTIVE_SUBJECT_STATUS)){
+			return ValidationType.SUBJECT_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP;
 		}
-		LinkSubjectStudy linkRelativeStudy=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createTwinRequest.getRelativeUID(),study);
-		if(linkRelativeStudy==null || linkRelativeStudy.getId()==null){
+		LinkSubjectStudy relative=iStudyService.getLinkSubjectStudyBySubjectUidAndStudy(createTwinRequest.getRelativeUID(),study);
+		if(relative==null || relative.getId()==null){
 			return ValidationType.RELATIVE_SUBJECT_UID_NOT_EXISTS;
+		}else if (!relative.getSubjectStatus().getName().equalsIgnoreCase(ACTIVE_SUBJECT_STATUS)){
+			return ValidationType.RELATION_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP;
 		}
 		if(createTwinRequest.getTwinType()!=null){
 			twinType=iArkCommonService.getTwinTypeByname(createTwinRequest.getTwinType());
 				if(twinType==null || twinType.getId()==null){
-					return ValidationType.INVALID_RELATION_TYPE;
+					return ValidationType.INVALID_TWIN_TYPE;
 				}
 		}else{
-			return ValidationType.NO_RELATION_TYPE;
+			return ValidationType.NO_TWIN_TYPE;
+		}
+		
+		LinkSubjectTwin linkSubjectTwin=iStudyService.getTwinRelationShipByLinkSubjectStudies(subject, relative);
+		
+		if(linkSubjectTwin!=null && linkSubjectTwin.getId()!=null){
+			return ValidationType.TWIN_RELATION_SHIP_ALREADY_EXISTS;
 		}
 		return ValidationType.SUCCESSFULLY_VALIDATED;
+	}
+	@Override
+	public ValidationType validateParentRelationShip(Long id) {
+		LinkSubjectPedigree linkSubjectPedigree=iStudyService.getLinkSubjectPedigreeById(id);
+		if(linkSubjectPedigree==null || linkSubjectPedigree.getId()==null){
+			return ValidationType.INVALID_PARENT_RELATION_SHIP;
+		}else{
+			return ValidationType.SUCCESSFULLY_VALIDATED;
+		}
+		
+	}
+	@Override
+	public ValidationType validateTwinRelationShip(Long id) {
+		LinkSubjectTwin linkSubjectTwin=iStudyService.getLinkSubjectTwinById(id);
+		if(linkSubjectTwin==null || linkSubjectTwin.getId()==null){
+			return ValidationType.INVALID_TWIN_RELATION_SHIP;
+		}else{
+			return ValidationType.SUCCESSFULLY_VALIDATED;
+		}
 	}
 	
 	
@@ -552,21 +622,28 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		return iArkCommonService.getListofLinkSubjectStudiesForStudy(study);
 	}
 	@Override
-	public List<CreateSubjectRequest> mapListOfLinkSubjectStudiesToListOfCreateSubjectRequests(List<LinkSubjectStudy> linkSubjectStudies) {
-		List<CreateSubjectRequest> createSubjectRequests=new ArrayList<CreateSubjectRequest>();
+	public List<SubjectRequest> mapListOfLinkSubjectStudiesToListOfSubjectRequests(List<LinkSubjectStudy> linkSubjectStudies) {
+		List<SubjectRequest> createSubjectRequests=new ArrayList<SubjectRequest>();
 		for (LinkSubjectStudy linkSubjectStudy : linkSubjectStudies) {
-			CreateSubjectRequest createSubjectRequest=new CreateSubjectRequest();
-			createSubjectRequest.setStudyId(linkSubjectStudy.getStudy().getId());
-			createSubjectRequest.setSubjectUID(linkSubjectStudy.getSubjectUID());
-			createSubjectRequest.setFirstName(linkSubjectStudy.getPerson().getFirstName());
-			createSubjectRequest.setLastName(linkSubjectStudy.getPerson().getLastName());
-			createSubjectRequest.setDateOfBirth(linkSubjectStudy.getPerson().getDateOfBirth());
-			createSubjectRequest.setGenderTypeName(linkSubjectStudy.getPerson().getGenderType().getName());
-			createSubjectRequest.setVitalStatusName(linkSubjectStudy.getPerson().getVitalStatus().getName());
-			createSubjectRequests.add(createSubjectRequest);
+			createSubjectRequests.add(mapLinkSubjectStudyToCreateSubjectRequests(linkSubjectStudy));
 		}
 		return createSubjectRequests;
 	}
+	@Override
+	public SubjectRequest mapLinkSubjectStudyToCreateSubjectRequests(LinkSubjectStudy linkSubjectStudy) {
+		SubjectRequest subjectRequest=new SubjectRequest();
+		subjectRequest.setStudyId(linkSubjectStudy.getStudy().getId());
+		subjectRequest.setId(linkSubjectStudy.getId());
+		subjectRequest.setSubjectUID(linkSubjectStudy.getSubjectUID());
+		subjectRequest.setFirstName(linkSubjectStudy.getPerson().getFirstName());
+		subjectRequest.setLastName(linkSubjectStudy.getPerson().getLastName());
+		subjectRequest.setDateOfBirth(linkSubjectStudy.getPerson().getDateOfBirth());
+		subjectRequest.setGenderTypeName(linkSubjectStudy.getPerson().getGenderType().getName());
+		subjectRequest.setVitalStatusName(linkSubjectStudy.getPerson().getVitalStatus().getName());
+		subjectRequest.setSubjectStatusName(linkSubjectStudy.getSubjectStatus().getName());
+		return subjectRequest;		
+	}
+	
 	@Override
 	public Boolean isRelativeASibling(SubjectVO subjectVO, SubjectVO relativeVO) {
 		boolean isSibling=false;
@@ -582,6 +659,72 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		}
 		return isSibling;
 	}
+	@Override
+	public Boolean updateSubject(SubjectVO subjectVO) {
+		try {
+			iStudyService.updateSubject(subjectVO);
+			return true;
+		} catch (ArkUniqueException | EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	@Override
+	public void deleteRelationShip(Long id) {
+		LinkSubjectPedigree linkSubjectPedigree=iStudyService.getLinkSubjectPedigreeById(id);
+		iStudyService.deleteRelationship(linkSubjectPedigree);
+	}
+	@Override
+	public void deleteTwin(Long id) {
+		LinkSubjectTwin linkSubjectTwin=iStudyService.getLinkSubjectTwinById(id);
+		iStudyService.delete(linkSubjectTwin);
+	}
+	@Override
+	public List<LinkSubjectPedigree> getListofLinkSubjectPedigreeForStudy(Study study) {
+		return iStudyService.getListOfLinkSubjectPedigreeForStudy(study);
+	}
+	
+	@Override
+	public List<LinkSubjectTwin> getListofLinkSubjectTwinForStudy(Study study) {
+		return iStudyService.getListOfLinkSubjectTwinForStudy(study);
+		
+	}
+	
+	@Override
+	public List<RelationShipRequest> mapListOfLinkSubjectPedigreesToListOfRelationShipRequests(List<LinkSubjectPedigree> linkSubjectPedigrees) {
+		List<RelationShipRequest> relationShipRequests=new ArrayList<RelationShipRequest>();
+			for (LinkSubjectPedigree linkSubjectPedigree : linkSubjectPedigrees) {
+				RelationShipRequest relationShipRequest=new RelationShipRequest();
+				relationShipRequest.setId(linkSubjectPedigree.getId().longValue());
+				relationShipRequest.setStudyId(linkSubjectPedigree.getSubject().getStudy().getId());
+				relationShipRequest.setSubjectUID(linkSubjectPedigree.getSubject().getSubjectUID());
+				relationShipRequest.setRelativeUID(linkSubjectPedigree.getRelative().getSubjectUID());
+				relationShipRequest.setParentType(linkSubjectPedigree.getRelationship().getName());
+				relationShipRequests.add(relationShipRequest);
+			}
+		return relationShipRequests;
+	}
+	@Override
+	public List<TwinRequest> mapListOfLinkSubjectTwinsToListOfTwinRequests(List<LinkSubjectTwin> linkSubjectTwins) {
+		List<TwinRequest> twinRequests=new ArrayList<TwinRequest>();
+		for (LinkSubjectTwin linkSubjectTwin : linkSubjectTwins) {
+			TwinRequest twinRequest=new TwinRequest();
+			twinRequest.setId(linkSubjectTwin.getId().longValue());
+			twinRequest.setStudyId(linkSubjectTwin.getFirstSubject().getStudy().getId());
+			twinRequest.setSubjectUID(linkSubjectTwin.getFirstSubject().getSubjectUID());
+			twinRequest.setRelativeUID(linkSubjectTwin.getSecondSubject().getSubjectUID());
+			twinRequest.setTwinType(linkSubjectTwin.getTwinType().getName());
+			twinRequests.add(twinRequest);
+		}
+	return twinRequests;
+		
+		
+	}
+	
+	
+	
+	
 	
 	
 	

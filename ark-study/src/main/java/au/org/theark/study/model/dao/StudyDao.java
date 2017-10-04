@@ -2938,5 +2938,61 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.setMaxResults(1);
 		return (LinkSubjectStudy)criteria.uniqueResult();
 	}
+
+	@Override
+	public LinkSubjectPedigree getParentRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class);
+		criteria.add(Restrictions.eq("subject", subject));
+		criteria.add(Restrictions.eq("relative",relative));
+		criteria.setMaxResults(1);
+		return (LinkSubjectPedigree)criteria.uniqueResult();
+	}
+
+	@Override
+	public LinkSubjectTwin getTwinRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectTwin.class);
+		criteria.add(Restrictions.eq("firstSubject", subject));
+		criteria.add(Restrictions.eq("secondSubject",relative));
+		criteria.setMaxResults(1);
+		return (LinkSubjectTwin)criteria.uniqueResult();
+	}
+
+	@Override
+	public LinkSubjectPedigree getLinkSubjectPedigreeById(Long id) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class);
+		criteria.add(Restrictions.eq("id",Integer.parseInt(id.toString())));
+		criteria.setMaxResults(1);
+		return (LinkSubjectPedigree)criteria.uniqueResult();
+		
+	}
+
+	@Override
+	public LinkSubjectTwin getLinkSubjectTwinById(Long id) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectTwin.class);
+		criteria.add(Restrictions.eq("id", Integer.parseInt(id.toString())));
+		criteria.setMaxResults(1);
+		return (LinkSubjectTwin)criteria.uniqueResult();
+		
+	}
+
+	@Override
+	public List<LinkSubjectPedigree> getListOfLinkSubjectPedigreeForStudy(Study study) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class)
+		.createAlias("subject", "subject")
+		.createAlias("relative", "relative")
+	    .add(Restrictions.eq("subject.study", study))
+	    .add(Restrictions.eq("relative.study", study));
+		return (List<LinkSubjectPedigree>)criteria.list();
+	}
+
+	@Override
+	public List<LinkSubjectTwin> getListOfLinkSubjectTwinForStudy(Study study) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectTwin.class)
+				.createAlias("firstSubject", "s1")
+				.createAlias("secondSubject", "s2")
+			    .add(Restrictions.eq("s1.study", study))
+			    .add(Restrictions.eq("s2.study", study));
+				return (List<LinkSubjectTwin>)criteria.list();
+	}
 		
 }

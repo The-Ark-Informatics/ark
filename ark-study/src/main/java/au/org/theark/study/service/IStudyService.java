@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.util.file.File;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSubjectInsertException;
@@ -570,5 +572,19 @@ public interface IStudyService {
 	public Study getStudy(Long studyId);
 	
 	public LinkSubjectStudy getLinkSubjectStudyBySubjectUidAndStudy(String subjectUid, Study study);
+		
+	public LinkSubjectPedigree getParentRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative);
+	
+	public LinkSubjectTwin getTwinRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative); 
+	
+	public void delete(LinkSubjectTwin twin);
+	
+	public LinkSubjectPedigree getLinkSubjectPedigreeById(Long id);
+	
+	public LinkSubjectTwin getLinkSubjectTwinById(Long id);
+	
+	public List<LinkSubjectPedigree> getListOfLinkSubjectPedigreeForStudy(Study study);
+	
+	public List<LinkSubjectTwin> getListOfLinkSubjectTwinForStudy(Study study);
 	
 }

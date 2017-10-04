@@ -2,7 +2,9 @@ package au.org.theark.web.rest.model;
 
 import java.util.Date;
 
-public class CreateSubjectRequest {
+public class SubjectRequest {
+	
+	private Long id;
 	
 	private String subjectUID;
 	
@@ -16,7 +18,17 @@ public class CreateSubjectRequest {
 	
 	private String vitalStatusName;
 	
+	private String subjectStatusName;
+	
 	private Long studyId;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getSubjectUID() {
 		return subjectUID;
@@ -64,6 +76,14 @@ public class CreateSubjectRequest {
 
 	public void setVitalStatusName(String vitalStatusName) {
 		this.vitalStatusName = vitalStatusName;
+	}
+
+	public String getSubjectStatusName() {
+		return subjectStatusName;
+	}
+
+	public void setSubjectStatusName(String subjectStatusName) {
+		this.subjectStatusName = subjectStatusName;
 	}
 
 	public Long getStudyId() {

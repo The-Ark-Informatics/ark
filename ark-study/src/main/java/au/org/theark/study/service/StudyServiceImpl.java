@@ -2631,6 +2631,42 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getLinkSubjectStudyBySubjectUidAndStudy(subjectUid, study);
 	}
 
+	@Override
+	public LinkSubjectPedigree getParentRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative) {
+		return iStudyDao.getParentRelationShipByLinkSubjectStudies(subject, relative);
+	}
+
+	@Override
+	public LinkSubjectTwin getTwinRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative) {
+		return iStudyDao.getTwinRelationShipByLinkSubjectStudies(subject, relative);
+	}
+
+	@Override
+	public void delete(LinkSubjectTwin twin) {
+		iStudyDao.delete(twin);
+	}
+
+	@Override
+	public LinkSubjectPedigree getLinkSubjectPedigreeById(Long id) {
+		return iStudyDao.getLinkSubjectPedigreeById(id);
+	}
+
+	@Override
+	public LinkSubjectTwin getLinkSubjectTwinById(Long id) {
+		return iStudyDao.getLinkSubjectTwinById(id);
+	}
+
+	@Override
+	public List<LinkSubjectPedigree> getListOfLinkSubjectPedigreeForStudy(Study study) {
+		return iStudyDao.getListOfLinkSubjectPedigreeForStudy(study);
+	}
+
+	@Override
+	public List<LinkSubjectTwin> getListOfLinkSubjectTwinForStudy(Study study) {
+		return iStudyDao.getListOfLinkSubjectTwinForStudy(study);
+	}
+	
+
 	
 
 }
