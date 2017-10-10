@@ -25,9 +25,14 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.web.rest.model.ConfigRequest;
+import au.org.theark.web.rest.model.MembershipResponse;
+import au.org.theark.web.rest.model.PedigreeResponse;
 import au.org.theark.web.rest.model.RelationShipRequest;
 import au.org.theark.web.rest.model.SubjectRequest;
 import au.org.theark.web.rest.model.TwinRequest;
@@ -39,6 +44,16 @@ import au.org.theark.web.rest.service.IPedigreeWebServiceRest;
 @RestController
 public class PedigreeRestController {
 
+	private static final String SUBJECT = "Subject";
+	
+	private static final String RELATIONSHIP = "Relationship";
+	
+	private static final String TWINTYPE = "Twintype";
+	
+	private static final String CONFIGURATION = "Configuration";
+	
+	
+
 	public static final Logger logger = LoggerFactory.getLogger(PedigreeRestController.class);
 
 	@Autowired
@@ -46,8 +61,6 @@ public class PedigreeRestController {
 	
 	@Autowired
 	ILoginWebServiceRest iLoginWebServiceRest;
-	
-	private String message;
 
 	//1-Create subject.
 	@CrossOrigin(origins = "http://localhost:8082")
@@ -61,14 +74,12 @@ public class PedigreeRestController {
 					iPedWebSerRest.createSubject(subjectvo);
 					HttpHeaders headers = new HttpHeaders();
 					headers.setLocation(ucBuilder.path("/study/{id}/subject/{id}").buildAndExpand(studyId,subjectvo.getLinkSubjectStudy().getId()).toUri());
-					message="Subject created successfuly.";
-					return new ResponseEntity<String>(message,headers, HttpStatus.CREATED);
+					return new ResponseEntity<String>(SUBJECT+ValidationType.CREATED_SUCCESSFULLY.getName(),headers,getResponseEntityForValidationCode(ValidationType.CREATED_SUCCESSFULLY));
 				}else{
 					return new ResponseEntity<String>(validationType.getName(),getResponseEntityForValidationCode(validationType)); 
 				}
 			}else{
-					message="Unauthorised user.Please check the credentials for the study.";
-					return new ResponseEntity<String>(message,HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity<String>(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName(),getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 			}
 	}
 
@@ -85,14 +96,12 @@ public class PedigreeRestController {
 					iPedWebSerRest.updateSubject(subjectvo);
 					HttpHeaders headers = new HttpHeaders();
 					headers.setLocation(ucBuilder.path("/study/{id}/subject/{lid}").buildAndExpand(studyId,subjectvo.getLinkSubjectStudy().getId()).toUri());
-					message="Subject updated successfuly.";
-					return new ResponseEntity<String>(message,headers, HttpStatus.CREATED);
+					return new ResponseEntity<String>(SUBJECT+ValidationType.UPDATED_SUCCESSFULLY.getName(),headers,getResponseEntityForValidationCode(ValidationType.UPDATED_SUCCESSFULLY));
 				}else{
 					return new ResponseEntity<String>(validationType.getName(),getResponseEntityForValidationCode(validationType)); 
 				}
 			}else{
-					message="Unauthorised user.Please check the credentials for the study.";
-					return new ResponseEntity<String>(message,HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity<String>(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName(),getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 			}
 	}
 
@@ -107,19 +116,20 @@ public class PedigreeRestController {
 			 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
 			        LinkSubjectStudy linkSubjectStudy = iPedWebSerRest.getLinkSubjectStudyBySubjectUidAndStudy(subjectUid, iPedWebSerRest.getStudyByID(studyId));
 			        if (linkSubjectStudy== null || linkSubjectStudy.getId()==null) {
-			        	message="Can not find a subject for this subjectuid.";
-			            return new ResponseEntity<SubjectRequest>(HttpStatus.NOT_FOUND);
+			        	 headers.set("message", ValidationType.SUBJECT_UID_NOT_EXISTS.getName());
+			            return new ResponseEntity<SubjectRequest>(headers,getResponseEntityForValidationCode(ValidationType.SUBJECT_UID_NOT_EXISTS));
 			        }else{
+			        	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());	
 			          createSubjectRequest=	iPedWebSerRest.mapLinkSubjectStudyToCreateSubjectRequests(linkSubjectStudy);
 			        }
-			        return new ResponseEntity<SubjectRequest>(createSubjectRequest, HttpStatus.OK);
+			        return new ResponseEntity<SubjectRequest>(createSubjectRequest,headers,HttpStatus.OK);
 			 }else{
-				 	headers.set("validation", validationType.getName());
+				 	headers.set("message", validationType.getName());
 					return new ResponseEntity<SubjectRequest>(headers,getResponseEntityForValidationCode(validationType)); 
 			 }   
 		 }else{
-			 	message="Unauthorised user.Please check the credentials for the study.";
-				return new ResponseEntity<SubjectRequest>(HttpStatus.UNAUTHORIZED);
+			 	headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName() );
+				return new ResponseEntity<SubjectRequest>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 		}
     }
 	
@@ -135,17 +145,18 @@ public class PedigreeRestController {
 			     List<LinkSubjectStudy> linkSubjectStudies = iPedWebSerRest.getListofLinkSubjectStudiesForStudy(iPedWebSerRest.getStudyByID(studyId));
 			        if (linkSubjectStudies!= null && !linkSubjectStudies.isEmpty()) {
 			        	 subjectRequests=iPedWebSerRest.mapListOfLinkSubjectStudiesToListOfSubjectRequests(linkSubjectStudies);
-			            return new ResponseEntity<List<SubjectRequest>>(subjectRequests,HttpStatus.OK);
+			        	 headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());	
+			            return new ResponseEntity<List<SubjectRequest>>(subjectRequests,headers,HttpStatus.OK);
 			        }
-			        message="Can not find any subject for this study.";
-			        headers.set("validation", message);
-			        return new ResponseEntity<List<SubjectRequest>>(headers, HttpStatus.NOT_FOUND);
+			        headers.set("message", ValidationType.SUBJECT_UID_NOT_EXISTS.getName());
+			        return new ResponseEntity<List<SubjectRequest>>(headers, getResponseEntityForValidationCode(ValidationType.SUBJECT_UID_NOT_EXISTS));
 			 }else{
-				 headers.set("validation", validationType.getName());
+				 headers.set("message", validationType.getName());
 				 return new ResponseEntity<List<SubjectRequest>>(headers,getResponseEntityForValidationCode(validationType)); 
 			 }   
 		 }else{
-				return new ResponseEntity<List<SubjectRequest>>(HttpStatus.UNAUTHORIZED);
+			 headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+			 return new ResponseEntity<List<SubjectRequest>>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 		}
     }
 	
@@ -155,6 +166,10 @@ public class PedigreeRestController {
 	public ResponseEntity<String> createRelationShip(@PathVariable("id") Long studyId,@RequestBody RelationShipRequest relationShipRequest,@RequestHeader HttpHeaders httpHeaders,UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
 		if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
+			//Set study id for the validation if not assigned in the request.
+			if(relationShipRequest.getStudyId()==null){
+				relationShipRequest.setStudyId(studyId);
+			}
 			 ValidationType validationType=iPedWebSerRest.validateRelationShipForStudy(relationShipRequest);
 			 Study study=iPedWebSerRest.getStudyByID(studyId);
 			 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
@@ -168,15 +183,16 @@ public class PedigreeRestController {
 					Relationship relationship=iPedWebSerRest.getRelationShipByname(relationShipRequest.getParentType());
 					iPedWebSerRest.createRelationShip(subjectVO,relativeVO,relationship);
 				 }else{
-						return new ResponseEntity<String>(ValidationType.CIRCULAR_VALIDATION_UNSUCCESSFUL.getName(),HttpStatus.CONFLICT); 
+						return new ResponseEntity<String>(ValidationType.CIRCULAR_VALIDATION_UNSUCCESSFUL.getName(),getResponseEntityForValidationCode(ValidationType.CIRCULAR_VALIDATION_UNSUCCESSFUL)); 
 				}	
 					headers.setLocation(ucBuilder.path("/study/{id}/relationship/{id}").buildAndExpand(studyId,subject.getId()).toUri());
-					return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+					return new ResponseEntity<String>(RELATIONSHIP+ValidationType.CREATED_SUCCESSFULLY.getName(),headers,getResponseEntityForValidationCode(ValidationType.CREATED_SUCCESSFULLY));
 			 	}else{
 					return new ResponseEntity<String>(validationType.getName(),getResponseEntityForValidationCode(validationType)); 
 			 }   
 			}else{
-				return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+				headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+				return new ResponseEntity<String>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 			}
 	}
 	
@@ -190,12 +206,13 @@ public class PedigreeRestController {
 			 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
 				 iPedWebSerRest.deleteRelationShip(relationShipId);	
 				 headers.setLocation(ucBuilder.path("/study/{id}/relationship/{id}").buildAndExpand(studyId,relationShipId).toUri());
-				 return new ResponseEntity<String>(headers, HttpStatus.ACCEPTED);
+				 return new ResponseEntity<String>(RELATIONSHIP+ValidationType.DELETED_SUCCESSFULLY.getName(),headers,getResponseEntityForValidationCode(ValidationType.DELETED_SUCCESSFULLY));
 			 	}else{
 			 		return new ResponseEntity<String>(validationType.getName(),getResponseEntityForValidationCode(validationType)); 
 			 }   
 			}else{
-				return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+				headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+				return new ResponseEntity<String>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 			}
 	}
 	
@@ -211,17 +228,18 @@ public class PedigreeRestController {
 				     List<LinkSubjectPedigree> linkSubjectPedigrees = iPedWebSerRest.getListofLinkSubjectPedigreeForStudy(iPedWebSerRest.getStudyByID(studyId));
 				        if (linkSubjectPedigrees!= null && !linkSubjectPedigrees.isEmpty()) {
 				        	 relationshipRequests=iPedWebSerRest.mapListOfLinkSubjectPedigreesToListOfRelationShipRequests(linkSubjectPedigrees);
-				            return new ResponseEntity<List<RelationShipRequest>>(relationshipRequests,HttpStatus.OK);
+				        	 headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());	 
+				            return new ResponseEntity<List<RelationShipRequest>>(relationshipRequests,headers,HttpStatus.OK);
 				        }
-				        message="Can not find any parent relations for this study.";
-				        headers.set("validation", message);
-				        return new ResponseEntity<List<RelationShipRequest>>(headers, HttpStatus.NOT_FOUND);
+				        headers.set("message", ValidationType.NO_PARENT_RELATIONSHIP_EXISTS_FOR_STUDY.getName());
+				        return new ResponseEntity<List<RelationShipRequest>>(headers, getResponseEntityForValidationCode(ValidationType.NO_PARENT_RELATIONSHIP_EXISTS_FOR_STUDY));
 				 }else{
-					 headers.set("validation", validationType.getName());
+					 headers.set("message", validationType.getName());
 					 return new ResponseEntity<List<RelationShipRequest>>(headers,getResponseEntityForValidationCode(validationType)); 
 				 }   
 			 }else{
-					return new ResponseEntity<List<RelationShipRequest>>(HttpStatus.UNAUTHORIZED);
+				 headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+				 return new ResponseEntity<List<RelationShipRequest>>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 			}
 	    }
 	
@@ -231,6 +249,10 @@ public class PedigreeRestController {
 	public ResponseEntity<String> createTwin(@PathVariable("id") Long studyId,@RequestBody TwinRequest twinRequest,@RequestHeader HttpHeaders httpHeaders,UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
 		if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
+			//Set study id for the validation if not assigned in the request.
+			if(twinRequest.getStudyId()==null){
+				twinRequest.setStudyId(studyId);
+			}
 			 ValidationType validationType=iPedWebSerRest.validateTwinTypeForStudy(twinRequest);
 			 Study study=iPedWebSerRest.getStudyByID(studyId);
 			 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
@@ -244,15 +266,16 @@ public class PedigreeRestController {
 					TwinType twinType=iPedWebSerRest.getTwinTypeByname(twinRequest.getTwinType());
 					iPedWebSerRest.createTwin(subjectVO, relativeVO, twinType);
 				 }else{
-					 return new ResponseEntity<String>(ValidationType.NOT_A_SIBLING.getName(),HttpStatus.FORBIDDEN);
+					 return new ResponseEntity<String>(ValidationType.NOT_A_SIBLING.getName(),getResponseEntityForValidationCode(ValidationType.NOT_A_SIBLING));
 				 }
 					headers.setLocation(ucBuilder.path("/study/{id}/twintype/").buildAndExpand(studyId).toUri());
-					return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+					return new ResponseEntity<String>(TWINTYPE+ValidationType.CREATED_SUCCESSFULLY.getName(),headers,getResponseEntityForValidationCode(ValidationType.CREATED_SUCCESSFULLY));
 			 	}else{
 			 		return new ResponseEntity<String>(validationType.getName(),getResponseEntityForValidationCode(validationType)); 
 			 }   
 		}else{
-			return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+			headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+			return new ResponseEntity<String>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 		}
 	}
 	
@@ -266,12 +289,13 @@ public class PedigreeRestController {
 				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
 					 iPedWebSerRest.deleteTwin(twinTypeId);	
 					 headers.setLocation(ucBuilder.path("/study/{id}/twintype/{id}").buildAndExpand(studyId,twinTypeId).toUri());
-					 return new ResponseEntity<String>(headers, HttpStatus.ACCEPTED);
+					 return new ResponseEntity<String>(TWINTYPE+ValidationType.DELETED_SUCCESSFULLY.getName(),headers,getResponseEntityForValidationCode(ValidationType.DELETED_SUCCESSFULLY));
 				 	}else{
 				 		return new ResponseEntity<String>(validationType.getName(),getResponseEntityForValidationCode(validationType)); 
 				 }   
 				}else{
-					return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+					headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+					return new ResponseEntity<String>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 				}
 		}
 	
@@ -287,39 +311,148 @@ public class PedigreeRestController {
 					     List<LinkSubjectTwin> linkSubjectTwins = iPedWebSerRest.getListofLinkSubjectTwinForStudy(iPedWebSerRest.getStudyByID(studyId));
 					        if (linkSubjectTwins!= null && !linkSubjectTwins.isEmpty()) {
 					        	 twinRequests=iPedWebSerRest.mapListOfLinkSubjectTwinsToListOfTwinRequests(linkSubjectTwins);
-					            return new ResponseEntity<List<TwinRequest>>(twinRequests,HttpStatus.OK);
+					        	 headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());	 
+						         return new ResponseEntity<List<TwinRequest>>(twinRequests,headers,HttpStatus.OK);
 					        }
-					        message="Can not find any twins for this study.";
-					        headers.set("validation", message);
-					        return new ResponseEntity<List<TwinRequest>>(headers, HttpStatus.NOT_FOUND);
+					        headers.set("message", ValidationType.NO_TWINTYPE_RELATIONSHIP_EXISTS_FOR_STUDY.getName());
+					        return new ResponseEntity<List<TwinRequest>>(headers, getResponseEntityForValidationCode(ValidationType.NO_TWINTYPE_RELATIONSHIP_EXISTS_FOR_STUDY));
 					 }else{
-						 headers.set("validation", validationType.getName());
+						 headers.set("message", validationType.getName());
 						 return new ResponseEntity<List<TwinRequest>>(headers,getResponseEntityForValidationCode(validationType)); 
 					 }   
 				 }else{
-						return new ResponseEntity<List<TwinRequest>>(HttpStatus.UNAUTHORIZED);
+					 headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+						return new ResponseEntity<List<TwinRequest>>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 				}
 		    }
 
 	//11-Get Pedigree view as a file
 	@CrossOrigin(origins = "http://localhost:8082")
 	@RequestMapping(value = "/study/{id}/pedigree/{uid}", method = RequestMethod.GET)
-	public ResponseEntity<String> getPedigreeView(@PathVariable("id") Long studyId,@PathVariable("uid") String uid,@RequestHeader HttpHeaders httpHeaders) {
+	public ResponseEntity<PedigreeResponse> getPedigreeView(@PathVariable("id") Long studyId,@PathVariable("uid") String uid,@RequestHeader HttpHeaders httpHeaders) {
+		 HttpHeaders headers = new HttpHeaders();
 		 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
 			 ValidationType validationType=iPedWebSerRest.validateForSubjectUIDForStudy(studyId,uid);
 			 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
 			 String pedigreeFile=iPedWebSerRest.getPedigreeView(uid,studyId);
 	         if (pedigreeFile== null) {
-		           return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+	        	 headers.set("message", ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName());
+			     return new ResponseEntity<PedigreeResponse>(headers, getResponseEntityForValidationCode(ValidationType.PEDIGREE_VIEW_NOT_EXISTS));
 		      }
-	         	return new ResponseEntity<String>(pedigreeFile, HttpStatus.CREATED);
+	         	PedigreeResponse pedigreeResponse=new PedigreeResponse();
+	         	pedigreeResponse.setSvg(pedigreeFile);
+	         	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());
+	         	return new ResponseEntity<PedigreeResponse>(pedigreeResponse,headers,HttpStatus.OK);
 			 }else{
-				 return new ResponseEntity<String>(validationType.getName(),getResponseEntityForValidationCode(validationType)); 
+				 headers.set("message",validationType.getName() );
+				 return new ResponseEntity<PedigreeResponse>(headers,getResponseEntityForValidationCode(validationType)); 
 			 }	
 		 }else{
-				return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+			 	headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+				return new ResponseEntity<PedigreeResponse>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 		}
 	 }
+	//12-Get Study Pedigree Configuration
+	@CrossOrigin(origins = "http://localhost:8082")
+	@RequestMapping(value = "/study/{id}/configuration/", method = RequestMethod.GET)
+	public ResponseEntity<ConfigRequest> getPedigreeConfig(@PathVariable("id") Long studyId,@RequestHeader HttpHeaders httpHeaders) {
+		HttpHeaders headers = new HttpHeaders();
+		 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
+			 ValidationType validationType=iPedWebSerRest.validateForStudy(studyId);
+			 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+			 StudyPedigreeConfiguration studyPedigreeConfiguration=iPedWebSerRest.getStudyPedigreeConfiguration(studyId);
+	         if (studyPedigreeConfiguration== null) {
+	        	 headers.set("message", ValidationType.PEDIGREE_CONFIG_NOT_EXISTS.getName());
+			     return new ResponseEntity<ConfigRequest>(headers,getResponseEntityForValidationCode(ValidationType.PEDIGREE_CONFIG_NOT_EXISTS));
+		      }
+	         	ConfigRequest config=iPedWebSerRest.mapStudyPedigreeConfigurationToConfigRequest(studyPedigreeConfiguration);
+	         	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());
+	         	return new ResponseEntity<ConfigRequest>(config,headers,HttpStatus.OK);
+			 }else{
+				 headers.set("message", validationType.getName());
+				 return new ResponseEntity<ConfigRequest>(headers,getResponseEntityForValidationCode(validationType)); 
+			 }	
+		 }else{
+			 headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+			 return new ResponseEntity<ConfigRequest>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+		}
+	 }
+	
+	//13-Create Pedigree config.
+	@CrossOrigin(origins = "http://localhost:8082")
+	@RequestMapping(value = "/study/{id}/configuration/", method = RequestMethod.POST,produces = "text/plain")
+	public ResponseEntity<String> createPedigreeConfig(@PathVariable("id") Long studyId,@RequestBody ConfigRequest configRequest,@RequestHeader HttpHeaders httpHeaders , UriComponentsBuilder ucBuilder) {
+		HttpHeaders headers = new HttpHeaders();
+		if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
+				//Set study id for the validation if not assigned in the request.
+				if(configRequest.getStudyId()==null){
+					configRequest.setStudyId(studyId);
+				}
+				ValidationType validationType=iPedWebSerRest.validateConfigRequest(configRequest,Constants.ACTION_INSERT);
+				if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+					StudyPedigreeConfiguration studyPedigreeConfiguration=iPedWebSerRest.mapConfigRequestToStudyPedigreeConfiguration(configRequest,Constants.ACTION_INSERT);
+					iPedWebSerRest.saveOrUpdateStudyPedigreeConfiguration(studyPedigreeConfiguration);
+					headers.setLocation(ucBuilder.path("/study/{id}/configuration/").buildAndExpand(studyId,studyPedigreeConfiguration.getStudy().getId()).toUri());
+					return new ResponseEntity<String>(CONFIGURATION+ValidationType.CREATED_SUCCESSFULLY.getName(),headers,getResponseEntityForValidationCode(ValidationType.CREATED_SUCCESSFULLY));
+				}else{
+					return new ResponseEntity<String>(validationType.getName(),getResponseEntityForValidationCode(validationType)); 
+				}
+			}else{
+				headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+				return new ResponseEntity<String>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+			}
+	}
+	//14-Update Pedigree config.
+		@CrossOrigin(origins = "http://localhost:8082")
+		@RequestMapping(value = "/study/{id}/configuration/", method = RequestMethod.PUT,produces = "text/plain")
+		public ResponseEntity<String> updatePedigreeConfig(@PathVariable("id") Long studyId,@RequestBody ConfigRequest configRequest,@RequestHeader HttpHeaders httpHeaders , UriComponentsBuilder ucBuilder) {
+			HttpHeaders headers = new HttpHeaders();
+			if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
+					//Set study id for the validation if not assigned in the request.
+					if(configRequest.getStudyId()==null){
+						configRequest.setStudyId(studyId);
+					}
+					ValidationType validationType=iPedWebSerRest.validateConfigRequest(configRequest,Constants.ACTION_UPDATE);
+					if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+						StudyPedigreeConfiguration studyPedigreeConfiguration=iPedWebSerRest.mapConfigRequestToStudyPedigreeConfiguration(configRequest,Constants.ACTION_UPDATE);
+						iPedWebSerRest.saveOrUpdateStudyPedigreeConfiguration(studyPedigreeConfiguration);
+						headers.setLocation(ucBuilder.path("/study/{id}/configuration/").buildAndExpand(studyId,studyPedigreeConfiguration.getStudy().getId()).toUri());
+						return new ResponseEntity<String>(CONFIGURATION+ValidationType.UPDATED_SUCCESSFULLY.getName(),headers,getResponseEntityForValidationCode(ValidationType.UPDATED_SUCCESSFULLY));
+					}else{
+						return new ResponseEntity<String>(validationType.getName(),getResponseEntityForValidationCode(validationType)); 
+					}
+				}else{
+					headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+					return new ResponseEntity<String>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+				}
+		}
+		
+		//15-Get Study Member ship.
+		@CrossOrigin(origins = "http://localhost:8082")
+		@RequestMapping(value = "/study/{id}/membership/{uid}", method = RequestMethod.GET)
+		public ResponseEntity<List<MembershipResponse>> getMembership(@PathVariable("id") Long studyId,@PathVariable("uid") String subjectUid,@RequestHeader HttpHeaders httpHeaders) {
+			HttpHeaders headers = new HttpHeaders();
+			 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
+				 ValidationType validationType=iPedWebSerRest.validateForStudy(studyId);
+				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+					 List<RelationshipVo> relationshipVos=iPedWebSerRest.generateSubjectPedigreeRelativeList(subjectUid, studyId);
+		         if (relationshipVos==null || relationshipVos.isEmpty()) {
+		        	 headers.set("message", ValidationType.PEDIGREE_MEMEBERS_CAN_NOT_FOUND.getName());
+				     return new ResponseEntity<List<MembershipResponse>>(headers,getResponseEntityForValidationCode(ValidationType.PEDIGREE_MEMEBERS_CAN_NOT_FOUND));
+			      }
+		         List<MembershipResponse> membershipResponses=iPedWebSerRest.mapListOfRelationshipVoToListofMembershipresponse(relationshipVos);
+		         	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());
+		         	return new ResponseEntity<List<MembershipResponse>>(membershipResponses,headers,HttpStatus.OK);
+				 }else{
+					 headers.set("message", validationType.getName());
+					 return new ResponseEntity<List<MembershipResponse>>(headers,getResponseEntityForValidationCode(validationType)); 
+				 }	
+			 }else{
+				 headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+				 return new ResponseEntity<List<MembershipResponse>>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+			}
+		 }
+	
 		/**
 		 * 
 		 * @param arkUserVO
@@ -350,13 +483,28 @@ public class PedigreeRestController {
 			HttpStatus httpStatus;
 			switch (validationType) {
 			
-            case INVALID_STUDY_ID:   
+			case USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES:
+								httpStatus=HttpStatus.UNAUTHORIZED;
+								break;
+			case CREATED_SUCCESSFULLY:
+								httpStatus=HttpStatus.CREATED;
+								break;
+			case UPDATED_SUCCESSFULLY:
+								httpStatus=HttpStatus.CREATED;
+								break;
+			case DELETED_SUCCESSFULLY:
+								httpStatus=HttpStatus.FOUND;
+								break;	
+			case FOUND_SUCCESSFULLY:
+								httpStatus=HttpStatus.FOUND;
+								break;	
+	        case INVALID_STUDY_ID:   
             					httpStatus=HttpStatus.NOT_FOUND;	
             					break;
             case SUBJECT_UID_ALREADY_EXISTS:   
             					httpStatus=HttpStatus.CONFLICT;
             					break;
-            case NOT_EXSISTING_STUDY:   
+            case NOT_EXISTING_STUDY:   
 								httpStatus=HttpStatus.NOT_FOUND;	
 								break;
             case NO_GENDERTYPE:   
@@ -365,10 +513,10 @@ public class PedigreeRestController {
             case INVALID_GENDER_TYPE:   
 								httpStatus=HttpStatus.NOT_FOUND;	
 								break;
-            case NO_VITALTYPE:   
+            case NO_VITAL_STATUS:   
 								httpStatus=HttpStatus.NOT_FOUND;	
 								break;
-            case INVALID_VITAL_TYPE:   
+            case INVALID_VITAL_STATUS:   
 								httpStatus=HttpStatus.NOT_FOUND;	
 								break;	
             case NO_SUBJECT_STATUS:   
@@ -378,15 +526,18 @@ public class PedigreeRestController {
             					httpStatus=HttpStatus.NOT_FOUND;	
             					break;	
             case SUBJECT_UID_NOT_EXISTS:
-            					httpStatus=HttpStatus.CONFLICT;
+            					httpStatus=HttpStatus.NOT_FOUND;
             					break;
             case RELATIVE_SUBJECT_UID_NOT_EXISTS:
-            					httpStatus=HttpStatus.CONFLICT;	
+            					httpStatus=HttpStatus.NOT_FOUND;	
             					break;
             case NO_PARENT_TYPE:
             					httpStatus=HttpStatus.NOT_FOUND;	
             					break;
             case INVALID_PARENT_TYPE:
+            					httpStatus=HttpStatus.NOT_FOUND;	
+            					break;
+            case NO_PARENT_RELATIONSHIP_EXISTS_FOR_STUDY:					
             					httpStatus=HttpStatus.NOT_FOUND;	
             					break;
             case NO_TWIN_TYPE:
@@ -399,18 +550,39 @@ public class PedigreeRestController {
             					httpStatus=HttpStatus.FORBIDDEN;	
             					break;
             case NOT_A_SIBLING:
+            					httpStatus=HttpStatus.CONFLICT;	
+            					break;
+            case PARENT_RELATIONSHIP_ALREADY_EXISTS:
+            					httpStatus=HttpStatus.CONFLICT;	
+            					break;
+            case TWIN_RELATIONSHIP_ALREADY_EXISTS:
+            					httpStatus=HttpStatus.CONFLICT;	
+            					break;
+            case PEDIGREE_VIEW_NOT_EXISTS:
             					httpStatus=HttpStatus.NOT_FOUND;	
             					break;
-            case PARENT_RELATION_SHIP_ALREADY_EXISTS:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;
-            case TWIN_RELATION_SHIP_ALREADY_EXISTS:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;
+            case PEDIGREE_CONFIG_NOT_EXISTS:
+								httpStatus=HttpStatus.NOT_FOUND;	
+								break;
             case SUCCESSFULLY_VALIDATED:	
 				            	httpStatus=HttpStatus.OK;	
 								break;
-			default:
+            case  PEDIGREE_CONFIGURATION_SET_VALUE_NOT_ACCEPTED:
+            					httpStatus=HttpStatus.CONFLICT;	
+            					break;
+            case  PEDIGREE_CONFIGURATION_CUSTOM_FIELD_NAME_NOT_FOUND:
+            					httpStatus=HttpStatus.CONFLICT;	
+            					break;
+            case PEDIGREE_CONFIGURATION_ALREADY_EXISTS_FOR_STUDY:
+            					httpStatus=HttpStatus.CONFLICT;	
+            					break;
+            case PEDIGREE_CONFIGURATION_CAN_NOT_UPDATE_FOR_STUDY:
+            					httpStatus=HttpStatus.CONFLICT;	
+            					break;	
+            case PEDIGREE_MEMEBERS_CAN_NOT_FOUND:
+            					httpStatus=HttpStatus.CONFLICT;	
+            					break;
+            default:
 				httpStatus=HttpStatus.BAD_REQUEST;
 				break;	
 			}

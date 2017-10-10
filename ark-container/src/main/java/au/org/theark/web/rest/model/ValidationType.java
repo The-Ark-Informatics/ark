@@ -1,57 +1,86 @@
 package au.org.theark.web.rest.model;
 
 public enum ValidationType {
-	INVALID_STUDY_ID("Study id should be a number."),
 	
-	SUBJECT_UID_ALREADY_EXISTS("Subject uid already exists."),
-
-	NOT_EXSISTING_STUDY("Study should be in the system."),
+	USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES("The authenticated user account does not have sufficient privileges to perform this action."),
 	
-	NO_GENDERTYPE("No gender type assigned to subject."),
-
-	INVALID_GENDER_TYPE("Gender type should be male or female."),
-
-	NO_VITALTYPE("No vital type assigned to subject."),
-
-	INVALID_VITAL_TYPE("Vital type should be alive or deceased."),
+	CREATED_SUCCESSFULLY(" created successfully."),
 	
-	NO_SUBJECT_STATUS("No subject status assigned to subject."),
+	UPDATED_SUCCESSFULLY(" updated successfully."),
+	
+	DELETED_SUCCESSFULLY(" deleted successfully."),
+	
+	FOUND_SUCCESSFULLY("Found successfully."),
+	
+	INVALID_STUDY_ID("Invalid Study ID."),
+	
+	SUBJECT_UID_ALREADY_EXISTS("A subject with this UID already exists."),
 
-	INVALID_SUBJECT_STATUS("Invalid subject status assigned."),
+	NOT_EXISTING_STUDY("A study with this ID does not exist."),
 	
-	MISMATCH_SUBJECT_UID_WITH_SUBJECT_ID("The long id and the subject uid mis matched."),
+	NO_GENDERTYPE("Gender not specified."),
+
+	INVALID_GENDER_TYPE("Gender must be “male“ or “female“."),
+
+	NO_VITAL_STATUS("Vital Status not specified."),
+
+	INVALID_VITAL_STATUS("Vital Status must be “Alive”, “Deceased”, or “Unknown”."),
 	
-	SUCCESSFULLY_VALIDATED("Validation is successful."),
+	NO_SUBJECT_STATUS("Subject Status not specified."),
+
+	INVALID_SUBJECT_STATUS("Subject Status must be “Subject”, “Prospect”, “Withdrawn Subject”, “Archive”, or “Inactive”."),
+	
+	MISMATCH_SUBJECT_UID_WITH_SUBJECT_ID("The given Subject UID and Subject ID do not match."),
+	
+	SUCCESSFULLY_VALIDATED("Validation successful."),
 	
 	//Relation ship vaidation
 	
-	SUBJECT_UID_NOT_EXISTS("Subject uid not exists."),
+	SUBJECT_UID_NOT_EXISTS("A subject with this UID does not exist."),
 	
-	RELATIVE_SUBJECT_UID_NOT_EXISTS("relative subject uid not exists."),
+	RELATIVE_SUBJECT_UID_NOT_EXISTS("A relative with this subject UID does not exist."),
 	
-	NO_PARENT_TYPE("No parent type assigned."),
+	NO_PARENT_RELATIONSHIP_EXISTS_FOR_STUDY("No parent relationship exists."),
 	
-	INVALID_PARENT_TYPE("Invalid parent type assigned."),
+	NO_TWINTYPE_RELATIONSHIP_EXISTS_FOR_STUDY("No twin relationship exists."),
 	
-	NO_TWIN_TYPE("No twin type assigned."),
+	NO_PARENT_TYPE("Parent Type not specified."),
 	
-	INVALID_TWIN_TYPE("Invalid twin type assigned."),
+	INVALID_PARENT_TYPE("Parent Type must be “Mother” or “Father”."),
 	
-	CIRCULAR_VALIDATION_UNSUCCESSFUL("Circular validation Unsuccessful."),
+	NO_TWIN_TYPE("Twin Type not specified."),
 	
-	NOT_A_SIBLING("Relative not recognise as a sibling."),
+	INVALID_TWIN_TYPE("Twin Type must be “MZ” or “DZ”."),
 	
-	PARENT_RELATION_SHIP_ALREADY_EXISTS("This parent relationship already exist."),
+	CIRCULAR_VALIDATION_UNSUCCESSFUL("Consanguineous relationship detected in a study not configured to permit it."),
 	
-	TWIN_RELATION_SHIP_ALREADY_EXISTS("This Twin relationship already exist."),
+	NOT_A_SIBLING("Twin relationship indicated for a subject that is not a sibling."),
 	
-	SUBJECT_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP("Subject status not allowed to create relation ship."),
+	PARENT_RELATIONSHIP_ALREADY_EXISTS("Parental relationship already exists."),
 	
-	RELATION_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP("relative status not allowed to create relation ship."),
+	TWIN_RELATIONSHIP_ALREADY_EXISTS("Twin relationship already exists."),
 	
-	INVALID_PARENT_RELATION_SHIP("Invalid relation ship."),
+	SUBJECT_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP("Cannot create a relationship for a subject with this Subject Status."),
 	
-	INVALID_TWIN_RELATION_SHIP("Invalid Twin relation ship.");
+	RELATION_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP("Cannot create a relationship for a relative with this Subject Status."),
+	
+	INVALID_PARENT_RELATIONSHIP("Invalid parental relationship."),
+	
+	INVALID_TWIN_RELATIONSHIP("Invalid twin relationship."),
+	
+	PEDIGREE_VIEW_NOT_EXISTS("Pedigree view does not exists."),
+	
+	PEDIGREE_CONFIG_NOT_EXISTS("Pedigree configuration does not exists."),
+	
+	PEDIGREE_CONFIGURATION_SET_VALUE_NOT_ACCEPTED("Pedigree configuration expected boolean value “yes”, “true”, “no”, or “false”."),
+	
+	PEDIGREE_CONFIGURATION_CUSTOM_FIELD_NAME_NOT_FOUND("Study does not contain a custom field with this name."),
+	
+	PEDIGREE_CONFIGURATION_ALREADY_EXISTS_FOR_STUDY("Cannot create a pedigree configuration when one already exists for this study."),
+	
+	PEDIGREE_CONFIGURATION_CAN_NOT_UPDATE_FOR_STUDY("Cannot update a pedigree configuration when no configuration has been set previously."),
+	
+	PEDIGREE_MEMEBERS_CAN_NOT_FOUND("No Pedigree members exists.");
 	
 	private final String name;
 

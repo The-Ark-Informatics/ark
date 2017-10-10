@@ -7,8 +7,12 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.web.rest.model.ConfigRequest;
+import au.org.theark.web.rest.model.MembershipResponse;
 import au.org.theark.web.rest.model.RelationShipRequest;
 import au.org.theark.web.rest.model.SubjectRequest;
 import au.org.theark.web.rest.model.TwinRequest;
@@ -27,9 +31,7 @@ public interface IPedigreeWebServiceRest {
 	public void createRelationShip(SubjectVO subjectVO,SubjectVO relativeVO,Relationship relationship);
 	
 	public Boolean createTwin(SubjectVO subjectVO,SubjectVO relativeVO,TwinType twinType);
-	
-	public Boolean generatePedigree(SubjectVO subjectVO);
-	
+
 	public Study getStudyByID(Long id);
 	
 	public String getPedigreeView(String subjectUid,Long studyId);
@@ -76,4 +78,19 @@ public interface IPedigreeWebServiceRest {
 	public List<RelationShipRequest> mapListOfLinkSubjectPedigreesToListOfRelationShipRequests(List<LinkSubjectPedigree> linkSubjectPedigrees);
 	
 	public List<TwinRequest> mapListOfLinkSubjectTwinsToListOfTwinRequests(List<LinkSubjectTwin> linkSubjectTwins);
+	
+	public StudyPedigreeConfiguration getStudyPedigreeConfiguration(Long studyId);
+	
+	public ConfigRequest mapStudyPedigreeConfigurationToConfigRequest(StudyPedigreeConfiguration studyPedigreeConfiguration);
+	
+	public StudyPedigreeConfiguration mapConfigRequestToStudyPedigreeConfiguration(ConfigRequest configRequest,String action);
+	
+	public ValidationType validateConfigRequest(ConfigRequest configRequest,String action);
+	
+	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
+	
+	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID, final Long studyId);
+	
+	public List<MembershipResponse> mapListOfRelationshipVoToListofMembershipresponse(List<RelationshipVo> relationshipVos);
+	
 }
