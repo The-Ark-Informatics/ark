@@ -12,6 +12,7 @@ import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.web.rest.model.ConfigRequest;
+import au.org.theark.web.rest.model.MadelineObject;
 import au.org.theark.web.rest.model.MembershipResponse;
 import au.org.theark.web.rest.model.RelationShipRequest;
 import au.org.theark.web.rest.model.SubjectRequest;
@@ -92,5 +93,13 @@ public interface IPedigreeWebServiceRest {
 	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID, final Long studyId);
 	
 	public List<MembershipResponse> mapListOfRelationshipVoToListofMembershipresponse(List<RelationshipVo> relationshipVos);
+	
+	//public String getPedigreeViewFromCsv(String csvString,Long studyID);
+	
+	public String getPedigreeViewFromCsv(MadelineObject[] madelineObjects,Long studyID);
+	
+	//public ValidationType validateCSVStringToDrawPedigree(String csvString,Long studyID);
+	
+	public ValidationType validateCSVStringToDrawPedigree(MadelineObject[] madelineObjects,Long studyID);
 	
 }

@@ -1,9 +1,12 @@
 package au.org.theark.web.rest.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+
+
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -31,7 +36,9 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.web.rest.model.ConfigRequest;
+import au.org.theark.web.rest.model.MadelineObject;
 import au.org.theark.web.rest.model.MembershipResponse;
+import au.org.theark.web.rest.model.PedigreeRequest;
 import au.org.theark.web.rest.model.PedigreeResponse;
 import au.org.theark.web.rest.model.RelationShipRequest;
 import au.org.theark.web.rest.model.SubjectRequest;
@@ -326,7 +333,7 @@ public class PedigreeRestController {
 				}
 		    }
 
-	//11-Get Pedigree view as a file
+	//11-Get Pedigree view for the persistence subjects.
 	@CrossOrigin(origins = "http://localhost:8082")
 	@RequestMapping(value = "/study/{id}/pedigree/{uid}", method = RequestMethod.GET)
 	public ResponseEntity<PedigreeResponse> getPedigreeView(@PathVariable("id") Long studyId,@PathVariable("uid") String uid,@RequestHeader HttpHeaders httpHeaders) {
@@ -452,7 +459,37 @@ public class PedigreeRestController {
 				 return new ResponseEntity<List<MembershipResponse>>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 			}
 		 }
-	
+		
+		//16-Get Pedigree view from ped file.
+		@CrossOrigin(origins = "http://localhost:8082")
+		@RequestMapping(value = "/study/{id}/visualise/", method = RequestMethod.POST)
+		public ResponseEntity<PedigreeResponse> getPedigreeViewFromCSV(@PathVariable("id") Long studyId,@RequestBody List<MadelineObject> medlineObjects,@RequestHeader HttpHeaders httpHeaders) {
+			 HttpHeaders headers = new HttpHeaders();
+			 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
+				 MadelineObject[] madelineArr = new MadelineObject[medlineObjects.size()];
+				 madelineArr = medlineObjects.toArray(madelineArr);
+				// ValidationType validationType=iPedWebSerRest.validateCSVStringToDrawPedigree(pedigreeRequest.getCsv(), studyId);
+				 ValidationType validationType=iPedWebSerRest.validateCSVStringToDrawPedigree(madelineArr, studyId);
+				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+				// String pedigreeFile = iPedWebSerRest.getPedigreeViewFromCsv(pedigreeRequest.getCsv(),studyId);
+					 String pedigreeFile = iPedWebSerRest.getPedigreeViewFromCsv(madelineArr,studyId);
+		         if (pedigreeFile== null) {
+		        	 headers.set("message", ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName());
+				     return new ResponseEntity<PedigreeResponse>(headers, getResponseEntityForValidationCode(ValidationType.PEDIGREE_VIEW_NOT_EXISTS));
+			      }
+		         	PedigreeResponse pedigreeResponse=new PedigreeResponse();
+		         	pedigreeResponse.setSvg(pedigreeFile);
+		         	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());
+		         	return new ResponseEntity<PedigreeResponse>(pedigreeResponse,headers,HttpStatus.OK);
+				 }else{
+					 headers.set("message",validationType.getName() );
+					 return new ResponseEntity<PedigreeResponse>(headers,getResponseEntityForValidationCode(validationType)); 
+				 }	
+			 }else{
+				 	headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+					return new ResponseEntity<PedigreeResponse>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+			}
+		 }
 		/**
 		 * 
 		 * @param arkUserVO
@@ -486,105 +523,63 @@ public class PedigreeRestController {
 			case USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES:
 								httpStatus=HttpStatus.UNAUTHORIZED;
 								break;
-			case CREATED_SUCCESSFULLY:
-								httpStatus=HttpStatus.CREATED;
-								break;
-			case UPDATED_SUCCESSFULLY:
-								httpStatus=HttpStatus.CREATED;
-								break;
-			case DELETED_SUCCESSFULLY:
-								httpStatus=HttpStatus.FOUND;
-								break;	
-			case FOUND_SUCCESSFULLY:
-								httpStatus=HttpStatus.FOUND;
-								break;	
+			
 	        case INVALID_STUDY_ID:   
-            					httpStatus=HttpStatus.NOT_FOUND;	
-            					break;
-            case SUBJECT_UID_ALREADY_EXISTS:   
-            					httpStatus=HttpStatus.CONFLICT;
-            					break;
             case NOT_EXISTING_STUDY:   
-								httpStatus=HttpStatus.NOT_FOUND;	
-								break;
-            case NO_GENDERTYPE:   
-								httpStatus=HttpStatus.NOT_FOUND;	
-								break;
-            case INVALID_GENDER_TYPE:   
-								httpStatus=HttpStatus.NOT_FOUND;	
-								break;
-            case NO_VITAL_STATUS:   
-								httpStatus=HttpStatus.NOT_FOUND;	
-								break;
-            case INVALID_VITAL_STATUS:   
-								httpStatus=HttpStatus.NOT_FOUND;	
-								break;	
-            case NO_SUBJECT_STATUS:   
-								httpStatus=HttpStatus.NOT_FOUND;	
-								break;
-            case INVALID_SUBJECT_STATUS:   
-            					httpStatus=HttpStatus.NOT_FOUND;	
-            					break;	
+	        case NO_GENDERTYPE:   
+	        case INVALID_GENDER_TYPE:   
+	        case NO_VITAL_STATUS:   
+	        case INVALID_VITAL_STATUS:   
+	        case NO_SUBJECT_STATUS:   
+	        case INVALID_SUBJECT_STATUS:   
             case SUBJECT_UID_NOT_EXISTS:
-            					httpStatus=HttpStatus.NOT_FOUND;
-            					break;
             case RELATIVE_SUBJECT_UID_NOT_EXISTS:
-            					httpStatus=HttpStatus.NOT_FOUND;	
-            					break;
             case NO_PARENT_TYPE:
-            					httpStatus=HttpStatus.NOT_FOUND;	
-            					break;
             case INVALID_PARENT_TYPE:
-            					httpStatus=HttpStatus.NOT_FOUND;	
-            					break;
             case NO_PARENT_RELATIONSHIP_EXISTS_FOR_STUDY:					
-            					httpStatus=HttpStatus.NOT_FOUND;	
-            					break;
             case NO_TWIN_TYPE:
-				            	httpStatus=HttpStatus.NOT_FOUND;	
-								break;
-            case INVALID_TWIN_TYPE:
-            					httpStatus=HttpStatus.NOT_FOUND;	
-            					break;
-            case CIRCULAR_VALIDATION_UNSUCCESSFUL:
-            					httpStatus=HttpStatus.FORBIDDEN;	
-            					break;
+	        case INVALID_TWIN_TYPE:
+	        case PEDIGREE_VIEW_NOT_EXISTS:
+	        case PEDIGREE_CONFIG_NOT_EXISTS:
+	        case PEDIGREE_MEMEBERS_CAN_NOT_FOUND:
+	        case PEDIGREE_CONFIGURATION_CUSTOM_FIELD_NAME_NOT_FOUND:	
+	        case FATHER_ID_IS_NOT_PRESENT_IN_THE_LIST:
+	        case MOHTER_ID_IS_NOT_PRESENT_IN_THE_LIST:	
+	        					httpStatus=HttpStatus.NOT_FOUND;	
+	        					break;
             case NOT_A_SIBLING:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;
             case PARENT_RELATIONSHIP_ALREADY_EXISTS:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;
             case TWIN_RELATIONSHIP_ALREADY_EXISTS:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;
-            case PEDIGREE_VIEW_NOT_EXISTS:
-            					httpStatus=HttpStatus.NOT_FOUND;	
-            					break;
-            case PEDIGREE_CONFIG_NOT_EXISTS:
-								httpStatus=HttpStatus.NOT_FOUND;	
+            case PEDIGREE_CONFIGURATION_SET_VALUE_NOT_ACCEPTED:
+            case PEDIGREE_CONFIGURATION_ALREADY_EXISTS_FOR_STUDY:
+            case PEDIGREE_CONFIGURATION_CAN_NOT_UPDATE_FOR_STUDY:
+            case SUBJECT_UID_ALREADY_EXISTS:   
+								httpStatus=HttpStatus.CONFLICT;
 								break;
-            case SUCCESSFULLY_VALIDATED:	
+            case CIRCULAR_VALIDATION_UNSUCCESSFUL:
+								httpStatus=HttpStatus.FORBIDDEN;	
+								break;
+            case GENDER_FIELD_UNACCEPTED_VALUES:
+            case AFFECTED_UNACCEPTED_VALUES:
+            case ZYGOSITY_UNACCEPTED_VALUES:
+            case DECEASED_UNACCEPTED_VALUES:
+            case PROBAND_UNACCEPTED_VALUES:	
+           	            		httpStatus=HttpStatus.NOT_ACCEPTABLE;	
+								break;
+            case INDIVIDUAL_ID_IS_MANDATORY:
+            case FAMILY_ID_IS_MANDATORY:
+            					httpStatus=HttpStatus.NO_CONTENT;	
+            					break;	
+            case SUCCESSFULLY_VALIDATED:
+            case CREATED_SUCCESSFULLY:
+	        case UPDATED_SUCCESSFULLY:
+	        case DELETED_SUCCESSFULLY:
+			case FOUND_SUCCESSFULLY:
 				            	httpStatus=HttpStatus.OK;	
 								break;
-            case  PEDIGREE_CONFIGURATION_SET_VALUE_NOT_ACCEPTED:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;
-            case  PEDIGREE_CONFIGURATION_CUSTOM_FIELD_NAME_NOT_FOUND:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;
-            case PEDIGREE_CONFIGURATION_ALREADY_EXISTS_FOR_STUDY:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;
-            case PEDIGREE_CONFIGURATION_CAN_NOT_UPDATE_FOR_STUDY:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;	
-            case PEDIGREE_MEMEBERS_CAN_NOT_FOUND:
-            					httpStatus=HttpStatus.CONFLICT;	
-            					break;
-            default:
-				httpStatus=HttpStatus.BAD_REQUEST;
-				break;	
+	        default:
+								httpStatus=HttpStatus.BAD_REQUEST;
+								break;	
 			}
 			return httpStatus;
 		}

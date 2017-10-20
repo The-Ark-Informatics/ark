@@ -2278,7 +2278,8 @@ public class StudyServiceImpl implements IStudyService {
 		return age;
 	}
 
-	private String calculatePedigreeAge(Date birthDate, Date selectDate) {
+	@Override
+	public String calculatePedigreeAge(Date birthDate, Date selectDate) {
 		String age = null;
 		LocalDate oldDate = null;
 		LocalDate newDate = null;

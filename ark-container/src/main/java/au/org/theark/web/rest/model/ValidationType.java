@@ -80,7 +80,25 @@ public enum ValidationType {
 	
 	PEDIGREE_CONFIGURATION_CAN_NOT_UPDATE_FOR_STUDY("Cannot update a pedigree configuration when no configuration has been set previously."),
 	
-	PEDIGREE_MEMEBERS_CAN_NOT_FOUND("No Pedigree members exists.");
+	PEDIGREE_MEMEBERS_CAN_NOT_FOUND("No Pedigree members exists."),
+	
+	GENDER_FIELD_UNACCEPTED_VALUES("A value for the mandatory field “Gender“ accept only “Male“,“Female“ or “Unknown“."),
+	
+	AFFECTED_UNACCEPTED_VALUES("A value for the field “Affected“ accept only “Affected“ or “Unaffected“."),
+	
+	ZYGOSITY_UNACCEPTED_VALUES("A value for the field “zygosity“ accept only “MZTwin“,“DZTwin“ or “Unknown“."),
+	
+	DECEASED_UNACCEPTED_VALUES("A value for the field “deceased“ accept only “Yes“,“No“ or “Missing“."),
+	
+	PROBAND_UNACCEPTED_VALUES("A value for the field “proband“ accept only “Yes“,“No“ or “Missing“."),
+	
+	FAMILY_ID_IS_MANDATORY("A value for the mandatory field “FamilyId“ can not be empty."),
+	
+	INDIVIDUAL_ID_IS_MANDATORY("A value for the mandatory field “IndividualId“ can not be empty."),
+	
+	MOHTER_ID_IS_NOT_PRESENT_IN_THE_LIST("Specified mother id is not present in the list."),
+	
+	FATHER_ID_IS_NOT_PRESENT_IN_THE_LIST("Specified father id is not present in the list.");
 	
 	private final String name;
 

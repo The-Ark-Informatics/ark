@@ -20,6 +20,7 @@ package au.org.theark.study.service;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -586,5 +587,7 @@ public interface IStudyService {
 	public List<LinkSubjectPedigree> getListOfLinkSubjectPedigreeForStudy(Study study);
 	
 	public List<LinkSubjectTwin> getListOfLinkSubjectTwinForStudy(Study study);
+	
+	public String calculatePedigreeAge(Date birthDate, Date selectDate);
 	
 }

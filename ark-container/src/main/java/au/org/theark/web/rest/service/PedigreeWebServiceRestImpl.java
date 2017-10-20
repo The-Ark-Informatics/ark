@@ -3,10 +3,17 @@ package au.org.theark.web.rest.service;
 import static au.org.theark.study.web.Constants.MADELINE_PEDIGREE_TEMPLATE;
 import static au.org.theark.study.web.Constants.PEDIGREE_TEMPLATE_EXT;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +27,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +35,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.csvreader.CsvReader;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 
@@ -48,13 +57,14 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.DataConversionAndManipulationHelper;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.PedigreeUploadValidator;
 import au.org.theark.web.rest.model.ConfigRequest;
+import au.org.theark.web.rest.model.MadelineObject;
+import au.org.theark.web.rest.model.MadelineProp;
 import au.org.theark.web.rest.model.MembershipResponse;
 import au.org.theark.web.rest.model.RelationShipRequest;
 import au.org.theark.web.rest.model.SubjectRequest;
@@ -72,6 +82,28 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 	private  IArkCommonService		iArkCommonService;
 	
 	private static final String ACTIVE_SUBJECT_STATUS="Subject";
+	
+	public static final SimpleDateFormat formatMadeline = new SimpleDateFormat("yyyy.MM.dd");
+	
+	private static final String MALE="Male";
+	
+	private static final String FEMALE="Female";
+	
+	private static final String UNKNOWN="Unknown";
+	
+	private static final String AFFECTED="Affected";
+	
+	private static final String UNAFFECTED="Unaffected";
+	
+	private static final String MZTWIN="MZTwin";
+	
+	private static final String DZTWIN="DZTwin";
+	
+	private static final String YES="Yes";
+	
+	private static final String NO="No";
+	
+	private static final String MISSING="Missing";
 	
 	@Override
 	public Boolean createSubject(SubjectVO subjectVO) {
@@ -238,12 +270,28 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 	}
 	@Override
 	public String getPedigreeView(String subjectUid, Long studyId) {
+
+		RelativeCapsule[] relatives = iStudyService.generateSubjectPedigreeImageList(subjectUid, studyId);
+
+		return getMadelinePedigreeViewFromRelativeCapsules(relatives,studyId);
+	}
+	
+	/**
+	 * 
+	 * @param relatives
+	 * @param studyId
+	 * @return
+	 */
+	private String getMadelinePedigreeViewFromRelativeCapsules(RelativeCapsule[] relatives,Long studyId){
+		
 		final StringBuffer sb = new StringBuffer();
 		sb.setLength(0);
 
 		String familyId = null;
 		StringBuffer columnList = new StringBuffer("IndividualId");
+		
 		Study study = iStudyService.getStudy(studyId);
+		
 		StudyPedigreeConfiguration config = study.getPedigreeConfiguration();
 
 		if (config != null && config.isDobAllowed()) {
@@ -253,9 +301,8 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		if (config != null && config.isAgeAllowed()) {
 			columnList.append(" Age");
 		}
-
-		RelativeCapsule[] relatives = iStudyService.generateSubjectPedigreeImageList(subjectUid, studyId);
-
+		
+		
 		if (relatives.length > 2) {
 			StringWriter out = null;
 			familyId = relatives[0].getFamilyId();
@@ -295,18 +342,6 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 					e.printStackTrace();
 				}
 			}
-
-			// Execute madeline by runtime
-			// Madeline execute independent of the Ark program
-			// Not recommend this option because this may causes unexpected errors. Ex: FileNotFound Exception
-			// try{
-			//
-			// File file = new File("/tmp");
-			// Runtime.getRuntime().exec("madeline2 /tmp/cs_009.data",null, file);
-			//
-			// }catch(IOException ioe){
-			// ioe.printStackTrace();
-			// }
 
 			try {
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -352,8 +387,9 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<svg width=\"640\" height=\"480\" xmlns=\"http://www.w3.org/2000/svg\">\r\n <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->\r\n <g>\r\n  <title>Layer 1</title>\r\n  <text transform=\"rotate(-0.0100589, 317.008, 97.5)\" xml:space=\"preserve\" text-anchor=\"middle\" font-family=\"serif\" font-size=\"24\" id=\"svg_3\" y=\"106\" x=\"317\" stroke-width=\"0\" stroke=\"#000000\" fill=\"#000000\">No Pedigree History</text>\r\n </g>\r\n</svg>");
 		}
 		return sb.toString();
-
 	}
+	
+	
 	@Override
 	public  SubjectVO mapSubjectRequestToBusinessSubjectVO(SubjectRequest subjectRequestInsert){
 		SubjectVO subjectVO=new SubjectVO();
@@ -831,12 +867,276 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		return membershipResponses;
 		
 	}
+
+	/*@Override
+	public String getPedigreeViewFromCsv(String csvString,Long studyId) {
+		 RelativeCapsule[] relativeCapsules=mapCSVRecordsToArrayOfRelativeCapsules(csvString);
+		return getMadelinePedigreeViewFromRelativeCapsules(relativeCapsules,studyId);
+	}*/
 	
 	
+	@Override
+	public String getPedigreeViewFromCsv(MadelineObject[] madelineObjects,Long studyId) {
+		 RelativeCapsule[] relativeCapsules=mapCSVRecordsToArrayOfRelativeCapsules(madelineObjects);
+		return getMadelinePedigreeViewFromRelativeCapsules(relativeCapsules,studyId);
+	}
 	
+	/**
+	 * 
+	 * @param csvstring
+	 * @return
+	 *//*
+	private RelativeCapsule[] mapCSVRecordsToArrayOfRelativeCapsules(String csvstring){
+		char delimeter=',';
+		String[] stringLineArray = null;
+		List<RelativeCapsule> relativeCapsules=new ArrayList<RelativeCapsule>();
+		try {
+			CsvReader csvReader = new CsvReader(new InputStreamReader(new ByteArrayInputStream(csvstring.getBytes(StandardCharsets.UTF_8.name()))),delimeter);
+			while (csvReader.readRecord()) {
+				int index = 0;
+				stringLineArray = csvReader.getValues();
+				RelativeCapsule relativeCapsule=new RelativeCapsule();
+				relativeCapsule.setFamilyId(getValue(stringLineArray[index++]));
+				relativeCapsule.setIndividualId(getValue(stringLineArray[index++]));
+				relativeCapsule.setGender(getValue(stringLineArray[index++]));
+				relativeCapsule.setFather(getValue(stringLineArray[index++]));
+				relativeCapsule.setMother(getValue(stringLineArray[index++]));
+				relativeCapsule.setDeceased(getValue(stringLineArray[index++]));
+				relativeCapsule.setProband(getValue(stringLineArray[index++]));
+				relativeCapsule.setDob(getValue(stringLineArray[index++]));
+				relativeCapsule.setMzTwin(getValue(stringLineArray[index++]));
+				relativeCapsule.setDzTwin(getValue(stringLineArray[index++]));
+				relativeCapsule.setSampled(getValue(stringLineArray[index++]));
+				relativeCapsule.setAffected(getValue(stringLineArray[index++]));
+				relativeCapsule.setAge(getValue(stringLineArray[index++]));
+				relativeCapsules.add(relativeCapsule);
+			}
+		} catch (IOException e) {
+			
+		}
+		return relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]);
+	} */
 	
+	/**
+	 * 
+	 * @param csvstring
+	 * @return
+	 */
+	private RelativeCapsule[] mapCSVRecordsToArrayOfRelativeCapsules(MadelineObject[] madelineObjects){
+		List<RelativeCapsule> relativeCapsules=new ArrayList<RelativeCapsule>();
+		
+		for (MadelineObject madelineObject : madelineObjects) {
+			
+			RelativeCapsule relativeCapsule=new RelativeCapsule();
+			if(madelineObject.getFamilyId()!=null && !madelineObject.getFamilyId().isEmpty()){
+				relativeCapsule.setFamilyId(madelineObject.getFamilyId());
+			}else{
+				relativeCapsule.setFamilyId("FAM001");
+			}
+			relativeCapsule.setIndividualId(madelineObject.getIndividualId());
+			//Set Gender
+			if(madelineObject.getGender()!=null){
+				relativeCapsule.setGender(madelineObject.getGender().substring(0,1).toUpperCase());
+			}
+			relativeCapsule.setFather(madelineObject.getFather());
+			relativeCapsule.setMother(madelineObject.getMother());
+			
+			if(madelineObject.getDeceased()!=null && !madelineObject.getDeceased().isEmpty()){
+				relativeCapsule.setDeceased(madelineObject.getDeceased().substring(0,1).toUpperCase());
+			}
+			if(madelineObject.getProband()!=null && !madelineObject.getProband().isEmpty()){
+				relativeCapsule.setProband(madelineObject.getProband().substring(0,1).toUpperCase());
+			}
+			relativeCapsule.setDob(formatMadeline.format(madelineObject.getdOB()));
+			if(madelineObject.getZygosity()!=null && !madelineObject.getZygosity().isEmpty()){
+				String zygosity=madelineObject.getZygosity().substring(0,1).toUpperCase();
+				relativeCapsule.setMzTwin(zygosity.equalsIgnoreCase("M")?"Y":null);
+				relativeCapsule.setDzTwin(zygosity.equalsIgnoreCase("D")?"Y":null);
+			}
+			if(madelineObject.getAffected()!=null && !madelineObject.getAffected().isEmpty()){
+				relativeCapsule.setAffected(madelineObject.getAffected().substring(0,1).toUpperCase());
+			}
+			if(madelineObject.getDeceased()!=null && !madelineObject.getDeceased().isEmpty()&& relativeCapsule.getDeceased().equals("Y")){
+				relativeCapsule.setAge(iStudyService.calculatePedigreeAge(madelineObject.getdOB(), null));
+			}else if(madelineObject.getDeceased()!=null && !madelineObject.getDeceased().isEmpty() && relativeCapsule.getDeceased().equals("N")){
+				relativeCapsule.setAge(iStudyService.calculatePedigreeAge(madelineObject.getdOB(),null ));
+			}
+			relativeCapsules.add(relativeCapsule);
+		}
+		
+				
+		return relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]);
+	} 
 	
+	/*private String getValue(String value){
+		
+		if(value.isEmpty()){
+			return null;
+		}else{
+			return value;
+		}
+		
+	}*/
+
+	/*@Override
+	public ValidationType validateCSVStringToDrawPedigree(String csvString, Long studyId) {
+		char delimeter=',';
+		String[] stringLineArray = null;
+		HashedMap map=new HashedMap();
+		
+		Study study;
+		//Check for valid(not null) study id.
+		if(studyId!=null ){
+			study=iArkCommonService.getStudy(studyId);
+		}else{
+			return ValidationType.INVALID_STUDY_ID;
+		}
+		//Check for valid study(already created)
+		if(study==null || study.getId()==null){
+			return ValidationType.NOT_EXISTING_STUDY;
+		}
+		try {
+			CsvReader csvReader = new CsvReader(new InputStreamReader(new ByteArrayInputStream(csvString.getBytes(StandardCharsets.UTF_8.name()))),delimeter);
+			while (csvReader.readRecord()) {
+				int index = 0;
+				stringLineArray = csvReader.getValues();
+				if(stringLineArray.length!=CSV_FIELD_LENGH){
+					return ValidationType.NOT_ACCEPTABLE_FIELD_LENGTH;
+				}
+				for (MadelineProp prop : MadelineProp.values()) {
+					map.put(prop, stringLineArray[index++]);
+				}
+				if(map.get(MadelineProp.FamilyId).toString().isEmpty()){
+					return ValidationType.MANDATORY_FIELD_MISSING_VALUE;
+				}
+				
+				
+			}
+		} catch (IOException e) {
+			
+		}
+		PedigreeUploadValidator pedigreeUploadValidator=new PedigreeUploadValidator();
+		try {
+			Collection<String> str=pedigreeUploadValidator.validatePedigreeFileData(new ByteArrayInputStream(csvString.getBytes(StandardCharsets.UTF_8.name())), "ped", delimeter, new ArrayList<String>());
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		return ValidationType.SUCCESSFULLY_VALIDATED;
+	}*/
 	
-	
+	@Override
+	public ValidationType validateCSVStringToDrawPedigree(MadelineObject[] madelineObjects, Long studyId) {
+		
+		Study study;
+		List<String> allIndividuIDList=new ArrayList<String>();
+		List<String> allMotherIDList=new ArrayList<String>();
+		List<String> allFatherIDList=new ArrayList<String>();
+
+		//Check for valid(not null) study id.
+		if(studyId!=null ){
+			study=iArkCommonService.getStudy(studyId);
+		}else{
+			return ValidationType.INVALID_STUDY_ID;
+		}
+		//Check for valid study(already created)
+		if(study==null || study.getId()==null){
+			return ValidationType.NOT_EXISTING_STUDY;
+		}
+		
+		for (MadelineObject madelineObject : madelineObjects) {
+			
+			if(madelineObject.getFamilyId()==null){
+				return ValidationType.FAMILY_ID_IS_MANDATORY;
+			}
+			if(madelineObject.getIndividualId()==null){
+				return ValidationType.INDIVIDUAL_ID_IS_MANDATORY;
+			}
+			
+			//Gender validation
+			String gender=madelineObject.getGender();
+			
+			String shortGender=gender.substring(0, 1);
+			
+			if(!(gender.equalsIgnoreCase(MALE)|| gender.equalsIgnoreCase(FEMALE)||gender.equalsIgnoreCase(UNKNOWN)
+			   || shortGender.equalsIgnoreCase("M") ||shortGender.equalsIgnoreCase("F")||shortGender.equalsIgnoreCase("U"))){
+				return ValidationType.GENDER_FIELD_UNACCEPTED_VALUES;
+			}
+			
+			//Affected validation
+			String affectedStatus=madelineObject.getAffected();
+			
+			if(affectedStatus!=null && !affectedStatus.isEmpty() ){
+				
+				String shortAffectedStatus=affectedStatus.substring(0, 1);
+				
+				if(!(affectedStatus.equalsIgnoreCase(AFFECTED)|| affectedStatus.equalsIgnoreCase(UNAFFECTED) || affectedStatus.equalsIgnoreCase(MISSING)
+						   || shortAffectedStatus.equalsIgnoreCase("A") ||shortAffectedStatus.equalsIgnoreCase("U"))){
+							return ValidationType.AFFECTED_UNACCEPTED_VALUES;
+						}
+			}
+			
+			//Zygosity validation
+			String zygosity=madelineObject.getZygosity();
+			
+			if(zygosity!=null && !zygosity.isEmpty()){
+		
+				String shortZygosity=zygosity.substring(0, 1);
+				
+				if(!(zygosity.equalsIgnoreCase(MZTWIN)|| zygosity.equalsIgnoreCase(DZTWIN)||gender.equalsIgnoreCase(UNKNOWN)
+						   || shortZygosity.equalsIgnoreCase("M") ||shortZygosity.equalsIgnoreCase("D")||shortZygosity.equalsIgnoreCase("U"))){
+							return ValidationType.ZYGOSITY_UNACCEPTED_VALUES;
+				}
+			
+			}
+			
+			//Yes,No validation(Deceased)
+			String deceased=madelineObject.getDeceased();
+			
+			if(deceased!=null && !deceased.isEmpty()){
+				String shortDeceased=deceased.substring(0, 1);
+				if(!(deceased.equalsIgnoreCase(YES)||deceased.equalsIgnoreCase(NO)
+						|| shortDeceased.equalsIgnoreCase("Y") || shortDeceased.equalsIgnoreCase("N"))){
+					return ValidationType.DECEASED_UNACCEPTED_VALUES;
+				}
+			}
+			
+			
+			//Yes,No validation(Proband)
+			String proband=madelineObject.getProband();
+			
+			if(proband!=null && !proband.isEmpty()){
+				String shortProband=proband.substring(0, 1);
+				if(!(proband.equalsIgnoreCase(YES)||proband.equalsIgnoreCase(NO)
+						|| shortProband.equalsIgnoreCase("Y") || shortProband.equalsIgnoreCase("N"))){
+					return ValidationType.PROBAND_UNACCEPTED_VALUES;
+				}
+			}
+			allIndividuIDList.add(madelineObject.getIndividualId());
+			
+			if(madelineObject.getMother()!=null && !madelineObject.getMother().isEmpty()){
+				allMotherIDList.add(madelineObject.getMother());
+			}
+			if(madelineObject.getFather()!=null && !madelineObject.getFather().isEmpty()){
+				allFatherIDList.add(madelineObject.getFather());
+			}
+			
+		}//End of for.
+		//Check father in the list.
+		for (String fatherId : allFatherIDList) {
+			if(!allIndividuIDList.contains(fatherId)){
+				return ValidationType.FATHER_ID_IS_NOT_PRESENT_IN_THE_LIST;		
+			}
+		}
+		//Check mother in the list.
+		for (String motherId : allMotherIDList) {
+			if(!allIndividuIDList.contains(motherId)){
+				return ValidationType.MOHTER_ID_IS_NOT_PRESENT_IN_THE_LIST;
+			}
+		}
+		return ValidationType.SUCCESSFULLY_VALIDATED;
+	}
 
 }
