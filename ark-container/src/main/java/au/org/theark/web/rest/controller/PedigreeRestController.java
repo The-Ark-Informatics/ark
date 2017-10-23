@@ -38,7 +38,6 @@ import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.web.rest.model.ConfigRequest;
 import au.org.theark.web.rest.model.MadelineObject;
 import au.org.theark.web.rest.model.MembershipResponse;
-import au.org.theark.web.rest.model.PedigreeRequest;
 import au.org.theark.web.rest.model.PedigreeResponse;
 import au.org.theark.web.rest.model.RelationShipRequest;
 import au.org.theark.web.rest.model.SubjectRequest;
