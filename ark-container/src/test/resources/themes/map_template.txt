@@ -1,0 +1,10 @@
+IndivUID     FathUID     MothUID     TwinStatus     TwinUID
+Mandatory    Mandatory   Mandatory   Mandatory      Mandatory
+             -           -           -              -
+             -(dash) =   -(dash) =   -(dash) =      For M and D 
+             Missing     Missing     Not Twin       TwinStatus,	
+                                     M=Monozygotic  the IndivID of 
+                                     D=Dizygotic    the twin,
+                                                    otherwise  -
+                                                    (dash)
+                                                                                                      

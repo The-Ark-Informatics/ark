@@ -1,0 +1,18 @@
+FamilyId
+IndividualId
+Gender
+Father
+Mother
+Deceased
+Proband
+DOB
+MZTwin
+DZTwin
+Sampled
+Affected
+Age
+
+{.loop in $relatives}
+{$relative_family_id|sprintf(%-11.11s)} {$relative_individual_id|sprintf(%-11.11s)} {$relative_gender} {.if ($relative_father) }{$relative_father|sprintf(%-11.11s)}{.else}.          {/if} {.if ($relative_mother) }{$relative_mother|sprintf(%-11.11s)}{.else}.          {/if} {.if($relative_deceased)}{$relative_deceased}{.else}.{/if} {.if($relative_proband)}{$relative_proband}{.else}.{/if} {.if ($relative_dob) }{$relative_dob|sprintf(%-10.10s)}{.else}.         {/if} {.if($relative_mz_twin)}{$relative_mz_twin}{.else}.{/if} {.if($relative_dz_twin)}{$relative_dz_twin}{.else}.{/if} {.if($relative_sampled)}{$relative_sampled}{.else}.{/if} {.if($relative_affected)}{$relative_affected}{.else}.{/if} {.if($relative_age)}{$relative_age|sprintf(%-5.5s)}{.else}.    {/if}{$relative_line_end}
+{.onEmpty}
+{/loop}
