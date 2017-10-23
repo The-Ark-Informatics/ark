@@ -1,0 +1,4 @@
+{.loop in $arkrelatives}
+{$arkrelative_individual_id}	{.if ($arkrelative_father_id)}{$arkrelative_father_id}{.else}-{/if}	{.if ($arkrelative_mother_id)}{$arkrelative_mother_id}{.else}-{/if}	{.if ($arkrelative_twin_status)}{$arkrelative_twin_status}{.else}-{/if}	{.if ($arkrelative_twin_id)}{$arkrelative_twin_id}{.else}-{/if}{$arkrelative_line}
+{.onEmpty}
+{/loop}
