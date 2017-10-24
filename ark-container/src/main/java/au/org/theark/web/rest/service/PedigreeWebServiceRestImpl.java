@@ -3,17 +3,11 @@ package au.org.theark.web.rest.service;
 import static au.org.theark.study.web.Constants.MADELINE_PEDIGREE_TEMPLATE;
 import static au.org.theark.study.web.Constants.PEDIGREE_TEMPLATE_EXT;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +21,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +28,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.csvreader.CsvReader;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 
@@ -64,7 +56,6 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.PedigreeUploadValidator;
 import au.org.theark.web.rest.model.ConfigRequest;
 import au.org.theark.web.rest.model.MadelineObject;
-import au.org.theark.web.rest.model.MadelineProp;
 import au.org.theark.web.rest.model.MembershipResponse;
 import au.org.theark.web.rest.model.RelationShipRequest;
 import au.org.theark.web.rest.model.SubjectRequest;
@@ -624,7 +615,18 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		return ValidationType.SUCCESSFULLY_VALIDATED;
 	}
 	@Override
-	public ValidationType validateParentRelationShip(Long id) {
+	public ValidationType validateParentRelationShip(Long studyId,Long id) {
+		Study study;
+		//Check for valid(not null) study id.
+		if(studyId!=null ){
+			study=iArkCommonService.getStudy(studyId);
+		}else{
+			return ValidationType.INVALID_STUDY_ID;
+		}
+		//Check for valid study(already created)
+		if(study==null || study.getId()==null){
+				return ValidationType.NOT_EXISTING_STUDY;
+		}
 		LinkSubjectPedigree linkSubjectPedigree=iStudyService.getLinkSubjectPedigreeById(id);
 		if(linkSubjectPedigree==null || linkSubjectPedigree.getId()==null){
 			return ValidationType.INVALID_PARENT_RELATIONSHIP;
@@ -634,7 +636,18 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		
 	}
 	@Override
-	public ValidationType validateTwinRelationShip(Long id) {
+	public ValidationType validateTwinRelationShip(Long studyId,Long id) {
+		Study study;
+		//Check for valid(not null) study id.
+		if(studyId!=null ){
+			study=iArkCommonService.getStudy(studyId);
+		}else{
+			return ValidationType.INVALID_STUDY_ID;
+		}
+		//Check for valid study(already created)
+		if(study==null || study.getId()==null){
+				return ValidationType.NOT_EXISTING_STUDY;
+		}
 		LinkSubjectTwin linkSubjectTwin=iStudyService.getLinkSubjectTwinById(id);
 		if(linkSubjectTwin==null || linkSubjectTwin.getId()==null){
 			return ValidationType.INVALID_TWIN_RELATIONSHIP;
@@ -793,12 +806,6 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		}else if(Constants.ACTION_UPDATE.equals(action) &&  (config==null && config.getId()==null) ){
 			return ValidationType.PEDIGREE_CONFIGURATION_CAN_NOT_UPDATE_FOR_STUDY;
 		}
-		/*if(!DataConversionAndManipulationHelper.isSomethingLikeABoolean(configRequest.getStatusAllowed())||
-				!DataConversionAndManipulationHelper.isSomethingLikeABoolean(configRequest.getDobAllowed())||
-						!DataConversionAndManipulationHelper.isSomethingLikeABoolean(configRequest.getAgeAllowed())||
-								!DataConversionAndManipulationHelper.isSomethingLikeABoolean(configRequest.getInbreedAllowed())){
-			return ValidationType.PEDIGREE_CONFIGURATION_SET_VALUE_NOT_ACCEPTED;
-		}*/
 		if(configRequest.getCustomFieldName() !=null && !isCustomfieldHasRequestCustomfieldName(configRequest.getStudyId(), configRequest.getCustomFieldName())){
 			return ValidationType.PEDIGREE_CONFIGURATION_CUSTOM_FIELD_NAME_NOT_FOUND;
 		}
@@ -807,7 +814,6 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 	
 	private boolean isCustomfieldHasRequestCustomfieldName(Long studyId,String requestCustomField){
 		boolean status=false;
-		//List<CustomField> customFields=iStudyService.getStudySubjectCustomFieldList(studyId);
 		List<CustomField> customFields=iStudyService.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
 		for (CustomField customField : customFields) {
 			if(customField.getName().equalsIgnoreCase(requestCustomField)){
@@ -867,55 +873,12 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		return membershipResponses;
 		
 	}
-
-	/*@Override
-	public String getPedigreeViewFromCsv(String csvString,Long studyId) {
-		 RelativeCapsule[] relativeCapsules=mapCSVRecordsToArrayOfRelativeCapsules(csvString);
-		return getMadelinePedigreeViewFromRelativeCapsules(relativeCapsules,studyId);
-	}*/
-	
 	
 	@Override
 	public String getPedigreeViewFromCsv(MadelineObject[] madelineObjects,Long studyId) {
 		 RelativeCapsule[] relativeCapsules=mapCSVRecordsToArrayOfRelativeCapsules(madelineObjects);
 		return getMadelinePedigreeViewFromRelativeCapsules(relativeCapsules,studyId);
 	}
-	
-	/**
-	 * 
-	 * @param csvstring
-	 * @return
-	 *//*
-	private RelativeCapsule[] mapCSVRecordsToArrayOfRelativeCapsules(String csvstring){
-		char delimeter=',';
-		String[] stringLineArray = null;
-		List<RelativeCapsule> relativeCapsules=new ArrayList<RelativeCapsule>();
-		try {
-			CsvReader csvReader = new CsvReader(new InputStreamReader(new ByteArrayInputStream(csvstring.getBytes(StandardCharsets.UTF_8.name()))),delimeter);
-			while (csvReader.readRecord()) {
-				int index = 0;
-				stringLineArray = csvReader.getValues();
-				RelativeCapsule relativeCapsule=new RelativeCapsule();
-				relativeCapsule.setFamilyId(getValue(stringLineArray[index++]));
-				relativeCapsule.setIndividualId(getValue(stringLineArray[index++]));
-				relativeCapsule.setGender(getValue(stringLineArray[index++]));
-				relativeCapsule.setFather(getValue(stringLineArray[index++]));
-				relativeCapsule.setMother(getValue(stringLineArray[index++]));
-				relativeCapsule.setDeceased(getValue(stringLineArray[index++]));
-				relativeCapsule.setProband(getValue(stringLineArray[index++]));
-				relativeCapsule.setDob(getValue(stringLineArray[index++]));
-				relativeCapsule.setMzTwin(getValue(stringLineArray[index++]));
-				relativeCapsule.setDzTwin(getValue(stringLineArray[index++]));
-				relativeCapsule.setSampled(getValue(stringLineArray[index++]));
-				relativeCapsule.setAffected(getValue(stringLineArray[index++]));
-				relativeCapsule.setAge(getValue(stringLineArray[index++]));
-				relativeCapsules.add(relativeCapsule);
-			}
-		} catch (IOException e) {
-			
-		}
-		return relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]);
-	} */
 	
 	/**
 	 * 
@@ -967,66 +930,6 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 				
 		return relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]);
 	} 
-	
-	/*private String getValue(String value){
-		
-		if(value.isEmpty()){
-			return null;
-		}else{
-			return value;
-		}
-		
-	}*/
-
-	/*@Override
-	public ValidationType validateCSVStringToDrawPedigree(String csvString, Long studyId) {
-		char delimeter=',';
-		String[] stringLineArray = null;
-		HashedMap map=new HashedMap();
-		
-		Study study;
-		//Check for valid(not null) study id.
-		if(studyId!=null ){
-			study=iArkCommonService.getStudy(studyId);
-		}else{
-			return ValidationType.INVALID_STUDY_ID;
-		}
-		//Check for valid study(already created)
-		if(study==null || study.getId()==null){
-			return ValidationType.NOT_EXISTING_STUDY;
-		}
-		try {
-			CsvReader csvReader = new CsvReader(new InputStreamReader(new ByteArrayInputStream(csvString.getBytes(StandardCharsets.UTF_8.name()))),delimeter);
-			while (csvReader.readRecord()) {
-				int index = 0;
-				stringLineArray = csvReader.getValues();
-				if(stringLineArray.length!=CSV_FIELD_LENGH){
-					return ValidationType.NOT_ACCEPTABLE_FIELD_LENGTH;
-				}
-				for (MadelineProp prop : MadelineProp.values()) {
-					map.put(prop, stringLineArray[index++]);
-				}
-				if(map.get(MadelineProp.FamilyId).toString().isEmpty()){
-					return ValidationType.MANDATORY_FIELD_MISSING_VALUE;
-				}
-				
-				
-			}
-		} catch (IOException e) {
-			
-		}
-		PedigreeUploadValidator pedigreeUploadValidator=new PedigreeUploadValidator();
-		try {
-			Collection<String> str=pedigreeUploadValidator.validatePedigreeFileData(new ByteArrayInputStream(csvString.getBytes(StandardCharsets.UTF_8.name())), "ped", delimeter, new ArrayList<String>());
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		
-		
-		
-		return ValidationType.SUCCESSFULLY_VALIDATED;
-	}*/
-	
 	@Override
 	public ValidationType validateCSVStringToDrawPedigree(MadelineObject[] madelineObjects, Long studyId) {
 		

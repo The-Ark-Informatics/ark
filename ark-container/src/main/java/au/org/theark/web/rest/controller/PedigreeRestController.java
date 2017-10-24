@@ -1,12 +1,9 @@
 package au.org.theark.web.rest.controller;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-
-
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -38,7 +33,6 @@ import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.web.rest.model.ConfigRequest;
 import au.org.theark.web.rest.model.MadelineObject;
 import au.org.theark.web.rest.model.MembershipResponse;
-import au.org.theark.web.rest.model.PedigreeRequest;
 import au.org.theark.web.rest.model.PedigreeResponse;
 import au.org.theark.web.rest.model.RelationShipRequest;
 import au.org.theark.web.rest.model.SubjectRequest;
@@ -155,8 +149,8 @@ public class PedigreeRestController {
 			        	 headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());	
 			            return new ResponseEntity<List<SubjectRequest>>(subjectRequests,headers,HttpStatus.OK);
 			        }
-			        headers.set("message", ValidationType.SUBJECT_UID_NOT_EXISTS.getName());
-			        return new ResponseEntity<List<SubjectRequest>>(headers, getResponseEntityForValidationCode(ValidationType.SUBJECT_UID_NOT_EXISTS));
+			        headers.set("message", ValidationType.NO_SUBJECT.getName());
+			        return new ResponseEntity<List<SubjectRequest>>(headers, getResponseEntityForValidationCode(ValidationType.NO_SUBJECT));
 			 }else{
 				 headers.set("message", validationType.getName());
 				 return new ResponseEntity<List<SubjectRequest>>(headers,getResponseEntityForValidationCode(validationType)); 
@@ -209,7 +203,7 @@ public class PedigreeRestController {
 	public ResponseEntity<String> deleteRelationShip(@PathVariable("sid") Long studyId,@PathVariable("id") Long relationShipId,@RequestHeader HttpHeaders httpHeaders,UriComponentsBuilder ucBuilder) {
 		HttpHeaders headers = new HttpHeaders();
 		if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
-			 ValidationType validationType=iPedWebSerRest.validateParentRelationShip(relationShipId);
+			 ValidationType validationType=iPedWebSerRest.validateParentRelationShip(studyId,relationShipId);
 			 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
 				 iPedWebSerRest.deleteRelationShip(relationShipId);	
 				 headers.setLocation(ucBuilder.path("/study/{id}/relationship/{id}").buildAndExpand(studyId,relationShipId).toUri());
@@ -292,7 +286,7 @@ public class PedigreeRestController {
 	public ResponseEntity<String> deleteTwin(@PathVariable("sid") Long studyId,@PathVariable("id") Long twinTypeId,@RequestHeader HttpHeaders httpHeaders,UriComponentsBuilder ucBuilder) {
 			HttpHeaders headers = new HttpHeaders();
 			if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
-				 ValidationType validationType=iPedWebSerRest.validateTwinRelationShip(twinTypeId);
+				 ValidationType validationType=iPedWebSerRest.validateTwinRelationShip(studyId,twinTypeId);
 				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
 					 iPedWebSerRest.deleteTwin(twinTypeId);	
 					 headers.setLocation(ucBuilder.path("/study/{id}/twintype/{id}").buildAndExpand(studyId,twinTypeId).toUri());
@@ -440,7 +434,7 @@ public class PedigreeRestController {
 		public ResponseEntity<List<MembershipResponse>> getMembership(@PathVariable("id") Long studyId,@PathVariable("uid") String subjectUid,@RequestHeader HttpHeaders httpHeaders) {
 			HttpHeaders headers = new HttpHeaders();
 			 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
-				 ValidationType validationType=iPedWebSerRest.validateForStudy(studyId);
+				 ValidationType validationType=iPedWebSerRest.validateForSubjectUIDForStudy(studyId,subjectUid);
 				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
 					 List<RelationshipVo> relationshipVos=iPedWebSerRest.generateSubjectPedigreeRelativeList(subjectUid, studyId);
 		         if (relationshipVos==null || relationshipVos.isEmpty()) {
@@ -468,10 +462,8 @@ public class PedigreeRestController {
 			 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
 				 MadelineObject[] madelineArr = new MadelineObject[medlineObjects.size()];
 				 madelineArr = medlineObjects.toArray(madelineArr);
-				// ValidationType validationType=iPedWebSerRest.validateCSVStringToDrawPedigree(pedigreeRequest.getCsv(), studyId);
 				 ValidationType validationType=iPedWebSerRest.validateCSVStringToDrawPedigree(madelineArr, studyId);
 				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
-				// String pedigreeFile = iPedWebSerRest.getPedigreeViewFromCsv(pedigreeRequest.getCsv(),studyId);
 					 String pedigreeFile = iPedWebSerRest.getPedigreeViewFromCsv(madelineArr,studyId);
 		         if (pedigreeFile== null) {
 		        	 headers.set("message", ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName());
@@ -525,7 +517,8 @@ public class PedigreeRestController {
 								break;
 			
 	        case INVALID_STUDY_ID:   
-            case NOT_EXISTING_STUDY:   
+            case NOT_EXISTING_STUDY:  
+            case NO_SUBJECT:	
 	        case NO_GENDERTYPE:   
 	        case INVALID_GENDER_TYPE:   
 	        case NO_VITAL_STATUS:   
@@ -547,6 +540,7 @@ public class PedigreeRestController {
 	        case MOHTER_ID_IS_NOT_PRESENT_IN_THE_LIST:	
 	        					httpStatus=HttpStatus.NOT_FOUND;	
 	        					break;
+	        case MISMATCH_SUBJECT_UID_WITH_SUBJECT_ID:					
             case NOT_A_SIBLING:
             case PARENT_RELATIONSHIP_ALREADY_EXISTS:
             case TWIN_RELATIONSHIP_ALREADY_EXISTS:
@@ -557,6 +551,8 @@ public class PedigreeRestController {
 								httpStatus=HttpStatus.CONFLICT;
 								break;
             case CIRCULAR_VALIDATION_UNSUCCESSFUL:
+            case SUBJECT_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP:
+            case RELATION_STATUS_NOT_ALLOWED_TO_CREATE_RELATIONSHIP:	
 								httpStatus=HttpStatus.FORBIDDEN;	
 								break;
             case GENDER_FIELD_UNACCEPTED_VALUES:

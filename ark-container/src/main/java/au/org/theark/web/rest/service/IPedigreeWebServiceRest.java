@@ -66,9 +66,9 @@ public interface IPedigreeWebServiceRest {
 	
 	public void deleteTwin(Long id);
 	
-	public ValidationType validateParentRelationShip(Long id);
+	public ValidationType validateParentRelationShip(Long studyId,Long id);
 	
-	public ValidationType validateTwinRelationShip(Long id);
+	public ValidationType validateTwinRelationShip(Long studyId,Long id);
 	
 	public SubjectRequest mapLinkSubjectStudyToCreateSubjectRequests(LinkSubjectStudy linkSubjectStudy);
 	
@@ -94,11 +94,7 @@ public interface IPedigreeWebServiceRest {
 	
 	public List<MembershipResponse> mapListOfRelationshipVoToListofMembershipresponse(List<RelationshipVo> relationshipVos);
 	
-	//public String getPedigreeViewFromCsv(String csvString,Long studyID);
-	
 	public String getPedigreeViewFromCsv(MadelineObject[] madelineObjects,Long studyID);
-	
-	//public ValidationType validateCSVStringToDrawPedigree(String csvString,Long studyID);
 	
 	public ValidationType validateCSVStringToDrawPedigree(MadelineObject[] madelineObjects,Long studyID);
 	

@@ -14,6 +14,8 @@ public enum ValidationType {
 	
 	INVALID_STUDY_ID("Invalid Study ID."),
 	
+	NO_SUBJECT("Subject not specified."),
+	
 	SUBJECT_UID_ALREADY_EXISTS("A subject with this UID already exists."),
 
 	NOT_EXISTING_STUDY("A study with this ID does not exist."),
