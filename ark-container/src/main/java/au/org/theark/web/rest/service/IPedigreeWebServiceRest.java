@@ -2,6 +2,7 @@ package au.org.theark.web.rest.service;
 
 import java.util.List;
 
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.LinkSubjectTwin;
@@ -90,12 +91,20 @@ public interface IPedigreeWebServiceRest {
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 	
-	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID, final Long studyId);
+	public List<RelationshipVo> generateSubjectPedigreeRelativeList(String subjectUID, Long studyId);
 	
 	public List<MembershipResponse> mapListOfRelationshipVoToListofMembershipresponse(List<RelationshipVo> relationshipVos);
 	
 	public String getPedigreeViewFromCsv(MadelineObject[] madelineObjects,Long studyID);
 	
 	public ValidationType validateCSVStringToDrawPedigree(MadelineObject[] madelineObjects,Long studyID);
+	
+	public List<RelationshipVo> getMySiblings(String subjectUID,Long studyId);
+	
+	public List<String> mapListOfRelativeVoToListOfSubjectUids(List<RelationshipVo> relationshipVos);
+	
+	public List<CustomField> getBinaryCustomFields(Long studyId);
+	
+	public List<String> mapListOfCustomFieldsToListOfCustomfieldNames(List<CustomField> customFields);
 	
 }

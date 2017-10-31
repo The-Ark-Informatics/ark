@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.LinkSubjectTwin;
@@ -30,11 +31,13 @@ import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.web.rest.model.BinaryCustomFieldsResponse;
 import au.org.theark.web.rest.model.ConfigRequest;
 import au.org.theark.web.rest.model.MadelineObject;
 import au.org.theark.web.rest.model.MembershipResponse;
 import au.org.theark.web.rest.model.PedigreeResponse;
 import au.org.theark.web.rest.model.RelationShipRequest;
+import au.org.theark.web.rest.model.SiblingsResponse;
 import au.org.theark.web.rest.model.SubjectRequest;
 import au.org.theark.web.rest.model.TwinRequest;
 import au.org.theark.web.rest.model.ValidationType;
@@ -482,6 +485,65 @@ public class PedigreeRestController {
 					return new ResponseEntity<PedigreeResponse>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 			}
 		 }
+		
+		//17-Get Subject Siblings.
+		@CrossOrigin(origins = "http://localhost:8082")
+		@RequestMapping(value = "/study/{id}/siblings/{uid}", method = RequestMethod.GET)
+	    public ResponseEntity<SiblingsResponse> getSibling(@PathVariable("id") Long studyId,@PathVariable("uid") String subjectUid,@RequestHeader HttpHeaders httpHeaders) {
+			HttpHeaders headers = new HttpHeaders();
+			SiblingsResponse siblingResponse=new SiblingsResponse();
+			 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){ 
+				 List<String> subjectUids;
+				 ValidationType validationType=iPedWebSerRest.validateForSubjectUIDForStudy(studyId, subjectUid);
+				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+				        List<RelationshipVo> relatinshipVos = iPedWebSerRest.getMySiblings(subjectUid,studyId);
+				        if (relatinshipVos== null || relatinshipVos.isEmpty()) {
+				        	 headers.set("message", ValidationType.SIBLINGS_DOES_NOT_EXISTS.getName());
+				            return new ResponseEntity<SiblingsResponse>(headers,getResponseEntityForValidationCode(ValidationType.SIBLINGS_DOES_NOT_EXISTS));
+				        }else{
+				        	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());	
+				        	subjectUids=	iPedWebSerRest.mapListOfRelativeVoToListOfSubjectUids(relatinshipVos);
+				        	siblingResponse.setSubjectUids(subjectUids);
+				        }
+				        return new ResponseEntity<SiblingsResponse>(siblingResponse,headers,HttpStatus.OK);
+				 }else{
+					 	headers.set("message", validationType.getName());
+						return new ResponseEntity<SiblingsResponse>(headers,getResponseEntityForValidationCode(validationType)); 
+				 }   
+			 }else{
+				 	headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName() );
+					return new ResponseEntity<SiblingsResponse>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+			}
+	    }
+		//18-Get Encoded customfileds for study.
+		@CrossOrigin(origins = "http://localhost:8082")
+		@RequestMapping(value = "/study/{id}/binarycustomfields", method = RequestMethod.GET)
+		public ResponseEntity<BinaryCustomFieldsResponse> getBinaryCustomFields(@PathVariable("id") Long studyId,@RequestHeader HttpHeaders httpHeaders) {
+			HttpHeaders headers = new HttpHeaders();
+			BinaryCustomFieldsResponse binaryCustomFieldsResponse=new BinaryCustomFieldsResponse();
+			 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){ 
+				 List<String> customFieldNames;
+				 ValidationType validationType=iPedWebSerRest.validateForStudy(studyId);
+				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+				        List<CustomField> customFields = iPedWebSerRest.getBinaryCustomFields(studyId);
+				        if (customFields== null || customFields.isEmpty()) {
+				        	 headers.set("message", ValidationType.BINARY_CUSTOMFIELD_DOES_NOT_EXISTS.getName());
+				            return new ResponseEntity<BinaryCustomFieldsResponse>(headers,getResponseEntityForValidationCode(ValidationType.BINARY_CUSTOMFIELD_DOES_NOT_EXISTS));
+				        }else{
+				        	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());	
+				        	customFieldNames=	iPedWebSerRest.mapListOfCustomFieldsToListOfCustomfieldNames(customFields);
+				        	binaryCustomFieldsResponse.setCustomFieldNames(customFieldNames);
+				        }
+				        return new ResponseEntity<BinaryCustomFieldsResponse>(binaryCustomFieldsResponse,headers,HttpStatus.OK);
+				 }else{
+					 	headers.set("message", validationType.getName());
+						return new ResponseEntity<BinaryCustomFieldsResponse>(headers,getResponseEntityForValidationCode(validationType)); 
+				 }   
+			 }else{
+				 	headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName() );
+					return new ResponseEntity<BinaryCustomFieldsResponse>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+			}
+		}
 		/**
 		 * 
 		 * @param arkUserVO
@@ -538,6 +600,8 @@ public class PedigreeRestController {
 	        case PEDIGREE_CONFIGURATION_CUSTOM_FIELD_NAME_NOT_FOUND:	
 	        case FATHER_ID_IS_NOT_PRESENT_IN_THE_LIST:
 	        case MOHTER_ID_IS_NOT_PRESENT_IN_THE_LIST:	
+	        case SIBLINGS_DOES_NOT_EXISTS:	
+	        case BINARY_CUSTOMFIELD_DOES_NOT_EXISTS:	
 	        					httpStatus=HttpStatus.NOT_FOUND;	
 	        					break;
 	        case MISMATCH_SUBJECT_UID_WITH_SUBJECT_ID:					

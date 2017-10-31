@@ -49,6 +49,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.vo.RelationshipVo;
@@ -1040,6 +1041,35 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 			}
 		}
 		return ValidationType.SUCCESSFULLY_VALIDATED;
+	}
+
+	@Override
+	public List<RelationshipVo> getMySiblings(String subjectUID, Long studyId) {
+		return iStudyService.getSubjectPedigreeTwinList(subjectUID, studyId);
+	}
+
+	@Override
+	public List<String> mapListOfRelativeVoToListOfSubjectUids(List<RelationshipVo> relationshipVos) {
+		List<String> subjectUids=new ArrayList<String>();
+		for (RelationshipVo relationshipVo : relationshipVos) {
+			subjectUids.add(relationshipVo.getIndividualId());
+		}
+		return subjectUids;
+	}
+
+	@Override
+	public List<CustomField> getBinaryCustomFields(Long studyId) {
+		return iStudyService.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
+	}
+
+	@Override
+	public List<String> mapListOfCustomFieldsToListOfCustomfieldNames(List<CustomField> customFields) {
+		List<String> customfieldNames=new ArrayList<String>();
+		for (CustomField customField : customFields) {
+			customfieldNames.add(customField.getName());
+		}
+		return customfieldNames;
+		
 	}
 
 }

@@ -100,7 +100,11 @@ public enum ValidationType {
 	
 	MOHTER_ID_IS_NOT_PRESENT_IN_THE_LIST("Specified mother id is not present in the list."),
 	
-	FATHER_ID_IS_NOT_PRESENT_IN_THE_LIST("Specified father id is not present in the list.");
+	FATHER_ID_IS_NOT_PRESENT_IN_THE_LIST("Specified father id is not present in the list."),
+	
+	SIBLINGS_DOES_NOT_EXISTS("No siblings found."),
+	
+	BINARY_CUSTOMFIELD_DOES_NOT_EXISTS("No binary custom fields found.");
 	
 	private final String name;
 

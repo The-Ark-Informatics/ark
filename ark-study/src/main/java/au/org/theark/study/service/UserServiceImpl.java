@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,7 @@ import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.model.config.entity.UserSpecificSetting;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
@@ -287,4 +290,9 @@ public class UserServiceImpl implements IUserService {
 		return iArkAuthorisationService.getUserStudyListIncludeChildren(arkUserVO);
 		
 	}
+	@Override
+	public void deleteUserConfigSetting(ArkUserVO arkUserVO) {
+		iArkAuthorisationService.deleteUserConfigSetting(arkUserVO);
+	}
+	
 }

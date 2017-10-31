@@ -21,6 +21,7 @@ package au.org.theark.study.web.component.mydetails;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -67,12 +68,14 @@ public class MyDetails extends Panel {
 
 			protected void onSave(AjaxRequestTarget target) {
 				ArkUserVO arkUser = getModelObject();
-
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if(sessionStudyId!=null){
+					arkUser.setStudy(iArkCommonService.getStudy(sessionStudyId));
+				}
 				if ((arkUser.getPassword() != null && arkUser.getConfirmPassword() != null) && (!arkUser.getPassword().isEmpty() && !arkUser.getConfirmPassword().isEmpty())) {
 					// Temporary allow the user to select if he wants to change it
 					arkUser.setChangePassword(true);
 				}
-
 				try {
 					userService.updateArkUser(arkUser);
 					this.info("Details for user: " + arkUser.getUserName() + " were successfully updated.");
