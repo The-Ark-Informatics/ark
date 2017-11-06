@@ -24,7 +24,11 @@ public class DataCenterContainerPanel extends AbstractContainerPanel<DataCenterV
 	private SearchPanel						searchPanel;
 	private SearchResultListPanel			searchResultPanel;
 	
+	private DataSourceResultListPanel		dataSourceResultPanel;
+	
 	private PageableListView<DataSourceVo>	pageableListView;
+
+	private PageableListView<DataSourceVo>	pageableDataSourcetListView;
 
 	private ContainerForm					containerForm;
 
@@ -73,6 +77,32 @@ public class DataCenterContainerPanel extends AbstractContainerPanel<DataCenterV
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
+
+	protected WebMarkupContainer initialiseDataSourceSearchResults() {
+		dataSourceResultPanel = new DataSourceResultListPanel("dataSourceSearchResults", arkCrudContainerVO, containerForm);
+		dataSourceResultPanel.setOutputMarkupId(true);
+		
+		iModel = new LoadableDetachableModel<Object>() {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected Object load() {
+//				containerForm.getModelObject().setMicroServiceList(iGenomicService.searchMicroService((containerForm.getModelObject().getMicroService())));
+				pageableDataSourcetListView.removeAll();
+				return containerForm.getModelObject().getDataSourceList();
+			}
+		};
+
+		pageableDataSourcetListView = dataSourceResultPanel.buildPageableListView(iModel);
+		pageableDataSourcetListView.setReuseItems(true);
+		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableDataSourcetListView);
+		dataSourceResultPanel.add(pageNavigator);
+		dataSourceResultPanel.add(pageableDataSourcetListView);
+		arkCrudContainerVO.getSearchResultPanelContainer().add(dataSourceResultPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
+	}
+
+	
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
 		// TODO Auto-generated method stub
