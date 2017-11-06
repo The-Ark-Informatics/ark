@@ -1,0 +1,68 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+	<div wicket:id="detailModalWindow"></div>
+	<div wicket:id="queryModalWindow"></div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+						  
+			<th width="15%">
+				<label for="fileName">
+					<wicket:message	key="genomics.datacenter.filename">File Name:</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="directory">
+					<wicket:message	key="genomics.datacenter.filedirectory">Directory:</wicket:message>
+				</label>
+			</th>
+			<th width="40%">
+				<label for="path">
+					<wicket:message	key="genomics.datacenter.path">Path:</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="status">
+					<wicket:message	key="genomics.datacenter.status">Status:</wicket:message>
+					<span wicket:id="status">Status</span>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="status">
+					<wicket:message	key="genomics.datacenter.source">Status:</wicket:message>
+				</label>
+			</th>
+			
+			<th width="2%">&nbsp;</th>			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="dataSourceList">
+			<td width="2%">&nbsp;</td>
+			 
+			<td width="15%">
+				<!--  <span wicket:id="dataSourceVo.fileName">name</span> -->
+				<a href="#"wicket:id="dataSourceVo.fileName">
+			  		<span wicket:id="nameLbl">Name</span>
+			  	</a>
+			</td>
+			<td width="15%">
+				<span wicket:id="dataSourceVo.directory">dir</span>
+			</td>
+			<td width="40%">
+				<span wicket:id="dataSourceVo.path">path</span>
+			</td>
+			<td width="20%">
+				<span wicket:id="dataSourceVo.status">status</span>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td colspan="8"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
