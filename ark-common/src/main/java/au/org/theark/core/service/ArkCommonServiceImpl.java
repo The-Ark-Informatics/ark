@@ -2336,6 +2336,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public String getFileAttachmentDir() throws NullPointerException {
 		return iArkSettingService.getSetting("FILE_ATTACHMENT_DIR", null, null).getPropertyValue();
 	}
+	
+	public Setting getDemoMode(){
+		return iArkSettingService.getSetting("DEMO_MODE", null, null);
+	}
+	
+	
 	@Override
 	public boolean isAnyFilterAddedForSearch(Search search){
 		return studyDao.isAnyFilterAddedForSearch(search);
