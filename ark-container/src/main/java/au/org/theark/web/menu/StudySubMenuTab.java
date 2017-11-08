@@ -191,7 +191,14 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 							processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, arkFunction);
 							SecurityManager securityManager = ThreadContext.getSecurityManager();
 							Subject currentUser = SecurityUtils.getSubject();
-							return ArkPermissionHelper.hasEditPermission(securityManager, currentUser) && sessionStudyId != null;
+							// In Demo mode ON only a Super Administrator can see the Manage user tab 
+							//Refer ARK-1846
+							if(Constants.YES.equalsIgnoreCase(iArkCommonService.getDemoMode().getPropertyValue())){
+								return ArkPermissionHelper.hasEditPermission(securityManager, currentUser) && sessionStudyId != null && 
+										securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
+							}else{
+								return ArkPermissionHelper.hasEditPermission(securityManager, currentUser) && sessionStudyId != null;
+							}
 						}
 						return sessionStudyId != null;
 					}
@@ -217,4 +224,6 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 	public static Logger getLog() {
 		return log;
 	}
+	
+	
 }

@@ -230,8 +230,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 			}
 			
 		}
-		
-		
+
 	}
 	
 	public void determineViewOrEditMode(){

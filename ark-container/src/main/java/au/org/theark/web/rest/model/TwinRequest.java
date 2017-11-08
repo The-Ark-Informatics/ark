@@ -1,6 +1,8 @@
 package au.org.theark.web.rest.model;
 
-public class CreateTwinRequest {
+public class TwinRequest {
+	
+	private Long id;
 	
 	private String subjectUID;
 	
@@ -9,6 +11,14 @@ public class CreateTwinRequest {
 	private Long studyId;
 	
 	private String twinType;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getSubjectUID() {
 		return subjectUID;

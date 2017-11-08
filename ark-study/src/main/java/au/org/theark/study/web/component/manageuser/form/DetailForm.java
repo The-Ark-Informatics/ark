@@ -192,6 +192,8 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				public void onClose(AjaxRequestTarget target) {
 					if (confirmationAnswer.isAnswer() ) {
 						try {
+							//Add on 2017-10-27 Delete the user config settings before remove the user from system
+							iUserService.deleteUserConfigSetting(containerForm.getModelObject());
 							iUserService.deleteArkUser(containerForm.getModelObject());
 							ldapSuccessModal.show(target);
 							ldapSuccessModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {

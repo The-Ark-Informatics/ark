@@ -104,14 +104,6 @@ public abstract class BasePage extends WebPage {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 
-	static {
-		try{
-			System.loadLibrary("madeline");
-		}catch(Error e)	{
-			e.printStackTrace();
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	public BasePage() {
 		currentUser = SecurityUtils.getSubject();

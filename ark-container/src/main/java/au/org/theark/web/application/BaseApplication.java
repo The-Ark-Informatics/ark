@@ -35,6 +35,14 @@ import au.org.theark.web.pages.login.LoginPage;
 public abstract class BaseApplication extends WebApplication {
 	static final Logger	log	= LoggerFactory.getLogger(BaseApplication.class);
 
+	static {
+		try{
+			System.loadLibrary("madeline");
+		}catch(Error e)	{
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	protected void init() {
 		super.init();

@@ -117,4 +117,13 @@
             <url-pattern>/rest/*</url-pattern>
             <!-- <url-pattern>/</url-pattern> -->
     </servlet-mapping>
+    <!-- <filter>
+        <filter-name>cors</filter-name>
+        <filter-class>au.org.theark.web.rest.util.CorsFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>cors</filter-name>
+        <url-pattern>/rest/*</url-pattern>
+    </filter-mapping> -->
 </web-app>

@@ -49,6 +49,7 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
@@ -1265,6 +1266,8 @@ public interface IArkCommonService<T> {
 	public int getCustomFieldsPerPage();
 	
 	public String getFileAttachmentDir() throws NullPointerException;
+	
+	public Setting getDemoMode();
 	
 	public boolean isAnyFilterAddedForSearch(Search search);
 	

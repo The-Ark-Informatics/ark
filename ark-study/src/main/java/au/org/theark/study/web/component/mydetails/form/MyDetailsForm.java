@@ -127,8 +127,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	@SuppressWarnings( { "unchecked" })
 	public void initialiseForm() {
 		//ArkUserVO arkUserVOFromBackend = new ArkUserVO();
+		
 		try {
-
 			ArkUserVO arkUserVOFromBackend = iUserService.lookupArkUser(getModelObject().getUserName(), getModelObject().getStudy());
 			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			if(sessionStudyId!=null){
@@ -167,6 +167,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 				processFeedback(target, feedbackPanel);
 			}
 		};
+		//Save button will enable if study context enabled only.
+		saveButton.setEnabled(isStudyContexSelected());
 
 		closeButton = new AjaxButton(Constants.CLOSE) {
 
@@ -424,5 +426,9 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 
 	public void setDefaultValue(Study defaultValue) {
 		this.defaultValue = defaultValue;
+	}
+	private boolean isStudyContexSelected(){
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		return (sessionStudyId!=null);
 	}
 }

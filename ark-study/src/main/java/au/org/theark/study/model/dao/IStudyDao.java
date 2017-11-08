@@ -573,6 +573,16 @@ public interface IStudyDao {
 	
 	public LinkSubjectStudy getLinkSubjectStudyBySubjectUidAndStudy(String subjectUid, Study study);
 	
+	public LinkSubjectPedigree getParentRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative);
 	
+	public LinkSubjectTwin getTwinRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative);
+	
+	public LinkSubjectPedigree getLinkSubjectPedigreeById(Long id);
+	
+	public LinkSubjectTwin getLinkSubjectTwinById(Long id);
+	
+	public List<LinkSubjectPedigree> getListOfLinkSubjectPedigreeForStudy(Study study);
+	
+	public List<LinkSubjectTwin> getListOfLinkSubjectTwinForStudy(Study study);
 	
 }
