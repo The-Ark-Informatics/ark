@@ -44,11 +44,11 @@ public class ArkFileExtensionValidator extends AbstractValidator {
 					validatable.error(error);
 				}
 	    	}
-		}else{
+		}/*else{
 			error.addMessageKey(resourceKey());
 	        error.setVariable("validExtension",allowedFileExt );
 	        validatable.error(error);
-		}
+		}*/
 	}
 	@Override
 	protected String resourceKey() {

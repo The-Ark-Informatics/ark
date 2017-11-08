@@ -123,9 +123,9 @@ public abstract class AbstractContainerPanel<T> extends Panel {
 	}
 	
 	protected void disableUploadersInDemoMode() {
-		Setting demoSetting = iArkCommonService.getDemoMode();
-
-		if (Constants.YES.equalsIgnoreCase(demoSetting.getPropertyValue())) {
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if (!securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) && Constants.YES.equalsIgnoreCase(iArkCommonService.getDemoMode().getPropertyValue())) {
 
 			ComponentHierarchyIterator iterrator = this.visitChildren();
 
