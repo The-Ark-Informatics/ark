@@ -445,6 +445,7 @@ public class StudyServiceImpl implements IStudyService {
 				//remove existing attachment file id and checksum
 				study.setStudyLogoFileId(null);
 				study.setStudyLogoChecksum(null);
+				study.setFilename(null);
 			}
 		}
 		// Remove the attachment

@@ -283,6 +283,7 @@ public class Constants {
 
 	public static final String			STATE_SELECTOR_WMC											= "stateSelector";
 	public static final String			SUBJECT_FILE_FILENAMELINK									= "subjectFile.link";
+	public static final String			SUBJECT_LOGO_LINK											= "subjectLogo.link";
 	// WebMarkupContainer
 	// that
 	// will

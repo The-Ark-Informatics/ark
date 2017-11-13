@@ -168,7 +168,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			}
 		};
 		//Save button will enable if study context enabled only.
-		saveButton.setEnabled(isStudyContexSelected());
+		//Changed refer ARK-1852 
+		//saveButton.setEnabled(isStudyContexSelected());
 
 		closeButton = new AjaxButton(Constants.CLOSE) {
 

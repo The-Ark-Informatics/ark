@@ -18,7 +18,9 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.managestudy.form;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,6 +64,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
+import org.apache.wicket.util.resource.FileResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
@@ -70,6 +74,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.dao.LobUtil;
+import au.org.theark.core.exception.ArkCheckSumNotSameException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.CannotRemoveArkModuleException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -85,11 +91,13 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.ModuleConstants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.AJAXDownload;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
@@ -101,6 +109,7 @@ import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractArchiveDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -191,6 +200,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	
 	private HistoryButtonPanel historyButtonPanel;
 	
+	private Label									fileNameLbl;
+	private ArkBusyAjaxLink<String>  				fileNameLnk;
+	private AJAXDownload                            ajaxDownload;
+	private AjaxButton 								deleteButton;
 	/**
 	 * Constructor
 	 * 
@@ -362,7 +375,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyCrudVO.getStudyLogoUploadContainer().add(clearLogoButton);
 
 		initStudyLogo();
-
+		initStudyLogoDelete();
 		initSubjectUid();
 		initBioCollectionUid();
 		initBiospecimenUid();
@@ -1113,7 +1126,13 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyCrudVO.getDetailPanelFormContainer().add(bioCollectionUidContainer);
 
 		subjectFileUploadContainer.add(subjectFileUploadField);
+		
 		studyCrudVO.getDetailPanelFormContainer().add(subjectFileUploadContainer);
+		
+		//add new delete button for study logo.
+		studyCrudVO.getDetailPanelFormContainer().add(fileNameLnk);
+		studyCrudVO.getDetailPanelFormContainer().add(deleteButton);
+		studyCrudVO.getDetailPanelFormContainer().add(ajaxDownload);
 
 		studyCrudVO.getEditButtonContainer().add(newChildStudyButton);
 		
@@ -1296,6 +1315,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			
 			String checksum=null;
 			
+			// This is related to study logo already setting we have to get it from the data store and update.
+			checksum = addStudyLogoBlobDetailsToStudyModelFromfile(studyModel, checksum);
+			
 			if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
 				// Retrieve file and store as Blob in databasse
 				FileUpload fileUpload = fileUploadField.getFileUpload();
@@ -1346,6 +1368,27 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		target.add(subjectUidContainer);
 		target.add(bioCollectionUidContainer);
 		target.add(biospecimenUidContainer);
+	}
+
+	/**
+	 * 
+	 * @param studyModel
+	 * @param checksum
+	 * @return
+	 * @throws ArkSystemException
+	 * @throws ArkFileNotFoundException
+	 * @throws ArkCheckSumNotSameException
+	 * @throws IOException
+	 */
+	private String addStudyLogoBlobDetailsToStudyModelFromfile(StudyModelVO studyModel, String checksum)throws ArkSystemException, ArkFileNotFoundException, ArkCheckSumNotSameException, IOException {
+		if(studyModel.getStudy().getStudyLogoFileId()!=null && studyModel.getStudy().getStudyLogoChecksum()!=null){
+			File file=	iArkCommonService.retriveArkFileAttachmentAsFile(studyModel.getStudy().getId(), null, Constants.ARK_STUDY_DIR,studyModel.getStudy().getStudyLogoFileId() ,studyModel.getStudy().getStudyLogoChecksum());
+			studyModel.getStudy().setStudyLogoBlob(Files.readAllBytes(file.toPath()));
+			checksum=studyModel.getStudy().getStudyLogoChecksum();
+			String fileName=file.getName();
+			studyModel.getStudy().setFilename(fileName.substring(fileName.lastIndexOf("_") + 1));
+		}
+		return checksum;
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
@@ -1468,5 +1511,108 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 	public void setLinkedToStudyDDContainer(WebMarkupContainer linkedToStudyDDContainer) {
 		this.parentStudyContainer = linkedToStudyDDContainer;
+	}
+	
+	private void initStudyLogoDelete(){
+		
+		fileNameLbl = new Label(Constants.STUDY_FILENAME);
+		fileNameLbl.setOutputMarkupId(true);
+		ajaxDownload = new AJAXDownload()
+		{
+			 @Override
+	            protected IResourceStream getResourceStream()
+	            {     
+				 	Study study=containerForm.getModelObject().getStudy();
+					File file = null;
+					IResourceStream resStream =null;
+						try {
+							file=iArkCommonService.retriveArkFileAttachmentAsFile(study.getId(),null,Constants.ARK_STUDY_DIR,study.getStudyLogoFileId(),study.getStudyLogoChecksum());
+							resStream = new FileResourceStream(file);
+							if(resStream==null){
+								containerForm.error("An unexpected error occurred. Download request could not be fulfilled.");
+							}
+						} catch (ArkSystemException e) {
+							containerForm.error("An unexpected error occurred. Download request could not be fulfilled.");
+							log.error(e.getMessage());
+						} catch (ArkFileNotFoundException e) {
+							containerForm.error("File not found:"+e.getMessage());
+							log.error(e.getMessage());
+						} catch (ArkCheckSumNotSameException e) {
+							containerForm.error("Check sum error:"+e.getMessage());
+							log.error(e.getMessage());
+						}
+						return resStream;
+		        }
+	            @Override
+	            protected String getFileName() {
+	                return containerForm.getModelObject().getStudy().getFilename();
+	            }
+		};
+		fileNameLnk=new ArkBusyAjaxLink<String>(Constants.SUBJECT_LOGO_LINK) {
+		@Override
+		public void onClick(AjaxRequestTarget target) {
+			ajaxDownload.initiate(target);
+			processErrors(target);
+		}
+			
+		};
+		fileNameLnk.add(fileNameLbl);
+		deleteButton = new AjaxButton("deleteButton") {
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			try {
+				//remove existing attachment file id and checksum
+				StudyModelVO studyModel=containerForm.getModelObject();	
+				String checksum=null;
+				checksum=addStudyLogoBlobDetailsToStudyModelFromfile(studyModel, checksum);
+				studyModel.getStudy().setStudyLogoBlob(null);
+				iStudyService.updateStudy(studyModel,checksum);
+				containerForm.info("The file has been successfully deleted.");
+				onSavePostProcess(target, studyCrudVO);
+				target.add(studyCrudVO.getStudyLogoMarkup());
+				target.add(studyCrudVO.getDetailPanelFormContainer());
+			 }catch (ArkSystemException e) {
+					containerForm.error("System error occure:"+e.getMessage());
+			 } catch (ArkFileNotFoundException e) {
+				 containerForm.error("File not found:"+e.getMessage());
+			} catch (ArkCheckSumNotSameException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CannotRemoveArkModuleException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally{
+				 //containerForm.getModelObject().getSubjectFile().setFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLnk);
+				target.add(this);
+				processErrors(target);
+			 }
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().getStudy().setStudyLogoBlob(null);
+				containerForm.getModelObject().getStudy().setFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLnk);
+				target.add(this);
+				containerForm.error("Error occurred during the file deletion process.");
+				processErrors(target);
+			}
+			
+			@Override
+			public boolean isVisible() {
+				return (containerForm.getModelObject().getStudy()!=null && containerForm.getModelObject().getStudy().getFilename() != null) && !containerForm.getModelObject().getStudy().getFilename().isEmpty();
+			}
+		};
+		deleteButton.add(new AttributeModifier("title", new Model<String>("Remove study logo only")));
+		deleteButton.setOutputMarkupId(true);
 	}
 }
