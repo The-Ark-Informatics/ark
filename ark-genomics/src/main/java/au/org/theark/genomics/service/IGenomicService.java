@@ -49,6 +49,8 @@ public interface IGenomicService {
 	
 	public DataSource getDataSource(DataSourceVo dataSourceVo);
 	
+	public List<DataSource> searchDataSources(DataSourceVo dataSourceVo);
+	
 	public String executeDataSourceUpload(DataSourceVo dataSource);
 	
 	public String executeDataSourceUpload(DataCenterVo dataCenter, String initStatus);

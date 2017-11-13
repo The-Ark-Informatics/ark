@@ -32,7 +32,7 @@ public interface IGenomicsDao {
 	
 	public List<DataSourceType> listDataSourceTypes();
 	
-	public DataSource getDataSource(DataSourceVo dataSourceVo);	
+	public List<DataSource> getDataSources(DataSourceVo dataSourceVo);	
 	
 	public List<DataSource> searchDataSources(MicroService microService);
 	

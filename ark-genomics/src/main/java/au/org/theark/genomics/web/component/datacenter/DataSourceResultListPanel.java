@@ -8,8 +8,10 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -41,11 +43,14 @@ public class DataSourceResultListPanel extends Panel {
 
 	private PageableListView<DataSourceVo> sitePageableListView;
 	
-	public DataSourceResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm) {
+	private FeedbackPanel feedbackPanel;
+	
+	public DataSourceResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm, FeedbackPanel feedbackPanel) {
 		super(id);
 		setOutputMarkupId(true);
 		arkCrudContainerVO = crudContainerVO;
 		containerForm = studyCompContainerForm;
+		this.feedbackPanel = feedbackPanel;
 	}
 	
 	public PageableListView<DataSourceVo> buildPageableListView(IModel iModel) {
@@ -55,25 +60,30 @@ public class DataSourceResultListPanel extends Panel {
 			protected void populateItem(final ListItem<DataSourceVo> item) {
 				DataSourceVo dataSource = item.getModelObject();
 			
-				item.add(buildNameLink(dataSource));
 				
-				if (dataSource.getDirectory() != null) {
-					item.add(new Label(Constants.DATA_SOURCE_VO_DIRECTORY, dataSource.getDirectory()));
-				} else {
-					item.add(new Label(Constants.DATA_SOURCE_VO_DIRECTORY, ""));
-				}
-				if (dataSource.getPath() != null) {
-					item.add(new Label(Constants.DATA_SOURCE_VO_PATH, dataSource.getPath()));
-				} else {
-					item.add(new Label(Constants.DATA_SOURCE_VO_PATH, ""));
-				}
-				if (dataSource.getDataSource() != null && dataSource.getDataSource().getStatus() != null) {
-					item.add(new Label(Constants.DATA_SOURCE_VO_STATUS, dataSource.getDataSource().getStatus()));
-				} else {
-					item.add(new Label(Constants.DATA_SOURCE_VO_STATUS, ""));
-				}
+				DataSourceViewPanel dataSourcePanel = new DataSourceViewPanel("dataSourcePanel", feedbackPanel, arkCrudContainerVO);
+				dataSourcePanel.setOutputMarkupId(true);
+				dataSourcePanel.initialisePanel(new CompoundPropertyModel(dataSource));
+				item.add(dataSourcePanel);
+				
+//				item.add(buildNameLink(dataSource));
+				
+//				if (dataSource.getDirectory() != null) {
+//					item.add(new Label(Constants.DATA_SOURCE_VO_DIRECTORY, dataSource.getDirectory()));
+//				} else {
+//					item.add(new Label(Constants.DATA_SOURCE_VO_DIRECTORY, ""));
+//				}
+//				if (dataSource.getPath() != null) {
+//					item.add(new Label(Constants.DATA_SOURCE_VO_PATH, dataSource.getPath()));
+//				} else {
+//					item.add(new Label(Constants.DATA_SOURCE_VO_PATH, ""));
+//				}
+//				if (dataSource.getDataSource() != null && dataSource.getDataSource().getStatus() != null) {
+//					item.add(new Label(Constants.DATA_SOURCE_VO_STATUS, dataSource.getDataSource().getStatus()));
+//				} else {
+//					item.add(new Label(Constants.DATA_SOURCE_VO_STATUS, ""));
+//				}
 
-//				item.add(buildSourceLink(dataSource));
 				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long serialVersionUID = 1L;
@@ -85,6 +95,8 @@ public class DataSourceResultListPanel extends Panel {
 				}));
 			}
 		};
+		
+		sitePageableListView.setOutputMarkupId(true);
 
 		return sitePageableListView;
 	}

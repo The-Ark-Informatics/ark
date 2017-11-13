@@ -468,7 +468,12 @@ public class GenomicServiceImpl implements IGenomicService {
 
 	public DataSource getDataSource(DataSourceVo dataSourceVo) {
 		// TODO Auto-generated method stub
-		return genomicsDao.getDataSource(dataSourceVo);
+		List<DataSource> list = genomicsDao.getDataSources(dataSourceVo);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	public List<DataSource> searchDataSources(DataSourceVo dataSourceVo){
+		return genomicsDao.getDataSources(dataSourceVo);
 	}
 
 	public String executeDataSourceUpload(DataSourceVo dataSource) {

@@ -7,6 +7,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -37,6 +38,8 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 	private PageableListView<DataSourceVo> listView;
 
+	private PageableListView<DataSourceVo> sourceView;
+
 	private CompoundPropertyModel<DataCenterVo> cpmModel;
 
 	private DropDownChoice<MicroService> microServicesDDC;
@@ -49,14 +52,18 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 	private List<MicroService> microServiceList;
 
 	private List<String> dataSourceList;
+	
+	private WebMarkupContainer	        dataSourcePanelContainer;
 
-	public SearchForm(String id, CompoundPropertyModel<DataCenterVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<DataSourceVo> listView) {
+	public SearchForm(String id, CompoundPropertyModel<DataCenterVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<DataSourceVo> listView, PageableListView<DataSourceVo> sourceView, WebMarkupContainer dataSourcePanelContainer) {
 
 		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
 		this.listView = listView;
+		this.sourceView = sourceView;
 		this.cpmModel = cpmModel;
+		this.dataSourcePanelContainer = dataSourcePanelContainer;
 
 		initialiseSearchForm();
 		addSearchComponentsToForm();
@@ -209,8 +216,10 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		}
 		getModelObject().setDataSourceList(resultList);
 		listView.removeAll();
+		sourceView.removeAll();
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(dataSourcePanelContainer);
 	}
 
 	@Override

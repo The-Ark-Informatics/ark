@@ -21,7 +21,10 @@ public class DataCenterContainerPanel extends AbstractContainerPanel<DataCenterV
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	protected WebMarkupContainer	        dataSourcePanelContainer;
+	
 	private SearchPanel						searchPanel;
+	
 	private SearchResultListPanel			searchResultPanel;
 	
 	private DataSourceResultListPanel		dataSourceResultPanel;
@@ -47,7 +50,10 @@ public class DataCenterContainerPanel extends AbstractContainerPanel<DataCenterV
 
 		containerForm.add(initialiseSearchResults());
 
+		containerForm.add(initialiseDataSourceSearchResults());
+
 		containerForm.add(initialiseSearchPanel());
+
 
 		add(containerForm);
 	}
@@ -79,7 +85,10 @@ public class DataCenterContainerPanel extends AbstractContainerPanel<DataCenterV
 
 
 	protected WebMarkupContainer initialiseDataSourceSearchResults() {
-		dataSourceResultPanel = new DataSourceResultListPanel("dataSourceSearchResults", arkCrudContainerVO, containerForm);
+		
+		dataSourcePanelContainer = new WebMarkupContainer("dataSourceListContainer");
+		dataSourcePanelContainer.setOutputMarkupPlaceholderTag(true);
+		dataSourceResultPanel = new DataSourceResultListPanel("dataSourceSearchResults", arkCrudContainerVO, containerForm, feedBackPanel);
 		dataSourceResultPanel.setOutputMarkupId(true);
 		
 		iModel = new LoadableDetachableModel<Object>() {
@@ -98,8 +107,8 @@ public class DataCenterContainerPanel extends AbstractContainerPanel<DataCenterV
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableDataSourcetListView);
 		dataSourceResultPanel.add(pageNavigator);
 		dataSourceResultPanel.add(pageableDataSourcetListView);
-		arkCrudContainerVO.getSearchResultPanelContainer().add(dataSourceResultPanel);
-		return arkCrudContainerVO.getSearchResultPanelContainer();
+		dataSourcePanelContainer.add(dataSourceResultPanel);
+		return dataSourcePanelContainer;
 	}
 
 	
@@ -111,7 +120,7 @@ public class DataCenterContainerPanel extends AbstractContainerPanel<DataCenterV
 
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
-		searchPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO, feedBackPanel, containerForm, pageableListView);
+		searchPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO, feedBackPanel, containerForm, pageableListView, pageableDataSourcetListView, dataSourcePanelContainer);
 		searchPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();

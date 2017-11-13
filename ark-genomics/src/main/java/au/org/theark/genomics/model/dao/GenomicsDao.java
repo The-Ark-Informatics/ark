@@ -126,7 +126,7 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		return list;
 	}
 
-	public DataSource getDataSource(DataSourceVo dataSourceVo) {
+	public List<DataSource> getDataSources(DataSourceVo dataSourceVo) {
 		List<DataSource> list = null;
 
 		Criteria criteria = getSession().createCriteria(DataSource.class);
@@ -145,7 +145,7 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		}
 		list = criteria.list();
 		
-		return list.size() > 0 ? list.get(0) : null;
+		return list;
 	}
 
 	public List<DataSource> searchDataSources(MicroService microService) {
