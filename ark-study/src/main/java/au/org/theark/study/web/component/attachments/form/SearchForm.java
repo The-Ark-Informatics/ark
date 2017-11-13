@@ -23,6 +23,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -163,5 +166,16 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		target.add(feedbackPanel);
 		getModelObject().getSubjectFile().setId(null);
 		preProcessDetailPanel(target);
+	}
+	
+	@Override
+	protected void onBeforeRender() {
+		// TODO Auto-generated method stub
+		super.onBeforeRender();
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if (!securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) && Constants.YES.equalsIgnoreCase(iArkCommonService.getDemoMode().getPropertyValue())) {
+			this.newButton.setEnabled(false);
+		}
 	}
 }
