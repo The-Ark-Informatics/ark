@@ -8,6 +8,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.jni.ArkMadelineProxy;
+import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
@@ -49,7 +51,6 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.vo.RelationshipVo;
@@ -397,10 +398,9 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		person.setGenderType(iArkCommonService.getGenderType(subjectRequestInsert.getGenderTypeName()));
 		person.setVitalStatus(iArkCommonService.getVitalStatus(subjectRequestInsert.getVitalStatusName()));
 		linkSubjectStudy.setPerson(person);
-		
 		linkSubjectStudy.setSubjectStatus(iArkCommonService.getSubjectStatus(subjectRequestInsert.getSubjectStatusName()));
 		linkSubjectStudy.setSubjectUID(subjectRequestInsert.getSubjectUID());
-		
+		linkSubjectStudy.setConsentStatus(iArkCommonService.getConsentStatusByName(subjectRequestInsert.getConsentStatusName()));
 		subjectVO.setLinkSubjectStudy(linkSubjectStudy);
 		return subjectVO;
 	}
@@ -418,6 +418,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		person.setVitalStatus(iArkCommonService.getVitalStatus(subjectRequestUpdate.getVitalStatusName()));
 		linkSubjectStudy.setPerson(person);
 		linkSubjectStudy.setSubjectStatus(iArkCommonService.getSubjectStatus(subjectRequestUpdate.getSubjectStatusName()));
+		linkSubjectStudy.setConsentStatus(iArkCommonService.getConsentStatusByName(subjectRequestUpdate.getConsentStatusName()));
 		//linkSubjectStudy.setSubjectUID(subjectRequestUpdate.getSubjectUID());
 		
 		subjectVO.setLinkSubjectStudy(linkSubjectStudy);
@@ -469,6 +470,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		GenderType genderType;
 		VitalStatus vitalStatus;
 		SubjectStatus subjectStatus;
+		ConsentStatus consentStatus;
 		//Check for valid(not null) study id.
 		if(subjectRequest.getStudyId()!=null ){
 			study=iArkCommonService.getStudy(subjectRequest.getStudyId());
@@ -523,7 +525,15 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		if(subjectStatus==null || subjectStatus.getId()==null){
 			return ValidationType.INVALID_SUBJECT_STATUS;
 		}
-		
+		//Check for the valid consent Status
+		if(subjectRequest.getConsentStatusName()!=null){
+				consentStatus=iArkCommonService.getConsentStatusByName(subjectRequest.getConsentStatusName());
+		}else{
+			return ValidationType.NO_CONSENT_STATUS;
+		}
+		if(consentStatus==null || consentStatus.getId()==null){
+			return ValidationType.INVALID_CONSENT_STATUS;
+		}
 		return ValidationType.SUCCESSFULLY_VALIDATED;
 		
 	}
@@ -690,7 +700,8 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		subjectRequest.setDateOfBirth(linkSubjectStudy.getPerson().getDateOfBirth());
 		subjectRequest.setGenderTypeName(linkSubjectStudy.getPerson().getGenderType().getName());
 		subjectRequest.setVitalStatusName(linkSubjectStudy.getPerson().getVitalStatus().getName());
-		subjectRequest.setSubjectStatusName(linkSubjectStudy.getSubjectStatus().getName());
+		subjectRequest.setSubjectStatusName(linkSubjectStudy.getSubjectStatus()!=null ?linkSubjectStudy.getSubjectStatus().getName():null);
+		subjectRequest.setConsentStatusName(linkSubjectStudy.getConsentStatus()!=null ?linkSubjectStudy.getConsentStatus().getName():null);
 		return subjectRequest;		
 	}
 	
@@ -1070,6 +1081,23 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		}
 		return customfieldNames;
 		
+	}
+
+	@Override
+	public List<String> getSubjectUidsWhoHasSiblings(Long studyId) {
+		List<String> subjectUids = new ArrayList<String>();
+		Set<String> hsTemp = new HashSet<>();
+		Study study=iStudyService.getStudy(studyId);
+		for (LinkSubjectPedigree linkSubjectPedigree : getListofLinkSubjectPedigreeForStudy(study)) {
+			List<RelationshipVo> relationshipVos=getMySiblings(linkSubjectPedigree.getSubject().getSubjectUID(), studyId);
+				if(!relationshipVos.isEmpty()&& relationshipVos.size()>0){
+					subjectUids.add(linkSubjectPedigree.getSubject().getSubjectUID());
+				}
+		}
+		hsTemp.addAll(subjectUids);
+		subjectUids.clear();
+		subjectUids.addAll(hsTemp);
+		return subjectUids;
 	}
 
 }

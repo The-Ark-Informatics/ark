@@ -33,7 +33,9 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -1609,7 +1611,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			
 			@Override
 			public boolean isVisible() {
-				return (containerForm.getModelObject().getStudy()!=null && containerForm.getModelObject().getStudy().getFilename() != null) && !containerForm.getModelObject().getStudy().getFilename().isEmpty();
+				SecurityManager securityManager = ThreadContext.getSecurityManager();
+				Subject currentUser = SecurityUtils.getSubject();
+				if(Constants.YES.equalsIgnoreCase(iArkCommonService.getDemoMode().getPropertyValue())){
+					return (containerForm.getModelObject().getStudy()!=null && containerForm.getModelObject().getStudy().getFilename() != null) && !containerForm.getModelObject().getStudy().getFilename().isEmpty() &&
+							securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR); 
+				}else{
+					return (containerForm.getModelObject().getStudy()!=null && containerForm.getModelObject().getStudy().getFilename() != null) && !containerForm.getModelObject().getStudy().getFilename().isEmpty();
+				} 
 			}
 		};
 		deleteButton.add(new AttributeModifier("title", new Model<String>("Remove study logo only")));

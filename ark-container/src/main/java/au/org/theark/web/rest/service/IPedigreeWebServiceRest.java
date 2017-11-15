@@ -107,4 +107,7 @@ public interface IPedigreeWebServiceRest {
 	
 	public List<String> mapListOfCustomFieldsToListOfCustomfieldNames(List<CustomField> customFields);
 	
+	public List<String> getSubjectUidsWhoHasSiblings(Long studyId);
+	
+	
 }

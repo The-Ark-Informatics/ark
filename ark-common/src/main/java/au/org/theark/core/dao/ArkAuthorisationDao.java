@@ -199,7 +199,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.add(Restrictions.eq("arkRole", arkRole));
 		criteria.add(Restrictions.eq("arkUser", arkUser));
 		criteria.add(Restrictions.eq("arkModule", arkModule));
-
 		criteria.setMaxResults(1);
 		ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
 		if (arkUserRole != null) {

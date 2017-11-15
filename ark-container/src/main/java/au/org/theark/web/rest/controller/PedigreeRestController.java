@@ -544,6 +544,34 @@ public class PedigreeRestController {
 					return new ResponseEntity<BinaryCustomFieldsResponse>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 			}
 		}
+		//19-Get people who has siblings for study.
+		@CrossOrigin(origins = "http://localhost:8082")
+		@RequestMapping(value = "/study/{id}/havesiblings", method = RequestMethod.GET)
+		public ResponseEntity<SiblingsResponse> getHaveSiblings(@PathVariable("id") Long studyId,@RequestHeader HttpHeaders httpHeaders) {
+			HttpHeaders headers = new HttpHeaders();
+			SiblingsResponse siblingResponse=new SiblingsResponse();
+			 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){ 
+				 List<String> subjectUids;
+				 ValidationType validationType=iPedWebSerRest.validateForStudy(studyId);
+				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
+					 subjectUids = iPedWebSerRest.getSubjectUidsWhoHasSiblings(studyId);
+				        if (subjectUids== null || subjectUids.isEmpty()) {
+				        	 headers.set("message", ValidationType.NO_SUBJECT_UID_HAS_SIBLINGS.getName());
+				            return new ResponseEntity<SiblingsResponse>(headers,getResponseEntityForValidationCode(ValidationType.NO_SUBJECT_UID_HAS_SIBLINGS));
+				        }else{
+				        	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());	
+				        	siblingResponse.setSubjectUids(subjectUids);
+				        }
+				        return new ResponseEntity<SiblingsResponse>(siblingResponse,headers,HttpStatus.OK);
+				 }else{
+					 	headers.set("message", validationType.getName());
+						return new ResponseEntity<SiblingsResponse>(headers,getResponseEntityForValidationCode(validationType)); 
+				 }   
+			 }else{
+				 	headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName() );
+					return new ResponseEntity<SiblingsResponse>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+			}
+		}
 		/**
 		 * 
 		 * @param arkUserVO
@@ -586,7 +614,9 @@ public class PedigreeRestController {
 	        case NO_VITAL_STATUS:   
 	        case INVALID_VITAL_STATUS:   
 	        case NO_SUBJECT_STATUS:   
-	        case INVALID_SUBJECT_STATUS:   
+	        case INVALID_SUBJECT_STATUS: 
+	        case NO_CONSENT_STATUS:   
+	        case INVALID_CONSENT_STATUS:   	
             case SUBJECT_UID_NOT_EXISTS:
             case RELATIVE_SUBJECT_UID_NOT_EXISTS:
             case NO_PARENT_TYPE:

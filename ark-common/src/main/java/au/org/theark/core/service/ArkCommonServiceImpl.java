@@ -2367,4 +2367,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getListofLinkSubjectStudiesForStudy(study);
 	}
 
+	@Override
+	public void deleteSearchResult(SearchResult searchResult) {
+		studyDao.delete(searchResult);
+	}
+
 }

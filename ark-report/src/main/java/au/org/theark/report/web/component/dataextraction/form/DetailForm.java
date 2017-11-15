@@ -65,6 +65,7 @@ import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchFile;
+import au.org.theark.core.model.report.entity.SearchResult;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
@@ -447,6 +448,22 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	}
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
+		//Here we need to delete the Search result list if exist before we delete the search 
+		//Please refer ARK-1851
+		//Also need to delete search_file if exists.
+		Search search=containerForm.getModelObject().getSearch();
+		List<SearchResult> searchResults=iArkCommonService.getSearchResultList(search.getId());
+		for (SearchResult searchResult : searchResults) {
+			iArkCommonService.deleteSearchResult(searchResult);
+		}
+		SearchFile searchFile=reportService.getSearchFileByStudyAndSearch(search.getStudy(), search);
+		if(searchFile!=null && searchFile.getId()!=null){
+			try {
+				reportService.delete(searchFile,au.org.theark.report.web.Constants.REPORT_DATA_EXTRACTION_SUBJECT_UID_RESTRICT_FILE );
+			} catch (ArkSystemException | EntityNotFoundException | ArkFileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 		iArkCommonService.delete(containerForm.getModelObject().getSearch());
 		this.deleteInformation();
 		processErrors(target);

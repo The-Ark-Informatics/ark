@@ -88,6 +88,10 @@ public class ArkLdapRealm extends AuthorizingRealm {
 
 				String role = iArkCommonService.getUserRole(ldapUserName, arkFunction, arkModule, null);
 				simpleAuthInfo.addRole(role);
+				
+				/*//Add multiple roles
+				iArkCommonService.getArkRoleListByUserAndStudy(arkUserVo, study);
+				simpleAuthInfo.addRoles(roles);*/
 
 				/* Check if the logged in user is a Super Administrator */
 				if (iArkCommonService.isSuperAdministator(ldapUserName, arkFunction, arkModule)) {

@@ -20,6 +20,8 @@ public class SubjectRequest {
 	
 	private String subjectStatusName;
 	
+	private String consentStatusName;
+	
 	private Long studyId;
 
 	public Long getId() {
@@ -84,6 +86,14 @@ public class SubjectRequest {
 
 	public void setSubjectStatusName(String subjectStatusName) {
 		this.subjectStatusName = subjectStatusName;
+	}
+
+	public String getConsentStatusName() {
+		return consentStatusName;
+	}
+
+	public void setConsentStatusName(String consentStatusName) {
+		this.consentStatusName = consentStatusName;
 	}
 
 	public Long getStudyId() {

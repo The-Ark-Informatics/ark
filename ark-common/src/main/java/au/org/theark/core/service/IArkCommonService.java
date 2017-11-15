@@ -1279,4 +1279,6 @@ public interface IArkCommonService<T> {
 	
 	public List<LinkSubjectStudy> getListofLinkSubjectStudiesForStudy(Study study);
 	
+	public void deleteSearchResult(SearchResult searchResult);
+	
 }

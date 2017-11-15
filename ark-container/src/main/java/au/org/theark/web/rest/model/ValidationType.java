@@ -104,8 +104,14 @@ public enum ValidationType {
 	
 	SIBLINGS_DOES_NOT_EXISTS("No siblings found."),
 	
-	BINARY_CUSTOMFIELD_DOES_NOT_EXISTS("No binary custom fields found.");
+	BINARY_CUSTOMFIELD_DOES_NOT_EXISTS("No binary custom fields found."),
 	
+	NO_CONSENT_STATUS("Consent Status not specified."),
+
+	INVALID_CONSENT_STATUS("Consent Status must be “Consented”, “Not Consented”, “Ineligible”, “Refused”, “Withdrawn” , or “Pending”."),
+	
+	NO_SUBJECT_UID_HAS_SIBLINGS("No subject has siblings.");
+
 	private final String name;
 
 	ValidationType(String s) {
