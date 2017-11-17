@@ -1,0 +1,67 @@
+<div class="side-form">
+    <div class="content">
+        <h1 style="margin-bottom: 20px;">{{vm.title}}</h1>
+        <div  class="well form-container" style="display: inline-block;">
+            <form method="post" name="configurationForm" novalidate>
+<div class="col-md-12">
+            <div class="form-group col-md-12 " >
+			                    <label class="control-label col-md-4" for="subjectUID">Plot affected status?</label>
+			                    <input type="checkbox" id="affStatus" name="affStatus" class="" ng-model="vm.configuration.statusAllowed" ng-click="vm.updateSelection($event)" />
+
+                </div>
+
+
+</div>
+<div class="col-md-12">
+                  <div class="form-group col-md-12 {{vm.required}} " >
+				      <label  class="control-label col-md-4   " for="subjectStatusName">Affected status field</label>
+				          <select name="affStatusField" ng-model="vm.configuration.customFieldName" style="width:50%" class="form-control" ng-options="x for x in vm.customFields" ng-disabled="vm.isDisabledCustomFields" ng-required="vm.isMandotaryCustomFields"></select>
+
+				                </div>
+
+
+</div>
+<div class="col-md-12">
+            <div class="form-group col-md-12" >
+			                    <label class="control-label col-md-4" for="subjectUID">Plot date of birth?</label>
+			                    <input type="checkbox" id="plotDOB" name="dobAllowed" class="" ng-model="vm.configuration.dobAllowed"  />
+
+                </div>
+
+
+</div>
+<div class="col-md-12">
+            <div class="form-group col-md-12 " >
+			                    <label class="control-label col-md-4" for="subjectUID">Plot age?</label>
+			                    <input type="checkbox" id="plotAge" name="ageAllowed" class="" ng-model="vm.configuration.ageAllowed"  />
+
+                </div>
+
+
+</div>
+ <div class="col-md-12">
+  <div class="form-group col-md-12 " >
+			                    <label class="control-label col-md-4" for="subjectUID">Inbreeding allowed?</label>
+			                    <input type="checkbox" id="plotInbreeding" name="inbreedAllowed" class="" ng-model="vm.configuration.inbreedAllowed" ng-disabled="isDisabledInbreed" />
+
+                </div>
+
+   </div>
+
+
+<div class="form-group col-md-12" style="    margin-left: 15px;margin-top: 15px;">
+                    <a class="btn btn-default" ui-sref="configurations">Cancel</a>
+                    <button class="btn btn-primary" ng-disabled="!configurationForm.$valid"ng-click="vm.saveConfiguration()">Save</button>
+                </div>
+				<div class="form-group col-md-12 alert alert-danger fade in" ng-show="configuration_error_show">
+ 
+    <span>{{configuration_error}}</span>
+   </div>
+            </form>
+
+        </div>
+    </div>
+
+
+    <div class="background"></div>
+</div>

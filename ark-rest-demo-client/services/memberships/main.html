@@ -1,0 +1,63 @@
+<p style="padding-top:15px;margin-bottom:15px" class="ng-scope">This tab demonstrates how The Ark's web services can be used to call the BloodLine algorithm, which dynamically infers a pedigree structure for a selected subject.</p>
+<div class="side-form">
+    <div class="content">
+         <div class="form-container">
+            <form method="post">
+                <div class="form-group">
+                    <label style="margin-top:10px;margin-bottom:10" for="name">Subject UID (Proband)</label>
+                       <select ng-model="vm.subjectUID" class="form-control" ng-options="x.subjectUID as x.subjectUID for x in vm.subjects" required></select>
+                      </div>
+                <div class="form-group">
+                    <a class="btn btn-default" ng-click="vm.clear()">Reset</a>
+                    <button class="btn btn-primary" ng-click="vm.findMemershipBySubject()">Infer Pedigree</button>
+					<span  style="float: right; margin-top: 15px; margin-bottom: 15px;">Study in context: Demo 2</span>
+                </div>
+            </form>
+        </div>
+    </div>
+	
+    <div class="background">
+    <table class="table table-striped membership-table">
+     <tr     style="background: rgb(245, 226, 233);">
+	        <th>Subject UID</th>
+	        <th>First Name</th>
+	        <th>Last Name</th>
+	        <th>Relation</th>
+	        <th>Twin</th>
+		    <th>Date Of Birth</th>
+	       <!-- <th class="delete-column"></th> -->
+    </tr>
+
+
+	<tr ng-repeat="membership in vm.membership.slice(((vm.currentPage-1)*vm.itemsPerPage), ((vm.currentPage)*vm.itemsPerPage))">
+          <td>{{membership.subjectUID}}</td>
+        <td>{{membership.firstName}}</td>
+        <td>{{membership.lastName}}</td>
+        <td>{{membership.relation}}</td>
+        <td>{{membership.twin}}</td>
+	    <td>{{membership.dateOfBirth | date:'yyyy-MM-dd'}}</td>
+      </tr>
+    </table>
+  View <select ng-model="vm.viewby" ng-change="vm.setItemsPerPage(vm.viewby)"><option value="3">3</option><option value="5">5</option><option value="10">10</option><option value="20">20</option><option value="30">30</option></select> records at a time.
+  <pagination total-items="vm.totalItems" ng-model="vm.currentPage" ng-change="vm.pageChanged()" class="pagination-sm" items-per-page="vm.itemsPerPage"></pagination>
+
+    </table>
+	
+	
+	</div>
+</div>
+<div id="container"      style="text-align: center; padding-top: 15px;" >
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</div>

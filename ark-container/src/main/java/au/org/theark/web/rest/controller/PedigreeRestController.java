@@ -1,9 +1,11 @@
 package au.org.theark.web.rest.controller;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.web.rest.model.ApiError;
 import au.org.theark.web.rest.model.BinaryCustomFieldsResponse;
 import au.org.theark.web.rest.model.ConfigRequest;
 import au.org.theark.web.rest.model.MadelineObject;
@@ -56,8 +59,6 @@ public class PedigreeRestController {
 	
 	private static final String CONFIGURATION = "Configuration";
 	
-	
-
 	public static final Logger logger = LoggerFactory.getLogger(PedigreeRestController.class);
 
 	@Autowired
@@ -333,27 +334,32 @@ public class PedigreeRestController {
 	//11-Get Pedigree view for the persistence subjects.
 	@CrossOrigin(origins = "http://localhost:8082")
 	@RequestMapping(value = "/study/{id}/pedigree/{uid}", method = RequestMethod.GET)
-	public ResponseEntity<PedigreeResponse> getPedigreeView(@PathVariable("id") Long studyId,@PathVariable("uid") String uid,@RequestHeader HttpHeaders httpHeaders) {
+	public ResponseEntity<Object> getPedigreeView(@PathVariable("id") Long studyId,@PathVariable("uid") String uid,@RequestHeader HttpHeaders httpHeaders) {
 		 HttpHeaders headers = new HttpHeaders();
+		 ValidationType validationType=null;
 		 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
-			 ValidationType validationType=iPedWebSerRest.validateForSubjectUIDForStudy(studyId,uid);
+			 validationType=iPedWebSerRest.validateForSubjectUIDForStudy(studyId,uid);
 			 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
 			 String pedigreeFile=iPedWebSerRest.getPedigreeView(uid,studyId);
-	         if (pedigreeFile== null) {
+			 if (pedigreeFile== null || StringUtils.contains(pedigreeFile, "Pedigree Error") || StringUtils.contains(pedigreeFile, "No Pedigree History")) {
 	        	 headers.set("message", ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName());
-			     return new ResponseEntity<PedigreeResponse>(headers, getResponseEntityForValidationCode(ValidationType.PEDIGREE_VIEW_NOT_EXISTS));
+	        	 ApiError apiError =   new ApiError( getResponseEntityForValidationCode(ValidationType.PEDIGREE_VIEW_NOT_EXISTS),ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName(),ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName());
+					return new ResponseEntity<Object>(apiError,apiError.getStatus()); 
+			    // return new ResponseEntity<Object>(headers, getResponseEntityForValidationCode(ValidationType.PEDIGREE_VIEW_NOT_EXISTS));
 		      }
 	         	PedigreeResponse pedigreeResponse=new PedigreeResponse();
 	         	pedigreeResponse.setSvg(pedigreeFile);
 	         	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());
-	         	return new ResponseEntity<PedigreeResponse>(pedigreeResponse,headers,HttpStatus.OK);
+	         	return new ResponseEntity<Object>(pedigreeResponse,headers,HttpStatus.OK);
 			 }else{
-				 headers.set("message",validationType.getName() );
-				 return new ResponseEntity<PedigreeResponse>(headers,getResponseEntityForValidationCode(validationType)); 
+				 ApiError apiError =   new ApiError(getResponseEntityForValidationCode(validationType),validationType.getName(),validationType.getName());
+				return new ResponseEntity<Object>(apiError,apiError.getStatus()); 
 			 }	
 		 }else{
+			 	
+		     	 ApiError apiError =   new ApiError(getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES),ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName(),ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
 			 	headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
-				return new ResponseEntity<PedigreeResponse>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+				return new ResponseEntity<Object>(apiError,apiError.getStatus()); 
 		}
 	 }
 	//12-Get Study Pedigree Configuration
@@ -460,29 +466,37 @@ public class PedigreeRestController {
 		//16-Get Pedigree view from ped file.
 		@CrossOrigin(origins = "http://localhost:8082")
 		@RequestMapping(value = "/study/{id}/visualise/", method = RequestMethod.POST)
-		public ResponseEntity<PedigreeResponse> getPedigreeViewFromCSV(@PathVariable("id") Long studyId,@RequestBody List<MadelineObject> medlineObjects,@RequestHeader HttpHeaders httpHeaders) {
+		public ResponseEntity<Object> getPedigreeViewFromCSV(@PathVariable("id") Long studyId,@RequestBody List<MadelineObject> medlineObjects,@RequestHeader HttpHeaders httpHeaders) {
 			 HttpHeaders headers = new HttpHeaders();
+			 ValidationType validationType=null;
 			 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){
 				 MadelineObject[] madelineArr = new MadelineObject[medlineObjects.size()];
 				 madelineArr = medlineObjects.toArray(madelineArr);
-				 ValidationType validationType=iPedWebSerRest.validateCSVStringToDrawPedigree(madelineArr, studyId);
+				  validationType=iPedWebSerRest.validateCSVStringToDrawPedigree(madelineArr, studyId);
 				 if(validationType.equals(ValidationType.SUCCESSFULLY_VALIDATED)){
 					 String pedigreeFile = iPedWebSerRest.getPedigreeViewFromCsv(madelineArr,studyId);
-		         if (pedigreeFile== null) {
-		        	 headers.set("message", ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName());
-				     return new ResponseEntity<PedigreeResponse>(headers, getResponseEntityForValidationCode(ValidationType.PEDIGREE_VIEW_NOT_EXISTS));
+		         if (pedigreeFile== null || StringUtils.contains(pedigreeFile, "Pedigree Error") || StringUtils.contains(pedigreeFile, "No Pedigree History")) {
+		        	 ApiError apiError =   new ApiError( getResponseEntityForValidationCode(ValidationType.PEDIGREE_VIEW_NOT_EXISTS),ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName(),ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName());
+						return new ResponseEntity<Object>(apiError,apiError.getStatus()); 
+		        	// headers.set("message", ValidationType.PEDIGREE_VIEW_NOT_EXISTS.getName());
+				    // return new ResponseEntity<Object>(headers, getResponseEntityForValidationCode(ValidationType.PEDIGREE_VIEW_NOT_EXISTS));
 			      }
 		         	PedigreeResponse pedigreeResponse=new PedigreeResponse();
 		         	pedigreeResponse.setSvg(pedigreeFile);
 		         	headers.set("message",ValidationType.FOUND_SUCCESSFULLY.getName());
-		         	return new ResponseEntity<PedigreeResponse>(pedigreeResponse,headers,HttpStatus.OK);
+		         	return new ResponseEntity<Object>(pedigreeResponse,headers,HttpStatus.OK);
 				 }else{
-					 headers.set("message",validationType.getName() );
-					 return new ResponseEntity<PedigreeResponse>(headers,getResponseEntityForValidationCode(validationType)); 
+					 ApiError apiError =   new ApiError(getResponseEntityForValidationCode(validationType),validationType.getName(),validationType.getName());
+						return new ResponseEntity<Object>(apiError,apiError.getStatus());
+					 //headers.set("message",validationType.getName() );
+					 //return new ResponseEntity<Object>(headers,getResponseEntityForValidationCode(validationType)); 
 				 }	
 			 }else{
+				 ApiError apiError =   new ApiError(getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES),ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName(),ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
 				 	headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
-					return new ResponseEntity<PedigreeResponse>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
+					return new ResponseEntity<Object>(apiError,apiError.getStatus()); 
+				 	//headers.set("message",ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES.getName());
+					//return new ResponseEntity<Object>(headers,getResponseEntityForValidationCode(ValidationType.USER_AUTHENTICATION_INSUFFICIENT_PRIVILEGES));
 			}
 		 }
 		
@@ -546,8 +560,9 @@ public class PedigreeRestController {
 		}
 		//19-Get people who has siblings for study.
 		@CrossOrigin(origins = "http://localhost:8082")
-		@RequestMapping(value = "/study/{id}/havesiblings", method = RequestMethod.GET)
+		@RequestMapping(value = "/study/{id}/commonparentsubjects", method = RequestMethod.GET)
 		public ResponseEntity<SiblingsResponse> getHaveSiblings(@PathVariable("id") Long studyId,@RequestHeader HttpHeaders httpHeaders) {
+			logger.info("Common Parent info");
 			HttpHeaders headers = new HttpHeaders();
 			SiblingsResponse siblingResponse=new SiblingsResponse();
 			 if(isAuthenticateSuccessfulForStudy(httpHeaders,studyId)){ 
@@ -632,6 +647,7 @@ public class PedigreeRestController {
 	        case MOHTER_ID_IS_NOT_PRESENT_IN_THE_LIST:	
 	        case SIBLINGS_DOES_NOT_EXISTS:	
 	        case BINARY_CUSTOMFIELD_DOES_NOT_EXISTS:	
+	        case NO_SUBJECT_UID_HAS_SIBLINGS:	
 	        					httpStatus=HttpStatus.NOT_FOUND;	
 	        					break;
 	        case MISMATCH_SUBJECT_UID_WITH_SUBJECT_ID:					

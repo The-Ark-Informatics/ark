@@ -1,0 +1,28 @@
+<p style="padding-top:15px;margin-bottom:15px" class="ng-scope">This tab demonstrates how The Ark's web services can be used to add and edit the subjects (participants) of a study. Subjects are not deleted from a study within The Ark; they are instead marked as "Archived".</p>
+<a ui-sref="subjects.add" style="margin-top:15px;margin-bottom:15px"class="btn btn-ark">Add Subject</a><span  style="float: right; margin-top: 15px; margin-bottom: 15px;">Study in context: Demo 2</span>
+<table class="table subjects-table table-striped">
+    <tr     style="background: rgb(245, 226, 233);">
+        <th>Subject UID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Vital Status</th>
+        <th>Gender</th>
+	    <th>Status</th>
+        <th>Date Of Birth</th>
+       <!-- <th class="delete-column"></th> -->
+    </tr>
+
+<tr ng-repeat="subject in vm.subjects.slice(((vm.currentPage-1)*vm.itemsPerPage), ((vm.currentPage)*vm.itemsPerPage))">
+         <td><a ui-sref="subjects.edit({ id: subject.subjectUID })">{{subject.subjectUID}}</a></td>
+		   <td>{{subject.firstName}}</td>
+       <td>{{subject.lastName}}</td>
+        <td>{{subject.vitalStatusName}}</td>
+        <td>{{subject.genderTypeName}}</td>
+	    <td>{{subject.subjectStatusName}}</td>
+        <td>{{subject.dateOfBirth | date:'yyyy-MM-dd'}}</td>
+      </tr>
+    </table>
+  View <select ng-model="vm.viewby" ng-change="vm.setItemsPerPage(vm.viewby)"><option value="3">3</option><option value="5">5</option><option value="10">10</option><option value="20">20</option><option value="30">30</option></select> records at a time.
+  <pagination total-items="vm.totalItems" ng-model="vm.currentPage" ng-change="vm.pageChanged()" class="pagination-sm" items-per-page="vm.itemsPerPage"></pagination>
+
+<div ui-view class="view-side-form" style="text-align: center; padding-top: 15px;"></div>

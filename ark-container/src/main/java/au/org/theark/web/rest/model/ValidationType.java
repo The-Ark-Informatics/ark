@@ -22,15 +22,15 @@ public enum ValidationType {
 	
 	NO_GENDERTYPE("Gender not specified."),
 
-	INVALID_GENDER_TYPE("Gender must be “male“ or “female“."),
+	INVALID_GENDER_TYPE("Gender must be \"male\" or \"female\"."),
 
 	NO_VITAL_STATUS("Vital Status not specified."),
 
-	INVALID_VITAL_STATUS("Vital Status must be “Alive”, “Deceased”, or “Unknown”."),
+	INVALID_VITAL_STATUS("Vital Status must be \"Alive\", \"Deceased\", or \"Unknown\"."),
 	
 	NO_SUBJECT_STATUS("Subject Status not specified."),
 
-	INVALID_SUBJECT_STATUS("Subject Status must be “Subject”, “Prospect”, “Withdrawn Subject”, “Archive”, or “Inactive”."),
+	INVALID_SUBJECT_STATUS("Subject Status must be \"Subject\", \"Prospect\", \"Withdrawn Subject\", \"Archive\", or \"Inactive\"."),
 	
 	MISMATCH_SUBJECT_UID_WITH_SUBJECT_ID("The given Subject UID and Subject ID do not match."),
 	
@@ -48,11 +48,11 @@ public enum ValidationType {
 	
 	NO_PARENT_TYPE("Parent Type not specified."),
 	
-	INVALID_PARENT_TYPE("Parent Type must be “Mother” or “Father”."),
+	INVALID_PARENT_TYPE("Parent Type must be \"Mother\" or \"Father\"."),
 	
 	NO_TWIN_TYPE("Twin Type not specified."),
 	
-	INVALID_TWIN_TYPE("Twin Type must be “MZ” or “DZ”."),
+	INVALID_TWIN_TYPE("Twin Type must be \"MZ\" or \"DZ\"."),
 	
 	CIRCULAR_VALIDATION_UNSUCCESSFUL("Consanguineous relationship detected in a study not configured to permit it."),
 	
@@ -74,7 +74,7 @@ public enum ValidationType {
 	
 	PEDIGREE_CONFIG_NOT_EXISTS("Pedigree configuration does not exists."),
 	
-	PEDIGREE_CONFIGURATION_SET_VALUE_NOT_ACCEPTED("Pedigree configuration expected boolean value “yes”, “true”, “no”, or “false”."),
+	PEDIGREE_CONFIGURATION_SET_VALUE_NOT_ACCEPTED("Pedigree configuration expected boolean value \"yes\", \"true\", \"no\", or \"false\"."),
 	
 	PEDIGREE_CONFIGURATION_CUSTOM_FIELD_NAME_NOT_FOUND("Study does not contain a custom field with this name."),
 	
@@ -84,19 +84,19 @@ public enum ValidationType {
 	
 	PEDIGREE_MEMEBERS_CAN_NOT_FOUND("No Pedigree members exists."),
 	
-	GENDER_FIELD_UNACCEPTED_VALUES("A value for the mandatory field “Gender“ accept only “Male“,“Female“ or “Unknown“."),
+	GENDER_FIELD_UNACCEPTED_VALUES("The mandatory field \"Gender\" can only take values \"Male\",Female\" or \"Unknown\"."),
 	
-	AFFECTED_UNACCEPTED_VALUES("A value for the field “Affected“ accept only “Affected“ or “Unaffected“."),
+	AFFECTED_UNACCEPTED_VALUES("The field \"Affected\" can only take values \"Affected\" or \"Unaffected\"."),
 	
-	ZYGOSITY_UNACCEPTED_VALUES("A value for the field “zygosity“ accept only “MZTwin“,“DZTwin“ or “Unknown“."),
+	ZYGOSITY_UNACCEPTED_VALUES("The field \"Zygosity\" can only take values \"MZTwin\",\"DZTwin\" or \"Unknown\"."),
 	
-	DECEASED_UNACCEPTED_VALUES("A value for the field “deceased“ accept only “Yes“,“No“ or “Missing“."),
+	DECEASED_UNACCEPTED_VALUES("The field \"Deceased\" can only take values \"Yes\",\"No\" or \"Missing\"."),
 	
-	PROBAND_UNACCEPTED_VALUES("A value for the field “proband“ accept only “Yes“,“No“ or “Missing“."),
+	PROBAND_UNACCEPTED_VALUES("The field \"Proband\" can only take values \"Yes\",\"No\" or \"Missing\"."),
+		
+	FAMILY_ID_IS_MANDATORY("The mandatory field \"FamilyId\" can not be empty."),
 	
-	FAMILY_ID_IS_MANDATORY("A value for the mandatory field “FamilyId“ can not be empty."),
-	
-	INDIVIDUAL_ID_IS_MANDATORY("A value for the mandatory field “IndividualId“ can not be empty."),
+	INDIVIDUAL_ID_IS_MANDATORY("The mandatory field \"IndividualId\" can not be empty."),
 	
 	MOHTER_ID_IS_NOT_PRESENT_IN_THE_LIST("Specified mother id is not present in the list."),
 	
@@ -108,9 +108,9 @@ public enum ValidationType {
 	
 	NO_CONSENT_STATUS("Consent Status not specified."),
 
-	INVALID_CONSENT_STATUS("Consent Status must be “Consented”, “Not Consented”, “Ineligible”, “Refused”, “Withdrawn” , or “Pending”."),
+	INVALID_CONSENT_STATUS("Consent status must be \"Consented\", \"Not Consented\", \"Ineligible\", \"Refused\", \"Withdrawn\" , or \"Pending\"."),
 	
-	NO_SUBJECT_UID_HAS_SIBLINGS("No subject has siblings.");
+	NO_SUBJECT_UID_HAS_SIBLINGS("No subject with siblings found.");
 
 	private final String name;
 

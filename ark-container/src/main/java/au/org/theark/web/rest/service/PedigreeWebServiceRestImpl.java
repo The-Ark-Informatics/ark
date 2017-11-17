@@ -922,7 +922,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 			if(madelineObject.getProband()!=null && !madelineObject.getProband().isEmpty()){
 				relativeCapsule.setProband(madelineObject.getProband().substring(0,1).toUpperCase());
 			}
-			relativeCapsule.setDob(formatMadeline.format(madelineObject.getdOB()));
+			relativeCapsule.setDob(madelineObject.getdOB()!=null ?formatMadeline.format(madelineObject.getdOB()):null);
 			if(madelineObject.getZygosity()!=null && !madelineObject.getZygosity().isEmpty()){
 				String zygosity=madelineObject.getZygosity().substring(0,1).toUpperCase();
 				relativeCapsule.setMzTwin(zygosity.equalsIgnoreCase("M")?"Y":null);
@@ -971,15 +971,15 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 			}
 			
 			//Gender validation
-			String gender=madelineObject.getGender();
-			
-			String shortGender=gender.substring(0, 1);
-			
-			if(!(gender.equalsIgnoreCase(MALE)|| gender.equalsIgnoreCase(FEMALE)||gender.equalsIgnoreCase(UNKNOWN)
-			   || shortGender.equalsIgnoreCase("M") ||shortGender.equalsIgnoreCase("F")||shortGender.equalsIgnoreCase("U"))){
-				return ValidationType.GENDER_FIELD_UNACCEPTED_VALUES;
+			if(madelineObject.getGender()!=null && !madelineObject.getGender().isEmpty() ){
+				String gender=madelineObject.getGender();
+				String shortGender=gender.substring(0, 1);
+				
+				if(!(gender.equalsIgnoreCase(MALE)|| gender.equalsIgnoreCase(FEMALE)||gender.equalsIgnoreCase(UNKNOWN)
+				   || shortGender.equalsIgnoreCase("M") ||shortGender.equalsIgnoreCase("F")||shortGender.equalsIgnoreCase("U"))){
+					return ValidationType.GENDER_FIELD_UNACCEPTED_VALUES;
+				}
 			}
-			
 			//Affected validation
 			String affectedStatus=madelineObject.getAffected();
 			
@@ -1000,7 +1000,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		
 				String shortZygosity=zygosity.substring(0, 1);
 				
-				if(!(zygosity.equalsIgnoreCase(MZTWIN)|| zygosity.equalsIgnoreCase(DZTWIN)||gender.equalsIgnoreCase(UNKNOWN)
+				if(!(zygosity.equalsIgnoreCase(MZTWIN)|| zygosity.equalsIgnoreCase(DZTWIN)||zygosity.equalsIgnoreCase(UNKNOWN)
 						   || shortZygosity.equalsIgnoreCase("M") ||shortZygosity.equalsIgnoreCase("D")||shortZygosity.equalsIgnoreCase("U"))){
 							return ValidationType.ZYGOSITY_UNACCEPTED_VALUES;
 				}
@@ -1017,7 +1017,6 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 					return ValidationType.DECEASED_UNACCEPTED_VALUES;
 				}
 			}
-			
 			
 			//Yes,No validation(Proband)
 			String proband=madelineObject.getProband();
@@ -1037,6 +1036,8 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 			if(madelineObject.getFather()!=null && !madelineObject.getFather().isEmpty()){
 				allFatherIDList.add(madelineObject.getFather());
 			}
+			
+			
 			
 		}//End of for.
 		//Check father in the list.
@@ -1094,9 +1095,11 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 					subjectUids.add(linkSubjectPedigree.getSubject().getSubjectUID());
 				}
 		}
-		hsTemp.addAll(subjectUids);
-		subjectUids.clear();
-		subjectUids.addAll(hsTemp);
+		if(subjectUids!=null && !subjectUids.isEmpty() && subjectUids.size()>0){
+			hsTemp.addAll(subjectUids);
+			subjectUids.clear();
+			subjectUids.addAll(hsTemp);
+		}
 		return subjectUids;
 	}
 

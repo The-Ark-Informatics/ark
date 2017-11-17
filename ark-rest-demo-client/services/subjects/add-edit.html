@@ -1,0 +1,72 @@
+<div class="side-form">
+    <div class="content">
+        <h1 style="margin-bottom: 20px;">{{vm.title}}</h1>
+        <div class="well form-container" style="display: inline-block;">
+            <form method="post" name="userForm" novalidate>
+<div class="col-md-12">
+            <div class="form-group col-md-6 required" ng-class="{ 'has-error' : userForm.subjectUID.$dirty && userForm.subjectUID.$error.required }">
+			                    <label class="control-label" for="subjectUID">Subject UID</label>
+			                    <input type="text" id="subjectUID" name="subjectUID" class="form-control" ng-disabled="isDisabled" ng-model="vm.subject.subjectUID" required />
+								  <p ng-show="userForm.subjectUID.$dirty && userForm.subjectUID.$error.required" class="help-block">Subject UID is required.</p>
+                </div>
+
+                   <div class="form-group col-md-6">
+							                    <label for="genderType">Gender</label>
+							                   <select ng-model="vm.subject.genderTypeName" class="form-control" ng-options="x for x in gendertypes" ></select>
+                </div>
+</div>
+ <div class="col-md-12">               
+ <div class="form-group col-md-6 ">
+                    <label  class="control-label" for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="form-control" ng-model="vm.subject.firstName"  />
+					
+      </div>
+                
+                <div class="form-group col-md-6 " >
+                    <label class="control-label" for="lastname">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" class="form-control" ng-model="vm.subject.lastName"  />
+					
+      </div>
+   </div>  
+
+<div class="col-md-12"> 
+ <div class="form-group col-md-3 required" ng-class="{ 'has-error' : userForm.consentStatusName.$dirty && userForm.consentStatusName.$error.required }">
+				      <label  class="control-label" for="subjectStatusName">Consent Status</label>
+				          <select name="consentStatusName" ng-model="vm.subject.consentStatusName" class="form-control" ng-options="x for x in consentStatuses" required></select>
+
+				                </div>
+                  <div class="form-group col-md-3 required" ng-class="{ 'has-error' : userForm.subjectStatusName.$dirty && userForm.subjectStatusName.$error.required }">
+				      <label  class="control-label" for="subjectStatusName">Subject Status</label>
+				          <select name="subjectStatusName" ng-model="vm.subject.subjectStatusName" class="form-control" ng-options="x for x in status" required></select>
+
+				                </div>
+  <div class="form-group col-md-3 " ">
+				      <label class="control-label" for="vitalStatusName">Vital Status</label>
+				          <select name="vitalStatusName" ng-model="vm.subject.vitalStatusName" class="form-control" ng-options="x for x in vitalstatuses"></select>
+
+				                </div>
+
+				  <div class="form-group col-md-3" >
+				                    <label for="lastname" style="display:block">Date Of Birth</label>
+								
+				                  <md-datepicker ng-model = "vm.subject.dateOfBirth"  md-placeholder = "Enter date"  md-current-view="year"></md-datepicker>
+								 
+
+                </div>
+</div>
+<div class="form-group col-md-12" style="    margin-left: 15px;margin-top: 15px;">
+                    <a class="btn btn-default" ui-sref="subjects">Cancel</a>
+                    <button class="btn btn-primary" ng-disabled="!userForm.$valid"ng-click="vm.saveSubject()">Save</button>
+                </div>
+				<div class="form-group col-md-12 alert alert-danger fade in" ng-show="subject_error_show">
+   
+    <span>{{subject_error}}</span>
+   </div>
+            </form>
+			
+        </div>
+    </div>
+	
+
+    <div class="background"></div>
+</div>
