@@ -1255,6 +1255,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			this.error("There is an error in saving the current study");
 			log.error(e.getMessage());
 		}
+		finally{
+			target.add(feedBackPanel);
+		}
 	}
 
 	private void processSaveUpdate(StudyModelVO studyModel, AjaxRequestTarget target) throws EntityExistsException, UnAuthorizedOperation, ArkSystemException, EntityCannotBeRemoved,
