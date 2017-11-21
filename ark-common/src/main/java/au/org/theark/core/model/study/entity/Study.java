@@ -107,7 +107,7 @@ public class Study implements java.io.Serializable {
 
 	private Set<Pipeline> pipelines = new HashSet<Pipeline>(0);
 	
-	private StudyPedigreeConfiguration pedigreeConfiguration = new StudyPedigreeConfiguration();
+	private StudyPedigreeConfiguration pedigreeConfiguration;
 
 	public Study() {
 	}
