@@ -6,6 +6,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.genomics.model.vo.DataCenterVo;
 import au.org.theark.genomics.model.vo.DataSourceVo;
@@ -23,11 +24,11 @@ public class SearchPanel extends Panel{
 	private ArkCrudContainerVO				arkCrudContainerVO;
 	private FeedbackPanel					feedBackPanel;
 	private PageableListView<DataSourceVo>	listView;
-	private PageableListView<DataSourceVo>	sourceView;
+	private PageableListView<DataSource>	sourceView;
 	private WebMarkupContainer	        dataSourcePanelContainer;
 
 
-	public SearchPanel(String id, ArkCrudContainerVO crudContainerVO, FeedbackPanel feedBackPanel, ContainerForm containerForm, PageableListView<DataSourceVo> listView,PageableListView<DataSourceVo> sourceView, WebMarkupContainer dataSourcePanelContainer ) {
+	public SearchPanel(String id, ArkCrudContainerVO crudContainerVO, FeedbackPanel feedBackPanel, ContainerForm containerForm, PageableListView<DataSourceVo> listView,PageableListView<DataSource> sourceView, WebMarkupContainer dataSourcePanelContainer ) {
 		super(id);
 		arkCrudContainerVO = crudContainerVO;
 		this.feedBackPanel = feedBackPanel;

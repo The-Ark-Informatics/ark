@@ -7,6 +7,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.genomics.model.vo.DataCenterVo;
 import au.org.theark.genomics.model.vo.DataSourceVo;
@@ -31,7 +32,7 @@ public class DataCenterContainerPanel extends AbstractContainerPanel<DataCenterV
 	
 	private PageableListView<DataSourceVo>	pageableListView;
 
-	private PageableListView<DataSourceVo>	pageableDataSourcetListView;
+	private PageableListView<DataSource>	pageableDataSourcetListView;
 
 	private ContainerForm					containerForm;
 
@@ -98,7 +99,7 @@ public class DataCenterContainerPanel extends AbstractContainerPanel<DataCenterV
 			protected Object load() {
 //				containerForm.getModelObject().setMicroServiceList(iGenomicService.searchMicroService((containerForm.getModelObject().getMicroService())));
 				pageableDataSourcetListView.removeAll();
-				return containerForm.getModelObject().getDataSourceList();
+				return containerForm.getModelObject().getDataSourceEntityList();
 			}
 		};
 

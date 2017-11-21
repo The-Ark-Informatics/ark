@@ -298,7 +298,7 @@ public class SshServiceImpl implements SshService {
 		}
 	}
 
-	public void onlinePlinkDataSource(DataCenterVo dataCenter) throws Exception {
+	public void onlinePlinkDataSource1(DataCenterVo dataCenter) throws Exception {
 		ChannelSftp channelSftp = sftpSession.getClientInstance();
 
 		String directory = dataCenter.getDirectory();
@@ -445,6 +445,298 @@ public class SshServiceImpl implements SshService {
 
 				inputStream.close();
 				sc.close();
+
+				HashMap<String, Byte> alleleMap = alleleMap(snpArray, ++snpId, channelSftp, mapFile, dataCenter);
+
+				for (String s : snpArray) {
+					System.out.print(s);
+				}
+				System.out.println();
+
+				int noAlleles = snpArray.length;
+				int noSnps = noAlleles / 2;
+
+				int noInts = 0;
+
+				if (noSnps % 16 == 0) {
+					noInts = noSnps / 16;
+				} else {
+					noInts = (noSnps / 16) + 1;
+				}
+
+				int[] data = new int[noInts];
+
+				for (int pos = 0, k = 0; pos < noAlleles; pos += 32, ++k) {
+					data[k] = prepareInt(pos, snpArray, alleleMap);
+				}
+
+				System.out.println(data.length);
+
+				if (!isCreated) {
+					// TODO remove print after production
+					System.out.println("-----------------Create table ------------------");
+					cassandraService.createPlinkBedTable(data, dataCenter);
+					isCreated = true;
+				}
+				// TODO remove print after production success
+				System.out.println(" ----------------------- " + data.length + " ---------------------  ");
+				cassandraService.insertPlinkBedTable(snpId, data, dataCenter);
+				// writeFile(data, "sparksnpmjc.bed");
+			}
+
+		} else if (bedFile != null && bimFile != null && famFile != null) {
+
+			cassandraService.createPlinkFamTable(dataCenter);
+			cassandraService.createPlinkBimTable(dataCenter);
+
+			int rows = 0;
+
+			String dataLine = null;
+			String mapValues[] = null;
+
+			InputStream inputStream = null;
+			Scanner sc = null;
+
+			inputStream = channelSftp.get(famFile);
+			sc = new Scanner(inputStream, "UTF-8");
+
+			while (sc.hasNextLine()) {
+				dataLine = sc.nextLine();
+				mapValues = pattern.split(dataLine);
+				++rows;
+
+				cassandraService.insertPlinkFamTable(rows, mapValues, dataCenter);
+
+			}
+			inputStream.close();
+			sc.close();
+
+			inputStream = channelSftp.get(bimFile);
+			sc = new Scanner(inputStream, "UTF-8");
+
+			int bimId=0;
+			while (sc.hasNextLine()) {
+				dataLine = sc.nextLine();
+				mapValues = pattern.split(dataLine);
+				cassandraService.insertPlinkBimTable(++bimId, mapValues, dataCenter);
+			}
+			inputStream.close();
+			sc.close();
+
+			// Read the binary bed file
+			inputStream = channelSftp.get(bedFile);
+			byte[] bedData = IOUtils.toByteArray(inputStream);
+			int byteLength = bedData.length - 3;
+			byte type = bedData[2];
+
+			int noOfColmns = 0;
+
+			if (rows % 16 == 0) {
+				noOfColmns = rows / 16;
+			} else {
+				noOfColmns = (rows / 16) + 1;
+			}
+
+			int[] snpData = new int[noOfColmns];
+
+			// CAlculate bytes per snp
+
+			int noOfBytes = 0;
+
+			if (rows % 4 == 0) {
+				noOfBytes = rows / 4;
+			} else {
+				noOfBytes = (rows / 4) + 1;
+			}
+			
+			
+//			System.out.println("No of Bytes per File = "+bedData.length);
+//			System.out.println("No of Bytes per SNP = "+noOfBytes);
+
+			cassandraService.createPlinkBedTable(snpData, dataCenter);
+
+			if (type == 1) {				
+				for(int bedPOS=3,id=1;bedPOS < bedData.length;++id){
+					byte[] snpBytes= new byte[noOfBytes];
+					for(int byteCount=0;byteCount<snpBytes.length;++byteCount,++bedPOS){
+//						System.out.println("ID - "+id);
+//						System.out.println("Byte Count - "+byteCount);
+//						System.out.println(toByteBineryFormat(bedData[bedPOS]));
+						snpBytes[byteCount]=bedData[bedPOS];
+					}
+					
+					int[] colInts=new int[noOfColmns];
+					
+					int finalInt = Integer.parseInt("00", 2);
+					int count=0;
+					int colIntPos=0;
+//					System.out.println("-------------------- Read bytes -----------------------------");
+					for(int snpByteCount=0;snpByteCount<snpBytes.length;++snpByteCount){
+						String s = toByteBineryFormat(snpBytes[snpByteCount]);
+//						System.out.println(s);
+						int i = Integer.parseInt(s,2);
+						finalInt = (finalInt | ( i << (count*8)));
+						if(++count==4){
+							colInts[colIntPos] = finalInt;
+							count=0;
+							++colIntPos;
+							finalInt = Integer.parseInt("00", 2);
+						}
+					}
+					if(count >0){
+						colInts[colIntPos] = finalInt;
+					}
+					cassandraService.insertPlinkBedTable(id, colInts, dataCenter);
+				}
+			}
+		}
+	}
+	
+	public void onlinePlinkDataSource(DataCenterVo dataCenter) throws Exception {
+		ChannelSftp channelSftp = sftpSession.getClientInstance();
+
+		String directory = dataCenter.getDirectory();
+
+		if (directory == null) {
+			channelSftp.cd(rootPath+File.separator+"data");
+		} else {
+			channelSftp.cd(rootPath + File.separator+"data"+File.separator + directory);
+		}
+
+		String mapFile = null;
+
+		String pedFile = null;
+
+		String bedFile = null;
+
+		String bimFile = null;
+
+		String famFile = null;
+
+		Vector<String> filest = null;
+
+		filest = channelSftp.ls(".");
+
+		for (int i = 0; i < filest.size(); i++) {
+			Object obj = filest.elementAt(i);
+			if (obj instanceof com.jcraft.jsch.ChannelSftp.LsEntry) {
+				LsEntry entry = (LsEntry) obj;
+
+				if (true && !entry.getAttrs().isDir()) {
+					String fileName = entry.getFilename();
+					String[] extList = fileName.split("\\.");
+					if (extList.length > 1) {
+						String extension = extList[1];
+						if ("map".equalsIgnoreCase(extension)) {
+							mapFile = fileName;
+						} else if ("ped".equalsIgnoreCase(extension)) {
+							pedFile = fileName;
+						} else if ("bed".equalsIgnoreCase(extension)) {
+							bedFile = fileName;
+						} else if ("bim".equalsIgnoreCase(extension)) {
+							bimFile = fileName;
+						} else if ("fam".equalsIgnoreCase(extension)) {
+							famFile = fileName;
+						}
+					}
+				}
+			}
+		}
+
+		byte[] header = { 0b01101100, 0b00011011, 0b00000001 };
+
+		String bedTableName = "";
+
+		if (mapFile != null && pedFile != null) {
+
+			String dataLine = null;
+//			String mapValues[] = null;
+
+			InputStream inputStream = null;
+			//TODO remove the scanner to support > 1GB files
+			//Scanner sc = null;
+			BufferedReader reader;
+
+			inputStream = channelSftp.get(pedFile);
+//			sc = new Scanner(inputStream, "UTF-8");
+			reader = new BufferedReader(new InputStreamReader(inputStream));
+
+			int cols = 0;
+			boolean access = false;
+
+			int rows = 0;
+
+			// TODO Create fam table
+
+			cassandraService.createPlinkFamTable(dataCenter);
+			cassandraService.createPlinkBimTable(dataCenter);
+
+//			while (sc.hasNextLine()) {
+//				dataLine = sc.nextLine();
+//				mapValues = pattern.split(dataLine);
+//
+//				if (!access) {
+//					cols = mapValues.length;
+//					access = true;
+//				}
+//				++rows;
+//
+//				String[] famArray = Arrays.copyOfRange(mapValues, 0, 6);
+//
+//				cassandraService.insertPlinkFamTable(rows, famArray, dataCenter);
+//
+//			}
+			
+			reader.lines().forEach(line -> {
+                // process liness
+				String mapValues[] = pattern.split(line);
+
+				if (!access) {
+					cols = mapValues.length;
+					access = true;
+				}
+				++rows;
+
+				String[] famArray = Arrays.copyOfRange(mapValues, 0, 6);
+
+				cassandraService.insertPlinkFamTable(rows, famArray, dataCenter);
+            });
+
+			inputStream.close();
+//			sc.close();
+			reader.close();
+
+			boolean isCreated = false;
+			for (int i = 6, snpId = 0; i < cols; i = i + 2) {
+				inputStream = channelSftp.get(pedFile); // new
+														// FileInputStream(pedFileName);
+//				sc = new Scanner(inputStream, "UTF-8");
+				reader = new BufferedReader(new InputStreamReader(inputStream));
+
+				String[] snpArray = new String[rows * 2];
+//				for (int j = 0; sc.hasNextLine(); ++j) {
+//					dataLine = sc.nextLine();
+//					mapValues = pattern.split(dataLine);
+//
+//					snpArray[j] = mapValues[i];
+//					snpArray[++j] = mapValues[i + 1];
+//				}
+				
+				int j=0;
+				reader.lines().forEach(line -> {
+	                // process liness
+					String  mapValues[] = pattern.split(line);
+
+					snpArray[j] = mapValues[i];
+					snpArray[++j] = mapValues[i + 1];
+					++j;
+	            });
+
+
+
+				inputStream.close();
+//				sc.close();
+				reader.close();
 
 				HashMap<String, Byte> alleleMap = alleleMap(snpArray, ++snpId, channelSftp, mapFile, dataCenter);
 

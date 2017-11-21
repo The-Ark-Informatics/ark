@@ -38,7 +38,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 	private PageableListView<DataSourceVo> listView;
 
-	private PageableListView<DataSourceVo> sourceView;
+	private PageableListView<DataSource> sourceView;
 
 	private CompoundPropertyModel<DataCenterVo> cpmModel;
 
@@ -55,7 +55,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 	
 	private WebMarkupContainer	        dataSourcePanelContainer;
 
-	public SearchForm(String id, CompoundPropertyModel<DataCenterVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<DataSourceVo> listView, PageableListView<DataSourceVo> sourceView, WebMarkupContainer dataSourcePanelContainer) {
+	public SearchForm(String id, CompoundPropertyModel<DataCenterVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<DataSourceVo> listView, PageableListView<DataSource> sourceView, WebMarkupContainer dataSourcePanelContainer) {
 
 		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
 		this.arkCrudContainerVO = arkCrudContainerVO;
@@ -162,6 +162,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 			dataSourceVo.setPath(dir == null ? "/" : dir.charAt(0) == '/' ? dir : ("/" + dir));
 
 			DataSource dataSource = iGenomicService.getDataSource(dataSourceVo);
+			
 
 			if (dataSource != null && dataSource.getStatus() != null) {
 				cpmModel.getObject().setStatus(dataSource.getStatus());
@@ -214,7 +215,18 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 				}
 			}
 		}
+		
+		
+		//Search data sources available for search criteria
+		
+		DataSourceVo dataSourceVo = new DataSourceVo();
+		dataSourceVo.setDataCenter(cpmModel.getObject().getName());
+		dataSourceVo.setMicroService(cpmModel.getObject().getMicroService());
+		getModelObject().setDataSourceEntityList(iGenomicService.searchDataSources(dataSourceVo));
+		
+		
 		getModelObject().setDataSourceList(resultList);
+				
 		listView.removeAll();
 		sourceView.removeAll();
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);

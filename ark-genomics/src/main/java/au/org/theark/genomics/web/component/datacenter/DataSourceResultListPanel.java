@@ -1,20 +1,19 @@
 package au.org.theark.genomics.web.component.datacenter;
 
-import java.util.List;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -41,7 +40,7 @@ public class DataSourceResultListPanel extends Panel {
 	@SpringBean(name = Constants.GENOMIC_SERVICE)
 	private IGenomicService iGenomicService;
 
-	private PageableListView<DataSourceVo> sitePageableListView;
+	private PageableListView<DataSource> sitePageableListView;
 	
 	private FeedbackPanel feedbackPanel;
 	
@@ -53,18 +52,20 @@ public class DataSourceResultListPanel extends Panel {
 		this.feedbackPanel = feedbackPanel;
 	}
 	
-	public PageableListView<DataSourceVo> buildPageableListView(IModel iModel) {
-		this.sitePageableListView = new PageableListView<DataSourceVo>("dataSourceList", iModel, iArkCommonService.getRowsPerPage()) {
+	public PageableListView<DataSource> buildPageableListView(IModel iModel) {
+		this.sitePageableListView = new PageableListView<DataSource>("dataSourceEntityList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			@Override
-			protected void populateItem(final ListItem<DataSourceVo> item) {
-				DataSourceVo dataSource = item.getModelObject();
-			
+			protected void populateItem(final ListItem<DataSource> item) {
+				DataSource dataSource = item.getModelObject();
 				
-				DataSourceViewPanel dataSourcePanel = new DataSourceViewPanel("dataSourcePanel", feedbackPanel, arkCrudContainerVO);
-				dataSourcePanel.setOutputMarkupId(true);
-				dataSourcePanel.initialisePanel(new CompoundPropertyModel(dataSource));
-				item.add(dataSourcePanel);
+				item.add(new Label(Constants.DATA_SOURCE_ID, dataSource.getId().toString()));				
+				item.add(new Label(Constants.DATA_SOURCE_NAME, dataSource.getName()));
+				
+//				DataSourceViewPanel dataSourcePanel = new DataSourceViewPanel("dataSourcePanel", feedbackPanel, arkCrudContainerVO);
+//				dataSourcePanel.setOutputMarkupId(true);
+//				dataSourcePanel.initialisePanel(new CompoundPropertyModel(dataSource));
+//				item.add(dataSourcePanel);
 				
 //				item.add(buildNameLink(dataSource));
 				
@@ -84,6 +85,9 @@ public class DataSourceResultListPanel extends Panel {
 //					item.add(new Label(Constants.DATA_SOURCE_VO_STATUS, ""));
 //				}
 
+				item.add(buildUploadBtn(dataSource));
+				item.add(buildDeleteBtn(dataSource));
+				item.add(buildQuaryBtn(dataSource));
 				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long serialVersionUID = 1L;
@@ -125,6 +129,42 @@ public class DataSourceResultListPanel extends Panel {
 		Label nameLinkLabel = new Label("nameLbl", dataSourceVo.getFileName());
 		link.add(nameLinkLabel);
 		return link;
-	}	
+	}
+	
+	private AjaxButton buildUploadBtn(final DataSource dataSource){
+		AjaxButton uploadBtn = new AjaxButton("dsUpload") {
+			@Override
+			public void onSubmit() {
+				// TODO Auto-generated method stub
+				super.onSubmit();
+			}
+		};
+		
+		return uploadBtn;
+	}
+	
+	private AjaxButton buildDeleteBtn(final DataSource dataSource){
+		AjaxButton uploadBtn = new AjaxButton("dsDelete") {
+			@Override
+			public void onSubmit() {
+				// TODO Auto-generated method stub
+				super.onSubmit();
+			}
+		};
+		
+		return uploadBtn;
+	}
+	
+	private AjaxButton buildQuaryBtn(final DataSource dataSource){
+		AjaxButton uploadBtn = new AjaxButton("dsQuery") {
+			@Override
+			public void onSubmit() {
+				// TODO Auto-generated method stub
+				super.onSubmit();
+			}
+		};
+		
+		return uploadBtn;
+	}
 
 }
