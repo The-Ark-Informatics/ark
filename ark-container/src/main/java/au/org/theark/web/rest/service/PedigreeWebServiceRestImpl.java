@@ -286,6 +286,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		Study study = iStudyService.getStudy(studyId);
 		
 		StudyPedigreeConfiguration config = study.getPedigreeConfiguration();
+		
 
 		if (config != null && config.isDobAllowed()) {
 			columnList.append(" DOB");

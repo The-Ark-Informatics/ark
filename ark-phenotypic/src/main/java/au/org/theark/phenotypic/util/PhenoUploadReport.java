@@ -89,7 +89,7 @@ public class PhenoUploadReport {
 	public void appendDetails(Upload upload) {
 		append("Study: ");
 		appendAndNewLine(upload.getStudy().getName());
-		append("UserID: ");
+		append("User ID: ");
 		appendAndNewLine(SecurityUtils.getSubject().getPrincipal().toString());
 		append("Filename: ");
 		appendAndNewLine(upload.getFilename());

@@ -1231,29 +1231,39 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		catch (EntityExistsException e) {
 			this.error("The specified study already exists in the system.");
 			log.error(e.getMessage());
+			e.printStackTrace();
 		}
 		catch (EntityCannotBeRemoved e) {
 			this.error("The Study cannot be removed from the system.There are participants linked to the study.");
 			log.error(e.getMessage());
+			e.printStackTrace();
 		}
 		catch (IOException e) {
 			this.error("There was an error transferring the specified Study logo image.");
 			log.error(e.getMessage());
+			e.printStackTrace();
 		}
 		catch (ArkSystemException e) {
 			this.error("A System exception has occurred. Please contact Support");
 			log.error(e.getMessage());
+			e.printStackTrace();
 		}
 		catch (UnAuthorizedOperation e) {
 			this.error("You (logged in user) is unauthorised to create/update or archive this study.");
 			log.error(e.getMessage());
+			e.printStackTrace();
 		}
 		catch (CannotRemoveArkModuleException e) {
 			this.error("You cannot remove the modules as part of the update. There are system Users who are associated with this study and modules.");
 			log.error(e.getMessage());
+			e.printStackTrace();
 		}catch(Exception e){
 			this.error("There is an error in saving the current study");
 			log.error(e.getMessage());
+			e.printStackTrace();
+		}
+		finally{
+			target.add(feedBackPanel);
 		}
 	}
 

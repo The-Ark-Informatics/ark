@@ -86,6 +86,7 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 
 		final Study study = iArkCommonService.getStudy(studyId);
 		StudyPedigreeConfiguration config = study.getPedigreeConfiguration();
+		
 
 		if (config != null) {
 			cpmModel.getObject().setPedigreeConfig(config);
