@@ -1265,6 +1265,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		finally{
 			target.add(feedBackPanel);
 		}
+		finally{
+			target.add(feedBackPanel);
+		}
 	}
 
 	private void processSaveUpdate(StudyModelVO studyModel, AjaxRequestTarget target) throws EntityExistsException, UnAuthorizedOperation, ArkSystemException, EntityCannotBeRemoved,

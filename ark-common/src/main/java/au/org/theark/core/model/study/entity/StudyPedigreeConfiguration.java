@@ -51,7 +51,8 @@ public class StudyPedigreeConfiguration implements Serializable {
 	}
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_ID")
+	@JoinColumn(name = "STUDY_ID",
+				referencedColumnName="ID")
 	public Study getStudy() {
 		return study;
 	}
