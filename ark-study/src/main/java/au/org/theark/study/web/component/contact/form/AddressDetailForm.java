@@ -437,7 +437,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 				//feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
 			}
 
-			if (person.getFirstName() != null && person.getLastName() != null) {
+			/*if (person.getFirstName() != null && person.getLastName() != null) {
 				feedBackMessageStr.append(person.getFirstName() + " " + person.getLastName());
 			}
 			else {
@@ -446,7 +446,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 				String uid = iArkCommonService.getSubject(person.getId(), study).getSubjectUID();
 				feedBackMessageStr.append(uid);
 			}
-			this.info(feedBackMessageStr.toString());
+			this.info(feedBackMessageStr.toString());*/
 			processErrors(target);
 			onSavePostProcess(target);
 			// Invoke backend to persist the AddressVO

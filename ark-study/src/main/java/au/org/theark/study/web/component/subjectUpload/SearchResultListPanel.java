@@ -85,7 +85,9 @@ public class SearchResultListPanel extends Panel {
 	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
 	private ModalWindow 			confirmModal;
 	private ConfirmationAnswer		confirmationAnswer;
-	private final String modalText = "<p align='center'>You are about to delete the uploaded file <b>*.</b></p>"
+	private final String modalText = "<p align='center'>You are about to delete the uploaded file </p>"
+			+ "</br>"
+			+"<p align='center'><b>*</b> (Attachment ID: <b>#</b>).</p>"
 			+ "</br>"
 			+ "<p align='center'> Data that were uploaded from this file will remain in The Ark; only the record of the upload process will be deleted.</p>"
 			+ "</br>"
@@ -410,7 +412,7 @@ public class SearchResultListPanel extends Panel {
 	 * @param upload
 	 */
 	private void updateModelAndVarifyForDeleteUpload(Upload upload) {
-		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText.replace("*"," ["+upload.getId()+"] "+upload.getFilename()),"Warning", confirmModal, confirmationAnswer));
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText.replace("*",upload.getFilename()).replace("#", " "+upload.getId()),"Warning", confirmModal, confirmationAnswer));
 		confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
 		private static final long serialVersionUID = 1L;
 			public void onClose(AjaxRequestTarget target) {

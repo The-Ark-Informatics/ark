@@ -69,6 +69,15 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		this.feedbackPanel = feedbackPanel;
 		setMultiPart(true);
 		
+		makeNewButtonInVisible();
+
+		this.setCpmModel(cpmModel);
+
+		initialiseSearchForm();
+		addSearchComponentsToForm();
+	}
+
+	private void makeNewButtonInVisible() {
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 
 			private static final long	serialVersionUID	= 1L;
@@ -87,11 +96,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 			}
 		};
 		addOrReplace(newButton);
-
-		this.setCpmModel(cpmModel);
-
-		initialiseSearchForm();
-		addSearchComponentsToForm();
 	}
 
 	protected void initialiseSearchForm() {
