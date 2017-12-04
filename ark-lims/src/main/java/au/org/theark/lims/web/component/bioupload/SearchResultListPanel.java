@@ -68,7 +68,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not proceed with download of the template.");
+				this.error("An unexpected error occurred. Could not proceed with the download of the template.");
 			}
 
 		};
@@ -82,7 +82,7 @@ public class SearchResultListPanel extends Panel {
 	 */
 	@SuppressWarnings("unchecked")
 	public PageableListView<Upload> buildPageableListView(IModel iModel) {
-		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 			
 			private static final long	serialVersionUID	= 1L;
 
@@ -207,7 +207,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download request");
+				this.error("An unexpected error occurred. Could not process the download request");
 			};
 		};
 
@@ -260,7 +260,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download upload report request");
+				this.error("An unexpected error occurred. Could not process the download upload report request.");
 			};
 		};
 

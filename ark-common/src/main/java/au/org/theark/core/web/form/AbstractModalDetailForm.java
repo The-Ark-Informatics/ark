@@ -71,7 +71,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 
 
 	private void initialiseEditButtonsPanel(boolean isNew) {
-		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this,feedbackPanel);
 		if (isNew) {
 			buttonsPanel.setDeleteButtonVisible(false);
 			buttonsPanel.setDeleteButtonEnabled(false);
@@ -81,7 +81,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 	}
 	
 	private void initialiseEditButtonsPanelForReadOnlyUser(){
-		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this,feedbackPanel);
 		buttonsPanel.setDeleteButtonVisible(false);
 		buttonsPanel.setDeleteButtonEnabled(false);
 		buttonsPanel.setSaveButtonVisible(false);
@@ -212,7 +212,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 
 	abstract protected void onClose(AjaxRequestTarget target);
 
-	abstract protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form);
+	abstract protected void onDeleteConfirmed(AjaxRequestTarget target);//, Form<?> form);
 
 	abstract protected void processErrors(AjaxRequestTarget target);
 
@@ -246,7 +246,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 	 * org.apache.wicket.markup.html.form.Form)
 	 */
 	public void onEditDelete(AjaxRequestTarget target, Form<?> form) {
-		onDeleteConfirmed(target, form);
+		onDeleteConfirmed(target);
 	}
 
 	/*

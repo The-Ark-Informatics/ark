@@ -134,4 +134,6 @@ public interface IUserService {
 	public void updateArkUserRoleListForExsistingUser(ArkUserVO arkUserVO);
 	
 	public List<Study> getUserStudyListIncludeChildren(ArkUserVO arkUserVO);
+	
+	public void deleteUserConfigSetting(ArkUserVO arkUserVO);
 }

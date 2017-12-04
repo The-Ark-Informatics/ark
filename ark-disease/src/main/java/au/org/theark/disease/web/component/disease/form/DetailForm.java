@@ -135,7 +135,7 @@ public class DetailForm extends AbstractDetailForm<DiseaseVO> {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
 			// No study in context
-			this.error("There is no study in Context. Please select a study to manage diseases.");
+			this.error("There is no study selected. Please select a study to manage diseases.");
 			processErrors(target);
 		}
 		else {			

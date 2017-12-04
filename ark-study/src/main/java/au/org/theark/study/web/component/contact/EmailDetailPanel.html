@@ -1,0 +1,171 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="emailDetailsForm">
+		<div class="detailsPanelBorder">
+			<div wicket:id="emailDetailFormContainer"> 
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<!--	Row 1 -->
+				<div class="fldLabel">
+					<div class="label">
+						<label for="emailAccountID">
+							<label for="emailAccountID">
+								<wicket:message key="emailAccountId">
+									emailId:
+								</wicket:message>
+							</label>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="emailAccountVo.emailAccount.id" type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="email">
+							<label for="email">
+								<wicket:message key="emailAccountName">
+									Email:
+								</wicket:message>
+							</label>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="emailAccountVo.emailAccount.name" type="text" />
+					</div>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				<div class="fldLabel">
+					<div class="label">
+						<label for="emailAccountType">
+							<label for="emailAccountType">
+								<wicket:message key="emailAccountType">
+									Email Type:
+								</wicket:message>
+							</label>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="emailAccountVo.emailAccount.emailAccountType">
+							<option>
+								Personal
+							</option>
+							<option>
+								Work
+							</option>
+						</select>
+					</div>
+				</div>
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+				
+				<div class="fldLabel">
+					<div class="label">
+						<label for="emailAccountStatus">
+							<label for="emailAccountStatus">
+								<wicket:message key="emailAccountStatus">
+									Email Status:
+								</wicket:message>
+							</label>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="emailAccountVo.emailAccount.emailStatus">
+							<option>
+								Unknown
+							</option>
+							<option>
+								Verified
+							</option>
+						</select>
+					</div>
+				</div>
+				
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="emailPrimaryAccount">
+						Preferred Phone Number:
+					</wicket:message>
+					<div class="note">
+						<wicket:message key="emailPrimaryAccount.note">
+							[Note]
+						</wicket:message>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<input type="checkbox" wicket:id="emailAccountVo.emailAccount.primaryAccount"/>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+
+			<!--	Row 2 Action Buttons -->
+			<div wicket:id="emailEditButtonContainer">
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+					<input wicket:id="historyButton" type="submit" value="History" />
+					<div wicket:id="historyModalWindow"></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</wicket:panel>

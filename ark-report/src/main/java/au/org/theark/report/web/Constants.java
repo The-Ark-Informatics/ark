@@ -88,4 +88,6 @@ public class Constants {
 	public static final String	STUDY_STATUS_COMPLETED								= "Completed";
 	public static final String	STUDY_STATUS_REQUESTED								= "Requested";
 	public static final String	STUDY_STATUS_RECEIVED								= "Received";
+	public static final String	SUBJECT_FILE_FILENAMELINK							= "subjectFile.link";
+	public static final String	REPORT_DATA_EXTRACTION_SUBJECT_UID_RESTRICT_FILE	= "dataExtraction";
 }

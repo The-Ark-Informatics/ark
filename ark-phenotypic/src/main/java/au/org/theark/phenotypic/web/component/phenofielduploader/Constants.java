@@ -76,24 +76,26 @@ public class Constants {
 	};
 	
 	public static final String[][] PHENO_DATASET_FIELD_UPLOAD_HEADER = {{"", "FIELD_NAME","FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
-		"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
+		"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "DEFAULT_VALUE","REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
 		{
 			"DESCRIPTION",
 			"The unique identifier of the field",
-			"The field type of the field",
-			"The details description of the field",
-			"The question or the label for the field ",
-			"The units for the field",
-			"The encoded value for the field ",
-			"The minimum value for the field",
-			"The maximum value for the field",
-			"The missing value for the field",
-			"The required status for the field",
-			"The multiple selection allowed status for the field"
+			"The data type of the field",
+			"A text description of the field",
+			"The question or label text associated with the field ",
+			"The units of measurement, if applicable",
+			"A specification of encoded values, optional when FIELD_TYPE is CHARACTER ",
+			"The minimum value for the field, optional when FIELD_TYPE is NUMBER & DATE",
+			"The maximum value for the field, optional when FIELD_TYPE is NUMBER & DATE",
+			"A value that represents missing data; the data type must match that indicated by FIELD_TYPE",
+			"The default value for the field if no value is set",
+			"Whether values for this field are mandatory",
+			"If FIELD_TYPE is CHARACTER and encoded values are set, should multiple selections be allowed?"
 	},
 	{ 		"MANDATORY", 
 			"Yes", 
 			"No", 
+			"No",
 			"No",
 			"No",
 			"No",
@@ -107,21 +109,22 @@ public class Constants {
 	 },
 	{
 			"VALID VALUES",
-			"", 
-			"",
+			"Maximum 50 characters", 
+			"Character, Number, Date",
 			"Maximum 255 characters", 
-			"", 
+			"Maximum 255 characters", 
+			"Maximum 50 characters",
+			"Example: 0=No;1=Yes;",
 			"",
-			"0=Yes;1=No;",
 			"",
 			"",
 			"",
-			"true;yes;1;y;false;no;0;n",
-			"true;yes;1;y;false;no;0;n"
+			"Yes, No",
+			"Yes, No"
 	},
-	{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "", "", "", "", ""
+	{ "NOTE: Remove this first column, and replace the contents of rows 2 to 5", "", "", "", "", "", "", "", "", "", "", "",""
 	}};
 	
-	public static final String			UPLOAD_TYPE_CUSTOM_DATA_SETS	= "Custom Data Sets";
+	public static final String			UPLOAD_TYPE_CUSTOM_DATA_SETS	= "Custom Datasets";
 
 }

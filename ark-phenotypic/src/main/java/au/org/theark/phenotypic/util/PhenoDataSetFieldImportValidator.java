@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +54,8 @@ import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.CustomFieldImportValidator;
+import au.org.theark.core.util.CustomFieldValidationMessage;
 import au.org.theark.core.util.DataConversionAndManipulationHelper;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
@@ -97,7 +100,7 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 	private int								row							= 1;
 	private ArkFunction					arkFunction;
 	private ArkModule 					arkModule;
-	private IPhenotypicService			iPhenotypicService			=null;
+	private static IPhenotypicService			iPhenotypicService			=null;
 
 	/**
 	 * CustomFieldImportValidator constructor
@@ -165,7 +168,10 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
-			csvReader.readHeaders();
+			//csvReader.readHeaders();
+			if(!csvReader.readHeaders()){
+				fileValidationMessages.add("Header reading was unsuccessful. Please check the file format again.");
+			}
 
 			// Set field list (note 2th column to Nth column)
 			// FIELD_NAME FIELD_TYPE DESCRIPTION QUESTION UNITS ENCODED_VALUES MINIMUM_VALUE MAXIMUM_VALUE MISSING_VALUE REQUIRED
@@ -290,11 +296,11 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
-			throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
+			throw new CustomFieldSystemException("An unexpected I/O exception occurred whilst reading the phenotypic data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixPhenoFile Exception stacktrace:", ex);
-			throw new CustomFieldSystemException("Unexpected exception occurred when trying to process phenotypic data file");
+			throw new CustomFieldSystemException("An unexpected exception occurred when trying to process phenotypic data file.");
 		}
 		finally {
 			// Clean up the IO objects
@@ -415,6 +421,7 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					field.setMissingValue(csvReader.get("MISSING_VALUE"));
+					field.setDefaultValue(csvReader.get("DEFAULT_VALUE"));
 
 					//This is how the old custom field being captured by the name.
 					//It is unique field according to the db index defined.
@@ -508,6 +515,13 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 							errorCells.add(gridCell);
 						}
 					}
+					if (field.getDefaultValue() != null && !field.getDefaultValue().isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("DEFAULT_VALUE"), rowIdx);
+						// Validate the field definition
+						if (!PhenoDataSetFieldImportValidator.validateFieldDefaultDefinition(field, dataValidationMessages)) {
+							errorCells.add(gridCell);
+						}
+					}
 					
 					// Required column only relevant to specific custom field data (eg subject custom field)
 					if(csvReader.getIndex("REQUIRED") > 0 && !(csvReader.get("REQUIRED")).isEmpty()) {
@@ -536,11 +550,11 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixFile IOException stacktrace:", ioe);
-			throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the data file");
+			throw new CustomFieldSystemException("An unexpected I/O exception occurred whilst reading the data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixFile Exception stacktrace:", ex);
-			throw new CustomFieldSystemException("Unexpected exception occurred when trying to process data file");
+			throw new CustomFieldSystemException("An unexpected exception occurred when trying to process data file.");
 		}
 		finally {
 			// Clean up the IO objects
@@ -780,6 +794,101 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 		}
 		return isValid;
 	}
+	
+	private static boolean validateFieldDefaultDefinition(PhenoDataSetField field, Collection<String> errorMessages) {
+		boolean isValid = true;
+		if (!(field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_CHARACTER) || field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_NUMBER) || field.getFieldType()
+				.getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_DATE))) {
+			errorMessages.add(PhenoDataSetFieldValidationMessage.fieldDefaultValueNotDefinedType(field));
+			isValid = false;
+		}
+		//Character field type
+		//if Encoded value has been introduced check the default value has one of the encoded value occupied.
+		//ARK-1357 -This Default value validation has to be removed-[2017-05-11-Sanjay].
+		/*if (field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_CHARACTER)) {
+			if(iPhenotypicService.isEncodedValue(field, field.getDefaultValue())){
+				isValid=true;
+			}else{
+				errorMessages.add(PhenoDataSetFieldValidationMessage.fieldDefaultValueNotINEncodedLst(field));
+				isValid=false;
+			}
+		}*/
+		// Number field type
+		if (field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_NUMBER)) {
+			try {
+				Float defaultVal = null;
+				Float minVal= null;
+				Float maxVal= null;		
+				
+				if(!field.getDefaultValue().isEmpty()&& field.getDefaultValue()!=null ){
+					defaultVal=	Float.parseFloat(field.getDefaultValue());
+				}
+				if(!field.getMinValue().isEmpty()&& field.getMinValue()!=null ){
+					minVal=	Float.parseFloat(field.getMinValue());
+				}
+				if(!field.getMaxValue().isEmpty()&& field.getMaxValue()!=null ){
+					maxVal=	Float.parseFloat(field.getMaxValue());
+				}
+				//check default value in between min and max
+				if(defaultVal!=null && minVal !=null && maxVal !=null){	
+					if((minVal.equals(defaultVal) && maxVal > defaultVal) || (maxVal.equals(defaultVal) && minVal < defaultVal) ||(minVal < defaultVal && maxVal > defaultVal)){
+						isValid = true;
+					}else{
+						errorMessages.add(PhenoDataSetFieldValidationMessage.fieldDefaultValueInsideMinAndMaxRange(field));
+						isValid = false;
+					}
+				}	
+			}
+			catch (NumberFormatException nfe) {
+				errorMessages.add(PhenoDataSetFieldValidationMessage.fieldDefaultValueNotDefinedType(field));
+				isValid = false;
+			}
+			catch (NullPointerException npe) {
+				errorMessages.add(PhenoDataSetFieldValidationMessage.fieldDefinitionDefaultValueValidatingNull(field));
+				isValid = false;
+			}
+		}
+
+		// Date field type
+		if (field.getFieldType().getName().equalsIgnoreCase(au.org.theark.core.Constants.FIELD_TYPE_DATE)) {
+			try {
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
+				Date defaultDate= null;
+				Date minDate=	null;
+				Date maxDate=	null;
+				if(!field.getDefaultValue().isEmpty()&& field.getDefaultValue()!=null ){
+					defaultDate=	dateFormat.parse(field.getDefaultValue());
+				}
+				if(!field.getMinValue().isEmpty()&& field.getMinValue()!=null ){
+					minDate=	dateFormat.parse(field.getMinValue());
+				}
+				if(!field.getMaxValue().isEmpty()&& field.getMaxValue()!=null ){
+					maxDate=	dateFormat.parse(field.getMaxValue());
+				}
+				//check default value in between min and max
+				if(defaultDate!=null && minDate !=null && maxDate!=null){
+					if((minDate.equals(defaultDate) && maxDate.after(defaultDate))|| (maxDate.equals(defaultDate) && minDate.before(defaultDate)) ||(minDate.before(defaultDate) && maxDate.after(defaultDate))){
+						isValid = true;
+					}else{
+						errorMessages.add(PhenoDataSetFieldValidationMessage.fieldDefaultDateInsideMinAndMaxRange(field, defaultDate, minDate, maxDate));
+						isValid = false;
+					}
+				}	
+			}
+			catch (ParseException pe) {
+				errorMessages.add(PhenoDataSetFieldValidationMessage.fieldDefinitionDefaultValueNotValidDate(field));
+				isValid = false;
+			}
+			catch (NullPointerException npe) {
+				errorMessages.add(PhenoDataSetFieldValidationMessage.fieldDefinitionDefaultValueValidatingNull(field));
+				isValid = false;
+			}
+		}
+		
+		return isValid;
+	}
+
 
 	private static boolean validateFieldMaxDefinition(PhenoDataSetField field, Collection<String> errorMessages) {
 		boolean isValid = false;

@@ -60,6 +60,8 @@ import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.BiospecimenLocationVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
@@ -68,15 +70,13 @@ import au.org.theark.core.web.component.export.ExportToolbar;
 import au.org.theark.core.web.component.export.ExportableTextColumn;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.BatchBiospecimenAliquotsVO;
-import au.org.theark.lims.model.vo.BiospecimenLocationVO;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationPanel;
 import au.org.theark.lims.web.component.biolocation.BioModalAllocateDetailPanel;
 import au.org.theark.lims.web.component.biospecimen.batchaliquot.BatchAliquotBiospecimenPanel;
-import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenDataEntryModalDetailPanel;
 
 /**
  * @author cellis
@@ -102,7 +102,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	protected AbstractDetailModalWindow					modalWindow;
 	private WebMarkupContainer arkContextMarkup;
 
-	private Label												idLblFld;
+	//private Label												idLblFld;
 	private Label												nameLblFld;
 	private Label												studyLblFld;
 	private Label												subjectUidLblFld;
@@ -178,7 +178,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		biospecimenProvider.setCriteriaModel(cpModel);
 
 		dataView = buildDataView(biospecimenProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		
 		final IModel<String> amountModel = new Model<String>(Integer.toString(biospecimenProvider.size()));
@@ -212,7 +212,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Sample Type"), "sampleType.name"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Quantity"), "quantity"));
 		
-		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("BiospecimenUID");
 		headers.add("Study");
@@ -247,7 +247,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to proceed with New Biospecimen");
+				this.error("An unexpected error occurred. Unable to proceed with new biospecimen.");
 			}
 		};
 		newButton.setDefaultFormProcessing(false);
@@ -303,7 +303,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					
 				};
 
-				idLblFld = new Label("biospecimen.id", String.valueOf(biospecimen.getId()));
+				//idLblFld = new Label("biospecimen.id", String.valueOf(biospecimen.getId()));
 
 				nameLblFld = new Label("biospecimen.biospecimenUid", biospecimen.getBiospecimenUid());
 				listDetailsLink.add(nameLblFld);
@@ -379,7 +379,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					log.error(e.getMessage());
 				}
 
-				item.add(idLblFld);
+				//item.add(idLblFld);
 				item.add(rowDetailsWMC);
 				item.add(studyLblFld);
 				item.add(subjectUidLblFld);
@@ -555,7 +555,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	}
 
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {
-		modalContentPanel = new BiospecimenModalDetailPanel("content", modalWindow, cpModel);
+		modalContentPanel = new BiospecimenDataEntryModalDetailPanel("content", modalWindow, cpModel);
 
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Biospecimen Detail");
@@ -589,7 +589,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		
 		// Set Study Logo
 		StudyHelper studyHelper = new StudyHelper();
-		studyHelper.setStudyLogo(linkSubjectStudy.getStudy(), target,  studyNameMarkup, studyLogoMarkup);
+		studyHelper.setStudyLogo(linkSubjectStudy.getStudy(), target,  studyNameMarkup, studyLogoMarkup, iArkCommonService);
 	}
 
 	/**

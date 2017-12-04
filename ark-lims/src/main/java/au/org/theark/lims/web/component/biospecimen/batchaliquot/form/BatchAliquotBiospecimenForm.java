@@ -42,7 +42,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
@@ -59,9 +58,11 @@ import au.org.theark.core.web.component.listeditor.AjaxEditorButton;
 import au.org.theark.core.web.component.listeditor.ListItem;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.lims.model.vo.BatchBiospecimenAliquotsVO;
-import au.org.theark.lims.model.vo.BatchBiospecimenVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
+
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.model.Model;
 
 /**
  * @author cellis
@@ -90,7 +91,9 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 	private TextField<Number>									concentrationTxtFld;
 	protected ModalWindow 										modalWindow;
 	private boolean												copyBiospecimen = false;
+	private boolean												autoIncrement = false;
 	protected Biospecimen										biospecimenToCopy = new Biospecimen();
+	private CheckBox											autoIncrementUID;
 
 	public BatchAliquotBiospecimenForm(String id, IModel<BatchBiospecimenAliquotsVO> model, ModalWindow modalWindow) {
 		super(id, model);
@@ -172,9 +175,9 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				Biospecimen biospecimen= new Biospecimen();
-				copyBiospecimen = false;
 				listEditor.addItem(biospecimen);
-				target.add(form);
+				listEditor.updateModel();
+				target.add(form);	
 			}
 		}.setDefaultFormProcessing(false));
 		
@@ -227,7 +230,7 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				target.add(feedbackPanel);
 			}
-		}.setDefaultFormProcessing(false));
+		}.setDefaultFormProcessing(false));		
 	}
 
 	/**
@@ -261,9 +264,15 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				if(copyBiospecimen) {
 					item.getModelObject().setParent(parentBiospecimen);
 					item.getModelObject().setParentUid(parentBiospecimen.getBiospecimenUid());
+					if(autoIncrement){
+						item.getModelObject().setBiospecimenUid(incrementUID(biospecimenToCopy.getBiospecimenUid(), item.getIndex()));
+					}else{
+						item.getModelObject().setBiospecimenUid(biospecimenToCopy.getBiospecimenUid());
+					}
 					item.getModelObject().setQuantity(biospecimenToCopy.getQuantity());
 					item.getModelObject().setTreatmentType(biospecimenToCopy.getTreatmentType());
 					item.getModelObject().setConcentration(biospecimenToCopy.getConcentration());
+					System.out.println("This is item: "+item.getIndex());
 				}
 				else {
 					item.getModelObject().setParent(parentBiospecimen);
@@ -279,7 +288,10 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				}
 				else {
 					biospecimenUidTxtFld.setEnabled(true);
-					biospecimenUidTxtFld.setModelObject(null);
+					if(!copyBiospecimen) {
+						biospecimenUidTxtFld.setModelObject(null);
+					}
+					
 				}
 
 				quantityTxtFld = new TextField<Double>("quantity", new PropertyModel(item.getModelObject(), "quantity")) {
@@ -299,19 +311,20 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				concentrationTxtFld = new TextField<Number>("concentration", new PropertyModel(item.getModelObject(), "concentration"));
 
 				item.add(biospecimenUidTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
-				    @Override
+					@Override
 				    protected void onUpdate(AjaxRequestTarget target) {
-				   	if(!item.getModelObject().getStudy().getAutoGenerateBiospecimenUid()) {
-					   	 // Check BiospecimenUID is unique
-							String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
-							Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUid, item.getModelObject().getStudy());
-							if (biospecimen != null && biospecimen.getId() != null) {
-								error("Biospecimen UID must be unique. Please try again.");
-								target.focusComponent(getComponent());
-							}
-				   	}
-				   	target.add(feedbackPanel);
-				   	biospecimenToCopy.setBiospecimenUid(getComponent().getDefaultModelObject().toString());
+					   	if(!item.getModelObject().getStudy().getAutoGenerateBiospecimenUid()) {
+						   	 // Check BiospecimenUID is unique
+								String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
+								Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUid, item.getModelObject().getStudy());
+								if (biospecimen != null && biospecimen.getId() != null) {
+									error("Biospecimen UID must be unique. Please try again.");
+									target.focusComponent(getComponent());
+								}
+								biospecimenToCopy.setBiospecimenUid(biospecimenUid);
+								item.getModelObject().setBiospecimenUid(getComponent().getDefaultModelObject().toString());
+					   	}
+					   	target.add(feedbackPanel);
 				    } 
 				}));
 				
@@ -345,6 +358,14 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				   	 item.getModelObject().setConcentration((Double) getComponent().getDefaultModelObject());
 				    } 
 				}));
+				
+				autoIncrementUID = new CheckBox("autoGenerateUID", Model.of(autoIncrement));
+				item.add(autoIncrementUID.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				    	autoIncrement = (Boolean) getComponent().getDefaultModelObject();
+				    } 
+				}));
 
 				// Copy button allows entire row details to be copied
 				item.add(new AjaxEditorButton(Constants.COPY) {
@@ -363,6 +384,7 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 							PropertyUtils.copyProperties(biospecimen, getItem().getModelObject());
 							PropertyUtils.copyProperties(biospecimenToCopy, getItem().getModelObject());
 							listEditor.addItem(biospecimen);
+							listEditor.updateModel();
 							target.add(form);
 						}
 						catch (IllegalAccessException e) {
@@ -388,6 +410,7 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 						listEditor.removeItem(item);
+						listEditor.updateModel();
 						target.add(form);
 					}
 				}.setDefaultFormProcessing(false).setVisible(item.getIndex()>0));
@@ -569,4 +592,16 @@ now replacing with this from George;
 		}
 		return ok;
 	}
+	
+	public String incrementUID(String biospecimenUID, int incrementValue){
+		String UID = null;
+		
+		String[] parts = biospecimenUID.split("-");
+		Integer newUID = Integer.valueOf(parts[parts.length-1]) + incrementValue;
+		parts[parts.length-1] = Integer.toString(newUID);
+		UID = String.join("-", parts);
+		
+		return UID;
+	}
+	
 }

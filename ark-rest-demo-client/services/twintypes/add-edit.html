@@ -1,0 +1,40 @@
+<div class="side-form">
+    <div class="content">
+        <h1>{{vm.title}}</h1>
+		<p>The list of Subject UIDs contains only those subjects with siblings.</p>
+        <div class="form-container well" style="display: inline-block;">
+            <form method="post" name="twinTypeForm">
+                
+				<div class="col-md-12">
+				<div class="form-group required col-md-12">
+                    <label for="name" class="control-label col-md-4">Subject UID</label>
+                       <select ng-model="vm.twintype.subjectUID" class="form-control" ng-options="o as o for o in vm.subjects" ng-change="vm.changeRelativeList(vm.twintype.subjectUID)" required></select>
+                      </div>
+					   </div>
+               <div class="col-md-12">
+				<div class="form-group required col-md-12">
+				     <label for="name" class="control-label col-md-4">Sibling UID</label>
+				   <select ng-model="vm.twintype.relativeUID" class="form-control" ng-options="o as o for o in  vm.siblings" required></select>
+                      </div>
+					   </div>
+               <div class="col-md-12">
+				<div class="form-group required col-md-12">
+                    <label for="name" class="control-label col-md-4">Zygosity</label>
+                         <select ng-model="vm.twintype.twinType" class="form-control" ng-options="x for x in twinTypes" required></select>
+
+                </div>
+				 </div>
+                <div class="form-group">
+                    <a class="btn btn-default" ui-sref="twintypes">Cancel</a>
+                    <button class="btn btn-primary" ng-disabled="!twinTypeForm.$valid" ng-click="vm.saveTwintype()">Save</button>
+                </div>
+				<div class="form-group col-md-12 alert alert-danger fade in" ng-show="twintype_error_show">
+ 
+    <span>{{twintype_error}}</span>
+   </div>
+            </form>
+        </div>
+    </div>
+    <div class="background"></div>
+</div>
+

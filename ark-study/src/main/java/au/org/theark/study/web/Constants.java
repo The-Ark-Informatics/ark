@@ -76,6 +76,7 @@ public class Constants {
 	public static final String			PERSON_VITAL_STATUS											= "linkSubjectStudy.person.vitalStatus";
 	public static final String			PERSON_PERSON_ID											= "linkSubjectStudy.person.id";
 	public static final String			SUBJECT_UID													= "linkSubjectStudy.subjectUID";
+	public static final String			FAMILY_ID													= "linkSubjectStudy.familyId";
 	public static final String			PERSON_FIRST_NAME											= "linkSubjectStudy.person.firstName";
 	public static final String			PERSON_MIDDLE_NAME											= "linkSubjectStudy.person.middleName";
 	public static final String			PERSON_LAST_NAME											= "linkSubjectStudy.person.lastName";
@@ -282,6 +283,7 @@ public class Constants {
 
 	public static final String			STATE_SELECTOR_WMC											= "stateSelector";
 	public static final String			SUBJECT_FILE_FILENAMELINK									= "subjectFile.link";
+	public static final String			SUBJECT_LOGO_LINK											= "subjectLogo.link";
 	// WebMarkupContainer
 	// that
 	// will
@@ -345,21 +347,22 @@ public class Constants {
 	public static final String			UPLOAD_TYPE_NAME										= "name";
 
 	// Exception messages
-	public static final String			IO_EXCEPTION												= "IOException: Input error. ";
-	public static final String			FILE_FORMAT_EXCEPTION										= "File Format Exception: Input error. ";
-	public static final String			ARK_SYSTEM_EXCEPTION										= "General ARK System Exception: ";
-	public static final String			ARK_BASE_EXCEPTION											= "Base ARK System Exception: ";
+	public static final String			IO_EXCEPTION											= "IOException: Input error. ";
+	public static final String			FILE_FORMAT_EXCEPTION									= "File Format Exception: Input error. ";
+	public static final String			ARK_SYSTEM_EXCEPTION									= "General ARK System Exception: ";
+	public static final String			ARK_BASE_EXCEPTION										= "Base ARK System Exception: ";
 
-	public static final String[]		SUBJECT_TEMPLATE_HEADER										= { "SUBJECTUID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH",
-			"VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH",  "DATE_LAST_KNOWN_ALIVE", "CAUSE_OF_DEATH", "MARITAL_STATUS", "PREFERRED_CONTACT", "EMAIL",
-			"BUILDING_NAME", "STREET_ADDRESS", "SUBURB", "STATE", "COUNTRY", "POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
-			"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "IS_PREFERRED_MAILING_ADDRESS", "PHONE_AREA_CODE",
-			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","SILENT", "PHONE_DATE_RECEIVED", 
-			"PREVIOUS_LAST_NAME", "OTHER_EMAIL", "HEARD_ABOUT_STUDY" , "COMMENTS", "EMAIL_STATUS", "OTHER_EMAIL_STATUS", "EMAIL_STATUS",
+	public static final String[]		SUBJECT_TEMPLATE_HEADER										= { "SUBJECTUID", "FAMILY_ID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH",
+			"VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH",  "DATE_LAST_KNOWN_ALIVE", "CAUSE_OF_DEATH", "MARITAL_STATUS", "PREFERRED_CONTACT",
+			"ADDRESS_BUILDING_NAME", "ADDRESS_STREET_ADDRESS", "ADDRESS_SUBURB", "ADDRESS_STATE", "ADDRESS_COUNTRY", "ADDRESS_POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
+			"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "ADDRESS_IS_PREFERRED", "PHONE_AREA_CODE",
+			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","PHONE_SILENT", "PHONE_IS_PREFERRED","PHONE_DATE_RECEIVED", 
+			"EMAIL", "EMAIL_TYPE", "EMAIL_STATUS", "EMAIL_IS_PREFERRED",
+			"PREVIOUS_LAST_NAME", "HEARD_ABOUT_STUDY" , "COMMENTS",
 			"CONSENT_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"		
 	};
 	
-	public static final String[] SUBJECT_CONSENT_TEMPLATE_HEADER = {"SUBJECTUID", "STUDY_COMPONENT", "STUDY_COMPONENT_STATUS","COMPLETED_DATE" ,"CONSENT_TYPE","CONSENT_STATUS",
+	public static final String[] SUBJECT_CONSENT_TEMPLATE_HEADER = {"SUBJECTUID", "STUDY_COMPONENT", "STUDY_COMPONENT_STATUS","REQUESTED_DATE","RECEIVED_DATE","COMPLETED_DATE","CONSENT_TYPE","CONSENT_STATUS",
 		"CONSENT_DOWNLOADED","CONSENTED_BY","CONSENT_DATE","COMMENT"};
 
 	
@@ -368,13 +371,13 @@ public class Constants {
 			{ "", "SUBJECTUID OR FAMILYUID", "YOUR_FIRST_CUSTOM_FIELD_NAME_HERE", "YOUR_SECOND_CUSTOM_FIELD_NAME_HERE", "AND SO ON"},
 			{ "DESCRIPTION", "The unique identifier assigned for this subject or family.", "Value for first custom field","Value for second field", "AND SO ON" },
 			{ "NOTE: This is the common template to upload the Subject or the Family custom field data.", "This must match the subjectUID in the database or if it's a FAMILYUID it should be the valid FAMILYUID of a SUBJECT", "" , "", "" },
-			{ "		 Please make sure to use either one of a data set.", "", "" , "", "" },
+			{ "		 Please make sure to use either one of a dataset.", "", "" , "", "" },
 			{ "		 Removed this first column, and replace row 2 with your actual custom field names (the headers only appear once, row 3 will have your next subject or family and his/her values", "", "" , "", "" } };
 
 	public static final String[][]	SUBJECT_CONSENT_FIELD_TEMPLATE_CELLS										= {
-		{ "", "SUBJECTUID", "STUDY_COMPONENT", "STUDY_COMPONENT_STATUS", "COMPLETED_DATE","CONSENT_TYPE","CONSENT_STATUS","CONSENT_DOWNLOADED","CONSENTED_BY","CONSENT_DATE","COMMENT"},
-		{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "Valid study component name","Valid study component Status","If status is completed then (dd/mm/yyyy)","Valid consent type","Valid consent status","Yes/No","","dd/mm/yyyy","" },
-		{ "NOTE: Removed this first column", "", "" , "", "","","","" ,"","",""} };
+		{ "", "SUBJECTUID", "STUDY_COMPONENT", "STUDY_COMPONENT_STATUS","REQUESTED_DATE","RECEIVED_DATE","COMPLETED_DATE","CONSENT_TYPE","CONSENT_STATUS","CONSENT_DOWNLOADED","CONSENTED_BY","CONSENT_DATE","COMMENT"},
+		{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "@CompName","@CompNameStatus","If status is requested then (dd/mm/yyyy)","If status is received then (dd/mm/yyyy)","If status is completed then (dd/mm/yyyy)","@ConsentName","@ConsentStatus","Yes/No","","dd/mm/yyyy","" },
+		{ "NOTE: Removed this first column", "", "" , "", "","","","","","","","",""} };
 	
 	public static final String[] SUBJECT_ATTACHMENT_TEMPLATE_HEADER = {"SUBJECTUID", "FILE_NAME_WITH_FULL_PATH", "STUDY_COMPONENT","COMMENT"};
 	
@@ -382,47 +385,93 @@ public class Constants {
 		{"", "SUBJECTUID", "FILE_NAME_WITH_FULL_PATH", "STUDY_COMPONENT","COMMENT"},
 		{"DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database","File name with full path. Ex:/mnt/data/arkAttachments/sample.csv", "Valid study component name","" },
 		{ "NOTE: Removed this first column", "", "" , "", ""}};
+
+//	public static final String[][]	SUBJECT_TEMPLATE_CELLS										= {
+//			{ "", "SUBJECTUID", "FAMILY_ID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH", "VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH", "DATE_LAST_KNOWN_ALIVE", "CAUSE_OF_DEATH",
+//			"MARITAL_STATUS", "PREFERRED_CONTACT", "EMAIL", 
+//			"ADDRESS_BUILDING_NAME", "ADDRESS_STREET_ADDRESS", "ADDRESS_SUBURB", "ADDRESS_STATE", "ADDRESS_COUNTRY", "ADDRESS_POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
+//			"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "ADDRESS_IS_PREFERRED", "PHONE_AREA_CODE",
+//			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","PHONE_SILENT", "PHONE_DATE_RECEIVED", 
+//			"PREVIOUS_LAST_NAME", "OTHER_EMAIL", "HEARD_ABOUT_STUDY" , "COMMENTS", "EMAIL_STATUS", "OTHER_EMAIL_STATUS",
+//			"CONSENT_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"},
+//			{ "DESCRIPTION", "The unique identifier assigned for this subject; this may be automatically generated on upload", "The Family Identity of the subject to group family information", "The title by which the subject prefers to be addressed",
+//			"The subject's first name", "The subject's middle name", "The subject's last or family name", "The name by which the subject prefers to be addressed", "The date the subject was born",
+//			"The subject's vital status", "The subject's gender", "The status of the subject as it pertains to the study", "The date the subject died, if deceased",  "The date the subject was last known to be alive", "The cause of death",
+//			"The marital status of the subject", "The preferred method for contacting the subject", "The subject's primary email address", 
+//			"The subject's building name", "The subject's street address", "The subject's suburb", "The subject's state", "The subject's country", "The subject's postcode", "The source of address information", "The subject's address status",
+//			"The subject's address type", "The date of receiving address information", "Optional comment text for an address", "Whether this is the preferred mailing address", "The subject's telephone area code",
+//			"The subject's telephone number", "The subject's telephone type", "The subject's telephone status", "The source of telephone information", "Optional comment text for a telephone number","Whether the telephone number is silent or not", "The date of receiving the telephone number information", 
+//			"The subject's previous last name", "The subject's alternate email address", "How the subject heard about the study" , "Optional comment text about the subject", "Status of the subject's primary email address", "Status of the subject's alternate email address",
+//			"The subject's date of consent", "The subject's consent status", "The subject's consent type", "The subject's consent to passive data gathering", "The subject's consent to active contact", "The subject's consent to use data"},
+//			{ "FORMAT", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "DD/MM/YYYY", "ALPHANUMERIC", "CHARACTER",
+//			"CHARACTER", "ALPHANUMERIC" , 
+//			"CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER",
+//			"CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "ALPHANUMERIC",
+//			"ALPHANUMERIC", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER","SILENT", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER" , "CHARACTER", "CHARACTER", "CHARACTER",
+//			"DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER"},
+//			{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No", "No", "No", "No", "No", "No", "No", "Yes", "No", "No", "No", "No", "No",  "No", 
+//				"No", "No", "No", "No", "No", "No", "No", "No",
+//				"No", "No", "No", "No", "No",
+//				"No", "No", "No", "No", "No","No", "No", "No", "No", "No" , "No" , "No", "No",
+//				"No", "No", "No" , "No" , "No", "No"},
+//			{ "VALID VALUES", "", "", "Unknown, Br, Capt, Col, Cpl, Dean, Dr, Fr, Lac, Major, Miss, Mr, Mrs, Ms, Past, Prof, Pstr, Rev, Sir, Sr", "", "", "", "", "", "Alive, Deceased, Unknown",
+//			"Male, Female, Unknown", "Subject, Prospect, Withdrawn Subject, Archive, Inactive", "", "", "", "Married, Single, Divorced, Unknown", "Email, Home telephone, Mobile telephone, Post", "", 
+//			"", "", "", "Refer to user interface for options", "Refer to user interface for options", "",  //last three on this line are state country and postcode - i really could enforce something 
+//			"", "Current, Current - Alternative, Current - Under Investigation, Incorrect address, Valid past address", "Postal, Work, Residential", "", "", "", "",
+//			"", "Mobile, Home, Work", "Unknown, Current, Current Alternative, Current Under Investigation, Valid Past, Incorrect or Disconnected", "", "","Yes, No", "", "", "", "" , "", "Unknown, Verified, Unverified, Bounced", "Unknown, Verified, Unverified, Bounced",
+//			"", "Consented, Ineligible, Refused, Withdrawn, Pending", "Electronic, Hard Copy" , "Yes, No, Pending, Unavailable, Limited, Revoked" , "Yes, No, Pending, Unavailable, Limited, Revoked", "Yes, No, Pending, Unavailable, Limited, Revoked"},
+//			{ "NOTE: Remove this first column, and replace the contents of rows 2 to 6", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
+//				"", "", "", "", "", "", "", "",
+//				"", "", "", "", "",
+//				"", "", "", "", "","", "", "" , "", "" , "" , "" , "",
+//				"", "", "", "", "","", ""} };
 	
-	//TODO this is all for validation and templates.  maybe we need some form of validation mapping to db, entities or something like that as this will not be maintainable for long
 	public static final String[][]	SUBJECT_TEMPLATE_CELLS										= {
-			{ "", "SUBJECTUID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH", "VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH", "DATE_LAST_KNOWN_ALIVE", "CAUSE_OF_DEATH",
-			"MARITAL_STATUS", "PREFERRED_CONTACT", "EMAIL", 
-			"BUILDING_NAME", "STREET_ADDRESS", "SUBURB", "STATE", "COUNTRY", "POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
-			"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "IS_PREFERRED_MAILING_ADDRESS", "PHONE_AREA_CODE",
-			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","SILENT", "PHONE_DATE_RECEIVED", 
-			"PREVIOUS_LAST_NAME", "OTHER_EMAIL", "HEARD_ABOUT_STUDY" , "COMMENTS", "EMAIL_STATUS", "OTHER_EMAIL_STATUS",
-			"CONSENT_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"},
-			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This may be automatically generated on upload into The Ark", "The title by which the subject prefers to be addressed",
-			"The subjects first name", "The subjects middle name", "The subjects last or family name", "The name by which the subject prefers to be addressed", "The date the subject was born",
-			"The subject's vital status", "The subject's gender", "The status of the subject as it pertains to the study", "The date the subject died, if known",  "The date the subject was last known to be alive", "The cause of death",
-			"The marital status of the subject", "The preferred method for contacting the subject", "The subject's primary email address", 
-			"BUILDING_NAME", "STREET_ADDRESS", "SUBURB", "STATE", "COUNTRY", "POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
-			"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "IS_PREFERRED_MAILING_ADDRESS", "PHONE_AREA_CODE",
-			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","SILENT", "Date that the phone number was recorded", 
-			"PREVIOUS_LAST_NAME", "OTHER_EMAIL", "HEARD_ABOUT_STUDY" , "COMMENTS", "EMAIL_STATUS", "OTHER_EMAIL_STATUS",
-			"CONSENT_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"},
-			{ "FORMAT", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "DD/MM/YYYY", "ALPHANUMERIC", "CHARACTER",
-			"CHARACTER", "ALPHANUMERIC" , 
-			"CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER",
-			"CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "ALPHANUMERIC",
-			"ALPHANUMERIC", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER","SILENT", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER" , "CHARACTER", "CHARACTER", "CHARACTER",
-			"DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER"},
-			{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No", "No", "No", "No", "No", "No", "Yes", "No", "No", "No", "No", "No",  "No", 
-				"No", "No", "No", "No", "No", "No", "No", "No",
-				"No", "No", "No", "No", "No",
-				"No", "No", "No", "No", "No","No", "No", "No", "No", "No" , "No" , "No", "No",
-				"No", "No", "No" , "No" , "No", "No"},
-			{ "VALID VALUES", "", "Unknown, Br, Capt, Col, Cpl, Dean, Dr, Fr, Lac, Major, Miss, Mr, Mrs, Ms, Past, Prof, Pstr, Rev, Sir, Sr", "", "", "", "", "", "Alive, Deceased, Unknown",
-			"Male, Female, Unknown", "Subject, Prospect, Withdrawn Subject, Archive", "", "", "", "Married, Single, Divorced, Unknown", "Email, Home telephone, Mobile telephone, Post", "", 
-			"", "", "", "", "", "",  //last three on this line are state country and postcode - i really could enforce something 
-			"", "", "", "", "", "", "",
-			"", "", "", "", "","", "", "", "", "" , "", "Unknown, Verified, Unverified, Bounced", "Unknown, Verified, Unverified, Bounced",
+		{ "", "SUBJECTUID", "FAMILY_ID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH", "VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH", "DATE_LAST_KNOWN_ALIVE", "CAUSE_OF_DEATH",
+		"MARITAL_STATUS", "PREFERRED_CONTACT", 
+		"ADDRESS_BUILDING_NAME", "ADDRESS_STREET_ADDRESS", "ADDRESS_SUBURB", "ADDRESS_STATE", "ADDRESS_COUNTRY", "ADDRESS_POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
+		"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "ADDRESS_IS_PREFERRED", "PHONE_AREA_CODE",
+		"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","PHONE_SILENT", "PHONE_DATE_RECEIVED", 
+		"EMAIL", "EMAIL_TYPE", "EMAIL_STATUS", "EMAIL_IS_PREFERRED", 
+		"PREVIOUS_LAST_NAME", "HEARD_ABOUT_STUDY" , "COMMENTS",
+		"CONSENT_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"},
+		{ "DESCRIPTION", "The unique identifier assigned for this subject; this may be automatically generated on upload", "The Family Identity of the subject to group family information", "The title by which the subject prefers to be addressed",
+		"The subject's first name", "The subject's middle name", "The subject's last or family name", "The name by which the subject prefers to be addressed", "The date the subject was born",
+		"The subject's vital status", "The subject's gender", "The status of the subject as it pertains to the study", "The date the subject died, if deceased",  "The date the subject was last known to be alive", "The cause of death",
+		"The marital status of the subject", "The preferred method for contacting the subject", 
+		"The subject's building name", "The subject's street address", "The subject's suburb", "The subject's state", "The subject's country", "The subject's postcode", "The source of address information", "The subject's address status",
+		"The subject's address type", "The date of receiving address information", "Optional comment text for an address", "Whether this is the preferred mailing address", "The subject's telephone area code",
+		"The subject's telephone number", "The subject's telephone type", "The subject's telephone status", "The source of telephone information", "Optional comment text for a telephone number","Whether the telephone number is silent or not", "The date of receiving the telephone number information", 
+		"The subject's email address", "The subject's email type", "The subject's email status", "Whether this is the preferred email account", 
+		"The subject's previous last name", "How the subject heard about the study" , "Optional comment text about the subject",
+		"The subject's date of consent", "The subject's consent status", "The subject's consent type", "The subject's consent to passive data gathering", "The subject's consent to active contact", "The subject's consent to use data"},
+		{ "FORMAT", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "DD/MM/YYYY", "ALPHANUMERIC", "CHARACTER",
+		"CHARACTER", 
+		"CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER",
+		"CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "ALPHANUMERIC",
+		"ALPHANUMERIC", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER","SILENT", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER" , "CHARACTER", "CHARACTER",
+		"CHARACTER", "CHARACTER",
+		"DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER"},
+		{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No", "No", "No", "No", "No", "No", "Yes", "No", "No", "No", "No", "No",  "No", 
+			"No", "No", "No", "No", "No", "No", "No", "No",
+			"No", "No", "No", "No", "No",
+			"No", "No", "No", "No", "No","No", "No", "No", "No", "No" , "No" , "No",
+			"No", "No", "No", "No",
+			"No", "No", "No" , "No"},
+		{ "VALID VALUES", "", "", "Unknown, Br, Capt, Col, Cpl, Dean, Dr, Fr, Lac, Major, Miss, Mr, Mrs, Ms, Past, Prof, Pstr, Rev, Sir, Sr", "", "", "", "", "", "Alive, Deceased, Unknown",
+			"Male, Female, Unknown", "Subject, Prospect, Withdrawn Subject, Archive, Inactive", "", "", "", "Married, Single, Divorced, Unknown", "Email, Home telephone, Mobile telephone, Post", 
+			"", "", "", "Refer to user interface for options", "Refer to user interface for options", "",  //last three on this line are state country and postcode - i really could enforce something 
+			"", "Current, Current - Alternative, Current - Under Investigation, Incorrect address, Valid past address", "Postal, Work, Residential", "", "", "", "",
+			"", "Mobile, Home, Work", "Unknown, Current, Current Alternative, Current Under Investigation, Valid Past, Incorrect or Disconnected", "", "","Yes, No", "", 
+			"","Personal, Work","Unknown, Verified, Unverified, Bounced","Yes, No",
+			"", "" , "",
 			"", "Consented, Ineligible, Refused, Withdrawn, Pending", "Electronic, Hard Copy" , "Yes, No, Pending, Unavailable, Limited, Revoked" , "Yes, No, Pending, Unavailable, Limited, Revoked", "Yes, No, Pending, Unavailable, Limited, Revoked"},
-			{ "NOTE: Removed this first column, and replace rows 2 to 6", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
-				"", "", "", "", "", "", "", "",
-				"", "", "", "", "",
-				"", "", "", "", "","", "", "" , "", "" , "" , "" , "",
-				"", "", "", "", "","", ""} };
+		{ "NOTE: Remove this first column, and replace the contents of rows 2 to 6", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
+			"", "", "", "", "", "", "", "",
+			"", "", "", "",
+			"", "", "", "", "","", "", "" , "", "" , "" , "" , "",
+			"", "", "", "", "","", "",
+	        "", ""} };
 
 	// 1 digit, 1 lower, 1 upper, 1 symbol "~!@#$%^&*()_-+={}[]:;\"<>|", from 6 to 20
 	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";
@@ -460,9 +509,11 @@ public class Constants {
 	public static final String ARK_SUBJECT_ATTACHEMENT_DIR="attachments";
 	public static final String ARK_SUBJECT_CORRESPONDENCE_DIR="correspondence";
 	public static final String ARK_STUDY_COMPONENT_DIR="studycomponent";
+	public static final String ARK_STUDY_DIR="study";
 	
 	public static final String PHONE_DETAIL_PANEL="phoneDetailPanel";
 	public static final String ADDRESS_DETAIL_PANEL="addressDetailPanel";
+	public static final String EMAIL_DETAIL_PANEL="emailDetailPanel";
 	
 	public static final String INBREED_ALLOWED="inbreedAllowed";
 	

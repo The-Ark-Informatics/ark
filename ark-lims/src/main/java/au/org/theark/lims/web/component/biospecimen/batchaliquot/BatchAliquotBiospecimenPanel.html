@@ -11,11 +11,16 @@
 				<span wicket:id="parentBiospecimen.biospecimenUid">
 					ParentUID
 				</span>
+			</table>
+			<table width="0%" cellspacing="0">
 				<wicket:message	key="parentBiospecimenQty">
 					Quantity:
 				</wicket:message>
 				<span wicket:id="parentBiospecimen.quantity">
-					Parent qty
+					Parent qty 
+				</span>
+				<span>
+					&nbsp;
 				</span>
 				<span wicket:id="parentBiospecimen.unit.name">
 					Parent units
@@ -54,6 +59,12 @@
 					<th width="5%">
 						<wicket:message	key="concentration">
 							Concentration:
+						</wicket:message>
+					</th>
+					
+					<th>
+						<wicket:message	key="autoIncrement">
+							Automatically Increment UID?:
 						</wicket:message>
 					</th>
 					
@@ -96,6 +107,10 @@
 							<input wicket:id="concentration" type="text" maxLength="10" size="10"/>
 						</td>
 
+						<td>
+							<input wicket:id="autoGenerateUID" type="checkbox" />
+						</td>
+					
 						<td>
 							<input wicket:id="copy" type="submit" wicket:message="value:button.copy" />
 						</td>

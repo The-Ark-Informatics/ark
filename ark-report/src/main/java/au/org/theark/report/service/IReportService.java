@@ -21,19 +21,35 @@ package au.org.theark.report.service;
 import java.util.List;
 import java.util.Map;
 
+import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
+import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.report.entity.SearchFile;
 import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.worktracking.entity.Researcher;
-import au.org.theark.report.model.vo.*;
-import au.org.theark.report.model.vo.report.*;
+import au.org.theark.report.model.vo.BiospecimenDetailsReportVO;
+import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.model.vo.FieldDetailsReportVO;
+import au.org.theark.report.model.vo.PhenoDataSetFieldDetailsReportVO;
+import au.org.theark.report.model.vo.ResearcherCostResportVO;
+import au.org.theark.report.model.vo.StudyComponentReportVO;
+import au.org.theark.report.model.vo.report.BiospecimenDetailsDataRow;
+import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
+import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
+import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.PhenoDataSetFieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
+import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
+import au.org.theark.report.model.vo.report.StudyComponentDetailsDataRow;
+import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
 public interface IReportService {
 
@@ -83,5 +99,15 @@ public interface IReportService {
 	public List<BiospecimenDetailsDataRow> getBiospecimenDetailsData(BiospecimenDetailsReportVO biospecimenDetailReportVO);
 	
 	public List<StudyComponentDetailsDataRow> getStudyComponentDataRow(StudyComponentReportVO studyComponentReportVO)throws ArkSystemException, EntityNotFoundException;
+	
+	public void create(SearchFile studytFile) throws ArkSystemException;
+
+	public void update(SearchFile studytFile) throws ArkSystemException, EntityNotFoundException;
+
+	public void delete(SearchFile studytFile,String directoryType) throws ArkSystemException, EntityNotFoundException,ArkFileNotFoundException;
+	
+	public void create(SearchFile studytFile, String directoryType) throws ArkSystemException;
+	
+	public SearchFile getSearchFileByStudyAndSearch(Study study,Search search);
 
 }

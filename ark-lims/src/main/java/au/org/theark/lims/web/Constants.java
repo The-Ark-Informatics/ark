@@ -245,4 +245,7 @@ public class Constants {
 	public static final String			SAVE_KEY												= "saveKey";
 	public static final String			DELETE_KEY												= "deleteKey";
 	public static final String			STUDY													= "study";
+	public static final String			CUSTOMFIELDCATEGORY_NAME								="name";
+	public static final String			CUSTOMFIELDCATEGORY_ID									="id";
+	public static final String			FIELDVO_CUSTOMFIELD_CUSTOEMFIELDCATEGORY				="customFieldCategory";
 }

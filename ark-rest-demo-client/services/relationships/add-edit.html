@@ -1,0 +1,50 @@
+<div class="side-form">
+    <div class="content">
+        <h1>{{vm.title}}</h1>
+        <div class="form-container well" style="display: inline-block;">
+            <form method="post" name="relationshipForm">
+                
+
+			
+
+
+					<div class="col-md-12">
+				<div class="form-group required col-md-12" >
+                    <label for="name" class="control-label col-md-4">Subject UID</label>
+                       <select ng-model="vm.relationship.subjectUID" class="form-control" ng-options="x.subjectUID as x.subjectUID for x in vm.subjects" required></select>
+                      </div>
+				
+				 
+				 </div>
+				 <div class="col-md-12">
+				 <div class="form-group required col-md-12">
+                    <label for="name" class="control-label col-md-5">Has mother/father</label>
+                         <select ng-model="vm.relationship.parentType" class="form-control" ng-options="x for x in relationshipTypes" required></select>
+
+                </div>
+                </div>
+				
+				<div class="col-md-12">
+				<div class="form-group required col-md-12">
+				     <label for="name" class="control-label col-md-4">Relative UID</label>
+				   <select ng-model="vm.relationship.relativeUID" class="form-control" ng-options="x.subjectUID as x.subjectUID for x in vm.subjects" required></select>
+                      </div>
+              
+                </div>
+				
+				<div class="form-group">
+                    <a class="btn btn-default" ui-sref="relationships">Cancel</a>
+                    <button class="btn btn-primary" ng-disabled="!relationshipForm.$valid" ng-click="vm.saveRelationship()">Save</button>
+                </div>
+				
+				
+				
+				<div class="form-group col-md-12 alert alert-danger fade in" ng-show="relationship_error_show">
+  
+    <span>{{relationship_error}}</span>
+   </div>
+            </form>
+        </div>
+    </div>
+    <div class="background"></div>
+</div>

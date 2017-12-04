@@ -125,25 +125,26 @@ public class ArkCalendarPage extends AbstractCalendarPage
 			@Override
 			public void onDayClick(AjaxRequestTarget target, CalendarView view, LocalDateTime date, boolean allDay)
 			{
-				ArkCalendarEvent event = ArkCalendarDao.newEvent(date);
-
-				event.setCustomFieldData(ArkCalendarDao.getCustomFieldList(event.getCalenderId(),event.getSubjectUID()));
-				dialog.setModelObject(event);
-				dialog.initCalendarDialog();
-				dialog.open(target);
+					ArkCalendarEvent event = ArkCalendarDao.newEvent(date);
+	
+					event.setCustomFieldData(ArkCalendarDao.getCustomFieldList(event.getCalenderId(),event.getSubjectUID()));
+					dialog.setModelObject(event);
+					dialog.initCalendarDialog();
+					dialog.open(target);
 			}
 
 			@Override
 			public void onSelect(AjaxRequestTarget target, CalendarView view, LocalDateTime start, LocalDateTime end, boolean allDay)
 			{
-				ArkCalendarEvent event = ArkCalendarDao.newEvent(start, end);
 				
-				event.setCustomFieldData(ArkCalendarDao.getCustomFieldList(event.getCalenderId(), event.getSubjectUID()));
-				event.setAllDay(allDay);
-
-				dialog.setModelObject(event);
-				dialog.initCalendarDialog();
-				dialog.open(target);
+					ArkCalendarEvent event = ArkCalendarDao.newEvent(start, end);
+					
+					event.setCustomFieldData(ArkCalendarDao.getCustomFieldList(event.getCalenderId(), event.getSubjectUID()));
+					event.setAllDay(allDay);
+	
+					dialog.setModelObject(event);
+					dialog.initCalendarDialog();
+					dialog.open(target);
 			}
 
 			@Override

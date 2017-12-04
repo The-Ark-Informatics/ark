@@ -89,7 +89,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 		String encodedValues = cf.getEncodedValues();
 		Boolean requiredField = aCustomData.getCustomFieldDisplay().getRequired();
 		if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
-			if(cf.getDefaultValue() != null && item.getModelObject().getDateDataValue() == null) {
+			if(cf.getDefaultValue() != null && item.getModelObject().getDateDataValue() == null && !cf.getDefaultValue().trim().isEmpty()) {
 				try {
 					item.getModelObject().setDateDataValue(new SimpleDateFormat(Constants.DD_MM_YYYY).parse(cf.getDefaultValue()));
 				} catch (ParseException e) {
@@ -208,7 +208,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				}
 				else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
 					// Number data
-					if(cf.getDefaultValue() != null && item.getModelObject().getNumberDataValue() == null) {
+					if(cf.getDefaultValue() != null && item.getModelObject().getNumberDataValue() == null && !cf.getDefaultValue().trim().isEmpty()) {
 						item.getModelObject().setNumberDataValue(Double.parseDouble(cf.getDefaultValue()));;
 					}
 					NumberDataEntryPanel numberDataEntryPanel = new NumberDataEntryPanel("dataValueEntryPanel", 

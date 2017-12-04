@@ -60,7 +60,7 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 													private static final long	serialVersionUID	= 1L;
 													@Override
 													protected void onError(AjaxRequestTarget target, Form<?> form) {
-														this.error("Unexpected Error: Download request could not be processed");
+														this.error("An unexpected error occurred. The download request could not be processed.");
 													}
 												};
 
@@ -138,10 +138,10 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid=null; 
 			if(Constants.PEDIGREE_DATA.equalsIgnoreCase(containerForm.getModelObject().getUpload().getUploadType().getName())){
 				arkExcelWorkSheetAsGrid= new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
-					fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType(),false);
+					fileUpload, iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType(),false);
 			}else{
 				arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
-						fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType());
+						fileUpload, iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType());
 			}
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			WebMarkupContainer wizardDataGridKeyContainer = new WebMarkupContainer("wizardDataGridKeyContainer");
@@ -197,7 +197,7 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 		}
 		catch(Exception e){
 			log.error("unexpected exception, not shown to user...INVESTIGATE :\n", e);
-			validationMessage = "Error attempting to validate the file. Please contact your system administrator.";
+			validationMessage = "Error attempting to validate the file. Please contact the system administrator.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
 			target.add(form.getWizardButtonContainer());

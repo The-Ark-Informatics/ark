@@ -45,8 +45,8 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
-import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
-import au.org.theark.core.model.config.entity.UserConfig;
+import au.org.theark.core.model.config.entity.Setting;
+import au.org.theark.core.model.config.entity.UserSpecificSetting;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
@@ -199,7 +199,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.add(Restrictions.eq("arkRole", arkRole));
 		criteria.add(Restrictions.eq("arkUser", arkUser));
 		criteria.add(Restrictions.eq("arkModule", arkModule));
-
 		criteria.setMaxResults(1);
 		ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
 		if (arkUserRole != null) {
@@ -481,10 +480,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				session.save(arkUserRole);
 			}
 		}
-		
-		for (UserConfig config : arkUserVO.getArkUserConfigs()) {
-			session.saveOrUpdate(config);
-		}
 	}
 
 	/**
@@ -614,9 +609,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 						session.delete(arkUserRoleToRemove);
 					}
 				}
-				for (UserConfig config : arkUserVO.getArkUserConfigs()) {
-					session.update(config);
-				}
 			}
 			else {
 				createArkUser(arkUserVO);
@@ -695,9 +687,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.addOrder(Order.asc("module.id"));
 
 		// Restrict by Study if NOT Super Administrator
-		if (!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+		//if (!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 			criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
-		}
+		//}
 
 		try {
 			arkUserRoleList = criteria.list();
@@ -747,7 +739,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		for (ArkUserRole arkUserRole : arkUserVO.getArkUserRoleList()) {
 			session.delete(arkUserRole);
 		}
-
+		
 		List<ArkUserRole> listOfRoles = getArkRoleListByUser(arkUserVO);
 		if (listOfRoles.size() <= 0) {
 			// Remove the ArkUser From the database only
@@ -1209,7 +1201,8 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	@SuppressWarnings("unchecked")
 	public List<ArkRolePolicyTemplate> getArkRolePolicytemplateList(ArkUserRole arkUserRole){
 		String queryString = "SELECT  arpt FROM ArkRolePolicyTemplate arpt where arpt.arkRole=(:arkRole) and "
-							 + "arpt.arkModule=(:arkModule) group by arpt.arkFunction, arpt.id";
+				 + "arpt.arkModule=(:arkModule) group by arpt.arkFunction";
+							// + "arpt.arkModule=(:arkModule) group by arpt.arkFunction, arpt.id";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("arkRole",arkUserRole.getArkRole() );
 		query.setParameter("arkModule",arkUserRole.getArkModule() );
@@ -1254,9 +1247,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				session.save(arkUserRole);
 			}
 		}
-		for (UserConfig config : arkUserVO.getArkUserConfigs()) {
-			session.update(config);
-		}
 	}
 
 	@Override
@@ -1294,5 +1284,15 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.setProjection(Projections.property("study"));
 
 		return criteria.list();
+	}
+
+	@Override
+	public void deleteUserConfigSetting(ArkUserVO arkUserVO) {
+		Criteria criteria = getSession().createCriteria(Setting.class);
+		criteria.add(Restrictions.eq("arkUser", arkUserVO.getArkUserEntity()));
+		List<Setting> listOfResults = (List<Setting>)criteria.list();
+		for (Setting userSpecificSetting : listOfResults) {
+			getSession().delete(userSpecificSetting);
+		}
 	}
 }

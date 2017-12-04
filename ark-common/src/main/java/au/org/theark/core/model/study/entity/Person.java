@@ -72,16 +72,13 @@ public class Person implements java.io.Serializable {
 	private Date dateOfDeath;
 	private String causeOfDeath;
 	private PersonContactMethod personContactMethod;
-	private String preferredEmail;
-	private String otherEmail;
-	private EmailStatus preferredEmailStatus;
-	private EmailStatus otherEmailStatus;
 	private Date dateLastKnownAlive;
 	private String currentOrDeathAge;
 
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(0);
 	private Set<Address> addresses = new HashSet<Address>(0);
 	private Set<Phone> phones = new HashSet<Phone>(0);
+	private Set<EmailAccount> emailAccounts = new HashSet<EmailAccount>(0);
 	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(0);
 	private Set<LinkSubjectContact> linkSubjectContactsForContactKey = new HashSet<LinkSubjectContact>(0);
 	private Set<LinkSubjectContact> linkSubjectContactsForSubjectKey = new HashSet<LinkSubjectContact>(0);
@@ -223,6 +220,15 @@ public class Person implements java.io.Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
+	public Set<EmailAccount> getEmailAccounts() {
+		return emailAccounts;
+	}
+
+	public void setEmailAccounts(Set<EmailAccount> emailAccounts) {
+		this.emailAccounts = emailAccounts;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
 	public Set<LinkSubjectStudycomp> getLinkSubjectStudycomps() {
 		return this.linkSubjectStudycomps;
 	}
@@ -267,38 +273,6 @@ public class Person implements java.io.Serializable {
 	@JoinColumn(name = "PERSON_CONTACT_METHOD_ID")
 	public PersonContactMethod getPersonContactMethod() {
 		return personContactMethod;
-	}
-
-	/**
-	 * @param preferredEmail
-	 *            the preferredEmail to set
-	 */
-	public void setPreferredEmail(String preferredEmail) {
-		this.preferredEmail = preferredEmail;
-	}
-
-	/**
-	 * @return the preferredEmail
-	 */
-	@Column(name = "PREFERRED_EMAIL", length = 150)
-	public String getPreferredEmail() {
-		return preferredEmail;
-	}
-
-	/**
-	 * @param otherEmail
-	 *            the otherEmail to set
-	 */
-	public void setOtherEmail(String otherEmail) {
-		this.otherEmail = otherEmail;
-	}
-
-	/**
-	 * @return the otherEmail
-	 */
-	@Column(name = "OTHER_EMAIL", length = 150)
-	public String getOtherEmail() {
-		return otherEmail;
 	}
 
 	/**
@@ -370,26 +344,6 @@ public class Person implements java.io.Serializable {
 		this.dateLastKnownAlive = dateLastKnownAlive;
 	}
 
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "OTHER_EMAIL_STATUS")
-	public EmailStatus getOtherEmailStatus() {
-		return this.otherEmailStatus;
-	}
-
-	public void setOtherEmailStatus(EmailStatus otherEmailStatus) {
-		this.otherEmailStatus = otherEmailStatus;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PREFERRED_EMAIL_STATUS")
-	public EmailStatus getPreferredEmailStatus() {
-		return this.preferredEmailStatus;
-	}
-
-	public void setPreferredEmailStatus(EmailStatus preferredEmailStatus) {
-		this.preferredEmailStatus = preferredEmailStatus;
-	}
 	@Column(name = "CURRENT_OR_DEATH_AGE", length = 50)
 	public String getCurrentOrDeathAge() {
 		return currentOrDeathAge;
@@ -436,8 +390,6 @@ public class Person implements java.io.Serializable {
 				+ ((maritalStatus == null) ? 0 : maritalStatus.hashCode());
 		result = prime * result
 				+ ((middleName == null) ? 0 : middleName.hashCode());
-		result = prime * result
-				+ ((otherEmail == null) ? 0 : otherEmail.hashCode());
 		result = prime
 				* result
 				+ ((personContactMethod == null) ? 0 : personContactMethod
@@ -447,8 +399,6 @@ public class Person implements java.io.Serializable {
 				+ ((personLastnameHistory == null) ? 0 : personLastnameHistory
 						.hashCode());
 		result = prime * result + ((phones == null) ? 0 : phones.hashCode());
-		result = prime * result
-				+ ((preferredEmail == null) ? 0 : preferredEmail.hashCode());
 		result = prime * result
 				+ ((preferredName == null) ? 0 : preferredName.hashCode());
 		result = prime * result
@@ -524,11 +474,6 @@ public class Person implements java.io.Serializable {
 				return false;
 		} else if (!middleName.equals(other.middleName))
 			return false;
-		if (otherEmail == null) {
-			if (other.otherEmail != null)
-				return false;
-		} else if (!otherEmail.equals(other.otherEmail))
-			return false;
 		if (personContactMethod == null) {
 			if (other.personContactMethod != null)
 				return false;
@@ -543,11 +488,6 @@ public class Person implements java.io.Serializable {
 			if (other.phones != null)
 				return false;
 		} else if (!phones.equals(other.phones))
-			return false;
-		if (preferredEmail == null) {
-			if (other.preferredEmail != null)
-				return false;
-		} else if (!preferredEmail.equals(other.preferredEmail))
 			return false;
 		if (preferredName == null) {
 			if (other.preferredName != null)

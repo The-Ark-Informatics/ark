@@ -1,12 +1,12 @@
 package au.org.theark.disease.web.component.affection.form;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -70,7 +70,8 @@ public class SearchForm extends AbstractSearchForm<AffectionVO> {
 	protected void initialiseSearchForm() {	
 		initDiseaseDdc();
 		initAffectionStatusDDC();
-		recordDateTxtFld = new DateTextField("affection.recordDate");
+		PatternDateConverter pdc = new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false); 
+		recordDateTxtFld = new DateTextField("affection.recordDate",pdc);
 		ArkDatePicker recordDatePicker = new ArkDatePicker();
 		recordDatePicker.bind(recordDateTxtFld);
 		recordDateTxtFld.add(recordDatePicker);

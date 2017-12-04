@@ -49,8 +49,6 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 
 	private DropDownChoice<CustomField> effectedStatusDDL;
 
-	private DropDownChoice<CustomField> familyIdDDL;
-
 	private CompoundPropertyModel<PedigreeVo> cpmModel;
 
 	private List<CustomField> affectedStatusList;
@@ -88,6 +86,7 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 
 		final Study study = iArkCommonService.getStudy(studyId);
 		StudyPedigreeConfiguration config = study.getPedigreeConfiguration();
+		
 
 		if (config != null) {
 			cpmModel.getObject().setPedigreeConfig(config);
@@ -97,10 +96,6 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		effectedStatusDDL = new DropDownChoice("pedigreeConfig.customField", this.affectedStatusList, defaultChoiceRenderer);
 		effectedStatusDDL.setOutputMarkupId(true);
-
-		familyIdList = studyService.getFamilyUIdCustomFieldsForPedigreeRelativesList(studyId);
-		familyIdDDL = new DropDownChoice("pedigreeConfig.familyId", this.familyIdList, defaultChoiceRenderer);
-		familyIdDDL.setOutputMarkupId(true);
 
 		if (config != null && config.isStatusAllowed() != null && config.isStatusAllowed()) {
 			effectedStatusDDL.setEnabled(true);
@@ -183,7 +178,6 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 		add(ageChkBox);
 		add(saveButton);
 		add(cancelButton);
-		add(familyIdDDL);
 		add(inbreedingChkBox);
 	}
 	

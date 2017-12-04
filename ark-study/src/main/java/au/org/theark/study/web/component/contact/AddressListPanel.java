@@ -33,6 +33,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -77,11 +78,13 @@ public class AddressListPanel extends Panel {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService												studyService;
 	private Person															person;
+	private FeedbackPanel 					feedBackPanel;
 
-	public AddressListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public AddressListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm, FeedbackPanel feedBackPanel) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
+		this.feedBackPanel =feedBackPanel;
 		initialiseDataview();
 	}
 
@@ -170,7 +173,7 @@ public class AddressListPanel extends Panel {
 
 		addressProvider.setModel(Model.of(containerForm.getModelObject().getAddressVo().getAddress()));
 		dataViewAddress = buildDataView(addressProvider);
-		dataViewAddress.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataViewAddress.setItemsPerPage(iArkCommonService.getRowsPerPage());
 		dataViewAddressSubjectVO = buildDataViewWithSubjectStudyID(addressSubjectProvider);
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("addressNavigator", dataViewAddress);
 		add(pageNavigator);
@@ -186,7 +189,7 @@ public class AddressListPanel extends Panel {
 		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("DateReceived"), "dateReceived"));
 		columns.add(new ExportableTextColumn<AddressSubjectVO>(Model.of("Preferred Mailing Address"), "preferredMailingAddress"));
 
-		DataTable table = new DataTable("datatable", columns, dataViewAddressSubjectVO.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		DataTable table = new DataTable("datatable", columns, dataViewAddressSubjectVO.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("Subject UID:");
 		headers.add("Street Address:");
@@ -404,8 +407,8 @@ public class AddressListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				containerForm.getModelObject().getAddressVo().setAddress(address);
-				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsWhenTwoTypesForms(target, arkCrudContainerVO, au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL,
-						au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsForMultiplePanels(target, arkCrudContainerVO, au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL,
+						au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL,au.org.theark.study.web.Constants.EMAIL_DETAIL_PANEL);
 			}
 		};
 		String add1 = address.getAddressLineOne() != null ? address.getAddressLineOne() : "";

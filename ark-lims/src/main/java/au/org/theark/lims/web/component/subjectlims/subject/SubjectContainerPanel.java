@@ -41,9 +41,9 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
@@ -287,7 +287,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		subjectProvider.setCriteriaModel(this.cpModel);
 
 		dataView = searchResultListPanel.buildDataView(subjectProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 

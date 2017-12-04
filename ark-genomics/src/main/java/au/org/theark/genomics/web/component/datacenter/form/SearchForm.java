@@ -61,7 +61,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
+		disableSearchForm(sessionStudyId, "There is no study select. Please select a study.");
 	}
 
 	private void initialiseSearchForm() {
@@ -133,10 +133,10 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 			MicroService microService = dataCenterVo.getMicroService();
 
 			if (microService == null || dataCenter == null) {
-				this.error("Need to select a service and data centre prior to make a search.");
+				this.error("You need to select a service and data centre prior to performing a search.");
 			} else {
 //				this.info(getModelObject().getName() + " cannot be reach in the " + getModelObject().getMicroService().getName() + " Service");
-				this.info("Cannot find any directories or files in the search location");
+				this.info("Cannot find any directories or files in the search location.");
 			}
 			target.add(feedbackPanel);
 

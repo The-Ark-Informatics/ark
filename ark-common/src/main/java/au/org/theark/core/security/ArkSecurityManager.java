@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.core.security;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
@@ -47,9 +49,12 @@ public class ArkSecurityManager {
 	}
 
 	public boolean subjectHasRole(String roleName) {
-
 		Subject currentUser = SecurityUtils.getSubject();
 		return getShiroSecurityManager().hasRole(currentUser.getPrincipals(), roleName);
+	}
+	public boolean[] subjectHasRoles(List<String> rolesName){
+		Subject currentUser = SecurityUtils.getSubject();
+		return getShiroSecurityManager().hasRoles(currentUser.getPrincipals(),rolesName);
 	}
 
 }

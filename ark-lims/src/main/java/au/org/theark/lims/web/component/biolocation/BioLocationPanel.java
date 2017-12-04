@@ -9,8 +9,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 
 /**

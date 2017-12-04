@@ -168,50 +168,10 @@
 					[shibboleth session details]
 				</iframe>
 			</div>
-			
-			<div class="detailPanelBreaker">
-				&nbsp;
-			</div>
-			
-			<div class="panelMargin">
-					&nbsp;
-			</div>
-			
-			<div class="fldLabel">
-				<h3><wicket:message key="userConfig"></wicket:message></h3>
-			</div>
 
-			<table width="0%" cellspacing="0">
-			</table>
-			<table width="100%" cellspacing="0" class="dataview" border="0">
-				<tr>
-					<th width="2%"></th>
-					<th width="48%">Field</th>
-					<th width="48%">Value</th>
-					<th width="2%"></th>
-				</tr>
-				<tr wicket:id="arkUserConfigs">
-					<td width="2%"></td>
-					<td width="48%"><span wicket:id="configField.description"></span></td>
-					<td width="48%"><input wicket:id="value"/></td>
-					<td width="2%"></td>
-				</tr>
-				<tfoot>
-					<td width="2%"></td>
-					<td width="96%" colspan="2">
-						<!-- <span wicket:id="config_navigator" class="a">
-							[navigator]
-						</span> -->
-					</td>
-					<td width="2%"></td>
-				</tfoot>
-			</table>
+			<!-- User Settings -->
+        	<div wicket:id="settingsPanel"></div>
 
-			<div class="detailPanelBreaker">
-				&nbsp;
-			</div>
-			
-			
 			<!-- All the studies for the user -->
 			<div class="detailPanelBreaker">
 				&nbsp;
@@ -369,7 +329,6 @@
 			<!-- end of the list view panel -->
 			<table width="0%" cellspacing="0">
 			</table>
-
 
 			<div class="actionButtons">
 				<input wicket:id="save" type="submit" wicket:message="value:page.save" />

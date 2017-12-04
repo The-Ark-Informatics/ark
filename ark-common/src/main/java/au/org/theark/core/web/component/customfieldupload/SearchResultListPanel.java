@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfieldupload;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -33,6 +34,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
@@ -52,7 +54,14 @@ public class SearchResultListPanel extends Panel {
 	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
 	private ModalWindow 			confirmModal;
 	private ConfirmationAnswer		confirmationAnswer;
-	private final String modalText = "<p>You are about to delete this record of</p><p><b>*.</b></p></p><p> But it will never delete the data imported to the Ark from this file previously.</p>";
+	private final String modalText = "<p align='center'>You are about to delete the uploaded file </p>"
+			+ "</br>"
+			+"<p align='center'><b>*</b> (Attachment ID: <b>#</b>).</p>"
+			+ "</br>"
+			+ "<p align='center'> Data that were uploaded from this file will remain in The Ark; only the record of the upload process will be deleted.</p>"
+			+ "</br>"
+			+ "<p align='center'>Do you wish to continue?</p>"
+			+ "</br>";
 	private SearchResultListPanel me;
 	
 	/**
@@ -63,18 +72,23 @@ public class SearchResultListPanel extends Panel {
 		super(id);
 		this.setOutputMarkupId(true);
 		me=this;
-		ArkDownloadTemplateButton downloadFieldTemplateButton = new ArkDownloadTemplateButton("downloadTemplateField", "CustomFieldUpload", au.org.theark.core.Constants.CUSTOM_FIELD_UPLOAD_HEADER) {
+		Long sessionModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+		ArkModule arkModule=iArkCommonService.getArkModuleById(sessionModuleId);
+		
+		//Refer ARK-1386 programmatically pick the header details according to the module.     
+		ArkDownloadTemplateButton downloadFieldTemplateButton = new ArkDownloadTemplateButton("downloadTemplateField",
+				(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_LIMS))?"LIMSCustomFieldUpload":"SubjectCustomFieldUpload",changeCustomFieldHeaderWithModuleName(arkModule, au.org.theark.core.Constants.CUSTOM_FIELD_UPLOAD_HEADER)) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Download custom field template request could not be processed");
+				this.error("An unexpected error occurred. The download custom field template request could not be processed.");
 			}
 		};
 		ArkDownloadTemplateButton downloadCategoryTemplateButton = new ArkDownloadTemplateButton("downloadTemplateCategory", "CustomFieldCategoryUpload", au.org.theark.core.Constants.CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Download custom field category request could not be processed");
+				this.error("An unexpected error occurred. The download custom field category request could not be processed.");
 			}
 		};
 		initConfirmModel();
@@ -88,7 +102,7 @@ public class SearchResultListPanel extends Panel {
 	 * @return the pageableListView of Upload
 	 */
 	public PageableListView<Upload> buildPageableListView(IModel iModel) {
-		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -251,7 +265,7 @@ public class SearchResultListPanel extends Panel {
 	 * @param upload
 	 */
 	private void updateModelAndVarifyForDeleteUpload(Upload upload) {
-		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText.replace("*"," ["+upload.getId()+"] "+upload.getFilename()),"Delete upload record.", confirmModal, confirmationAnswer));
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText.replace("*",upload.getFilename()).replace("#", " "+upload.getId()),"Warning", confirmModal, confirmationAnswer));
 		confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
 		private static final long serialVersionUID = 1L;
 			public void onClose(AjaxRequestTarget target) {
@@ -272,6 +286,33 @@ public class SearchResultListPanel extends Panel {
 		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText,"Delete upload record.", confirmModal, confirmationAnswer));
 		addOrReplace(confirmModal);
 	}
-	
 
+	/**
+	 * 
+	 * @param arkModule
+	 * @param header
+	 * @return
+	 */
+	private String[][] changeCustomFieldHeaderWithModuleName(ArkModule arkModule, String[][] header) {
+		if (arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_LIMS)) {
+			for (int rows = 0; rows < header.length; rows++) {
+				for (int columns = 0; columns < header[rows].length; columns++) {
+					header[rows][columns] = header[rows][columns].replaceAll("Subject", "Biocollection");
+					header[rows][columns] = header[rows][columns].replaceAll("Family", "Biospecimen");
+					header[rows][columns] = header[rows][columns].replaceAll("subject", "biocollection");
+					header[rows][columns] = header[rows][columns].replaceAll("family", "biospecimen");
+				}
+			}
+		}else if(arkModule.getName().equals(au.org.theark.core.Constants.ARK_MODULE_STUDY)){
+			for (int rows = 0; rows < header.length; rows++) {
+				for (int columns = 0; columns < header[rows].length; columns++) {
+					header[rows][columns] = header[rows][columns].replaceAll("Biocollection","Subject");
+					header[rows][columns] = header[rows][columns].replaceAll("Biospecimen","Family");
+					header[rows][columns] = header[rows][columns].replaceAll("biocollection","subject");
+					header[rows][columns] = header[rows][columns].replaceAll("biospecimen","family");
+				}
+			}
+		}
+		return header;
+	}
 }

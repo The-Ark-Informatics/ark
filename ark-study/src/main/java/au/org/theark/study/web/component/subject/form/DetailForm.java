@@ -38,7 +38,8 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -55,7 +56,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,6 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
-import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.OtherID;
@@ -121,6 +120,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private WebMarkupContainer								arkContextMarkupContainer;
 
 	protected TextField<String>							subjectUIDTxtFld;
+	protected TextField<String>							familyIdTxtFld;
 	protected TextField<String>							firstNameTxtFld;
 	protected TextField<String>							middleNameTxtFld;
 	protected TextField<String>							lastNameTxtFld;
@@ -140,13 +140,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected DropDownChoice<ConsentOption>				consentToUseDataDdc;
 	protected DropDownChoice<ConsentOption>				consentToPassDataGatheringDdc;
 
-	// Address Stuff comes here
-	protected DropDownChoice<EmailStatus>				preferredEmailStatusDdc;
-	protected DropDownChoice<EmailStatus>				otherEmailStatusDdc;
-
-	protected TextField<String>							preferredEmailTxtFld;
-	protected TextField<String>							otherEmailTxtFld;
-
 	// Reference Data
 	protected DropDownChoice<TitleType>					titleTypeDdc;
 	protected DropDownChoice<VitalStatus>				vitalStatusDdc;
@@ -162,7 +155,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected CollapsiblePanel							consentHistoryPanel;
 
 	// Webmarkup for Ajax refreshing of items based on particular criteria
-	protected WebMarkupContainer						wmcPreferredEmailContainer;
 	protected WebMarkupContainer						wmcDeathDetailsContainer;
 
 	protected ChildStudyPalettePanel<SubjectVO>			childStudyPalettePanel;
@@ -224,6 +216,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 		};
 		subjectUIDTxtFld.setOutputMarkupId(true);
+		
+		familyIdTxtFld = new TextField<String>(Constants.FAMILY_ID);
 
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
@@ -298,12 +292,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		addNewOtherIdBtn.setDefaultFormProcessing(false);
 		otherIdWebMarkupContainer.add(otherIdListView);
 		otherIdWebMarkupContainer.add(addNewOtherIdBtn);
-		
-		preferredEmailTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_EMAIL);
-		otherEmailTxtFld = new TextField<String>(Constants.PERSON_OTHER_EMAIL);
 
 		heardAboutStudyTxtFld = new TextField<String>(Constants.SUBJECT_HEARD_ABOUT_STUDY_FROM);
-		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
@@ -322,12 +313,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 		});
 
-		dateLastKnownAliveTxtFld = new DateTextField("linkSubjectStudy.person.dateLastKnownAlive", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateLastKnownAliveTxtFld = new DateTextField("linkSubjectStudy.person.dateLastKnownAlive", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dateLastKnownAlivePicker = new ArkDatePicker();
 		dateLastKnownAlivePicker.bind(dateLastKnownAliveTxtFld);
 		dateLastKnownAliveTxtFld.add(dateLastKnownAlivePicker);
 
-		dateOfDeathTxtFld = new DateTextField(Constants.PERSON_DOD, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfDeathTxtFld = new DateTextField(Constants.PERSON_DOD, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		causeOfDeathTxtFld = new TextField<String>(Constants.PERSON_CAUSE_OF_DEATH);
 		ArkDatePicker dodDatePicker = new ArkDatePicker();
 		dodDatePicker.bind(dateOfDeathTxtFld);
@@ -365,16 +356,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		ChoiceRenderer<TitleType> defaultChoiceRenderer = new ChoiceRenderer<TitleType>(Constants.NAME, Constants.ID);
 		titleTypeDdc = new DropDownChoice<TitleType>(Constants.PERSON_TYTPE_TYPE, (List) titleTypeList, defaultChoiceRenderer);
 		titleTypeDdc.add(new ArkDefaultFormFocusBehavior());
-
-		// Preferred Status
-		Collection<EmailStatus> allEmailStatusList = iArkCommonService.getAllEmailStatuses();
-		ChoiceRenderer<EmailStatus> preferredEmailStatusRenderer = new ChoiceRenderer<EmailStatus>(Constants.NAME, Constants.ID);
-		preferredEmailStatusDdc = new DropDownChoice<EmailStatus>(Constants.PERSON_PREFERRED_EMAIL_STATUS, (List<EmailStatus>) allEmailStatusList, preferredEmailStatusRenderer);
-	
-			// Email Status
-//		Collection<EmailStatus> emailStatusList = iArkCommonService.getEmailStatus();
-		ChoiceRenderer<EmailStatus> otherEmailStatusRenderer = new ChoiceRenderer<EmailStatus>(Constants.NAME, Constants.ID);
-		otherEmailStatusDdc = new DropDownChoice<EmailStatus>(Constants.PERSON_OTHER_EMAIL_STATUS, (List<EmailStatus>) allEmailStatusList, otherEmailStatusRenderer);
 		
 			// Vital Status
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
@@ -418,7 +399,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					// check no biospecimens exist
 					long count = iLimsService.getBiospecimenCount(biospecimenCriteria);
 					if(count >0) {
-						error("You cannot archive this subject as there are Biospecimens associated ");
+						error("You cannot archive this subject as there are Biospecimens associated with it.");
 						target.focusComponent(subjectStatusDdc);
 					}
 				}
@@ -431,12 +412,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		ChoiceRenderer<MaritalStatus> maritalStatusRender = new ChoiceRenderer<MaritalStatus>(Constants.NAME, Constants.ID);
 		maritalStatusDdc = new DropDownChoice<MaritalStatus>(Constants.PERSON_MARITAL_STATUS, (List) maritalStatusList, maritalStatusRender);
 
-		// Container for preferredEmail (required when Email selected as preferred contact)
-		wmcPreferredEmailContainer = new WebMarkupContainer("preferredEmailContainer");
-		wmcPreferredEmailContainer.setOutputMarkupPlaceholderTag(true);
-		// Depends on preferredContactMethod
-		setPreferredEmailContainer();
-
 		// Person Contact Method
 		List<PersonContactMethod> contactMethodList = iArkCommonService.getPersonContactMethodList();
 		ChoiceRenderer<PersonContactMethod> contactMethodRender = new ChoiceRenderer<PersonContactMethod>(Constants.NAME, Constants.ID);
@@ -448,8 +423,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				// Check what was selected and then toggle
-				setPreferredEmailContainer();
-				target.add(wmcPreferredEmailContainer);
 			}
 		});
 
@@ -460,7 +433,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 		deleteButton.setVisible(false);
 		
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 
 	/**
@@ -499,25 +472,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		}
 	}
 
-	// Email required when preferred contact set to "Email"
-	private void setPreferredEmailContainer() {
-		PersonContactMethod personContactMethod = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getPersonContactMethod();
-
-		if (personContactMethod != null) {
-			String personContactMethodName = personContactMethod.getName();
-			if (personContactMethodName.equalsIgnoreCase("EMAIL")) {
-				preferredEmailTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.preferredEmail.required", null));
-			}
-			else {
-				preferredEmailTxtFld.setRequired(false);
-
-			}
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	private void initConsentFields() {
-		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker consentDatePicker = new ArkDatePicker();
 		consentDatePicker.bind(consentDateTxtFld);
 		consentDateTxtFld.add(consentDatePicker);
@@ -552,6 +509,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	public void addDetailFormComponents() {
 
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectUIDTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(familyIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(titleTypeDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(middleNameTxtFld);
@@ -575,13 +533,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectStatusDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(maritalStatusDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(personContactMethodDdc);
-
-		// Preferred email becomes required when selected as preferred contact method
-		wmcPreferredEmailContainer.add(preferredEmailTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcPreferredEmailContainer);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(otherEmailTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(preferredEmailStatusDdc);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(otherEmailStatusDdc);
 
 		// Add consent fields into the form container.
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentToActiveContactDdc);
@@ -642,8 +593,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		consentDateTxtFld.setLabel(new StringResourceModel("consentDate", this, null));
 		consentDateTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.consentDate.DateValidator.maximum", this, null));
 		dateLastKnownAliveTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.person.dateLastKnownAlive.DateValidator.maximum", this, null));
-		preferredEmailTxtFld.add(EmailAddressValidator.getInstance());
-		otherEmailTxtFld.add(EmailAddressValidator.getInstance());
+
 		consentStatusChoice.setRequired(true).setLabel(new StringResourceModel("consentStatus.required", this, null));
 		//Add new validators on 2016-05-19(Ark-1603).
 		firstNameTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));           
@@ -654,8 +604,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		causeOfDeathTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_DESCRIPTIVE_MAX_LENGTH_255));   
 		commentTxtAreaFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_COMMENTS_MAX_LENGTH_500));    
 		heardAboutStudyTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_COMMENTS_MAX_LENGTH_500));
-		preferredEmailTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));
-		otherEmailTxtFld.add(StringValidator.maximumLength(au.org.theark.core.Constants.GENERAL_FIELD_NAME_MAX_LENGTH_50));  
 		//Add Form validators...
 		//Date of birth and date of death range.  
 		this.add(new DateFromToValidator(dateOfBirthTxtFld, dateOfDeathTxtFld,"Date of birth","Date of death"));
@@ -703,7 +651,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				}
 
 				onSavePostProcess(target);
-				this.info(sb.toString());
+				this.saveInformation();
+				//this.info(sb.toString());
 
 				// Set new Subject into context
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectVO.getLinkSubjectStudy().getSubjectUID());
@@ -727,7 +676,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				// check no biospecimens exist
 				long count = iLimsService.getBiospecimenCount(biospecimenCriteria);
 				if(count >0) {
-					error("You cannot archive this subject as there are Biospecimens associated ");
+					error("You cannot archive this subject as there are Biospecimens associated with it.");
 					target.focusComponent(subjectStatusDdc);
 					errorFlag = true;
 				}
@@ -741,13 +690,14 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					sb.append(" has been updated successfully and linked to the study in context ");
 					sb.append(study.getName());
 					onSavePostProcess(target);
-					this.info(sb.toString());
+					this.updateInformation();
+					//this.info(sb.toString());
 				}
 				catch (ArkUniqueException e) {
 					this.error("Subject UID must be unique.");
 				}
 				catch(EntityNotFoundException enf){
-					this.error("Cannot found the selected Subject.");
+					this.error("Cannot find the selected Subject.");
 				}
 			}
 		}
@@ -768,7 +718,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
 			// No study in context
-			this.error("There is no study in Context. Please select a study to manage a subject.");
+			this.error("There is no study selected. Please select a study to manage a subject.");
 			processErrors(target);
 		}else {
 			//create warning messages for date data month >12 day > 31 ...etc 
@@ -808,7 +758,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		
 		if(bday!=null && dateOfDeathDay!=null && 
 				(getYearsBetweenDates(bday, dateOfDeathDay) > Constants.MAXIMUM_ACCEPTABLE_AGE || getYearsBetweenDates(bday, dateOfDeathDay) < 0 )){
-			this.warn("Warning: the difference between the date of death and date of birth exceeds 125 years.");
+			this.warn("Warning: The difference between the date of death and date of birth is greater than 125 years.");
 			processErrors(target);
 		}
 	}
@@ -822,7 +772,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private void createWarningForUnformattedDate(AjaxRequestTarget target,Date date ,String dateTextFieldInput) {
 		if(dateTextFieldInput!=null && !dateTextFieldInput.isEmpty() && !isDateValid(dateTextFieldInput)){
 			DateFormat dff=new SimpleDateFormat("dd/MM/yyyy");
-			this.warn("Warning: the specified date"+ dateTextFieldInput+" has been transformed to"+dff.format(date));
+			this.warn("Warning: The specified date"+ dateTextFieldInput+" has been transformed to"+dff.format(date));
 			processErrors(target);
 		}
 	}

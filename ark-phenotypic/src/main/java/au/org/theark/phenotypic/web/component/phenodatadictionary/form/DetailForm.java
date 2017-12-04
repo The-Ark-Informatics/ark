@@ -18,29 +18,18 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodatadictionary.form;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -58,28 +47,22 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkRunTimeException;
-import au.org.theark.core.exception.ArkRunTimeUniqueException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
-import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.CharactorDefaultMissingAndEncodedValueValidator;
+import au.org.theark.core.util.CharacterDefaultMissingAndEncodedValueValidator;
 import au.org.theark.core.util.DateFromToValidator;
-import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
 import au.org.theark.core.util.DefaultMissingValueDateRangeValidator;
 import au.org.theark.core.util.DefaultMissingValueDoubleRangeValidator;
+import au.org.theark.core.util.DoubleMinimumToMaximumValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.PhenoDataSetCategoryVO;
 import au.org.theark.core.vo.PhenoDataSetFieldVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
@@ -89,11 +72,7 @@ import au.org.theark.core.web.component.customfield.dataentry.StringDateModel;
 import au.org.theark.core.web.component.customfield.dataentry.TextDataEntryPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.util.PhenoDataSetCategoryOrderingHelper;
 import au.org.theark.phenotypic.web.component.phenodatadictionary.Constants;
-
-import com.googlecode.wicket.jquery.ui.interaction.draggable.Draggable;
-import com.googlecode.wicket.jquery.ui.interaction.droppable.Droppable;
 
 //import com.googlecode.wicket.jquery.ui.interaction.droppable.Droppable;
 
@@ -151,6 +130,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 	private WebMarkupContainer  					panelCustomUnitTypeText;
 	
 	private HistoryButtonPanel 						historyButtonPanel;
+	//private HistoryCustomPhenoFieldButtonPanel historyCustomPhenoFieldButtonPanel;
 	//private TextField<Long>							phenoDataSetCategoryOrderNoTxtFld;
 	private ArkModule 								arkModule;
 	
@@ -184,10 +164,10 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		if (getModelObject().getPhenoDataSetField().getId() != null) {
 			PhenoDataSetField cfFromBackend = iPhenotypicService.getPhenoDataSetField(getModelObject().getPhenoDataSetField().getId());
 			getModelObject().setPhenoDataSetField(cfFromBackend);
-
-			/*PhenoDataSetFieldDisplay pdsdFromBackend;
-			pdsdFromBackend = iPhenotypicService.getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(getModelObject().getPhenoDataSetField(),null);
-			getModelObject().setPhenoDataSetFieldDisplay(pdsdFromBackend);*/
+			
+			//PhenoDataSetFieldDisplay pdsdFromBackend;
+			//pdsdFromBackend = iPhenotypicService.getPhenoDataSetFieldDisplayByPhenoDataSetFieldAndGroup(getModelObject().getPhenoDataSetField(),null);
+			//getModelObject().setPhenoDataSetFieldDisplay(getModelObject().getPhenoDataSetFieldDisplay());
 		}
 		/*if (getModelObject().isUsePhenoDataSetFieldDisplay() == true) {
 			// Ensure the phenoDataSetFieldDisplay.require is never NULL
@@ -301,7 +281,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				
 				TextField<?> missing= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
 				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
-				this.add(new CharactorDefaultMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing,defaultVal, "Encoded Values","Missing Value","Default Value"));
+				this.add(new CharacterDefaultMissingAndEncodedValueValidator(fieldEncodedValuesTxtFld, missing,defaultVal, "Encoded Values","Missing Value","Default Value"));
 				
 			}
 			// Not supporting min and max value for CHARACTER fieldTypes
@@ -343,8 +323,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				defaultValueEntryPnl = new TextDataEntryPanel("defaultValueEntryPnl", defaultValueMdl, new Model<String>("DefaultValue"));
 				defaultValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 				
-				DateTextField fromDate= ((DateDataEntryPanel)minValueEntryPnl).getDataValueDateFld();
-				DateTextField toDate= ((DateDataEntryPanel)maxValueEntryPnl).getDataValueDateFld();
+				DateTextField fromDate= (DateTextField) ((DateDataEntryPanel)minValueEntryPnl).getDataValueDateFld();
+				DateTextField toDate= (DateTextField) ((DateDataEntryPanel)maxValueEntryPnl).getDataValueDateFld();
 				//DateTextField missingDate= ((DateDataEntryPanel)missingValueEntryPnl).getDataValueDateFld();
 				TextField<?> missingDate= ((TextDataEntryPanel)missingValueEntryPnl).getDataValueTxtFld();
 				TextField<?> defaultVal= ((TextDataEntryPanel)defaultValueEntryPnl).getDataValueTxtFld();
@@ -403,11 +383,12 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		/*if (getModelObject().isUsePhenoDataSetFieldDisplay()) {
 			// TODO: Have not implemented position support right now
 			phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
-		}*/
-	//	else {
+		}
+		else {
 			phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
-		//}
-		
+		}
+		*/
+		phenoDataSetDisplayPositionPanel = new EmptyPanel("phenoDataSetFieldDisplayPositionPanel");
 		// Initialise Drop Down Choices
 		initFieldTypeDdc();
 		initUnitTypeDdc();
@@ -444,7 +425,9 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 
 		initMinMaxValuePnls();
 		
-		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(this, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
+		
+		
 	}
 	
 	protected void attachValidators() {
@@ -470,7 +453,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 			// Save the Field
 			try {
 				iPhenotypicService.createPhenoDataSetField(getModelObject());
-				this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
+				this.saveInformation();
+				//this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
@@ -487,7 +471,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 			// Update the Field
 			try {
 				iPhenotypicService.updatePhenoDataSetField(getModelObject());
-				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
+				this.updateInformation();
+				//this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getPhenoDataSetField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
@@ -514,7 +499,8 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iPhenotypicService.deletePhenoDataSetField(getModelObject());
-			this.info("Field " + getModelObject().getPhenoDataSetField().getName() + " was deleted successfully");
+			this.deleteInformation();
+			//this.info("Field " + getModelObject().getPhenoDataSetField().getName() + " was deleted successfully");
 		}
 		catch (ArkSystemException e) {
 			this.error(e.getMessage());

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <title>The Ark: web services demonstration</title>
+  <link rel = "stylesheet" href = "https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="app-content/app.less" rel="stylesheet/less" type="text/css" />
+
+</head>
+<body>
+ <div class="container">
+    <!-- header -->
+	<div class="header" style="min-height: 110px;    background-color: white;    box-shadow: 1px 1px 3px #aaa;  margin-bottom: 10px;">
+				<div>
+					<a href="http://demo.sphinx.org.au/services"><img class="img-responsive" src="../img/cfr-banner.jpg" style="float: right;"></a>
+				</div>
+				<div class="clearfix"></div>
+
+				<div class="clearfix"></div>
+			</div>
+    <header>
+        <ul class="nav nav-tabs"     style="background: rgb(255, 248, 248);border-color: rgb(246, 235, 235);border-width: thin;border-style: dashed;margin-bottom: 10px; ">
+            <li ng-class="{active: currentState.match('^overview')}"><a ui-sref="overview">Overview</a></li>
+            <li ng-class="{active: currentState.match('^subject')}"><a ui-sref="subjects">Subjects</a></li>
+			  <li ng-class="{active: currentState.match('^relationship')}"><a ui-sref="relationships">Parentage</a></li>
+			     <li ng-class="{active: currentState.match('^twintype')}"><a ui-sref="twintypes">Twins</a></li>
+				 <li ng-class="{active: currentState.match('^membership')}"><a ui-sref="memberships">BloodLine</a></li>
+			    <li ng-class="{active: currentState.match('^pedigree')}"><a ui-sref="pedigrees">Visualise Proband</a></li>
+				<li ng-class="{active: currentState.match('^visualisation')}"><a ui-sref="visualisations">Send & Visualise</a></li>
+				<li ng-class="{active: currentState.match('^configuration')}"><a ui-sref="configurations">Configuration</a></li>
+        </ul>
+    </header>
+
+    <!-- main -->
+    <main ui-view></main>
+
+    <!-- footer -->
+	</div>
+    <footer>
+
+        <p>
+           Visit The Ark at <a href="http://demo.sphinx.org.au/ark" target="_blank">http://demo.sphinx.org.au/ark</a>
+        </p>
+    </footer>
+
+    <!-- less.js -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js"></script>
+
+    <!-- angular -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+
+    <!-- ui router -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
+     <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+      <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+ <!--  <script src = "//ajax.googleapis.com/ajax/libs/angular_material/1.0.9/angular-material.min.js"></script> -->
+   <script src = "https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.9/angular-material.min.js"></script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
+  <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+
+    <!-- application scripts -->
+    <script src="app.js"></script>
+    <script src="app-services/subject.service.js"></script>
+	 <script src="app-services/relationship.service.js"></script>
+	  <script src="app-services/twintype.service.js"></script>
+	  <script src="app-services/pedigree.service.js"></script>
+	   <script src="app-services/configuration.service.js"></script>
+	   <script src="app-services/membership.service.js"></script>
+	    <script src="app-services/visualisation.service.js"></script>
+    <script src="overview/main.controller.js"></script>
+    <script src="subjects/main.controller.js"></script>
+    <script src="subjects/add-edit.controller.js"></script>
+	<script src="relationships/main.controller.js"></script>
+    <script src="relationships/add-edit.controller.js"></script>
+	 <script src="twintypes/main.controller.js"></script>
+    <script src="twintypes/add-edit.controller.js"></script>
+    <script src="pedigrees/main.controller.js"></script>
+	<script src="configurations/main.controller.js"></script>
+    <script src="configurations/add-edit.controller.js"></script>
+    <script src="memberships/main.controller.js"></script>
+	<script src="visualisations/main.controller.js"></script>
+
+
+</body>
+</html>

@@ -23,12 +23,10 @@ import java.util.List;
 
 import au.org.theark.report.model.vo.PhenoDataSetFieldDetailsReportVO;
 import au.org.theark.report.model.vo.report.PhenoDataSetFieldDetailsDataRow;
+import au.org.theark.report.service.IReportService;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
-import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
-import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
-import au.org.theark.report.service.IReportService;
 
 /**
  * @author elam
@@ -75,6 +73,9 @@ public class PhenoDataSetFieldDetailsReportDataSource implements Serializable, J
 
 		if ("Questionnaire".equals(fieldName)) {
 			value = data.get(index).getQuestionnaire();
+		}
+		if ("Category".equals(fieldName)) {
+			value = data.get(index).getCategory();
 		}
 		else if ("FieldName".equals(fieldName)) {
 			value = data.get(index).getFieldName();

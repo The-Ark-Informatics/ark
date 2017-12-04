@@ -104,7 +104,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 		// addSearchComponentsToForm();
 		// TODO: Use Subject UID when they are not just contacts
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
+		disableSearchForm(sessionPersonId, "There is no subject or contact selected. Please select a subject or contact.");
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			address.setPerson(studyService.getPerson(sessionPersonId));
 			Collection<Address> addressList = studyService.getPersonAddressList(sessionPersonId, address);
 			if (addressList != null && addressList.size() == 0) {
-				this.info("No records match the specified criteria.");
+				this.info("No records match the specified search criteria.");
 				target.add(feedbackPanel);
 			}
 
@@ -220,12 +220,12 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
-			this.warn("There are no addresses available for the specified criteria.");
+			this.warn("There are no addresses available for the specified search criteria.");
 			target.add(feedbackPanel);
 
 		}
 		catch (ArkSystemException arkException) {
-			this.error("The Ark Application has encountered a system error.");
+			this.error("The Ark Application has encountered a system error. Please contact the system administrator.");
 			target.add(feedbackPanel);
 		}
 
@@ -261,7 +261,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 		// Ensure we update the CountyStateChoices in DetailsForm
 		// like what happens via DetailForm's updateStateChoices(..)
 		List<State> stateList = iArkCommonService.getStates(address.getCountry());
-		WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+		WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelContainer().get("addressDetailPanel").get("addressDetailsForm").get("addressDetailFormContainer").get(Constants.STATE_SELECTOR_WMC);
 		DropDownChoice<State> detailStateSelector = (DropDownChoice<State>) wmcStateSelector.get("address.state");
 		Label otherStateInvalidError = (Label) wmcStateSelector.get("address.otherStateInvalidError");
 		TextField<String> otherState = (TextField<String>) wmcStateSelector.get("address.otherState");

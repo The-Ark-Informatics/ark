@@ -42,6 +42,7 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -127,7 +128,7 @@ private String[][]	PHENO_TEMPLATE_CELLS2;
             		downloadTemplateButton.setEnabled(true);
 	            	for (PhenoDataSetField phenoDataSetField : phenoDataSetFields) {
 	            		PHENO_COLUMN_NAMES=(String[])ArrayUtils.add(PHENO_COLUMN_NAMES, phenoDataSetField.getName());
-	            		PHENO_COLUMN_DESC=(String[])ArrayUtils.add(PHENO_COLUMN_DESC, phenoDataSetField.getFieldType().getName().toLowerCase());
+	            		PHENO_COLUMN_DESC=(String[])ArrayUtils.add(PHENO_COLUMN_DESC, getUserFamiliardesc(phenoDataSetField));
 	            	}
 	            	PHENO_TEMPLATE_CELLS2=createPhenoTemplateCellArray(PHENO_COLUMN_NAMES, PHENO_COLUMN_DESC);
 	            	PHENO_COLUMN_NAMES=null;
@@ -233,7 +234,7 @@ private String[][]	PHENO_TEMPLATE_CELLS2;
 		templatePanel.setOutputMarkupId(true);
 	}
 	private void initDownloadButton(String [][] defaultArray,String datasetName){
-		downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "PhenoDataSetDataUpload-"+datasetName, defaultArray) {
+		downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "DatasetUpload-"+datasetName, defaultArray) {
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
@@ -260,5 +261,31 @@ private String[][]	PHENO_TEMPLATE_CELLS2;
 			this.error("The DataSet not having any fields specified.");
 			return null;
 		}
+	}
+	/**
+	 * 
+	 * @param fieldType
+	 * @return
+	 */
+	private String getUserFamiliardesc(PhenoDataSetField phenoDataSetField){
+		
+		String fieldTypeName=phenoDataSetField.getFieldType().getName();
+		String descString=null;
+		switch (fieldTypeName) {
+		case Constants.FIELD_TYPE_NUMBER: descString= "A number field"; 
+		break;
+		case Constants.FIELD_TYPE_DATE: descString= "A date field"; 
+		break;
+		case Constants.FIELD_TYPE_CHARACTER: 
+			if (phenoDataSetField.getEncodedValues()!=null && !phenoDataSetField.getEncodedValues().isEmpty()){
+				descString= " A character field with encodings"; 
+			}else{
+				descString= "A character field";
+			}
+		break;
+		default:
+			break;
+		}
+		return descString;
 	}
 }

@@ -40,6 +40,7 @@ public class StudyCalendar implements Serializable {
 	private Date endDate;
 	private Study study;
 	private StudyComp studyComp;
+	private Boolean allowOverlapping;
 	private Set<LinkCalendarCustomField> calendarCustomFields = new HashSet<LinkCalendarCustomField>();
 	
 	@Id
@@ -87,6 +88,15 @@ public class StudyCalendar implements Serializable {
 	
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	@Column(name= "ALLOW_OVERLAPPING")
+	public Boolean getAllowOverlapping(){
+		return allowOverlapping;
+	}
+	
+	public void setAllowOverlapping(Boolean allowOverlapping){
+		this.allowOverlapping = allowOverlapping;
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -43,12 +43,12 @@ import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.vo.StudyCrudContainerVO;
 import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
@@ -221,7 +221,7 @@ public class SearchResultListPanel extends Panel {
 				StudyCrudContainerVO studyCrudContainerVO = new StudyCrudContainerVO();
 				studyCrudContainerVO.setStudyNameMarkup(studyNameMarkup);
 				studyCrudContainerVO.setStudyLogoMarkup(studyLogoMarkup);
-				studyHelper.setStudyLogo(subjectFromBackend.getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
+				studyHelper.setStudyLogo(subjectFromBackend.getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup(),iArkCommonService);
 			}
 		};
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getSubjectUID());

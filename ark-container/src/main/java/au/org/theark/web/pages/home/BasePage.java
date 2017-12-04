@@ -18,17 +18,35 @@
  ******************************************************************************/
 package au.org.theark.web.pages.home;
 
+import au.org.theark.core.exception.ArkCheckSumNotSameException;
+import au.org.theark.core.exception.ArkFileNotFoundException;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.config.entity.SettingFile;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.service.IArkSettingService;
+import au.org.theark.core.util.EventPayload;
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.Component;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
+import org.apache.wicket.event.IEvent;
+import org.apache.wicket.event.IEventSource;
 import org.apache.wicket.markup.MarkupException;
+import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.image.NonCachingImage;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.DynamicImageResource;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.StringValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +56,13 @@ import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
 import au.org.theark.web.pages.Constants;
 import au.org.theark.web.pages.login.LoginPage;
 import au.org.theark.web.pages.mydetails.MyDetailModalWindow;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.naming.Context;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * <p>
@@ -67,28 +92,25 @@ public abstract class BasePage extends WebPage {
 
 	protected WebMarkupContainer	studyNameMarkup;
 	protected WebMarkupContainer	studyLogoMarkup;
+	protected WebComponent			productImage;
+	protected WebComponent			hostedByImage;
 
 	private MyDetailModalWindow	modalWindow;
 	private ArkBusyAjaxLink<Void> ajaxLogoutLink;
-	
-	static {
-		try{
-			System.loadLibrary("madeline");
-		}catch(Error e)	{
-			e.printStackTrace();
-		}
-	}
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_SETTING_SERVICE)
+	private IArkSettingService iArkSettingService;
 
-	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+
 	@SuppressWarnings("unchecked")
 	public BasePage() {
 		currentUser = SecurityUtils.getSubject();
 
 		if (currentUser.getPrincipal() != null) {
-			ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
 			ContextImage studyLogoImage = new ContextImage("studyLogoImage", new Model<String>("images/" + Constants.NO_STUDY_LOGO_IMAGE));
-			ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
+
 			principal = (String) currentUser.getPrincipal();
 			userNameLbl = new Label("loggedInUser", new Model<String>(principal));
 			studyNameLbl = new Label("studyNameLabel", new Model<String>(" "));
@@ -104,10 +126,12 @@ public abstract class BasePage extends WebPage {
 			studyLogoMarkup.setOutputMarkupPlaceholderTag(true);
 			
 			// Add images
-			add(hostedByImage);
 			add(studyNameMarkup);
 			add(studyLogoMarkup);
+			productImage = iArkCommonService.getProductImage();
+			hostedByImage = iArkCommonService.getHostedByImage();
 			add(productImage);
+			add(hostedByImage);
 
 			ArkBusyAjaxLink myDetailLink = new ArkBusyAjaxLink("myDetailLink") {
 
@@ -160,7 +184,16 @@ public abstract class BasePage extends WebPage {
 			setResponsePage(LoginPage.class);
 		}
 	}
-	
+
+	@Override
+	protected void onBeforeRender() {
+		productImage = iArkCommonService.getProductImage();
+		hostedByImage = iArkCommonService.getHostedByImage();
+		addOrReplace(productImage);
+		addOrReplace(hostedByImage);
+		super.onBeforeRender();
+	}
+
 	@Override
 	protected void onRender() {
 		try{
@@ -181,7 +214,8 @@ public abstract class BasePage extends WebPage {
 
 	protected void showModalWindow(AjaxRequestTarget target) {
 		MyDetailsContainer modalContentPanel = new MyDetailsContainer("content", new ArkUserVO(), currentUser, modalWindow);
-		modalWindow.setTitle("My Detail");
+		//modalWindow.setTitle("My Detail");
+		modalWindow.setTitle("My Account");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
 	}
@@ -192,4 +226,20 @@ public abstract class BasePage extends WebPage {
 	protected abstract void buildModuleTabs();
 
 	abstract String getTitle();
+
+	public void onEvent(IEvent<?> event) {
+		if(event.getPayload() instanceof EventPayload) {
+			EventPayload payload = (EventPayload) event.getPayload();
+			AjaxRequestTarget target = payload.getTarget();
+			productImage = iArkCommonService.getProductImage();
+			hostedByImage = iArkCommonService.getHostedByImage();
+			addOrReplace(productImage);
+			addOrReplace(hostedByImage);
+			if(payload.getEventName().equalsIgnoreCase(au.org.theark.core.Constants.EVENT_RELOAD_LOGO_IMAGES)) {
+				target.add(productImage);
+				target.add(hostedByImage);
+			}
+			this.dirty();
+		}
+	}
 }

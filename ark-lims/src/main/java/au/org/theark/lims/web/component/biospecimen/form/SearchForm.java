@@ -26,7 +26,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -41,16 +42,15 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 
@@ -114,7 +114,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		
 		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
 		bioCollectionUidTxtFld = new TextField<String>("bioCollection.biocollectionUid");
-		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
 
 		ArkDatePicker startDatePicker = new ArkDatePicker();
 		startDatePicker.bind(sampleDateTxtFld);

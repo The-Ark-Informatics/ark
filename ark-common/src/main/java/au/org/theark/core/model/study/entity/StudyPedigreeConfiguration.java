@@ -35,7 +35,6 @@ public class StudyPedigreeConfiguration implements Serializable {
 
 	private Boolean statusAllowed;
 	private Boolean ageAllowed;
-	private CustomField familyId;
 	
 	private Boolean inbreedAllowed;
 
@@ -52,7 +51,8 @@ public class StudyPedigreeConfiguration implements Serializable {
 	}
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_ID")
+	@JoinColumn(name = "STUDY_ID",
+				referencedColumnName="ID")
 	public Study getStudy() {
 		return study;
 	}
@@ -96,16 +96,6 @@ public class StudyPedigreeConfiguration implements Serializable {
 
 	public void setAgeAllowed(Boolean ageAllowed) {
 		this.ageAllowed = ageAllowed;
-	}
-
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FAMILY_ID")
-	public CustomField getFamilyId() {
-		return familyId;
-	}
-
-	public void setFamilyId(CustomField familyId) {
-		this.familyId = familyId;
 	}
 
 	@Column(name = "INBREED_ALLOWED")

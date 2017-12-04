@@ -20,15 +20,14 @@ package au.org.theark.study.web.component.subject.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -82,6 +81,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	private DropDownChoice<Study>					studyDdc;
 	private TextField<String>						subjectUIDTxtFld;
+	protected TextField<String>						familyIdTxtFld;
 	private TextField<String>						firstNameTxtFld;
 	private TextField<String>						middleNameTxtFld;
 	private TextField<String>						lastNameTxtFld;
@@ -115,12 +115,13 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	protected void addSearchComponentsToForm() {
 		add(studyDdc);
 		add(subjectUIDTxtFld);
+		add(familyIdTxtFld);
 		add(firstNameTxtFld);
 		add(middleNameTxtFld);
 		add(lastNameTxtFld);
@@ -134,6 +135,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected void initialiseSearchForm() {
 		initStudyDdc();
 		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
+		familyIdTxtFld = new TextField<String>(Constants.FAMILY_ID);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
@@ -142,7 +144,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		initSubjectStatusDdc();
 		initGenderTypeDdc();
 
-		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, au.org.theark.core.Constants.DD_MM_YYYY);
+		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
@@ -190,7 +192,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 				contextHelper.resetContextLabel(target, arkContextMarkup);
 				contextHelper.setStudyContextLabel(target, studyDdc.getModelObject().getName(), arkContextMarkup);
 				StudyHelper studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(studyDdc.getModelObject(), target, studyNameMarkup, studyLogoMarkup);
+				studyHelper.setStudyLogo(studyDdc.getModelObject(), target, studyNameMarkup, studyLogoMarkup,iArkCommonService);
 				target.add(SearchForm.this);
 			}
 		});
@@ -282,7 +284,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		}
 		long count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
 		if (count == 0L) {
-			this.info("There are no subjects with the specified criteria.");
+			this.info("There are no subjects with the specified search criteria.");
 			target.add(feedbackPanel);
 		}
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);

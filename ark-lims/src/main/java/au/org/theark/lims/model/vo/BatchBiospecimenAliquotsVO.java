@@ -39,6 +39,8 @@ public class BatchBiospecimenAliquotsVO implements Serializable {
 	public BatchBiospecimenAliquotsVO(Biospecimen parentBiospecimen) {
 		this.parentBiospecimen = parentBiospecimen;
 		aliquots = new ArrayList<Biospecimen>(0);
+		Biospecimen biospecimen= new Biospecimen();
+		aliquots.add(biospecimen);
 	}
 	/**
 	 * @return the numberToCreate

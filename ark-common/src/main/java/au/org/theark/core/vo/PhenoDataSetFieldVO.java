@@ -8,19 +8,17 @@ import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 
-public class PhenoDataSetFieldVO implements Serializable {
+public class PhenoDataSetFieldVO implements ArkVo,Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private PhenoDataSetField phenoDataSetField;
 	/*private PhenoDataSetFieldDisplay phenoDataSetFieldDisplay;
-	protected List<PhenoDataSetCategory>			phenoDataSetFieldCategoryLst;
-	protected boolean usePhenoDataSetFieldDisplay;	*/
-	
+	protected boolean usePhenoDataSetFieldDisplay;	
+	*/
 	public PhenoDataSetFieldVO() {
 		super();
 		phenoDataSetField = new PhenoDataSetField();
 		/*phenoDataSetFieldDisplay = new PhenoDataSetFieldDisplay();
-		phenoDataSetFieldCategoryLst=new ArrayList<PhenoDataSetCategory>();
 		usePhenoDataSetFieldDisplay = false;*/
 	}
 	
@@ -38,17 +36,17 @@ public class PhenoDataSetFieldVO implements Serializable {
 			PhenoDataSetFieldDisplay phenoDataSetFieldDisplay) {
 		this.phenoDataSetFieldDisplay = phenoDataSetFieldDisplay;
 	}
-	public List<PhenoDataSetCategory> getPhenoDataSetFieldCategoryLst() {
-		return phenoDataSetFieldCategoryLst;
-	}
-	public void setPhenoDataSetFieldCategoryLst(
-			List<PhenoDataSetCategory> phenoDataSetFieldCategoryLst) {
-		this.phenoDataSetFieldCategoryLst = phenoDataSetFieldCategoryLst;
-	}
 	public boolean isUsePhenoDataSetFieldDisplay() {
 		return usePhenoDataSetFieldDisplay;
 	}
 	public void setUsePhenoDataSetFieldDisplay(boolean usePhenoDataSetFieldDisplay) {
 		this.usePhenoDataSetFieldDisplay = usePhenoDataSetFieldDisplay;
 	}*/
+
+
+	@Override
+	public String getArkVoName() {
+		
+		return "Pheno Data Dictionary";
+	}
 }

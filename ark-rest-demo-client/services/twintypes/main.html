@@ -1,0 +1,23 @@
+<p style="padding-top:15px;margin-bottom:15px" class="ng-scope">This tab demonstrates how The Ark's web services can be used to establish monozygotic (MZ) and dizygotic (DZ) twin relationships for siblings.</p>
+<a ui-sref="twintypes.add" style="margin-top:15px;margin-bottom:15px" class="btn btn-ark">Set Twin</a><span  style="float: right; margin-top: 15px; margin-bottom: 15px;">Study in context: Demo 2</span>
+<table class="table table-striped twintypes-table">
+    <tr style="background: rgb(245, 226, 233);">
+        <th>Subject UID</th>
+        <th>Sibling UID</th>
+        <th>Twin Type</th>
+        <th class="delete-column"></th>
+    </tr>
+  
+
+	<tr ng-repeat="twintype in vm.twintypes.slice(((vm.currentPage-1)*vm.itemsPerPage), ((vm.currentPage)*vm.itemsPerPage))" ng-hide="twintypes.isRemoved">
+        <td>{{twintype.subjectUID}}</td>
+        <td>{{twintype.relativeUID}}</td>
+        <td>{{twintype.twinType}}</td>
+        <td><a ng-click="vm.deleteTwintypes(twintype.id)" class="btn btn-xs btn-danger">Delete</a></td>
+      </tr>
+    </table>
+  View <select ng-model="vm.viewby" ng-change="vm.setItemsPerPage(vm.viewby)"><option value="3">3</option><option value="5">5</option><option value="10">10</option><option value="20">20</option><option value="30">30</option></select> records at a time.
+  <pagination total-items="vm.totalItems" ng-model="vm.currentPage" ng-change="vm.pageChanged()" class="pagination-sm" items-per-page="vm.itemsPerPage"></pagination>
+
+
+<div ui-view class="view-side-form" style="text-align: center; padding-top: 15px;"></div>

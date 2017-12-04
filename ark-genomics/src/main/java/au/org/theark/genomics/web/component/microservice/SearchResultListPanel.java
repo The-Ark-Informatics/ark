@@ -48,7 +48,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<MicroService> buildPageableListView(IModel iModel) {
 
-		PageableListView<MicroService> sitePageableListView = new PageableListView<MicroService>("microServiceList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<MicroService> sitePageableListView = new PageableListView<MicroService>("microServiceList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -147,7 +147,7 @@ public class SearchResultListPanel extends Panel {
 			
 		};
 		
-		Label nameLinkLabel = new Label("statusLbl", "TEST");
+		Label nameLinkLabel = new Label("statusLbl", "Check status");
 		statusBtn.add(nameLinkLabel);
 		
 		

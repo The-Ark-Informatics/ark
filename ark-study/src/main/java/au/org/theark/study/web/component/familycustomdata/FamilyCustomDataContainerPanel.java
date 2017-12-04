@@ -15,13 +15,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.study.model.vo.FamilyCustomDataVO;
+import au.org.theark.core.vo.FamilyCustomDataVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
@@ -88,7 +87,7 @@ public class FamilyCustomDataContainerPanel extends Panel {
 		}
 		else {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
-			this.error("You do not have sufficient permissions to access this function");
+			this.error("You do not have sufficient permissions to access this function.");
 		}
 		customDataEditorWMC.add(dataEditorPanel);
 		return customDataEditorWMC;
@@ -126,15 +125,12 @@ public class FamilyCustomDataContainerPanel extends Panel {
 			LinkSubjectStudy linkSubjectStudy = null;
 			ArkModule arkModule = null;
 			Study study = null;
-			String familyUId=null;
 			try {
 				study = iArkCommonService.getStudy(sessionStudyId);
 				cpModel.getObject().getLinkSubjectStudy().setStudy(study);
 				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
 				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-				familyUId = iStudyService.getSubjectFamilyId(sessionStudyId, sessionSubjectUID);
-				cpModel.getObject().setFamilyUId(familyUId);
 				// cpModel.getObject().setArkModule(arkModule);
 				if (study != null && linkSubjectStudy != null && arkModule != null) {
 					contextLoaded = true;

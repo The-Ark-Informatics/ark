@@ -29,8 +29,8 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.session.ArkSession;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
@@ -206,7 +206,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Site button");
+				this.error("An unexpected error occurred. Unable to process Add Site button.");
 			}
 
 		};
@@ -228,7 +228,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Freezer button");
+				this.error("An unexpected error occurred. Unable to process Add Freezer button.");
 			}
 
 		};
@@ -250,7 +250,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Enabling of all empty cells");
+				this.error("An unexpected error occurred. Unable to process Enabling of all empty cells.");
 			}
 
 		};
@@ -273,7 +273,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Rack button");
+				this.error("An unexpected error occurred. Unable to process Add Rack button.");
 			}
 
 		};
@@ -295,7 +295,7 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Box button");
+				this.error("An unexpected error occurred. Unable to process Add Box button.");
 			}
 
 		};

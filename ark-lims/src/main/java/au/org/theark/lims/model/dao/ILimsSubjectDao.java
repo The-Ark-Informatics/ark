@@ -22,7 +22,8 @@ import java.util.List;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.vo.LimsVO;
+
 
 /**
  * 

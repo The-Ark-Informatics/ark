@@ -168,7 +168,8 @@ public class DetailForm extends AbstractDetailForm<GeneVO> {
 	
 	protected void deleteCompleted(String feedback, boolean successful) {
 		if(successful) { 
-			this.info(feedback);
+			//this.info(feedback);
+			this.deleteInformation();
 		} else {
 			this.error(feedback);
 		}
@@ -200,7 +201,7 @@ public class DetailForm extends AbstractDetailForm<GeneVO> {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyId == null) {
 			// No study in context
-			this.error("There is no study in Context. Please select a study to manage genes.");
+			this.error("There is no study selected. Please select a study to manage genes.");
 			processErrors(target);
 		} else {
 			Gene gene = containerForm.getModelObject().getGene();

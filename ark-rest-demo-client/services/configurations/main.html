@@ -1,0 +1,12 @@
+<p style="padding-top:15px;margin-bottom:15px" class="ng-scope">This tab demonstrates how The Ark's web services can be used to configure the pedigree module for a given study. A web service call is used to mimic the behaviour of The Ark's pedigree configuration window. The settings are:</p>
+<ul class='social'>
+<li><b>Plot affected status?</b> A yes/no toggle to switch on/off annotation of each subject's affected status.</li>
+<li><b>Affected status field ?</b> When "Plot affected status" is enabled, a subject custom field must be specified to provide the data for each subject's affected status. The custom field must be pre-defined in The Ark, and be of type CHARACTER with encoded values for "Yes" and "No", e.g. 1=Yes;0=No;</li>
+<li><b>Plot date of birth? </b> A yes/no toggle to switch on/off annotation of each subject's date of birth.</li>
+<li><b>Plot age? </b>A yes/no toggle to switch on/off annotation of each subject's current age.</li>
+<li><b>Inbreeding allowed? </b>A yes/no toggle to allow/disallow consanguineous relationships within a pedigree. This setting applies to both pedigree structures established using the pedigree module structures and visualisations. The default setting is "No". Once this setting has been enabled, it cannot later be disabled.</li>
+</ul>
+<p style="padding-top:15px;margin-bottom:15px" class="ng-scope">This example sets the configuration for the study Demo 2 within The Ark at <a href="http://demo.sphinx.org.au/ark" target="_blank">http://demo.sphinx.org.au/ark</a></p>
+<a ui-sref="configurations.add" style="margin-top:15px;margin-bottom:15px"class="btn btn-ark">Set Configuration</a>
+
+<div ui-view class="view-side-form"></div>

@@ -42,6 +42,7 @@ import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -60,77 +61,22 @@ public interface IPhenotypicService {
 
 	public java.util.Collection<PhenoDataSetCollection> getPhenoCollectionByStudy(Study study);
 
-//	public java.util.Collection<PhenoCollection> searchPhenoCollection(PhenoCollection phenoCollection);
-//
-//	public PhenoCollectionVO getPhenoCollectionAndFields(Long id);
-
 	public void createCollection(PhenoDataSetCollection col);
-
-	//public void createCollection(PhenoCollectionVO colVo);
 
 	public void updateCollection(PhenoDataSetCollection col);
 
-	//public void updateCollection(PhenoCollectionVO colVo);
-
 	public void deleteCollection(PhenoDataSetCollection col);
 
-	//public void deleteCollection(PhenoCollectionVO colVo);
-
-	//public int clearPhenoCollection(PhenoCollection phenoCollection);
-
 	public boolean phenoCollectionHasData(PhenoDataSetCollection phenoCollection);
-
-	// Upload phenotypic data file
-	//public void uploadPhenotypicDataFile(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
-
-	//public StringBuffer uploadAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
-
-	//public void uploadPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
-
-	//public StringBuffer uploadAndReportPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
-
-//	public StringBuffer uploadAndReportPhenotypicDataFile(UploadVO uploadVo);
-
-	//public PhenoCollectionVO getPhenoCollectionAndUploads(Long id);
-
-	//public PhenoCollectionVO getPhenoCollectionAndUploads(PhenoCollection phenoCollection);
-
-	//public PhenoUpload getUpload(Long id);
-
-	//blic void createUpload(PhenoUpload upload);
-
-	//public void updateUpload(PhenoUpload upload);
-
-	//public void deleteUpload(PhenoUpload upload) throws ArkSystemException, EntityCannotBeRemoved;
 
 	// Delimiter Type
 	public Collection<DelimiterType> getDelimiterTypes();
 
-	//public long getCountOfFieldsInStudy(Study study);
-
-	//public long getCountOfFieldsWithDataInStudy(Study study);
-
 	public long getCountOfCollectionsInStudy(Study study);
 
 	public long getCountOfCollectionsWithDataInStudy(Study study);
-
-	/**
-	 * A generic interface that will return a list PhenoCollectionVO specified by a particular criteria, and a paginated reference point
-	 * 
-	 * @return Collection of PhenoCollectionVO
-	 */
-	//public List<PhenoCollectionVO> searchPageableFieldData(PhenoCollectionVO phenoCollectionVoCriteria, int first, int count);
-
-	/**
-	 * A generic interface that will return count of the fieldData's in the study
-	 * 
-	 * @return int
-	 */
-	//public long getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria);
-
+	
 	public DelimiterType getDelimiterType(Long id);
-
-	//public java.util.List<BarChartResult> getFieldsWithDataResults(Study study);
 
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
 
@@ -389,8 +335,6 @@ public interface IPhenotypicService {
 	
 	public void updatePickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException;
 	
-	//public boolean isLinkPhenoDataSetCategoryFieldExsists(Study study, ArkFunction arkFunction,ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory,PhenoDataSetField phenoDataSetField);
-	
 	public List<PhenoDataSetField> getLinkedPhenoDataSetFieldsForSelectedCategories(Study study, ArkFunction arkFunction,ArkUser arkUser,List<PhenoDataSetCategory> phenoDataSetCategories);
 	
 	public LinkPhenoDataSetCategoryField getLinkPhenoDataSetCategoryField(Study study, ArkFunction arkFunction,ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory,PhenoDataSetField phenoDataSetField);
@@ -454,5 +398,11 @@ public interface IPhenotypicService {
 	public boolean isPhenoDataSetFieldCategoryBeingUsed(PhenoDataSetCategory phenoDataSetCategory);
 	
 	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria);
+	
+	public boolean isEncodedValue(PhenoDataSetField phenoDataSetField, String value);
+	
+	public boolean isSameNameFieldGroupExsistsForTheStudy(PhenoDataSetFieldGroupVO phenoDataSetFieldGroupVO);
+	
+	public void deletePhenoDatasetData(PhenoDataSetCollection phenoDataSetCollection);
 }
 

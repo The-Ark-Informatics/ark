@@ -28,8 +28,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.vo.BioCollectionCustomDataVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
 
 /**
@@ -61,7 +61,7 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<BioCollec
 			}
 		}
 		else {
-			this.info("Successfully saved all edits");
+			this.info("All edits were successfuly saved.");
 		}
 		/*
 		 * Need to update the dataView, which forces a refresh of the model objects from backend.

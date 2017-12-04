@@ -64,7 +64,7 @@ public class BioUploadStep3 extends AbstractWizardStepPanel {
 
 																			@Override
 																			protected void onError(AjaxRequestTarget target, Form<?> form) {
-																				this.error("Unexpected Error: Download request could not be processed");
+																				this.error("An unexpected error occurred. The download request could not be processed.");
 																			}
 																	};
 
@@ -207,7 +207,7 @@ public class BioUploadStep3 extends AbstractWizardStepPanel {
 
 				@Override
 				protected void onError(AjaxRequestTarget target, Form<?> form) {
-					this.error("Unexpected Error: Download request could not be processed");
+					this.error("An unexpected error occurred. The download request could not be processed.");
 				}
 
 			};

@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.image.resource.BlobImageResource;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 
 public class StudyHelper implements Serializable {
 
@@ -39,11 +40,16 @@ public class StudyHelper implements Serializable {
 	private ContextImage				noStudyLogoImage;
 	private Label						studyNameLabel		= null;
 	private Label						studyLabel			= null;
+	
+	private IArkCommonService<Void>						iArkCommonService;
 
-	public void setStudyLogo(Study study, AjaxRequestTarget target, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
+	public void setStudyLogo(Study study, AjaxRequestTarget target, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, IArkCommonService<Void> iArkCommonService) {
+		this.iArkCommonService = iArkCommonService;
 		// Set the study logo
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if (sessionStudyId != null && study.getStudyLogoBlob() != null) {
+		if (sessionStudyId != null && (study.getStudyLogoFileId() !=null || study.getStudyLogoBlob() != null)) {
+		
+			
 			setStudyLogoImage(study, "studyLogoImage", studyLogoMarkup);
 			studyNameMarkup.setVisible(false);
 			studyLogoMarkup.setVisible(true);
@@ -59,20 +65,41 @@ public class StudyHelper implements Serializable {
 		target.add(studyNameMarkup);
 		target.add(studyLogoMarkup);
 	}
-	
-	public void setStudyLogoImage(final Study study, String id, WebMarkupContainer studyLogoImageContainer) {
-		// Set the study logo
-		if (study != null && study.getStudyLogoBlob() != null) {
-			final java.sql.Blob studyLogoBlob = study.getStudyLogoBlob();
 
+	
+	private void setStudyLogoImage(final Study study, String id, WebMarkupContainer studyLogoImageContainer) {
+		// Set the study logo
+		if (study != null && (study.getStudyLogoFileId() != null || study.getStudyLogoBlob() != null)) {
+			byte[] studyLogo = null;
+			
+			if(study.getStudyLogoFileId() != null){
+				try{
+					studyLogo =   iArkCommonService.retriveArkFileAttachmentByteArray(study.getId(),null,au.org.theark.core.Constants.ARK_STUDY_DIR,study.getStudyLogoFileId(),study.getStudyLogoChecksum());
+				}catch(Exception e){
+					e.printStackTrace();
+				}	
+				
+			}else if(study.getStudyLogoBlob() != null){
+				studyLogo = study.getStudyLogoBlob();
+			}
+			
+			final byte[] studyLogoBlob = studyLogo;
+			
 			if (studyLogoBlob != null) {
 				BlobImageResource blobImageResource = new BlobImageResource() {
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
 					protected Blob getBlob() {
-						return studyLogoBlob;
+						Blob blob=null;
+						try{
+							blob = new javax.sql.rowset.serial.SerialBlob(studyLogoBlob);
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+						return blob;
 					}
+					
 				};
 				
 				Image	studyLogoImage = new Image(id, blobImageResource);

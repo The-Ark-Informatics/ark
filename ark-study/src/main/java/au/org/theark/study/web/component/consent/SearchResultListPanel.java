@@ -78,7 +78,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<Consent> buildPageableListView(IModel iModel) {
 
-		PageableListView<Consent> pageableListView = new PageableListView<Consent>(Constants.CONSENT_LIST, iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<Consent> pageableListView = new PageableListView<Consent>(Constants.CONSENT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 
 
 			private static final long	serialVersionUID	= 1L;
@@ -162,7 +162,7 @@ public class SearchResultListPanel extends Panel {
 					ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				}
 				catch (ArkSystemException e) {
-					containerForm.error("A System Error has occured please contact Support");
+					containerForm.error("A system error has occurred. Please contact the system administrator.");
 				}
 			}
 		};

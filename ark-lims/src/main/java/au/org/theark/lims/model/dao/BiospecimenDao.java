@@ -23,7 +23,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
-import au.org.theark.core.service.IArkCommonService;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -33,6 +32,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +61,12 @@ import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.Constants;
 
@@ -340,36 +343,42 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	}
 
 	public long getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction) {
-		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.createAlias("customField", "cfield");
-		
 		// Allow child studies to inherit parent defined custom fields
 		List studyList = new ArrayList();
 		studyList.add(biospecimenCriteria.getStudy());
 		if(biospecimenCriteria.getStudy().getParentStudy() != null && biospecimenCriteria.getStudy().getParentStudy() != biospecimenCriteria.getStudy()) {
 			studyList.add(biospecimenCriteria.getStudy().getParentStudy());
 		}
-		
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.createAlias("customField", "cfield",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("cfield.customFieldType", "cfieldType",JoinType.LEFT_OUTER_JOIN);		
 		criteria.add(Restrictions.in("cfield.study", studyList));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
+		criteria.add(Restrictions.or(Restrictions.isNull("cfield.customFieldType"),Restrictions.eq("cfieldType.name", "Biospecimen")));
 		criteria.setProjection(Projections.rowCount());
 		return  (Long)criteria.uniqueResult();
 	}
 
-	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count) {
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count) {
 		List<BiospecimenCustomFieldData> biospecimenCustomFieldDataList = new ArrayList<BiospecimenCustomFieldData>();
 		
 		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT cfd, fieldList");
 		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
+		sb.append("LEFT JOIN cfd.customField AS cf ");
+		sb.append("LEFT JOIN cf.customFieldType AS cft ");
 		sb.append("LEFT JOIN cfd.biospecimenCustomFieldData as fieldList ");
 		sb.append(" with fieldList.biospecimen.id = :biospecimenId ");
 		sb.append( "  where cfd.customField.study.id IN (:studyId)" );
 		sb.append(" and cfd.customField.arkFunction.id = :functionId");
+		//Add new requirement for the category
+		if(customFieldCategory!=null){
+			sb.append(" and cfd.customField.customFieldCategory.id = :customFieldCategotyId");
+		}
+		sb.append(" and (cft is null or cft.name = :type)");
 		sb.append(" order by cfd.sequence");
-		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("biospecimenId", biospecimenCriteria.getId());
-		
 		// Allow child studies to inherit parent defined custom fields
 		List studyList = new ArrayList();
 		studyList.add(biospecimenCriteria.getStudy().getId());
@@ -378,6 +387,11 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		}
 		query.setParameterList("studyId", studyList);
 		query.setParameter("functionId", arkFunction.getId());
+		//Add type and category
+		if(customFieldCategory!=null){
+			query.setParameter("customFieldCategotyId", customFieldCategory.getId());
+		}
+		query.setParameter("type", customFieldType.getName());
 		query.setFirstResult(first);
 		query.setMaxResults(count);
 		
@@ -760,4 +774,20 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		List<Biospecimen> list = criteria.list();
 		return list;
 	}
+	public List<BiospecimenCustomFieldData> getBiospecimenHasFieldDataForBiospecimen(Biospecimen biospecimen) {
+		Criteria criteria = getSession().createCriteria(BiospecimenCustomFieldData.class);
+		criteria.add(Restrictions.eq("biospecimen", biospecimen));
+		return (List<BiospecimenCustomFieldData>)criteria.list();
+		
+	}
+	
+	public void deleteBiospecimenCustomFieldDataForBiospecimen(Biospecimen biospecimen){
+		Criteria criteria = getSession().createCriteria(BiospecimenCustomFieldData.class);
+		criteria.add(Restrictions.eq("biospecimen", biospecimen));
+		List<BiospecimenCustomFieldData> list = criteria.list();
+		for (BiospecimenCustomFieldData biospecimenCustomFieldData : list) {
+			deleteBiospecimenCustomFieldData(biospecimenCustomFieldData);
+		}
+	}
+
 }

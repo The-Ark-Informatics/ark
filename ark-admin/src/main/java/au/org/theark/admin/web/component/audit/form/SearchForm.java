@@ -7,9 +7,11 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -26,6 +28,7 @@ import au.org.theark.core.service.IAuditService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.AuditVO;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
 public class SearchForm extends AbstractSearchForm<AuditVO> {
@@ -64,6 +67,7 @@ public class SearchForm extends AbstractSearchForm<AuditVO> {
 	}
 	
 	public void initialiseSearchForm() {
+		
 		initAuditPackageDropdown();
 		
 		initAuditEntityDropdown();
@@ -76,14 +80,38 @@ public class SearchForm extends AbstractSearchForm<AuditVO> {
 		
 		revisedByTxtFld = new TextField<String>("revisedBy");
 		
-		revisedDateTxtFld = new DateTextField("revisedDate", Constants.DD_MM_YYYY);
+		revisedDateTxtFld = new DateTextField("revisedDate", new PatternDateConverter( Constants.DD_MM_YYYY, false));
 		ArkDatePicker revisedDatePicker = new ArkDatePicker();
 		revisedDatePicker.bind(revisedDateTxtFld);
 		revisedDateTxtFld.add(revisedDatePicker);
 		
 		idTxtFld = new TextField<Long>("entityID");
 		
+		//ARK-1835-remove new button.
+		makeNewButtonInVisible();
+		
+		
 		addComponents();
+	}
+	private void makeNewButtonInVisible() {
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isVisible() {
+				return false;
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			}
+		};
+		addOrReplace(newButton);
 	}
 	
 	private void initAuditPackageDropdown() {

@@ -35,6 +35,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ICustomFieldData;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.ArkAjaxButton;
 import au.org.theark.core.web.component.button.EditModeButtonsPanel;
 import au.org.theark.core.web.component.button.IEditModeEventHandler;
@@ -71,11 +72,9 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 		setOutputMarkupPlaceholderTag(true);
 	}
 
-	public AbstractCustomDataEditorForm<T> initialiseForm() {
+	public AbstractCustomDataEditorForm<T> initialiseForm(Boolean includeHistoryButtonPanel) {
 		dataViewWMC = new WebMarkupContainer("dataViewWMC") {
-
-			private static final long	serialVersionUID	= 1L;
-
+		private static final long	serialVersionUID	= 1L;
 			// this WMC must have the visitor since the form itself isn't always repainted
 			@Override
 			protected void onBeforeRender() {
@@ -91,7 +90,11 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 		buttonsPanelWMC = new WebMarkupContainer("buttonsPanelWMC");
 		buttonsPanelWMC.setOutputMarkupPlaceholderTag(true);
 		
-		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		EditModeButtonsPanel	buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this,feedbackPanel);
+		//Set the history button panel if someone need it.
+		if(includeHistoryButtonPanel){
+			buttonsPanel.createHistoryButtonPanel(new ArkCrudContainerVO());
+		}
 		buttonsPanel.setDeleteButtonEnabled(false);	// delete button not used in data entry
 		buttonsPanel.setDeleteButtonVisible(false);
 		buttonsPanelWMC.addOrReplace(buttonsPanel);
@@ -99,6 +102,7 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 		
 		return this;
 	}
+	
 
 	public void onBeforeRender() {
 		super.onBeforeRender();
@@ -127,7 +131,6 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 			if(buttonPanel != null){
 				((ArkAjaxButton)buttonPanel.get("cancel")).setVisible(false);
 			}
-			
 		}
 	}
 	
@@ -164,4 +167,5 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 	public void onEditSaveError(AjaxRequestTarget target, Form<?> form) {
 		target.add(feedbackPanel);
 	}
+	
 }

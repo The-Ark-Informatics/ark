@@ -20,15 +20,17 @@ package au.org.theark.study.web.component.correspondence.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -43,7 +45,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkFileNotFoundException;
@@ -53,9 +54,7 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
-import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
@@ -108,7 +107,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	private WebMarkupContainer										workTrackingContainer;
 	private HistoryButtonPanel										historyButtonPanel;
-	private  WebMarkupContainer						categoryPanel;
+	private  WebMarkupContainer										categoryPanelDirectionType;
+	private  WebMarkupContainer										categoryPanelOutCome;
 
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
@@ -125,12 +125,13 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	public void initialiseDetailForm() {
 		initialiseOperatorDropDown();
 		// create new DateTextField and assign date format
-		dateFld = new DateTextField("correspondence.date", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateFld = new DateTextField("correspondence.date", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateFld);
 		dateFld.add(datePicker);
 
 		timeTxtFld = new TextField<String>("correspondence.time");
+		initCategoryPanels();
 		initialiseModeTypeDropDown();
 		initialiseDirectionTypeDropDown();
 		initialiseOutcomeTypeDropDown();
@@ -206,7 +207,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		addDetailFormComponents();
 		attachValidators();
 
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 
 	private void initialiseOperatorDropDown() {
@@ -226,14 +227,26 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		modeTypeChoice = new DropDownChoice<CorrespondenceModeType>("correspondence.correspondenceModeType", list, defaultRenderer);
 		modeTypeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             protected void onUpdate(AjaxRequestTarget target) {
-            	List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypesForModeAndDirection(modeTypeChoice.getModelObject(),directionTypeChoice.getModelObject() );
-            	categoryPanel.remove(outcomeTypeChoice);
-            	ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
-            	outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
-        		outcomeTypeChoice.setOutputMarkupId(true);
-				categoryPanel.add(outcomeTypeChoice);
-		    	target.add(outcomeTypeChoice);
-		    	target.add(categoryPanel);
+            	List<CorrespondenceDirectionType> list = studyService.getCorrespondenceDirectionForMode(modeTypeChoice.getModelObject());
+            	categoryPanelDirectionType.remove(directionTypeChoice);
+            	ChoiceRenderer<CorrespondenceDirectionType> defaultRenderer = new ChoiceRenderer<CorrespondenceDirectionType>("name", "id");
+            	directionTypeChoice = new DropDownChoice<CorrespondenceDirectionType>("correspondence.correspondenceDirectionType", list, defaultRenderer);
+            	directionTypeChoice.setOutputMarkupId(true);
+            	directionTypeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+                    protected void onUpdate(AjaxRequestTarget target) {
+                    	List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypesForModeAndDirection(modeTypeChoice.getModelObject(),directionTypeChoice.getModelObject() );
+                    	categoryPanelOutCome.remove(outcomeTypeChoice);
+                    	ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
+                    	outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
+                		outcomeTypeChoice.setOutputMarkupId(true);
+                		categoryPanelOutCome.addOrReplace(outcomeTypeChoice);
+        		    	target.add(outcomeTypeChoice);
+        		    	target.add(categoryPanelOutCome);
+                    }
+                    });
+            	categoryPanelDirectionType.addOrReplace(directionTypeChoice);
+		    	target.add(directionTypeChoice);
+		    	target.add(categoryPanelDirectionType);
             }
             });
 	}
@@ -242,30 +255,20 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		List<CorrespondenceDirectionType> list = studyService.getCorrespondenceDirectionTypes();
 		ChoiceRenderer<CorrespondenceDirectionType> defaultRenderer = new ChoiceRenderer<CorrespondenceDirectionType>("name", "id");
 		directionTypeChoice = new DropDownChoice<CorrespondenceDirectionType>("correspondence.correspondenceDirectionType", list, defaultRenderer);
-		directionTypeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-            protected void onUpdate(AjaxRequestTarget target) {
-            	List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypesForModeAndDirection(modeTypeChoice.getModelObject(),directionTypeChoice.getModelObject() );
-            	categoryPanel.remove(outcomeTypeChoice);
-            	ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
-            	outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
-        		outcomeTypeChoice.setOutputMarkupId(true);
-				categoryPanel.add(outcomeTypeChoice);
-		    	target.add(outcomeTypeChoice);
-		    	target.add(categoryPanel);
-            }
-            });
+		directionTypeChoice.setOutputMarkupId(true);
+		if(!isNew()){
+			directionTypeChoice.setModelObject(getModelObject().getCorrespondence().getCorrespondenceDirectionType());
+		}
 	}
 
 	private void initialiseOutcomeTypeDropDown() {
-		//This method is replaced with new studyservice method which only filtered the corresponding outcome types.
-		//List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypes();
-		//On 2016-07-12
-		categoryPanel = new WebMarkupContainer("categoryPanel");
-		categoryPanel.setOutputMarkupId(true);
-		List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypesForModeAndDirection(modeTypeChoice.getModelObject(),directionTypeChoice.getModelObject() );
+		List<CorrespondenceOutcomeType> list = studyService.getCorrespondenceOutcomeTypes();
 		ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
 		outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
 		outcomeTypeChoice.setOutputMarkupId(true);
+		if(!isNew()){
+			 outcomeTypeChoice.setModelObject(getModelObject().getCorrespondence().getCorrespondenceOutcomeType());
+		}
 	}
 
 	private void initBillableItemTypeDropDown() {
@@ -308,9 +311,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(timeTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(modeTypeChoice);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(directionTypeChoice);
-		categoryPanel.add(outcomeTypeChoice);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(categoryPanel);
+		//--panel adding for dynamic behavior.
+		categoryPanelDirectionType.add(directionTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(categoryPanelDirectionType);
+		categoryPanelOutCome.add(outcomeTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(categoryPanelOutCome);
+		//---
 		arkCrudContainerVO.getDetailPanelFormContainer().add(reasonTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(detailsTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
@@ -348,11 +354,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 		try {
 			studyService.delete(containerForm.getModelObject().getCorrespondence());
-			containerForm.info("The correspondence has been deleted successfully.");
+			this.deleteInformation();
+			//containerForm.info("The correspondence has been deleted successfully.");
 			editCancelProcess(target);
 		}
 		catch (Exception ex) {
-			this.error("An error occurred while processing the correspondence delete operation.");
+			this.error("A system error occurred while processing the correspondence delete operation.");
 			ex.printStackTrace();
 		}
 		onCancel(target);
@@ -412,7 +419,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 				// save
 				studyService.create(containerForm.getModelObject().getCorrespondence());
-				this.info("Correspondence was successfully added and linked to subject: " + lss.getSubjectUID());
+				this.saveInformation();
+				//this.info("Correspondence was successfully added and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}
 			else {
@@ -433,9 +441,10 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				try {
 					studyService.update(containerForm.getModelObject().getCorrespondence(),checksum);
 				} catch (ArkFileNotFoundException e) {
-					this.error("Couldn't find the file.");;
+					this.error("The file could not be found.");;
 				}
-				this.info("Correspondence was successfully updated and linked to subject: " + lss.getSubjectUID());
+				this.updateInformation();
+				//this.info("Correspondence was successfully updated and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}
 			// invoke backend to persist the correspondence
@@ -497,12 +506,14 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	@Override
 	protected boolean isNew() {
-
-		if (containerForm.getModelObject().getCorrespondence().getId() == null) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return  (containerForm.getModelObject().getCorrespondence().getId() == null);
+	}
+	
+	private void initCategoryPanels(){
+		categoryPanelDirectionType=new WebMarkupContainer("categoryPanelDirectionType");
+		categoryPanelDirectionType.setOutputMarkupId(true);
+		categoryPanelOutCome=new WebMarkupContainer("categoryPanelOutCome");
+		categoryPanelOutCome.setOutputMarkupId(true);
+		
 	}
 }

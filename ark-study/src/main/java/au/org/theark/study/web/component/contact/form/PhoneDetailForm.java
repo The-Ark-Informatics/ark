@@ -23,7 +23,11 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -50,10 +54,9 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.DateFromToValidator;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
-import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
+import au.org.theark.core.web.component.audit.modal.AuditModalPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -63,7 +66,7 @@ import au.org.theark.study.web.Constants;
  * @author cellis
  * 
  */
-public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
+public class PhoneDetailForm extends AbstractDetailForm<ContactVO>{
 
 
 	private static final long				serialVersionUID	= -5784184438113767249L;
@@ -90,8 +93,10 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 	
 	private DateTextField 					dateValidFrom;
 	private DateTextField 					dateValidTo;
-	private HistoryButtonPanel historyButtonPanel;
-
+	
+	private ModalWindow modalWindow;
+	private AjaxButton historyButton;
+	
 	/**
 	 * /**
 	 * 
@@ -109,32 +114,35 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 	@Override
 	public void onBeforeRender() {
 		// Disable preferred phone for new phone and if no others exist
+		this.containerForm.getModelObject().setObjectId("Phone");
 		boolean enabled = !(isNew() && containerForm.getModelObject().getPhoneVo().getPhoneList().size() == 0);
 		preferredPhoneNumberChkBox.setEnabled(enabled);
-		historyButtonPanel.setVisible(!isNew());
+		deleteButton.setEnabled(!isNew());
+		historyButton.setVisible(!isNew());
 		super.onBeforeRender();
 	}
 
 	public void initialiseDetailForm() {
+		this.setOutputMarkupId(true);
 		phoneIdTxtFld = new TextField<String>("phoneVo.phone.id");
 		areaCodeTxtFld = new TextField<String>("phoneVo.phone.areaCode");
 		preferredPhoneNumberChkBox = new CheckBox("phoneVo.phone.preferredPhoneNumber");
 		phoneNumberTxtFld = new TextField<String>("phoneVo.phone.phoneNumber");
 		source = new TextField<String>("phoneVo.phone.source");
 		commentsTxtArea = new TextArea<String>("phoneVo.phone.comment");
-		dateReceivedDp = new DateTextField("phoneVo.phone.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateReceivedDp = new DateTextField("phoneVo.phone.dateReceived", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dPDateReceived = new ArkDatePicker();
 		dPDateReceived.bind(dateReceivedDp);
 		dateReceivedDp.add(dPDateReceived);
 		
 		//Valid From
-		dateValidFrom=new DateTextField("phoneVo.phone.validFrom", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidFrom=new DateTextField("phoneVo.phone.validFrom", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dPDateValidFrom = new ArkDatePicker();
 		dPDateValidFrom.bind(dateValidFrom);
 		dateValidFrom.add(dPDateValidFrom);
 
 		//Valid To
-		dateValidTo=new DateTextField("phoneVo.phone.validTo", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidTo=new DateTextField("phoneVo.phone.validTo", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dPDateValidTo = new ArkDatePicker();
 		dPDateValidTo.bind(dateValidTo);
 		dateValidTo.add(dPDateValidTo);
@@ -151,11 +159,36 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		ChoiceRenderer<PhoneType> defaultChoiceRenderer = new ChoiceRenderer<PhoneType>(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice<PhoneType>("phoneVo.phone.phoneType", phoneTypeList, defaultChoiceRenderer);
 		phoneTypeChoice.add(new ArkDefaultFormFocusBehavior());
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		initializeHistoryButton();
 		addDetailFormComponents();
 		attachValidators();
 	}
-
+	
+	private void initializeHistoryButton(){
+		modalWindow = new ModalWindow("historyModalWindow");
+		historyButton = new AjaxButton("historyButton") {
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				AuditModalPanel historyPanel = new AuditModalPanel("content", containerForm.getModelObject().getPhoneVo(), (WebMarkupContainer)arkCrudContainerVO.getDetailPanelContainer().get("phoneDetailPanel").get("phoneDetailsForm"));
+				modalWindow.setTitle("Entity History");
+				modalWindow.setAutoSize(true);
+				modalWindow.setMinimalWidth(950);
+				modalWindow.setContent(historyPanel);
+				target.add(modalWindow);
+				modalWindow.show(target);
+				target.add(historyPanel.getFeedbackPanel());
+				super.onSubmit(target, form);
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedBackPanel);
+				super.onError(target, form);
+			}
+		};
+		historyButton.setOutputMarkupId(true);
+	}
+	
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneIdTxtFld.setEnabled(false));
 		arkCrudContainerVO.getDetailPanelFormContainer().add(areaCodeTxtFld);
@@ -169,7 +202,8 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(source);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
-		arkCrudContainerVO.getEditButtonContainer().add(historyButtonPanel);
+		arkCrudContainerVO.getEditButtonContainer().add(historyButton);
+		arkCrudContainerVO.getEditButtonContainer().add(modalWindow);
 		this.add(new DateFromToValidator(dateValidFrom, dateValidTo,"Valid from date","Valid to date"));
 	}
 
@@ -199,7 +233,7 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
 		ContactVO contactVO=new ContactVO();
-		contactVO.setPhoneVo(new PhoneVO());
+//		contactVO.setPhoneVo(new PhoneVO());
 		containerForm.setModelObject(contactVO);
 	}
 
@@ -213,11 +247,12 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			studyService.delete(containerForm.getModelObject().getPhoneVo().getPhone());
-			containerForm.info("The Phone record was deleted successfully.");
+			this.deleteInformation();
+			//containerForm.info("The Phone record was deleted successfully.");
 			editCancelProcess(target);
 		}
 		catch (ArkSystemException e) {
-			this.error("An error occured while processing your delete. Please contact Support");
+			this.error("An error occured while processing your delete request. Please contact the system administrator.");
 			// TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to
 			// admin
 		}
@@ -252,14 +287,16 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 							studyService.setPreferredPhoneNumberToFalse(person);
 						}
 						studyService.create(containerForm.getModelObject().getPhoneVo().getPhone());
-						this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
+						this.saveInformation();
+						//this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
 					}else {
 						if(containerForm.getModelObject().getPhoneVo().getPhone().getPreferredPhoneNumber()){
 							// Update any other preferredMailingAddresses to false
 							studyService.setPreferredPhoneNumberToFalse(person);
 						}
 						studyService.update(containerForm.getModelObject().getPhoneVo().getPhone());
-						this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
+						this.updateInformation();
+						//this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
 						}
 				}else if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)) {
 					// TODO: Contact Interface implementation
@@ -275,10 +312,10 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 			this.error(aue.getMessage());
 		}
 		catch (EntityNotFoundException e) {
-			this.error("The Subject/Participant is not available in the system anymore");
+			this.error("The Subject/Participant is no longer available in the system.");
 		}
 		catch (ArkSystemException e) {
-			this.error("A System Exception has occured please contact Support.");
+			this.error("A system exception has occurred. Please contact the system administrator.");
 		}
 	}
 
@@ -306,6 +343,5 @@ public class PhoneDetailForm extends AbstractDetailForm<ContactVO> {
 			return false;
 		}
 	}
-
 	
 }

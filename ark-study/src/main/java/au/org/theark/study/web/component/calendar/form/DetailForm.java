@@ -23,7 +23,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -31,6 +32,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
@@ -76,6 +78,8 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 	private DropDownChoice<StudyComp> calendarStudyCompDDL;
 	private DateTextField studyCalendarStartDateFld;
 	private DateTextField studyCalendarEndDateFld;
+	private CheckBox overLappingBooking;
+	
 	
 	private Palette<CustomField>	customFieldPalette;
 
@@ -108,6 +112,9 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 	}	
 
 	public void onBeforeRender() {
+		// Disable overlapping if it has aleady been set
+		boolean enabled = (isNew());
+		overLappingBooking.setEnabled(enabled);
 		super.onBeforeRender();
 	}
 
@@ -126,15 +133,17 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 		calendarStudyCompDDL = new DropDownChoice<StudyComp>(Constants.STUDY_CALENDAR_STUDY_COMP,studyCompList,defaultChoiceRenderer);
 		calendarStudyCompDDL.setOutputMarkupId(true);
 		
-		studyCalendarStartDateFld =new DateTextField(Constants.STUDY_CALENDAR_START_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		studyCalendarStartDateFld =new DateTextField(Constants.STUDY_CALENDAR_START_DATE,new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker startDatePicker = new ArkDatePicker();
 		startDatePicker.bind(studyCalendarStartDateFld);
 		studyCalendarStartDateFld.add(startDatePicker);
 		
-		studyCalendarEndDateFld =new DateTextField(Constants.STUDY_CALENDAR_END_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		studyCalendarEndDateFld =new DateTextField(Constants.STUDY_CALENDAR_END_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker endDatePicker = new ArkDatePicker();
 		endDatePicker.bind(studyCalendarEndDateFld);
 		studyCalendarEndDateFld.add(endDatePicker);
+		
+		overLappingBooking = new CheckBox("studyCalendar.allowOverlapping");
 		
 		initCustomFieldPalette();
 		
@@ -150,7 +159,8 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(studyCalendarStartDateFld);		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(studyCalendarEndDateFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldPalette);
-
+		arkCrudContainerVO.getDetailPanelFormContainer().add(overLappingBooking);
+		
 	}
 	
 	private void initCustomFieldPalette() {
@@ -228,14 +238,16 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 			if (containerForm.getModelObject().getStudyCalendar().getId() == null) {
 
 				iStudyService.saveOrUpdate(containerForm.getModelObject());
-				this.info("Study Calendar " + containerForm.getModelObject().getStudyCalendar().getName() + " was created successfully");
+				this.saveInformation();
+				//this.info("Study Calendar " + containerForm.getModelObject().getStudyCalendar().getName() + " was created successfully");
 				processErrors(target);
 
 			}
 			else {
 
 				iStudyService.saveOrUpdate(containerForm.getModelObject());
-				this.info("Study Calendar " + containerForm.getModelObject().getStudyCalendar().getName() + " was updated successfully");
+				this.updateInformation();
+				//this.info("Study Calendar " + containerForm.getModelObject().getStudyCalendar().getName() + " was updated successfully");
 				processErrors(target);
 
 			}
@@ -261,7 +273,8 @@ public class DetailForm extends AbstractDetailForm<StudyCalendarVo> {
 			iStudyService.delete(containerForm.getModelObject().getStudyCalendar());
 			StudyCalendarVo studyCalendarVo = new StudyCalendarVo();
 			containerForm.setModelObject(studyCalendarVo);
-			containerForm.info("The Study Component was deleted successfully.");
+			//containerForm.info("The Study Component was deleted successfully.");
+			this.deleteInformation();
 			editCancelProcess(target);		
 	}
 

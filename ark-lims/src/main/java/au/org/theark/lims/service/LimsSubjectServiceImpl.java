@@ -26,8 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.lims.model.dao.ILimsSubjectDao;
-import au.org.theark.lims.model.vo.LimsVO;
+
+
 
 /**
  * @author cellis

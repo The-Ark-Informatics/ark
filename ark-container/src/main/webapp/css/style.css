@@ -676,3 +676,6 @@ nobreakws{
 	padding: 0px;
 	margin-top:1px;
 }
+.buttonMargin {
+float: left;
+}

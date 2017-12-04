@@ -22,18 +22,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -276,7 +275,15 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(newPositionBtn);
 
 		PropertyModel<Date> recordDateModel = new PropertyModel<Date>(containerForm.getModel(), "affection.recordDate");
-		recordDateTxtFld = new DateTextField("recordDate", recordDateModel){
+		/*recordDateTxtFld = new DateTextField("recordDate", recordDateModel){
+			@Override
+			protected void onBeforeRender() {
+				this.setModel(new PropertyModel<Date>(containerForm.getModel(), "affection.recordDate"));
+				super.onBeforeRender();
+			}
+		};*/
+		recordDateTxtFld =new DateTextField("recordDate", recordDateModel, new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false)){
+			private static final long serialVersionUID = 1L;
 			@Override
 			protected void onBeforeRender() {
 				this.setModel(new PropertyModel<Date>(containerForm.getModel(), "affection.recordDate"));
@@ -291,7 +298,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 		affectionCustomDataVO.setCustomFieldDataList(new ArrayList<AffectionCustomFieldData>(cpModel.getObject().getAffection().getAffectionCustomFieldDataSets()));
 
 		final CompoundPropertyModel<AffectionCustomDataVO> affectionCustomDataModel = new CompoundPropertyModel<AffectionCustomDataVO>(affectionCustomDataVO);
-		dataViewPanel = new AffectionCustomDataDataViewPanel("dataViewPanel", affectionCustomDataModel).initialisePanel(iArkCommonService.getUserConfig(Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE).getIntValue());
+		dataViewPanel = new AffectionCustomDataDataViewPanel("dataViewPanel", affectionCustomDataModel).initialisePanel(iArkCommonService.getCustomFieldsPerPage());
 		customFieldForm = new AbstractCustomDataEditorForm<AffectionCustomDataVO>("customFieldForm", affectionCustomDataModel, feedBackPanel) {
 
 			private static final long	serialVersionUID	= 1L;
@@ -311,7 +318,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 				this.buttonsPanelWMC.setVisible(false);
 				super.onBeforeRender();
 			}
-		}.initialiseForm();
+		}.initialiseForm(false);
 
 		pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
 			@Override
@@ -452,7 +459,7 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
 			// No study in context
-			this.error("There is no study in Context. Please select a study to manage diseases.");
+			this.error("There is no study selected. Please select a study to manage diseases.");
 			processErrors(target);
 		}
 		else {
@@ -491,7 +498,8 @@ public class DetailForm extends AbstractDetailForm<AffectionVO> {
 
 	protected void deleteCompleted(String feedback, boolean successful) {
 		if(successful) { 
-			this.info(feedback);
+			this.deleteInformation();
+			//this.info(feedback);
 		} else {
 			this.error(feedback);
 		}

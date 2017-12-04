@@ -24,10 +24,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import au.org.theark.core.audit.annotations.ArkAuditDisplay;
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 /**
@@ -114,7 +112,6 @@ public class PhenoDataSetCollection implements Serializable{
 		this.reviewedBy = reviewedBy;
 	}
 	
-	@ArkAuditDisplay
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PHENO_DATASET_FIELD_GROUP_ID")
 	public PhenoDataSetGroup getQuestionnaire() {
@@ -136,7 +133,7 @@ public class PhenoDataSetCollection implements Serializable{
 	}
 
 	@NotAudited
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetCollection")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "phenoDataSetCollection")
 	public Set<PhenoDataSetData> getPhenoDataSetData() {
 		return phenoDataSetData;
 	}
@@ -144,6 +141,29 @@ public class PhenoDataSetCollection implements Serializable{
 		this.phenoDataSetData = phenoDataSetData;
 	}
 
-	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PhenoDataSetCollection other = (PhenoDataSetCollection) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
 	
 }

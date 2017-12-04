@@ -53,7 +53,7 @@ import au.org.theark.core.vo.ArkUserVO;
 @Component
 public class ArkLdapRealm extends AuthorizingRealm {
 	static final Logger				log					= LoggerFactory.getLogger(ArkLdapRealm.class);
-	private static final String	UNKNOWN_ACCOUNT	= "The user is not registered with the Ark Application. Please see your administrator";
+	private static final String	UNKNOWN_ACCOUNT	= "The user is not registered with the Ark Application. Please contact the system administrator.";
 	/* Interface to Core */
 	protected IArkCommonService	iArkCommonService;
 
@@ -88,6 +88,10 @@ public class ArkLdapRealm extends AuthorizingRealm {
 
 				String role = iArkCommonService.getUserRole(ldapUserName, arkFunction, arkModule, null);
 				simpleAuthInfo.addRole(role);
+				
+				/*//Add multiple roles
+				iArkCommonService.getArkRoleListByUserAndStudy(arkUserVo, study);
+				simpleAuthInfo.addRoles(roles);*/
 
 				/* Check if the logged in user is a Super Administrator */
 				if (iArkCommonService.isSuperAdministator(ldapUserName, arkFunction, arkModule)) {

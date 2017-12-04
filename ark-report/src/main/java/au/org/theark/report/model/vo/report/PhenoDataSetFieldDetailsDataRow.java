@@ -25,6 +25,7 @@ public class PhenoDataSetFieldDetailsDataRow implements Serializable {
 	private static final long	serialVersionUID	= 1L;
 
 	protected String				questionnaire;
+	protected String 				category;
 	protected String				fieldName;
 	protected String				description;
 	protected String				minValue;
@@ -38,9 +39,10 @@ public class PhenoDataSetFieldDetailsDataRow implements Serializable {
 
 	}
 
-	public PhenoDataSetFieldDetailsDataRow(String questionnaire, String fieldName, String description, String minValue, String maxValue, String encodedValues, String missingValue, String units, String type) {
+	public PhenoDataSetFieldDetailsDataRow(String questionnaire,String category, String fieldName, String description, String minValue, String maxValue, String encodedValues, String missingValue, String units, String type) {
 		super();
 		this.questionnaire = questionnaire;
+		this.category=category;
 		this.fieldName = fieldName;
 		this.description = description;
 		this.minValue = minValue;
@@ -57,6 +59,14 @@ public class PhenoDataSetFieldDetailsDataRow implements Serializable {
 
 	public void setQuestionnaire(String questionnaire) {
 		this.questionnaire = questionnaire;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public String getFieldName() {

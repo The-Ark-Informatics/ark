@@ -10,15 +10,14 @@ import javax.servlet.ServletContext;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.wicketstuff.jasperreports.JRConcreteResource;
@@ -111,7 +110,7 @@ public class StudyComponentFilterForm extends AbstractReportFilterForm<StudyComp
 		}
 		catch (JRException e) {
 			//reportFile = null;
-			this.error("Please contact the system administrator there is problem during the report creation.");
+			this.error("A system error has occurred when creating the report. Please contact the system administrator.");
 			onErrorProcess(target);
 			e.printStackTrace();
 		}
@@ -134,7 +133,7 @@ public class StudyComponentFilterForm extends AbstractReportFilterForm<StudyComp
 		try {
 			reportDS = new StudyComponentReportDataSource(reportService, getModelObject());
 		} catch (ArkSystemException | EntityNotFoundException e) {
-			this.error("Please contact the system administrator there is problem during the report creation.");
+			this.error("A system error has occurred when creating the report. Please contact the system administrator.");
 			onErrorProcess(target);
 			e.printStackTrace();
 		}
@@ -171,14 +170,14 @@ public class StudyComponentFilterForm extends AbstractReportFilterForm<StudyComp
 		toDateLabel=new Label(Constants.TO_DATE_LABEL);
 		toDateLabel.setOutputMarkupId(true);
 
-		fromDatePicker = new DateTextField(Constants.FROM_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		fromDatePicker = new DateTextField(Constants.FROM_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker arkFromDatePicker = new ArkDatePicker();
 		arkFromDatePicker.bind(fromDatePicker);
 		fromDatePicker.add(arkFromDatePicker);
 		wmcFromDate.add(fromDatePicker);
 		wmcFromDate.add(fromDateLabel);
 		
-		toDatePicker = new DateTextField(Constants.TO_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		toDatePicker = new DateTextField(Constants.TO_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker arkToDatePicker = new ArkDatePicker();
 		arkToDatePicker.bind(toDatePicker);
 		toDatePicker.add(arkToDatePicker);

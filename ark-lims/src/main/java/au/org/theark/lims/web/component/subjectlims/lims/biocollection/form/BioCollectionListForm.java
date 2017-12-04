@@ -48,14 +48,14 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionModalDetailPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionDataEntryModalDetailPanel;
 
 /**
  * @author cellis
@@ -170,7 +170,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		});
 
 		dataView = buildDataView(bioColectionProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 
@@ -209,7 +209,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to proceed with New BioCollection");
+				this.error("An unexpected error occurred. Unable to proceed with New BioCollection.");
 			}
 		};
 		newButton.setDefaultFormProcessing(false);
@@ -317,7 +317,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 	}
 
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {
-		modalContentPanel = new BioCollectionModalDetailPanel("content", modalWindow, cpModel);
+		modalContentPanel = new BioCollectionDataEntryModalDetailPanel("content", modalWindow, cpModel);
 
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Collection Detail");

@@ -27,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,22 +35,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import au.org.theark.core.util.OrderByNatural;
+import au.org.theark.core.model.study.entity.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
@@ -77,8 +73,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
-import au.org.theark.core.model.config.entity.ConfigField;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
 import au.org.theark.core.model.geno.entity.Pipeline;
@@ -117,60 +111,6 @@ import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchPayload;
 import au.org.theark.core.model.report.entity.SearchResult;
 import au.org.theark.core.model.report.entity.SearchSubject;
-import au.org.theark.core.model.study.entity.Address;
-import au.org.theark.core.model.study.entity.AddressStatus;
-import au.org.theark.core.model.study.entity.AddressType;
-import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ArkFunctionType;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkModuleFunction;
-import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.ArkUserRole;
-import au.org.theark.core.model.study.entity.AuditHistory;
-import au.org.theark.core.model.study.entity.Consent;
-import au.org.theark.core.model.study.entity.ConsentAnswer;
-import au.org.theark.core.model.study.entity.ConsentOption;
-import au.org.theark.core.model.study.entity.ConsentStatus;
-import au.org.theark.core.model.study.entity.ConsentType;
-import au.org.theark.core.model.study.entity.Country;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomFieldType;
-import au.org.theark.core.model.study.entity.CustomFieldUpload;
-import au.org.theark.core.model.study.entity.DelimiterType;
-import au.org.theark.core.model.study.entity.EmailStatus;
-import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
-import au.org.theark.core.model.study.entity.FieldType;
-import au.org.theark.core.model.study.entity.FileFormat;
-import au.org.theark.core.model.study.entity.GenderType;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.LinkSubjectTwin;
-import au.org.theark.core.model.study.entity.MaritalStatus;
-import au.org.theark.core.model.study.entity.OtherID;
-import au.org.theark.core.model.study.entity.Payload;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.PersonContactMethod;
-import au.org.theark.core.model.study.entity.PersonLastnameHistory;
-import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.model.study.entity.PhoneStatus;
-import au.org.theark.core.model.study.entity.PhoneType;
-import au.org.theark.core.model.study.entity.Relationship;
-import au.org.theark.core.model.study.entity.State;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.core.model.study.entity.StudyCompStatus;
-import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
-import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.core.model.study.entity.SubjectUidPadChar;
-import au.org.theark.core.model.study.entity.SubjectUidToken;
-import au.org.theark.core.model.study.entity.TitleType;
-import au.org.theark.core.model.study.entity.Upload;
-import au.org.theark.core.model.study.entity.UploadStatus;
-import au.org.theark.core.model.study.entity.UploadType;
-import au.org.theark.core.model.study.entity.VitalStatus;
-import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.vo.DataExtractionVO;
 import au.org.theark.core.vo.ExtractionVO;
@@ -371,8 +311,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public List<EmailStatus> getAllEmailStatuses() {
 		Example example = Example.create(new EmailStatus());
 		Criteria criteria = getSession().createCriteria(EmailStatus.class).add(example);
+		criteria.addOrder(Order.asc("name"));
 		return criteria.list();
 	}
+	
+	public List<EmailAccountType> getEmailAccountTypes(){
+		Criteria criteria = getSession().createCriteria(EmailAccountType.class);
+		criteria.addOrder(Order.asc("name"));
+		return criteria.list();
+	}
+
 
 	/**
 	 * Look up the Link Subject Study for subjects linked to a study
@@ -953,6 +901,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if (subjectVO.getLinkSubjectStudy().getSubjectUID() != null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0) {
 			criteria.add(Restrictions.ilike("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
 		}
+		
+		if (subjectVO.getLinkSubjectStudy().getFamilyId() != null && subjectVO.getLinkSubjectStudy().getFamilyId().length() > 0) {
+			criteria.add(Restrictions.ilike("familyId", subjectVO.getLinkSubjectStudy().getFamilyId(), MatchMode.ANYWHERE));
+		}
+		
 		/**
 		 * The new requirement arises on 2017-11-10 we need to show the archived subjects when only filtered as archive. 
 		 */
@@ -1640,7 +1593,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public Collection<UploadType> getUploadTypesForSubject(Study study) {
 		Criteria criteria = getSession().createCriteria(UploadType.class);
 		criteria.add(Restrictions.eq("arkModule", getArkModuleForSubject()));
-		if(study != null && study.getParentStudy() != null) { //i.e. study is a child study
+		//Add an additional condition added on 2017-01-17 when a study got it's children I found the parent study's parent is set as it's own
+		if(study != null && study.getParentStudy() != null && !study.equals(study.getParentStudy())) { //i.e. study is a child study
 			criteria.add(Restrictions.not(Restrictions.eq("name", "Subject Demographic Data")));
 		}
 		return criteria.list();
@@ -2999,7 +2953,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 
 	/**
-	 * This will get all the pheno data for the given subjects FOR THIS ONE CustomFieldGroup aka questionaire (aka data set)
+	 * This will get all the pheno data for the given subjects FOR THIS ONE CustomFieldGroup aka questionaire (aka dataset)
 	 * 
 	 * @param allTheData
 	 * @param search
@@ -3220,26 +3174,26 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					map.put(field.getPublicFieldName(), lss.getPerson().getCauseOfDeath());
 				}
 			}
-			else if (field.getFieldName().equalsIgnoreCase("preferredEmail")) {
-				if(lss.getPerson().getPreferredEmail()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmail());
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("preferredEmailStatus")) {
-				if(lss.getPerson().getPreferredEmailStatus()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus().getName());
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("otherEmail")) {
-				if(lss.getPerson().getOtherEmail()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmail());
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("otherEmailStatus")) {
-				if(lss.getPerson().getOtherEmailStatus()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus().getName());
-				}
-			}
+//			else if (field.getFieldName().equalsIgnoreCase("preferredEmail")) {
+//				if(lss.getPerson().getPreferredEmail()!=null){
+//					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmail());
+//				}
+//			}
+//			else if (field.getFieldName().equalsIgnoreCase("preferredEmailStatus")) {
+//				if(lss.getPerson().getPreferredEmailStatus()!=null){
+//					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus().getName());
+//				}
+//			}
+//			else if (field.getFieldName().equalsIgnoreCase("otherEmail")) {
+//				if(lss.getPerson().getOtherEmail()!=null){
+//					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmail());
+//				}
+//			}
+//			else if (field.getFieldName().equalsIgnoreCase("otherEmailStatus")) {
+//				if(lss.getPerson().getOtherEmailStatus()!=null){
+//					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus().getName());
+//				}
+//			}
 			else if (field.getFieldName().equalsIgnoreCase("dateLastKnownAlive")) {
 				if(lss.getPerson().getDateLastKnownAlive()!=null){
 					map.put(field.getPublicFieldName(), formatDate(lss.getPerson().getDateLastKnownAlive().toString()));					
@@ -3271,16 +3225,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					map.put(field.getPublicFieldName(), lss.getPerson().getPersonContactMethod().getName());					
 				}
 			}
-			else if (field.getFieldName().equalsIgnoreCase("preferredEmailStatus")) {
-				if(lss.getPerson().getPreferredEmailStatus()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus().getName());					
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("otherEmailStatus")) {
-				if(lss.getPerson().getOtherEmailStatus()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus().getName());					
-				}
-			}
+//			else if (field.getFieldName().equalsIgnoreCase("preferredEmailStatus")) {
+//				if(lss.getPerson().getPreferredEmailStatus()!=null){
+//					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus().getName());					
+//				}
+//			}
+//			else if (field.getFieldName().equalsIgnoreCase("otherEmailStatus")) {
+//				if(lss.getPerson().getOtherEmailStatus()!=null){
+//					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus().getName());					
+//				}
+//			}
 		}
 		for (DemographicField field : lssFields) {
 			if (field.getFieldName().equalsIgnoreCase("subjectStatus")) {
@@ -4327,7 +4281,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	/**
-	 * get pheno filters  FOR THIS ONE CustomFieldGroup aka questionaire (aka data set)
+	 * get pheno filters  FOR THIS ONE CustomFieldGroup aka questionaire (aka dataset)
 	 * @param search
 	 * @param THIS
 	 * @return
@@ -5208,68 +5162,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Collection<PersonLastnameHistory> results = c.list();
 		return results;
 	}
-	
-	public void createUserConfigs(List<UserConfig> userConfigList) throws ArkSystemException {
-		
-		for(UserConfig uc : userConfigList) {
-			getSession().saveOrUpdate(uc);
-		}
-			
-	}
-			
-	public List<ConfigField> getAllConfigFields() {
-		Criteria criteria = getSession().createCriteria(ConfigField.class);
-		final List<ConfigField> configFields = criteria.list();
-		return configFields;
-	}
-	
-	public List<UserConfig> getUserConfigs(ArkUser arkUser) {
-		List<UserConfig> userConfigs = new ArrayList<UserConfig>();
-		Criteria criteria = getSession().createCriteria(UserConfig.class);
-		log.info("arkuser: " + arkUser);
-		log.info("arkuser.id: " + arkUser.getId());
-		if(arkUser != null && arkUser.getId() != null) {
-			criteria.add(Restrictions.eq("arkUser", arkUser));
-			userConfigs = criteria.list();
-			log.info("userconfs.size: " + userConfigs.size());
-		}
-		return userConfigs;
-	}
-	
-	@Override
-	public UserConfig getUserConfig(ArkUser arkUser, ConfigField configField) {
-		Criteria criteria = getSession().createCriteria(UserConfig.class);
-		if(arkUser != null && arkUser.getId() != null) {
-			criteria.add(Restrictions.eq("arkUser",  arkUser));
-		}
-		if(configField != null && configField.getId() != null) {
-			criteria.add(Restrictions.eq("configField", configField));
-		}
-		UserConfig userConfig = null;
-		try {
-			userConfig = (UserConfig) criteria.uniqueResult();
-		} catch (HibernateException e) {
-			log.error(e.getMessage());
-			e.printStackTrace();
-			userConfig = new UserConfig();
-			userConfig.setArkUser(arkUser);
-			userConfig.setConfigField(configField);
-//			userConfig.setValue(configField.getDefaultValue());
-		}
-		return userConfig;
-	}	
-	
-	public ConfigField getConfigFieldByName(String configField) {
-		Criteria criteria = getSession().createCriteria(ConfigField.class);
-		criteria.add(Restrictions.eq("name", configField));
-		return (ConfigField) criteria.uniqueResult();
-	}
-		
-	public void deleteUserConfig(UserConfig uc) {
-		if(uc != null) {
-			getSession().delete(uc);
-		}
-	}
 
 	@Override
 	public List<Study> getChildStudiesForStudy(Study parentStudy) {
@@ -5457,5 +5349,69 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public void deleteUpload(final Upload upload) {
 		getSession().delete(upload);
 	}
+
+	@Override
+	public StudyComp getStudyCompByNameAndStudy(Study study,String name){
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("name",name));
+		criteria.setMaxResults(1);
+		return (StudyComp)criteria.uniqueResult();
+	}
+	@Override
+	public boolean isConsentExsistByStudySublectUIDAndStudyComp(Study study,LinkSubjectStudy linkSubjectStudy,StudyComp studyComp){
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("linkSubjectStudy",linkSubjectStudy));
+		criteria.add(Restrictions.eq("studyComp",studyComp));
+		criteria.setMaxResults(1);
+		Consent consent= (Consent)criteria.uniqueResult();
+		return (consent!=null);
+		
+	}
+	@Override
+	public boolean isAnyFilterAddedForSearch(Search search){
+		Criteria criteria = getSession().createCriteria(QueryFilter.class);
+		criteria.add(Restrictions.eq("search", search));
+		List<QueryFilter> queryFilters=criteria.list();
+		return (queryFilters.size() > 0); 
+	}
+	@Override
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInLIMS(Study study, ArkFunction arkFunction,CustomFieldType customFieldType) {
+		String queryString = "select cfd " + " from CustomFieldDisplay cfd " + 
+							" where customField.id in ( " + " SELECT id from CustomField cf " + 
+															" where cf.study =:study "
+															+ " and cf.arkFunction =:arkFunction and cf.customFieldType =:customFieldType )";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		query.setParameter("arkFunction", arkFunction);
+		query.setParameter("customFieldType", customFieldType);
+		return query.list();
+	}
 	
+	@Override
+	public Relationship getRelationShipByname(String name) {
+		Criteria criteria = getSession().createCriteria(Relationship.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.setMaxResults(1);
+		return (Relationship)criteria.uniqueResult();
+	}
+
+	@Override
+	public TwinType getTwinTypeByname(String name) {
+		Criteria criteria = getSession().createCriteria(TwinType.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.setMaxResults(1);
+		return (TwinType)criteria.uniqueResult();
+	}
+
+	@Override
+	public List<LinkSubjectStudy> getListofLinkSubjectStudiesForStudy(Study study) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.add(Restrictions.eq("study",study));
+		List<LinkSubjectStudy> fieldsList = criteria.list();
+		return fieldsList;
+		
+	}
+
 }

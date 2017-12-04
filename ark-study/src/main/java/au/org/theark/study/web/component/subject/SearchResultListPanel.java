@@ -248,7 +248,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<SubjectVO> buildListView(IModel iModel) {
 
-		PageableListView<SubjectVO> listView = new PageableListView<SubjectVO>(Constants.SUBJECT_LIST, iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<SubjectVO> listView = new PageableListView<SubjectVO>(Constants.SUBJECT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 
 			@Override
 			protected void populateItem(final ListItem<SubjectVO> item) {
@@ -358,7 +358,7 @@ public class SearchResultListPanel extends Panel {
 
 				// Set Study Logo
 				StudyHelper studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup);
+				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup, iArkCommonService);
 			}
 		};
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());

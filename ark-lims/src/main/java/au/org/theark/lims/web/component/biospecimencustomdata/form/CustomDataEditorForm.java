@@ -28,8 +28,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.vo.BiospecimenCustomDataVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
 
 /**
@@ -61,7 +61,7 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<Biospecim
 			}
 		}
 		else {
-			this.info("Successfully saved all edits");
+			this.info("All edits were successfully saved.");
 		}
 		/*
 		 * Need to update the dataView, which forces a refresh of the model objects from backend. This is because deleted fields still remain in the

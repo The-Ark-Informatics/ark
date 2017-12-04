@@ -19,11 +19,10 @@
 package au.org.theark.web.pages.login;
 
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.image.ContextImage;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.web.pages.Constants;
+import au.org.theark.core.service.IArkCommonService;
 
 /**
  * <p>
@@ -38,21 +37,17 @@ import au.org.theark.web.pages.Constants;
 public class LoginPage<T> extends WebPage {
 
 	private static final long			serialVersionUID	= -985615571643703296L;
-	
-	
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 
-	
 	public LoginPage() {
 		LoginForm form = new LoginForm("loginForm");
 		this.add(form);
 
-		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
-		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
-
 		// Add images
-		add(hostedByImage);
-		add(productImage);
+		add(iArkCommonService.getHostedByImage());
+		add(iArkCommonService.getProductImage());
 	}
 
 	@Override

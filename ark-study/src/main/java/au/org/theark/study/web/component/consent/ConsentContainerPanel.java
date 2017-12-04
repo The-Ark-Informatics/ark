@@ -118,11 +118,11 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
-			containerForm.error("The Person/Subject cannot be found in the system. Please contact Support.");
+			containerForm.error("The Person/Subject cannot be found in the system. Please contact the system administrator.");
 
 		}
 		catch (ArkSystemException arkSystemException) {
-			containerForm.error("A System error/exception has occured. Please contact Support.");
+			containerForm.error("A System error/exception has occured. Please contact the system administrator.");
 		}
 
 		return arkCrudContainerVO.getSearchPanelContainer();
@@ -159,10 +159,10 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 					}
 				}
 				catch (EntityNotFoundException e) {
-					containerForm.error("Subject is not available in the system");
+					containerForm.error("The subject is not available in the system.");
 				}
 				catch (ArkSystemException e) {
-					containerForm.error("A System Error has occured please contact Support");
+					containerForm.error("A system error has occurred. Please contact the system administrator.");
 				}
 
 				pageableListView.removeAll();

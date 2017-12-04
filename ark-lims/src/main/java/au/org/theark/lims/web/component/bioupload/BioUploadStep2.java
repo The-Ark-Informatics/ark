@@ -60,7 +60,7 @@ public class BioUploadStep2 extends AbstractWizardStepPanel {
 												private static final long	serialVersionUID	= 1L;
 												@Override
 												protected void onError(AjaxRequestTarget target, Form<?> form) {
-													this.error("Unexpected Error: Download request could not be processed");
+													this.error("An unexpected error occurred. The download request could not be processed.");
 												}
 											};
 
@@ -121,7 +121,7 @@ public class BioUploadStep2 extends AbstractWizardStepPanel {
 			}
 
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
-					fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue(), containerForm.getModelObject().getUpload().getUploadType());
+					fileUpload, iArkCommonService.getRowsPerPage(), containerForm.getModelObject().getUpload().getUploadType());
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			WebMarkupContainer wizardDataGridKeyContainer = new WebMarkupContainer("wizardDataGridKeyContainer");
 			wizardDataGridKeyContainer.setVisible(false);
@@ -144,7 +144,7 @@ public class BioUploadStep2 extends AbstractWizardStepPanel {
 					private static final long	serialVersionUID	= 1L;
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {
-						this.error("Unexpected Error: Download request could not be processed");
+						this.error("An unexpected error occurred. The download request could not be processed.");
 					}
 				};
 				addOrReplace(downloadValMsgButton);

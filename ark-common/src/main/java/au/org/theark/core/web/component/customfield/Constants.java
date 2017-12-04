@@ -27,18 +27,18 @@ public class Constants {
 	
 
 
-	public static final String FIELD_TYPE_NUMBER = "NUMBER";
-	public static final String FIELD_TYPE_CHARACTER = "CHARACTER";
-	public static final String FIELD_TYPE_DATE = "DATE";
+	public static final String FIELD_TYPE_NUMBER = "Number";
+	public static final String FIELD_TYPE_CHARACTER = "Character";
+	public static final String FIELD_TYPE_DATE = "Date";
 	public static final String DISCRETE_RANGE_TOKEN = ",";
 	public static final String ENCODED_VALUES_TOKEN = ";";
 	public static final String ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE = " ";
 	public static final String ENCODED_VALUES_SEPARATOR = "=";
 	
-	public static final String		CHARACTER_FIELD_TYPE_NAME									= "CHARACTER";
-	public static final String		DATE_FIELD_TYPE_NAME										= "DATE";
-	public static final String		NUMBER_FIELD_TYPE_NAME										= "NUMBER";
-	public static final String		LOOKUP_FIELD_TYPE_NAME										= "LOOKUP";
+	public static final String		CHARACTER_FIELD_TYPE_NAME									= "Character";
+	public static final String		DATE_FIELD_TYPE_NAME										= "Date";
+	public static final String		NUMBER_FIELD_TYPE_NAME										= "Number";
+	public static final String		LOOKUP_FIELD_TYPE_NAME										= "LookUp";
 
 	public static final String		CUSTOMFIELD 													= "customField";
 	public static final String		CUSTOMFIELD_ID													= "id";

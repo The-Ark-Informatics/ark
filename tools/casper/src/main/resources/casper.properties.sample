@@ -1,0 +1,6 @@
+db.url=jdbc:mysql://localhost
+db.class=com.mysql.jdbc.Driver
+db.username=arkadmin
+db.password=
+
+file.attachment.dir=/opt/data/arkFileData

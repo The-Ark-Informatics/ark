@@ -2,7 +2,8 @@
 # need to tear down all the containers, and delete their volumes (easily done with 'docker-compose down -v')
 # Note: Doing this will delete all contents of your MySQL and LDAP databases.
 
-MYSQL_ROOT_PASSWORD=mysql-password
+MYSQL_USER=ark
+MYSQL_PASSWORD=mysql-password
 SLAPD_PASSWORD=slapd-password
 ARK_SUPERUSER_PASSWORD=Password_1
 ARK_USERNAME=arksuperuser@ark.org.au

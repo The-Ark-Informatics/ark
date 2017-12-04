@@ -205,7 +205,8 @@ public class RowForm extends AbstractDetailForm<RowListVO>{
 	
 	protected void deleteCompleted(String feedback, boolean successful) {
 		if(successful) { 
-			this.info(feedback);
+			//this.info(feedback);
+			this.deleteInformation();
 		} else {
 			this.error(feedback);
 		}
@@ -234,7 +235,8 @@ public class RowForm extends AbstractDetailForm<RowListVO>{
 		}
 		if(!rowList.isEmpty() &&  rowList.size() == getModelObject().getRows().size()) {
 			iArkGenoService.createOrUpdateRows(rowList);
-			this.info("Rows updated successfully. New Row IDs won't appear until page has been reloaded.");
+			this.updateInformation();
+			//this.info("Rows updated successfully. New Row IDs won't appear until page has been reloaded.");
 		}
 		target.add(feedBackPanel);
 	}

@@ -157,7 +157,7 @@ public class PhenoDataCategoryContainerPanel extends AbstractContainerPanel<Phen
 		// Set the criteria for the data provider
 		phenoDataSetCategoryProvider.setCriteriaModel(new PropertyModel<PhenoDataSetCategory>(cpModel, "phenoDataSetCategory"));
 		dataView = searchResultListPanel.buildDataView(phenoDataSetCategoryProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 		private static final long	serialVersionUID	= 1L;
 		@Override

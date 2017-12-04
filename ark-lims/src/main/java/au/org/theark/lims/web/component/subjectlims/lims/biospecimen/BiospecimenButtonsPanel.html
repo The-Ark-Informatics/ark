@@ -1,14 +1,21 @@
 <wicket:panel>
 	<div class="actionButtons">
-		<input wicket:id="clone" type="submit"	wicket:message="value:button.clone" />
-		<input wicket:id="process" type="submit" wicket:message="value:button.process" />
-		<input wicket:id="aliquot" type="submit" wicket:message="value:button.aliquot" />
+		<div class="label">
+			<input wicket:id="clone" type="submit"	wicket:message="value:button.clone" />
+			<div class="buttonMargin">&nbsp;</div>
+			<input wicket:id="process" type="submit" wicket:message="value:button.process" />
+			<div class="buttonMargin">&nbsp;</div>
+			<input wicket:id="aliquot" type="submit" wicket:message="value:button.aliquot" />
+		</div>	
 	</div>
 	<div class="printButtons">
 		<div wicket:id="numberOfLabels">
 			[No. of labels:]
 		</div>
-		<input wicket:id="printBarcode" type="button" wicket:message="value:button.printBarcode" />
-		<input wicket:id="printStrawBarcode" type="button" wicket:message="value:button.printStrawBarcode" />
+		<div class="label">
+			<input wicket:id="printBarcode" type="button" wicket:message="value:button.printBarcode" />
+			<div class="panelMargin">&nbsp;</div>
+			<input wicket:id="printStrawBarcode" type="button" wicket:message="value:button.printStrawBarcode" />
+		</div>
 	</div>
 </wicket:panel>

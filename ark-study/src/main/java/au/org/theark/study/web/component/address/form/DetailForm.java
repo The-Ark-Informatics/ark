@@ -26,7 +26,8 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -135,7 +136,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		initialiseDatePicker();
 		attachValidators();
 		addDetailFormComponents();
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
+		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer(),feedBackPanel);
 	}
 
 	public void addDetailFormComponents() {
@@ -250,7 +251,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 
 	private void initialiseDatePicker() {
 		// Create new DateTextField and assign date format
-		dateReceivedDp = new DateTextField("address.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateReceivedDp = new DateTextField("address.dateReceived", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateReceivedDp);
 		dateReceivedDp.add(datePicker);
@@ -307,11 +308,12 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iStudyService.delete(containerForm.getModelObject().getAddress());
-			this.info("The Address has been deleted successfully.");
+			//this.info("The Address has been deleted successfully.");
+			this.deleteInformation();
 			editCancelProcess(target);
 		}
 		catch (ArkSystemException e) {
-			this.error("An error occured while processing your delete. Please contact Support");
+			this.error("An error occured while processing your delete request. Please contact the system administrator.");
 			// TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to
 			// admin
 			e.printStackTrace();
@@ -340,7 +342,8 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				containerForm.getModelObject().getAddress().setOtherState(null);
 			}
 //			otherStateInvalidError.setVisible(false);
-			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+//			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelContainer().get("addressDetailPanel").get("addressDetailsForm").get("addressDetailFormContainer").get(Constants.STATE_SELECTOR_WMC);
 			Label otherStateInvalidError = (Label) wmcStateSelector.get("address.otherStateInvalidError");
 			otherStateInvalidError.setVisible(false);
 			
@@ -352,7 +355,8 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				}
 				
 				iStudyService.create(containerForm.getModelObject().getAddress());
-				feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
+				//feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
+				this.saveInformation();
 			}
 			else {
 				if(containerForm.getModelObject().getAddress().getPreferredMailingAddress()){
@@ -361,7 +365,8 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				}
 				
 				iStudyService.update(containerForm.getModelObject().getAddress());
-				feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
+				//feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
+				this.updateInformation();
 			}
 
 			if (person.getFirstName() != null && person.getLastName() != null) {
@@ -379,10 +384,10 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 			// Invoke backend to persist the AddressVO
 		}
 		catch (EntityNotFoundException e) {
-			this.error("The Specified subject is not available any more in the system. Please re-do the operation");
+			this.error("The specified subject is not longer available in the system. Please try the operation again.");
 		}
 		catch (ArkSystemException e) {
-			this.error("A system error has occured, Pleas contact support.");
+			this.error("A system error has occured. Please contact the system administrator.");
 		}
 	}
 

@@ -150,7 +150,7 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 				try {
 					iGenomicService.uploadComputation(computation);
 				} catch (Exception e) {
-					this.error("Computation upload failed");
+					this.error("An unexpected error occurred. Computation upload failed.");
 					computation.setStatus(Constants.STATUS_UPLOAD_FAILED);
 					e.printStackTrace();
 				}
@@ -212,7 +212,7 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 					executor.run();
 
 				} catch (Exception e) {
-					this.error("Computation Compilation failled");
+					this.error("An unexpected error occurred. Computation compilation failled.");
 					e.printStackTrace();
 				}
 
@@ -299,7 +299,7 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 				}
 
 				this.iGenomicService.save(containerForm.getModelObject().getComputation(), uploadData);
-				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was created successfully");
+				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was created successfully.");
 			} else {
 
 				String checksum = null;
@@ -316,14 +316,14 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 				}
 
 				iGenomicService.update(containerForm.getModelObject().getComputation(), uploadData, checksum);
-				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was updated successfully");
+				this.info("Computation " + containerForm.getModelObject().getComputation().getName() + " was updated successfully.");
 			}
 			target.add(uploadButton);
 			processErrors(target);
 			onSavePostProcess(target);
 		} catch (Exception e) {
 			log.error("Error in computation entity ", e);
-			this.error("A System error occured, we will have someone contact you.");
+			this.error("A system error occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}
@@ -345,12 +345,12 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 				containerForm.info("Computation was deleted successfully.");
 				editCancelProcess(target);
 			} else {
-				containerForm.error("Computation package is already uploaded");
+				containerForm.error("Computation package is already uploaded.");
 				processErrors(target);
 			}
 		} catch (Exception e) {
 			log.error("Error in deleting computation entity ", e);
-			containerForm.error("A System Error has occured please contact support.");
+			containerForm.error("An unexpected error occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 

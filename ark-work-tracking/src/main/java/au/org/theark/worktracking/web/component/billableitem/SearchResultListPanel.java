@@ -44,7 +44,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<BillableItem> buildPageableListView(IModel iModel) {
 
-		PageableListView<BillableItem> sitePageableListView = new PageableListView<BillableItem>("billableItemList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<BillableItem> sitePageableListView = new PageableListView<BillableItem>("billableItemList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -232,7 +232,7 @@ public class SearchResultListPanel extends Panel {
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				// TODO: log!
 				System.err.println(" Error Downloading File ");
-				this.error("There was an error while downloading file.  Please contact Administrator");
+				this.error("There was an error while downloading the file. Please contact the system administrator.");
 			};
 		};
 

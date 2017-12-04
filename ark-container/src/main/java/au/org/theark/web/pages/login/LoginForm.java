@@ -182,7 +182,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 			return true;
 		}
 		catch (IncorrectCredentialsException e) {
-			String errMessage = getLocalizer().getString("page.incorrect.password", LoginForm.this, "Password is incorrect");
+			String errMessage = getLocalizer().getString("page.incorrect.password", LoginForm.this, "Password is incorrect.");
 			getSession().error(errMessage);
 			log.error(e.getMessage());
 		}

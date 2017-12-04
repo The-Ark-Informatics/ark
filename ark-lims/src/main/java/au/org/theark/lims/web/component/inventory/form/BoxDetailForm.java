@@ -49,10 +49,10 @@ import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.panel.box.BoxAllocationPanel;
@@ -333,7 +333,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		if (containerForm.getModelObject().getInvBox().getId() == null) {
 			// Save
 			iInventoryService.createInvBox(containerForm.getModelObject());
-			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was created successfully");
+			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was successfully created.");
 			processErrors(target);
 			
 			if(node != null) {
@@ -347,7 +347,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		else {
 			// Update
 			iInventoryService.updateInvBox(containerForm.getModelObject());
-			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was updated successfully");
+			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was successfully updated.");
 			processErrors(target);
 		}
 
@@ -378,7 +378,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target) {
 		iInventoryService.deleteInvBox(containerForm.getModelObject());
-		this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was deleted successfully");
+		this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was successfully deleted.");
 		// Display delete confirmation message
 		target.add(feedbackPanel);
 	}

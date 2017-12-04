@@ -21,6 +21,7 @@ package au.org.theark.study.web.component.mydetails;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -31,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
@@ -68,60 +68,30 @@ public class MyDetails extends Panel {
 
 			protected void onSave(AjaxRequestTarget target) {
 				ArkUserVO arkUser = getModelObject();
-
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if(sessionStudyId!=null){
+					arkUser.setStudy(iArkCommonService.getStudy(sessionStudyId));
+				}
 				if ((arkUser.getPassword() != null && arkUser.getConfirmPassword() != null) && (!arkUser.getPassword().isEmpty() && !arkUser.getConfirmPassword().isEmpty())) {
 					// Temporary allow the user to select if he wants to change it
 					arkUser.setChangePassword(true);
 				}
-
-				boolean invalid = false;
-				for(UserConfig config : arkUser.getArkUserConfigs()) {
-					String value = config.getValue();
-					System.out.println("value: " + value);
-					switch(config.getConfigField().getType().getName()) {
-						case "NUMBER":
-							if(!isNumeric(value)) {
-								System.out.println("Field '" + config.getConfigField().getDescription() + "' should be a number");
-								this.error("Field '" + config.getConfigField().getDescription() + "' should be a number");
-								invalid = true;
-							}
-							break;
-						case "CHARACTER":
-							break;
-						case "DATE":
-							if(!isDate(value)) {
-								System.out.println("Field '" + config.getConfigField().getDescription() + "' should be a date (DD/MM/YYYY)");
-								this.error("Field '" + config.getConfigField().getDescription() + "' should be a date (DD/MM/YYYY)");
-								invalid = true;
-							}
-							break;
-						default:
-							break;
-						}
-				}
-				
-				if (invalid) {
-					System.out.println("===== INVALID ======");
-					processFeedback(target, feedBackPanel);
-					return;
-				}
-				
 				try {
 					userService.updateArkUser(arkUser);
-					this.info("Details for user: " + arkUser.getUserName() + " updated");
+					this.info("Details for user: " + arkUser.getUserName() + " were successfully updated.");
 					processFeedback(target, feedBackPanel);
 				}
 				catch (ArkSystemException arkSystemException) {
-					log.error("Exception occured while performing an update on the user details in LDAP " + arkSystemException.getMessage());
-					this.error("An error has occured, cannot update user details. Please contact support.");
+					log.error("Exception occurred while performing an update on the user details in LDAP " + arkSystemException.getMessage());
+					this.error("An error has occurred. The user details could not be updated. Please contact the system administrator.");
 					processFeedback(target, feedBackPanel);
 					// add custom error message to feedback panel.
 				}
 				catch (Exception ex) {
 					// Handle all other type of exceptions
-					this.error("An error has occured while saving user details. Please contact support.");
+					this.error("An error has occurred while saving the user details. Please contact the system administrator.");
 					processFeedback(target, feedBackPanel);
-					log.error("Exception occured when saving user details " + ex.getMessage());
+					log.error("An exception occurred when saving user details " + ex.getMessage());
 				}
 			}
 

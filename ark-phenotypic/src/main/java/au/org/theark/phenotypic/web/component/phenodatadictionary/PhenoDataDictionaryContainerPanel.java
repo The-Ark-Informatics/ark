@@ -68,24 +68,14 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Ph
 	
 	
 
-	/**
-	 * @param id
-	 *            -
-	 * @param arkContextMarkup
-	 *            -
-	 * @param useCustomFieldDisplay
-	 *            - enables saving of the VO's phenoDataSetFieldDisplay as well as the
-	 *            phenoDataSetField
-	 * @param associatedPrimaryFn
-	 *            - primary function that the phenoDataSetFields will belong to
-	 */
-	public PhenoDataDictionaryContainerPanel(String id, boolean useCustomFieldDisplay, ArkFunction associatedPrimaryFn) {
+	
+	public PhenoDataDictionaryContainerPanel(String id, boolean usePhenoFieldDisplay, ArkFunction associatedPrimaryFn) {
 		super(id);
 		/* Initialise the CPM */
 		
 		cpModel = new CompoundPropertyModel<PhenoDataSetFieldVO>(new PhenoDataSetFieldVO());
 		cpModel.getObject().getPhenoDataSetField().setArkFunction(associatedPrimaryFn);
-	//	cpModel.getObject().setUsePhenoDataSetFieldDisplay(useCustomFieldDisplay);
+		//cpModel.getObject().setUsePhenoDataSetFieldDisplay(usePhenoFieldDisplay);
 
 		prerenderContextCheck();
 
@@ -161,7 +151,7 @@ public class PhenoDataDictionaryContainerPanel extends AbstractContainerPanel<Ph
 		phenoDataSetFieldProvider.setCriteriaModel(new PropertyModel<PhenoDataSetField>(cpModel, "phenoDataSetField"));
 
 		dataView = searchResultListPanel.buildDataView(phenoDataSetFieldProvider);
-		dataView.setItemsPerPage(iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 

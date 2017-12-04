@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BiospecimenSummaryReport" pageWidth="1224" pageHeight="865" whenNoDataType="AllSectionsNoDetail" columnWidth="1184" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2017-06-01T16:50:32 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BiospecimenSummaryReport" pageWidth="1224" pageHeight="865" whenNoDataType="AllSectionsNoDetail" columnWidth="1184" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c718151b-e9ac-4b8f-8e3c-48b03ded7530">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="studyName" class="java.lang.String"/>
 	<parameter name="baseDir" class="java.io.File"/>
 	<queryString>
@@ -40,72 +43,72 @@
 	<title>
 		<band height="50">
 			<textField>
-				<reportElement mode="Transparent" x="0" y="0" width="1026" height="49"/>
+				<reportElement mode="Transparent" x="0" y="0" width="1026" height="49" uuid="fa6bb244-5d11-41e2-9a8f-44130ded1734"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="22" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA["Biospecimen Detail Report for "+$P{studyName}+" Study"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Biospecimen Detail Report for "+$P{studyName}+" Study"]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement mode="Transparent" x="1026" y="0" width="158" height="49"/>
-				<imageExpression class="java.io.File"><![CDATA[new File($P{baseDir}, "product_image.gif")]]></imageExpression>
+				<reportElement mode="Transparent" x="1026" y="0" width="158" height="49" uuid="f881ad21-4cb5-4420-8295-1a04547bdd2c"/>
+				<imageExpression><![CDATA[new File($P{baseDir}, "product_image.gif")]]></imageExpression>
 			</image>
 		</band>
 	</title>
 	<columnHeader>
 		<band height="28">
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="181" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
-				<textElement>
+				<reportElement mode="Opaque" x="0" y="0" width="181" height="20" forecolor="#FFFFFF" backcolor="#333333" uuid="cc416120-a6eb-4705-9839-16d73592e37a"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Study Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="181" y="0" width="161" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
-				<textElement>
+				<reportElement mode="Opaque" x="181" y="0" width="161" height="20" forecolor="#FFFFFF" backcolor="#333333" uuid="e8040c1e-ea44-4f31-a1c7-2270e58e3922"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Subject UID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="450" y="0" width="135" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
-				<textElement>
+				<reportElement mode="Opaque" x="450" y="0" width="135" height="20" forecolor="#FFFFFF" backcolor="#333333" uuid="783b422c-9759-47d8-8b3f-5e970bde85a9"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Parent UID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="585" y="0" width="144" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
-				<textElement>
+				<reportElement mode="Opaque" x="585" y="0" width="144" height="20" forecolor="#FFFFFF" backcolor="#333333" uuid="fd4a53d8-fa7f-49d0-adbe-92a63f6f5e54"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Sample Type]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="729" y="0" width="78" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
-				<textElement>
+				<reportElement mode="Opaque" x="729" y="0" width="78" height="20" forecolor="#FFFFFF" backcolor="#333333" uuid="3cce80cf-d9c0-4262-996b-81109204d106"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Quantity]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="340" y="0" width="110" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
-				<textElement>
+				<reportElement mode="Opaque" x="340" y="0" width="110" height="20" forecolor="#FFFFFF" backcolor="#333333" uuid="b83e6da9-8155-4c32-aca0-302b9e00c625"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Biospecimen UID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="807" y="0" width="112" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
-				<textElement>
+				<reportElement mode="Opaque" x="807" y="0" width="112" height="20" forecolor="#FFFFFF" backcolor="#333333" uuid="bb8b4c82-4235-431a-983f-9699a5d6f37c"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Initial Status]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="919" y="0" width="265" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
-				<textElement>
+				<reportElement mode="Opaque" x="919" y="0" width="265" height="20" forecolor="#FFFFFF" backcolor="#333333" uuid="a2750dc0-e85e-4e31-a5f4-71372a41fe84"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Biospecimen Location]]></text>
@@ -115,44 +118,36 @@
 	<detail>
 		<band height="24">
 			<textField>
-				<reportElement mode="Transparent" x="0" y="0" width="181" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{studyName}]]></textFieldExpression>
+				<reportElement mode="Transparent" x="0" y="0" width="181" height="20" uuid="882333d2-f9fa-4d05-8bf2-40c1a8559357"/>
+				<textFieldExpression><![CDATA[$F{studyName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="181" y="0" width="161" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{subjectUId}]]></textFieldExpression>
+				<reportElement mode="Transparent" x="181" y="0" width="161" height="20" uuid="bb4cb5e9-51ec-4be5-a8b1-08c7fdd63143"/>
+				<textFieldExpression><![CDATA[$F{subjectUId}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="342" y="0" width="110" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{biospecimenUid}]]></textFieldExpression>
+				<reportElement mode="Transparent" x="342" y="0" width="110" height="20" uuid="03d80b41-eab5-43aa-8e08-6bdb67dc8556"/>
+				<textFieldExpression><![CDATA[$F{biospecimenUid}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="452" y="0" width="135" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{parentId}]]></textFieldExpression>
+				<reportElement mode="Transparent" x="452" y="0" width="135" height="20" uuid="ce6ae6e2-0855-480c-ac2c-0e59fe6784da"/>
+				<textFieldExpression><![CDATA[$F{parentId}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="587" y="0" width="142" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{sampleType}]]></textFieldExpression>
+				<reportElement mode="Transparent" x="587" y="0" width="142" height="20" uuid="50fba644-8313-46c8-bbd7-ab489f056db2"/>
+				<textFieldExpression><![CDATA[$F{sampleType}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="729" y="0" width="78" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.Double"><![CDATA[$F{quantity}]]></textFieldExpression>
+				<reportElement mode="Transparent" x="729" y="0" width="78" height="20" uuid="15e7cafe-4bb0-451c-8697-3312ae98e8a4"/>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="807" y="0" width="112" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{initialStatus}]]></textFieldExpression>
+				<reportElement mode="Transparent" x="807" y="0" width="112" height="20" uuid="9c84eb6f-bf87-4ed5-8ead-b2552874efe6"/>
+				<textFieldExpression><![CDATA[$F{initialStatus}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="919" y="0" width="258" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[($F{site} !=null ? $F{site}:"NS")+ "->"+
+				<reportElement mode="Transparent" x="919" y="0" width="258" height="20" uuid="4551ffc3-a3b4-4821-9ccb-5510ac110128"/>
+				<textFieldExpression><![CDATA[($F{site} !=null ? $F{site}:"NS")+ "->"+
 ($F{freezer} != null?$F{freezer}:"NS")+"->"+
 ($F{rack} !=null ?$F{rack}:"NS")+"->"+
 ($F{box} !=null ?$F{box}:"NS")]]></textFieldExpression>
@@ -162,7 +157,7 @@
 	<summary>
 		<band height="22">
 			<staticText>
-				<reportElement mode="Transparent" x="919" y="0" width="258" height="20"/>
+				<reportElement mode="Transparent" x="919" y="0" width="258" height="20" uuid="ef2e60a5-3884-4da5-a0bb-395d51164856"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>

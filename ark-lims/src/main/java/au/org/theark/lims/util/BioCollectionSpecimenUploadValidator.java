@@ -15,16 +15,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.csvreader.CsvReader;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
@@ -40,13 +38,13 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.XLStoCSV;
+import au.org.theark.core.vo.BiospecimenLocationVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
-import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
-
-import com.csvreader.CsvReader;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 
 /**
  * BiospecimenUploadValidator provides support for validating Biospecimen matrix-formatted files.
@@ -279,7 +277,7 @@ public class BioCollectionSpecimenUploadValidator {
 
 				for (int i = 0; i < headerColumnArray.length; i++) {
 					if (!biospecimenColumns.contains(headerColumnArray[i].toUpperCase())) {
-						fileValidationMessages.add("Error: the column name " + headerColumnArray[i] + " is not a valid column name.");
+						fileValidationMessages.add("Error: The column name " + headerColumnArray[i] + " is not a valid column name.");
 					}
 				}
 			}
@@ -288,11 +286,11 @@ public class BioCollectionSpecimenUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("locationFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the Location data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the Location data file.");
 		}
 		catch (Exception ex) {
 			log.error("locationFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process Location data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process Location data file.");
 		}
 		finally {
 			// Clean up the IO objects
@@ -597,7 +595,7 @@ public class BioCollectionSpecimenUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the Biospecimen data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the Biospecimen data file.");
 		}
 		finally {
 			// Clean up the IO objects
@@ -646,7 +644,7 @@ public class BioCollectionSpecimenUploadValidator {
 		errorString.append(row);
 		errorString.append(": BIOCOLLECTIONUID: ");
 		errorString.append(biocollectionUID);
-		errorString.append(" can not be empty when study biocollection auto generated function deactiveted.");
+		errorString.append(" can not be empty when the study biocollection auto generated function is deactiveted.");
 		dataValidationMessages.add(errorString.toString());
 		errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTIONUID"), row));
 	}
@@ -751,7 +749,7 @@ public class BioCollectionSpecimenUploadValidator {
 			}
 	}catch (IOException ioe) {
 			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the Biospecimen data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the Biospecimen data file.");
 	}finally {
 			// Clean up the IO objects
 			//timer.stop();
@@ -1076,7 +1074,7 @@ public class BioCollectionSpecimenUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the Biospecimen data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the Biospecimen data file.");
 		}
 		finally {
 			// Clean up the IO objects

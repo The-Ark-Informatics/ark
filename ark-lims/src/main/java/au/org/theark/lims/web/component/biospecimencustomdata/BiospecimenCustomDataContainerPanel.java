@@ -38,7 +38,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
+import au.org.theark.core.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
 
 /**
@@ -90,17 +90,17 @@ public class BiospecimenCustomDataContainerPanel extends Panel {
 		Panel dataEditorPanel;
 		boolean contextLoaded = prerenderContextCheck();
 		if (contextLoaded && isActionPermitted()) {
-			dataEditorPanel = new BiospecimenCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();
+			//dataEditorPanel = new BiospecimenCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();
 		}
 		else if (!contextLoaded) {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
-			this.error("A study and LIMS biospecimen in context are required to proceed.");
+			this.error("A study and LIMS biospecimen need to be selected to proceed.");
 		}
 		else {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
 			this.error("You do not have sufficient permissions to access this function");
 		}
-		customDataEditorWMC.add(dataEditorPanel);
+		//customDataEditorWMC.add(dataEditorPanel);
 		return customDataEditorWMC;
 	}
 

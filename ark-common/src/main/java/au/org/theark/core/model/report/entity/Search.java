@@ -12,10 +12,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.Study;
@@ -201,4 +203,5 @@ public class Search  implements java.io.Serializable {
 	public void setFinishTime(Date finishTime) {
 		this.finishTime = finishTime;
 	}
+
 }

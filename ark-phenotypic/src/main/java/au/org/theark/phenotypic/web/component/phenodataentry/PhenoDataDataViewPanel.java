@@ -57,6 +57,7 @@ public class PhenoDataDataViewPanel extends Panel {
 	
 	protected ArkDataProvider2<PhenoDataCollectionVO, PhenoDataSetData> scdDataProvider;
 	protected DataView<PhenoDataSetData> dataView;
+	
 
 	public PhenoDataDataViewPanel(String id, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id);
@@ -67,9 +68,8 @@ public class PhenoDataDataViewPanel extends Panel {
 	public PhenoDataDataViewPanel initialisePanel(Integer numRowsPerPage,PhenoDataSetCategory phenoDataSetCategory) {	
 		initialiseDataView(phenoDataSetCategory);
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getRowsPerPage());
 		}
-		
 		this.add(dataView);
 		return this;
 	}
@@ -123,6 +123,7 @@ public class PhenoDataDataViewPanel extends Panel {
 				// Ensure we tie Subject in context to the item if that link isn't there already
 				if (phenoData.getPhenoDataSetCollection() == null) {
 					phenoData.setPhenoDataSetCollection(cpModel.getObject().getPhenoDataSetCollection());
+					
 				}
 				super.populateItem(item);
 			}
@@ -161,4 +162,5 @@ public class PhenoDataDataViewPanel extends Panel {
 			}
 		}
 	}
+	
 }

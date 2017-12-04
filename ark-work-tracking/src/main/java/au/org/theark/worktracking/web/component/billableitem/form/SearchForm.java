@@ -11,7 +11,8 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -37,7 +38,6 @@ import au.org.theark.core.web.component.button.AjaxInvoiceButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
-import au.org.theark.worktracking.util.BillableItemCostCalculator;
 import au.org.theark.worktracking.util.Constants;
 
 
@@ -91,7 +91,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	protected void addSearchComponentsToForm() {		
@@ -127,7 +127,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		initBillableItemTypeDropDown();
 		initInvoiceDropDown();
 		
-		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		initDataPicker(billableItemCommenceDateDp);
 		
 		
@@ -156,7 +156,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 				}catch(Exception ex){
-					this.error("A System error occured in invoice update");
+					this.error("A system error occurred in the invoice update.");
 				}
 			}
 			@Override
@@ -171,6 +171,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		else{
 			invoiceButton.setVisible(false);
 		}
+		setInvoiceButtonState();
 	}
 	
 	private void initDataPicker(DateTextField dateTextField){
@@ -321,10 +322,13 @@ private void initBillableItemTypeDropDown() {
 			List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getModelObject());
 			
 			if(resultList != null && resultList.size() == 0){
-				this.info("Billable Item with the specified criteria does not exist in the system.");
+				this.info("Billable Item with the specified search criteria does not exist in the system.");
 				target.add(feedbackPanel);
+				invoiceButton.setEnabled(false);
+			}else{
+				invoiceButton.setEnabled(true);
 			}
-			
+			target.add(invoiceButton);
 			getModelObject().setBillableItemList(resultList);
 			listView.removeAll();
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
@@ -334,4 +338,14 @@ private void initBillableItemTypeDropDown() {
 	private BillableItemVo getFormModelObject(){
 		return getModelObject();
 	}
+	
+	private void setInvoiceButtonState(){
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		getModelObject().getBillableItem().setStudyId(studyId);
+		List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getFormModelObject());
+		if(resultList!=null){
+			invoiceButton.setEnabled(resultList.size() > 0);
+		}
+	}
+
 }

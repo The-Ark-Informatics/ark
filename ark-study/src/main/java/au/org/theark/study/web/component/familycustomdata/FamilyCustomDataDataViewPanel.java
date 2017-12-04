@@ -17,12 +17,11 @@ import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.FamilyCustomDataVO;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
-import au.org.theark.study.model.vo.FamilyCustomDataVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataDataViewPanel;
@@ -51,7 +50,7 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 	public FamilyCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage, CustomFieldCategory customFieldCategory) {
 		initialiseDataView(customFieldCategory);
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage); // iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+			dataView.setItemsPerPage(numRowsPerPage); // iArkCommonService.getRowsPerPage());
 		}
 
 		this.add(dataView);
@@ -74,7 +73,7 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 				public Iterator<FamilyCustomFieldData> iterator(int first, int count) {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-					String familyUId=criteriaModel.getObject().getFamilyUId();
+//					String familyUId=criteriaModel.getObject().getFamilyUId();
 					CustomFieldType customFieldType=iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.FAMILY);
 					List<FamilyCustomFieldData> familyCustomDataList = studyService.getFamilyCustomFieldDataList(lss, arkFunction,customFieldCategory,customFieldType, first, count);
 					//List<FamilyCustomFieldData> familyCustomDataList = studyService.getFamilyCustomFieldDataListByCategory(lss.getStudy(), familyId, arkFunction, customFieldCategory, customFieldType, first, count);
@@ -111,9 +110,12 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 				FamilyCustomFieldData subjectCustomData = item.getModelObject();
 				// Ensure we tie Subject in context to the item if that link
 				// isn't there already
+				
 				if (subjectCustomData.getFamilyUid() == null) {
-					subjectCustomData.setFamilyUid(cpModel.getObject().getFamilyUId());
+					subjectCustomData.setFamilyUid(cpModel.getObject().getLinkSubjectStudy().getFamilyId());
 				}
+
+				
 				if(subjectCustomData.getStudy() == null){
 					subjectCustomData.setStudy(cpModel.getObject().getLinkSubjectStudy().getStudy());
 				}

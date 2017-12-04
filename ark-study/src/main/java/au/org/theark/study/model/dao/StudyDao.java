@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.ArkUidGenerator;
 import au.org.theark.core.dao.HibernateSessionDao;
@@ -83,6 +84,8 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.EmailAccount;
+import au.org.theark.core.model.study.entity.EmailAccountType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -100,6 +103,7 @@ import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyCalendar;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -534,6 +538,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
+	@Transactional
 	public void createSubject(SubjectVO subjectVo) throws ArkUniqueException, ArkSubjectInsertException {
 		Study study = subjectVo.getLinkSubjectStudy().getStudy();
 		if (study.getAutoGenerateSubjectUid()) {
@@ -835,11 +840,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Integer result;
 		if (study == null) {
 			log.error("Error in Subject insertion - Study was null");
-			throw new ArkSubjectInsertException("Error in Subject insertion - Study not in context");
+			throw new ArkSubjectInsertException("Error in Subject insertion - Study not selected.");
 		}
 		if (study.getName() == null) {
 			log.error("Error in Subject insertion - Study name was null");
-			throw new ArkSubjectInsertException("Error in Subject insertion - Empty study name");
+			throw new ArkSubjectInsertException("Error in Subject insertion - Empty study name.");
 		}
 		//log.warn("Ark uid generator nnull??? " + (arkUidGenerator == null));
 		// arkUidGenerator.
@@ -1050,6 +1055,23 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		// }
 		return personAddressList;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public List<EmailAccount> getPersonEmailAccountList(Long personId) throws ArkSystemException {
+
+		Criteria emailAccountCriteria = getSession().createCriteria(EmailAccount.class);
+
+		if (personId != null) {
+			emailAccountCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+	
+		List<EmailAccount> emailAccountList = emailAccountCriteria.list();
+		return emailAccountList;
+	}
+
 
 	public void create(Address address) throws ArkSystemException {
 		Session session = getSession();
@@ -1065,6 +1087,28 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		getSession().delete(address);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void create(EmailAccount emailAccount) throws ArkSystemException {
+		getSession().save(emailAccount);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void update(EmailAccount emailAccount) throws ArkSystemException {
+		getSession().update(emailAccount);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void delete(EmailAccount emailAccount) throws ArkSystemException {
+		getSession().delete(emailAccount);
+	}
+
 
 	public void create(OtherID otherID) throws ArkSystemException {
 		Session session = getSession();
@@ -1375,7 +1419,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return list;
 	}
 
-	private boolean isSubjectUIDUnique(String subjectUID, Long studyId, String action) {
+	public boolean isSubjectUIDUnique(String subjectUID, Long studyId, String action) {
 		boolean isUnique = true;
 		Session session = getSession();
 		Criteria criteria = session.createCriteria(LinkSubjectStudy.class);
@@ -1941,7 +1985,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" order by cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
-		query.setParameter("familyUid", getSubjectFamilyUId(linkSubjectStudyCriteria.getStudy().getId(),linkSubjectStudyCriteria.getSubjectUID()));
+		query.setParameter("familyUid", linkSubjectStudyCriteria.getFamilyId());
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("functionId", arkFunction.getId());
 		//Add type and category
@@ -1973,19 +2017,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	@Override
-	public String getSubjectFamilyUId(Long studyId, String subjectUID) {
-		String result=null;
-		
-		StringBuffer sb= new StringBuffer("select scfd.TEXT_DATA_VALUE from "
-				+ "study.link_subject_study lss "
-				+ "left outer join study.study st on lss.STUDY_ID = st.ID "
-				+ "left outer join study.study_pedigree_config spc on spc.study_id = st.ID "
-				+ "left outer join study.custom_field cf on cf.ID = spc.family_id "
-				+ "left outer join study.custom_field_display cfd on cfd.custom_field_id = cf.id "
-				+ "left outer join study.subject_custom_field_data scfd on scfd.CUSTOM_FIELD_DISPLAY_ID = cfd.id "
-				+ "and scfd.LINK_SUBJECT_STUDY_ID = lss.ID "
-				+ "where st.ID= :studyId and lss.SUBJECT_UID = :subjectUID and spc.family_id is not null");
-		
+	public String getSubjectFamilyId(Long studyId, String subjectUID) {
+		String result=null;		
+		StringBuffer sb= new StringBuffer("select lss.FAMILY_ID from study.link_subject_study lss where lss.STUDY_ID = :studyId and lss.SUBJECT_UID = :subjectUID ");
 		Query query = getSession().createSQLQuery(sb.toString());
 	    query.setParameter("studyId", studyId);
 	    query.setParameter("subjectUID", subjectUID);
@@ -2215,9 +2249,20 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("person", person);
 		query.executeUpdate();
 	}
+	
+	public void setPreferredEmailAccountToFalse(Person person) {
+		String queryString = "UPDATE EmailAccount SET primaryAccount = 0 WHERE person = :person";
+		Query query = getSession().createQuery(queryString);
+		query.setParameter("person", person);
+		query.executeUpdate();
+	}
 
 	public EmailStatus getDefaultEmailStatus() {
 		return (EmailStatus) (getSession().get(EmailStatus.class, 0L));// TODO hardcode removal
+	}
+	
+	public EmailAccountType getDefaultEmailAccountType() {
+		return (EmailAccountType) (getSession().get(EmailAccountType.class, 1L));// TODO hardcode removal
 	}
 
 	public List<ConsentOption> getConsentOptions() {
@@ -2562,6 +2607,27 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		return personPhoneList;
 	}
+	
+	/**
+	 * Pageable person Email list.
+	 */
+	public List<EmailAccount> pageablePersonEmailLst(Long personId,int first, int count) {
+		Criteria criteria = getSession().createCriteria(EmailAccount.class);
+		if (personId != null) {
+			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<EmailAccount> emailAccountList = criteria.list();
+		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
+		if (emailAccountList.isEmpty()) {
+			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+			log.info(" personId " + personId + " had no Emails");
+		}
+		return emailAccountList;
+	}
+	
+	
 	/**
 	 * Genenal Phone search.
 	 * @param personId
@@ -2785,6 +2851,21 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (consents.size() > 0);
 		
 	}
+	
+	@Override
+	public List<CorrespondenceDirectionType> getCorrespondenceDirectionForMode(CorrespondenceModeType correspondenceModeType) {
+		List<CorrespondenceDirectionType> correspondenceDirectionTypes=new ArrayList<CorrespondenceDirectionType>();
+		Criteria criteria = getSession().createCriteria(CorrespondenceModeDirectionOutcome.class);
+		criteria.add(Restrictions.eq("correspondenceModeType", correspondenceModeType));
+		List<CorrespondenceModeDirectionOutcome> lst=(List<CorrespondenceModeDirectionOutcome>)criteria.list();
+		List<CorrespondenceModeDirectionOutcome> unqueLst= lst;
+		for (CorrespondenceModeDirectionOutcome correspondenceModeDirectionOutcome : unqueLst) {
+			correspondenceDirectionTypes.add(correspondenceModeDirectionOutcome.getCorrespondenceDirectionType());
+		}
+		return removeDuplicates(correspondenceDirectionTypes);
+	}
+	
+	@Override
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType) {
 		
 		List<CorrespondenceOutcomeType> correspondenceOutcomeTypes=new ArrayList<CorrespondenceOutcomeType>();
@@ -2816,4 +2897,102 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.setMaxResults(1);
 		return (SubjectFile)criteria.uniqueResult();
 	}
+	
+	@Override
+	public List<SubjectFile> getSubjectFileForLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		Criteria criteria = getSession().createCriteria(SubjectFile.class);
+		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		return (List<SubjectFile>)criteria.list();
+	}
+	
+	@Override
+	public List<StudyComp> getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(Study study,LinkSubjectStudy linkSubjectStudy) {
+		List<SubjectFile> subjectFileLst=getSubjectFileForLinkSubjectStudy(linkSubjectStudy);//Study components having file attachments. 
+		List<Long> studyCompList=new ArrayList<Long>();
+		if(subjectFileLst!=null){
+			for (SubjectFile subjectFile : subjectFileLst) {
+				if(subjectFile.getStudyComp()!=null){
+					studyCompList.add(subjectFile.getStudyComp().getId());
+				}
+			}
+		}
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		criteria.add(Restrictions.eq("study", study));
+		if(!studyCompList.isEmpty()) {
+			criteria.add(Restrictions.not(Restrictions.in("id", studyCompList)));
+		}
+		return (List<StudyComp>)criteria.list();
+	}
+	
+	private List<CorrespondenceDirectionType>  removeDuplicates(List<CorrespondenceDirectionType> list){
+		Set<CorrespondenceDirectionType> setOfCorrespondenseDirectionTypes=new HashSet<CorrespondenceDirectionType>();
+		setOfCorrespondenseDirectionTypes.addAll(list);
+		return new ArrayList<CorrespondenceDirectionType>(setOfCorrespondenseDirectionTypes);
+	}
+
+	@Override
+	public LinkSubjectStudy getLinkSubjectStudyBySubjectUidAndStudy(String subjectUid, Study study) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.add(Restrictions.eq("subjectUID", subjectUid));
+		criteria.add(Restrictions.eq("study",study));
+		criteria.setMaxResults(1);
+		return (LinkSubjectStudy)criteria.uniqueResult();
+	}
+
+	@Override
+	public LinkSubjectPedigree getParentRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class);
+		criteria.add(Restrictions.eq("subject", subject));
+		criteria.add(Restrictions.eq("relative",relative));
+		criteria.setMaxResults(1);
+		return (LinkSubjectPedigree)criteria.uniqueResult();
+	}
+
+	@Override
+	public LinkSubjectTwin getTwinRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectTwin.class);
+		criteria.add(Restrictions.eq("firstSubject", subject));
+		criteria.add(Restrictions.eq("secondSubject",relative));
+		criteria.setMaxResults(1);
+		return (LinkSubjectTwin)criteria.uniqueResult();
+	}
+
+	@Override
+	public LinkSubjectPedigree getLinkSubjectPedigreeById(Long id) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class);
+		criteria.add(Restrictions.eq("id",Integer.parseInt(id.toString())));
+		criteria.setMaxResults(1);
+		return (LinkSubjectPedigree)criteria.uniqueResult();
+		
+	}
+
+	@Override
+	public LinkSubjectTwin getLinkSubjectTwinById(Long id) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectTwin.class);
+		criteria.add(Restrictions.eq("id", Integer.parseInt(id.toString())));
+		criteria.setMaxResults(1);
+		return (LinkSubjectTwin)criteria.uniqueResult();
+		
+	}
+
+	@Override
+	public List<LinkSubjectPedigree> getListOfLinkSubjectPedigreeForStudy(Study study) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class)
+		.createAlias("subject", "subject")
+		.createAlias("relative", "relative")
+	    .add(Restrictions.eq("subject.study", study))
+	    .add(Restrictions.eq("relative.study", study));
+		return (List<LinkSubjectPedigree>)criteria.list();
+	}
+
+	@Override
+	public List<LinkSubjectTwin> getListOfLinkSubjectTwinForStudy(Study study) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectTwin.class)
+				.createAlias("firstSubject", "s1")
+				.createAlias("secondSubject", "s2")
+			    .add(Restrictions.eq("s1.study", study))
+			    .add(Restrictions.eq("s2.study", study));
+				return (List<LinkSubjectTwin>)criteria.list();
+	}
+		
 }

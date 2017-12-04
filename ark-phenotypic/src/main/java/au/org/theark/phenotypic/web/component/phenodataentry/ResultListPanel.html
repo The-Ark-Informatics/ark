@@ -9,108 +9,37 @@
 					<!-- Header row -->
 					<thead>
 						<tr>
-							<th width="2%">
-								&nbsp;
-							</th>
-							<th width="10%">
-								<wicket:message	key="phenoDataSetCollection.id">
-									[ID:]
-								</wicket:message>
-							</th>
-							<th width="15%">
-								<wicket:message	key="phenoDataSetCollection.questionnaire">
-									[Questionnaire:]
-								</wicket:message>
-							</th>
-							<!--  
-							<th width="15%">
-								<wicket:message	key="PhenoCollection.name">
-									[Collection Name:]
-								</wicket:message>
-							</th>
-							-->
-							<th width="22%">
-								<wicket:message	key="phenoDataSetCollection.description">
-									[Description:]
-								</wicket:message>
-							</th>
-							<th width="16%">
-								<wicket:message	key="phenoDataSetCollection.status">
-									[Status:]
-								</wicket:message>
-							</th>
-							<th width="10%">
-								<wicket:message	key="phenoDataSetCollection.recordDate">
-									[Record Date:]
-								</wicket:message>
-							</th>
-							<th width="10%">
-								<wicket:message	key="phenoDataSetCollection.reviewedDate">
-									[Reviewed Date:]
-								</wicket:message>
-							</th>
-							<th width="2%">
-								&nbsp;
-							</th>
+							<th width="2%">	&nbsp;</th>
+							<th width="10%"><wicket:message	key="phenoDataSetCollection.id">[ID:]</wicket:message></th>
+							<th width="15%"><wicket:message	key="phenoDataSetCollection.questionnaire">[Questionnaire:]</wicket:message></th>
+							<th width="22%"><wicket:message	key="phenoDataSetCollection.description">[Description:]</wicket:message></th>
+							<th width="16%"><wicket:message	key="phenoDataSetCollection.status">[Status:]</wicket:message></th>
+							<th width="10%"><wicket:message	key="phenoDataSetCollection.recordDate">[Record Date:]</wicket:message></th>
+							<th width="10%"><wicket:message	key="phenoDataSetCollection.reviewedDate">[Reviewed Date:]</wicket:message></th>
+							<th width="2%" colspan="2">&nbsp;</th>
 						</tr>
 					</thead>
-					<tfoot>
-						<tr>
-							<td width="2%">
-								&nbsp;
-							</td>
-							<td width="96%" colspan="6">
-								<span wicket:id="navigator" class="a">
-								</span>
-							</td>
-							<td width="2%">
-								&nbsp;
-							</td>
-						</tr>
-					</tfoot>
 					<tbody>
 						<!-- Repeated item row -->
 						<tr wicket:id="PhenoDataSetCollectionList">
-							<td width="2%">
-								&nbsp;
-							</td>
-							<td width="10%">
-								<span wicket:id="phenoDataSetCollection.id">
-								</span>
-							</td>
-							<td width="15%">
-								<a href="#" wicket:id="link">
-									<span wicket:id="phenoDataSetCollection.questionnaire">
-									</span>
-								</a>
-							</td>
-							<!--  
-							<td width="15%">
-								<span wicket:id="PhenoCollection.name">
-								</span>
-							</td>
-							-->
-							<td width="22%">
-								<span wicket:id="phenoDataSetCollection.description">
-								</span>
-							</td>
-							<td width="14%">
-								<span wicket:id="phenoDataSetCollection.status">
-								</span>
-							</td>
-							<td width="10%">
-								<span wicket:id="phenoDataSetCollection.recordDate">
-								</span>
-							</td>
-							<td width="10%">
-								<span wicket:id="phenoDataSetCollection.reviewedDate">
-								</span>
-							</td>
-							<td width="2%">
-								&nbsp;
-							</td>
+							<td width="2%">	&nbsp;</td>
+							<td width="10%"><span wicket:id="phenoDataSetCollection.id"></span></td>
+							<td width="15%"><a href="#" wicket:id="link"><span wicket:id="phenoDataSetCollection.questionnaire"></span></a></td>
+							<td width="22%"><span wicket:id="phenoDataSetCollection.description"></span></td>
+							<td width="14%"><span wicket:id="phenoDataSetCollection.status"></span></td>
+							<td width="10%"><span wicket:id="phenoDataSetCollection.recordDate"></span></td>
+							<td width="10%"><span wicket:id="phenoDataSetCollection.reviewedDate"></span></td>
+							<td width="15%"><input wicket:id="edit" type="submit" wicket:message="value:button.editdatavalues"/></td>
+							<td width="2%">&nbsp;</td>
 						</tr>
 					</tbody>
+					<tfoot>
+						<tr>
+							<td width="2%">&nbsp;</td>
+							<td width="96%" colspan="7"><span wicket:id="navigator" class="a"></span></td>
+							<td width="2%">&nbsp;</td>
+						</tr>
+					</tfoot>
 				</table>
 				<table width="0%" cellspacing="0">
 				</table>
@@ -122,8 +51,8 @@
 			<!--	End listDetailsPanelBorder -->
 
 			<!--	The detailModalWindow for detail edit/add from listPanel -->
-			<div wicket:id="detailModalWindow">
-			</div>
+			<div wicket:id="detailModalWindow">	</div>
+			<div wicket:id="datasetValueModalWindow">	</div>
 			<div class="detailPanel">
 				<table width="100%" cellspacing="0" class="buttonview" border="0">
 					<!-- Header row -->

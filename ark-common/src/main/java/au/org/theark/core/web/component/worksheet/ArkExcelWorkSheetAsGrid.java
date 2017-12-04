@@ -88,7 +88,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private String							fileFormat;
 	private WebMarkupContainer				wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
 	private WebMarkupContainer				wizardDataGridKeyContainerForCustom	= new WebMarkupContainer("wizardDataGridKeyContainerForCustom");
-	private int									rowsToDisplay					= iArkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue();
+	private int									rowsToDisplay					= iArkCommonService.getRowsPerPage();
 	private Behavior		errorCellBehavior				= new Behavior() {
 																			private static final long	serialVersionUID	= 7204106018358344579L;
 																			@Override
@@ -758,7 +758,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("An error occured while downloading. Please contact Administrator");
+				this.error("An unexpected error occurred while downloading. Please contact the system administrator.");
 			};
 		};
 

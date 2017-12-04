@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -72,7 +73,7 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	protected void addSearchComponentsToForm() {		
@@ -90,11 +91,11 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 		
 		workRequestIdTxtField=new TextField<String>(Constants.WORK_REQUEST_ID);             
 		workRequestItemNameTxtField=new TextField<String>(Constants.WORK_REQUEST_ITEM_NAME);       
-		workRequestRequestedDateDp=new DateTextField(Constants.WORK_REQUEST_REQUESTED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
+		workRequestRequestedDateDp=new DateTextField(Constants.WORK_REQUEST_REQUESTED_DATE,new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		initDateTextField(workRequestRequestedDateDp);
-		workRequestCommencedDateDp=new DateTextField(Constants.WORK_REQUEST_COMMENCED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);      
+		workRequestCommencedDateDp=new DateTextField(Constants.WORK_REQUEST_COMMENCED_DATE,new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));      
 		initDateTextField(workRequestCommencedDateDp);
-		workRequestCompletedDateDp=new DateTextField(Constants.WORK_REQUEST_COMPLETED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
+		workRequestCompletedDateDp=new DateTextField(Constants.WORK_REQUEST_COMPLETED_DATE,new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		initDateTextField(workRequestCompletedDateDp);
 
 		CompoundPropertyModel<WorkRequestVo> workRequestCmpModel = (CompoundPropertyModel<WorkRequestVo>) cpmModel;
@@ -179,7 +180,7 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 			List<WorkRequest> resultList= iWorkTrackingService.searchWorkRequest(getModelObject().getWorkRequest());
 			
 			if(resultList != null && resultList.size() == 0){
-				this.info("Billable Item Type with the specified criteria does not exist in the system.");
+				this.info("Billable item type with the specified criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
 			

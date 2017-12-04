@@ -18,7 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.model.study.entity;
 
-import java.sql.Blob;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,10 +38,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import au.org.theark.core.Constants;
@@ -71,9 +71,11 @@ public class Study implements java.io.Serializable {
 	private String ldapGroupName;
 	private Boolean autoConsent;
 	private String subStudyBiospecimenPrefix;
-	// TODO may want to consider byte[] + @Lob annotation
-	private Blob studyLogoBlob;
+
+	private byte[] studyLogoBlob;
 	private String filename;
+	private String studyLogoChecksum;
+	private String studyLogoFileId;
 
 	// SubjectUID autogeneration parameters
 	private Boolean autoGenerateSubjectUid;
@@ -105,7 +107,7 @@ public class Study implements java.io.Serializable {
 
 	private Set<Pipeline> pipelines = new HashSet<Pipeline>(0);
 	
-	private StudyPedigreeConfiguration pedigreeConfiguration = new StudyPedigreeConfiguration();
+	private StudyPedigreeConfiguration pedigreeConfiguration;
 
 	public Study() {
 	}
@@ -307,12 +309,14 @@ public class Study implements java.io.Serializable {
 		return this.subStudyBiospecimenPrefix;
 	}
 
-	public void setStudyLogoBlob(Blob studyLogoBlob) {
+	public void setStudyLogoBlob(byte[] studyLogoBlob) {
 		this.studyLogoBlob = studyLogoBlob;
 	}
 
-	@Column(name = "STUDY_LOGO")
-	public Blob getStudyLogoBlob() {
+	/*@Lob
+	@Column(name = "STUDY_LOGO")*/
+	@Transient
+	public byte[] getStudyLogoBlob() {
 		return studyLogoBlob;
 	}
 
@@ -535,6 +539,24 @@ public class Study implements java.io.Serializable {
 	public void setAutoGenerateBiocollectionUid(
 			Boolean autoGenerateBiocollectionUid) {
 		this.autoGenerateBiocollectionUid = autoGenerateBiocollectionUid;
+	}
+
+	@Column(name = "STUDY_LOGO_CHECKSUM")
+	public String getStudyLogoChecksum() {
+		return studyLogoChecksum;
+	}
+
+	public void setStudyLogoChecksum(String studyLogoChecksum) {
+		this.studyLogoChecksum = studyLogoChecksum;
+	}
+
+	@Column(name = "STUDY_LOGO_FILE_ID")
+	public String getStudyLogoFileId() {
+		return studyLogoFileId;
+	}
+
+	public void setStudyLogoFileId(String studyLogoFileId) {
+		this.studyLogoFileId = studyLogoFileId;
 	}
 
 	/*@Transient

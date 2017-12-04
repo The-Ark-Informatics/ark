@@ -59,6 +59,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private SubjectStatus subjectStatus;
 	private Person person;
 	private String subjectUID;
+	private String familyId;
 	private String naturalUID;
 	private ConsentOption consentToActiveContact;
 	private ConsentOption consentToPassiveDataGathering;
@@ -155,7 +156,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public void setSubjectStatus(SubjectStatus subjectStatus) {
 		this.subjectStatus = subjectStatus;
 	}
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PERSON_ID")
 	public Person getPerson() {
@@ -174,7 +175,15 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public void setSubjectUID(String subjectUID) {
 		this.subjectUID = subjectUID;
 	}
-
+	
+	@Column(name = "FAMILY_ID", length = 50)
+	public String getFamilyId() {
+		return familyId;
+	}
+	public void setFamilyId(String familyId) {
+		this.familyId = familyId;
+	}
+	
 	@NotAudited
 	@Column(name = "NATURAL_UID", length = 100)
 	public String getNaturalUID() {

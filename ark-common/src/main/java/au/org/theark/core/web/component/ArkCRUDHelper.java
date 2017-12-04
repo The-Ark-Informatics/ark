@@ -18,10 +18,14 @@
  ******************************************************************************/
 package au.org.theark.core.web.component;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
+import org.apache.wicket.util.iterator.ComponentHierarchyIterator;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.config.entity.Setting;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -118,7 +122,7 @@ public class ArkCRUDHelper {
 	 * @param target
 	 * @param arkCrudContainerVO
 	 */
-	public static void preProcessDetailPanelOnSearchResultsWhenTwoTypesForms(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO,String type_one,String type_two){
+	public static void preProcessDetailPanelOnSearchResultsForMultiplePanels(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO,String primaryMarkupId,String ... secondaryMarkupId){
 		// this check is required to make the delete button enabled if the user has Delete permissions. If the user had navigated from New to Detail Form first, 
 		// The delete button will be disabled. When he cancels out and then clicks on an existing record, even if the user had permissions the delete button will be disabled.
 		//The earlier code had two containers to manage this so it was possible. Now this has to be done through this method.
@@ -133,18 +137,19 @@ public class ArkCRUDHelper {
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-		arkCrudContainerVO.getDetailPanelContainer().get(type_one).setVisible(true);
-		arkCrudContainerVO.getDetailPanelContainer().get(type_one).setOutputMarkupId(true);
-		arkCrudContainerVO.getDetailPanelContainer().get(type_two).setVisible(false);
-		arkCrudContainerVO.getDetailPanelContainer().get(type_two).setOutputMarkupId(true);
+		arkCrudContainerVO.getDetailPanelContainer().get(primaryMarkupId).setVisible(true);
+		arkCrudContainerVO.getDetailPanelContainer().get(primaryMarkupId).setOutputMarkupId(true);
+		for(String markupId:secondaryMarkupId){
+		 arkCrudContainerVO.getDetailPanelContainer().get(markupId).setVisible(false);
+		 arkCrudContainerVO.getDetailPanelContainer().get(markupId).setOutputMarkupId(true);
+		 target.add(arkCrudContainerVO.getDetailPanelContainer().get(markupId));
+		}
 		//add to target.
-		target.add(arkCrudContainerVO.getDetailPanelContainer().get(type_one));
-		target.add(arkCrudContainerVO.getDetailPanelContainer().get(type_two));
+		target.add(arkCrudContainerVO.getDetailPanelContainer().get(primaryMarkupId));
 		target.add(arkCrudContainerVO.getSearchPanelContainer());
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
 	
 	}
-	
-	
+		
 }

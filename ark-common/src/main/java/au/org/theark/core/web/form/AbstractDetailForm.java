@@ -40,7 +40,9 @@ import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ValidationMessages;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.ArkVo;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
@@ -79,6 +81,10 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	
 	@SpringBean(name = "lobUtil")
 	protected LobUtil							lobUtil;
+	
+	@SpringBean(name = Constants.VALIDATION_MESSAGES)
+	private ValidationMessages validationMsg;
+	
 
 	/**
 	 * 
@@ -224,8 +230,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 			}
 			
 		}
-		
-		
+
 	}
 	
 	public void determineViewOrEditMode(){
@@ -452,4 +457,33 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		}
 		return hex.toString();
 	}
+	
+	protected void saveInformation(){
+		this.info(getComponentName()+" "+validationMsg.save());
+	}
+	
+	protected void updateInformation(){
+		this.info(getComponentName()+" "+validationMsg.update());
+	}
+	
+	protected void deleteInformation(){
+		this.info(getComponentName()+" "+validationMsg.delete());
+	}
+	
+	private String getComponentName(){
+		String name = "";
+		Object modelObject=null;
+		if(containerForm!=null){
+			modelObject = containerForm.getModelObject();
+			
+		}else{
+			modelObject=cpModel.getObject();
+		}
+		if(modelObject instanceof ArkVo){
+			name= ((ArkVo)modelObject).getArkVoName();
+		}
+		return name;
+	}
+	
+	
 }

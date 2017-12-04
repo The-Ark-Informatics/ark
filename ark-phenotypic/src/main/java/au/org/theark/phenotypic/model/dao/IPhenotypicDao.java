@@ -30,9 +30,9 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.LinkPhenoDataSetCategoryField;
+import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetGroup;
@@ -41,7 +41,6 @@ import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -60,149 +59,14 @@ import au.org.theark.core.vo.PhenoDataSetFieldGroupVO;
  */
 public interface IPhenotypicDao {
 
-	// Collection
-//	public PhenoCollection getPhenoCollection(Long id);
-
 	public java.util.Collection<PhenoDataSetCollection> getPhenoCollectionByStudy(Study study);
-
-//	public PhenoCollectionVO getPhenoCollectionAndFields(Long id);
-
-//	public java.util.Collection<PhenoCollection> searchPhenoCollection(PhenoCollection collectionToMatch);
-
-//	public PhenoCollection getPhenoCollectionByUpload(Upload upload);
-
-//	public void createPhenoCollection(PhenoCollection collection);
-
-//	public void createPhenoCollection(PhenoCollectionVO collectionVo);
-
-//	public void updatePhenoCollection(PhenoCollection collection);
-
-	//public void updatePhenoCollection(PhenoCollectionVO collectionVo);
 
 	public void deletePhenoCollection(PhenoDataSetCollection collection);
 
-	//public void deletePhenoCollection(PhenoCollectionVO collectionVo);
-
-//	public int clearPhenoCollection(PhenoCollection phenoCollection);
-
-	// FieldCollection
-//	public java.util.Collection<FieldPhenoCollection> getFieldPhenoCollection(PhenoCollection phenoCollection);
-
-	// Collection Upload
-//	public PhenoCollectionUpload getCollectionUpload(Long id);
-/*
-	public java.util.Collection<PhenoCollectionUpload> getCollectionUpload();
-
-	public PhenoCollectionVO getPhenoCollectionAndUploads(PhenoCollection phenoCollection);
-
-	public java.util.Collection<PhenoCollectionUpload> searchCollectionUpload(PhenoCollectionUpload phenoCollectionUploadToMatch);
-
-	public void createCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
-
-	public void updateCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
-
-	public void deleteCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
-
-	// Status
-	public Status getStatus(Long statusId);
-
-	public Status getStatusByName(String statusName);
-
-	public java.util.Collection<Status> getStatus();
-
-	public void createStatus(Status status);
-
-	public void updateStatus(Status status);
-	// Field
-	public Field getField(Long fieldId);
-
-	public java.util.Collection<Field> getField();
-
-	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException;
-
-	public java.util.Collection<Field> searchField(Field field);
-
-	public boolean fieldHasData(Field field);
-
-	public void createField(Field field);
-
-	public void updateField(Field field);
-
-	public void deleteField(Field field) throws ArkSystemException, EntityCannotBeRemoved;
-
-	// Field Type
-	public FieldType getFieldType(Long id);
-
-	public FieldType getFieldTypeByName(String fieldTypeName);
-
-	public java.util.Collection<FieldType> getFieldTypes();
-
-	public void createFieldType(FieldType fieldType);
-
-	public void updateFieldType(FieldType fieldType);
-
-	// Field_collections
-	public FieldPhenoCollection getFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
-
-	public void createFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
-
-	public void updateFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
-
-	// Field Data
-	public FieldData getFieldData(Long id);
-
-	public FieldData getFieldData(FieldData fieldData);
-
-	public java.util.Collection<FieldData> getFieldDataByCollectionAndField(PhenoCollection phenoCollection, Field field);
-
-	public FieldData getFieldData(PhenoCollection phenoCollection, LinkSubjectStudy linkSubjectStudy, Field field, Date dateCollected, String value);
-
-	public Collection<FieldData> searchFieldDataByField(Field field);
-
-	public Collection<FieldData> searchFieldData(FieldData fieldData);
-
-	public void createFieldData(FieldData fieldData);
-
-	public void updateFieldData(FieldData fieldData);
-
-	public void deleteFieldData(FieldData fieldData);
-
-	// Field Data Log
-	public FieldDataLog getFieldDataLog(Long id);
-
-	public java.util.Collection<FieldDataLog> getFieldDataLogByField(Field field);
-
-	public void createFieldDataLog(FieldDataLog fieldDataLog);
-
-	// Upload
-//	public java.util.Collection<Upload> searchUpload(Upload upload);
-
-	public java.util.Collection<Upload> searchUploadByCollection(PhenoCollection phenoCollection);
-
-	public PhenoCollectionVO getPhenoCollectionAndUploads(Long id);
-
-//	public Upload getUpload(Long id);
-
-*/
 	public void createUpload(Upload upload);
-
-//	public void createUpload(UploadVO uploadVo);
 
 	public void updateUpload(Upload upload);
 
-/*	public void deleteUpload(Upload upload) throws ArkSystemException, EntityCannotBeRemoved;
-
-	// Collection Upload
-	public PhenoCollectionUpload getPhenoCollectionUpload(Long id);
-
-	public java.util.Collection<PhenoCollectionUpload> searchPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
-
-	public void createPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
-
-	public void updatePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
-
-	public void deletePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
-*/
 	// File Formats
 	public java.util.Collection<FileFormat> getFileFormats();
 
@@ -213,30 +77,12 @@ public interface IPhenotypicDao {
 
 	public long getCountOfFieldsWithDataInStudy(Study study);
 
-	// Field Upload
-//	public Collection<Upload> searchFieldUpload(Upload Upload);
 
 	public long getCountOfCollectionsInStudy(Study study);
 
 	public long getCountOfCollectionsWithDataInStudy(Study study);
 
-	/**
-	 * A generic interface that will return a list PhenoCollectionVO specified by a particular criteria, and a paginated reference point
-	 * 
-	 * @return Collection of PhenoCollectionVO
-	 */
-//	public List<PhenoCollectionVO> searchPageableFieldData(PhenoCollectionVO phenoCollectionVoCriteria, int first, int count);
-
-	/**
-	 * A generic interface that will return count of the fieldData's in the study
-	 * 
-	 * @return int
-	 */
-//	public long getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria);
-
 	public DelimiterType getDelimiterType(Long id);
-
-//	public java.util.List<BarChartResult> getFieldsWithDataResults(Study study);
 
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
 
@@ -277,8 +123,6 @@ public interface IPhenotypicDao {
 	public void createPhenoCollection(PhenoDataSetCollection phenoCollection);
 
 	public void updatePhenoCollection(PhenoDataSetCollection phenoCollection);
-
-//	public void deletePhenoCollection(PhenoCollection phenoCollection);
 	
 	public QuestionnaireStatus getPhenoCollectionStatusByName(String statusName);
 	
@@ -326,17 +170,6 @@ public interface IPhenotypicDao {
 	 * @return
 	 */
 	public long getPhenoDataSetCategoryCount(PhenoDataSetCategory phenoDataSetCategoryCriteria);
-	
-	
-	/**
-	 * Category list.
-	 * @param study
-	 * @param arkFunction
-	 * @param customFieldType
-	 * @return
-	 * @throws ArkSystemException
-	 */
-	//public List<PhenoDataSetCategory> getPhenoParentCategoryList(Study study,ArkFunction arkFunction) throws ArkSystemException;
 	
 	/**
 	 * List of all available Pheno category list for update.
@@ -428,13 +261,6 @@ public interface IPhenotypicDao {
 	 */
 	public List<PhenoDataSetField> searchPageablePhenoFields(PhenoDataSetField phenoDataSetCriteria, int first, int count);
 	/**
-	 * searchPageablePhenoFields
-	 * 
-	 * @param pheDataSetFieldCriteria
-	 * @return
-	 */
-	//public PhenoDataSetFieldDisplay getPhenoDataSetFieldDisplayByPhenoDataSet(PhenoDataSetField pheDataSetFieldCriteria);
-	/**
 	 * getAvailableAllCategoryListInStudy
 	 * 
 	 * @param study
@@ -464,14 +290,6 @@ public interface IPhenotypicDao {
 	 * @throws ArkSystemException
 	 */
 	public void updatePhenoDataSetFieldDisplay(PhenoDataSetFieldDisplay phenDataSetFieldDisplay) throws  ArkSystemException;
-	/**
-	 * 
-	 * @param study
-	 * @param arkFunction
-	 * @param phenoDataSetCategory
-	 * @return
-	 */
-	//public List<PhenoDataSetCategory> getSiblingList(Study study,ArkFunction arkFunction,PhenoDataSetCategory phenoDataSetCategory);
 	/**
 	 * 
 	 * @param CustomFieldCategory
@@ -546,8 +364,6 @@ public interface IPhenotypicDao {
 	
 	public void updatePickedPhenoDataSetCategory(PickedPhenoDataSetCategory pickedPhenoDataSetCategory)throws ArkSystemException, ArkRunTimeUniqueException,ArkRunTimeException;
 	
-	//public boolean isLinkPhenoDataSetCategoryFieldExsists(Study study, ArkFunction arkFunction,ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory,PhenoDataSetField phenoDataSetField);
-	
 	public List<PhenoDataSetField> getLinkedPhenoDataSetFieldsForSelectedCategories(Study study, ArkFunction arkFunction,ArkUser arkUser,List<PhenoDataSetCategory> phenoDataSetCategory);
 	
 	public LinkPhenoDataSetCategoryField getLinkPhenoDataSetCategoryField(Study study, ArkFunction arkFunction,ArkUser arkUser,PhenoDataSetCategory phenoDataSetCategory,PhenoDataSetField phenoDataSetField);
@@ -600,8 +416,6 @@ public interface IPhenotypicDao {
 	
 	public List<PhenoDataSetGroup> getPhenoDataSetFieldGroups(PhenoDataSetGroup phenoDataSetGroup, int first, int count);
 	
-	//public boolean isPhenoDataSetGroupAlreadyPublished(PhenoDataSetGroup phenoDataSetGroup);
-	
 	public List<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplayForPhenoDataSetFieldGroupOrderByPhenoDataSetCategory(PhenoDataSetGroup phenoDataSetGroup);
 	
 	public List<PhenoDataSetField> getPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroupAndPhenoDataSetCategory(PhenoDataSetGroup phenoDataSetGroupCriteria,PhenoDataSetCategory phenoDataSetCategory);
@@ -613,5 +427,10 @@ public interface IPhenotypicDao {
 	public boolean isPhenoDataSetFieldCategoryBeingUsed(PhenoDataSetCategory phenoDataSetCategory);
 	
 	public List<PhenoDataSetField> getAllPhenoDataSetFieldsLinkedToPhenoDataSetFieldGroup(PhenoDataSetGroup phenoDataSetGroupCriteria);
+	
+	public boolean isInEncodedValues(PhenoDataSetField phenoDataSetField, String value);
 
+	public boolean isSameNameFieldGroupExsistsForTheStudy(String name,Study study,ArkFunction arkFunction);
+	
+	public void deletePhenoDatasetData(PhenoDataSetCollection phenoDataSetCollection);
 }

@@ -25,9 +25,10 @@ package au.org.theark.core.security;
  */
 public class RoleConstants {
 	public static final String	ARK_ROLE_ADMINISTATOR			= "Administrator";
-	public static final String	ARK_ROLE_SUPER_ADMINISTATOR	= "Super Administrator";
-	public static final String	ARK_ROLE_STUDY_ADMINISTATOR	= "Study Administrator";
+	public static final String	ARK_ROLE_SUPER_ADMINISTATOR		= "Super Administrator";
+	public static final String	ARK_ROLE_STUDY_ADMINISTATOR		= "Study Administrator";
 	public static final String	ARK_ROLE_SUBJECT_ADMINISTATOR	= "Subject Administrator";
-	public static final String	ARK_ROLE_PHENO_ADMINISTATOR	= "Pheno Administrator";
+	public static final String	ARK_ROLE_PHENO_ADMINISTATOR		= "Pheno Administrator";
 	public static final String	ARK_ROLE_LIMS_ADMINISTATOR		= "LIMS Administrator";
+	public static final String	ARK_ROLE_CALENDAR_ADMINISTATOR	= "Calendar Administrator";
 }

@@ -36,6 +36,7 @@ import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ValidationMessages;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -58,6 +59,10 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
+	
+	@SpringBean(name = "Validation")
+	private ValidationMessages validationMsg;
+	
 	private Study					study;
 
 	private TextField<String>	componentIdTxtFld;
@@ -160,14 +165,16 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 			if (containerForm.getModelObject().getStudyComponent().getId() == null) {
 
 				iStudyService.create(containerForm.getModelObject().getStudyComponent());
-				this.info("Study Component " + containerForm.getModelObject().getStudyComponent().getName() + " was created successfully");
+//				this.info("Study Component " + containerForm.getModelObject().getStudyComponent().getName() + " was created successfully");
+				this.saveInformation();
 				processErrors(target);
 
 			}
 			else {
 
 				iStudyService.update(containerForm.getModelObject().getStudyComponent());
-				this.info("Study Component " + containerForm.getModelObject().getStudyComponent().getName() + " was updated successfully");
+//				this.info("Study Component " + containerForm.getModelObject().getStudyComponent().getName() + " was updated successfully");
+				this.updateInformation();
 				processErrors(target);
 
 			}
@@ -176,7 +183,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 
 		}
 		catch (EntityExistsException e) {
-			this.error("A Study Component with the same name already exists for this study.");
+			this.error("A study component with the same name already exists in this study.");
 			processErrors(target);
 		}
 		catch (UnAuthorizedOperation e) {
@@ -184,7 +191,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 			processErrors(target);
 		}
 		catch (ArkSystemException e) {
-			this.error("A System error occured, we will have someone contact you.");
+			this.error("A system error occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 
@@ -206,7 +213,8 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 			iStudyService.delete(containerForm.getModelObject().getStudyComponent());
 			StudyCompVo studyCompVo = new StudyCompVo();
 			containerForm.setModelObject(studyCompVo);
-			containerForm.info("The Study Component was deleted successfully.");
+//			containerForm.info("The Study Component was deleted successfully.");
+			this.deleteInformation();
 			editCancelProcess(target);
 		}
 		catch (UnAuthorizedOperation unAuthorisedexception) {
@@ -214,11 +222,11 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 			processErrors(target);
 		}
 		catch (EntityCannotBeRemoved cannotRemoveException) {
-			containerForm.error("Cannot Delete this Study Component. This component is associated with a Subject");
+			containerForm.error("Cannot delete this study component. This component is associated with a subject");
 			processErrors(target);
 		}
 		catch (ArkSystemException e) {
-			containerForm.error("A System Error has occured please contact support.");
+			containerForm.error("A system error has occurred. Please contact the system administrator.");
 			processErrors(target);
 		}
 	}

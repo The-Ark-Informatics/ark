@@ -67,7 +67,7 @@ public class BiospecimenUploadStep2 extends AbstractWizardStepPanel {
 
 		@Override
 		protected void onError(AjaxRequestTarget target, Form<?> form) {
-			this.error("Unexpected Error: Download request could not be processed");
+			this.error("An unexpected error occurred. The download request could not be processed.");
 		}
 		
 	};
@@ -140,7 +140,7 @@ public class BiospecimenUploadStep2 extends AbstractWizardStepPanel {
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, iArkCommonService.getRowsPerPage());
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			WebMarkupContainer wizardDataGridKeyContainer = new WebMarkupContainer("wizardDataGridKeyContainer");
 			wizardDataGridKeyContainer.setVisible(false);
@@ -169,7 +169,7 @@ public class BiospecimenUploadStep2 extends AbstractWizardStepPanel {
 
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {
-						this.error("Unexpected Error: Download request could not be processed");
+						this.error("An unexpected error occurred. The download request could not be processed.");
 					}
 					
 				};

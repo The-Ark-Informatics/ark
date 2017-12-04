@@ -76,7 +76,7 @@ public class SubjectUploadReport {
 	public void appendDetails(Upload studyUpload) {
 		append("Study: ");
 		appendAndNewLine(studyUpload.getStudy().getName());
-		append("UserID: ");
+		append("User ID: ");
 		appendAndNewLine(SecurityUtils.getSubject().getPrincipal().toString());
 		append("Filename: ");
 		appendAndNewLine(studyUpload.getFilename());

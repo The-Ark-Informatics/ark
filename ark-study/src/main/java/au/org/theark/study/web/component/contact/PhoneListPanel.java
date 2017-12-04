@@ -34,6 +34,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -77,6 +78,7 @@ public class PhoneListPanel extends Panel {
 	private IStudyService												studyService;
 	private Person														person;
 	private WebMarkupContainer											dataContainer;
+	private FeedbackPanel 					feedBackPanel;
 
 	/**
 	 * Constructor
@@ -85,10 +87,11 @@ public class PhoneListPanel extends Panel {
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public PhoneListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public PhoneListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm, FeedbackPanel feedBackPanel) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
+		this.feedBackPanel=feedBackPanel;
 		initialiseDataview();
 
 	}
@@ -200,7 +203,7 @@ public class PhoneListPanel extends Panel {
 		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Valid From"), "validFrom"));
 		exportColumns.add(new ExportableTextColumn<PhoneSubjectVO>(Model.of("Phone Valid To"), "validTo"));
 		
-		DataTable exportTable = new DataTable("datatable", exportColumns, dataViewPhoneSubject.getDataProvider(), iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue());
+		DataTable exportTable = new DataTable("datatable", exportColumns, dataViewPhoneSubject.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("Subject UID:");
 		headers.add("ID:");
@@ -230,7 +233,7 @@ public class PhoneListPanel extends Panel {
 	 */
 	private DataView<Phone> buildDataView(ArkDataProvider<Phone, IStudyService> phoneProvider) {
 
-		DataView<Phone> phoneListDataView = new DataView<Phone>("phoneList", phoneProvider, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		DataView<Phone> phoneListDataView = new DataView<Phone>("phoneList", phoneProvider, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -310,7 +313,7 @@ public class PhoneListPanel extends Panel {
 	 */
 	private DataView<PhoneSubjectVO> buildDataViewWithStudySubjectID(ArkDataProvider<PhoneSubjectVO, IStudyService> phoneProvider) {
 
-		DataView<PhoneSubjectVO> phoneListDataView = new DataView<PhoneSubjectVO>("phoneListWithSubjectID", subjectPhoneProvider, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		DataView<PhoneSubjectVO> phoneListDataView = new DataView<PhoneSubjectVO>("phoneListWithSubjectID", subjectPhoneProvider, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -370,8 +373,8 @@ public class PhoneListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				containerForm.getModelObject().getPhoneVo().setPhone(phone);
-				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsWhenTwoTypesForms(target, arkCrudContainerVO, au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL,
-						au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsForMultiplePanels(target, arkCrudContainerVO, au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL,
+						au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL,au.org.theark.study.web.Constants.EMAIL_DETAIL_PANEL);
 			}
 		};
 		Label nameLinkLabel = new Label(Constants.PHONE_NUMBER_VALUE, phone.getPhoneNumber());

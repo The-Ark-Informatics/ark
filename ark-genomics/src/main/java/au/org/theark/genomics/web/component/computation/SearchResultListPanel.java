@@ -57,7 +57,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<Computation> buildPageableListView(IModel iModel) {
 
-		PageableListView<Computation> sitePageableListView = new PageableListView<Computation>("computationList", iModel, iArkCommonService.getUserConfig(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<Computation> sitePageableListView = new PageableListView<Computation>("computationList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -169,11 +169,11 @@ public class SearchResultListPanel extends Panel {
 					}
 				}
 				catch(ArkSystemException e){
-					this.error("Unexpected error: Download request could not be fulfilled.");
+					this.error("An unexpected error occurred. Download request could not be fulfilled.");
 				}catch (IOException e) {
-					this.error("Unexpected error: Download request could not be fulfilled.");
+					this.error("An unexpected error occurred. Download request could not be fulfilled.");
 				} catch (ArkFileNotFoundException e) {
-					this.error("Unexpected error: Download request could not be fulfilled.");
+					this.error("An unexpected error occurred. Download request could not be fulfilled.");
 				} catch (ArkCheckSumNotSameException e) {
 					e.printStackTrace();
 				}
@@ -184,7 +184,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Download request could not be fulfilled.");
+				this.error("An unexpected error occurred. Download request could not be fulfilled.");
 //				log.error("Unexpected error: Download request could not be fulfilled.");
 			};
 			

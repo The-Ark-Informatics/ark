@@ -96,7 +96,7 @@ public class SearchResultListPanel extends Panel {
 	 */
 	@SuppressWarnings("unchecked")
 	public PageableListView<SubjectFile> buildPageableListView(IModel iModel) {
-		PageableListView<SubjectFile> sitePageableListView = new PageableListView<SubjectFile>(Constants.RESULT_LIST, iModel, arkCommonService.getUserConfig(Constants.CONFIG_ROWS_PER_PAGE).getIntValue()) {
+		PageableListView<SubjectFile> sitePageableListView = new PageableListView<SubjectFile>(Constants.RESULT_LIST, iModel, arkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -184,7 +184,7 @@ public class SearchResultListPanel extends Panel {
 					String fileId = subjectFile.getFileId();
 					String checksum = subjectFile.getChecksum();
 					
-					data = arkCommonService.retriveArkFileAttachmentByteArray(studyId,subjectUID,au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR,fileId,checksum);
+					data = arkCommonService.retriveArkFileAttachmentByteArray(studyId,subjectUID,(subjectFile.getIsConsentFile()?au.org.theark.study.web.Constants.ARK_SUBJECT_CONSENT_DIR:au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR),fileId,checksum);
 
 					if (data != null) {
 						InputStream inputStream = new ByteArrayInputStream(data);
@@ -207,13 +207,13 @@ public class SearchResultListPanel extends Panel {
 					}
 				}
 				catch(ArkSystemException e){
-					this.error("Unexpected error: Download request could not be fulfilled.");
+					this.error("An unexpected error occurred. Download request could not be fulfilled.");
 					log.error("ArkSystemException" + e.getMessage(), e);
 				}catch (IOException e) {
-					this.error("Unexpected error: Download request could not be fulfilled.");
+					this.error("An unexpected error occurred. Download request could not be fulfilled.");
 					log.error("IOException" + e.getMessage(), e);
 				} catch (ArkFileNotFoundException e) {
-					this.error("Unexpected error: Download request could not be fulfilled.");
+					this.error("An unexpected error occurred. Download request could not be fulfilled.");
 					log.error("FileNotFoundException" + e.getMessage(), e);
 				} catch (ArkCheckSumNotSameException e) {
 					// TODO Auto-generated catch block
@@ -226,8 +226,8 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Download request could not be fulfilled.");
-				log.error("Unexpected error: Download request could not be fulfilled.");
+				this.error("An unexpected error occurred. Download request could not be fulfilled.");
+				log.error("An unexpected error occurred. Download request could not be fulfilled.");
 			};
 		};
 
@@ -257,11 +257,11 @@ public class SearchResultListPanel extends Panel {
 						success=true;
 					}
 					catch (ArkSystemException e) {
-						this.error("Unexpected error: Delete request could not be fulfilled.");
+						this.error("An unexpected error occurred. Delete request could not be fulfilled.");
 						log.error("ArkSystemException" + e.getMessage(), e);
 					}
 					catch (EntityNotFoundException e) {
-						this.error("Unexpected error: Delete request could not be fulfilled.");
+						this.error("An unexpected error occurred. Delete request could not be fulfilled.");
 						log.error("Entity not found" + e.getMessage(), e);
 					} catch (ArkFileNotFoundException e) {
 						this.error("File not found:"+e.getMessage());
@@ -269,7 +269,7 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				if(success){
-					containerForm.info("Attachment " + subjectFile.getFilename() + " was deleted successfully.");
+					containerForm.info("Attachment " + subjectFile.getFilename() + " was successfully deleted.");
 				}	
 				// Update the result panel
 				// target.add(searchResultContainer);
@@ -292,8 +292,8 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Delete request could not be fulfilled.");
-				log.error("Unexpected error: Delete request could not be fulfilled.");
+				this.error("An unexpected error occurred. Delete request could not be fulfilled.");
+				log.error("An unexpected error occurred. Delete request could not be fulfilled.");
 			}
 		};
 

@@ -12,8 +12,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 

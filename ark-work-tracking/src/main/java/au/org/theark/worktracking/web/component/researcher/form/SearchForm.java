@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -73,7 +74,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
+		disableSearchForm(sessionStudyId, "There is no study selected. Please select a study.");
 	}
 
 	protected void addSearchComponentsToForm() {
@@ -94,7 +95,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		lastNameTxtFld=new TextField<String>(Constants.RESEARCHER_LAST_NAME);
 		organizationTxtFld=new TextField<String>(Constants.RESEARCHER_ORGANIZATION);
 		
-		createdDateDp=new DateTextField(Constants.RESEARCHER_CREATED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
+		createdDateDp=new DateTextField(Constants.RESEARCHER_CREATED_DATE,new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		initDateTextField(createdDateDp);
 		
 		
@@ -189,7 +190,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 			List<Researcher> resultList = iWorkTrackingService.searchResearcher(getModelObject().getResearcher());
 
 			if (resultList != null && resultList.size() == 0) {
-				this.info("Researcher with the specified criteria does not exist in the system.");
+				this.info("Researcher with the specified search criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
 

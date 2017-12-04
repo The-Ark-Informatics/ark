@@ -28,8 +28,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.vo.SubjectCustomDataVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.study.model.vo.SubjectCustomDataVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
@@ -61,7 +61,7 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCu
 				}
 			}
 		} else {
-			this.info("Successfully saved all edits");
+			this.info("All edits were successfully saved.");
 		}
 		/*
 		 * Need to update the dataView, which forces a refresh of the model

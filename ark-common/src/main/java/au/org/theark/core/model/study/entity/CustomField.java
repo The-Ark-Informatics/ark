@@ -56,7 +56,7 @@ public class CustomField implements Serializable {
 	private String name;
 	private CustomFieldCategory customFieldCategory;
 	private String description;
-	private FieldType fieldType;//Charactor,Number,Date,Look up.
+	private FieldType fieldType;//Character,Number,Date,Look up.
 	private Study study;
 	private ArkFunction arkFunction;
 	private UnitType unitType;

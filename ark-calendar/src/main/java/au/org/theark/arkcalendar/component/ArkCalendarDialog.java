@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -116,12 +118,13 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 				if(!ArkCalendarDao.isSubjectUIDExists(calendarId,uid)){
 					error(validatable, "invalidUID");
 				}
+				
 			}
 			
 			private void error(IValidatable<String> validatable, String errorKey) {
 				ValidationError error = new ValidationError();
 				error.addKey(getClass().getSimpleName() + "." + errorKey);
-				error.setMessage("Subject UID is not exist in the study");
+				error.setMessage("Subject UID does not exist in the study.");
 				validatable.error(error);
 			}
 		
@@ -133,10 +136,57 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 		// DateTimePickers //
 		startDateTimePicker = new DateTimePicker("start");
 		
+		
+		startDateTimePicker.add(new IValidator<LocalDateTime>() {
+			
+			@Override
+			public void validate(IValidatable<LocalDateTime> validatable) {
+				LocalDateTime date = validatable.getValue();
+
+				int calendarId = (int)getSession().getAttribute("calendarId");
+				//System.out.println("Date: "+date);
+				//
+				if(ArkCalendarDao.isEventOverlapping(date) && !ArkCalendarDao.allowOverlapping(calendarId)){
+					error(validatable, "overlappingStart");
+				}
+			}
+			
+			private void error(IValidatable<LocalDateTime> validatable, String errorKey) {
+				ValidationError error = new ValidationError();
+				error.addKey(getClass().getSimpleName() + "." + errorKey);
+				error.setMessage("The start date and time overlaps with another event.");
+				validatable.error(error);
+			}
+		
+		});
+		
 		startDateTimePicker.setRequired(true);
 		
 		
 		endDateTimePicker = new DateTimePicker("end");
+		
+		endDateTimePicker.add(new IValidator<LocalDateTime>() {
+			
+			@Override
+			public void validate(IValidatable<LocalDateTime> validatable) {
+				LocalDateTime date = validatable.getValue();
+
+				int calendarId = (int)getSession().getAttribute("calendarId");
+				//System.out.println("Date: "+date);
+				//
+				if(ArkCalendarDao.isEventOverlapping(date) && !ArkCalendarDao.allowOverlapping(calendarId)){
+					error(validatable, "overlappingStart");
+				}
+			}
+			
+			private void error(IValidatable<LocalDateTime> validatable, String errorKey) {
+				ValidationError error = new ValidationError();
+				error.addKey(getClass().getSimpleName() + "." + errorKey);
+				error.setMessage("The end date and time overlaps with another event.");
+				validatable.error(error);
+			}
+		
+		});
 		
 		endDateTimePicker.setRequired(true);
 
@@ -280,7 +330,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
 					log.error("Unexpected error: customfield.minValue is not in the DD/MM/YYYY date format");
-					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
+					this.error("An unexpected error occurred while loading the field validators from database.  Please contact the system administrator.");
 					getParent().setEnabled(false);
 				}
 			}
@@ -293,7 +343,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
 					log.error("Unexpected error: customfield.maxValue is not in the DD/MM/YYYY date format");
-					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
+					this.error("An unexpected error occurred loading the field validators from database.  Please contact the system administrator.");
 					getParent().setEnabled(false);
 				}
 			}
@@ -395,7 +445,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
 							log.error("Unexpected error: customfield.maxValue is not in a valid number format");
-							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
+							this.error("An unexpected error occurred loading the field validators from database. Please contact the system administrator.");
 //							getParentContainer().setEnabled(false);
 							getParent().setEnabled(false);
 						}
@@ -409,7 +459,7 @@ public abstract class ArkCalendarDialog extends AbstractFormDialog<ArkCalendarEv
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
 							log.error("Unexpected error: customfield.maxValue is not in a valid number format");
-							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
+							this.error("An unexpected error occurred loading the field validators from database. Please contact the system administrator.");
 							getParent().setEnabled(false);
 						}
 					}

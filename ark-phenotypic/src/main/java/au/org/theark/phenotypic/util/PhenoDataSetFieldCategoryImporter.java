@@ -172,14 +172,14 @@ public class PhenoDataSetFieldCategoryImporter implements IPhenoImporter,Seriali
 			completionTime = new Date(System.currentTimeMillis());
 		}
 		catch (IOException ioe) {
-			uploadReport.append("Unexpected I/O exception whilst reading the categoty data file\n");
+			uploadReport.append("An unexpected I/O exception occurred whilst reading the categoty data file.\n");
 			log.error("uploadAndReportMatrixDataDictionaryFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the category data file");
+			throw new ArkSystemException("An unexpected I/O exception occurred whilst reading the category data file.");
 		}
 		catch (Exception ex) {
-			uploadReport.append("Unexpected exception whilst reading the category data file\n");
+			uploadReport.append("An unexpected exception occurred whilst reading the category data file.\n");
 			log.error("uploadAndReportMatrixDataDictionaryFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process category data file");
+			throw new ArkSystemException("An unexpected exception occurred when trying to process category data file.");
 		}
 		finally {
 			uploadReport.append("Total file size: ");

@@ -49,9 +49,9 @@ import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
@@ -218,7 +218,7 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		if (containerForm.getModelObject().getInvRack().getId() == null) {
 			// Save
 			iInventoryService.createInvRack(containerForm.getModelObject());
-			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was created successfully");
+			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was successfully created.");
 			processErrors(target);
 			
 			if(node != null) {
@@ -232,7 +232,7 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		else {
 			// Update
 			iInventoryService.updateInvRack(containerForm.getModelObject());
-			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was updated successfully");
+			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was successfully updated.");
 			processErrors(target);
 		}
 

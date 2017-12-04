@@ -18,13 +18,9 @@
  ******************************************************************************/
 package au.org.theark.study.model.dao;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -52,6 +48,8 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.EmailAccount;
+import au.org.theark.core.model.study.entity.EmailAccountType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FamilyCustomFieldData;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -67,6 +65,7 @@ import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyCalendar;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -238,6 +237,15 @@ public interface IStudyDao {
 	 * @throws ArkSystemException
 	 */
 	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException;
+	
+	/**
+	 *Looks up the email accounts linked to a person.
+	 * 
+	 * @param personId
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<EmailAccount> getPersonEmailAccountList(Long personId) throws ArkSystemException;
 
 	/**
 	 * 
@@ -259,6 +267,33 @@ public interface IStudyDao {
 	 * @throws ArkSystemException
 	 */
 	public void delete(Address address) throws ArkSystemException;
+	
+	
+	/**
+	 * Create Email Account.
+	 * 
+	 * @param emailAccount
+	 * @throws ArkSystemException
+	 */
+	public void create(EmailAccount emailAccount) throws ArkSystemException;
+	
+	/**
+	 * Update Email Account.
+	 * 
+	 * @param emailAccount
+	 * @throws ArkSystemException
+	 */
+	public void update(EmailAccount emailAccount) throws ArkSystemException;
+	
+	/**
+	 * Delete Email Account.
+	 * 
+	 * @param emailAccount
+	 * @throws ArkSystemException
+	 */
+	public void delete(EmailAccount emailAccount) throws ArkSystemException;
+	
+	
 
 	/**
 	 * 
@@ -433,6 +468,8 @@ public interface IStudyDao {
 	public ConsentStatus getConsentStatusByName(String name);
 
 	public void setPreferredMailingAdressToFalse(Person person);
+	
+	public void setPreferredEmailAccountToFalse(Person person);
 
 	public AddressType getDefaultAddressType();
 	
@@ -443,6 +480,8 @@ public interface IStudyDao {
 	public PhoneStatus getDefaultPhoneStatus();
 
 	public EmailStatus getDefaultEmailStatus();
+	
+	public EmailAccountType getDefaultEmailAccountType();
 
 	public List<ConsentOption> getConsentOptions();
 
@@ -486,17 +525,19 @@ public interface IStudyDao {
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 	
-	public List<Phone> pageablePersonPhoneLst(Long personID,final Phone phoneCriteria,int first,int count);
+	public List<Phone> pageablePersonPhoneLst(Long personID,final Phone phoneCriteria,int first, int count);
 	
-	public List<Address> pageablePersonAddressLst(Long personID,final Address addressCriteria,int first,int count);
+	public List<EmailAccount> pageablePersonEmailLst(Long personId,int first, int count);
+	
+	public List<Address> pageablePersonAddressLst(Long personID,final Address addressCriteria, int first, int count);
 	
 	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles);
 	
 	public List<CustomField> getFamilyUIdCustomFieldsForPedigreeRelativesList(Long studyId);
 	
-	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction,CustomFieldCategory customFieldCategory,CustomFieldType customFieldType, int first, int count);
+	public List<FamilyCustomFieldData> getFamilyCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, CustomFieldCategory customFieldCategory, CustomFieldType customFieldType, int first, int count);
 
-	public String getSubjectFamilyUId(Long studyId, String subjectUID);
+	public String getSubjectFamilyId(Long studyId, String subjectUID);
 	
 	public void setPreferredPhoneNumberToFalse(Person person);
 	
@@ -516,9 +557,32 @@ public interface IStudyDao {
 
 	public void delete(OtherID otherID);
 	
+	public List<CorrespondenceDirectionType> getCorrespondenceDirectionForMode(CorrespondenceModeType correspondenceModeType);
+	
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypesForModeAndDirection(CorrespondenceModeType correspondenceModeType,CorrespondenceDirectionType correspondenceDirectionType);
 	
 	public boolean isAlreadyHasFileAttached(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
 	
 	public SubjectFile getSubjectFileParticularConsent(LinkSubjectStudy linkSubjectStudy,StudyComp studyComp);
+	
+	public List<SubjectFile> getSubjectFileForLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy);
+	
+	public List<StudyComp> getStudyComponentByStudyAndNotInLinkSubjectSubjectFile(Study study,LinkSubjectStudy linkSubjectStudy);
+	
+	public boolean isSubjectUIDUnique(String subjectUID, Long studyId, String action);
+	
+	public LinkSubjectStudy getLinkSubjectStudyBySubjectUidAndStudy(String subjectUid, Study study);
+	
+	public LinkSubjectPedigree getParentRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative);
+	
+	public LinkSubjectTwin getTwinRelationShipByLinkSubjectStudies(LinkSubjectStudy subject, LinkSubjectStudy relative);
+	
+	public LinkSubjectPedigree getLinkSubjectPedigreeById(Long id);
+	
+	public LinkSubjectTwin getLinkSubjectTwinById(Long id);
+	
+	public List<LinkSubjectPedigree> getListOfLinkSubjectPedigreeForStudy(Study study);
+	
+	public List<LinkSubjectTwin> getListOfLinkSubjectTwinForStudy(Study study);
+	
 }

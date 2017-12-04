@@ -25,8 +25,11 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -58,7 +61,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ContactVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
+import au.org.theark.core.web.component.audit.modal.AuditModalPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -100,7 +103,9 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	private ArkCrudContainerVO 				arkCrudContainerVO;
 	private DateTextField 					dateValidFrom;
 	private DateTextField 					dateValidTo;
-	private HistoryButtonPanel historyButtonPanel;
+	
+	private ModalWindow modalWindow;
+	private AjaxButton historyButton;
 
 	/**
 	 * 
@@ -120,11 +125,14 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		// Disable preferred mailing for new address and no others exist
 		boolean enabled = !(isNew() && containerForm.getModelObject().getAddressVo().getAddresses().size() == 0);
 		preferredMailingAddressChkBox.setEnabled(enabled);
-		historyButtonPanel.setVisible(!isNew());
+		this.containerForm.getModelObject().setObjectId("Address");
+		deleteButton.setEnabled(!isNew());
+		historyButton.setVisible(!isNew());
 		super.onBeforeRender();
 	}
 
 	public void initialiseDetailForm() {
+		this.setOutputMarkupId(true);
 		streetAddressTxtFld = new TextField<String>("addressVo.address.streetAddress");
 		streetAddressTxtFld.add(new ArkDefaultFormFocusBehavior());
 		cityTxtFld = new TextField<String>("addressVo.address.city");
@@ -133,8 +141,8 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		otherState = new TextField<String>("addressVo.address.otherState");
 		sourceTxtFld = new TextField<String>("addressVo.address.source");
 		addressLineOneTxtFld = new TextField<String>("addressVo.address.addressLineOne");
-		historyButtonPanel = new HistoryButtonPanel(containerForm, arkCrudContainerVO.getEditButtonContainer(), arkCrudContainerVO.getDetailPanelFormContainer());
 		
+		initializeHistoryButton();
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();
 		initialiseStateSelector();
@@ -145,7 +153,32 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		attachValidators();
 		addDetailFormComponents();
 	}
-
+	
+	private void initializeHistoryButton(){
+		modalWindow = new ModalWindow("historyModalWindow");
+		historyButton = new AjaxButton("historyButton") {
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				AuditModalPanel historyPanel = new AuditModalPanel("content", containerForm.getModelObject().getAddressVo(), (WebMarkupContainer)arkCrudContainerVO.getDetailPanelContainer().get("addressDetailPanel").get("addressDetailsForm"));
+				modalWindow.setTitle("Entity History");
+				modalWindow.setAutoSize(true);
+				modalWindow.setMinimalWidth(950);
+				modalWindow.setContent(historyPanel);
+				target.add(modalWindow);
+				modalWindow.show(target);
+				target.add(historyPanel.getFeedbackPanel());
+				super.onSubmit(target, form);
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedBackPanel);
+				super.onError(target, form);
+			}
+		};
+		historyButton.setOutputMarkupId(true);
+	}
+	
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(streetAddressTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(cityTxtFld);
@@ -161,7 +194,10 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(addressLineOneTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidFrom);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateValidTo);
-		arkCrudContainerVO.getEditButtonContainer().add(historyButtonPanel);
+		
+		arkCrudContainerVO.getEditButtonContainer().add(historyButton);
+		arkCrudContainerVO.getEditButtonContainer().add(modalWindow);
+		
 		this.add(new DateFromToValidator(dateValidFrom, dateValidTo,"Valid from date","Valid to date"));
 	}
 
@@ -262,13 +298,13 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 
 	private void initialiseDatePicker() {
 		// Create new DateTextField and assign date format
-		dateReceivedDp = new DateTextField("addressVo.address.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateReceivedDp = new DateTextField("addressVo.address.dateReceived", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker dPDateReceived = new ArkDatePicker();
 		dPDateReceived.bind(dateReceivedDp);
 		dateReceivedDp.add(dPDateReceived);
 		
 		//Valid From
-		dateValidFrom=new DateTextField("addressVo.address.validFrom", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidFrom=new DateTextField("addressVo.address.validFrom", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		dateValidFrom.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long	serialVersionUID	= 1L;
 				@Override
@@ -280,7 +316,7 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		dPDateValidFrom.bind(dateValidFrom);
 		dateValidFrom.add(dPDateValidFrom);
 		//Valid To
-		dateValidTo=new DateTextField("addressVo.address.validTo", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateValidTo=new DateTextField("addressVo.address.validTo", new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		dateValidTo.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 		private static final long	serialVersionUID	= 1L;
 			@Override
@@ -327,8 +363,6 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	 */
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
-		//AddressVO addressVO = new AddressVO();
-		//containerForm.setModelObject(addressVO);
 		ContactVO contactVO=new ContactVO();
 		containerForm.setModelObject(contactVO);
 	}
@@ -343,11 +377,12 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iStudyService.delete(containerForm.getModelObject().getAddressVo().getAddress());
-			this.info("The Address has been deleted successfully.");
+			this.deleteInformation();
+			//this.info("The Address has been deleted successfully.");
 			editCancelProcess(target);
 		}
 		catch (ArkSystemException e) {
-			this.error("An error occured while processing your delete. Please contact Support");
+			this.error("An error occured while processing your delete request. Please contact the system administrator.");
 			// TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to
 			// admin
 			e.printStackTrace();
@@ -375,8 +410,8 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 			else{
 				containerForm.getModelObject().getAddressVo().getAddress().setOtherState(null);
 			}
-//			otherStateInvalidError.setVisible(false);
-			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+
+			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelContainer().get("addressDetailPanel").get("addressDetailsForm").get("addressDetailFormContainer").get(Constants.STATE_SELECTOR_WMC);
 			Label otherStateInvalidError = (Label) wmcStateSelector.get("addressVo.address.otherStateInvalidError");
 			otherStateInvalidError.setVisible(false);
 			
@@ -388,7 +423,8 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 				}
 				
 				iStudyService.create(containerForm.getModelObject().getAddressVo().getAddress());
-				feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
+				this.saveInformation();
+				//feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
 			}
 			else {
 				if(containerForm.getModelObject().getAddressVo().getAddress().getPreferredMailingAddress()){
@@ -397,10 +433,11 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 				}
 				
 				iStudyService.update(containerForm.getModelObject().getAddressVo().getAddress());
-				feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
+				this.updateInformation();
+				//feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
 			}
 
-			if (person.getFirstName() != null && person.getLastName() != null) {
+			/*if (person.getFirstName() != null && person.getLastName() != null) {
 				feedBackMessageStr.append(person.getFirstName() + " " + person.getLastName());
 			}
 			else {
@@ -409,16 +446,16 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 				String uid = iArkCommonService.getSubject(person.getId(), study).getSubjectUID();
 				feedBackMessageStr.append(uid);
 			}
-			this.info(feedBackMessageStr.toString());
+			this.info(feedBackMessageStr.toString());*/
 			processErrors(target);
 			onSavePostProcess(target);
 			// Invoke backend to persist the AddressVO
 		}
 		catch (EntityNotFoundException e) {
-			this.error("The Specified subject is not available any more in the system. Please re-do the operation");
+			this.error("The specified subject is not available any more in the system. Please re-do the operation.");
 		}
 		catch (ArkSystemException e) {
-			this.error("A system error has occured, Pleas contact support.");
+			this.error("A system error has occurred. Please contact the system administrator.");
 		}
 	}
 
@@ -468,4 +505,5 @@ public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 		// Add the Country State Dropdown into the WebMarkupContainer - countrySelector
 		stateSelector.add(stateChoice);
 	}
+	
 }

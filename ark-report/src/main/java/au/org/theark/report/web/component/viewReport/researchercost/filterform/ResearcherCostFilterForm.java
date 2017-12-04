@@ -8,15 +8,10 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.PatternDateConverter;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -37,6 +32,11 @@ import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
 import au.org.theark.report.web.component.viewReport.researchercost.WorkResearcherCostReportDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 public class ResearcherCostFilterForm extends AbstractReportFilterForm<ResearcherCostResportVO> {
 
@@ -139,9 +139,9 @@ public class ResearcherCostFilterForm extends AbstractReportFilterForm<Researche
 	@Override
 	protected void initialiseCustomFilterComponents() {
 //		yearTxtField = new TextField<String>(Constants.RESEARCHER_COST_REPORT_YEAR);
-		fromDateDp= new DateTextField(Constants.RESEARCHER_COST_REPORT_FROM_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		fromDateDp= new DateTextField(Constants.RESEARCHER_COST_REPORT_FROM_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		initDataPicker(fromDateDp);
-		toDateDp= new DateTextField(Constants.RESEARCHER_COST_REPORT_TO_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		toDateDp= new DateTextField(Constants.RESEARCHER_COST_REPORT_TO_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		initDataPicker(toDateDp);
 		this.initResearcherDropDown();
 		this.addFilterFormComponents();

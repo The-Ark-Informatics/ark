@@ -14,13 +14,13 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.LimsVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.image.MouseOverImage;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenDataEntryModalDetailPanel;
 
 /**
  * The link content of a GridCell, that opens a modalWindow to the Biospecimen reference in the cell
@@ -141,7 +141,7 @@ public class GridCellLink extends Panel {
 	 * @param cpModel
 	 */
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {
-		modalContentPanel = new BiospecimenModalDetailPanel("content", modalWindow, cpModel);
+		modalContentPanel = new BiospecimenDataEntryModalDetailPanel("content", modalWindow, cpModel);
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Biospecimen Detail");
 		modalWindow.setContent(modalContentPanel);

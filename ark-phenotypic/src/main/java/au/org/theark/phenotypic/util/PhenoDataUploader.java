@@ -304,7 +304,7 @@ public class PhenoDataUploader {
 		}
 		else if(phenoDataSetField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
 			if(phenoDataSetField.getEncodedValues()!=null && !phenoDataSetField.getEncodedValues().isEmpty() 
-					&& phoDataSetFieldDisplay.getAllowMultiselect()){
+					&& phenoDataSetField.getAllowMultiselect()){
 				if(theDataAsString != null){
 					theDataAsString = theDataAsString.replaceAll(" ", ";");
 				}
