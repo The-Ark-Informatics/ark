@@ -376,6 +376,8 @@ public class Constants {
 	public static final String ARK_MODULE_DISEASE = "Disease";
 	public static final String ARK_MODULE_GLOBAL_SEARCH = "Global Search";
 	public static final String ARK_MODULE_GENOMICS = "Genomics";
+	public static final String ARK_MODULE_CALENDAR = "Calendar";
+	public static final String CALENDAR_SUBMENU	= "CalendarSubMenus";
 
 	public static final char DEFAULT_DELIMITER_CHARACTER = ',';
 	public static final String DEFAULT_FILE_FORMAT = "CSV";
