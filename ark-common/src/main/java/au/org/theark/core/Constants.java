@@ -685,6 +685,8 @@ public class Constants {
 			{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "",
 					"", "", "", "", "", "", "", "", "", "", "", "" } };
 	public static final String DOWNLOAD_FILE = "downloadFile";
+	public static final String DOWNLOAD_EXCLUDE_UIS = "downloadExcludUIs";
+	
 	public static final String DELETE_FILE = "deleteFile";
 
 	// Exception messages
