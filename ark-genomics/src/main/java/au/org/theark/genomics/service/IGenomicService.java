@@ -55,6 +55,8 @@ public interface IGenomicService {
 	
 	public String executeDataSourceUpload(DataCenterVo dataCenter, String initStatus);
 	
+	public String executeDataSourceUpload(DataSource dataSource, String initStatus);
+	
 	public void updateDataSourceStatus(final String processUID, DataSource dataSource, List<DataSource> dataSourceList, String intStatus);
 	
 //	public void uploadComputaion(Computation computation);

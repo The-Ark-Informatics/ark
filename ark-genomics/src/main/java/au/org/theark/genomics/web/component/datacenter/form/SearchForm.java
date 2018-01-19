@@ -46,6 +46,9 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 	private DropDownChoice<String> dataCentersDDC;
 	private TextField<String> fileNameTextField;
 	private TextField<String> directoryTextField;
+	
+	private TextField<String> idTextField;
+	private TextField<String> nameTextField;
 
 	private AjaxButton newButton;
 
@@ -89,6 +92,9 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		this.newButton = new AjaxButton(au.org.theark.core.Constants.NEW) {
 		};
 		newButton.setVisible(false);
+		
+		this.idTextField = new TextField<String>(Constants.DATA_CENTER_DATA_SOURCE_ID);
+		this.nameTextField = new TextField<String>(Constants.DATA_CENTER_DATA_SOURCE_NAME);
 	}
 
 	private void addSearchComponentsToForm() {
@@ -97,6 +103,8 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		add(fileNameTextField);
 		add(directoryTextField);
 		addOrReplace(newButton);
+		add(idTextField);
+		add(nameTextField);
 	}
 
 	private void initMicroServiceDropDown(PropertyModel<MicroService> microService) {
@@ -222,6 +230,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		DataSourceVo dataSourceVo = new DataSourceVo();
 		dataSourceVo.setDataCenter(cpmModel.getObject().getName());
 		dataSourceVo.setMicroService(cpmModel.getObject().getMicroService());
+		dataSourceVo.setDataSource(cpmModel.getObject().getDataSource());
 		getModelObject().setDataSourceEntityList(iGenomicService.searchDataSources(dataSourceVo));
 		
 		

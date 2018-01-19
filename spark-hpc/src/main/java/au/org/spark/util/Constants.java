@@ -45,8 +45,12 @@ public final class Constants {
 		return (dataSourceVo.getDataCenterName()+dataSourceVo.getPath().replaceAll("[^A-Za-z0-9]", "_")).toUpperCase();
 	}
 	
-	public static final String dataCenterTablePrefix(DataCenterVo dataCenterVo){
+	public static final String dataCenterTablePrefix1(DataCenterVo dataCenterVo){
 		return ("ms"+dataCenterVo.getMicroserviceId() +"_"+ dataCenterVo.getName()+"_"+dataCenterVo.getDirectory().replaceAll("[^A-Za-z0-9]", "_")).toUpperCase();
+	}
+	
+	public static final String dataCenterTablePrefix(DataCenterVo dataCenterVo){
+		return ("ms"+dataCenterVo.getMicroserviceId() +"_"+ dataCenterVo.getId()+"").toUpperCase();
 	}
 	
 }

@@ -131,9 +131,19 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 
 		Criteria criteria = getSession().createCriteria(DataSource.class);
 		criteria.setFetchMode("microService", FetchMode.JOIN);
-		if (dataSourceVo.getFileName() != null) {
-			criteria.add(Restrictions.eq(Constants.NAME, dataSourceVo.getFileName()));
+		
+//		if (dataSourceVo.getFileName() != null) {
+//			criteria.add(Restrictions.eq(Constants.NAME, dataSourceVo.getFileName()));
+//		}
+		
+		if (dataSourceVo.getDataSource().getId() != null) {
+			criteria.add(Restrictions.eq(Constants.ID, dataSourceVo.getDataSource().getId()));
 		}
+		
+		if (dataSourceVo.getDataSource().getName() != null) {
+			criteria.add(Restrictions.eq(Constants.NAME, dataSourceVo.getDataSource().getName()));
+	    }
+		
 		if (dataSourceVo.getPath() != null) {
 			criteria.add(Restrictions.eq(Constants.PATH, dataSourceVo.getPath()));
 		}
@@ -143,6 +153,7 @@ public class GenomicsDao extends HibernateSessionDao implements IGenomicsDao {
 		if (dataSourceVo.getMicroService() != null) {
 			criteria.add(Restrictions.eq(Constants.MICROSERVICE, dataSourceVo.getMicroService()));
 		}
+		
 		list = criteria.list();
 		
 		return list;

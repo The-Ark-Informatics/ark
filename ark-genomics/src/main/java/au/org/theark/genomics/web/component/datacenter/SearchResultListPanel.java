@@ -160,7 +160,7 @@ public class SearchResultListPanel extends Panel {
 					deleteBtn.setEnabled(false);
 					queryBtn.setEnabled(false);
 					
-					if (dataCenterVo.getDirectory() != null || dataCenterVo.getDirectory().length()>0 ) {
+					if (dataCenterVo.getDirectory() != null && dataCenterVo.getDirectory().length()>0 ) {
 						
 						if(dataSource == null ){
 							uploadBtn.setEnabled(true);

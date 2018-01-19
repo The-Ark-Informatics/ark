@@ -29,6 +29,18 @@
 				<label for="Download">			
 				</label>
 			</th>
+			<th width="10%">
+				<label for="Upload">			
+				</label>
+			</th>
+			<th width="10%">
+				<label for="Compile">			
+				</label>
+			</th>
+			<th width="10%">
+				<label for="Available">			
+				</label>
+			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -51,12 +63,22 @@
 			<td width="10%">
 				<input wicket:id="downloadPackage" type="submit" wicket:message="value:button.downloadFile" />
 			</td>
+			<td width="10%">
+				<input wicket:id="uploadPackage" type="submit" wicket:message="value:button.upload" />
+			</td>
+			<td width="10%">
+				<input wicket:id="compilePackage" type="submit" wicket:message="value:button.compile" />
+			</td>
+			<td width="10%">
+				<!--  <input wicket:id="availablePackage" type="submit" wicket:message="value:button.available" /> -->
+				<input wicket:id="availablePackage" type="button"/>
+			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="5"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="8"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>
