@@ -159,6 +159,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 		deleteButton.add(new AttributeModifier("title", new Model<String>("Delete Attachment")));
 		deleteButton.setOutputMarkupId(true);
 
+		//TODO Deprecated button
 		this.executeButton = new AjaxButton("execute") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -188,6 +189,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 		};
 		this.executeButton.setVisible(false);
 
+		//TODO Download the results
 		this.resultButton = new AjaxButton("result") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -221,7 +223,9 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 
 		};
 		this.resultButton.setOutputMarkupId(true);
+		this.resultButton.setVisible(false);
 
+		//TODO Deprecated button
 		this.jobButton = new AjaxButton("job") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -246,6 +250,7 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 		};
 		this.jobButton.setVisible(false);
 
+		//TODO Execute the analysis
 		this.queueButton = new AjaxButton("queue") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -282,7 +287,8 @@ public class DetailForm extends AbstractDetailForm<AnalysisVo> {
 			}
 		};
 		this.queueButton.setOutputMarkupId(true);
-
+		this.queueButton.setVisible(false);
+		
 		addDetailFormComponents();
 		attachValidators();
 	}

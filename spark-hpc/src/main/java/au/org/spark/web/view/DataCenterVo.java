@@ -9,6 +9,8 @@ public class DataCenterVo implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private String id;
+	
 	private String name;
 	
 	private String directory;
@@ -20,6 +22,15 @@ public class DataCenterVo implements Serializable {
 	private String individualId;
 	
 	private String microserviceId;
+	
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;

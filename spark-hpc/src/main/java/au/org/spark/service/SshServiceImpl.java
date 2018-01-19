@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,7 @@ import org.molgenis.genotype.Sample;
 import org.molgenis.genotype.variant.GeneticVariant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
 import org.springframework.integration.sftp.session.SftpSession;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +49,10 @@ import au.org.spark.web.view.DataCenterVo;
 import au.org.spark.web.view.DataSourceVo;
 
 import com.google.common.base.Splitter;
+import com.gs.collections.impl.block.procedure.AtomicCountProcedure;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 
@@ -63,6 +68,9 @@ public class SshServiceImpl implements SshService {
 
 	@Autowired
 	SftpSession sftpSession;
+	
+	@Autowired
+	DefaultSftpSessionFactory sftpSessionFactory;
 
 	@Autowired
 	CassandraService cassandraService;
@@ -89,14 +97,17 @@ public class SshServiceImpl implements SshService {
 	public List<DataSourceVo> listFilesAndDirectories(String directory, String fileName) throws Exception {
 
 		// TODO Enable this code block when resolving re-creating a new session
-		// ChannelSftp channelSftp = null;
-		// if(sftpSession.isOpen()){
-		// channelSftp = sftpSession.getClientInstance();
-		// }else{
-		//
-		// }
+//		 ChannelSftp channelSftp = null;
+//		 if(sftpSession.isOpen()){
+//			 channelSftp = sftpSession.getClientInstance();
+//		 }else{
+//			 throw new Exception();
+//		 }
+		
+		SftpSession session = sftpSessionFactory.getSession();
 
-		ChannelSftp channelSftp = sftpSession.getClientInstance();
+//		ChannelSftp channelSftp = sftpSession.getClientInstance();
+		ChannelSftp channelSftp = session.getClientInstance();
 		List<DataSourceVo> files = new ArrayList<DataSourceVo>();
 		Vector<String> filest = null;
 
@@ -138,6 +149,8 @@ public class SshServiceImpl implements SshService {
 				}
 			}
 		}
+		
+		session.close();
 
 		return files;
 	}
@@ -298,7 +311,7 @@ public class SshServiceImpl implements SshService {
 		}
 	}
 
-	public void onlinePlinkDataSource(DataCenterVo dataCenter) throws Exception {
+	public void onlinePlinkDataSource1(DataCenterVo dataCenter) throws Exception {
 		ChannelSftp channelSftp = sftpSession.getClientInstance();
 
 		String directory = dataCenter.getDirectory();
@@ -592,6 +605,331 @@ public class SshServiceImpl implements SshService {
 		}
 	}
 	
+	public void onlinePlinkDataSource(DataCenterVo dataCenter) throws Exception {
+		
+		SftpSession session = sftpSessionFactory.getSession();
+		
+//		ChannelSftp channelSftp = sftpSession.getClientInstance();
+		
+		ChannelSftp channelSftp = session.getClientInstance();
+		
+		String directory = dataCenter.getDirectory();
+
+		if (directory == null) {
+//			channelSftp.cd(rootPath);
+			channelSftp.cd(rootPath+File.separator+"data");
+		} else {
+//			channelSftp.cd(rootPath + File.separator + directory);
+			channelSftp.cd(rootPath + File.separator+"data"+File.separator + directory);
+		}
+
+		String mapFile = null;
+
+		String pedFile = null;
+
+		String bedFile = null;
+
+		String bimFile = null;
+
+		String famFile = null;
+
+		Vector<String> filest = null;
+
+		filest = channelSftp.ls(".");
+
+		for (int i = 0; i < filest.size(); i++) {
+			Object obj = filest.elementAt(i);
+			if (obj instanceof com.jcraft.jsch.ChannelSftp.LsEntry) {
+				LsEntry entry = (LsEntry) obj;
+
+				if (true && !entry.getAttrs().isDir()) {
+					String fileName = entry.getFilename();
+					String[] extList = fileName.split("\\.");
+					if (extList.length > 1) {
+						String extension = extList[1];
+						if ("map".equalsIgnoreCase(extension)) {
+							mapFile = fileName;
+						} else if ("ped".equalsIgnoreCase(extension)) {
+							pedFile = fileName;
+						} else if ("bed".equalsIgnoreCase(extension)) {
+							bedFile = fileName;
+						} else if ("bim".equalsIgnoreCase(extension)) {
+							bimFile = fileName;
+						} else if ("fam".equalsIgnoreCase(extension)) {
+							famFile = fileName;
+						}
+					}
+				}
+			}
+		}
+
+		byte[] header = { 0b01101100, 0b00011011, 0b00000001 };
+
+		String bedTableName = "";
+
+		if (mapFile != null && pedFile != null) {
+
+//			String dataLine = null;
+//			String mapValues[] = null;
+
+			InputStream inputStream = null;
+//			Scanner sc = null;
+			BufferedReader reader;
+
+			inputStream = channelSftp.get(pedFile);
+//			sc = new Scanner(inputStream, "UTF-8");
+
+			reader = new BufferedReader(new InputStreamReader(inputStream));
+			
+//			int cols = 0;
+//			boolean access = false;
+//			int rows = 0;
+			
+			AtomicInteger cols = new AtomicInteger(0);
+			AtomicBoolean access = new AtomicBoolean(false);
+			AtomicInteger rows = new AtomicInteger(0);
+			// TODO Create fam table
+
+			cassandraService.createPlinkFamTable(dataCenter);
+			cassandraService.createPlinkBimTable(dataCenter);
+
+//			while (sc.hasNextLine()) {
+//				dataLine = sc.nextLine();
+//				mapValues = pattern.split(dataLine);
+//
+//				if (!access) {
+//					cols = mapValues.length;
+//					access = true;
+//				}
+//				++rows;
+//
+//				String[] famArray = Arrays.copyOfRange(mapValues, 0, 6);
+//
+//				cassandraService.insertPlinkFamTable(rows, famArray, dataCenter);
+//
+//			}
+			
+			 reader.lines().forEach(line -> {
+		            // process liness
+				 String mapValues[] = pattern.split(line);
+
+					if (!access.get()) {
+						cols.set(mapValues.length);
+						access.set(true);
+					}
+					rows.addAndGet(1);
+
+					String[] famArray = Arrays.copyOfRange(mapValues, 0, 6);
+
+					cassandraService.insertPlinkFamTable(rows.get(), famArray, dataCenter);
+		      });
+			
+
+			inputStream.close();
+//			sc.close();
+			reader.close();
+
+			boolean isCreated = false;
+			for (AtomicInteger i = new AtomicInteger(6), snpId = new AtomicInteger(0); i.get() < cols.get(); i.addAndGet(2)) {
+				inputStream = channelSftp.get(pedFile); // new
+														// FileInputStream(pedFileName);
+//				sc = new Scanner(inputStream, "UTF-8");
+				reader = new BufferedReader(new InputStreamReader(inputStream));
+
+				String[] snpArray = new String[rows.get() * 2];
+//				for (int j = 0; sc.hasNextLine(); ++j) {
+//					dataLine = sc.nextLine();
+//					mapValues = pattern.split(dataLine);
+//
+//					snpArray[j] = mapValues[i];
+//					snpArray[++j] = mapValues[i + 1];
+//				}
+//				 int j=0;
+				AtomicInteger j = new AtomicInteger(0);
+				 reader.lines().forEach(line -> {
+			            // process liness
+					 String mapValues[] = pattern.split(line);
+
+					 	snpArray[j.get()] = mapValues[i.get()];
+					 	snpArray[j.addAndGet(1)] = mapValues[i.get()+1];
+					 	j.getAndIncrement();
+			    });
+
+				inputStream.close();
+//				sc.close();
+				reader.close();
+				
+				HashMap<String, Byte> alleleMap = alleleMap(snpArray, snpId.addAndGet(1), channelSftp, mapFile, dataCenter);
+
+//				for (String s : snpArray) {
+//					System.out.print(s);
+//				}
+//				System.out.println();
+
+				int noAlleles = snpArray.length;
+				int noSnps = noAlleles / 2;
+
+				int noInts = 0;
+
+				if (noSnps % 16 == 0) {
+					noInts = noSnps / 16;
+				} else {
+					noInts = (noSnps / 16) + 1;
+				}
+
+				int[] data = new int[noInts];
+
+				for (int pos = 0, k = 0; pos < noAlleles; pos += 32, ++k) {
+					data[k] = prepareInt(pos, snpArray, alleleMap);
+				}
+
+				//System.out.println(data.length);
+
+				if (!isCreated) {
+					// TODO remove print after production
+					//System.out.println("-----------------Create table ------------------");
+					cassandraService.createPlinkBedTable(data, dataCenter);
+					isCreated = true;
+				}
+				// TODO remove print after production success
+				System.out.println(" ----------------------- " + data.length + " ---------------------  ");
+				cassandraService.insertPlinkBedTable(snpId.get(), data, dataCenter);
+				// writeFile(data, "sparksnpmjc.bed");
+			}
+
+		} else if (bedFile != null && bimFile != null && famFile != null) {
+
+			cassandraService.createPlinkFamTable(dataCenter);
+			cassandraService.createPlinkBimTable(dataCenter);
+
+			AtomicInteger rows = new AtomicInteger(0);
+
+//			String dataLine = null;
+//			String mapValues[] = null;
+
+			InputStream inputStream = null;
+//			Scanner sc = null;
+			BufferedReader reader;
+
+			inputStream = channelSftp.get(famFile);
+//			sc = new Scanner(inputStream, "UTF-8");
+			reader = new BufferedReader(new InputStreamReader(inputStream));
+
+//			while (sc.hasNextLine()) {
+//				dataLine = sc.nextLine();
+//				mapValues = pattern.split(dataLine);
+//				++rows;
+//
+//				cassandraService.insertPlinkFamTable(rows, mapValues, dataCenter);
+//
+//			}
+			
+			reader.lines().forEach(line -> {
+				String[] mapValues = pattern.split(line);
+				rows.addAndGet(1);
+				cassandraService.insertPlinkFamTable(rows.get(), mapValues, dataCenter);
+
+			
+			});
+
+			
+			
+			inputStream.close();
+//			sc.close();
+			reader.close();
+
+			inputStream = channelSftp.get(bimFile);
+//			sc = new Scanner(inputStream, "UTF-8");
+			reader = new BufferedReader(new InputStreamReader(inputStream));
+			
+			AtomicInteger bimId= new AtomicInteger(0);
+//			while (sc.hasNextLine()) {
+//				dataLine = sc.nextLine();
+//				mapValues = pattern.split(dataLine);
+//				cassandraService.insertPlinkBimTable(++bimId, mapValues, dataCenter);
+//			}
+			
+			reader.lines().forEach(line -> {
+				String[] mapValues = pattern.split(line);
+				cassandraService.insertPlinkBimTable(bimId.addAndGet(1), mapValues, dataCenter);
+			
+			});
+			inputStream.close();
+//			sc.close();
+			reader.close();
+
+			// Read the binary bed file
+			inputStream = channelSftp.get(bedFile);
+			byte[] bedData = IOUtils.toByteArray(inputStream);
+			int byteLength = bedData.length - 3;
+			byte type = bedData[2];
+
+			int noOfColmns = 0;
+
+			if (rows.get() % 16 == 0) {
+				noOfColmns = rows.get() / 16;
+			} else {
+				noOfColmns = (rows.get() / 16) + 1;
+			}
+
+			int[] snpData = new int[noOfColmns];
+
+			// CAlculate bytes per snp
+
+			int noOfBytes = 0;
+
+			if (rows.get() % 4 == 0) {
+				noOfBytes = rows.get() / 4;
+			} else {
+				noOfBytes = (rows.get() / 4) + 1;
+			}
+			
+			
+//			System.out.println("No of Bytes per File = "+bedData.length);
+//			System.out.println("No of Bytes per SNP = "+noOfBytes);
+
+			cassandraService.createPlinkBedTable(snpData, dataCenter);
+
+			if (type == 1) {				
+				for(int bedPOS=3,id=1;bedPOS < bedData.length;++id){
+					byte[] snpBytes= new byte[noOfBytes];
+					for(int byteCount=0;byteCount<snpBytes.length;++byteCount,++bedPOS){
+//						System.out.println("ID - "+id);
+//						System.out.println("Byte Count - "+byteCount);
+//						System.out.println(toByteBineryFormat(bedData[bedPOS]));
+						snpBytes[byteCount]=bedData[bedPOS];
+					}
+					
+					int[] colInts=new int[noOfColmns];
+					
+					int finalInt = Integer.parseInt("00", 2);
+					int count=0;
+					int colIntPos=0;
+//					System.out.println("-------------------- Read bytes -----------------------------");
+					for(int snpByteCount=0;snpByteCount<snpBytes.length;++snpByteCount){
+						String s = toByteBineryFormat(snpBytes[snpByteCount]);
+//						System.out.println(s);
+						int i = Integer.parseInt(s,2);
+						finalInt = (finalInt | ( i << (count*8)));
+						if(++count==4){
+							colInts[colIntPos] = finalInt;
+							count=0;
+							++colIntPos;
+							finalInt = Integer.parseInt("00", 2);
+						}
+					}
+					if(count >0){
+						colInts[colIntPos] = finalInt;
+					}
+					cassandraService.insertPlinkBedTable(id, colInts, dataCenter);
+				}
+			}
+		}
+		
+		session.close();
+	}
+
+	
 	private String toByteBineryFormat(byte b1){
 		String s1 = String.format("%8s", Integer.toBinaryString(b1 & 0xFF)).replace(' ', '0');
 		return s1; 
@@ -690,6 +1028,117 @@ public class SshServiceImpl implements SshService {
 		return alleleMap;
 	}
 
+	private HashMap<String, Byte> alleleMap1(String[] snpArray, int snpId, ChannelSftp channelSftp, String mapFile, DataCenterVo dataCenter) throws IOException, SftpException {
+		HashMap<String, Byte> alleleMap = new HashMap<String, Byte>();
+
+		// Collections.frequency(c, o) Arrays.asList(snpArray).re
+
+		char allele1 = '0';
+		char allele2 = '0';
+		
+		
+
+		int count = 0;
+		for (int i = 0; i < snpArray.length; ++i) {
+			if ("0".equalsIgnoreCase(snpArray[i])) {
+				continue;
+			}
+			++count;
+		}
+
+		String[] values = new String[count];
+		for (int i = 0, j = 0; i < snpArray.length; ++i) {
+			String s = snpArray[i];
+			if (!"0".equalsIgnoreCase(s)) {
+				values[j] = s;
+				++j;
+			}
+		}
+
+		if (values.length > 0) {
+			char tmp1 = values[0].charAt(0);
+			char tmp2 = '0';
+			int match = 0;
+			for (String s : values) {
+				if (tmp1 == s.charAt(0)) {
+					++match;
+				} else {
+					tmp2 = s.charAt(0);
+				}
+			}
+
+			int diff = values.length - match;
+
+			if (diff == 0) {
+				allele2 = tmp1;
+			} else if (diff > values.length / 2) {
+				allele1 = tmp1;
+				allele2 = tmp2;
+			} else if (diff < values.length / 2) {
+				allele1 = tmp2;
+				allele2 = tmp1;
+			} else if (diff == values.length / 2) {
+				int comp = Character.compare(tmp1, tmp2);
+				if (comp < 0) {
+					allele1 = tmp1;
+					allele2 = tmp2;
+				} else {
+					allele1 = tmp2;
+					allele2 = tmp1;
+				}
+			}
+
+		}
+
+		// FileInputStream inputStream = null;
+		InputStream inputStream = null;
+		//Scanner sc = null;
+		BufferedReader reader=null;
+		// String mapFileName= "data/5SNPx3/3SAMPLE.map";
+
+		// inputStream = new FileInputStream(mapFileName);
+		inputStream = channelSftp.get(mapFile);
+		//sc = new Scanner(inputStream, "UTF-8");
+		reader = new BufferedReader(new InputStreamReader(inputStream));
+		String dataLine = null;
+
+//		for (int i = 1; sc.hasNextLine(); ++i) {
+//			dataLine = sc.nextLine();
+//			if (i == snpId) {
+//				String bimLine = dataLine + "\t" + allele1 + "\t" + allele2 + "\n";
+//				// writeFile(bimLine.getBytes(), "sparksnpmjc1.bim");
+//				cassandraService.insertPlinkBimTable(snpId, bimLine.split("\t"), dataCenter);
+//				break;
+//			}
+//		}
+		
+		AtomicInteger i = new AtomicInteger(1);
+		String s1=Character.toString(allele1);
+		String s2=Character.toString(allele2);
+		reader.lines().forEach(line -> {
+			if(i.get() == snpId){
+//				String bimLine = line + "\t" + allele1 + "\t" + allele2 + "\n";
+				String bimLine = line + "\t" + s1 + "\t" + s2 + "\n";
+				cassandraService.insertPlinkBimTable(snpId, bimLine.split("\t"), dataCenter);
+			}
+			i.getAndIncrement();
+		});
+
+//		sc.close();
+		inputStream.close();
+		reader.close();
+
+		alleleMap.put(allele1 + "" + allele1, new Byte((byte) 0b00000000)); // Homozygote
+																			// "1"/"1"
+		alleleMap.put(allele1 + "" + allele2, ((byte) 0b00000010)); // Heterozygote
+		alleleMap.put(allele2 + "" + allele1, new Byte((byte) 0b00000010)); // Heterozygote
+		alleleMap.put(allele2 + "" + allele2, new Byte((byte) 0b00000011)); // Homozygote
+																			// "2"/"2"
+
+		return alleleMap;
+	}
+
+	
 	private int prepareInt(int pos, String[] mapValues, HashMap<String, Byte> alleleMap) throws IOException {
 		int finalInt = Integer.parseInt("00", 2);
 
@@ -772,6 +1221,7 @@ public class SshServiceImpl implements SshService {
 			in = channelExec.getInputStream();
 
 			String path = "spark/" + computationVo.getProgramId() + "/" + computationVo.getProgram();
+//			String path = rootPath+ "/" + computationVo.getProgramId() + "/" + computationVo.getProgram();
 
 			command = "cat " + path + "/spark.info";
 
@@ -790,6 +1240,9 @@ public class SshServiceImpl implements SshService {
 					map.put(array[0], array[1]);
 				}
 			}
+			
+			in.close();
+			reader.close();
 
 			int exitStatus = channelExec.getExitStatus();
 
@@ -828,6 +1281,9 @@ public class SshServiceImpl implements SshService {
 					System.out.println(line);
 					results.append(line);
 				}
+				
+				in.close();
+				reader.close();
 
 				exitStatus = channelExec.getExitStatus();
 
@@ -888,6 +1344,9 @@ public class SshServiceImpl implements SshService {
 					map.put(array[0], array[1]);
 				}
 			}
+			
+			in.close();
+			reader.close();
 
 			int exitStatus = channelExec.getExitStatus();
 
@@ -954,6 +1413,9 @@ public class SshServiceImpl implements SshService {
 				System.out.println(line);
 				results.append(line);
 			}
+			
+			in.close();
+			reader.close();
 
 			exitStatus = channelExec.getExitStatus();
 
@@ -1004,6 +1466,9 @@ public class SshServiceImpl implements SshService {
 					map.put(array[0], array[1]);
 				}
 			}
+			
+			in.close();
+			reader.close();
 
 			int exitStatus = channelExec.getExitStatus();
 
@@ -1053,6 +1518,9 @@ public class SshServiceImpl implements SshService {
 					results.append(line + "\n");
 				}
 			}
+			
+			in.close();
+			reader.close();
 
 			exitStatus = channelExec.getExitStatus();
 
@@ -1466,6 +1934,9 @@ public class SshServiceImpl implements SshService {
 					break;
 				}
 			}
+			
+			in.close();
+			reader.close();
 
 			int exitStatus = channelExec.getExitStatus();
 

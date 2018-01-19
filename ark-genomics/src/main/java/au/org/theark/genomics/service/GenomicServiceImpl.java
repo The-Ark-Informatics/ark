@@ -468,7 +468,12 @@ public class GenomicServiceImpl implements IGenomicService {
 
 	public DataSource getDataSource(DataSourceVo dataSourceVo) {
 		// TODO Auto-generated method stub
-		return genomicsDao.getDataSource(dataSourceVo);
+		List<DataSource> list = genomicsDao.getDataSources(dataSourceVo);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	public List<DataSource> searchDataSources(DataSourceVo dataSourceVo){
+		return genomicsDao.getDataSources(dataSourceVo);
 	}
 
 	public String executeDataSourceUpload(DataSourceVo dataSource) {
@@ -517,6 +522,34 @@ public class GenomicServiceImpl implements IGenomicService {
 			obj.put("name", dataCenter.getName());
 			obj.put("status", initStatus);
 			obj.put("microserviceId", dataCenter.getMicroService().getId().longValue());
+			httpService.addPostParameters(obj);
+			List<String> data = httpService.finish();
+			processUID = data.stream().findFirst().get();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return processUID;
+	}
+	
+	public String executeDataSourceUpload(DataSource dataSource, String initStatus) {
+
+		MicroService microService = dataSource.getMicroService();
+
+		String URL = microService.getServiceUrl() + "/executePlinkProcess";
+
+		String processUID = null;
+		try {
+			ArkHTTPService httpService = new ArkHTTPService(URL, "UTF-8", this.authHeader, HttpMethod.POST);
+
+			JSONObject obj = new JSONObject();
+			obj.put("id", dataSource.getId().longValue());
+			obj.put("directory", dataSource.getPath());
+			obj.put("name", dataSource.getName());
+			obj.put("status", initStatus);
+			obj.put("microserviceId", dataSource.getMicroService().getId().longValue());
 			httpService.addPostParameters(obj);
 			List<String> data = httpService.finish();
 			processUID = data.stream().findFirst().get();

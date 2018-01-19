@@ -192,6 +192,8 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 			}
 		};
 		this.uploadButton.setOutputMarkupId(true);
+		
+		this.uploadButton.setVisible(false);
 
 		this.compileButton = new AjaxButton("compile") {
 			@Override
@@ -234,11 +236,13 @@ public class DetailForm extends AbstractDetailForm<ComputationVo> {
 			}
 		};
 		this.compileButton.setOutputMarkupId(true);
+		this.compileButton.setVisible(false);
 
 		arkCrudContainerVO.getEditButtonContainer().add(uploadButton);
 		arkCrudContainerVO.getEditButtonContainer().add(compileButton);
 
 		this.availableChkBox = new CheckBox(Constants.COMPUTATION_AVAILABLE);
+		this.availableChkBox.setEnabled(false);
 
 		addDetailFormComponents();
 		attachValidators();
