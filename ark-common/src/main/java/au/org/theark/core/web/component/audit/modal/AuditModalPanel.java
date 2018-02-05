@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +42,6 @@ import au.org.theark.core.audit.UsernameRevisionEntity;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetCategory;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetCollection;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
@@ -181,55 +179,59 @@ public class AuditModalPanel extends Panel implements Serializable {
 			}
 		}
 		
-		//Move to else statement to accept nested properties and select only the last two property values.
-//		for(Component component : list) {
-//			Object current = entity;
-//			//we can capture the PhenoDataSet Data and the Custom Field Data from the component name
-//			//which does not include the . for properties.
-//			//ARK-1791 We must ignore the nested properties like the category order number here.
-//			if(component.getId().contains(".") && StringUtils.countMatches(component.getId(), ".")==1){
-//				for(String s : component.getId().split(Pattern.quote("."))) {
-//					try { 
-//						PropertyUtilsBean propertyBean = new PropertyUtilsBean();
-//						Object property = propertyBean.getNestedProperty(current, s);
-//						//if(property != null && !reader.isEntityClassAudited(property.getClass())) {
-//						if(property != null ){
-//							Object primaryKey = iAuditService.getEntityPrimaryKey(current);
-//							if(primaryKey != null && reader.isEntityClassAudited(current.getClass())) {
-//								List<Number> revisionNumbers = reader.getRevisions(current.getClass(), primaryKey);
-//								String fieldName = (s.equalsIgnoreCase("id") ? "ID" : iAuditService.getFieldName(current.getClass(), s));
-//								if(fieldName==null){
-//									this.error("Please contact the system administrator; auditing for some fields("+s+") on this screen has not been properly configured.");
-//									log.error("Please contact system administrator need to add audit field "+s+" to table(Audit.audit_field) In Entity : "+current.getClass());
-//									setFeedbackPanel(feedbackPanel);
-//								}
-//								for(Number revision : revisionNumbers) {
-//									Object rev =reader.find(current.getClass(), primaryKey, revision);
-//									Object revProperty = propertyBean.getProperty(rev, s);
-//									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(current.getClass(), false, true)
-//													.add(AuditEntity.revisionNumber().eq(revision))
-//													.add(AuditEntity.id().eq(primaryKey))
-//													.getSingleResult();
-//									RevisionType type = (RevisionType) result[2];
-//									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
-//									revisionEntities.add(new AuditRow(ure, revProperty, type, fieldName));
-//								}
-//							}
-//						}
-//						//property becomes a current entity.
-//						current = property;
-//					} catch(NoSuchMethodException nsme) {
-//						//The current entity has no property named "s", move on to next "s"
-//						//TODO: find better way to catch this (i.e. use a if instead)
-//						nsme.printStackTrace();
-//					}catch(Exception e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}else{
-//				log.info("Comp:"+component.getId());
-//			}
-//		}
+
+		for(Component component : list) {
+			Object current = entity;
+			//we can capture the PhenoDataSet Data and the Custom Field Data from the component name
+			//which does not include the . for properties.
+			//ARK-1791 We must ignore the nested properties like the category order number here.
+			if(component.getId().contains(".") && StringUtils.countMatches(component.getId(), ".")==1){
+				for(String s : component.getId().split(Pattern.quote("."))) {
+					try { 
+						PropertyUtilsBean propertyBean = new PropertyUtilsBean();
+						
+						Object property = propertyBean.getNestedProperty(current, s);
+						//if(property != null && !reader.isEntityClassAudited(property.getClass())) {
+						if(property != null ){
+							Object primaryKey = iAuditService.getEntityPrimaryKey(current);
+							if(primaryKey != null && reader.isEntityClassAudited(current.getClass())) {
+								List<Number> revisionNumbers = reader.getRevisions(current.getClass(), primaryKey);
+								String fieldName = (s.equalsIgnoreCase("id") ? "ID" : iAuditService.getFieldName(current.getClass(), s));
+								if(fieldName==null){
+									this.error("Please contact the system administrator; auditing for some fields("+s+") on this screen has not been properly configured.");
+									log.error("Please contact system administrator need to add audit field "+s+" to table(Audit.audit_field) In Entity : "+current.getClass());
+									setFeedbackPanel(feedbackPanel);
+								}
+								for(Number revision : revisionNumbers) {
+									Object rev =reader.find(current.getClass(), primaryKey, revision);
+									if(rev!=null){
+										Object revProperty = propertyBean.getProperty(rev, s);
+										Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(current.getClass(), false, true)
+														.add(AuditEntity.revisionNumber().eq(revision))
+														.add(AuditEntity.id().eq(primaryKey))
+														.getSingleResult();
+										RevisionType type = (RevisionType) result[2];
+										UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+										revisionEntities.add(new AuditRow(ure, revProperty, type, fieldName));
+									}
+								}
+							}
+						}
+						//property becomes a current entity.
+						current = property;
+					} catch(NoSuchMethodException nsme) {
+						//The current entity has no property named "s", move on to next "s"
+						//TODO: find better way to catch this (i.e. use a if instead)
+						//nsme.printStackTrace();
+						log.info("Please check no property name called:"+s+"in "+current.toString());
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}else{
+				log.info("Comp:"+component.getId());
+			}
+		}
 		
 		//Handling the history of pheno dataset.
 		if(entity instanceof PhenoDataCollectionVO){
@@ -428,24 +430,26 @@ public class AuditModalPanel extends Panel implements Serializable {
 						for(Number revision : revisionNumbers) {
 							PropertyUtilsBean propertyBean = new PropertyUtilsBean(); 
 							Object rev =reader.find(BioCollectionCustomFieldData.class, pKey, revision);
-							Object revProperty = pickDataValue(rev, propertyBean);
-							try {
-								Object fieldName = propertyBean.getProperty(rev, "customFieldDisplay");
-								CustomFieldDisplay customFieldDisplay=(((CustomFieldDisplay)fieldName));
-									String fieldLabel=((customFieldDisplay.getCustomField()!=null && customFieldDisplay.getCustomField().getFieldLabel()!=null)?  customFieldDisplay.getCustomField().getFieldLabel():customFieldDisplay.getCustomField().getName());
-									String unitTypeInText=((customFieldDisplay.getCustomField()!=null)?customFieldDisplay.getCustomField().getUnitTypeInText():"");;
-									String dataWithUnit= (revProperty!=null)?revProperty.toString():"" +" "+(unitTypeInText!=null?unitTypeInText:"");
-									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(BioCollectionCustomFieldData.class, false, true)
-											.add(AuditEntity.revisionNumber().eq(revision))
-											.add(AuditEntity.id().eq(pKey))
-											.getSingleResult();
-									RevisionType type = (RevisionType) result[2];
-									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
-									revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
-							} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
-								this.error("Audit information can not be displayed in some records.");
-								setFeedbackPanel(feedbackPanel);
-							}
+							if(rev!=null){
+								Object revProperty = pickDataValue(rev, propertyBean);
+								try {
+									Object fieldName = propertyBean.getProperty(rev, "customFieldDisplay");
+									CustomFieldDisplay customFieldDisplay=(((CustomFieldDisplay)fieldName));
+										String fieldLabel=((customFieldDisplay.getCustomField()!=null && customFieldDisplay.getCustomField().getFieldLabel()!=null)?  customFieldDisplay.getCustomField().getFieldLabel():customFieldDisplay.getCustomField().getName());
+										String unitTypeInText=((customFieldDisplay.getCustomField()!=null)?customFieldDisplay.getCustomField().getUnitTypeInText():"");;
+										String dataWithUnit= (revProperty!=null)?revProperty.toString():"" +" "+(unitTypeInText!=null?unitTypeInText:"");
+										Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(BioCollectionCustomFieldData.class, false, true)
+												.add(AuditEntity.revisionNumber().eq(revision))
+												.add(AuditEntity.id().eq(pKey))
+												.getSingleResult();
+										RevisionType type = (RevisionType) result[2];
+										UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+										revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
+								} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
+									this.error("Audit information can not be displayed in some records.");
+									setFeedbackPanel(feedbackPanel);
+								}
+							}	
 						}
 				}
 			}
@@ -462,25 +466,27 @@ public class AuditModalPanel extends Panel implements Serializable {
 						for(Number revision : revisionNumbers) {
 							PropertyUtilsBean propertyBean = new PropertyUtilsBean(); 
 							Object rev =reader.find(BiospecimenCustomFieldData.class, pKey, revision);
-							Object revProperty = pickDataValue(rev, propertyBean);
-							try {
-								Object fieldName = propertyBean.getProperty(rev, "customFieldDisplay");
-								CustomFieldDisplay customFieldDisplay=(((CustomFieldDisplay)fieldName));
-									String fieldLabel=((customFieldDisplay.getCustomField()!=null && customFieldDisplay.getCustomField().getFieldLabel()!=null)?  customFieldDisplay.getCustomField().getFieldLabel():customFieldDisplay.getCustomField().getName());
-									String unitTypeInText=((customFieldDisplay.getCustomField()!=null)?customFieldDisplay.getCustomField().getUnitTypeInText():"");;
-									String dataWithUnit= (revProperty!=null)?revProperty.toString():"" +" "+(unitTypeInText!=null?unitTypeInText:"");
-									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(BiospecimenCustomFieldData.class, false, true)
-											.add(AuditEntity.revisionNumber().eq(revision))
-											.add(AuditEntity.id().eq(pKey))
-											.getSingleResult();
-									RevisionType type = (RevisionType) result[2];
-									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
-									revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
-							} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
-								this.error("Audit information can not be displayed in some records.");
-								setFeedbackPanel(feedbackPanel);
-							}
+							if(rev!=null){
+								Object revProperty = pickDataValue(rev, propertyBean);
+								try {
+									Object fieldName = propertyBean.getProperty(rev, "customFieldDisplay");
+									CustomFieldDisplay customFieldDisplay=(((CustomFieldDisplay)fieldName));
+										String fieldLabel=((customFieldDisplay.getCustomField()!=null && customFieldDisplay.getCustomField().getFieldLabel()!=null)?  customFieldDisplay.getCustomField().getFieldLabel():customFieldDisplay.getCustomField().getName());
+										String unitTypeInText=((customFieldDisplay.getCustomField()!=null)?customFieldDisplay.getCustomField().getUnitTypeInText():"");;
+										String dataWithUnit= (revProperty!=null)?revProperty.toString():"" +" "+(unitTypeInText!=null?unitTypeInText:"");
+										Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(BiospecimenCustomFieldData.class, false, true)
+												.add(AuditEntity.revisionNumber().eq(revision))
+												.add(AuditEntity.id().eq(pKey))
+												.getSingleResult();
+										RevisionType type = (RevisionType) result[2];
+										UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+										revisionEntities.add(new AuditRow(ure, dataWithUnit, type,fieldLabel+" ["+((customFieldCategory!=null)?customFieldCategory.getName():"All")+"]"));
+								} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ObjectNotFoundException e) {
+									this.error("Audit information can not be displayed in some records.");
+									setFeedbackPanel(feedbackPanel);
+								}
 						}
+					}		
 				}
 			}
 		}
@@ -518,14 +524,16 @@ public class AuditModalPanel extends Panel implements Serializable {
 								}
 								for(Number revision : revisionNumbers) {
 									Object rev =reader.find(current.getClass(), primaryKey, revision);
-									Object revProperty = propertyBean.getProperty(rev, s);
-									Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(current.getClass(), false, true)
-													.add(AuditEntity.revisionNumber().eq(revision))
-													.add(AuditEntity.id().eq(primaryKey))
-													.getSingleResult();
-									RevisionType type = (RevisionType) result[2];
-									UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
-									revisionEntities.add(new AuditRow(ure, revProperty, type, fieldName));
+									if(rev!=null){
+										Object revProperty = propertyBean.getProperty(rev, s);
+										Object[] result = (Object[]) reader.createQuery().forRevisionsOfEntity(current.getClass(), false, true)
+														.add(AuditEntity.revisionNumber().eq(revision))
+														.add(AuditEntity.id().eq(primaryKey))
+														.getSingleResult();
+										RevisionType type = (RevisionType) result[2];
+										UsernameRevisionEntity ure = (UsernameRevisionEntity) result[1];
+										revisionEntities.add(new AuditRow(ure, revProperty, type, fieldName));
+									}	
 								}
 							}
 						}else{

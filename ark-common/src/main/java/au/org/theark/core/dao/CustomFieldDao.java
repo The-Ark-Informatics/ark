@@ -24,6 +24,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -848,6 +849,30 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		criteria.add(Restrictions.eq("customFieldType", customFieldType));
 		criteria.setMaxResults(1);
 		return (CustomFieldCategory) criteria.uniqueResult();
+	}
+	
+	@Override
+	public CustomFieldType getCustomFieldTypeById(Long id){
+		Criteria criteria = getSession().createCriteria(CustomFieldType.class);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setMaxResults(1);
+		return (CustomFieldType) criteria.uniqueResult();
+	}
+
+	@Override
+	public UnitType getUnitTypeById(Long id) {
+		Criteria criteria = getSession().createCriteria(UnitType.class);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setMaxResults(1);
+		return (UnitType) criteria.uniqueResult();
+	}
+
+	@Override
+	public Unit getUnitById(Long id) {
+		Criteria criteria = getSession().createCriteria(Unit.class);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setMaxResults(1);
+		return (Unit) criteria.uniqueResult();
 	}
 
 	

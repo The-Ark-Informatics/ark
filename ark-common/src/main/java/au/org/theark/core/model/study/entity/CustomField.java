@@ -32,10 +32,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -110,7 +110,7 @@ public class CustomField implements Serializable {
 	public void setCustomFieldCategory(CustomFieldCategory customFieldCategory) {
 		this.customFieldCategory = customFieldCategory;
 	}
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_TYPE_ID", nullable = false)
 	public FieldType getFieldType() {
