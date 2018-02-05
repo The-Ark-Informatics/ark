@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -31,12 +32,13 @@ import au.org.theark.core.exception.ArkCheckSumNotSameException;
 import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.spark.entity.Computation;
-import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.genomics.jobs.CompilationExecutor;
 import au.org.theark.genomics.model.vo.ComputationVo;
+import au.org.theark.genomics.service.IGenomicService;
 import au.org.theark.genomics.util.Constants;
 import au.org.theark.genomics.web.component.computation.form.ContainerForm;
 
@@ -48,6 +50,10 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
+	
+	@SpringBean(name = Constants.GENOMIC_SERVICE)
+	private IGenomicService iGenomicService;
+
 	
 	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm) {
 		super(id);
@@ -90,6 +96,9 @@ public class SearchResultListPanel extends Panel {
 				}
 				
 				item.add(buildDownloadButton(computation));
+				item.add(buildUploadButton(computation));
+				item.add(buildCompileButton(computation));
+				item.add(buildAvailableButton(computation));
 				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= 1L;
@@ -102,6 +111,7 @@ public class SearchResultListPanel extends Panel {
 
 			}
 		};
+		
 		return sitePageableListView;
 	}
 
@@ -204,6 +214,140 @@ public class SearchResultListPanel extends Panel {
 		//if (subjectFile.getPayload() == null)
 		//ajaxButton.setVisible(false);
 
+		return ajaxButton;
+	}
+	
+	private AjaxButton buildUploadButton(final Computation computation) {
+		AjaxButton ajaxButton = new AjaxButton("uploadPackage") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// TODO Auto-generated method stub
+				try {
+					iGenomicService.uploadComputation(computation);
+				} catch (Exception e) {
+					this.error("An unexpected error occurred. Computation upload failed.");
+					computation.setStatus(Constants.STATUS_UPLOAD_FAILED);
+					e.printStackTrace();
+				}
+				
+				try{
+					iGenomicService.update(computation, null, null);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+//				target.add(computationStatusTxtFld);
+//				target.add(feedBackPanel);
+//				target.add(uploadButton);
+				target.add(this);
+//				target.add(sitePageableListView);
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				boolean enabled = false;
+				if (computation.getId() != null && 
+						!(Constants.STATUS_UPLOADING.equalsIgnoreCase(computation.getStatus()) 
+								|| Constants.STATUS_UPLOADED.equalsIgnoreCase(computation.getStatus()) 
+								|| Constants.STATUS_PROCESSED.equalsIgnoreCase(computation.getStatus()) )) {
+					enabled = true;
+				}
+				return enabled;
+			}
+		};
+		
+		ajaxButton.setOutputMarkupId(true);
+		
+		return ajaxButton;
+	}
+	
+	private AjaxButton buildCompileButton(final Computation computation) {
+		AjaxButton ajaxButton = new AjaxButton("compilePackage") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				try {
+
+//					Computation computation = getFormModelObject().getComputation();
+
+					String processUID = iGenomicService.compileComputation(computation);
+
+					computation.setStatus(Constants.STATUS_PROCESSING);
+
+					iGenomicService.saveOrUpdate(computation);
+
+					CompilationExecutor executor = new CompilationExecutor(computation, processUID, iGenomicService);
+
+					executor.run();
+
+				} catch (Exception e) {
+					this.error("An unexpected error occurred. Computation compilation failled.");
+					e.printStackTrace();
+				}
+
+//				target.add(computationStatusTxtFld);
+//				target.add(feedBackPanel);
+//				target.add(compileButton);
+				target.add(this);
+//				target.add(sitePageableListView);
+			}
+			
+			
+			@Override
+			public boolean isEnabled() {
+
+				boolean enabled = false;
+//				Computation computation = getFormModelObject().getComputation();
+				if (computation.getId() != null && 
+						(Constants.STATUS_UPLOADED.equalsIgnoreCase(computation.getStatus()))) {
+					enabled = true;
+				}
+				return enabled;
+			}
+		};
+		
+		ajaxButton.setOutputMarkupId(true);
+		
+		return ajaxButton;
+	}
+
+	private AjaxButton buildAvailableButton(final Computation computation) {
+//		AjaxButton ajaxButton = new AjaxButton("availablePackage") {
+//			@Override
+//			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+//				// TODO Auto-generated method stub
+//				super.onSubmit(target, form);
+//			}
+//		};
+		
+		IModel<String> textModel = new AbstractReadOnlyModel<String>() {
+		    public String getObject() {
+		    	
+//		    	System.out.println("Text Model "+ computation.getAvailable() );
+		    	
+		        return BooleanUtils.isTrue(computation.getAvailable())? getString("button.available") : getString("button.unavailable");
+		    }
+		};
+		
+		AjaxButton ajaxButton = new AjaxButton("availablePackage", textModel) {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// TODO Auto-generated method stub
+				
+//				boolean available = !(computation.getAvailable()!=null ? computation.getAvailable():Boolean.FALSE);
+				
+				boolean available = !BooleanUtils.isTrue(computation.getAvailable());
+				
+//				System.out.println("onSubmit "+ available );
+				
+				computation.setAvailable(available);
+				
+				iGenomicService.saveOrUpdate(computation);
+				
+				target.add(this);
+			}
+		};	
+		
+		ajaxButton.setOutputMarkupId(true);
+		
 		return ajaxButton;
 	}
 

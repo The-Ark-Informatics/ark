@@ -40,6 +40,12 @@ public class SourceForm extends AbstractDetailForm<DataSourceVo> {
 	private TextField<String> dataSourceDataCenterTxtFld;
 	private DropDownChoice<DataSourceType> dataSourceTypesDDC;
 	private TextField<String> dataSourceStatusTxtFld;
+	
+	
+	private TextField<String> dataSourceOwnerTxtFld;
+	private TextField<String> dataSourceChipTxtFld;
+	private TextField<String> dataSourceSnpCountTxtFld;
+	private TextField<String> dataSourceSizeTxtFld;
 
 	private AbstractDetailModalWindow modalWindow;
 
@@ -82,6 +88,11 @@ public class SourceForm extends AbstractDetailForm<DataSourceVo> {
 
 		dataSourceStatusTxtFld = new TextField<String>(Constants.DATA_SOURCE_STATUS);
 		dataSourceStatusTxtFld.setEnabled(false);
+		
+		dataSourceOwnerTxtFld = new TextField<String>(Constants.DATA_SOURCE_OWNER) ;
+		dataSourceChipTxtFld = new TextField<String>(Constants.DATA_SOURCE_CHIP);
+		dataSourceSnpCountTxtFld = new TextField<String>(Constants.DATA_SOURCE_SNP_COUNT);
+		dataSourceSizeTxtFld = new TextField<String>(Constants.DATA_SOURCE_SIZE);
 
 		addDetailFormComponents();
 	}
@@ -169,6 +180,11 @@ public class SourceForm extends AbstractDetailForm<DataSourceVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dataSourceDataCenterTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dataSourceTypesDDC);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dataSourceStatusTxtFld);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dataSourceOwnerTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dataSourceChipTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dataSourceSnpCountTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dataSourceSizeTxtFld);
 	}
 
 }

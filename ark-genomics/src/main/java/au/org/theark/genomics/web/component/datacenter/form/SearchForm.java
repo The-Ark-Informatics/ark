@@ -7,6 +7,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -37,26 +38,35 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 
 	private PageableListView<DataSourceVo> listView;
 
+	private PageableListView<DataSource> sourceView;
+
 	private CompoundPropertyModel<DataCenterVo> cpmModel;
 
 	private DropDownChoice<MicroService> microServicesDDC;
 	private DropDownChoice<String> dataCentersDDC;
 	private TextField<String> fileNameTextField;
 	private TextField<String> directoryTextField;
+	
+	private TextField<String> idTextField;
+	private TextField<String> nameTextField;
 
 	private AjaxButton newButton;
 
 	private List<MicroService> microServiceList;
 
 	private List<String> dataSourceList;
+	
+	private WebMarkupContainer	        dataSourcePanelContainer;
 
-	public SearchForm(String id, CompoundPropertyModel<DataCenterVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<DataSourceVo> listView) {
+	public SearchForm(String id, CompoundPropertyModel<DataCenterVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<DataSourceVo> listView, PageableListView<DataSource> sourceView, WebMarkupContainer dataSourcePanelContainer) {
 
 		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
 		this.listView = listView;
+		this.sourceView = sourceView;
 		this.cpmModel = cpmModel;
+		this.dataSourcePanelContainer = dataSourcePanelContainer;
 
 		initialiseSearchForm();
 		addSearchComponentsToForm();
@@ -82,6 +92,9 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		this.newButton = new AjaxButton(au.org.theark.core.Constants.NEW) {
 		};
 		newButton.setVisible(false);
+		
+		this.idTextField = new TextField<String>(Constants.DATA_CENTER_DATA_SOURCE_ID);
+		this.nameTextField = new TextField<String>(Constants.DATA_CENTER_DATA_SOURCE_NAME);
 	}
 
 	private void addSearchComponentsToForm() {
@@ -90,6 +103,8 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 		add(fileNameTextField);
 		add(directoryTextField);
 		addOrReplace(newButton);
+		add(idTextField);
+		add(nameTextField);
 	}
 
 	private void initMicroServiceDropDown(PropertyModel<MicroService> microService) {
@@ -155,6 +170,7 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 			dataSourceVo.setPath(dir == null ? "/" : dir.charAt(0) == '/' ? dir : ("/" + dir));
 
 			DataSource dataSource = iGenomicService.getDataSource(dataSourceVo);
+			
 
 			if (dataSource != null && dataSource.getStatus() != null) {
 				cpmModel.getObject().setStatus(dataSource.getStatus());
@@ -207,10 +223,24 @@ public class SearchForm extends AbstractSearchForm<DataCenterVo> {
 				}
 			}
 		}
+		
+		
+		//Search data sources available for search criteria
+		
+		DataSourceVo dataSourceVo = new DataSourceVo();
+		dataSourceVo.setDataCenter(cpmModel.getObject().getName());
+		dataSourceVo.setMicroService(cpmModel.getObject().getMicroService());
+		dataSourceVo.setDataSource(cpmModel.getObject().getDataSource());
+		getModelObject().setDataSourceEntityList(iGenomicService.searchDataSources(dataSourceVo));
+		
+		
 		getModelObject().setDataSourceList(resultList);
+				
 		listView.removeAll();
+		sourceView.removeAll();
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(dataSourcePanelContainer);
 	}
 
 	@Override

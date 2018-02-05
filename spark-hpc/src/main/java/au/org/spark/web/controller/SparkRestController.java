@@ -136,6 +136,7 @@ public class SparkRestController {
 			try {
 				list = sshService.listFilesAndDirectories(datacenter.getDirectory(), datacenter.getFileName());
 			} catch (Exception e) {
+				e.printStackTrace();
 				list = new ArrayList<DataSourceVo>();
 			}
 		} 
@@ -546,6 +547,22 @@ public class SparkRestController {
 			
 		}
 		return jobId;
+	}
+	
+	@RequestMapping(value = "/queryResult1", method = RequestMethod.POST)
+	public @ResponseBody String queryResult1(@RequestBody DataCenterVo dataCenter) {
+		String result = "No Result Found"; 
+		try {
+			
+			System.out.println("--------Query Result Execution-----------"+dataCenter.getIndividualId());
+			
+			result=sshService.queryResult(dataCenter);
+						
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("-------------Result----------------"+ result);
+		return result;
 	}
 	
 	@RequestMapping(value = "/queryResult", method = RequestMethod.POST)
