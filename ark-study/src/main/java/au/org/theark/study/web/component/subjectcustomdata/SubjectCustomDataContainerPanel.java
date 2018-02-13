@@ -153,7 +153,7 @@ public class SubjectCustomDataContainerPanel extends Panel {
 					//Get the subject persistance object from the custom field type.
 					customFieldCriteria.setCustomFieldType(iArkCommonService.getCustomFieldTypeByName(au.org.theark.core.Constants.SUBJECT));
 				}
-			}
+			}	
 			catch (EntityNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -1593,8 +1593,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 		if (!fileDir.exists()) {
 			try {
-				fileDir.mkdirs();
-			} catch (SecurityException se) {
+				boolean status=fileDir.mkdirs();
+				if(!status) throw new SecurityException("Directory not created."); 
+				} catch (SecurityException se) {
 				log.error("Do not have the sufficient permission to access the file directory " + directoryName, se);
 				throw new ArkSystemException(se.getMessage());
 			}
