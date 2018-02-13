@@ -253,7 +253,7 @@ public class SearchResultListPanel extends Panel {
 				boolean success=false;
 				if (subjectFile.getId() != null) {
 					try {
-						studyService.delete(subjectFile,au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+						studyService.delete(subjectFile,(subjectFile.getIsConsentFile()?au.org.theark.study.web.Constants.ARK_SUBJECT_CONSENT_DIR:au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR));
 						success=true;
 					}
 					catch (ArkSystemException e) {

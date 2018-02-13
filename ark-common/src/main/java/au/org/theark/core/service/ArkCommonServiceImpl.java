@@ -1578,8 +1578,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * {@inheritDoc}
 	 */
 	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) throws ArkSystemException {
-
-
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
 		createArkFileAttachmentDirectoy(directoryName);
 		createFile(directoryName, fileId, payload);
