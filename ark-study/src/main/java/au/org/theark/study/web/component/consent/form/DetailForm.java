@@ -634,7 +634,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		
 				// Save
 				iStudyService.create(containerForm.getModelObject().getSubjectFile(),Constants.ARK_SUBJECT_CONSENT_DIR);
-				this.saveInformation();
+				//this.saveInformation();
+				//No need of this cause it's calling at the actual consent object creation or update.
 				//this.info("Consent file: " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
 			}
 			catch (IOException ioe) {
