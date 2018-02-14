@@ -42,6 +42,14 @@ public class DataSource implements Serializable {
 	
 	private Boolean directory;
 	
+	private String chip;
+	
+	private Integer snpCount;
+	
+	private Double size;
+	
+	private String owner;
+	
 	public DataSource() {
 		
 	}
@@ -131,5 +139,42 @@ public class DataSource implements Serializable {
 	public void setDirectory(Boolean directory) {
 		this.directory = directory;
 	}
+
+	@Column(name = "CHIP")
+	public String getChip() {
+		return chip;
+	}
+
+	public void setChip(String chip) {
+		this.chip = chip;
+	}
+
+	@Column(name = "SNP_COUNT")
+	public Integer getSnpCount() {
+		return snpCount;
+	}
+
+	public void setSnpCount(Integer snpCount) {
+		this.snpCount = snpCount;
+	}
+
+	@Column(name = "SIZE")
+	public Double getSize() {
+		return size;
+	}
+
+	public void setSize(Double size) {
+		this.size = size;
+	}
+
+	@Column(name = "OWNER")
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	
 	
 }

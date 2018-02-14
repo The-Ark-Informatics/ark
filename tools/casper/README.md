@@ -12,9 +12,10 @@ STEPS:
 
 mvn clean compile assembly:single
 
-(3) Execute JAR file: 
+(3) Execute JAR file: Please make sure before you execute this you must have the user permission to the folder to create sub directories(/opt/data/arkFileData).
 
 java -jar casper-1.0-SNAPSHOT-jar-with-dependencies.jar
 
-(4) Set permissions to tomcat user to access the base directory and it's sub directories.
-Ex: chown -R tomcat6:tomcat6 /opt/ark-datastore/
+(4) Set permissions to tomcat user to access the base directory and it's sub directories.According to the step 3 the permiss may set for the current logged in user not tomcat7
+	
+Ex: chown -R tomcat7:tomcat7 /opt/data/arkFileData

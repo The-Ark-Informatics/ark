@@ -101,6 +101,18 @@ public class Main {
 			"c.ATTACHMENT_CHECKSUM= ? \n" + 
 			"where c.ID = ?";
 	
+	private static final String SELECT_FILE_ATTACHMENT_DUMMYCHECKSUM ="select sf.ID, sf.FILENAME, lss.STUDY_ID, lss.SUBJECT_UID,sf.PAYLOAD \n" + 
+			"from study.subject_file sf \n" + 
+			"	inner join study.link_subject_study lss on lss.ID = sf.LINK_SUBJECT_STUDY_ID \n" + 
+			"where sf.id > ? \n" + 
+			"	and sf.PAYLOAD is not null \n" +
+			"   and sf.checksum='DummyCheckSum' \n"+
+			"order by sf.ID limit 1";
+	
+	private static final String UPDATE_FILE_ATTACHMENT_DUMMYCHECKSUM = "update study.subject_file sf \n" + 
+			"set sf.checksum= ? \n" +
+			"where sf.id = ?";	
+	
 	private static final String CASPER_PROPERTIES_FILE="casper.properties";
 	
 	private static Logger log = Logger.getLogger(Main.class.getName()) ;
@@ -119,6 +131,7 @@ public class Main {
 		m.migrateStudyLogoFiles(con);;
 		m.migrateSubjectFiles(con);
 		m.migrateCorrespondenceFiles(con);
+		m.updateDummyCheckSumsInSubjectFile(con);
 		closeConnection(con);
 	}
 	
@@ -289,6 +302,41 @@ public class Main {
 				break;
 			}
 		}
+	}
+	
+	public void updateDummyCheckSumsInSubjectFile(Connection con) throws Exception{
+		int id = 0;
+		int previousId=0;
+		PreparedStatement selectPS = con.prepareStatement(Main.SELECT_FILE_ATTACHMENT_DUMMYCHECKSUM);
+		PreparedStatement updatePS = con.prepareStatement(Main.UPDATE_FILE_ATTACHMENT_DUMMYCHECKSUM);
+		while(true){
+			previousId =id;
+			id = update(id, selectPS, updatePS);
+			if(previousId != id){
+				continue;
+			}else{
+				break;
+			}
+		}
+	}
+	
+	private int update(int id, PreparedStatement selectPS, PreparedStatement updatePS) throws Exception{
+		
+		byte[] payload = null;
+		selectPS.setInt(1, id);
+		ResultSet rs = selectPS.executeQuery();
+
+		if (rs.next()) {
+			id = rs.getInt(1);
+			payload = rs.getBytes(5);
+			updatePS.setString(1, DigestUtils.md5Hex(new ByteArrayInputStream(payload)).toUpperCase());
+			updatePS.setInt(2, id);
+			updatePS.executeUpdate();
+			//Clear payload 
+			payload = null;
+		}
+		return id;
+		
 	}
 
 	private int migrate(int id, PreparedStatement selectPS, PreparedStatement updatePS, String baseDir) throws Exception {

@@ -23,5 +23,7 @@ public interface JobService {
 	public Future<Report> compileProgram(ComputationVo computation);
 	
 	public Future<Report> executeAnalysis(AnalysisVo analysis);
+	
+	public Future<Report> queryResult(DataCenterVo dataCenterVo);
 
 }

@@ -11,7 +11,7 @@
 				</label>
 			</th>
 			
-			<th width="30%">
+			<th width="20%">
 				<label for="searchName">
 					<wicket:message	key="search.name">search name:</wicket:message>
 				</label>
@@ -19,11 +19,14 @@
 			<th width="20%">
 				<wicket:message	key="search.status">search status:</wicket:message>
 			</th>
-			<th width="20%">
+			<th width="15%">
 				<wicket:message	key="search.startTime">start:</wicket:message>
 			</th>
-			<th width="20%">
+			<th width="15%">
 				<wicket:message	key="search.finishTime">finish:</wicket:message>
+			</th>
+			<th width="15%">
+				<wicket:message	key="downloadExcludUIs">downloadExcludUI:</wicket:message>
 			</th>
 			<th width="15%">
 				<input wicket:id="refresh" type="submit" wicket:message="value:button.refresh" />&nbsp;
@@ -39,7 +42,7 @@
 			<td width="5%">
 				<span wicket:id="search.id">100</span>
 			</td>
-			<td width="30%">
+			<td width="20%">
 			  <a href="#"wicket:id="search.name">
 			  	<span wicket:id="nameLbl">Name</span>
 			  </a>
@@ -47,11 +50,14 @@
 			<td width="20%">
 			  <span wicket:id="search.status">Status</span>
 			</td>
-			<td width="5%">
+			<td width="15%">
 			  <span wicket:id="search.startTime">Start</span>
 			</td>
-			<td width="5%">
+			<td width="15%">
 			  <span wicket:id="search.finishTime">Finish</span>
+			</td>
+			<td width="15%">
+			  <input wicket:id="downloadExcludUIs" type="submit" wicket:message="value:button.downloadExcludeUIs"/>
 			</td>
 			<td width="15%">
 			  <input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadResult" />
@@ -66,7 +72,7 @@
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="7"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="8"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>

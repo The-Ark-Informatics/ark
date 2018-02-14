@@ -89,6 +89,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetData;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
@@ -5412,6 +5413,25 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		List<LinkSubjectStudy> fieldsList = criteria.list();
 		return fieldsList;
 		
+	}
+	@Override
+	public TreatmentType getBiospecimenTreatmentTypeById(Long id) {
+		Criteria criteria = getSession().createCriteria(TreatmentType.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (TreatmentType) criteria.uniqueResult();
+	}
+
+	@Override
+	public SubjectStatus getSubjectStatusById(Long id) {
+		Criteria criteria = getSession().createCriteria(SubjectStatus.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (SubjectStatus) criteria.uniqueResult();
+	}
+	@Override
+	public StudyStatus getStudyStatusById(Long id){
+		Criteria criteria = getSession().createCriteria(StudyStatus.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (StudyStatus) criteria.uniqueResult();
 	}
 
 }

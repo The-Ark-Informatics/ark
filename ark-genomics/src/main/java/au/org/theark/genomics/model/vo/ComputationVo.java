@@ -21,6 +21,7 @@ public class ComputationVo implements Serializable {
 
 	public ComputationVo() {
 		this.computation = new Computation();
+		this.computation.setAvailable(Boolean.FALSE);
 		this.computationList = new ArrayList<Computation>();
 	}
 

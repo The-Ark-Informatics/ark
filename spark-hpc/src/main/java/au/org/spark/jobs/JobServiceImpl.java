@@ -130,4 +130,24 @@ public class JobServiceImpl implements JobService {
 		return new AsyncResult<Report>(report);
 	}
 	
+	@Async
+	public Future<Report> queryResult(DataCenterVo dataCenterVo){
+		String result=null;
+		
+		try {
+			System.out.println(" ----------- Query Result --------------------");
+			result = sshService.queryResult(dataCenterVo);		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		Report report = new Report();
+		report.setName("New Report");
+		report.setResult(result);
+		report.setDescription("New Report Description");
+
+		return new AsyncResult<Report>(report);
+	
+	}
+	
 }

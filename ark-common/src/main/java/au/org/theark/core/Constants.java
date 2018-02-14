@@ -376,6 +376,8 @@ public class Constants {
 	public static final String ARK_MODULE_DISEASE = "Disease";
 	public static final String ARK_MODULE_GLOBAL_SEARCH = "Global Search";
 	public static final String ARK_MODULE_GENOMICS = "Genomics";
+	public static final String ARK_MODULE_CALENDAR = "Calendar";
+	public static final String CALENDAR_SUBMENU	= "CalendarSubMenus";
 
 	public static final char DEFAULT_DELIMITER_CHARACTER = ',';
 	public static final String DEFAULT_FILE_FORMAT = "CSV";
@@ -683,6 +685,8 @@ public class Constants {
 			{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "",
 					"", "", "", "", "", "", "", "", "", "", "", "" } };
 	public static final String DOWNLOAD_FILE = "downloadFile";
+	public static final String DOWNLOAD_EXCLUDE_UIS = "downloadExcludUIs";
+	
 	public static final String DELETE_FILE = "deleteFile";
 
 	// Exception messages

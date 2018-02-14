@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.org.theark.core.model.spark.entity.DataSource;
 import au.org.theark.core.model.spark.entity.MicroService;
 
 public class DataCenterVo implements Serializable {
@@ -27,10 +28,16 @@ public class DataCenterVo implements Serializable {
 	
 	private String outputType;
 	
+	private DataSource dataSource;
+	
 	private List<DataSourceVo> dataSourceList;	
 
+	private List<DataSource> dataSourceEntityList;	
+
 	public DataCenterVo() {
-		this.dataSourceList = new ArrayList<DataSourceVo>();		
+		this.dataSourceList = new ArrayList<DataSourceVo>();
+		this.dataSourceEntityList = new ArrayList<DataSource>();
+		this.dataSource = new DataSource();
 	}
 
 	public MicroService getMicroService() {
@@ -96,5 +103,20 @@ public class DataCenterVo implements Serializable {
 	public void setOutputType(String outputType) {
 		this.outputType = outputType;
 	}
-	
+
+	public List<DataSource> getDataSourceEntityList() {
+		return dataSourceEntityList;
+	}
+
+	public void setDataSourceEntityList(List<DataSource> dataSourceEntityList) {
+		this.dataSourceEntityList = dataSourceEntityList;
+	}
+
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 }

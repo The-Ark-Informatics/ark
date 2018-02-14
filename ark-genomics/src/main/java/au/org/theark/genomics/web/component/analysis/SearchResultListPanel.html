@@ -35,6 +35,14 @@
 					<wicket:message	key="genomics.analysis.status">Role:</wicket:message>
 				</label>
 			</th>
+			<th width="10%">
+				<label for="run">
+				</label>
+			</th>
+			<th width="10%">
+				<label for="download">
+				</label>
+			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -60,12 +68,18 @@
 			<td width="10%">
 				<span wicket:id="analysis.status">Status</span>
 			</td>
+			<td width="10%">
+				<input wicket:id="runAnalysis" type="submit" wicket:message="value:page.queue" />
+			</td>
+			<td width="10%">
+				<input wicket:id="downloadResults" type="submit" wicket:message="value:page.result" />
+			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="6"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="8"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>

@@ -109,6 +109,8 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.lims.entity.TreatmentType;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
@@ -153,6 +155,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	//private JavaMailSender javaMailSender;
 	private VelocityEngine velocityEngine;
 	private IGenoDao genoDao;
+	
 	
 
 	@Autowired
@@ -1575,8 +1578,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * {@inheritDoc}
 	 */
 	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) throws ArkSystemException {
-
-
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
 		createArkFileAttachmentDirectoy(directoryName);
 		createFile(directoryName, fileId, payload);
@@ -1590,8 +1591,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 		if (!fileDir.exists()) {
 			try {
-				fileDir.mkdirs();
-			} catch (SecurityException se) {
+				boolean status=fileDir.mkdirs();
+				if(!status) throw new SecurityException("Directory not created."); 
+				} catch (SecurityException se) {
 				log.error("Do not have the sufficient permission to access the file directory " + directoryName, se);
 				throw new ArkSystemException(se.getMessage());
 			}
@@ -2370,6 +2372,40 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public void deleteSearchResult(SearchResult searchResult) {
 		studyDao.delete(searchResult);
+	}
+
+	@Override
+	public FieldType getFieldTypeById(Long id) {
+		return customFieldDao.getFieldTypeById(id);
+	}
+
+	@Override
+	public CustomFieldType getCustomFieldTypeById(Long id) {
+		return customFieldDao.getCustomFieldTypeById(id);
+	}
+	@Override
+	public TreatmentType getBiospecimenTreatmentTypeById(Long id){
+		return studyDao.getBiospecimenTreatmentTypeById(id);
+	}
+
+	@Override
+	public UnitType getUnitTypeById(Long id) {
+		return customFieldDao.getUnitTypeById(id);
+	}
+
+	@Override
+	public Unit getUnitById(Long id) {
+		return customFieldDao.getUnitById(id);
+	}
+
+	@Override
+	public SubjectStatus getSubjectStatusById(Long id) {
+		return studyDao.getSubjectStatusById(id);
+	}
+
+	@Override
+	public StudyStatus getStudyStatusById(Long id) {
+		return studyDao.getStudyStatusById(id);
 	}
 
 }

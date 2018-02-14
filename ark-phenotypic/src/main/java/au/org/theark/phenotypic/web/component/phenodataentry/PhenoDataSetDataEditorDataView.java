@@ -215,8 +215,8 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 				}
 				else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
 					// Number data
-					if(pf.getDefaultValue() != null && item.getModelObject().getNumberDataValue() == null) {
-						item.getModelObject().setNumberDataValue(Double.parseDouble(pf.getDefaultValue()));;
+					if(pf.getDefaultValue() != null && item.getModelObject().getNumberDataValue() == null && !pf.getDefaultValue().trim().isEmpty()) {
+						item.getModelObject().setNumberDataValue(Double.parseDouble(pf.getDefaultValue()));
 					}
 					NumberDataEntryPanel numberDataEntryPanel = new NumberDataEntryPanel("dataValueEntryPanel", 
 																						new PropertyModel<Double>(item.getModel(), "numberDataValue"), 

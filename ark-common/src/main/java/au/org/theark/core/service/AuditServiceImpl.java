@@ -9,8 +9,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import jxl.write.DateFormat;
-
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditQuery;
@@ -29,7 +27,16 @@ import au.org.theark.core.dao.IAuditDao;
 import au.org.theark.core.model.audit.entity.AuditEntity;
 import au.org.theark.core.model.audit.entity.AuditField;
 import au.org.theark.core.model.audit.entity.AuditPackage;
+import au.org.theark.core.model.lims.entity.TreatmentType;
+import au.org.theark.core.model.lims.entity.Unit;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.vo.AuditVO;
+import jxl.write.DateFormat;
 
 /**
  * @author george
@@ -42,7 +49,10 @@ public class AuditServiceImpl implements IAuditService {
 	protected transient Logger log = LoggerFactory.getLogger(AuditServiceImpl.class);
 
 	private IAuditDao iAuditDao;
+	
+	private IArkCommonService iArkCommonService;
 
+	
 	@Autowired
 	public void setAuditDai(IAuditDao iAuditDao) {
 		this.iAuditDao = iAuditDao;
@@ -50,6 +60,15 @@ public class AuditServiceImpl implements IAuditService {
 
 	public IAuditDao getAuditDao() {
 		return iAuditDao;
+	}
+
+	public IArkCommonService getiArkCommonService() {
+		return iArkCommonService;
+	}
+
+	@Autowired
+	public void setiArkCommonService(IArkCommonService iArkCommonService) {
+		this.iArkCommonService = iArkCommonService;
 	}
 
 	public AuditReader getAuditReader() {
@@ -195,6 +214,16 @@ public class AuditServiceImpl implements IAuditService {
 	 * Gets the value of the provided entity.
 	 * @param entity The entity to get the value of.
 	 * @return The string representation of the provided entity. If no representation could be achieved, an empty string is returned.
+	 * 
+	 * 
+	 * Special Comment on this method.
+	 * Coudn't find the way of finding the nested property values when the main class has the entity which is not a generic field but as an object.
+	 * So when this happen we have to look for the exact object going through the id.
+	 * Please look for the 
+	 * FieldType, CustomFieldType, CustomFieldCategory... etc.
+	 * 
+	 * Note: This is violating the concept of OOP may be but we can't go for the higher upgrade of hibernate enviers for the object auditing at the moment.
+	 * 
 	 */
 	public String getEntityValue(Object entity) {
 		if(entity == null) {
@@ -205,7 +234,31 @@ public class AuditServiceImpl implements IAuditService {
 		try {
 			if(entity instanceof Date) {
 				sb.append(new DateFormat(Constants.DD_MM_YYYY).getDateFormat().format(entity));
-			} else {
+			}else if(entity instanceof FieldType){
+					FieldType fieldType=iArkCommonService.getFieldTypeById(((FieldType) entity).getId());
+			        sb.append(fieldType.getName());
+			}else if(entity instanceof CustomFieldType){
+				CustomFieldType cusFieldType=iArkCommonService.getCustomFieldTypeById(((CustomFieldType)entity).getId());
+		        sb.append(cusFieldType.getName());
+			}else if(entity instanceof CustomFieldCategory){
+				CustomFieldCategory cusFieldCat=iArkCommonService.getCustomFieldCategory(((CustomFieldCategory)entity).getId());
+		        sb.append(cusFieldCat.getName());
+			}else if(entity instanceof TreatmentType){
+				TreatmentType treatmentType=iArkCommonService.getBiospecimenTreatmentTypeById(((TreatmentType)entity).getId());
+			        sb.append(treatmentType.getName());
+			}else if(entity instanceof UnitType){
+				UnitType unitType=iArkCommonService.getUnitTypeById(((UnitType)entity).getId());
+			        sb.append(unitType.getName());
+			}else if(entity instanceof Unit){
+				Unit unit=iArkCommonService.getUnitById(((Unit)entity).getId());
+			        sb.append(unit.getName());     
+			}else if(entity instanceof SubjectStatus){
+				SubjectStatus subjectStatus=iArkCommonService.getSubjectStatusById(((SubjectStatus)entity).getId());
+			        sb.append(subjectStatus.getName());     
+			}else if(entity instanceof StudyStatus){
+				StudyStatus studyStatus=iArkCommonService.getStudyStatusById(((StudyStatus)entity).getId());
+			        sb.append(studyStatus.getName());                
+			}else{
 				sb.append(displayMethod.invoke(entity, (Object[])null));
 			}
 		} catch (Exception e) {

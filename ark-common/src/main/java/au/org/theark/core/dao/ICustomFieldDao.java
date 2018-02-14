@@ -6,6 +6,7 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -17,7 +18,6 @@ import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.UploadLevel;
-import au.org.theark.core.vo.CustomFieldCategoryVO;
 
 public interface ICustomFieldDao {
 
@@ -387,5 +387,23 @@ public interface ICustomFieldDao {
 	 * @return
 	 */
 	public boolean isInEncodedValues(CustomField customField, String value);
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public CustomFieldType getCustomFieldTypeById(Long id);
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public UnitType getUnitTypeById(Long id);
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Unit getUnitById(Long id);
 	
 }

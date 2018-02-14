@@ -36,6 +36,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
@@ -736,5 +737,11 @@ public interface IStudyDao {
 	public TwinType getTwinTypeByname(String name);
 	
 	public List<LinkSubjectStudy> getListofLinkSubjectStudiesForStudy(Study study);
+	
+	public TreatmentType getBiospecimenTreatmentTypeById(Long id);
+	
+	public SubjectStatus getSubjectStatusById(Long id);
+	
+	public StudyStatus getStudyStatusById(Long id);
 	
 }

@@ -61,6 +61,8 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.lims.entity.TreatmentType;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
@@ -1281,4 +1283,17 @@ public interface IArkCommonService<T> {
 	
 	public void deleteSearchResult(SearchResult searchResult);
 	
+	public FieldType getFieldTypeById(Long id);
+	
+	public CustomFieldType getCustomFieldTypeById(Long id);
+	
+	public TreatmentType getBiospecimenTreatmentTypeById(Long id);
+	
+	public UnitType getUnitTypeById(Long id);
+	
+	public Unit getUnitById(Long id);
+	
+	public SubjectStatus getSubjectStatusById(Long id);
+	
+	public StudyStatus getStudyStatusById(Long id);
 }
