@@ -38,7 +38,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
  * 
  */
 @SuppressWarnings("serial")
-public class SubjectVO implements Serializable {
+public class SubjectVO implements ArkVo,Serializable {
 	protected String										subjectFullName;
 	protected SubjectStatus									subjectStatus;
 	protected LinkSubjectStudy								linkSubjectStudy;
@@ -303,6 +303,11 @@ public class SubjectVO implements Serializable {
 	@Override
 	public String toString() {
 		return "SubjectVO [subjectUID=" + subjectUID + "]";
+	}
+
+	@Override
+	public String getArkVoName() {
+		return "Subject";
 	}
 
 }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
@@ -210,6 +211,8 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	protected void onNew(AjaxRequestTarget target) {
 		// ARK-108:: no longer do full reset to VO
 		// Remove session object
+		Session.get().cleanupFeedbackMessages();
+		target.add(feedbackPanel);
 		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
 		preProcessDetailPanel(target);
 	}

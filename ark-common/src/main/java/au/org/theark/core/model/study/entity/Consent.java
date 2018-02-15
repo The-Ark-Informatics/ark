@@ -212,7 +212,7 @@ public class Consent implements Serializable {
 		this.linkSubjectStudy = linkSubjectStudy;
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		return "Consent [id=" + id + ", study=" + study.getName() + ", linkSubjectStudy="
 				+ linkSubjectStudy.getId() + ", studyComp=" + studyComp.getName()
@@ -223,7 +223,7 @@ public class Consent implements Serializable {
 				+ ", requestedDate=" + requestedDate + ", receivedDate="
 				+ receivedDate + ", completedDate=" + completedDate
 				+ ", consentDownloaded=" + consentDownloaded.getName() + "]";
-	}
+	}*/
 	
 	
 }

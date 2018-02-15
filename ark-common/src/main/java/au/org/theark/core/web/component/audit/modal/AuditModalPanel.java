@@ -509,8 +509,8 @@ public class AuditModalPanel extends Panel implements Serializable {
 						
 						//TODO Should remove after ARK-1450 testing
 						log.info("------------------------------------------- "+s);
-						log.info("------------------------------------------- "+current.toString());
-						
+						log.info("------------------------------------------- "+String.valueOf(current));
+					
 						//if(property != null && !reader.isEntityClassAudited(property.getClass())) {
 						if(property != null ){
 							Object primaryKey = iAuditService.getEntityPrimaryKey(current);

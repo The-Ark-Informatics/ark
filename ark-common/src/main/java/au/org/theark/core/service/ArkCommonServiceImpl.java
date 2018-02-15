@@ -2408,4 +2408,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getStudyStatusById(id);
 	}
 
+	@Override
+	public StudyCompStatus getStudyCompStatusById(Long id) {
+		return studyDao.getStudyCompStatusById(id);
+	}
+
 }

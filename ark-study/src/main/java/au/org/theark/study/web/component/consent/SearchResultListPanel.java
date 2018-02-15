@@ -22,12 +22,14 @@ import java.text.SimpleDateFormat;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
@@ -63,16 +65,17 @@ public class SearchResultListPanel extends Panel {
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
+	private FeedbackPanel 			feedbackPanel;
 
 	/**
 	 * @param id
 	 * @param arkCrudContainerVO
 	 */
-	public SearchResultListPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
-
+	public SearchResultListPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO ,FeedbackPanel feedbackPanel) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
+		this.feedbackPanel=feedbackPanel;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -147,6 +150,8 @@ public class SearchResultListPanel extends Panel {
 			public void onClick(AjaxRequestTarget target) {
 				Long id = consent.getId();
 				try {
+					Session.get().cleanupFeedbackMessages();
+					target.add(feedbackPanel);
 					Consent consentFromBackend = studyService.getConsent(id);
 					containerForm.getModelObject().setConsent(consentFromBackend);
 					//Subject file need to be populated in here.

@@ -744,4 +744,6 @@ public interface IStudyDao {
 	
 	public StudyStatus getStudyStatusById(Long id);
 	
+	public StudyCompStatus getStudyCompStatusById(Long id);
+	
 }

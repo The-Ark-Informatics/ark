@@ -136,7 +136,7 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
 		// TODO: Should eventually remove containerForm and instead pass over the cpModel
-		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", containerForm, arkCrudContainerVO);
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", containerForm, arkCrudContainerVO,feedBackPanel);
 		iModel = new LoadableDetachableModel<Object>() {
 
 			private static final long	serialVersionUID	= 1L;

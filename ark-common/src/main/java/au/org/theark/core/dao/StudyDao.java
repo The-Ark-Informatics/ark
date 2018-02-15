@@ -5434,4 +5434,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (StudyStatus) criteria.uniqueResult();
 	}
 
+	@Override
+	public StudyCompStatus getStudyCompStatusById(Long id) {
+		Criteria criteria = getSession().createCriteria(StudyCompStatus.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (StudyCompStatus) criteria.uniqueResult();
+	}
+
 }

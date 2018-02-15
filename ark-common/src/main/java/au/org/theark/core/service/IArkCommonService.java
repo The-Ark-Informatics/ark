@@ -1296,4 +1296,6 @@ public interface IArkCommonService<T> {
 	public SubjectStatus getSubjectStatusById(Long id);
 	
 	public StudyStatus getStudyStatusById(Long id);
+	
+	public StudyCompStatus getStudyCompStatusById(Long id);
 }

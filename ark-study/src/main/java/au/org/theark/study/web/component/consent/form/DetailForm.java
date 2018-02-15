@@ -242,7 +242,10 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 			try {
-				iStudyService.delete(containerForm.getModelObject().getSubjectFile(),isConsentFile(containerForm.getModelObject().getSubjectFile())?Constants.ARK_SUBJECT_CONSENT_DIR:Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+				SubjectFile subjectFile=containerForm.getModelObject().getSubjectFile();
+				if(subjectFile!=null){
+					iStudyService.delete(subjectFile,isConsentFile(containerForm.getModelObject().getSubjectFile())?Constants.ARK_SUBJECT_CONSENT_DIR:Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+				}
 				containerForm.info("The file has been successfully deleted.");
 				containerForm.getModelObject().getSubjectFile().setFilename(null);
 			 }catch (EntityNotFoundException e) {
@@ -513,7 +516,10 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 			iStudyService.delete(containerForm.getModelObject().getConsent());
 			this.deleteInformation();
 			//containerForm.info("The Consent has been deleted successfully.");
-			iStudyService.delete(containerForm.getModelObject().getSubjectFile(),isConsentFile(containerForm.getModelObject().getSubjectFile())?Constants.ARK_SUBJECT_CONSENT_DIR:Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+			SubjectFile subjectFile=containerForm.getModelObject().getSubjectFile();
+			if(subjectFile!=null){
+				iStudyService.delete(subjectFile,isConsentFile(containerForm.getModelObject().getSubjectFile())?Constants.ARK_SUBJECT_CONSENT_DIR:Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+			}
 			editCancelProcess(target);
 		}catch (EntityNotFoundException entityNotFoundException) {
 			this.error("The consent you tried to delete does not exist.");
@@ -750,7 +756,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 * @return
 	 */
 	private boolean isConsentFile(SubjectFile subjectFile){
-		return subjectFile.getIsConsentFile();
+			return subjectFile.getIsConsentFile();
+		
 	}
 	
 }

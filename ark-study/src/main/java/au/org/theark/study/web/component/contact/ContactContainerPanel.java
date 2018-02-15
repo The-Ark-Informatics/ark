@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
@@ -178,6 +179,8 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 			}
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				Session.get().cleanupFeedbackMessages();
+				target.add(feedBackPanel);
 				onPhoneNew(target);
 			}
 			@Override
@@ -205,6 +208,8 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 			}
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				Session.get().cleanupFeedbackMessages();
+				target.add(feedBackPanel);
 				onAddressNew(target);
 			}
 			@Override
@@ -231,6 +236,8 @@ public class ContactContainerPanel extends AbstractContainerPanel<ContactVO> {
 			}
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				Session.get().cleanupFeedbackMessages();
+				target.add(feedBackPanel);
 				onEmailNew(target);
 			}
 			@Override

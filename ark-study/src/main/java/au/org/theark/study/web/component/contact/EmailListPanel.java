@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -335,8 +336,10 @@ public class EmailListPanel extends Panel {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
+				//Clean up the feedback messages before show about the phone details.
+				Session.get().cleanupFeedbackMessages();
+				target.add(feedBackPanel);
 				containerForm.getModelObject().getEmailAccountVo().setEmailAccount(email);
-				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResultsForMultiplePanels(target, arkCrudContainerVO, au.org.theark.study.web.Constants.EMAIL_DETAIL_PANEL,
 						au.org.theark.study.web.Constants.ADDRESS_DETAIL_PANEL, au.org.theark.study.web.Constants.PHONE_DETAIL_PANEL);
 			}
