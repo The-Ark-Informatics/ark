@@ -211,8 +211,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	protected void onNew(AjaxRequestTarget target) {
 		// ARK-108:: no longer do full reset to VO
 		// Remove session object
-		Session.get().cleanupFeedbackMessages();
-		target.add(feedbackPanel);
+		super.onNew(target);
 		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
 		preProcessDetailPanel(target);
 	}

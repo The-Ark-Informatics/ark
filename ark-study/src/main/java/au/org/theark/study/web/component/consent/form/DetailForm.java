@@ -756,7 +756,12 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 * @return
 	 */
 	private boolean isConsentFile(SubjectFile subjectFile){
+		if(subjectFile!=null){
 			return subjectFile.getIsConsentFile();
+		}else{
+			return false;
+		}
+		
 		
 	}
 	

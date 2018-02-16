@@ -98,6 +98,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 	 */
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
+		super.onNew(target);
 		getModelObject().setMode(Constants.MODE_NEW);
 		getModelObject().getStudyComponent().setId(null);
 		preProcessDetailPanel(target);
