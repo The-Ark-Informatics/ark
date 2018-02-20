@@ -20,9 +20,7 @@ package au.org.theark.study.web.component.correspondence.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -46,6 +44,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkFileNotFoundException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -54,6 +54,7 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
+import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
@@ -109,6 +110,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private HistoryButtonPanel										historyButtonPanel;
 	private  WebMarkupContainer										categoryPanelDirectionType;
 	private  WebMarkupContainer										categoryPanelOutCome;
+	
+	private transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);
 
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
@@ -171,30 +174,109 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		deleteButton = new AjaxButton("deleteButton") {
 			private static final long	serialVersionUID	= 1L;
-
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				containerForm.getModelObject().getCorrespondence().setAttachmentPayload(null);
-				containerForm.getModelObject().getCorrespondence().setAttachmentFilename(null);
-				this.setVisible(false);
-				target.add(fileNameLbl);
-				target.add(this);
+				Correspondences correspondence=containerForm.getModelObject().getCorrespondence();
+				if (correspondence.getAttachmentFileId() != null) {
+					Long studyId = correspondence.getLss().getStudy().getId();
+					String subjectUID = correspondence.getLss().getSubjectUID();
+					String fileId =correspondence.getAttachmentFileId();
+					String checksum = correspondence.getAttachmentChecksum();
+					try {
+							if (iArkCommonService.deleteArkFileAttachment(studyId, subjectUID, fileId, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR, checksum)) {
+								log.info("File deleted successfully - " + fileId);
+							}
+							else {
+								log.error("Could not find the file -" + fileId);
+							}
+					}
+					catch (Exception e) {
+						try {
+							throw new ArkSystemException(e.getMessage());
+						} catch (ArkSystemException e1) {
+							e1.printStackTrace();
+						}
+					}finally{
+						correspondence.setAttachmentPayload(null);
+						correspondence.setAttachmentFilename(null);
+						correspondence.setAttachmentChecksum(null);
+						correspondence.setAttachmentFileId(null);
+						try {
+							studyService.update(correspondence);
+						} catch (ArkSystemException | EntityNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						this.setVisible(false);
+						target.add(fileNameLbl);
+						target.add(this);
+						containerForm.info("The file has been successfully deleted.");
+						processErrors(target);
+						}
+				}
 			}
 			
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				containerForm.getModelObject().getCorrespondence().setAttachmentPayload(null);
-				containerForm.getModelObject().getCorrespondence().setAttachmentFilename(null);
+				Correspondences correspondence=containerForm.getModelObject().getCorrespondence();
+				correspondence.setAttachmentPayload(null);
+				correspondence.setAttachmentFilename(null);
 				this.setVisible(false);
 				target.add(fileNameLbl);
 				target.add(this);
+				containerForm.error("Error occurred during the file deletion process.");
+				processErrors(target);
 			}
-			
 			@Override
 			public boolean isVisible() {
 				return (containerForm.getModelObject().getCorrespondence().getAttachmentFilename() != null) && !containerForm.getModelObject().getCorrespondence().getAttachmentFilename().isEmpty();
 			}
 		};
+		/*deleteButton = new AjaxButton("deleteButton") {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			try {
+				SubjectFile subjectFile=containerForm.getModelObject().get
+				if(subjectFile!=null){
+					studyService.delete(subjectFile,isConsentFile(containerForm.getModelObject().getSubjectFile())?Constants.ARK_SUBJECT_CONSENT_DIR:Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+				}
+				containerForm.info("The file has been successfully deleted.");
+				containerForm.getModelObject().getSubjectFile().setFilename(null);
+			 }catch (EntityNotFoundException e) {
+					containerForm.error("The subject consent attachment no longer exists in the system.Please re-do the operation.");
+			 }catch (ArkSystemException e) {
+					containerForm.error("System error occure:"+e.getMessage());
+			 } catch (ArkFileNotFoundException e) {
+				 containerForm.error("File not found:"+e.getMessage());
+			}finally{
+				 //containerForm.getModelObject().getSubjectFile().setFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+				processErrors(target);
+			 }
+			}
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().getSubjectFile().setPayload(null);
+				containerForm.getModelObject().getSubjectFile().setFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+				containerForm.error("Error occurred during the file deletion process.");
+				processErrors(target);
+			}
+			
+			@Override
+			public boolean isVisible() {
+				return (containerForm.getModelObject().getSubjectFile()!=null && containerForm.getModelObject().getSubjectFile().getFilename() != null) && !containerForm.getModelObject().getSubjectFile().getFilename().isEmpty();
+			}
+		};
+*/		
+		
+		
 		deleteButton.add(new AttributeModifier("title", new Model<String>("Delete Attachment")));
 		deleteButton.setOutputMarkupId(true);
 		
