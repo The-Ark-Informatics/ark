@@ -25,6 +25,7 @@ import org.json.simple.JSONObject;
 public class ArkHTTPService {
 	
 	private static final String LINE_FEED = "\r\n";
+	private static final int CONNECTION_TIMEOUT = 1000;
 	private HttpURLConnection httpConn;
 	private OutputStream outputStream;
 	private PrintWriter writer;
@@ -52,6 +53,8 @@ public class ArkHTTPService {
 		}
 		httpConn.setRequestProperty("Accept", "application/json");
 		httpConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		httpConn.setConnectTimeout(ArkHTTPService.CONNECTION_TIMEOUT);
+		httpConn.setReadTimeout(ArkHTTPService.CONNECTION_TIMEOUT);
 		outputStream = httpConn.getOutputStream();
 		writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);
 	}
@@ -70,6 +73,8 @@ public class ArkHTTPService {
 		httpConn = (HttpURLConnection) url.openConnection();
 		httpConn.setRequestMethod(HttpMethod.GET);
 		httpConn.setRequestProperty("Accept", "application/json");
+		httpConn.setConnectTimeout(ArkHTTPService.CONNECTION_TIMEOUT);
+		httpConn.setReadTimeout(ArkHTTPService.CONNECTION_TIMEOUT);
 		if (authHeader != null) {
 			httpConn.setRequestProperty("Authorization", "Basic " + Base64Utility.encode(authHeader.getBytes()));
 		}
