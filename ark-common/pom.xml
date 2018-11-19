@@ -261,12 +261,16 @@
     		<artifactId>quartz-jobs</artifactId>
     		<version>2.2.1</version>
   		</dependency>   
-		<dependency>
+		<!-- <dependency>
 			<groupId>net.tanesha.recaptcha4j</groupId>
 			<artifactId>recaptcha4j</artifactId>
 			<version>0.0.7</version>
+		</dependency> -->
+		<dependency>
+    		<groupId>io.github.keetraxx</groupId>
+    		<artifactId>recaptcha</artifactId>
+    		<version>0.2</version>
 		</dependency>
-
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
@@ -504,6 +508,8 @@
 		<shiro.version>1.2.3</shiro.version>
 		<hibernate.version>4.2.21.Final</hibernate.version>
 		<springframework.version>4.2.0.RELEASE</springframework.version>
+		<!-- <springframework.version>[4.3.1,)</springframework.version> -->
+
 		<!-- <jersey.version>2.25</jersey.version> -->
 	</properties>
 	<repositories>

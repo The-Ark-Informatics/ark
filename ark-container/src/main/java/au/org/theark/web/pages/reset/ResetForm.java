@@ -2,6 +2,8 @@ package au.org.theark.web.pages.reset;
 
 import java.io.Serializable;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -66,9 +68,9 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 		userName.setRequired(true);
 		userName.setOutputMarkupId(true);
 
-		reCaptchaPanel = new ReCaptchaPanel("reCaptchaPanel", protocol);
+		/*reCaptchaPanel = new ReCaptchaPanel("reCaptchaPanel", protocol);
 		reCaptchaPanel.setOutputMarkupId(true);
-
+*/
 		resetButton = new AjaxButton("resetButton") {
 
 			private static final long	serialVersionUID	= 1L;
@@ -81,7 +83,12 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onReset(target);
+				HttpServletRequest httpServletRequest = (HttpServletRequest)getRequest().getContainerRequest();
+			    boolean isValidRecaptcha = ReCaptchaV2.getInstance().verify(httpServletRequest);
+			    if(isValidRecaptcha){
+			    	onReset(target);	
+			    }
+				
 			}
 		};
 		resetButton.setOutputMarkupId(true);
@@ -130,7 +137,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 
 	private void addFormComponents() {
 		add(userName);
-		add(reCaptchaPanel);
+		//add(reCaptchaPanel);
 		add(resetButton);
 		add(cancelButton);
 		add(signInButton);

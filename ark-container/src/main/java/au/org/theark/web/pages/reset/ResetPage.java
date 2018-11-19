@@ -18,19 +18,15 @@
  ******************************************************************************/
 package au.org.theark.web.pages.reset;
 
-import au.org.theark.core.service.IArkCommonService;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.request.UrlRenderer;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.Protocol;
-import au.org.theark.core.web.component.panel.recaptcha.ReCaptchaPanel;
-import au.org.theark.web.pages.Constants;
 
 /**
  * <p>

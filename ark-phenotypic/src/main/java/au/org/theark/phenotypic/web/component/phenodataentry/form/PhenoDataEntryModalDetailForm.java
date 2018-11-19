@@ -75,7 +75,8 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 		private IPhenotypicService								     iPhenotypicService;               
-		private TextField<String>						             idTxtFld;                         
+		private TextField<String>						             idTxtFld;
+		private TextField<String>						             nameTxtFld;
 		private DropDownChoice<PhenoDataSetGroup>		             questionnaireDdc;                 
 		private DropDownChoice<QuestionnaireStatus>		             statusDdc;                        
 		private TextArea<String>						             descriptionTxtAreaFld;            
@@ -171,6 +172,8 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("phenoDataSetCollection.id");
 		idTxtFld.setEnabled(false);	// automatically generated
+		
+		nameTxtFld = new TextField<String>("phenoDataSetCollection.name");
 
 		descriptionTxtAreaFld = new TextArea<String>("phenoDataSetCollection.description");
 		recordDateTxtFld = new DateTextField("phenoDataSetCollection.recordDate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
@@ -243,6 +246,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 	private void addComponents() {
 		arkCrudContainerVo.getDetailPanelFormContainer().add(idTxtFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(nameTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(questionnaireDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(recordDateTxtFld);
 //		arkCrudContainerVo.getDetailPanelFormContainer().add(nameTxtFld);

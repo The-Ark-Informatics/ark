@@ -84,7 +84,7 @@ public class PhenoClinicalDataValueEntryModalDetailForm extends AbstractModalDet
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 		private IPhenotypicService								     iPhenotypicService;               
 		private TextField<String>						             idTxtFld;                         
-	//	private TextField<String>								   	 nameTxtFld;                           
+		private TextField<String>								   	 nameTxtFld;                           
 		private DropDownChoice<PhenoDataSetGroup>		             questionnaireDdc;                 
 		private DropDownChoice<QuestionnaireStatus>		             statusDdc;                        
 		private TextArea<String>						             descriptionTxtAreaFld;            
@@ -240,6 +240,8 @@ public class PhenoClinicalDataValueEntryModalDetailForm extends AbstractModalDet
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("phenoDataSetCollection.id");
 		idTxtFld.setEnabled(false);	// automatically generated
+		
+		nameTxtFld = new TextField<String>("phenoDataSetCollection.name");
 
 		descriptionTxtAreaFld = new TextArea<String>("phenoDataSetCollection.description");
 		recordDateTxtFld = new DateTextField("phenoDataSetCollection.recordDate", new PatternDateConverter( au.org.theark.core.Constants.DD_MM_YYYY, false));
@@ -346,6 +348,7 @@ public class PhenoClinicalDataValueEntryModalDetailForm extends AbstractModalDet
 
 	private void addComponents() {
 		datasetDetailWMC.add(idTxtFld);
+		datasetDetailWMC.add(nameTxtFld);
 		datasetDetailWMC.add(questionnaireDdc);
 		datasetDetailWMC.add(recordDateTxtFld);
 		datasetDetailWMC.add(descriptionTxtAreaFld);

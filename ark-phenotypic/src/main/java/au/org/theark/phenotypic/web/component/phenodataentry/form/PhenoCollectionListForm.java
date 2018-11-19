@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -98,6 +99,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	protected FeedbackPanel												feedbackPanel;
 	protected AbstractDetailModalWindow									modalWindowDataSetDetail;
 	private Label														idLbl;
+	private Label														nameLbl;
 	private Label														questionnaireLbl;
 	private Label														descriptionLbl;
 	private Label														recordDateLbl;
@@ -364,8 +366,9 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 				final PhenoDataSetCollection PhenoCollection = item.getModelObject();
 
 				idLbl = new Label("phenoDataSetCollection.id", String.valueOf(PhenoCollection.getId()));
+				nameLbl=new Label("phenoDataSetCollection.name",PhenoCollection.getName());
 				questionnaireLbl = new Label("phenoDataSetCollection.questionnaire", PhenoCollection.getQuestionnaire().getName());
-				ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
+				ArkBusyAjaxLink linkName = new ArkBusyAjaxLink("linkName") {
 
 					private static final long	serialVersionUID	= 1L;
 
@@ -377,7 +380,22 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 						showModalWindowDatasetDetail(target, newModel);
 					}
 				};
-				link.add(questionnaireLbl);
+				ArkBusyAjaxLink linkQuestionnaire = new ArkBusyAjaxLink("linkQuestionnaire") {
+
+					private static final long	serialVersionUID	= 1L;
+
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						PhenoDataSetCollection phenoDataSetCollection= (PhenoDataSetCollection) (getParent().getDefaultModelObject());
+						CompoundPropertyModel<PhenoDataCollectionVO> newModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
+						newModel.getObject().setPhenoDataSetCollection(phenoDataSetCollection);
+						showModalWindowDatasetDetail(target, newModel);
+					}
+				};
+				
+				linkName.add(nameLbl);
+				
+				linkQuestionnaire.add(questionnaireLbl);
 				
 //				nameLbl = new Label("PhenoCollection.name", PhenoCollection.getName());
 				descriptionLbl = new Label("phenoDataSetCollection.description", PhenoCollection.getDescription());
@@ -395,7 +413,8 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 				}
 
 				item.add(idLbl);
-				item.add(link);
+				item.add(linkName);
+				item.add(linkQuestionnaire);
 				item.add(descriptionLbl);
 				item.add(statusLbl);
 				item.add(recordDateLbl);
@@ -426,6 +445,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 			// Set new Biospecimen into model, then show modalWindow to save
 			CompoundPropertyModel<PhenoDataCollectionVO> newModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 			newModel.getObject().getPhenoDataSetCollection().setLinkSubjectStudy(cpModel.getObject().getPhenoDataSetCollection().getLinkSubjectStudy());
+			newModel.getObject().getPhenoDataSetCollection().setRecordDate(new Date());
 			showModalWindowDatasetDetail(target, newModel);
 		}
 		else {
