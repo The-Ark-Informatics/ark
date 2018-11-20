@@ -96,14 +96,15 @@ public class Constants {
 	public static final String			PERSON_COMMENT												= "linkSubjectStudy.comment";
 	public static final String			PERSON_DATE_LAST_KNOWN_ALIVE								= "linkSubjectStudy.person.dateLastKnownAlive";
 	public static final String			PERSON_CONSENT_DATE											= "linkSubjectStudy.consentDate";
+	public static final String			PERSON_CONSENT_EXPIRY_DATE									= "linkSubjectStudy.consentExpiryDate";
 	public static final String			PERSON_CONSENT_DOWNLOADED									= "linkSubjectStudy.consentDownloaded";
 	public static final String			SUBJECT_CONSENT_STATUS										= "linkSubjectStudy.consentStatus";
-	public static final String			SUBJECT_CONSENT_TYPE											= "linkSubjectStudy.consentType";
+	public static final String			SUBJECT_CONSENT_TYPE										= "linkSubjectStudy.consentType";
 	public static final String			PERSON_CAUSE_OF_DEATH										= "linkSubjectStudy.person.causeOfDeath";
-	public static final String			PERSON_TYTPE_TYPE												= "linkSubjectStudy.person.titleType";
+	public static final String			PERSON_TYTPE_TYPE											= "linkSubjectStudy.person.titleType";
 	public static final String			PERSON_GENDER_TYPE											= "linkSubjectStudy.person.genderType";
 	public static final String			PERSON_GENDER_TYPE_NAME										= "linkSubjectStudy.person.genderType.name";
-	public static final String			SUBJECT_FULL_NAME												= "subjectFullName";
+	public static final String			SUBJECT_FULL_NAME											= "subjectFullName";
 	public static final String			PERSON_VITAL_STATUS_NAME									= "linkSubjectStudy.person.vitalStatus.statusName";
 	public static final String			SUBJECT_STATUS_NAME											= "linkSubjectStudy.person.subjectStatus.name";
 	public static final String			EVEN																= "even";
@@ -295,6 +296,7 @@ public class Constants {
 
 	public static final String			SUBJECT_CONSENT_TO_ACTIVE_CONTACT						= "linkSubjectStudy.consentToActiveContact";
 	public static final String			SUBJECT_CONSENT_TO_USEDATA								= "linkSubjectStudy.consentToUseData";
+	public static final String			SUBJECT_CONSENT_DATE_OF_CHANGE						= "linkSubjectStudy.consentDateOfLastChange";
 	public static final String			SUBJECT_CONSENT_PASSIVE_DATA_GATHER						= "linkSubjectStudy.consentToPassiveDataGathering";
 	public static final String			SUBJECT_HEARD_ABOUT_STUDY_FROM							= "linkSubjectStudy.heardAboutStudy";
 	public static final String			SUBJECT_AUTO_GENERATED									= "Auto-generated";
@@ -434,7 +436,7 @@ public class Constants {
 		"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","PHONE_SILENT", "PHONE_DATE_RECEIVED", 
 		"EMAIL", "EMAIL_TYPE", "EMAIL_STATUS", "EMAIL_IS_PREFERRED", 
 		"PREVIOUS_LAST_NAME", "HEARD_ABOUT_STUDY" , "COMMENTS",
-		"CONSENT_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"},
+		"CONSENT_DATE","CONSENT_EXPIRY_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"},
 		{ "DESCRIPTION", "The unique identifier assigned for this subject; this may be automatically generated on upload", "The Family Identity of the subject to group family information", "The title by which the subject prefers to be addressed",
 		"The subject's first name", "The subject's middle name", "The subject's last or family name", "The name by which the subject prefers to be addressed", "The date the subject was born",
 		"The subject's vital status", "The subject's gender", "The status of the subject as it pertains to the study", "The date the subject died, if deceased",  "The date the subject was last known to be alive", "The cause of death",
@@ -444,20 +446,20 @@ public class Constants {
 		"The subject's telephone number", "The subject's telephone type", "The subject's telephone status", "The source of telephone information", "Optional comment text for a telephone number","Whether the telephone number is silent or not", "The date of receiving the telephone number information", 
 		"The subject's email address", "The subject's email type", "The subject's email status", "Whether this is the preferred email account", 
 		"The subject's previous last name", "How the subject heard about the study" , "Optional comment text about the subject",
-		"The subject's date of consent", "The subject's consent status", "The subject's consent type", "The subject's consent to passive data gathering", "The subject's consent to active contact", "The subject's consent to use data"},
+		"The subject's date of consent","The subject's date of consent expiry", "The subject's consent status", "The subject's consent type", "The subject's consent to passive data gathering", "The subject's consent to active contact", "The subject's consent to use data"},
 		{ "FORMAT", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "DD/MM/YYYY", "ALPHANUMERIC", "CHARACTER",
 		"CHARACTER", 
 		"CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER",
 		"CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "ALPHANUMERIC",
 		"ALPHANUMERIC", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER","SILENT", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER" , "CHARACTER", "CHARACTER",
 		"CHARACTER", "CHARACTER",
-		"DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER"},
+		"DD/MM/YYYY", "DD/MM/YYYY","CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER"},
 		{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No", "No", "No", "No", "No", "No", "Yes", "No", "No", "No", "No", "No",  "No", 
 			"No", "No", "No", "No", "No", "No", "No", "No",
 			"No", "No", "No", "No", "No",
 			"No", "No", "No", "No", "No","No", "No", "No", "No", "No" , "No" , "No",
 			"No", "No", "No", "No",
-			"No", "No", "No" , "No"},
+			"No", "No", "No" , "No","No"},
 		{ "VALID VALUES", "", "", "Unknown, Br, Capt, Col, Cpl, Dean, Dr, Fr, Lac, Major, Miss, Mr, Mrs, Ms, Past, Prof, Pstr, Rev, Sir, Sr", "", "", "", "", "", "Alive, Deceased, Unknown",
 			"Male, Female, Unknown", "Subject, Prospect, Withdrawn Subject, Archive, Inactive", "", "", "", "Married, Single, Divorced, Unknown", "Email, Home telephone, Mobile telephone, Post", 
 			"", "", "", "Refer to user interface for options", "Refer to user interface for options", "",  //last three on this line are state country and postcode - i really could enforce something 
@@ -465,13 +467,13 @@ public class Constants {
 			"", "Mobile, Home, Work", "Unknown, Current, Current Alternative, Current Under Investigation, Valid Past, Incorrect or Disconnected", "", "","Yes, No", "", 
 			"","Personal, Work","Unknown, Verified, Unverified, Bounced","Yes, No",
 			"", "" , "",
-			"", "Consented, Ineligible, Refused, Withdrawn, Pending", "Electronic, Hard Copy" , "Yes, No, Pending, Unavailable, Limited, Revoked" , "Yes, No, Pending, Unavailable, Limited, Revoked", "Yes, No, Pending, Unavailable, Limited, Revoked"},
+			"","", "Consented, Ineligible, Refused, Withdrawn, Pending", "Electronic, Hard Copy" , "Yes, No, Pending, Unavailable, Limited, Revoked" , "Yes, No, Pending, Unavailable, Limited, Revoked", "Yes, No, Pending, Unavailable, Limited, Revoked"},
 		{ "NOTE: Remove this first column, and replace the contents of rows 2 to 6", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
 			"", "", "", "", "", "", "", "",
 			"", "", "", "",
 			"", "", "", "", "","", "", "" , "", "" , "" , "" , "",
 			"", "", "", "", "","", "",
-	        "", ""} };
+	        "", "",""} };
 
 	// 1 digit, 1 lower, 1 upper, 1 symbol "~!@#$%^&*()_-+={}[]:;\"<>|", from 6 to 20
 	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";

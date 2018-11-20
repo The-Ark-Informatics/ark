@@ -169,6 +169,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private Label 										currentOrDeathageLable;
 	private String 										dateOfDeathInput;
 	
+	protected DateTextField								consentExpiryDateTxtFld;
+	
+	protected DateTextField								consentDateOfLastChangeTxtFld;
+	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -478,6 +482,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		ArkDatePicker consentDatePicker = new ArkDatePicker();
 		consentDatePicker.bind(consentDateTxtFld);
 		consentDateTxtFld.add(consentDatePicker);
+		
+		consentExpiryDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_EXPIRY_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
+		ArkDatePicker consentExpiryDatePicker = new ArkDatePicker();
+		consentExpiryDatePicker.bind(consentDateTxtFld);
+		consentExpiryDateTxtFld.add(consentExpiryDatePicker);
+		
 
 		List<YesNo> yesNoListSource = iArkCommonService.getYesNoList();
 		ChoiceRenderer<YesNo> yesNoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME, Constants.ID);
@@ -488,6 +498,15 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 		consentToActiveContactDdc = new DropDownChoice<ConsentOption>(Constants.SUBJECT_CONSENT_TO_ACTIVE_CONTACT, (List) consentOptionList, consentOptionRenderer);
 		consentToUseDataDdc = new DropDownChoice<ConsentOption>(Constants.SUBJECT_CONSENT_TO_USEDATA, (List) consentOptionList, consentOptionRenderer);
+		
+		//consent date changed.
+		
+		consentDateOfLastChangeTxtFld = new DateTextField(Constants.SUBJECT_CONSENT_DATE_OF_CHANGE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
+		ArkDatePicker consentDateOfLastChangeDatePicker = new ArkDatePicker();
+		consentDateOfLastChangeDatePicker.bind(consentDateOfLastChangeTxtFld);
+		consentDateOfLastChangeTxtFld.add(consentDateOfLastChangeDatePicker);
+		
+		
 		consentToPassDataGatheringDdc = new DropDownChoice<ConsentOption>(Constants.SUBJECT_CONSENT_PASSIVE_DATA_GATHER, (List) consentOptionList, consentOptionRenderer);
 
 		initialiseConsentStatusChoice();
@@ -537,10 +556,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// Add consent fields into the form container.
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentToActiveContactDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentToUseDataDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDateOfLastChangeTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentToPassDataGatheringDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentStatusChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentTypeChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDateTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentExpiryDateTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedChoice);
 
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentHistoryPanel);
@@ -615,6 +636,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		this.add(new DateFromToValidator(dateOfBirthTxtFld, consentDateTxtFld,"Date of birth","Consent date"));
 		//Consent date and date of death
 		this.add(new DateFromToValidator(consentDateTxtFld,dateOfDeathTxtFld,"Consent date","Date of death"));
+		//Consent expiry cannot occur before the consent date"
+		this.add(new DateFromToValidator(consentDateTxtFld,consentExpiryDateTxtFld,"Consent date","Consent expiry date"));
+		
+		consentDateOfLastChangeTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.consentDateOfLastChange.DateValidator.maximum", this, null));
 		
 	}
 

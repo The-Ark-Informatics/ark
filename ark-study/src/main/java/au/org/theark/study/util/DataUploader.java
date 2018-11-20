@@ -582,6 +582,7 @@ public class DataUploader {
 					else {
 						// Manual Consent details
 						String consentDate = csvReader.get("CONSENT_DATE");
+						String consentExpiryDate = csvReader.get("CONSENT_EXPIRY_DATE");
 						String consentStatusStr = csvReader.get("CONSENT_STATUS");
 						String consentTypeStr = csvReader.get("CONSENT_TYPE");
 						String passiveDataStr = csvReader.get("CONSENT_TO_PASSIVE_DATA_GATHERING");
@@ -594,7 +595,10 @@ public class DataUploader {
 							if (!consentDate.isEmpty()) {
 								newSubject.setConsentDate(simpleDateFormat.parse(consentDate));
 							}
-
+							
+							if (!consentExpiryDate.isEmpty()) {
+								newSubject.setConsentExpiryDate(simpleDateFormat.parse(consentExpiryDate));
+							}
 							if (!consentStatusStr.isEmpty()) {
 								for (ConsentStatus consentStatus : consentStatusPossible) {
 									if (consentStatus.getName().equalsIgnoreCase(consentStatusStr)) {
@@ -633,6 +637,7 @@ public class DataUploader {
 								if (comparator.compare(subject, newSubject) != 0) {
 									subject.setUpdateConsent(true);
 									subject.setConsentDate(newSubject.getConsentDate());
+									subject.setConsentExpiryDate(newSubject.getConsentExpiryDate());
 									subject.setConsentStatus(newSubject.getConsentStatus());
 									subject.setConsentType(newSubject.getConsentType());
 									subject.setConsentToPassiveDataGathering(newSubject.getConsentToPassiveDataGathering());
@@ -646,6 +651,7 @@ public class DataUploader {
 							else {
 								// New Subject with consent details
 								subject.setConsentDate(newSubject.getConsentDate());
+								subject.setConsentExpiryDate(newSubject.getConsentExpiryDate());
 								subject.setConsentStatus(newSubject.getConsentStatus());
 								subject.setConsentType(newSubject.getConsentType());
 								subject.setConsentToPassiveDataGathering(newSubject.getConsentToPassiveDataGathering());
