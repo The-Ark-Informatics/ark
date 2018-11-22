@@ -564,6 +564,8 @@ public interface IStudyDao {
 	
 	public long getCountOfSubjects(Study study);
 	
+	public long getCountOfSubjectsForSubjectStatus(Study study,int subjectStatusID);
+	
 	/**
 	 * Match a file containing a list of SubjectUid's for a given study, and return the matched list
 	 * @param subjectFileUpload

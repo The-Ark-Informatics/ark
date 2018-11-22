@@ -1276,11 +1276,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void deleteArkUserRole(ArkUserRole arkUserRole) {
 		arkAuthorisationDao.deleteArkUserRole(arkUserRole);
 	}
-
-	public long getCountOfSubjects(Study study) {
+	
+	public long getCountOfSubjects(Study study){
 		return studyDao.getCountOfSubjects(study);
 	}
 
+	public long getCountOfSubjectsForSubjectStatus(Study study,int subjectStatusID){
+		return studyDao.getCountOfSubjectsForSubjectStatus(study,subjectStatusID);
+	}
+	
 	public List<SubjectVO> matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study) {
 		return studyDao.matchSubjectsFromInputFile(subjectFileUpload, study);
 	}

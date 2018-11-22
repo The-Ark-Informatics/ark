@@ -205,7 +205,13 @@ public class SubjectUploadValidator {
 				}catch (ArkBaseException e) {
 					log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + e);
 				}
-				
+			// Include this part looks like header validation is missing if the file is in the csv file format.	
+			}else if(fileFormat.equalsIgnoreCase("CSV")){
+				try {
+					validationMessages = validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(),fileFormat, delimiterCharacter);
+				} catch (ArkBaseException e) {
+					e.printStackTrace();
+				}
 			}
 			//validationMessages = validateSubjectFileFormat(inputStream, fileFormat, delimiterCharacter);
 			/*try {
@@ -834,6 +840,20 @@ public class SubjectUploadValidator {
 								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
 								errorCells.add(new ArkGridCell(col, row));
 							}
+						}
+					}
+					if (csvReader.getIndex("CONSENT_DATE_OF_LAST_CHANGE") > 0) {
+						col = csvReader.getIndex("CONSENT_DATE_OF_LAST_CHANGE");
+						cellValue = csvReader.get("CONSENT_DATE_OF_LAST_CHANGE");
+						try {
+							dateStr = cellValue;
+							if (dateStr != null && !dateStr.isEmpty())
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
 						}
 					}
 

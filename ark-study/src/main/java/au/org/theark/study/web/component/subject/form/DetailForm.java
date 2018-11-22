@@ -485,7 +485,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		
 		consentExpiryDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_EXPIRY_DATE, new PatternDateConverter(au.org.theark.core.Constants.DD_MM_YYYY,false));
 		ArkDatePicker consentExpiryDatePicker = new ArkDatePicker();
-		consentExpiryDatePicker.bind(consentDateTxtFld);
+		consentExpiryDatePicker.bind(consentExpiryDateTxtFld);
 		consentExpiryDateTxtFld.add(consentExpiryDatePicker);
 		
 
@@ -658,10 +658,21 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	}
 
 	private void saveUpdateProcess(SubjectVO subjectVO, AjaxRequestTarget target) {
-
+		
+		//Setting the today's date if consent date of last change not entered or edited. 
+		if(subjectVO.getLinkSubjectStudy().getConsentDateOfLastChange()==null){
+			subjectVO.getLinkSubjectStudy().setConsentDateOfLastChange(new Date());
+		}
+		
 		if (subjectVO.getLinkSubjectStudy().getPerson().getId() == null || containerForm.getModelObject().getLinkSubjectStudy().getPerson().getId() == 0) {
 
 			subjectVO.getLinkSubjectStudy().setStudy(study);
+			
+			//Setting the today's date if consent date of last change not entered. 
+			if(subjectVO.getLinkSubjectStudy().getConsentDateOfLastChange()==null){
+				subjectVO.getLinkSubjectStudy().setConsentDateOfLastChange(new Date());
+			}  
+	
 			try {
 				studyService.createSubject(subjectVO);
 				StringBuffer sb = new StringBuffer();
