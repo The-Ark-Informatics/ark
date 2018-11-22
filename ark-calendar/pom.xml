@@ -43,7 +43,8 @@
 	<properties>
 		<wicket.version>7.0.0</wicket.version>
 		<wicket.jquery.version>7.3.0</wicket.jquery.version>
-		<jetty9.version>9.2.11.v20150529</jetty9.version>
+		<jetty9.version>9.2.25</jetty9.version>
+		<!-- <jetty9.version>9.2.11.v20150529</jetty9.version> -->
 		<log4j.version>2.3</log4j.version>
 		<junit.version>4.12</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
