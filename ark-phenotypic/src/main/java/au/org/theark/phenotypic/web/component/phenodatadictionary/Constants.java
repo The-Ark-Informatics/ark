@@ -72,6 +72,7 @@ public class Constants {
 	public static final String		FIELDVO_PHENODATASET_UNIT_TYPE								= "phenoDataSetField.unitType";
 	public static final String		FIELDVO_PHENODATASET_REQUIRED								= "phenoDataSetField.required";
 	public static final String		FIELDVO_PHENODATASET_ALLOW_MULTIPLE_SELECTION				= "phenoDataSetField.allowMultiselect";
+	public static final String		FIELDVO_PHENODATASET_MULTILINE_DISPLAY						= "phenoDataSetField.multiLineDisplay";
 	public static final String		FIELDVO_PHENODATASET_DEFAULT_VALUE							= "phenoDataSetField.defaultValue";
 	//Add unit type as text
 	public static final String		FIELDVO_PHENODATASET_UNIT_TYPE_TXT						= "phenoDataSetField.unitTypeInText";

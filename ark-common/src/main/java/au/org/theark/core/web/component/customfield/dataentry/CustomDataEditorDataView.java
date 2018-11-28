@@ -190,23 +190,29 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 			}
 			else {
 				if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.CHARACTER_FIELD_TYPE_NAME)) {
-					// Text data
+					
 					if(cf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
 						item.getModelObject().setTextDataValue(cf.getDefaultValue());
 					}
-					TextDataEntryPanel textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel", 
-																										new PropertyModel<String>(item.getModel(), "textDataValue"), 
-																										new Model<String>(labelModel));
-					textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
-					textDataEntryPanel.setTextFieldSize(60);
 					
-					if (requiredField != null && requiredField == true) {
-						 textDataEntryPanel.setRequired(true);
+					AbstractDataEntryPanel<?> textDataEntryPanel;
+					
+					if (cfd.getMultiLineDisplay()) {
+						// Text multi line
+						 textDataEntryPanel = new TextMultiLineDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"),new Model<String>(labelModel));
+					} else {
+						// Text data single line
+						 textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel",	new PropertyModel<String>(item.getModel(), "textDataValue"),new Model<String>(labelModel));
+						 ((TextDataEntryPanel)textDataEntryPanel).setTextFieldSize(60);
 					}
-					dataValueEntryPanel = textDataEntryPanel;
-				}
-				else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
+						textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
+						textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(),"customFieldDisplay.customField.unitType.name"));
+	
+						if (requiredField != null && requiredField == true) {
+							textDataEntryPanel.setRequired(true);
+						}
+						dataValueEntryPanel = textDataEntryPanel;
+				}else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
 					// Number data
 					if(cf.getDefaultValue() != null && item.getModelObject().getNumberDataValue() == null && !cf.getDefaultValue().trim().isEmpty()) {
 						item.getModelObject().setNumberDataValue(Double.parseDouble(cf.getDefaultValue()));;

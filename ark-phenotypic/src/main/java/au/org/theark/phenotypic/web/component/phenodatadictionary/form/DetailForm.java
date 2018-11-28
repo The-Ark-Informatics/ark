@@ -107,6 +107,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 	private TextArea<String>						fieldLabelTxtAreaFld;
 	private CheckBox								fieldDisplayRequiredChkBox;
 	private CheckBox								fieldAllowMultiselectChkBox;
+	private CheckBox								fieldMultLineDisplayChkBox;
 	private DropDownChoice<PhenoDataSetGroup>		fieldDisplayFieldGroupDdc;
 
 	protected WebMarkupContainer					phenoDataSetDetailWMC;
@@ -204,6 +205,12 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				target.add(fieldUnitTypeDdc);
 				target.add(fieldUnitTypeTxtFld);
 				target.add(fieldAllowMultiselectChkBox);
+				if(fieldTypeDdc.getModelObject()!=null && fieldTypeDdc.getModelObject().getName().equals(Constants.FIELD_TYPE_CHARACTER)){
+					fieldMultLineDisplayChkBox.setEnabled(true);
+				}else{
+					fieldMultLineDisplayChkBox.setEnabled(false);
+				}	
+					target.add(fieldMultLineDisplayChkBox);
 			}
 		});
 	}
@@ -216,6 +223,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 			// Only allowed to use encodedValues when fieldType == CHARACTER
 			fieldEncodedValuesTxtFld.setEnabled(true);
 			fieldAllowMultiselectChkBox.setEnabled(true);
+			fieldMultLineDisplayChkBox.setEnabled(true);
 		}
 		else {
 			// Forcibly reset encoded values and allow multi when NUMBER or DATE
@@ -227,7 +235,11 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 			if(fieldAllowMultiselectChkBox.getDefaultModelObject() != null) {
 				fieldAllowMultiselectChkBox.setDefaultModelObject(false);
 			}
+			if(fieldMultLineDisplayChkBox.getDefaultModelObject() != null) {
+				fieldMultLineDisplayChkBox.setDefaultModelObject(false);
+			}
 			fieldAllowMultiselectChkBox.setEnabled(false);
+			fieldMultLineDisplayChkBox.setEnabled(false);
 		}
 	}
 
@@ -379,6 +391,15 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 				return (fieldEncodedValuesTxtFld.getModelObject() != null);
 			}
 		};
+		
+		fieldMultLineDisplayChkBox = new CheckBox(Constants.FIELDVO_PHENODATASET_MULTILINE_DISPLAY) {
+			private static final long	serialVersionUID	= 1L;
+				@Override
+				public boolean isEnabled() {
+					return (fieldEncodedValuesTxtFld.getModelObject() == null && (fieldTypeDdc.getModelObject()!=null && fieldTypeDdc.getModelObject().getName().equals(Constants.FIELD_TYPE_CHARACTER)));
+				}
+			};
+		fieldMultLineDisplayChkBox.setEnabled(false);	
 
 		/*if (getModelObject().isUsePhenoDataSetFieldDisplay()) {
 			// TODO: Have not implemented position support right now
@@ -409,6 +430,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				target.add(fieldAllowMultiselectChkBox);
+				target.add(fieldMultLineDisplayChkBox);
 			}
 		});
 
@@ -584,6 +606,7 @@ public class DetailForm extends AbstractDetailForm<PhenoDataSetFieldVO> {
 		phenoDataSetDisplayDetailWMC.add(phenoDataSetDisplayPositionPanel);
 		phenoDataSetDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
 		phenoDataSetDisplayDetailWMC.add(fieldAllowMultiselectChkBox);
+		phenoDataSetDisplayDetailWMC.add(fieldMultLineDisplayChkBox);
 		
 		// phenoDataSetFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
 		// Only show these fields if necessary...

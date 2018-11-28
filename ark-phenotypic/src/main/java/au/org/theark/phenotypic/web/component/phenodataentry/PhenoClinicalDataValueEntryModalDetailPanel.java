@@ -38,7 +38,7 @@ public class PhenoClinicalDataValueEntryModalDetailPanel extends Panel {
 	private ModalWindow													modalWindow;
 	private PhenoClinicalDataValueEntryModalDetailForm					detailForm;
 	private ArkCrudContainerVO											arkCrudContainerVo;
-	protected Label														jQueryLabel;
+	//protected Label														jQueryLabel;
 
 	protected CompoundPropertyModel<PhenoDataCollectionVO>	cpModel;
 
@@ -59,14 +59,14 @@ public class PhenoClinicalDataValueEntryModalDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		jQueryLabel = new Label("jQueryDirtyFormScript", "");
-		jQueryLabel.setOutputMarkupId(true);
-		detailForm = new PhenoClinicalDataValueEntryModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel, jQueryLabel);
+		//jQueryLabel = new Label("jQueryDirtyFormScript", "");
+		//jQueryLabel.setOutputMarkupId(true);
+		detailForm = new PhenoClinicalDataValueEntryModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);//, jQueryLabel);
 		detailForm.initialiseDetailForm();
-		jQueryLabel = new JQueryDirtyFormScript("jQueryDirtyFormScript", detailForm.getMarkupId());
+		//jQueryLabel = new JQueryDirtyFormScript("jQueryDirtyFormScript", detailForm.getMarkupId());
 		add(detailFeedbackPanel);
 		add(detailForm);
-		add(jQueryLabel);
+		//add(jQueryLabel);
 	}
 
 	/**

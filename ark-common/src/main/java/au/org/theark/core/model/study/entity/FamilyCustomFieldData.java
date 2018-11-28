@@ -118,5 +118,5 @@ public class FamilyCustomFieldData implements Serializable, ICustomFieldData {
 	public void setTextDataValue(String textDataValue) {
 		this.textDataValue = textDataValue;
 	}
-
+	
 }

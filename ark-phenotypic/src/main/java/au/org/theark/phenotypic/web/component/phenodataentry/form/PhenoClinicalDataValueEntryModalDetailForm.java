@@ -95,7 +95,7 @@ public class PhenoClinicalDataValueEntryModalDetailForm extends AbstractModalDet
 		private ModalWindow								             modalWindow;                      
 		private AjaxPagingNavigator						             dataEntryNavigator;               
 		private WebMarkupContainer						             dataEntryWMC;                     
-		protected Label									             jQueryLabel;                      
+		//protected Label									             jQueryLabel;                      
 		private DropDownChoice<PickedPhenoDataSetCategory>           pickedPhenoDataSetCategoryDdc;
 		private WebMarkupContainer 									 categoryPanel;
 		private WebMarkupContainer 									 categoryWithdataEntryWMC;
@@ -110,11 +110,11 @@ public class PhenoClinicalDataValueEntryModalDetailForm extends AbstractModalDet
 	 * @param cpModel
 	 * @param jQueryLabel
 	 */
-	public PhenoClinicalDataValueEntryModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel, Label jQueryLabel) {
+	public PhenoClinicalDataValueEntryModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) { //, Label jQueryLabel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
 		refreshEntityFromBackend();
-		this.jQueryLabel = jQueryLabel;
+		//this.jQueryLabel = jQueryLabel;
 		initialisePhenoCollectionDataEntry(null);
 	}
 

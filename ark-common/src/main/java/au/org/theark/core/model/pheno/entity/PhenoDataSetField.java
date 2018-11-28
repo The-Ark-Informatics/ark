@@ -48,6 +48,7 @@ public class PhenoDataSetField implements Serializable{
 	private String unitTypeInText;
 	private Boolean required;
 	private Boolean allowMultiselect = Boolean.FALSE;
+	private Boolean multiLineDisplay = Boolean.FALSE;
 
 	//private Set<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplay = new HashSet<PhenoDataSetFieldDisplay>();
 
@@ -195,15 +196,6 @@ public class PhenoDataSetField implements Serializable{
 	public void setUnitTypeInText(String unitTypeInText) {
 		this.unitTypeInText = unitTypeInText;
 	}
-
-	/*@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoDataSetField")
-	public Set<PhenoDataSetFieldDisplay> getPhenoDataSetFieldDisplay() {
-		return phenoDataSetFieldDisplay;
-	}
-
-	public void setPhenoDataSetFieldDisplay(Set<PhenoDataSetFieldDisplay> phenoDataSetFieldDisplay) {
-		this.phenoDataSetFieldDisplay = phenoDataSetFieldDisplay;
-	}*/
 	@Column(name = "REQUIRED")
 	public Boolean getRequired() {
 		return required;
@@ -217,6 +209,14 @@ public class PhenoDataSetField implements Serializable{
 	}
 	public void setAllowMultiselect(Boolean allowMultiselect) {
 		this.allowMultiselect = allowMultiselect;
+	}
+	
+	@Column(name = "MULTI_LINE_DISPLAY", precision = 1, scale = 0)
+	public Boolean getMultiLineDisplay() {
+		return multiLineDisplay;
+	}
+	public void setMultiLineDisplay(Boolean multiLineDisplay) {
+		this.multiLineDisplay = multiLineDisplay;
 	}
 	@Override
 	public int hashCode() {
