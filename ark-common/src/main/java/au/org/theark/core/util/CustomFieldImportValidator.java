@@ -572,6 +572,7 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 					}
 					boolean validForMultiSelect = false;
 					String allowMultiple = (csvReader.get("ALLOW_MULTIPLE_SELECTIONS"));
+					
 					if (field.getEncodedValues() != null && !field.getEncodedValues().isEmpty()) {
 						gridCell = new ArkGridCell(csvReader.getIndex("ENCODED_VALUES"), rowIdx);
 						// Validate encoded values not a date type
@@ -596,6 +597,29 @@ public class CustomFieldImportValidator implements ICustomImportValidator,Serial
 						dataValidationMessages.add(CustomFieldValidationMessage.nonConformingAllowMultipleSelect(field.getName()));
 						errorCells.add(gridCell);
 					}
+					//Handling the MultiLine display with encoded values
+					String allowMultiLine = (csvReader.get("MULTI_LINE_DISPLAY"));
+					if (field.getEncodedValues().isEmpty() && field.getEncodedValues().trim()=="") {
+						if(!DataConversionAndManipulationHelper.isSomethingLikeABoolean(allowMultiLine) && !allowMultiLine.isEmpty()){
+							gridCell = new ArkGridCell(csvReader.getIndex("MULTI_LINE_DISPLAY"), rowIdx);
+							dataValidationMessages.add(CustomFieldValidationMessage.invalidOption(field.getName(), "MULTI_LINE_DISPLAY"));
+							errorCells.add(gridCell);
+						}
+						
+					}else{
+						if(!allowMultiLine.isEmpty()){
+							gridCell = new ArkGridCell(csvReader.getIndex("MULTI_LINE_DISPLAY"), rowIdx);
+							dataValidationMessages.add(CustomFieldValidationMessage.nonMultiLineAllowWithEncodedValues(field.getName(), "MULTI_LINE_DISPLAY"));
+							errorCells.add(gridCell);
+						}
+					}
+					//Handling the MultiLine value for the other character types.
+					if(!allowMultiLine.isEmpty() && !field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)){
+						gridCell = new ArkGridCell(csvReader.getIndex("MULTI_LINE_DISPLAY"), rowIdx);
+						dataValidationMessages.add(CustomFieldValidationMessage.nonChatacterFieldTypeMultiLineNotAccepted(field.getName(), "MULTI_LINE_DISPLAY"));
+						errorCells.add(gridCell);
+					}
+					
 					if (field.getMinValue() != null && !field.getMinValue().isEmpty()) {
 						gridCell = new ArkGridCell(csvReader.getIndex("MINIMUM_VALUE"), rowIdx);
 						// Validate the field definition

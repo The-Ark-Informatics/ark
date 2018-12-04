@@ -303,6 +303,11 @@ public class CustomFieldImporter implements ICustomImporter,Serializable {
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("y") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("true") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("1") ) );
+					customFieldVo.getCustomFieldDisplay().setMultiLineDisplay(csvReader.get("MULTI_LINE_DISPLAY") != null && 
+							(	csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("yes") ||
+								csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("y") ||
+								csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("true") ||
+								csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("1") ));
 					
 					iArkCommonService.createCustomField(customFieldVo);
 					insertCount++;

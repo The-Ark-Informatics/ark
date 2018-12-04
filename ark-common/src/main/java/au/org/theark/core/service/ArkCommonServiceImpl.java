@@ -2478,4 +2478,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getStudyCompStatusById(id);
 	}
 
+	@Override
+	public Setting getCustomFieldTextFieldWidthInPixel() {
+		return iArkSettingService.getSetting("CUSTOM_FIELD_TEXT_WIDTH_IN_PIXEL", null, null);
+	}
+
+	@Override
+	public Setting getCustomFieldMultiLineTexFieldtHeightInPixel() {
+		return iArkSettingService.getSetting("CUSTOM_FIELD_MULTI_LINE_TEXT_HEIGHT_IN_PIXEL", null, null);
+	}
+
 }

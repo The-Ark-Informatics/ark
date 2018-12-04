@@ -35,6 +35,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.validator.DateValidator;
@@ -47,6 +48,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.study.entity.IPhenoDataSetFieldData;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractDataEntryPanel;
 import au.org.theark.core.web.component.customfield.dataentry.CheckGroupDataEntryPanel;
 import au.org.theark.core.web.component.customfield.dataentry.DateDataEntryPanel;
@@ -70,6 +72,9 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 	private static final Logger				log					= LoggerFactory.getLogger(PhenoDataSetDataEditorDataView.class);
 
 	private static final long	serialVersionUID	= 1L;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	protected PhenoDataSetDataEditorDataView(String id, IDataProvider<T> dataProvider) {
 		super(id, dataProvider);
@@ -208,10 +213,12 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 					if (pf.getMultiLineDisplay()) {
 						// Text multi line
 						 textDataEntryPanel = new TextMultiLineDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"),new Model<String>(labelModel));
+						 ((TextMultiLineDataEntryPanel)textDataEntryPanel).setTextFieldSizeInPixel(Integer.parseInt(iArkCommonService.getCustomFieldTextFieldWidthInPixel().getPropertyValue())
+									,Integer.parseInt(iArkCommonService.getCustomFieldMultiLineTexFieldtHeightInPixel().getPropertyValue()));
 					} else {
 						// Text data single line
 						 textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel",	new PropertyModel<String>(item.getModel(), "textDataValue"),new Model<String>(labelModel));
-						 ((TextDataEntryPanel)textDataEntryPanel).setTextFieldSize(60);
+						 ((TextDataEntryPanel)textDataEntryPanel).setTextFieldSizeInPixel(Integer.parseInt(iArkCommonService.getCustomFieldTextFieldWidthInPixel().getPropertyValue()));
 					}
 						textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 						textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(),"phenoDataSetFieldDisplay.phenoDataSetField.unitTypeInText"));

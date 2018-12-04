@@ -1301,4 +1301,9 @@ public interface IArkCommonService<T> {
 	public StudyStatus getStudyStatusById(Long id);
 	
 	public StudyCompStatus getStudyCompStatusById(Long id);
+	
+	public Setting getCustomFieldTextFieldWidthInPixel();
+	
+	public Setting getCustomFieldMultiLineTexFieldtHeightInPixel();
+		
 }

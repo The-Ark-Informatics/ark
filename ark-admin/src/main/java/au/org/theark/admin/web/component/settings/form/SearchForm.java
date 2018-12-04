@@ -18,34 +18,27 @@
  ******************************************************************************/
 package au.org.theark.admin.web.component.settings.form;
 
-import au.org.theark.admin.model.vo.AdminVO;
-import au.org.theark.admin.service.IAdminService;
-import au.org.theark.admin.web.component.settings.form.ContainerForm;
-import au.org.theark.core.Constants;
-import au.org.theark.core.model.config.entity.PropertyType;
-import au.org.theark.core.model.config.entity.Setting;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.service.IArkSettingService;
-import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.form.AbstractSearchForm;
+import java.util.Arrays;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import java.util.Arrays;
-import java.util.List;
+import au.org.theark.admin.service.IAdminService;
+import au.org.theark.core.Constants;
+import au.org.theark.core.model.config.entity.PropertyType;
+import au.org.theark.core.model.config.entity.Setting;
+import au.org.theark.core.service.IArkSettingService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.form.AbstractSearchForm;
 
 public class SearchForm extends AbstractSearchForm<Setting> {
 

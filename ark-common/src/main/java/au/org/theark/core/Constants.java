@@ -407,7 +407,7 @@ public class Constants {
 			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE" }; //ALLOW MULTI  not here because it is Questionairre/customfieldgroup based
 	public static final String[][] CUSTOM_FIELD_UPLOAD_HEADER = {{"", "FIELD_NAME","CUSTOM_FIELD_TYPE","CUSTOM_FIELD_CATEGORY",
 			"FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
-			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "DEFAULT_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
+			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "DEFAULT_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS","MULTI_LINE_DISPLAY"},
 			{
 				"DESCRIPTION",
 				"The unique identifier of the field",
@@ -423,13 +423,15 @@ public class Constants {
 				"A value that represents missing data; the data type must match that indicated by FIELD_TYPE",
 				"The default value for the field if no value is set",
 				"Whether values for this field are mandatory",
-				"If FIELD_TYPE is CHARACTER and encoded values are set, should multiple selections be allowed?"
+				"If FIELD_TYPE is CHARACTER and encoded values are set, should multiple selections be allowed?",
+				"If FIELD_TYPE is CHARACTER and encoded values are not set, should multi-line display be allowed?"
 		},
 		{ 		"MANDATORY", 
 				"Yes", 
 				"Yes", 
 				"No",
 				"Yes",
+				"No",
 				"No",
 				"No",
 				"No",
@@ -456,9 +458,10 @@ public class Constants {
 				"",
 				"",
 				"Yes, No",
+				"Yes, No",
 				"Yes, No"
 		},
-		{ "NOTE: Remove this first column, and replace the contents of rows 2 to 5", "", "", "", "", "", "", "","", "", "", "", "", "",""
+		{ "NOTE: Remove this first column, and replace the contents of rows 2 to 5", "", "", "", "", "", "", "","", "", "", "", "", "","",""
 		}};
 	public static final String[][] CUSTOM_FIELD_CATEGORY_UPLOAD_HEADER={ { "","CATEGORY_NAME",
 		"CUSTOM_FIELD_TYPE","DESCRIPTION","PARENT_CATEGORY_NAME","ORDER_NUMBER"	},
