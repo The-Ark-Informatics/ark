@@ -40,6 +40,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -88,6 +89,8 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.audit.button.HistoryButtonPanel;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.component.listeditor.ListItem;
+import au.org.theark.core.web.component.panel.ConfirmationAnswer;
+import au.org.theark.core.web.component.panel.YesNoPanel;
 import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.lims.service.ILimsService;
@@ -173,6 +176,15 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	
 	protected DateTextField								consentDateOfLastChangeTxtFld;
 	
+	//implementing the last name history not changed accedently.
+	private ModalWindow 			confirmModal;
+	private ConfirmationAnswer		confirmationAnswer;
+	private final String modalText = "<p align='center'>The last name of subject # has changed from @ to $.  </p>"
+			+ "</br>"
+			+ "<p align='center'>Would you like to record @ as a previous last name?</p>"
+			+ "</br>";
+	private String currentLastName;
+	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -196,6 +208,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		historyButtonPanel.setVisible(!isNew());
 		//Decide the Death of Date to be enable or disable according to the (vital status and new/existing) 
 		wmcDeathDetailsContainer.setEnabled(!isNew()&& containerForm.getModelObject().getLinkSubjectStudy().getPerson().getVitalStatus().getName().equalsIgnoreCase("DECEASED"));
+		currentLastName=containerForm.getModelObject().getLinkSubjectStudy().getPerson().getLastName();
 		super.onBeforeRender();
 		
 	}
@@ -431,7 +444,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		});
 
 		initConsentFields();
-
+		initConfirmModel();
 		attachValidators();
 		addDetailFormComponents();
 
@@ -672,7 +685,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			if(subjectVO.getLinkSubjectStudy().getConsentDateOfLastChange()==null){
 				subjectVO.getLinkSubjectStudy().setConsentDateOfLastChange(new Date());
 			}  
-	
 			try {
 				studyService.createSubject(subjectVO);
 				StringBuffer sb = new StringBuffer();
@@ -719,14 +731,40 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 			if(!errorFlag) {
 				try {
-					studyService.updateSubject(subjectVO);
-					StringBuffer sb = new StringBuffer();
-					sb.append("The Subject with Subject UID: ");
-					sb.append(subjectVO.getLinkSubjectStudy().getSubjectUID());
-					sb.append(" has been updated successfully and linked to the study in context ");
-					sb.append(study.getName());
-					onSavePostProcess(target);
-					this.updateInformation();
+					if(isLastNameChanged()){
+						confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText.replace("#",subjectVO.getLinkSubjectStudy().getSubjectUID()).replace("@",currentLastName).replace("$",lastNameTxtFld.getInput() )
+								,"Warning", confirmModal, confirmationAnswer));
+						confirmModal.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+						private static final long serialVersionUID = 1L;
+							public void onClose(AjaxRequestTarget target) {
+								subjectVO.setChangingLastName(confirmationAnswer.isAnswer());
+								try {
+									studyService.updateSubject(subjectVO);
+								} catch (ArkUniqueException | EntityNotFoundException e) {
+									e.printStackTrace();
+								}
+								StringBuffer sb = new StringBuffer();
+								sb.append("The Subject with Subject UID: ");
+								sb.append(subjectVO.getLinkSubjectStudy().getSubjectUID());
+								sb.append(" has been updated successfully and linked to the study in context ");
+								sb.append(study.getName());
+								target.add(lastNameTxtFld);//Refresh to updated value.
+								onSavePostProcess(target);
+								updateInformation();
+							}
+						});
+						arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(confirmModal);
+						confirmModal.show(target);
+					}else{
+						studyService.updateSubject(subjectVO);
+						StringBuffer sb = new StringBuffer();
+						sb.append("The Subject with Subject UID: ");
+						sb.append(subjectVO.getLinkSubjectStudy().getSubjectUID());
+						sb.append(" has been updated successfully and linked to the study in context ");
+						sb.append(study.getName());
+						onSavePostProcess(target);
+						this.updateInformation();
+					}
 					//this.info(sb.toString());
 				}
 				catch (ArkUniqueException e) {
@@ -918,5 +956,17 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	    secondCal.setTime(second);
 	    secondCal.add(Calendar.DAY_OF_YEAR, -firstCal.get(Calendar.DAY_OF_YEAR));
 	    return secondCal.get(Calendar.YEAR) - firstCal.get(Calendar.YEAR);
+	}
+	
+	private void initConfirmModel(){
+		confirmationAnswer = new ConfirmationAnswer(false);
+		confirmModal = new ModalWindow("confirmModal");
+		confirmModal.setCookieName("yesNoPanel");
+		confirmModal.setContent(new YesNoPanel(confirmModal.getContentId(), modalText,"Changed the last name.", confirmModal, confirmationAnswer));
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(confirmModal);
+	}
+	private Boolean isLastNameChanged(){
+		return !currentLastName.equals(lastNameTxtFld.getInput());
+		
 	}
 }

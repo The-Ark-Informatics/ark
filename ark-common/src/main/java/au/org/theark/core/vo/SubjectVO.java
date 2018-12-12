@@ -72,6 +72,8 @@ public class SubjectVO implements ArkVo,Serializable {
 	private String parentType;
 	
 	private String message;
+	
+	protected boolean changingLastName=true;
 
 	
 	public SubjectVO() {
@@ -310,4 +312,13 @@ public class SubjectVO implements ArkVo,Serializable {
 		return "Subject";
 	}
 
+	public boolean isChangingLastName() {
+		return changingLastName;
+	}
+
+	public void setChangingLastName(boolean changingLastName) {
+		this.changingLastName = changingLastName;
+	}
+
+	
 }

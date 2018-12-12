@@ -735,11 +735,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Person person = subjectVO.getLinkSubjectStudy().getPerson();
 		String currentLastNameFromDB = getCurrentLastnameFromDB(person);// may need to test this effect of a reget
 
+		if(!subjectVO.isChangingLastName()){
+			person.setLastName(currentLastNameFromDB);
+		}
+	
 		session.update(person);// Update Person and associated Phones
 
 		PersonLastnameHistory personLastNameHistory = null;
 
-		if (currentLastNameFromDB != null && !currentLastNameFromDB.isEmpty() && !currentLastNameFromDB.equalsIgnoreCase(person.getLastName())) {
+		if (currentLastNameFromDB != null && !currentLastNameFromDB.isEmpty() && !currentLastNameFromDB.equalsIgnoreCase(person.getLastName()) 
+				&& subjectVO.isChangingLastName()) {
 			if (person.getLastName() != null) {
 				personLastNameHistory = new PersonLastnameHistory();
 				personLastNameHistory.setPerson(person);
