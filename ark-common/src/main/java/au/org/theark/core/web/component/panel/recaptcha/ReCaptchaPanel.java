@@ -2,10 +2,10 @@ package au.org.theark.core.web.component.panel.recaptcha;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.tanesha.recaptcha.ReCaptcha;
+/*import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaFactory;
 import net.tanesha.recaptcha.ReCaptchaImpl;
-import net.tanesha.recaptcha.ReCaptchaResponse;
+import net.tanesha.recaptcha.ReCaptchaResponse;*/
 
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
@@ -38,7 +38,7 @@ public class ReCaptchaPanel extends Panel {
 	public ReCaptchaPanel(final String id, final Protocol protocol) {
 		super(id);
 
-		FormComponent<Void> formComponent = new FormComponent<Void>("captcha") {
+		/*FormComponent<Void> formComponent = new FormComponent<Void>("captcha") {
 		
 			private static final long	serialVersionUID	= 1L;
 
@@ -88,6 +88,6 @@ public class ReCaptchaPanel extends Panel {
 			}
 		};
 
-		add(formComponent);
+		add(formComponent);*/
 	}
 }

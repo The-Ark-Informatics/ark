@@ -582,11 +582,13 @@ public class DataUploader {
 					else {
 						// Manual Consent details
 						String consentDate = csvReader.get("CONSENT_DATE");
+						String consentExpiryDate = csvReader.get("CONSENT_EXPIRY_DATE");
 						String consentStatusStr = csvReader.get("CONSENT_STATUS");
 						String consentTypeStr = csvReader.get("CONSENT_TYPE");
 						String passiveDataStr = csvReader.get("CONSENT_TO_PASSIVE_DATA_GATHERING");
 						String activeContactStr = csvReader.get("CONSENT_TO_ACTIVE_CONTACT");
 						String useDataStr = csvReader.get("CONSENT_TO_USE_DATA");
+						String consentDateOfLastChange = csvReader.get("CONSENT_DATE_OF_LAST_CHANGE");
 
 						if (!consentDate.isEmpty() || !consentStatusStr.isEmpty() || !consentTypeStr.isEmpty() || !passiveDataStr.isEmpty() || !activeContactStr.isEmpty() || !useDataStr.isEmpty()) {
 							LinkSubjectStudy newSubject = new LinkSubjectStudy();
@@ -594,7 +596,10 @@ public class DataUploader {
 							if (!consentDate.isEmpty()) {
 								newSubject.setConsentDate(simpleDateFormat.parse(consentDate));
 							}
-
+							
+							if (!consentExpiryDate.isEmpty()) {
+								newSubject.setConsentExpiryDate(simpleDateFormat.parse(consentExpiryDate));
+							}
 							if (!consentStatusStr.isEmpty()) {
 								for (ConsentStatus consentStatus : consentStatusPossible) {
 									if (consentStatus.getName().equalsIgnoreCase(consentStatusStr)) {
@@ -626,18 +631,26 @@ public class DataUploader {
 									}
 								}
 							}
-
+							//Upload thw consent Date of Last change is entered or else insert the today's date.
+							if(!consentDateOfLastChange.isEmpty()){
+								newSubject.setConsentDateOfLastChange(simpleDateFormat.parse(consentDateOfLastChange));
+							}else{
+								newSubject.setConsentDateOfLastChange(new Date());
+							}
+					
 							if (thisSubjectAlreadyExists) {
 								// Existing Subject to compare if consent actually changed (inherently handles when no consent previously)
 								LinkSubjectStudyConsentHistoryComparator comparator = new LinkSubjectStudyConsentHistoryComparator();
 								if (comparator.compare(subject, newSubject) != 0) {
 									subject.setUpdateConsent(true);
 									subject.setConsentDate(newSubject.getConsentDate());
+									subject.setConsentExpiryDate(newSubject.getConsentExpiryDate());
 									subject.setConsentStatus(newSubject.getConsentStatus());
 									subject.setConsentType(newSubject.getConsentType());
 									subject.setConsentToPassiveDataGathering(newSubject.getConsentToPassiveDataGathering());
 									subject.setConsentToActiveContact(newSubject.getConsentToActiveContact());
 									subject.setConsentToUseData(newSubject.getConsentToUseData());
+									subject.setConsentDateOfLastChange(newSubject.getConsentDateOfLastChange());
 								}
 								else {
 									subject.setUpdateConsent(false);
@@ -646,11 +659,13 @@ public class DataUploader {
 							else {
 								// New Subject with consent details
 								subject.setConsentDate(newSubject.getConsentDate());
+								subject.setConsentExpiryDate(newSubject.getConsentExpiryDate());
 								subject.setConsentStatus(newSubject.getConsentStatus());
 								subject.setConsentType(newSubject.getConsentType());
 								subject.setConsentToPassiveDataGathering(newSubject.getConsentToPassiveDataGathering());
 								subject.setConsentToActiveContact(newSubject.getConsentToActiveContact());
 								subject.setConsentToUseData(newSubject.getConsentToUseData());
+								subject.setConsentDateOfLastChange(newSubject.getConsentDateOfLastChange());
 							}
 						}
 					}

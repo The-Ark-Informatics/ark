@@ -35,6 +35,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.validator.DateValidator;
@@ -47,6 +48,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.ICustomFieldData;
+import au.org.theark.core.service.IArkCommonService;
 
 /**
  * CustomDataEditorDataView is designed to assist in rendering a customField Data entry panel
@@ -62,6 +64,9 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 	private static final Logger				log					= LoggerFactory.getLogger(CustomDataEditorDataView.class);
 
 	private static final long	serialVersionUID	= 1L;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	protected CustomDataEditorDataView(String id, IDataProvider<T> dataProvider) {
 		super(id, dataProvider);
@@ -190,23 +195,31 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 			}
 			else {
 				if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.CHARACTER_FIELD_TYPE_NAME)) {
-					// Text data
+					
 					if(cf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
 						item.getModelObject().setTextDataValue(cf.getDefaultValue());
 					}
-					TextDataEntryPanel textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel", 
-																										new PropertyModel<String>(item.getModel(), "textDataValue"), 
-																										new Model<String>(labelModel));
-					textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
-					textDataEntryPanel.setTextFieldSize(60);
 					
-					if (requiredField != null && requiredField == true) {
-						 textDataEntryPanel.setRequired(true);
+					AbstractDataEntryPanel<?> textDataEntryPanel;
+					
+					if (cfd.getMultiLineDisplay()) {
+						// Text multi line
+						 textDataEntryPanel = new TextMultiLineDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"),new Model<String>(labelModel));
+						 ((TextMultiLineDataEntryPanel)textDataEntryPanel).setTextFieldSizeInPixel(Integer.parseInt(iArkCommonService.getCustomFieldTextFieldWidthInPixel().getPropertyValue())
+								 												,Integer.parseInt(iArkCommonService.getCustomFieldMultiLineTexFieldtHeightInPixel().getPropertyValue()));
+					} else {
+						// Text data single line
+						 textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel",	new PropertyModel<String>(item.getModel(), "textDataValue"),new Model<String>(labelModel));
+						 ((TextDataEntryPanel)textDataEntryPanel).setTextFieldSizeInPixel(Integer.parseInt(iArkCommonService.getCustomFieldTextFieldWidthInPixel().getPropertyValue()));
 					}
-					dataValueEntryPanel = textDataEntryPanel;
-				}
-				else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
+						textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
+						textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(),"customFieldDisplay.customField.unitType.name"));
+	
+						if (requiredField != null && requiredField == true) {
+							textDataEntryPanel.setRequired(true);
+						}
+						dataValueEntryPanel = textDataEntryPanel;
+				}else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
 					// Number data
 					if(cf.getDefaultValue() != null && item.getModelObject().getNumberDataValue() == null && !cf.getDefaultValue().trim().isEmpty()) {
 						item.getModelObject().setNumberDataValue(Double.parseDouble(cf.getDefaultValue()));;

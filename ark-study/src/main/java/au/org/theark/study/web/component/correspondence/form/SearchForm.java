@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
@@ -78,9 +79,11 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	private DropDownChoice<CorrespondenceDirectionType>	directionTypeChoice;
 	private DropDownChoice<CorrespondenceOutcomeType>		outcomeTypeChoice;
 	private TextArea<String>										detailsTxtArea;
+	private FeedbackPanel 									feedbackPanel;
 
 	public SearchForm(String id, CompoundPropertyModel<CorrespondenceVO> model, PageableListView<Correspondences> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, model, feedBackPanel, arkCrudContainerVO);
+		this.feedbackPanel=feedBackPanel;
 		this.pageableListView = listView;
 		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model()));
 		add(generalTextLbl);
@@ -155,7 +158,8 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
-
+		Session.get().cleanupFeedbackMessages();
+		target.add(feedbackPanel);
 		setModelObject(new CorrespondenceVO());
 		preProcessDetailPanel(target);
 		arkCrudContainerVO.getDetailPanelFormContainer().get("worktrackingcontainer").setVisible(true);

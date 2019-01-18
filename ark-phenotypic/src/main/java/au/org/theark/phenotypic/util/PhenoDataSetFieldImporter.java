@@ -214,6 +214,11 @@ public class PhenoDataSetFieldImporter implements IPhenoImporter,Serializable {
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("y") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("true") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("1") ) );
+					oldField.setMultiLineDisplay(csvReader.get("MULTI_LINE_DISPLAY") != null && 
+							(	csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("yes") ||
+								csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("y") ||
+								csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("true") ||
+								csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("1") ));
 					// Try to update the oldField
 					PhenoDataSetFieldVO updateCFVo = new PhenoDataSetFieldVO();
 					updateCFVo.setPhenoDataSetField(oldField);
@@ -253,6 +258,11 @@ public class PhenoDataSetFieldImporter implements IPhenoImporter,Serializable {
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("y") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("true") ||
 								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("1") ) );
+					phenoDataSetField.setMultiLineDisplay(csvReader.get("MULTI_LINE_DISPLAY") != null && 
+							(	csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("yes") ||
+								csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("y") ||
+								csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("true") ||
+								csvReader.get("MULTI_LINE_DISPLAY").equalsIgnoreCase("1") ));
 					// Try to create the field
 					PhenoDataSetFieldVO phenoDataSetFieldVO=new PhenoDataSetFieldVO();
 					phenoDataSetFieldVO.setPhenoDataSetField(phenoDataSetField);

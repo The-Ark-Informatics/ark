@@ -26,7 +26,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 
-public class CorrespondenceVO implements Serializable {
+public class CorrespondenceVO implements ArkVo,Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Correspondences								correspondence;
@@ -105,6 +105,11 @@ public class CorrespondenceVO implements Serializable {
 	 */
 	public void setFile(String file) {
 		this.file = file;
+	}
+
+	@Override
+	public String getArkVoName() {
+		return "Correspondence";
 	}
 
 }

@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.core.web.form;
 
+
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -191,5 +193,9 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 
 	abstract protected void onSearch(AjaxRequestTarget target);
 
-	abstract protected void onNew(AjaxRequestTarget target);
+	//abstract protected void onNew(AjaxRequestTarget target);
+	protected void onNew(AjaxRequestTarget target){
+		Session.get().cleanupFeedbackMessages();
+		target.add(feedbackPanel);
+	}
 }

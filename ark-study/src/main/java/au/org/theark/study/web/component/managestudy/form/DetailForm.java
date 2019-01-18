@@ -1308,12 +1308,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			if (!arkUserVo.getUserName().isEmpty()) {
 				// Create new study and assign the current user
 				iStudyService.createStudy(studyModel, arkUserVo);
-				this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " was saved successfully.");
+				this.info("Study " + studyModel.getStudy().getName().toUpperCase() + " was saved successfully.");
 			}
 			else {
 				// Create new study by default, without assignment of user
 				iStudyService.createStudy(studyModel);
-				this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved successfully.");
+				this.info("Study " + studyModel.getStudy().getName().toUpperCase() + " has been saved successfully.");
 			}
 
 			subjectUidExampleTxt = getSubjectUidExample();
@@ -1347,7 +1347,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.add(subjectUidExampleLbl);
 
-			this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " was updated successfully.");
+			this.info("Study " + studyModel.getStudy().getName().toUpperCase() + " was updated successfully.");
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);
 		}

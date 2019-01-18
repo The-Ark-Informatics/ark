@@ -50,14 +50,15 @@ public abstract class AbstractDataEntryPanel<T> extends Panel {
 	protected Label					errorValueLbl;
 	protected Label					unitsLbl;
 
-	private static final String	DATE_VALIDATION_ERROR_RSRC_KEY		= "validationError.dateType";
-	private static final String	NUMBER_VALIDATION_ERROR_RSRC_KEY		= "validationError.numberType";
-	private static final String	TEXT_VALIDATION_ERROR_RSRC_KEY		= "validationError.textType";
-	private static final String	DROPDOWN_VALIDATION_ERROR_RSRC_KEY	= "validationError.dropDownType";
-	private static final String	CHECKGROUP_VALIDATION_ERROR_RSRC_KEY	= "validationError.checkGroupType";
+	private static final String	DATE_VALIDATION_ERROR_RSRC_KEY				= "validationError.dateType";
+	private static final String	NUMBER_VALIDATION_ERROR_RSRC_KEY			= "validationError.numberType";
+	private static final String	TEXT_VALIDATION_ERROR_RSRC_KEY				= "validationError.textType";
+	private static final String	DROPDOWN_VALIDATION_ERROR_RSRC_KEY			= "validationError.dropDownType";
+	private static final String	CHECKGROUP_VALIDATION_ERROR_RSRC_KEY		= "validationError.checkGroupType";
+	private static final String	TEXT_MULTILINE_VALIDATION_ERROR_RSRC_KEY	= "validationError.textMultiLineType";
 
 	public enum DataEntryType {
-		TEXT, DROPDOWN, NUMBER, DATE, CHECKGROUP
+		TEXT,TEXTMULTILINE, DROPDOWN, NUMBER, DATE, CHECKGROUP
 	}
 
 	public AbstractDataEntryPanel(String id, IModel<String> labelModel) {
@@ -117,6 +118,9 @@ public abstract class AbstractDataEntryPanel<T> extends Panel {
 		switch (getDataEntryType()) {
 			case TEXT:
 				typeRsrcKey = TEXT_VALIDATION_ERROR_RSRC_KEY;
+				break;
+			case TEXTMULTILINE:
+				typeRsrcKey = TEXT_MULTILINE_VALIDATION_ERROR_RSRC_KEY;
 				break;
 			case NUMBER:
 				typeRsrcKey = NUMBER_VALIDATION_ERROR_RSRC_KEY;

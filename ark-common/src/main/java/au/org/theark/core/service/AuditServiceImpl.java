@@ -32,6 +32,7 @@ import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.CustomFieldCategory;
 import au.org.theark.core.model.study.entity.CustomFieldType;
 import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.UnitType;
@@ -258,7 +259,11 @@ public class AuditServiceImpl implements IAuditService {
 			}else if(entity instanceof StudyStatus){
 				StudyStatus studyStatus=iArkCommonService.getStudyStatusById(((StudyStatus)entity).getId());
 			        sb.append(studyStatus.getName());                
-			}else{
+			}else if(entity instanceof StudyCompStatus){
+				StudyCompStatus studyCompStatus=iArkCommonService.getStudyCompStatusById(((StudyCompStatus)entity).getId());
+		        sb.append(studyCompStatus.getName());                
+			}
+			else{
 				sb.append(displayMethod.invoke(entity, (Object[])null));
 			}
 		} catch (Exception e) {

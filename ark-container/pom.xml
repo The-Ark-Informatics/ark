@@ -131,6 +131,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
+			<!-- <version>${springframework.version}</version> -->
 			<version>4.2.0.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
@@ -207,5 +208,8 @@
 		<ark-work-tracking.version>1.2b.3</ark-work-tracking.version>
 		<ark-disease.version>1.2b.3</ark-disease.version>
 		<ark-genomics.version>1.2b.3</ark-genomics.version>
+		<!-- <springframework.version>[4.3.1,)</springframework.version> -->
+		<springframework.version>4.3.0.RELEASE</springframework.version>
+		
 	</properties>
 </project>

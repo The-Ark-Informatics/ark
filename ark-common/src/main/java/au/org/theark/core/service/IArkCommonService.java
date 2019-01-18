@@ -694,9 +694,12 @@ public interface IArkCommonService<T> {
 	public Boolean studyHasBiospecimen(Study study);
 
 	public Boolean studyHasBioCollection(Study study);
-
+	
 	public long getCountOfSubjects(Study study);
 
+	public long getCountOfSubjectsForSubjectStatus(Study study,int subjectStatusID);
+	
+	
 	// public long countNumberOfUniqueSubjects(Study study, List subjects);
 	public long countNumberOfUniqueSubjectsWithTheseUIDs(Study study, List<String> subjectUIDs);
 
@@ -1296,4 +1299,11 @@ public interface IArkCommonService<T> {
 	public SubjectStatus getSubjectStatusById(Long id);
 	
 	public StudyStatus getStudyStatusById(Long id);
+	
+	public StudyCompStatus getStudyCompStatusById(Long id);
+	
+	public Setting getCustomFieldTextFieldWidthInPixel();
+	
+	public Setting getCustomFieldMultiLineTexFieldtHeightInPixel();
+		
 }

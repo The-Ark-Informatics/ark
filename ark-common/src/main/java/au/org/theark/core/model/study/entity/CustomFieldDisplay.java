@@ -59,21 +59,22 @@ public class CustomFieldDisplay implements Serializable {
 
 	private Long id;
 	private CustomField customField;
-	//private Category category;
 	private CustomFieldGroup customFieldGroup;
 	private Boolean required;
 	private String requiredMessage;
 	private Boolean allowMultiselect = Boolean.FALSE;
+	private Boolean multiLineDisplay = Boolean.FALSE;
+	
 	private Long sequence;
 	private Set<SubjectCustomFieldData> subjectCustomFieldData = new HashSet<SubjectCustomFieldData>();
 	private Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData = new HashSet<BioCollectionCustomFieldData>();
 	private Set<BiospecimenCustomFieldData> biospecimenCustomFieldData = new HashSet<BiospecimenCustomFieldData>();
-	//private Set<PhenoDataSetData> phenoData = new HashSet<PhenoDataSetData>();
+	
 	private Set<FamilyCustomFieldData> familyCustomFieldData = new HashSet<FamilyCustomFieldData>();
 	protected String descriptiveNameIncludingCFGName;
 
 	public CustomFieldDisplay() {
-//		this.allowMultiselect = Boolean.FALSE;
+
 	}
 
 	@Id
@@ -97,18 +98,6 @@ public class CustomFieldDisplay implements Serializable {
 	public void setCustomField(CustomField customField) {
 		this.customField = customField;
 	}
-
-/*
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CATEGORY_ID", nullable = false)
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-*/
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOM_FIELD_GROUP_ID")
 	public CustomFieldGroup getCustomFieldGroup() {
@@ -184,18 +173,6 @@ public class CustomFieldDisplay implements Serializable {
 	public void setFamilyCustomFieldData(Set<FamilyCustomFieldData> familyCustomFieldData) {
 		this.familyCustomFieldData = familyCustomFieldData;
 	}
-
-	//TODO: Remove NotAudited when pheno auditing is done
-	/*@NotAudited
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
-	public Set<PhenoDataSetData> getPhenoData() {
-		return phenoData;
-	}
-
-	public void setPhenoData(Set<PhenoDataSetData> phenoData) {
-		this.phenoData = phenoData;
-	}*/
-
 	@Column(name = "ALLOW_MULTIPLE_SELECTION", precision = 1, scale = 0)
 	public Boolean getAllowMultiselect() {
 		return allowMultiselect;
@@ -203,6 +180,15 @@ public class CustomFieldDisplay implements Serializable {
 
 	public void setAllowMultiselect(Boolean allowMultiselect) {
 		this.allowMultiselect = allowMultiselect;
+	}
+	
+	@Column(name = "MULTI_LINE_DISPLAY", precision = 1, scale = 0)
+	public Boolean getMultiLineDisplay() {
+		return multiLineDisplay;
+	}
+
+	public void setMultiLineDisplay(Boolean multiLineDisplay) {
+		this.multiLineDisplay = multiLineDisplay;
 	}
 
 	@ArkAuditDisplay

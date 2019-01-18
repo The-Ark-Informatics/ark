@@ -26,15 +26,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +58,7 @@ import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
+import net.sf.cglib.core.Local;
 
 /**
  * SubjectUploadValidator provides support for validating subject matrix-formatted files.
@@ -201,7 +205,13 @@ public class SubjectUploadValidator {
 				}catch (ArkBaseException e) {
 					log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + e);
 				}
-				
+			// Include this part looks like header validation is missing if the file is in the csv file format.	
+			}else if(fileFormat.equalsIgnoreCase("CSV")){
+				try {
+					validationMessages = validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(),fileFormat, delimiterCharacter);
+				} catch (ArkBaseException e) {
+					e.printStackTrace();
+				}
 			}
 			//validationMessages = validateSubjectFileFormat(inputStream, fileFormat, delimiterCharacter);
 			/*try {
@@ -689,8 +699,36 @@ public class SubjectUploadValidator {
 							errorCells.add(new ArkGridCell(col, row));
 						}
 					}
+					// Consent Expiry date validation
+					if (csvReader.getIndex("CONSENT_EXPIRY_DATE") > 0) {
+						col = csvReader.getIndex("CONSENT_EXPIRY_DATE");
+						cellValue = csvReader.get("CONSENT_EXPIRY_DATE");
+						try {
+							dateStr = cellValue;
+							if (dateStr != null && !dateStr.isEmpty())
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
 					
-					
+					//Validating the consent date and consent expiry date.
+					if (csvReader.getIndex("CONSENT_DATE") > 0 && csvReader.getIndex("CONSENT_EXPIRY_DATE") > 0) {
+						int colConsentDate = csvReader.getIndex("CONSENT_DATE");
+						int colConsentExpiryDate = csvReader.getIndex("CONSENT_EXPIRY_DATE");
+						SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+						Date cellValueConsentDate = format.parse(csvReader.get("CONSENT_DATE"));
+						Date cellValueConsentDateExpiry = format.parse(csvReader.get("CONSENT_EXPIRY_DATE"));
+						if (cellValueConsentDateExpiry.before(cellValueConsentDate)) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[colConsentExpiryDate] + ": "
+									+  format.format(cellValueConsentDateExpiry) + " Consent expiry cannot occur before the consent date in "+ fieldNameArray[colConsentDate]+":"+format.format(cellValueConsentDate));
+							errorCells.add(new ArkGridCell(colConsentDate, row));	
+							errorCells.add(new ArkGridCell(colConsentExpiryDate, row));
+						}
+					}
 					if (csvReader.getIndex("CONSENT_STATUS") > 0) {
 						boolean validData = true;
 						col = csvReader.getIndex("CONSENT_STATUS");
@@ -802,6 +840,20 @@ public class SubjectUploadValidator {
 								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
 								errorCells.add(new ArkGridCell(col, row));
 							}
+						}
+					}
+					if (csvReader.getIndex("CONSENT_DATE_OF_LAST_CHANGE") > 0) {
+						col = csvReader.getIndex("CONSENT_DATE_OF_LAST_CHANGE");
+						cellValue = csvReader.get("CONSENT_DATE_OF_LAST_CHANGE");
+						try {
+							dateStr = cellValue;
+							if (dateStr != null && !dateStr.isEmpty())
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
 						}
 					}
 

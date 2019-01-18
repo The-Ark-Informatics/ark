@@ -1355,11 +1355,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate) {
 		getSession().saveOrUpdate(bioCollectionUidTemplate);
 	}
-
-	public long getCountOfSubjects(Study study) {
+	public long getCountOfSubjectsForSubjectStatus(Study study,int subjectStatusID) {
 		int total = 0;
-		total = ((Long) getSession().createQuery("select count(*) from LinkSubjectStudy where study = :study").setParameter("study", study).iterate().next()).intValue();
+		total = ((Long) getSession().createQuery("select count(*) from LinkSubjectStudy where study = :study and SUBJECT_STATUS_ID= :subjectStatus")
+				.setParameter("study", study)
+				.setParameter("subjectStatus", subjectStatusID)
+				.iterate().next()).intValue();
 		return total;
+	}
+	
+	public long getCountOfSubjects(Study study){
+		int total = 0;
+		total = ((Long) getSession().createQuery("select count(*) from LinkSubjectStudy where study = :study")
+				.setParameter("study", study)
+				.iterate().next()).intValue();
+		return total;
+		
 	}
 
 	public List<SubjectVO> matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study) {
@@ -5432,6 +5443,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(StudyStatus.class);
 		criteria.add(Restrictions.eq("id", id));
 		return (StudyStatus) criteria.uniqueResult();
+	}
+
+	@Override
+	public StudyCompStatus getStudyCompStatusById(Long id) {
+		Criteria criteria = getSession().createCriteria(StudyCompStatus.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (StudyCompStatus) criteria.uniqueResult();
 	}
 
 }

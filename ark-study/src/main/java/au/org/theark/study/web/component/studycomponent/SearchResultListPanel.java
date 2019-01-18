@@ -19,11 +19,13 @@
 package au.org.theark.study.web.component.studycomponent;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
@@ -45,6 +47,7 @@ public class SearchResultListPanel extends Panel {
 
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
+	private FeedbackPanel feedbackPanel;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
@@ -55,8 +58,9 @@ public class SearchResultListPanel extends Panel {
 	 * @param crudContainerVO
 	 * @param studyCompContainerForm
 	 */
-	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm) {
+	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm,FeedbackPanel feedbackPanel) {
 		super(id);
+		this.feedbackPanel=feedbackPanel;
 		arkCrudContainerVO = crudContainerVO;
 		containerForm = studyCompContainerForm;
 	}
@@ -129,7 +133,8 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-
+				Session.get().cleanupFeedbackMessages();
+				target.add(feedbackPanel);
 				StudyCompVo studyCompVo = containerForm.getModelObject();
 				studyCompVo.setMode(Constants.MODE_EDIT);
 				studyCompVo.setStudyComponent(studyComponent);// Sets the selected object into the model

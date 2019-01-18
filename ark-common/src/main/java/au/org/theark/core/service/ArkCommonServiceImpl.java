@@ -25,12 +25,19 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Blob;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,10 +46,6 @@ import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
-
-import au.org.theark.core.model.config.entity.Setting;
-import au.org.theark.core.model.config.entity.SettingFile;
-import au.org.theark.core.model.study.entity.*;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -58,13 +61,11 @@ import org.apache.wicket.markup.html.image.NonCachingImage;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.resource.DynamicImageResource;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.ldap.NameNotFoundException;
 import org.springframework.ldap.core.ContextMapper;
@@ -78,7 +79,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.velocity.VelocityEngineUtils;
+
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.ArkLdapContextSource;
@@ -100,6 +101,8 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.config.entity.Setting;
+import au.org.theark.core.model.config.entity.SettingFile;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
@@ -111,7 +114,6 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
-import au.org.theark.core.model.pheno.entity.PhenoDataSetField;
 import au.org.theark.core.model.pheno.entity.PhenoDataSetFieldDisplay;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -122,6 +124,64 @@ import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchPayload;
 import au.org.theark.core.model.report.entity.SearchResult;
 import au.org.theark.core.model.report.entity.SearchSubject;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkPermission;
+import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.ConsentAnswer;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldCategory;
+import au.org.theark.core.model.study.entity.CustomFieldCategoryUpload;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldType;
+import au.org.theark.core.model.study.entity.CustomFieldUpload;
+import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.EmailAccountType;
+import au.org.theark.core.model.study.entity.EmailStatus;
+import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.FileFormat;
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkStudyArkModule;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
+import au.org.theark.core.model.study.entity.Payload;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
+import au.org.theark.core.model.study.entity.PhoneStatus;
+import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
+import au.org.theark.core.model.study.entity.State;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.SubjectUidPadChar;
+import au.org.theark.core.model.study.entity.SubjectUidToken;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.TwinType;
+import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.model.study.entity.UploadLevel;
+import au.org.theark.core.model.study.entity.UploadStatus;
+import au.org.theark.core.model.study.entity.UploadType;
+import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
@@ -999,8 +1059,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				// message.addInline("bgHeaderImg", res);
 
 				// Set up the email text
-				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordEmail.vm", model);
-				message.setText(text, true);
+				//String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordEmail.vm","UTF-8", model);
+				//message.setText(text, true);
 			}
 		};
 
@@ -1016,9 +1076,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		model.put("password", password);
 
 		/* get the text and replace all the mapped fields */
-		String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordMessage.vm", "UTF-8", model);
+	//	String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordMessage.vm", "UTF-8", model);
 		/* send out the email */
-		return text;
+		//return text;
+		return null;
 	}
 
 	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws ArkSystemException {
@@ -1215,11 +1276,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void deleteArkUserRole(ArkUserRole arkUserRole) {
 		arkAuthorisationDao.deleteArkUserRole(arkUserRole);
 	}
-
-	public long getCountOfSubjects(Study study) {
+	
+	public long getCountOfSubjects(Study study){
 		return studyDao.getCountOfSubjects(study);
 	}
 
+	public long getCountOfSubjectsForSubjectStatus(Study study,int subjectStatusID){
+		return studyDao.getCountOfSubjectsForSubjectStatus(study,subjectStatusID);
+	}
+	
 	public List<SubjectVO> matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study) {
 		return studyDao.matchSubjectsFromInputFile(subjectFileUpload, study);
 	}
@@ -2406,6 +2471,21 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public StudyStatus getStudyStatusById(Long id) {
 		return studyDao.getStudyStatusById(id);
+	}
+
+	@Override
+	public StudyCompStatus getStudyCompStatusById(Long id) {
+		return studyDao.getStudyCompStatusById(id);
+	}
+
+	@Override
+	public Setting getCustomFieldTextFieldWidthInPixel() {
+		return iArkSettingService.getSetting("CUSTOM_FIELD_TEXT_WIDTH_IN_PIXEL", null, null);
+	}
+
+	@Override
+	public Setting getCustomFieldMultiLineTexFieldtHeightInPixel() {
+		return iArkSettingService.getSetting("CUSTOM_FIELD_MULTI_LINE_TEXT_HEIGHT_IN_PIXEL", null, null);
 	}
 
 }

@@ -81,7 +81,7 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
+		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm,feedBackPanel);
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;

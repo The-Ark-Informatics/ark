@@ -62,9 +62,13 @@ public class StudyModelVO implements Serializable {
 	private String						studySummaryLabel;
 	//todo we can set it, cant get it?
 	@SuppressWarnings("unused")
-	private String						totalSubjectsLabel;
+	private String							totalSubjectsLabel;
 	private long							totalSubjects;
 	private long							totalSubjectsOfParent;
+	
+	private long 							activeSubjects;
+	private long 							withdrawnSubjects;
+	private long 							archivedSubjects;
 
 	public StudyModelVO() {
 		study = new Study();
@@ -267,16 +271,49 @@ public class StudyModelVO implements Serializable {
 	 * @return the totalSubjects
 	 */
 	public String getTotalSubjectsLabel() {
-		StringBuilder totalSubjects = new StringBuilder();
-		totalSubjects.append("Total Subjects: ");
-		totalSubjects.append(getTotalSubjects());
-		
+		StringBuilder subjectsSummary = new StringBuilder();
+		String BLANK_SPACE="    ";
+		subjectsSummary.append("Active Subjects: ");
+		subjectsSummary.append(getActiveSubjects());
+		subjectsSummary.append(BLANK_SPACE);
+		subjectsSummary.append("Withdrawn Subjects: ");
+		subjectsSummary.append(getWithdrawnSubjects());
+		subjectsSummary.append(BLANK_SPACE);
+		subjectsSummary.append("Archived Subjects:  ");
+		subjectsSummary.append(getArchivedSubjects());
+		subjectsSummary.append(BLANK_SPACE);
+		subjectsSummary.append("Total Subjects: ");
+		subjectsSummary.append(getTotalSubjects());
 		if(study.getParentStudy() != null && study.getParentStudy() != study) {
-			totalSubjects.append(" (of ");
-			totalSubjects.append(getTotalSubjectsOfParent());
-			totalSubjects.append(" in parent)");
+			subjectsSummary.append(" (of ");
+			subjectsSummary.append(getTotalSubjectsOfParent());
+			subjectsSummary.append(" in parent)");
 		}
-		return totalSubjects.toString();
+		return subjectsSummary.toString();
+	}
+	
+	public long getActiveSubjects() {
+		return activeSubjects;
+	}
+
+	public void setActiveSubjects(long activeSubjects) {
+		this.activeSubjects = activeSubjects;
+	}
+
+	public long getWithdrawnSubjects() {
+		return withdrawnSubjects;
+	}
+
+	public void setWithdrawnSubjects(long withdrawnSubjects) {
+		this.withdrawnSubjects = withdrawnSubjects;
+	}
+
+	public long getArchivedSubjects() {
+		return archivedSubjects;
+	}
+
+	public void setArchivedSubjects(long archivedSubjects) {
+		this.archivedSubjects = archivedSubjects;
 	}
 
 	/**

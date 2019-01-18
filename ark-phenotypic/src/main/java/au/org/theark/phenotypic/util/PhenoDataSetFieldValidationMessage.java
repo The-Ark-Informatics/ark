@@ -294,5 +294,25 @@ public class PhenoDataSetFieldValidationMessage {
 		stringBuffer.append(" have an issue when validating.");
 		return (stringBuffer.toString());
 	}
+	public static String nonMultiLineAllowWithEncodedValues(String fieldName,String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field  ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(", If correct encoded values contains in the field ");
+		stringBuffer.append(columnName);
+		stringBuffer.append(" must not accept data when the field type is character type.");
+		return (stringBuffer.toString());
+	}
+	public static String nonChatacterFieldTypeMultiLineNotAccepted(String fieldName,String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field  ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(", when field type is NOT a character type  ");
+		stringBuffer.append(columnName);
+		stringBuffer.append(" is not allowed any value.");
+		return (stringBuffer.toString());
+	}
 
 }

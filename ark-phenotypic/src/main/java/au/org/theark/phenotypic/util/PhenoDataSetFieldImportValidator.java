@@ -491,6 +491,31 @@ public class PhenoDataSetFieldImportValidator implements IPhenoImportValidator,S
 						dataValidationMessages.add(PhenoDataSetFieldValidationMessage.nonConformingAllowMultipleSelect(field.getName()));
 						errorCells.add(gridCell);
 					}
+					
+					//Handling the MultiLine display with encoded values
+					String allowMultiLine = (csvReader.get("MULTI_LINE_DISPLAY"));
+					if (field.getEncodedValues().isEmpty() && field.getEncodedValues().trim()=="") {
+						if(!DataConversionAndManipulationHelper.isSomethingLikeABoolean(allowMultiLine) && !allowMultiLine.isEmpty()){
+							gridCell = new ArkGridCell(csvReader.getIndex("MULTI_LINE_DISPLAY"), rowIdx);
+							dataValidationMessages.add(PhenoDataSetFieldValidationMessage.invalidOption(field.getName(), "MULTI_LINE_DISPLAY"));
+							errorCells.add(gridCell);
+						}
+						
+					}else{
+						if(!allowMultiLine.isEmpty()){
+							gridCell = new ArkGridCell(csvReader.getIndex("MULTI_LINE_DISPLAY"), rowIdx);
+							dataValidationMessages.add(PhenoDataSetFieldValidationMessage.nonMultiLineAllowWithEncodedValues(field.getName(), "MULTI_LINE_DISPLAY"));
+							errorCells.add(gridCell);
+						}
+					}
+					//Handling the MultiLine value for the other character types.
+					if(!allowMultiLine.isEmpty() && !field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)){
+						gridCell = new ArkGridCell(csvReader.getIndex("MULTI_LINE_DISPLAY"), rowIdx);
+						dataValidationMessages.add(PhenoDataSetFieldValidationMessage.nonChatacterFieldTypeMultiLineNotAccepted(field.getName(), "MULTI_LINE_DISPLAY"));
+						errorCells.add(gridCell);
+					}
+					
+					
 
 					if (field.getMinValue() != null && !field.getMinValue().isEmpty()) {
 						gridCell = new ArkGridCell(csvReader.getIndex("MINIMUM_VALUE"), rowIdx);

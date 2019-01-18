@@ -370,6 +370,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.setMaxResults(count);
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.groupProperty("id"), "id");
+		projectionList.add(Projections.groupProperty("name"), "name");
 		projectionList.add(Projections.groupProperty("questionnaire"), "questionnaire");
 		projectionList.add(Projections.groupProperty("description"), "description");
 		projectionList.add(Projections.groupProperty("recordDate"), "recordDate");

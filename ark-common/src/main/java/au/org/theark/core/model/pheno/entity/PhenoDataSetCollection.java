@@ -40,6 +40,7 @@ public class PhenoDataSetCollection implements Serializable{
 	private static final long	serialVersionUID	= 1L;
 
 	private Long id;
+	private String name;
 	private String description;
 	private LinkSubjectStudy linkSubjectStudy;
 	private Date recordDate;
@@ -66,6 +67,15 @@ public class PhenoDataSetCollection implements Serializable{
 	@Column(name = "DESCRIPTION", length = 500)
 	public String getDescription() {
 		return description;
+	}
+	
+	@Column(name = "NAME", length = 500)
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setDescription(String description) {

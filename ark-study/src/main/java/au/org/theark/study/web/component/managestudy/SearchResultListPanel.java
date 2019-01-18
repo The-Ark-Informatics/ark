@@ -22,6 +22,7 @@ import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import au.org.theark.core.util.EventPayload;
 
@@ -46,7 +47,9 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.security.AAFRealm;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ModuleConstants;
@@ -305,9 +308,18 @@ public class SearchResultListPanel extends Panel {
 				detailForm.getSubjectFileUploadContainer().setVisible(isChildStudy);
 				detailForm.getSubjectFileUploadContainer().setEnabled(isChildStudy);
 
-				long totalSubjects = iArkCommonService.getCountOfSubjects(searchStudy);
+				//Subject Status active/Subject =1
+				long activeSubjects=iArkCommonService.getCountOfSubjectsForSubjectStatus(searchStudy,1);
+				//Subject Status Withdrawn Subject =3
+				long withdrawnSubjects=iArkCommonService.getCountOfSubjectsForSubjectStatus(searchStudy,3);
+				//Subject Status Archive =4
+				long archivedSubjects=iArkCommonService.getCountOfSubjectsForSubjectStatus(searchStudy,4);
+				long totalSubjects=iArkCommonService.getCountOfSubjects(searchStudy);
 				long totalSubjectsOfParent = iArkCommonService.getCountOfSubjects(searchStudy.getParentStudy());
-
+				
+				studyContainerForm.getModelObject().setActiveSubjects(activeSubjects);
+				studyContainerForm.getModelObject().setWithdrawnSubjects(withdrawnSubjects);
+				studyContainerForm.getModelObject().setArchivedSubjects(archivedSubjects);
 				studyContainerForm.getModelObject().setTotalSubjects(totalSubjects);
 				studyContainerForm.getModelObject().setTotalSubjectsOfParent(totalSubjectsOfParent);
 

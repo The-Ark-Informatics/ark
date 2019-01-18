@@ -11,6 +11,7 @@
 						<tr>
 							<th width="2%">	&nbsp;</th>
 							<th width="10%"><wicket:message	key="phenoDataSetCollection.id">[ID:]</wicket:message></th>
+							<th width="15%"><wicket:message	key="phenoDataSetCollection.name">[Name:]</wicket:message></th>
 							<th width="15%"><wicket:message	key="phenoDataSetCollection.questionnaire">[Questionnaire:]</wicket:message></th>
 							<th width="22%"><wicket:message	key="phenoDataSetCollection.description">[Description:]</wicket:message></th>
 							<th width="16%"><wicket:message	key="phenoDataSetCollection.status">[Status:]</wicket:message></th>
@@ -24,7 +25,8 @@
 						<tr wicket:id="PhenoDataSetCollectionList">
 							<td width="2%">	&nbsp;</td>
 							<td width="10%"><span wicket:id="phenoDataSetCollection.id"></span></td>
-							<td width="15%"><a href="#" wicket:id="link"><span wicket:id="phenoDataSetCollection.questionnaire"></span></a></td>
+							<td width="15%"><a href="#" wicket:id="linkName"><span wicket:id="phenoDataSetCollection.name"></span></a></td>
+							<td width="15%"><a href="#" wicket:id="linkQuestionnaire"><span wicket:id="phenoDataSetCollection.questionnaire"></span></a></td>
 							<td width="22%"><span wicket:id="phenoDataSetCollection.description"></span></td>
 							<td width="14%"><span wicket:id="phenoDataSetCollection.status"></span></td>
 							<td width="10%"><span wicket:id="phenoDataSetCollection.recordDate"></span></td>
@@ -36,7 +38,7 @@
 					<tfoot>
 						<tr>
 							<td width="2%">&nbsp;</td>
-							<td width="96%" colspan="7"><span wicket:id="navigator" class="a"></span></td>
+							<td width="96%" colspan="8"><span wicket:id="navigator" class="a"></span></td>
 							<td width="2%">&nbsp;</td>
 						</tr>
 					</tfoot>

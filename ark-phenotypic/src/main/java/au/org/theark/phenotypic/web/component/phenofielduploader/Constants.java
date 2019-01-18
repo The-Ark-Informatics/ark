@@ -49,6 +49,7 @@ public class Constants {
 	public static final String	UPLOAD_LEVEL_NAME											= "name";
 	public static final String	UPLOAD_LEVEL_FIELD											= "Field";
 	public static final String	UPLOAD_LEVEL_CATEGORY										= "Category";
+	public static final String FIELD_TYPE_CHARACTER 										= "Character";
 	
 	public static final String[][] PHENO_DATASET_CATEGORY_UPLOAD_HEADER={ { "","CATEGORY_NAME","DESCRIPTION"},
 		{
@@ -76,7 +77,7 @@ public class Constants {
 	};
 	
 	public static final String[][] PHENO_DATASET_FIELD_UPLOAD_HEADER = {{"", "FIELD_NAME","FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
-		"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "DEFAULT_VALUE","REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"},
+		"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "DEFAULT_VALUE","REQUIRED", "ALLOW_MULTIPLE_SELECTIONS","MULTI_LINE_DISPLAY"},
 		{
 			"DESCRIPTION",
 			"The unique identifier of the field",
@@ -90,11 +91,13 @@ public class Constants {
 			"A value that represents missing data; the data type must match that indicated by FIELD_TYPE",
 			"The default value for the field if no value is set",
 			"Whether values for this field are mandatory",
-			"If FIELD_TYPE is CHARACTER and encoded values are set, should multiple selections be allowed?"
+			"If FIELD_TYPE is CHARACTER and encoded values are set, should multiple selections be allowed?",
+			"If FIELD_TYPE is CHARACTER and encoded values are not set, should multi-line display be allowed?"
 	},
 	{ 		"MANDATORY", 
 			"Yes", 
 			"No", 
+			"No",
 			"No",
 			"No",
 			"No",
@@ -120,9 +123,10 @@ public class Constants {
 			"",
 			"",
 			"Yes, No",
+			"Yes, No",
 			"Yes, No"
 	},
-	{ "NOTE: Remove this first column, and replace the contents of rows 2 to 5", "", "", "", "", "", "", "", "", "", "", "",""
+	{ "NOTE: Remove this first column, and replace the contents of rows 2 to 5", "", "", "", "", "", "", "", "", "", "", "","",""
 	}};
 	
 	public static final String			UPLOAD_TYPE_CUSTOM_DATA_SETS	= "Custom Datasets";
