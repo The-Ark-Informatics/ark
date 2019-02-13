@@ -708,7 +708,8 @@ public class Constants {
 	public static final String SEARCH_NAME = "search.name";
 	public static final String SEARCH_INCLUDE_GENO = "search.includeGeno";
 	public static final String SEARCH_INCLUDE_MEGA = "search.includeMega";
-	public static final String	SAVEANDCLOSE									= "saveAndClose";
+	public static final String	SAVEANDCLOSE	= "saveAndClose";
+	public static final String	SETANDCLOSE	= "setAndClose";
 	public static final String	yyyy_MM_dd	= "yyyy-MM-dd";
 	public static final String ARK_GENO_SERVICE = "genoService";
 	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML};
@@ -785,4 +786,8 @@ public class Constants {
 	public static final String MAIL_SETTING_PROPERTIES_STARTTLS = "MAIL_SETTING_PROPERTIES_STARTTLS";
 	
 	public static final String ARK_STUDY_DIR="study";
+	
+	public static final String ENCODED_VALUES=	"encodedValueVO";
+	
+	
 }

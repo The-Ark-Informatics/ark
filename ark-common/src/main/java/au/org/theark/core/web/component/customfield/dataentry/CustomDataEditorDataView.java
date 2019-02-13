@@ -170,7 +170,11 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 					if (requiredField != null && requiredField == true) {
 						cgdePanel.setRequired(true);
 					}
-					
+					// Didn't see any reason why we not set the default value for this multiselect 
+					if(cf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
+						item.getModelObject().setTextDataValue(cf.getDefaultValue());
+					}
+					/////////////////////////////////////////////////////////////////////////////////
 					dataValueEntryPanel = cgdePanel;
 
 				}

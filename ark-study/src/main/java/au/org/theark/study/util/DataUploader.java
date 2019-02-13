@@ -318,7 +318,7 @@ public class DataUploader {
 			int phoneDateReceivedIndex = csvReader.getIndex("PHONE_DATE_RECEIVED");
 			int phoneSilentIndex = csvReader.getIndex("PHONE_SILENT");
 			int phoneIsPreferredIndex = csvReader.getIndex("PHONE_IS_PREFERRED");
-			int familyIdIndex = csvReader.getIndex("FAMILY_ID");
+			int familyIdIndex = csvReader.getIndex("FAMILY_UID");
 			
 			int emailIndex = csvReader.getIndex("EMAIL");
 			int emailTypeIndex = csvReader.getIndex("EMAIL_TYPE");
@@ -390,7 +390,7 @@ public class DataUploader {
 					}
 					
 					if(familyIdIndex > 0){
-						subject.setFamilyId(stringLineArray[familyIdIndex]);
+						subject.setFamilyUID(stringLineArray[familyIdIndex]);
 					}
 
 					if (firstNameIndex > 0)

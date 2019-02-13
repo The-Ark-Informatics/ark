@@ -112,7 +112,7 @@ public class FamilyCustomDataDataViewPanel extends Panel {
 				// isn't there already
 				
 				if (subjectCustomData.getFamilyUid() == null) {
-					subjectCustomData.setFamilyUid(cpModel.getObject().getLinkSubjectStudy().getFamilyId());
+					subjectCustomData.setFamilyUid(cpModel.getObject().getLinkSubjectStudy().getFamilyUID());
 				}
 
 				

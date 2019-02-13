@@ -195,7 +195,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				for (int idx = 0; idx < nodes.getLength(); idx++) {
 					String nodeText = nodes.item(idx).getTextContent();
 					if (nodeText != null) {
-						// Replace family id and dummy subject uids by blank text
+						// Replace family uid and dummy subject uids by blank text
 						if (nodeText.startsWith("_F") || nodeText.startsWith("!")) {
 							nodes.item(idx).setTextContent("");
 						}

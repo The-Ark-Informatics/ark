@@ -1990,7 +1990,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" order by cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
-		query.setParameter("familyUid", linkSubjectStudyCriteria.getFamilyId());
+		query.setParameter("familyUID", linkSubjectStudyCriteria.getFamilyUID());
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("functionId", arkFunction.getId());
 		//Add type and category
@@ -2024,7 +2024,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	@Override
 	public String getSubjectFamilyId(Long studyId, String subjectUID) {
 		String result=null;		
-		StringBuffer sb= new StringBuffer("select lss.FAMILY_ID from study.link_subject_study lss where lss.STUDY_ID = :studyId and lss.SUBJECT_UID = :subjectUID ");
+		StringBuffer sb= new StringBuffer("select lss.FAMILY_UID from study.link_subject_study lss where lss.STUDY_ID = :studyId and lss.SUBJECT_UID = :subjectUID ");
 		Query query = getSession().createSQLQuery(sb.toString());
 	    query.setParameter("studyId", studyId);
 	    query.setParameter("subjectUID", subjectUID);
@@ -2197,7 +2197,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public GenderType getDefaultGenderType() {
-		return getGenderType(0L);// TODO meaningful use of constants perhaps or a default bool in db
+		//return getGenderType(0L);// TODO meaningful use of constants perhaps or a default bool in db
+		return getGenderType(5L);//The default gender type has been moved to create a primary key for the table Gender Type.
 	}
 
 	// TODO ASAP - I see hardcoding everywhere, fix

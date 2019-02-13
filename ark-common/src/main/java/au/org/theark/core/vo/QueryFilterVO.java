@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.QueryFilter;
+import au.org.theark.core.web.component.customfield.dataentry.EncodedValueVO;
 
 public class QueryFilterVO implements Serializable {
 
@@ -12,7 +13,7 @@ public class QueryFilterVO implements Serializable {
 	private FieldCategory fieldCategory;
 	
 	private QueryFilter queryFilter;
-	
+
 	public QueryFilterVO() {
 		this.fieldCategory = FieldCategory.DEMOGRAPHIC_FIELD;
 		this.queryFilter = new QueryFilter();
@@ -36,5 +37,6 @@ public class QueryFilterVO implements Serializable {
 	public void setQueryFilter(QueryFilter queryFilter) {
 		this.queryFilter = queryFilter;
 	}
+
 	
 }

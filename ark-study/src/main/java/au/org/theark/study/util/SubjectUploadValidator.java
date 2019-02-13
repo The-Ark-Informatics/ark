@@ -685,19 +685,24 @@ public class SubjectUploadValidator {
 						}
 					}
 					
+					Date cellValueConsentDate=null;
+					Date cellValueConsentDateExpiry = null;
+					
 					if (csvReader.getIndex("CONSENT_DATE") > 0) {
 						col = csvReader.getIndex("CONSENT_DATE");
 						cellValue = csvReader.get("CONSENT_DATE");
 						try {
 							dateStr = cellValue;
-							if (dateStr != null && !dateStr.isEmpty())
-								simpleDateFormat.parse(dateStr);
+							if (dateStr != null && !dateStr.trim().isEmpty())
+							 cellValueConsentDate =simpleDateFormat.parse(dateStr);
 						}
 						catch (ParseException pex) {
 							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
 									+ Constants.DD_MM_YYYY.toLowerCase());
 							errorCells.add(new ArkGridCell(col, row));
 						}
+						
+						
 					}
 					// Consent Expiry date validation
 					if (csvReader.getIndex("CONSENT_EXPIRY_DATE") > 0) {
@@ -705,8 +710,8 @@ public class SubjectUploadValidator {
 						cellValue = csvReader.get("CONSENT_EXPIRY_DATE");
 						try {
 							dateStr = cellValue;
-							if (dateStr != null && !dateStr.isEmpty())
-								simpleDateFormat.parse(dateStr);
+							if (dateStr != null && !dateStr.trim().isEmpty())
+							 cellValueConsentDateExpiry =simpleDateFormat.parse(dateStr);
 						}
 						catch (ParseException pex) {
 							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
@@ -719,12 +724,12 @@ public class SubjectUploadValidator {
 					if (csvReader.getIndex("CONSENT_DATE") > 0 && csvReader.getIndex("CONSENT_EXPIRY_DATE") > 0) {
 						int colConsentDate = csvReader.getIndex("CONSENT_DATE");
 						int colConsentExpiryDate = csvReader.getIndex("CONSENT_EXPIRY_DATE");
-						SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
-						Date cellValueConsentDate = format.parse(csvReader.get("CONSENT_DATE"));
-						Date cellValueConsentDateExpiry = format.parse(csvReader.get("CONSENT_EXPIRY_DATE"));
-						if (cellValueConsentDateExpiry.before(cellValueConsentDate)) {
+						//SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+						//Date cellValueConsentDate = format.parse(csvReader.get("CONSENT_DATE"));
+						//Date cellValueConsentDateExpiry = format.parse(csvReader.get("CONSENT_EXPIRY_DATE"));
+						if (cellValueConsentDateExpiry!=null && cellValueConsentDate!=null && cellValueConsentDateExpiry.before(cellValueConsentDate)) {
 							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[colConsentExpiryDate] + ": "
-									+  format.format(cellValueConsentDateExpiry) + " Consent expiry cannot occur before the consent date in "+ fieldNameArray[colConsentDate]+":"+format.format(cellValueConsentDate));
+									+  simpleDateFormat.format(cellValueConsentDateExpiry) + " Consent expiry cannot occur before the consent date in "+ fieldNameArray[colConsentDate]+":"+simpleDateFormat.format(cellValueConsentDate));
 							errorCells.add(new ArkGridCell(colConsentDate, row));	
 							errorCells.add(new ArkGridCell(colConsentExpiryDate, row));
 						}

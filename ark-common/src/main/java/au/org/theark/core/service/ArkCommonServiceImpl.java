@@ -1334,6 +1334,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction) {
 		return studyDao.getCustomFieldDisplaysIn(fieldNameCollection, study, arkFunction);
 	}
+	
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInForCustomFieldType(Study study, CustomFieldType customFieldType,ArkFunction arkFunction){
+		return studyDao.getCustomFieldDisplaysInForCustomFieldType(study, customFieldType, arkFunction);
+	}
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction) {
 		return studyDao.getCustomFieldDisplaysIn(study, arkFunction);
@@ -1478,7 +1482,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	}
 
-	public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search) {
+	/*public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search) {
 		return studyDao.getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 
 	}
@@ -1486,6 +1490,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search) {
 		return studyDao.getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
 
+	}*/
+	public Collection<CustomFieldDisplay> getSelectedLIMSCustomFieldDisplaysForSearchOnCustomFieldType(Search search,CustomFieldType customFieldType){
+		return studyDao.getSelectedLIMSCustomFieldDisplaysForSearchOnCustomFieldType(search, customFieldType);
 	}
 
 	public void runSearch(Long searchId) {

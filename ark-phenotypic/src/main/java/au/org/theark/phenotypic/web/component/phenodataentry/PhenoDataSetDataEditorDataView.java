@@ -179,6 +179,9 @@ public abstract class PhenoDataSetDataEditorDataView<T extends IPhenoDataSetFiel
 					if (requiredField != null && requiredField == true) {
 						cgdePanel.setRequired(true);
 					}
+					if(pf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
+						item.getModelObject().setTextDataValue(pf.getDefaultValue());
+					}
 					
 					dataValueEntryPanel = cgdePanel;
 

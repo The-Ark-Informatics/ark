@@ -3,6 +3,9 @@
 		<span wicket:id="feedback">
 			[Feedback]
 		</span>
+		<div wicket:id="detailModalWindowEncoded">
+			&nbsp;
+		</div>
 		
 		<div class="detailPanel">
 			<table width="100%" cellspacing="0" class="dataview" border="0">
@@ -82,12 +85,12 @@
 								<option>1</option>
 							</select><span class="requiredHint">*</span>
 						</td>
-						
 						<td>
 							<input wicket:id="value" type="text"/>
 						</td>
 						<td>
 							<input wicket:id="secondValue" type="text"/>
+																
 						</td>
 						<td>
 							<input wicket:id="copy" type="submit" wicket:message="value:button.copy" />

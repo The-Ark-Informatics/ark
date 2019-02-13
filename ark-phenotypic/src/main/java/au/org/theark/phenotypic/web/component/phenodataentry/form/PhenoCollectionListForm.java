@@ -558,7 +558,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 			}
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				log.error("onError called when clinical data set value button pressed");
+				log.error("onError called when subject datasets value button pressed");
 			};
 		};
 		ajaxButton.setDefaultFormProcessing(false);
@@ -568,7 +568,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
 		modalContentPanel = new PhenoClinicalDataValueEntryModalDetailPanel("content", modalWindowClinicalDataSetValues, cpModel);
 		// Set the modalWindow title and content
-		modalWindowClinicalDataSetValues.setTitle("Clinical Dataset Values");
+		modalWindowClinicalDataSetValues.setTitle("Subject Datasets Values");
 		modalWindowClinicalDataSetValues.setContent(modalContentPanel);
 		modalWindowClinicalDataSetValues.repaintComponent(getDataButton);
 		// 2015-09-29 set windows call back

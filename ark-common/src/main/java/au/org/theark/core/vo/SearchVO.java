@@ -31,6 +31,7 @@ import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchFile;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.web.component.customfield.dataentry.EncodedValueVO;
 
 /**
  * @author cellis and travis
@@ -68,6 +69,8 @@ public class SearchVO implements Serializable {
 	
 	private Collection<ConsentStatusField> availableConsentStatusFields = new ArrayList<ConsentStatusField>();
 	private Collection<ConsentStatusField> selectedConsentStatusFields = new ArrayList<ConsentStatusField>();
+	
+	private EncodedValueVO encodedValueVO; 
 	
 	
 	public SearchVO() {
@@ -281,5 +284,22 @@ public class SearchVO implements Serializable {
 	public void setSearchFile(SearchFile searchFile) {
 		this.searchFile = searchFile;
 	}
+
+	//Request by the program 
+	//2019-02-08
+	
+	public EncodedValueVO getEncodedValueVO() {
+		return encodedValueVO;
+	}
+
+	public void setEncodedValueVO(EncodedValueVO encodedValueVO) {
+		this.encodedValueVO = encodedValueVO;
+	}
+	
+
+	
+
+	
+	
 
 }

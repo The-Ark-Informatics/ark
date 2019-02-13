@@ -351,7 +351,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 				for (int idx = 0; idx < nodes.getLength(); idx++) {
 					String nodeText = nodes.item(idx).getTextContent();
 					if (nodeText != null) {
-						// Replace family id and dummy subject uids by blank text
+						// Replace family uid and dummy subject uids by blank text
 						if (nodeText.startsWith("_F") || nodeText.startsWith("!")) {
 							nodes.item(idx).setTextContent("");
 						}
@@ -965,7 +965,7 @@ public class PedigreeWebServiceRestImpl implements IPedigreeWebServiceRest {
 		for (MadelineObject madelineObject : madelineObjects) {
 			
 			if(madelineObject.getFamilyId()==null){
-				return ValidationType.FAMILY_ID_IS_MANDATORY;
+				return ValidationType.FAMILY_UID_IS_MANDATORY;
 			}
 			if(madelineObject.getIndividualId()==null){
 				return ValidationType.INDIVIDUAL_ID_IS_MANDATORY;

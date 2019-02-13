@@ -94,7 +94,7 @@ public enum ValidationType {
 	
 	PROBAND_UNACCEPTED_VALUES("The field \"Proband\" can only take values \"Yes\",\"No\" or \"Missing\"."),
 		
-	FAMILY_ID_IS_MANDATORY("The mandatory field \"FamilyId\" can not be empty."),
+	FAMILY_UID_IS_MANDATORY("The mandatory field \"FamilyUID\" can not be empty."),
 	
 	INDIVIDUAL_ID_IS_MANDATORY("The mandatory field \"IndividualId\" can not be empty."),
 	

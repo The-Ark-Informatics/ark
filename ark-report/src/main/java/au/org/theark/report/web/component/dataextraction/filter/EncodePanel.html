@@ -1,0 +1,44 @@
+<wicket:panel>
+	<form wicket:id="encodeForm">
+		<span wicket:id="feedback">
+			[Feedback]
+		</span>
+		<div class="detailPanel">
+			<!-- <div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer"> -->
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!-- Row 1 search ID and Name -->
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="encodeValue">
+						<wicket:message key="encodeValue">
+								EncodeValue:
+						</wicket:message>
+					</label>
+				</div>	
+			</div>
+			
+			<div class="fldControl">
+				<div class="label"     style="padding-left: 50px;">
+				<select wicket:id="encodedValueVO">
+					<option>1</option>
+				</select>
+				</div>
+			</div>
+		</div>
+		<div class="detailPanelBreaker">
+		</div>
+		<!-- End listPanelBorder -->
+		<div class="actionButtons" style="padding-right: 50px;padding-top: 10px;">
+			<input wicket:id="setAndClose" type="submit" wicket:message="value:button.setAndClose" />
+		</div>
+	</form>
+</wicket:panel>

@@ -135,7 +135,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected void initialiseSearchForm() {
 		initStudyDdc();
 		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
-		familyIdTxtFld = new TextField<String>(Constants.FAMILY_ID);
+		familyIdTxtFld = new TextField<String>(Constants.FAMILY_UID);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);

@@ -25,44 +25,32 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.QueryFilterListVO;
-import au.org.theark.report.web.component.dataextraction.filter.form.QueryFilterForm;
+import au.org.theark.core.vo.QueryFilterVO;
+import au.org.theark.report.web.component.dataextraction.filter.form.EncodeForm;
 
-public class QueryFilterPanel extends Panel {
+public class EncodePanel extends Panel {
 
 	private static final long						serialVersionUID	= 7224168117680252835L;
 	protected FeedbackPanel							feedbackPanel;
-	private QueryFilterForm					form;
+	private EncodeForm					form;
 
-	public QueryFilterPanel(String id, FeedbackPanel feedbackPanel, IModel<QueryFilterListVO> model, ModalWindow modalWindow,ArkCrudContainerVO arkCrudContainerVO) {
+	public EncodePanel(String id, FeedbackPanel feedbackPanel, IModel<QueryFilterVO> model,ModalWindow modalWindow,ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, model);
 		this.feedbackPanel = feedbackPanel;
-		initialisePanel(model, modalWindow,arkCrudContainerVO);
+		initialisePanel(model,modalWindow,arkCrudContainerVO);
 		setOutputMarkupPlaceholderTag(true);
 	}
 
-	public void initialisePanel(IModel<QueryFilterListVO> model, ModalWindow modalWindow,ArkCrudContainerVO arkCrudContainerVO) {
-		ModalWindow modalWindowEncoded = new ModalWindow("detailModalWindowEncoded");
-		modalWindowEncoded.setInitialHeight(80);
-		modalWindowEncoded.setInitialWidth(300);
-		modalWindowEncoded.setMinimalHeight(80);
-		modalWindowEncoded.setMinimalWidth(300);
-		form = new QueryFilterForm("queryFilterForm", model, modalWindow,modalWindowEncoded,arkCrudContainerVO);
+	public void initialisePanel(IModel<QueryFilterVO> model,ModalWindow modalWindow,ArkCrudContainerVO arkCrudContainerVO) {
+		form = new EncodeForm("encodeForm", model, modalWindow,arkCrudContainerVO);
 		form.initialiseForm();
 		add(form);
 	}
-
-	/**
-	 * @return the listDetailForm
-	 */
-	public QueryFilterForm getListDetailForm() {
+	public EncodeForm getForm() {
 		return form;
 	}
-
-	/**
-	 * @param listDetailForm the listDetailForm to set
-	 */
-	public void setListDetailForm(QueryFilterForm listDetailForm) {
-		this.form = listDetailForm;
+	public void setForm(EncodeForm form) {
+		this.form = form;
 	}
+	
 }

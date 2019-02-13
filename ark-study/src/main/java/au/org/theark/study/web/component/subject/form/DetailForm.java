@@ -234,7 +234,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		};
 		subjectUIDTxtFld.setOutputMarkupId(true);
 		
-		familyIdTxtFld = new TextField<String>(Constants.FAMILY_ID);
+		familyIdTxtFld = new TextField<String>(Constants.FAMILY_UID);
 
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);

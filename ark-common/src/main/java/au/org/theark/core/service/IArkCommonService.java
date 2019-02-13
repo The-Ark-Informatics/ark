@@ -817,13 +817,18 @@ public interface IArkCommonService<T> {
 	public Collection<PhenoDataSetFieldDisplay> getSelectedPhenoDataSetFieldDisplaysForSearch(Search search);
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction);
+	
+	public List<CustomFieldDisplay> getCustomFieldDisplaysInForCustomFieldType(Study study, CustomFieldType customFieldType,ArkFunction arkFunction);
 
 	public Collection<CustomFieldDisplay> getSelectedSubjectCustomFieldDisplaysForSearch(Search search);
 
-	public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search);
+	/*public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search);
 
 	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search);
-
+*/
+	public Collection<CustomFieldDisplay> getSelectedLIMSCustomFieldDisplaysForSearchOnCustomFieldType(Search search,CustomFieldType customFieldType);
+	
+	
 	public void runSearch(Long searchId);
 
 	public void createQueryFilters(List filterList) throws ArkSystemException;

@@ -45,7 +45,7 @@ public class LinkSubjectContact implements java.io.Serializable {
 	private Relationship relationship;
 	private Person personBySubjectId;
 	private Person personByContactId;
-	private Long familyId;
+	private Long familyUID;
 	
 	public LinkSubjectContact() {
 	}
@@ -55,13 +55,13 @@ public class LinkSubjectContact implements java.io.Serializable {
 	}
 
 	public LinkSubjectContact(Long id, Study study, Relationship relationship,
-			Person personBySubjectId, Person personByContactId, Long familyId) {
+			Person personBySubjectId, Person personByContactId, Long familyUID) {
 		this.id = id;
 		this.study = study;
 		this.relationship = relationship;
 		this.personBySubjectId = personBySubjectId;
 		this.personByContactId = personByContactId;
-		this.familyId = familyId;
+		this.familyUID = familyUID;
 	}
 
 	@Id
@@ -114,12 +114,13 @@ public class LinkSubjectContact implements java.io.Serializable {
 		this.personByContactId = personByContactId;
 	}
 
-	@Column(name = "FAMILY_ID", nullable = false, precision = 22, scale = 0)
-	public Long getFamilyId() {
-		return familyId;
+	@Column(name = "FAMILY_UID", nullable = false, precision = 22, scale = 0)
+	public Long getFamilyUID() {
+		return familyUID;
 	}
 
-	public void setFamilyId(Long familyId) {
-		this.familyId = familyId;
+	public void setFamilyUID(Long familyUID) {
+		this.familyUID = familyUID;
 	}
+	
 }

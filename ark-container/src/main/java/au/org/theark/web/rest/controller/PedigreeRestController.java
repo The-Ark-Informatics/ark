@@ -673,7 +673,7 @@ public class PedigreeRestController {
            	            		httpStatus=HttpStatus.NOT_ACCEPTABLE;	
 								break;
             case INDIVIDUAL_ID_IS_MANDATORY:
-            case FAMILY_ID_IS_MANDATORY:
+            case FAMILY_UID_IS_MANDATORY:
             					httpStatus=HttpStatus.NO_CONTENT;	
             					break;	
             case SUCCESSFULLY_VALIDATED:
