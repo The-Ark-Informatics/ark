@@ -104,6 +104,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	private TabbedPanel mainTabs;
 	private List<Study> studyListForUser = new ArrayList<Study>();
 	
+	
 	/**
 	 * @param id
 	 * @param studyLogoMarkup 
@@ -138,20 +139,20 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	}
 		
 	/**
-	 * Re-use in pedigree panel
+	 * Re-use in pedigree panel- commented due to looks like un used in here.
 	 * 
 	 * @param id
 	 * @param studyLogoMarkup 
 	 * @param studyNameMarkup 
 	 * @param modalWindow
 	 */
-	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup,AbstractDetailModalWindow modalWindow,String gender,List<RelationshipVo> relatives) {
+	/*public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup,AbstractDetailModalWindow modalWindow,String gender,List<RelationshipVo> relatives) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
 		
-		/* Initialise the CPM */
+		 Initialise the CPM 
 		
 		SubjectVO subjectVO = new SubjectVO();
 		subjectVO.setEnableNewButton(false);
@@ -175,7 +176,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("study").setEnabled(false);
 		
 		add(containerForm);
-	}
+	}*/
 
 	@SuppressWarnings("unchecked")
 	protected void prerenderContextCheck() {
@@ -283,6 +284,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 			}
 		};
 		
+		
+		
 		TextField<OtherID> txtFld = ((TextField<OtherID>) containerForm.get("searchContainer:searchComponentPanel:searchForm:otherID")); 
 		String otherIDSearch = txtFld!=null?txtFld.getValue():null;
 		if(otherIDSearch != null) {
@@ -343,6 +346,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 		String filename = "subjects";
 		RepeatingView toolbars = new RepeatingView("toolbars");
+		/*List<SubjectVO> listSubvo = new ArrayList<SubjectVO>();
+		if(subjectProvider.size() < 5000 ){
+			listSubvo=iArkCommonService.searchPageableSubjects(cpModel.getObject(), 0, subjectProvider.size());
+		}*/
 		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
 		toolbars.add(new Component[] { exportToolBar });
 		resultsWmc.add(toolbars);
@@ -353,7 +360,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 	
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	protected WebMarkupContainer initialiseSearchResults(AbstractDetailModalWindow modalWindow,final String gender,final List<RelationshipVo> relatives) {
 		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup, mainTabs);
 		searchResultsPanel.setOutputMarkupId(true);
@@ -458,6 +465,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		searchResultsPanel.add(resultsWmc);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
-	}
+	}*/
 	
 }

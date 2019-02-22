@@ -40,8 +40,6 @@ public class DataExtractionUploadJob implements Job {
 	public static final String		IARKCOMMONSERVICE	= "iArkCommonService";
 	public static final String		SEARCH_ID			= "uploadId";
 	public static final String		CURRENT_USER		= "currentUser";
-	public static final String		STUDY_ID			= "studyId";
-	
 	private IArkCommonService<Void>	iArkCommonService;
 
 	/**
@@ -59,10 +57,8 @@ public class DataExtractionUploadJob implements Job {
 	@SuppressWarnings("unchecked")
 	public void execute(JobExecutionContext context) throws JobExecutionException {		
 		JobDataMap data = context.getJobDetail().getJobDataMap();
-		
 		iArkCommonService			= (IArkCommonService<Void>) data.get(IARKCOMMONSERVICE);
 		Long searchId 				= (Long) data.get(SEARCH_ID);
-	//	Long studyId 				= data.getLongValue(STUDY_ID);
 		String currentUser		= data.getString(CURRENT_USER);
 		iArkCommonService.runSearch(searchId,currentUser);
 

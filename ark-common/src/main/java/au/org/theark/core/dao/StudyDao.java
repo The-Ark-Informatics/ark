@@ -986,31 +986,35 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		//criteria.addOrder(OrderByBorder"{alias}.STUDY_ID, length({alias}.SUBJECT_UID), {alias}.SUBJECT_UID");
 
-		criteria.setProjection(Projections.distinct(Projections.projectionList().add(Projections.id())));
+		/**
+		 * Commented out next line due to returning the id list 
+		 * which is not ideal way since we have to find and add 
+		 * all the object(LinkSubjectStudy) again from the table which is very time consuming. 
+		 */
+		//criteria.setProjection(Projections.distinct(Projections.projectionList().add(Projections.id())));
 		//criteria.addOrder(Order.asc("subjectUID"));
 		criteria.addOrder(Order.asc("naturalUID"));
 		return criteria;
 	}
+	
+	
 
 	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, int first, int count) {		
 		Criteria criteria = buildGeneralSubjectCriteria(subjectVoCriteria);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
-
-		List<Long> longs = criteria.list();
-
+		//List<Long> longs= criteria.list();
 		List<LinkSubjectStudy> list = new ArrayList<LinkSubjectStudy>();//criteria.list();
-
-		for(Long l : longs) {
+		list=criteria.list();
+		// Totally unnessary thing to do we have to take the list from the table.
+		/*for(Long l : longs) {
 			try {
 				list.add(getLinkSubjectStudy(l));
 			} catch (EntityNotFoundException e) {
 				e.printStackTrace();
 			}
-		}
-
+		}*/
 		List<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
-
 		// TODO analyse
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 

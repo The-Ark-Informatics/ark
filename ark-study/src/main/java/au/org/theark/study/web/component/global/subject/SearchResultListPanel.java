@@ -180,7 +180,7 @@ public class SearchResultListPanel extends Panel {
 		return studyCompDataView;
 	}
 
-	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives,
+	/*public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives,
 			final FeedbackPanel feedbackPanel) {
 
 		DataView<SubjectVO> studyCompDataView = new DataView<SubjectVO>("subjectList", subjectProvider) {
@@ -190,14 +190,14 @@ public class SearchResultListPanel extends Panel {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
 				item.add(buildLink(item, modalWindow, relatives, feedbackPanel));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
-/*
+
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
 					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
 				}
 				else {
 					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
 				}
-*/
+
 				List<PersonLastnameHistory> lastnameHistory = (List<PersonLastnameHistory>) iArkCommonService.getPersonLastNameHistory(subject.getPerson());
 				String lastNameString = "";
 				if(!lastnameHistory.isEmpty()) {
@@ -256,7 +256,7 @@ public class SearchResultListPanel extends Panel {
 			}
 		};
 		return studyCompDataView;
-	}
+	}*/
 
 	public PageableListView<SubjectVO> buildListView(IModel iModel) {
 

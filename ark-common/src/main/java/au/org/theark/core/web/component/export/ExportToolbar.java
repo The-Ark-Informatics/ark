@@ -7,6 +7,8 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 
+import au.org.theark.core.vo.SubjectVO;
+
 /**
  * A toolbar for exporting DataTable results to CSV, XLS, or PDF 
  * @author cellis

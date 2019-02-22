@@ -44,11 +44,8 @@ public class DataExtractionUploadExecutor {
 	 * @param iArkCommonService
 	 * @param searchId
 	 */
-	public DataExtractionUploadExecutor(IArkCommonService iArkCommonService,
-											Long searchId
-											) {
+	public DataExtractionUploadExecutor(IArkCommonService iArkCommonService,Long searchId) {
 		this.iArkCommonService = iArkCommonService;
-	//	this.studyId = studyId;
 		this.searchId = searchId;
 	}
 

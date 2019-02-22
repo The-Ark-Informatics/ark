@@ -48,6 +48,7 @@ public class CsvExportLink<T> extends Link<Void> {
 		this.headers = headers;
 		this.filename = filename;
 		
+		
 		add(new ContextImage("csvimage", new Model<String>("images/icons/page_white_text.png")));
 		add(new Behavior(){
 			private static final long	serialVersionUID	= 1L;
@@ -58,7 +59,6 @@ public class CsvExportLink<T> extends Link<Void> {
 			}
 		});
 	}
-
 	@Override
 	public void onClick() {
 		final String tempDir = System.getProperty("java.io.tmpdir");
@@ -89,7 +89,8 @@ public class CsvExportLink<T> extends Link<Void> {
 	private void writeTableToCsv(OutputStream outputStream) {
 		CsvWriter writer = new CsvWriter(outputStream);
 		List<ExportableColumn<T>> exportable = getExportableColumns();
-
+		log.info("Writing started");
+		
 		// Column headers
 		for (String col : headers) {
 			writer.write(col);
@@ -98,14 +99,14 @@ public class CsvExportLink<T> extends Link<Void> {
 
 		Iterator<? extends T> it = table.getDataProvider().iterator(0, table.getDataProvider().size()); //(pager.offset(i), pager.count(i));
 		while (it.hasNext()) {
-			T object = it.next();
+		T object = it.next();
 			for (ExportableColumn<T> col : exportable) {
 				col.exportCsv(object, writer);
 			}
 			writer.endLine();
 		}
 		writer.close();
-
+		log.info("Writing ended.");
 	}
 
 	@SuppressWarnings("unchecked")
