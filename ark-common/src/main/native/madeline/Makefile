@@ -17,7 +17,7 @@ FLAG_64_BIT := -m64
 CC_FLAGS := -fPIC $(FLAG_64_BIT)
 
 # Edit the following line to reflect the location of your JDK and its headers
-JAVA_BASE := /usr/lib/jvm/java-8-openjdk-amd64
+JAVA_BASE := /usr/local/openjdk-8
 JAVA_INCLUDES := -I$(JAVA_BASE)/include -I$(JAVA_BASE)/include/linux
 # Need to give the path to the libxml2 headers explicitly
 CPP_INCLUDES := -I/usr/include/libxml2

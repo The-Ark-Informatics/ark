@@ -1,8 +1,8 @@
-FROM java:openjdk-8-jdk
+FROM openjdk:8
 
 MAINTAINER George Gooden <gecgooden@gmail.com>
 
-ENV MAVEN_VERSION 3.3.9
+ENV MAVEN_VERSION 3.6.1
 
 RUN mkdir -p /usr/share/maven \
   && curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
@@ -77,8 +77,8 @@ RUN touch $HOME/.m2/repository/au/org/theark/admin/ark-admin/${ARKVERSION}/ark-a
 	$HOME/.m2/repository/au/org/theark/worktracking/ark-work-tracking/${ARKVERSION}/ark-work-tracking-${ARKVERSION}.jar \
 	$HOME/.m2/repository/au/org/theark/worktracking/ark-work-tracking/${ARKVERSION}/ark-work-tracking-${ARKVERSION}.pom 
 
-RUN mvn -T1C initialize
-RUN mvn -T1C dependency:resolve
+RUN mvn initialize
+RUN mvn dependency:resolve
 # End of hack
 
 ADD ark-user-account /usr/src/app/ark-user-account
@@ -95,7 +95,7 @@ ADD docker/base/ark-user-account-config.sh docker/base/ark-user-account-config.s
 RUN chmod +x docker/base/ark-user-account-config.sh
 RUN docker/base/ark-user-account-config.sh
 
-RUN mvn -T1C -f ark-user-account/pom.xml assembly:assembly 
+RUN mvn -f ark-user-account/pom.xml assembly:assembly
 
 RUN cp ark-user-account/target/ark-user-account-1.0.0-jar-with-dependencies.jar /usr/target/ark-user-account.jar
 
@@ -105,7 +105,7 @@ ADD . /usr/src/app/
 RUN chmod +x docker/base/ark-container-config.sh
 RUN docker/base/ark-container-config.sh
 
-RUN mvn -T1C package 
+RUN mvn package
 
 RUN cp ark-container/target/ark.war /usr/target/ark.war
 

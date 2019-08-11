@@ -210,6 +210,7 @@
 		<ark-genomics.version>1.2b.3</ark-genomics.version>
 		<!-- <springframework.version>[4.3.1,)</springframework.version> -->
 		<springframework.version>4.3.0.RELEASE</springframework.version>
-		
+
+        <maven.test.skip>true</maven.test.skip>
 	</properties>
 </project>

@@ -1,4 +1,4 @@
-FROM mysql:latest
+FROM mysql:5.7
 
 MAINTAINER George Gooden <gecgooden@gmail.com>
 

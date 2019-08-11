@@ -2,13 +2,7 @@ FROM the-ark/base:latest
 
 MAINTAINER George Gooden <gecgooden@gmail.com>
 
-RUN echo "deb http://packages.linuxmint.com debian import" >> /etc/apt/sources.list && \
-	gpg --keyserver pgp.mit.edu --recv-keys 3EE67F3D0FF405B2 && \
-	gpg --export 3EE67F3D0FF405B2 > 3EE67F3D0FF405B2.gpg && \
-	apt-key add ./3EE67F3D0FF405B2.gpg && \
-	rm ./3EE67F3D0FF405B2.gpg
-
-RUN apt-get update && apt-get install -y firefox xvfb ffmpeg tmux mysql-client
+RUN apt-get update && apt-get install -y firefox-esr xvfb ffmpeg tmux mysql-client
 
 ADD . /test/
 
