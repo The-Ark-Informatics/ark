@@ -1747,7 +1747,7 @@ void DrawingCanvas::iconQuadrantFill( double x, double y, Individual *pIndividua
 	std::string svalue = data->get();
 	std::istringstream i(svalue);
 	int level;
-	bool converted = (i>>level);
+	bool converted = static_cast<bool>(i>>level);
 	if(!converted || level<0 || level>15 ){
 		//
 		// (1) Unable to convert data string to integer, or
