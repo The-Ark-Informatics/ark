@@ -3,6 +3,9 @@ language: java
 jdk:
   - oraclejdk8
 
+before_install:
+  - mvn initialize
+
 cache:
   directories:
     - $HOME/.m2
