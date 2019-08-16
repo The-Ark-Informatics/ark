@@ -29,7 +29,16 @@
 	<context:annotation-config />
 	
 	<!-- Enable Ark properties -->
-	<context:property-placeholder location="classpath*:application.properties"/>
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:application.properties</value>
+				<value>classpath:default.properties</value>
+				<value>file:///etc/the-ark/the-ark.properties</value>
+			</list>
+		</property>
+	</bean>
 
 	<!--  Belongs to the Ark Container Application -->
 	<context:component-scan base-package="au.org.theark.dao" />
@@ -56,8 +65,8 @@
 		for the domain: http://the-ark.org.au
 	-->
 	<bean id="reCaptchaContextSource" class="au.org.theark.core.dao.ReCaptchaContextSource">
-		<property name="reCaptchaPublicKey" value="6LeH1soSAAAAAFJDIJlP3sjPiHu7QMTxVmYuxX_M" />
-		<property name="reCaptchaPrivateKey" value="6LeH1soSAAAAAHo5FTWfUzS5AQZ6Jea-9dBVtuyL" />
+		<property name="reCaptchaPublicKey" value="${recaptcha.key.public}" />
+		<property name="reCaptchaPrivateKey" value="${recaptcha.key.private}" />
 	</bean>
 
 	<!--   velocity allows us to use a template for the email-->
@@ -80,13 +89,13 @@
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url"
-			value="jdbc:mysql://ark-database:3306?rewriteBatchedStatements=true&amp;characterEncoding=utf8" />
+			value="jdbc:mysql://${database.host}:${database.port}?rewriteBatchedStatements=true&amp;characterEncoding=utf8" />
 		<!-- or for utf-8	
 			value="jdbc:mysql://ark-database:3306?characterEncoding=utf8" /> 
 			but the slightest typo or variation will cause you problems!!!
 		-->
-		<property name="username" value="arkadmin" />
-		<property name="password" value="##MYSQL_PASSWORD##" />
+		<property name="username" value="${database.username}" />
+		<property name="password" value="${database.password}" />
 	</bean>
 
 	<!--  Ark LDAP configuration (includes the LDAP data source) -->
@@ -97,11 +106,11 @@
 		au.org.theark.core.dao.ArkLdapContextSource
 	-->
 	<bean id="ldapDataContextSource" class="au.org.theark.core.dao.ArkLdapContextSource">
-		<property name="url" value="ldap://ark-ldap:389" />
-		<property name="basePeopleDn" value="ou=arkUsers" />
-		<property name="base" value="dc=the-ark,dc=org,dc=au" />
-		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
-		<property name="password" value="##SLAPD_PASSWORD##" />
+		<property name="url" value="ldap://${ldap.host}:${ldap.port}" />
+		<property name="basePeopleDn" value="${ldap.basePeopleDn}" />
+		<property name="base" value="${ldap.base}" />
+		<property name="userDn" value="${ldap.userDn}" />
+		<property name="password" value="${ldap.password}" />
 	</bean>
 
 	<!-- Shibboleth service provider -->
@@ -304,6 +313,10 @@
 		application defined below.See web.xml for the declaration of the
 		factory. =========================================================
 	-->
-	<bean id="wicketApplication" class="au.org.theark.web.application.ArkWebApplication" />
+	<bean id="wicketApplication" class="au.org.theark.web.application.ArkWebApplication">
+		<constructor-arg type="org.apache.wicket.RuntimeConfigurationType">
+			<value>${wicket.runtimeConfiguration}</value>
+		</constructor-arg>
+	</bean>
 </beans>
 
