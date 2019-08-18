@@ -3201,13 +3201,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					}
 					else {
 						// Determine field type and assign key value accordingly
-						if (data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+						if (data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && data.getDateDataValue() != null) {
 							map.put(data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getName(), data.getDateDataValue().toString());
 						}
-						if (data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+						if (data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER) && data.getNumberDataValue() != null) {
 							map.put(data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getName(), data.getNumberDataValue().toString());
 						}
-						if (data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+						if (data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER) && data.getTextDataValue() != null) {
 							map.put(data.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getName(), data.getTextDataValue());
 						}
 					}			
