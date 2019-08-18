@@ -22,46 +22,34 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
 import au.org.theark.core.service.IArkCommonService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * 
- * @author tendersby
- *
- */
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
 public class DataExtractionUploadJob implements Job {
-	//private static final Logger	log					= LoggerFactory.getLogger(DataExtractionUploadJob.class);
+    private static final Logger log = LoggerFactory.getLogger(DataExtractionUploadJob.class);
 
-	public static final String		IARKCOMMONSERVICE	= "iArkCommonService";
-	public static final String		SEARCH_ID			= "uploadId";
-	public static final String		CURRENT_USER		= "currentUser";
-	private IArkCommonService<Void>	iArkCommonService;
+    static final String IARKCOMMONSERVICE = "iArkCommonService";
+    static final String SEARCH_ID = "uploadId";
+    static final String CURRENT_USER = "currentUser";
 
-	/**
-	 * Empty constructor for job initialization
-	 * Quartz requires a public empty constructor so that the scheduler can instantiate the class whenever it needs.
-	 */
-	public DataExtractionUploadJob() {
-	}
-
-	/**
-	 * Called by the <code>{@link org.quartz.Scheduler}</code> when a <code>{@link org.quartz.Trigger}</code> fires that is associated with the
-	 * <code>Job</code>.
-	 * @throws JobExecutionException  if there is an exception while executing the job.
-	 */
-	@SuppressWarnings("unchecked")
-	public void execute(JobExecutionContext context) throws JobExecutionException {		
-		JobDataMap data = context.getJobDetail().getJobDataMap();
-		iArkCommonService			= (IArkCommonService<Void>) data.get(IARKCOMMONSERVICE);
-		Long searchId 				= (Long) data.get(SEARCH_ID);
-		String currentUser		= data.getString(CURRENT_USER);
-		iArkCommonService.runSearch(searchId,currentUser);
-
-	}
-
+    /**
+     * Called by the <code>{@link org.quartz.Scheduler}</code> when a <code>{@link org.quartz.Trigger}</code> fires that
+     * is associated with the Job.
+     */
+    public void execute(JobExecutionContext context) {
+        try {
+            JobDataMap data = context.getJobDetail().getJobDataMap();
+            IArkCommonService iArkCommonService = (IArkCommonService) data.get(IARKCOMMONSERVICE);
+            Long searchId = (Long) data.get(SEARCH_ID);
+            String currentUser = data.getString(CURRENT_USER);
+            iArkCommonService.runSearch(searchId, currentUser);
+        } catch (Exception e) {
+            log.error("Data extraction failed with exception: ", e);
+        }
+    }
 }
