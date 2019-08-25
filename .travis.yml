@@ -16,8 +16,9 @@ matrix:
     - jdk: openjdk11
     - jdk: oraclejdk11
 
-before_install:
+install:
   - mvn initialize
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 cache:
   directories:
