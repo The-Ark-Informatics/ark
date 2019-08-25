@@ -126,6 +126,7 @@ public class HomePage extends BasePage {
 					studyService.getPerson(sessionPersonId);
 					LinkSubjectStudy lss  = iArkCommonService.getSubject(sessionPersonId, study);
 					contextHelper.setSubjectContextLabel(lss.getSubjectUID(), this.arkContextPanelMarkup);
+					contextHelper.setSubjectNameContextLabel(lss.getPerson().getFullName(), this.arkContextPanelMarkup);
 				}
 				catch (EntityNotFoundException e) {
 					log.error(e.getMessage());
@@ -149,6 +150,8 @@ public class HomePage extends BasePage {
 		arkContextPanelMarkup.add(studyLabel);
 		Label subjectLabel = new Label("subjectLabel", "");
 		arkContextPanelMarkup.add(subjectLabel);
+		Label subjectNameLabel = new Label("subjectNameLabel", "");
+		arkContextPanelMarkup.add(subjectNameLabel);
 		Label phenoLabel = new Label("phenoLabel", "");
 		arkContextPanelMarkup.add(phenoLabel);
 		Label genoLabel = new Label("genoLabel", "");

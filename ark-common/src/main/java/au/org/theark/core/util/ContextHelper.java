@@ -26,6 +26,7 @@ import org.apache.wicket.model.Model;
 public class ContextHelper {
 	Label	studyLabel		= null;
 	Label	subjectLabel	= null;
+	Label subjectNameLabel = null;
 	Label	phenoLabel		= null;
 	Label	genoLabel		= null;
 
@@ -35,6 +36,8 @@ public class ContextHelper {
 		arkContextMarkup.addOrReplace(studyLabel);
 		subjectLabel = new Label("subjectLabel", new Model(""));
 		arkContextMarkup.addOrReplace(subjectLabel);
+		subjectNameLabel = new Label("subjectNameLabel", new Model(""));
+		arkContextMarkup.addOrReplace(subjectNameLabel);
 		phenoLabel = new Label("phenoLabel", new Model(""));
 		arkContextMarkup.addOrReplace(phenoLabel);
 		genoLabel = new Label("genoLabel", new Model(""));
@@ -71,6 +74,19 @@ public class ContextHelper {
 	public void setSubjectContextLabel( String label, WebMarkupContainer arkContextMarkup) {
 		subjectLabel = new Label("subjectLabel", new Model("Subject UID: " + label));
 		arkContextMarkup.addOrReplace(subjectLabel);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setSubjectNameContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup) {
+		subjectNameLabel = new Label("subjectNameLabel", new Model("Subject Name: " + label));
+		arkContextMarkup.addOrReplace(subjectNameLabel);
+		target.add(arkContextMarkup);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setSubjectNameContextLabel( String label, WebMarkupContainer arkContextMarkup) {
+		subjectNameLabel = new Label("subjectNameLabel", new Model("Subject Name: " + label));
+		arkContextMarkup.addOrReplace(subjectNameLabel);
 	}
 
 	@SuppressWarnings("unchecked")

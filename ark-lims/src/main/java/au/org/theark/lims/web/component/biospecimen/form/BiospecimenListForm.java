@@ -557,7 +557,8 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		ContextHelper contextHelper = new ContextHelper();
 		contextHelper.setStudyContextLabel(target, linkSubjectStudy.getStudy().getName(), arkContextMarkup);
 		contextHelper.setSubjectContextLabel(target, linkSubjectStudy.getSubjectUID(), arkContextMarkup);
-		
+		contextHelper.setSubjectNameContextLabel(target, linkSubjectStudy.getPerson().getFullName(), arkContextMarkup);
+
 		// Set Study Logo
 		StudyHelper studyHelper = new StudyHelper();
 		studyHelper.setStudyLogo(linkSubjectStudy.getStudy(), target,  studyNameMarkup, studyLogoMarkup,iArkCommonService);
