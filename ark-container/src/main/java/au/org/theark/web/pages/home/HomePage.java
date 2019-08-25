@@ -149,6 +149,8 @@ public class HomePage extends BasePage {
 		arkContextPanelMarkup.add(studyLabel);
 		Label subjectLabel = new Label("subjectLabel", "");
 		arkContextPanelMarkup.add(subjectLabel);
+		Label subjectNameLabel = new Label("subjectNameLabel", "");
+		arkContextPanelMarkup.add(subjectNameLabel);
 		Label phenoLabel = new Label("phenoLabel", "");
 		arkContextPanelMarkup.add(phenoLabel);
 		Label genoLabel = new Label("genoLabel", "");
