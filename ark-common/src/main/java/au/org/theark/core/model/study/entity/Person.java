@@ -363,6 +363,24 @@ public class Person implements java.io.Serializable {
 		return getOtherIDs().stream().map(otherID -> otherID.getOtherID_Source() + ": " + otherID.getOtherID()).collect(Collectors.joining("\n"));
 	}
 
+	@Transient
+	public String getFullName() {
+		StringBuilder fullNameBuilder = new StringBuilder();
+		if (getFirstName() != null) {
+			fullNameBuilder.append(getFirstName());
+			fullNameBuilder.append(" ");
+		}
+		if (getMiddleName() != null) {
+			fullNameBuilder.append(getMiddleName());
+			fullNameBuilder.append(" ");
+		}
+		if (getLastName() != null) {
+			fullNameBuilder.append(getLastName());
+		}
+
+		return fullNameBuilder.toString();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
