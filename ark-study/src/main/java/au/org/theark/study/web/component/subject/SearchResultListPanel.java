@@ -355,6 +355,7 @@ public class SearchResultListPanel extends Panel {
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
+				contextHelper.setSubjectNameContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getPerson().getFullName(), arkContextMarkup);
 
 				// Set Study Logo
 				StudyHelper studyHelper = new StudyHelper();

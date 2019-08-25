@@ -812,6 +812,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
 			contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkupContainer);
 			contextHelper.setSubjectContextLabel(target, containerForm.getModelObject().getLinkSubjectStudy().getSubjectUID(), arkContextMarkupContainer);
+			contextHelper.setSubjectNameContextLabel(target, containerForm.getModelObject().getLinkSubjectStudy().getPerson().getFullName(), arkContextMarkupContainer);
 
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, containerForm.getModelObject().getLinkSubjectStudy().getPerson().getId());
 			// We specify the type of person here as Subject

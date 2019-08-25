@@ -126,6 +126,7 @@ public class HomePage extends BasePage {
 					studyService.getPerson(sessionPersonId);
 					LinkSubjectStudy lss  = iArkCommonService.getSubject(sessionPersonId, study);
 					contextHelper.setSubjectContextLabel(lss.getSubjectUID(), this.arkContextPanelMarkup);
+					contextHelper.setSubjectNameContextLabel(lss.getPerson().getFullName(), this.arkContextPanelMarkup);
 				}
 				catch (EntityNotFoundException e) {
 					log.error(e.getMessage());

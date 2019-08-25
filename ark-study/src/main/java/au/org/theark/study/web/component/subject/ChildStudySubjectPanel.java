@@ -181,7 +181,8 @@ public class ChildStudySubjectPanel extends Panel {
 		ContextHelper contextHelper = new ContextHelper();
 		contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkup);
 		contextHelper.setSubjectContextLabel(target, subject.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
-		
+		contextHelper.setSubjectNameContextLabel(target, subject.getLinkSubjectStudy().getPerson().getFullName(), arkContextMarkup);
+
 		// Set Study Logo
 		StudyHelper studyHelper = new StudyHelper();
 		WebMarkupContainer wmc = (WebMarkupContainer) getParent();
