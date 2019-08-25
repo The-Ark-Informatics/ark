@@ -2,6 +2,11 @@ language: java
 
 jdk:
   - openjdk8
+  - openjdk10
+  - openjdk11
+  - oraclejdk8
+  - oraclejdk9
+  - oraclejdk11
 
 before_install:
   - mvn initialize
