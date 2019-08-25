@@ -4,11 +4,15 @@ jdk:
   - openjdk8
   - openjdk10
   - openjdk11
-  - oraclejdk8
   - oraclejdk9
   - oraclejdk11
 
 matrix:
+  include:
+    - jdk: oraclejdk9
+      before_install:
+        - rm "${JAVA_HOME}/lib/security/cacerts"
+        - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"
   allow_failures:
     - jdk: openjdk11
     - jdk: oraclejdk11
