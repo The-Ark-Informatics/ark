@@ -8,6 +8,11 @@ jdk:
   - oraclejdk9
   - oraclejdk11
 
+matrix:
+  allow_failures:
+    - jdk: openjdk11
+    - jdk: oraclejdk11
+
 before_install:
   - mvn initialize
 
