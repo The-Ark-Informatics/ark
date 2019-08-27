@@ -245,6 +245,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 					Long count = phenotypicDao.isPhenoDataSetFieldUsed(phenoData);
 
 					phenotypicDao.deletePhenoData(phenoData);
+					phenoData.getPhenoDataSetCollection().getPhenoDataSetData().remove(phenoData);
 					if (count <= 1) {
 						// Then update the PhenoDataSetField hasDataFlag to false.Reload since the session was closed in the front end and the child objects won't be loaded
 						Long id = phenoData.getPhenoDataSetFieldDisplay().getPhenoDataSetField().getId();
