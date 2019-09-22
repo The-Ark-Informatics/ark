@@ -938,16 +938,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			if(!subjectVO.getLinkSubjectStudy().getPerson().getOtherIDs().isEmpty()) {
 				OtherID o = (OtherID) subjectVO.getLinkSubjectStudy().getPerson().getOtherIDs().toArray()[0];
 				if(o != null && o.getOtherID()!= null && !o.getOtherID().isEmpty()) {
-					log.info("OtherID search");	
-//					DetachedCriteria otherID = DetachedCriteria.forClass(OtherID.class, "O")
-//							.setProjection(Projections.projectionList().add(Projections.property("O.otherID")))
-//							.add(Restrictions.ilike("O.otherID", ((OtherID) subjectVO.getLinkSubjectStudy().getPerson().getOtherIDs().toArray()[0]).getOtherID(), MatchMode.EXACT))
-//							.add(Restrictions.eqProperty("p.id", "O.person.id"));
-//					criteria.add(Subqueries.exists(otherID));
 					criteria.createAlias("p.otherIDs", "o");
 					criteria.add(Restrictions.ilike("o.otherID", ((OtherID) subjectVO.getLinkSubjectStudy().getPerson().getOtherIDs().toArray()[0]).getOtherID(), MatchMode.ANYWHERE));
-					criteria.setProjection(Projections.distinct(Projections.projectionList()
-							.add(Projections.property("o.personid"), "lss.person.id")));
 				}
 			}
 		}
@@ -980,19 +972,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
 			}
 		}
-		if (subjectVO.getRelativeUIDs().size() > 0) {
+		if (!subjectVO.getRelativeUIDs().isEmpty()) {
 			criteria.add(Restrictions.not(Restrictions.in("subjectUID",
 					subjectVO.getRelativeUIDs().toArray())));
 		}
-		//criteria.addOrder(OrderByBorder"{alias}.STUDY_ID, length({alias}.SUBJECT_UID), {alias}.SUBJECT_UID");
 
-		/**
-		 * Commented out next line due to returning the id list 
-		 * which is not ideal way since we have to find and add 
-		 * all the object(LinkSubjectStudy) again from the table which is very time consuming. 
-		 */
-		//criteria.setProjection(Projections.distinct(Projections.projectionList().add(Projections.id())));
-		//criteria.addOrder(Order.asc("subjectUID"));
 		criteria.addOrder(Order.asc("naturalUID"));
 		return criteria;
 	}
@@ -1003,36 +987,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = buildGeneralSubjectCriteria(subjectVoCriteria);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
-		//List<Long> longs= criteria.list();
-		List<LinkSubjectStudy> list = new ArrayList<LinkSubjectStudy>();//criteria.list();
-		list=criteria.list();
-		// Totally unnessary thing to do we have to take the list from the table.
-		/*for(Long l : longs) {
-			try {
-				list.add(getLinkSubjectStudy(l));
-			} catch (EntityNotFoundException e) {
-				e.printStackTrace();
-			}
-		}*/
-		List<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
-		// TODO analyse
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		List<LinkSubjectStudy> list = criteria.list();
 
-			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
+		List<SubjectVO> subjectVOList = new ArrayList<>();
+		for (LinkSubjectStudy linkSubjectStudy : list) {
 			// Place the LinkSubjectStudy instance into a SubjectVO and add the
 			// SubjectVO into a List
 			SubjectVO subject = new SubjectVO();
 			subject.setLinkSubjectStudy(linkSubjectStudy);
-			// Person person = subject.getLinkSubjectStudy().getPerson();
 			subject.setSubjectUID(linkSubjectStudy.getSubjectUID());
 			subjectVOList.add(subject);
 		}
 		return subjectVOList;
-		/*Try to sort in this position but unable to sort because data will be comming as a chunk of 20,40 
-		Comparator<SubjectVO> comparator=Comparator.comparing((SubjectVO svo)->svo.getLinkSubjectStudy().getStudy().getName()).thenComparingInt(svo->svo.getSubjectUID().length())
-				.thenComparing((SubjectVO svo)->svo.getSubjectUID());
-		Stream<SubjectVO> subjectVOStream = subjectVOList.stream().sorted(comparator);
-		return subjectVOStream.collect(Collectors.toList());*/
 	}
 
 	public List<ConsentStatus> getRecordableConsentStatus() {
