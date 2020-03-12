@@ -101,7 +101,7 @@ public class Constants {
 	public static final String			SUBJECT_CONSENT_STATUS										= "linkSubjectStudy.consentStatus";
 	public static final String			SUBJECT_CONSENT_TYPE										= "linkSubjectStudy.consentType";
 	public static final String			PERSON_CAUSE_OF_DEATH										= "linkSubjectStudy.person.causeOfDeath";
-	public static final String			PERSON_TYTPE_TYPE											= "linkSubjectStudy.person.titleType";
+	public static final String 			PERSON_TITLE_TYPE											= "linkSubjectStudy.person.titleType";
 	public static final String			PERSON_GENDER_TYPE											= "linkSubjectStudy.person.genderType";
 	public static final String			PERSON_GENDER_TYPE_NAME										= "linkSubjectStudy.person.genderType.name";
 	public static final String			SUBJECT_FULL_NAME											= "subjectFullName";
