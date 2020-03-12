@@ -573,7 +573,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		// Set default foreign key reference
 		if (subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName())) {
-			GenderType genderType = getGenderType(new Long(0));
+			GenderType genderType = getGenderType(getDefaultGenderType().getId());
 			subjectVo.getLinkSubjectStudy().getPerson().setGenderType(genderType);
 		}
 
@@ -695,7 +695,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			criteria.add(Restrictions.eq("id", id));
 		}
 
-		return (GenderType) criteria.list().get(0);
+		return (GenderType) criteria.uniqueResult();
 	}
 
 	public TitleType getTitleType(Long id) {
@@ -2197,7 +2197,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public GenderType getDefaultGenderType() {
-		//return getGenderType(0L);// TODO meaningful use of constants perhaps or a default bool in db
 		return getGenderType(5L);//The default gender type has been moved to create a primary key for the table Gender Type.
 	}
 
