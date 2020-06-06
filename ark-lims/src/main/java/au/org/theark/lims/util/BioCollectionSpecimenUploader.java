@@ -612,7 +612,8 @@ public class BioCollectionSpecimenUploader {
 				bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
 				bioTransaction.setQuantity(biospecimen.getQuantity());
 				bioTransaction.setReason(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
-					
+				bioTransaction.setUnit(biospecimen.getUnit());
+
 				BioTransactionStatus initialStatus = iLimsService.getBioTransactionStatusByName(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
 				bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
 				bioTransactions.add(bioTransaction);
