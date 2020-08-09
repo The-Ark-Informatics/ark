@@ -61,14 +61,6 @@
 			<version>${ark-phenotypic.version}</version>
 		</dependency>
 
-		<!-- Ark Genotypic Module -->
-		<!-- <dependency>
-			<groupId>au.org.theark.geno</groupId>
-			<artifactId>ark-geno</artifactId>
-			<version>${ark-geno.version}</version>
-		</dependency> -->
-		
-		
 		<!-- Ark Registry Module -->
 		<dependency>
 			<groupId>au.org.theark.registry</groupId>
@@ -200,7 +192,6 @@
 		<ark-common.version>1.2b.3</ark-common.version>
 		<ark-study.version>1.2b.3</ark-study.version>
 		<ark-phenotypic.version>1.2b.3</ark-phenotypic.version>
-		<ark-geno.version>1.2b.3</ark-geno.version>
 		<ark-registry.version>1.2b.3</ark-registry.version>
 		<ark-lims.version>1.2b.3</ark-lims.version>
 		<ark-report.version>1.2b.3</ark-report.version>
