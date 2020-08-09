@@ -34,7 +34,6 @@
 		<property name="locations">
 			<list>
 				<value>classpath:application.properties</value>
-				<value>classpath:default.properties</value>
 				<value>file:///etc/the-ark/the-ark.properties</value>
 			</list>
 		</property>
