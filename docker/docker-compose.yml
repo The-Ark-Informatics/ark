@@ -37,6 +37,7 @@ services:
                         - datastore:/opt/ark-datastore
                 volumes_from:
                         - base
+                env_file: env_file
                 ports:
                         - "8080:8080"
                         - "8000:8000"

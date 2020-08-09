@@ -20,4 +20,17 @@ done
 
 mv /usr/target/ark.war webapps/ark.war
 
-catalina.sh jpda run 
+mkdir -p /etc/the-ark
+
+cat <<EOF >/etc/the-ark/the-ark.properties
+database.host=mysql
+database.username=$MYSQL_USER
+database.password=$MYSQL_PASSWORD
+
+ldap.host=slapd
+ldap.password=$SLAPD_PASSWORD
+
+wicket.runtimeConfiguration=DEVELOPMENT
+EOF
+
+catalina.sh jpda run

@@ -19,6 +19,7 @@
 package au.org.theark.web.application;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.request.Request;
@@ -30,9 +31,13 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import au.org.theark.core.session.ArkSession;
 import au.org.theark.web.pages.login.LoginPage;
 
-public class ArkWebApplication extends BaseApplication{
-	
-	
+public class ArkWebApplication extends BaseApplication {
+
+	public ArkWebApplication(RuntimeConfigurationType runtimeConfigurationType) {
+		super();
+		this.setConfigurationType(runtimeConfigurationType);
+	}
+
 	public void init(){
 		log.info("In Constructor of ArkApplication");
 		super.init();
@@ -46,19 +51,15 @@ public class ArkWebApplication extends BaseApplication{
 
 	@Override
 	public Class<? extends Page> getHomePage() {
-
 		return LoginPage.class;
 	}
 
 	public ApplicationContext context(){
-
 		return WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 	}
 
 	@Override
 	public Session newSession(Request request, Response response) {
-		// TODO Auto-generated method stub
 		return new ArkSession(request);
 	}
-
 }
