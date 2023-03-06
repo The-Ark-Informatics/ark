@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+
+<!-- Mirrored from sphinx.org.au/the-ark/for-programmers/9-build-the-ark-using-docker by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:40 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="utf-8" />
+	<base  />
+	<meta name="keywords" content="University of Melbourne School of Population and Global Health Informatics" />
+	<meta name="description" content="The School of Population and Global Health Informatics Website" />
+	<meta name="generator" content="Joomla! - Open Source Content Management" />
+	<title>Build The Ark using Docker</title>
+	<link href="../../templates/protostar/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+	<link href="../../templates/protostar/css/template8374.css?79454ffff00e04053220fdb82f03fe7b" rel="stylesheet" />
+	<link href="../../../fonts.googleapis.com/cssd2d5.css?family=Open+Sans" rel="stylesheet" />
+	<style>
+
+	h1, h2, h3, h4, h5, h6, .site-title {
+		font-family: 'Open Sans', sans-serif;
+	}
+	body.site {
+		border-top: 3px solid #0088cc;
+		background-color: #f4f6f7;
+	}
+	a {
+		color: #0088cc;
+	}
+	.nav-list > .active > a,
+	.nav-list > .active > a:hover,
+	.dropdown-menu li > a:hover,
+	.dropdown-menu .active > a,
+	.dropdown-menu .active > a:hover,
+	.nav-pills > .active > a,
+	.nav-pills > .active > a:hover,
+	.btn-primary {
+		background: #0088cc;
+	}
+	</style>
+	<script src="../../media/jui/js/jquery.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/jui/js/jquery-noconflict8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/jui/js/jquery-migrate.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/system/js/caption8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/jui/js/bootstrap.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../templates/protostar/js/template8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<!--[if lt IE 9]><script src="/media/jui/js/html5.js?79454ffff00e04053220fdb82f03fe7b"></script><![endif]-->
+	<script>
+jQuery(window).on('load',  function() {
+				new JCaption('img.caption');
+			});
+	</script>
+
+</head>
+<body class="site com_content view-article no-layout no-task itemid-130">
+	<!-- Body -->
+	<div class="body" id="top">
+		<div class="container">
+			<!-- Header -->
+			<header class="header" role="banner">
+				<div class="header-inner clearfix">
+					<a class="brand pull-left" href="../../index.html">
+						<img src="../../images/logo.png" alt="SPHINX" />											</a>
+					<div class="header-search pull-right">
+						
+					</div>
+				</div>
+			</header>
+						
+			<div class="row-fluid">
+								<main id="content" role="main" class="span9">
+					<!-- Begin Content -->
+					
+					<div id="system-message-container">
+	</div>
+
+					<div class="item-page" itemscope itemtype="https://schema.org/Article">
+	<meta itemprop="inLanguage" content="en-GB" />
+	
+		
+			<div class="page-header">
+		<h2 itemprop="headline">
+			Build The Ark using Docker		</h2>
+							</div>
+					
+		
+	
+	
+		
+								<div itemprop="articleBody">
+		<p>The <a href="https://www.docker.com/" target="_blank" rel="noopener noreferrer">Docker</a> configuration supplied in The Ark repository allows quick and easy building of the system. This configuration has four containers defined; MySQL, LDAP (Slapd), Tomcat and Maven. The containers are integrated using <a href="https://www.docker.com/products/docker-compose" target="_blank" rel="noopener noreferrer">Docker Compose</a>.</p>
+<p><em><strong>Note:</strong></em> at present, this process has only been tested and verified to work on Ubuntu 14.04LTS. We are working towards ensuring compatibility with other operating systems such as Microsoft Windows and Apple OSX.</p>
+<h3>Prerequistite software</h3>
+<ul>
+<li><a href="https://www.docker.com/products/docker" target="_blank" rel="noopener noreferrer">Docker for your operating system (Windows, OSX, Linux)</a></li>
+<li><a href="https://www.docker.com/products/docker-compose" target="_blank" rel="noopener noreferrer">Docker Compose</a></li>
+</ul>
+<p>Microsoft Windows and Apple OSX users should download "Docker for Windows" and "Docker for</p>
+<h3>Usage</h3>
+<p>Assuming the source code repository has been <a href="../contact-us/16-the-ark/overview/29-get-the-source-code.html">checked out using Git</a> and that the Docker platform is running:</p>
+<ol>
+<li><span style="font-family: 'courier new', courier, monospace;">cd docker/</span></li>
+<li><span style="font-family: 'courier new', courier, monospace;">docker-compose build</span></li>
+<li><span style="font-family: 'courier new', courier, monospace;">docker-compose up</span></li>
+</ol>
+<h3>Extra Commands</h3>
+<table style="border: 1px solid #c0c0c0;" cellpadding="5" align="center">
+<tbody>
+<tr>
+<td style="border: 1px solid #c0c0c0; text-align: center; background-color: #f5f5f5;"><strong>Command</strong></td>
+<td style="border: 1px solid #c0c0c0; text-align: center; width: 350px; background-color: #f5f5f5;"><strong>Usage</strong></td>
+</tr>
+<tr>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">docker-compose up -d</span></td>
+<td style="border: 1px solid #c0c0c0;">Starts the containers in daemon mode meaning that no logs are printed to <span style="font-family: 'courier new', courier, monospace;">STDOUT</span>.</td>
+</tr>
+<tr>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">docker-compose down -v</span></td>
+<td style="border: 1px solid #c0c0c0;">Tears down all containers, and deletes all of the associated storage volumes.</td>
+</tr>
+<tr>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">docker exec -it &lt;containername&gt; /bin/bash</span></td>
+<td style="border: 1px solid #c0c0c0;">Starts an interactive bash session within the container named <span style="font-family: 'courier new', courier, monospace;">&lt;containername&gt;</span><span style="font-family: andale mono,times;">.</span></td>
+</tr>
+</tbody>
+</table>
+<h3>Passwords</h3>
+<p>The default passwords are contained in <a href="https://github.com/The-Ark-Informatics/ark/blob/master/docker/env_file">docker/env_file</a> and should be modified before the initial <span style="font-family: andale mono,times;">docker-compose up</span> command, as the services are configured in the first run of each container. Passwords can be changed by tearing down all containers and deleting their volumes, however this will also delete any data stored in the MySQL and LDAP containers.</p>
+<h3>Configuration</h3>
+<p>Inside <span style="font-family: 'courier new', courier, monospace;">docker/env_file</span>, the following Environment Variables can be set to configure the software inside each container:</p>
+<table cellpadding="5" align="center">
+<tbody>
+<tr>
+<td style="background-color: #f5f5f5; border: 1px solid #c0c0c0; text-align: center;"><strong>Environment Variable</strong></td>
+<td style="background-color: #f5f5f5; border: 1px solid #c0c0c0; text-align: center;"><strong>Usage</strong></td>
+<td style="background-color: #f5f5f5; border: 1px solid #c0c0c0; text-align: center;"><strong>Default Value</strong></td>
+</tr>
+<tr>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">MYSQL_ROOT_PASSWORD</span></td>
+<td style="border: 1px solid #c0c0c0;">Changes the MySQL root user password</td>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">mysql-password</span></td>
+</tr>
+<tr>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">SLAPD_PASSWORD</span></td>
+<td style="border: 1px solid #c0c0c0;">The password for the LDAP database</td>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">slapd-password</span></td>
+</tr>
+<tr>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">ARK_USERNAME</span></td>
+<td style="border: 1px solid #c0c0c0;">The Ark Superuser's username</td>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;"><span id="cloak5fbb1fcea7fdf22a85e16ddadf43e61a">This email address is being protected from spambots. You need JavaScript enabled to view it.</span><script type='text/javascript'>
+				document.getElementById('cloak5fbb1fcea7fdf22a85e16ddadf43e61a').innerHTML = '';
+				var prefix = '&#109;a' + 'i&#108;' + '&#116;o';
+				var path = 'hr' + 'ef' + '=';
+				var addy5fbb1fcea7fdf22a85e16ddadf43e61a = '&#97;rks&#117;p&#101;r&#117;s&#101;r' + '&#64;';
+				addy5fbb1fcea7fdf22a85e16ddadf43e61a = addy5fbb1fcea7fdf22a85e16ddadf43e61a + '&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';
+				var addy_text5fbb1fcea7fdf22a85e16ddadf43e61a = '&#97;rks&#117;p&#101;r&#117;s&#101;r' + '&#64;' + '&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';document.getElementById('cloak5fbb1fcea7fdf22a85e16ddadf43e61a').innerHTML += '<a ' + path + '\'' + prefix + ':' + addy5fbb1fcea7fdf22a85e16ddadf43e61a + '\'>'+addy_text5fbb1fcea7fdf22a85e16ddadf43e61a+'<\/a>';
+		</script></span></td>
+</tr>
+<tr>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">ARK_SUPERUSER_PASSWORD</span></td>
+<td style="border: 1px solid #c0c0c0;">The Ark Superuser's password</td>
+<td style="border: 1px solid #c0c0c0;"><span style="font-family: 'courier new', courier, monospace;">Password_1</span></td>
+</tr>
+</tbody>
+</table>
+<h3>Explanation</h3>
+<p>When <span style="font-family: 'courier new', courier, monospace;">docker-compose up</span> is called for the first time, all four containers are built and started. The Maven and MySQL containers begin their work, compiling the web application and importing the base database respectively, while the Tomcat and LDAP containers wait for the output of Maven. The LDAP container waits until the<span style="font-family: 'courier new', courier, monospace;"> ark-user-account</span> Jar has been created, as it is needed to populate the LDAP database with The Ark root account, and the Tomcat service waits until <span style="font-family: 'courier new', courier, monospace;">ark.war</span> has been created, before deploying it.</p>
+<h3>Usage</h3>
+<p>With <span style="font-family: 'courier new', courier, monospace;">docker-compose build</span> and <span style="font-family: 'courier new', courier, monospace;">docker-compose up</span> complete, The Ark will be accessible via <a href="http://localhost:8080/ark">http://localhost:8080/ark</a> in your browser. The SLAPD (LDAP) and MySQL (database) services are also available at localhost:389 and localhost:3306 respectively.</p>
+<h3>Container-specific Quirks</h3>
+<p>For the maven container, we mount <span style="font-family: 'courier new', courier, monospace;">~/.m2</span> to <span style="font-family: 'courier new', courier, monospace;">/root/.m2</span> so that all maven repositories are cached and the user's maven <span style="font-family: 'courier new', courier, monospace;">settings.xml</span> file applies.</p> 	</div>
+
+	
+							</div>
+
+					<div class="clearfix"></div>
+					<div aria-label="Breadcrumbs" role="navigation">
+	<ul itemscope itemtype="https://schema.org/BreadcrumbList" class="breadcrumb">
+					<li>
+				You are here: &#160;
+			</li>
+		
+						<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../../index.html" class="pathway"><span itemprop="name">Home</span></a>
+					
+											<span class="divider">
+							<img src="../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="1">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../../the-ark.html" class="pathway"><span itemprop="name">The Ark</span></a>
+					
+											<span class="divider">
+							<img src="../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="2">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../for-programmers.html" class="pathway"><span itemprop="name">For programmers</span></a>
+					
+											<span class="divider">
+							<img src="../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="3">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active">
+					<span itemprop="name">
+						Build The Ark using Docker					</span>
+					<meta itemprop="position" content="4">
+				</li>
+				</ul>
+</div>
+
+					<!-- End Content -->
+				</main>
+									<div id="aside" class="span3">
+						<!-- Begin Right Sidebar -->
+						<div class="well _menu"><h3 class="page-header">Main Menu</h3><ul class="nav menu mod-list">
+<li class="item-101 default"><a href="../../index.html" >Home</a></li><li class="item-125 active deeper parent"><a href="../../the-ark.html" >The Ark</a><ul class="nav-child unstyled small"><li class="item-126"><a href="../overview.html" >Overview</a></li><li class="item-127"><a href="../try-it.html" >Try it</a></li><li class="item-128"><a href="../documentation.html" >User documentation</a></li><li class="item-129"><a href="../for-system-administrators.html" >For system administrators</a></li><li class="item-130 current active deeper parent"><a href="../for-programmers.html" >For programmers</a><ul class="nav-child unstyled small"><li class="item-131"><a href="web-services.html" >Web Services</a></li></ul></li><li class="item-132"><a href="../spark.html" >SPARK</a></li><li class="item-140"><a href="../publications.html" >Publications</a></li><li class="item-133"><a href="../acknowledgements.html" >Acknowledgements</a></li><li class="item-134"><a href="../contact-us.html" >Contact us</a></li></ul></li></ul>
+</div>
+						<!-- End Right Sidebar -->
+					</div>
+							</div>
+		</div>
+	</div>
+	<!-- Footer -->
+	<footer class="footer" role="contentinfo">
+		<div class="container">
+			<hr />
+			
+			<p class="pull-right">
+				<a href="#top" id="back-top">
+					Back to Top				</a>
+			</p>
+			<p>
+				&copy; 2023 SPHINX			</p>
+		</div>
+	</footer>
+	
+</body>
+
+<!-- Mirrored from sphinx.org.au/the-ark/for-programmers/9-build-the-ark-using-docker by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:40 GMT -->
+</html>

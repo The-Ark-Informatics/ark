@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+
+<!-- Mirrored from sphinx.org.au/the-ark/for-programmers/17-vagrant by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:40 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="utf-8" />
+	<base  />
+	<meta name="keywords" content="University of Melbourne School of Population and Global Health Informatics" />
+	<meta name="description" content="The School of Population and Global Health Informatics Website" />
+	<meta name="generator" content="Joomla! - Open Source Content Management" />
+	<title>Build a VM image using Vagrant</title>
+	<link href="../../templates/protostar/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+	<link href="../../templates/protostar/css/template8374.css?79454ffff00e04053220fdb82f03fe7b" rel="stylesheet" />
+	<link href="../../../fonts.googleapis.com/cssd2d5.css?family=Open+Sans" rel="stylesheet" />
+	<style>
+
+	h1, h2, h3, h4, h5, h6, .site-title {
+		font-family: 'Open Sans', sans-serif;
+	}
+	body.site {
+		border-top: 3px solid #0088cc;
+		background-color: #f4f6f7;
+	}
+	a {
+		color: #0088cc;
+	}
+	.nav-list > .active > a,
+	.nav-list > .active > a:hover,
+	.dropdown-menu li > a:hover,
+	.dropdown-menu .active > a,
+	.dropdown-menu .active > a:hover,
+	.nav-pills > .active > a,
+	.nav-pills > .active > a:hover,
+	.btn-primary {
+		background: #0088cc;
+	}
+	</style>
+	<script src="../../media/jui/js/jquery.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/jui/js/jquery-noconflict8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/jui/js/jquery-migrate.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/system/js/caption8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/jui/js/bootstrap.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../templates/protostar/js/template8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<!--[if lt IE 9]><script src="/media/jui/js/html5.js?79454ffff00e04053220fdb82f03fe7b"></script><![endif]-->
+	<script>
+jQuery(window).on('load',  function() {
+				new JCaption('img.caption');
+			});
+	</script>
+
+</head>
+<body class="site com_content view-article no-layout no-task itemid-130">
+	<!-- Body -->
+	<div class="body" id="top">
+		<div class="container">
+			<!-- Header -->
+			<header class="header" role="banner">
+				<div class="header-inner clearfix">
+					<a class="brand pull-left" href="../../index.html">
+						<img src="../../images/logo.png" alt="SPHINX" />											</a>
+					<div class="header-search pull-right">
+						
+					</div>
+				</div>
+			</header>
+						
+			<div class="row-fluid">
+								<main id="content" role="main" class="span9">
+					<!-- Begin Content -->
+					
+					<div id="system-message-container">
+	</div>
+
+					<div class="item-page" itemscope itemtype="https://schema.org/Article">
+	<meta itemprop="inLanguage" content="en-GB" />
+	
+		
+			<div class="page-header">
+		<h2 itemprop="headline">
+			Build a VM image using Vagrant		</h2>
+							</div>
+					
+		
+	
+	
+		
+								<div itemprop="articleBody">
+		<p>Vagrant is a tool that allows easily configurable, reproducible and portable development environments. It uses configuration files to manage a Virtual Machine (VM), and integrates with tools such as <a href="https://puppetlabs.com/" target="_blank">Puppet</a>&nbsp; or <a href="http://www.ansible.com/" target="_blank">Ansible</a> to provision the VM. We have used Vagrant and Puppet to create a VM on an Ubuntu 14.04 LTS base image, with Tomcat7, SLAPD and MySQL configured to create a ready-to-go Ark server.</p>
+<p>These instructions have been tested on OSX, and Ubuntu Linux. Windows hosts are untested.</p>
+<p>Before attempting to using <em>vagrant-ark</em>, you should be comfortable with the following topics:</p>
+<ul>
+<li>Using a command prompt</li>
+<li>Virtual Machines and Virtualization</li>
+<li>Version Control Systems, specifically git</li>
+</ul>
+<p>The <em>vagrant-ark</em> repository contains a submodule of The Ark Github repository (<a href="https://github.com/The-Ark-Informatics/ark">https://github.com/The-Ark-Informatics/ark</a>), and is pulled down with <strong>git clone --recursive</strong>. If you didn’t clone using the recursive flag, you will need to run <strong>git submodule update --init --recursive</strong> to pull The Ark repository.</p>
+<h3>Prerequisite Software</h3>
+<ul>
+<li><a href="https://www.virtualbox.org/" target="_blank">VirtualBox</a></li>
+<li><a href="https://www.vagrantup.com/" target="_blank">Vagrant</a></li>
+<li><a href="http://git-scm.com/" target="_blank">Git</a></li>
+</ul>
+<h3>Setup</h3>
+<p>Recursively clone the vagrant-ark repository:</p>
+<table style="background-color: #ededed; width: 460px; height: 31px;" cellpadding="5" align="center">
+<tbody>
+<tr>
+<td style="text-align: center;">&nbsp;git clone --recursive <a>https://github.com/The-Ark-Informatics/vagrant-ark.git</a></td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p>Navigate into the vagrant-ark directory, then run the Virtual Machine:</p>
+<table style="background-color: #ededed; width: 144px; height: 46px;" cellpadding="5" align="center">
+<tbody>
+<tr>
+<td style="text-align: center;">
+<div style="text-align: left;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd vagrant-ark</div>
+<div style="text-align: left;">&nbsp;&nbsp; &nbsp;&nbsp; vagrant up</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p>The first time vagrant up is run, Vagrant will automatically provision the VM, installing and configuring all dependencies needed to run The Ark. &nbsp;</p>
+<h3>Usage</h3>
+<p>Once the VM is running, you can SSH into it via the vagrant ssh command from within the project directory. To access The Ark, navigate to&nbsp;<a href="http://192.168.33.10:8080/ark">http://192.168.33.10:8080/ark</a> in your browser.</p>
+<p>For development use, there are two approaches to working with vagrant-ark.</p>
+<ol>
+<li>You can work directly on the code in the submodule, or</li>
+<li>You can work on a copy of The Ark outside of vagrant-ark and copy the compiled WAR into the shared webapps directory.</li>
+</ol>
+<p>For approach 1, the code in src/ark will be recompiled and deployed if the image is provisioned again (i.e with <strong>vagrant up --provision</strong>), however database changes will persist throughout provisions.</p>
+<p>With approach 2, Tomcat will automatically detect when the WAR file in the shared webapps directory has been modified, and will automatically redeploy it.</p>
+<p>You should note that new or modified database patches will <strong>not</strong> be applied using either of the methods above, and should be managed independently.</p>
+<h4>Users and Passwords</h4>
+<p>The username and passwords for the services configured in <em>vagrant-ark</em> are listed below.</p>
+<table border="1" class="GridTable4Accent1" style="border-collapse: collapse;" cellspacing="0" cellpadding="0" align="center">
+<tbody>
+<tr>
+<td style="width: 70.65pt; border-width: 1pt medium 1pt 1pt; border-style: solid none solid solid; border-color: #5b9bd5 -moz-use-text-color #5b9bd5 #5b9bd5; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;" valign="top" width="71"><strong><span style="color: white;">Service</span></strong></td>
+<td style="width: 191.35pt; border-width: 1pt medium; border-style: solid none; border-color: #5b9bd5 -moz-use-text-color; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;" valign="top" width="191"><strong><span style="color: white;">Account/Username</span></strong></td>
+<td style="width: 188.5pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: #5b9bd5 #5b9bd5 #5b9bd5 -moz-use-text-color; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;" valign="top" width="189"><strong><span style="color: white;">Password</span></strong></td>
+</tr>
+<tr>
+<td style="width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;" valign="top" width="71"><strong>The Ark</strong></td>
+<td style="width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;" valign="top" width="191"><span id="cloakfa33d2ff27e90260a49378a483ac7357">This email address is being protected from spambots. You need JavaScript enabled to view it.</span><script type='text/javascript'>
+				document.getElementById('cloakfa33d2ff27e90260a49378a483ac7357').innerHTML = '';
+				var prefix = '&#109;a' + 'i&#108;' + '&#116;o';
+				var path = 'hr' + 'ef' + '=';
+				var addyfa33d2ff27e90260a49378a483ac7357 = '&#97;rks&#117;p&#101;r&#117;s&#101;r' + '&#64;';
+				addyfa33d2ff27e90260a49378a483ac7357 = addyfa33d2ff27e90260a49378a483ac7357 + '&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';
+				var addy_textfa33d2ff27e90260a49378a483ac7357 = '&#97;rks&#117;p&#101;r&#117;s&#101;r' + '&#64;' + '&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';document.getElementById('cloakfa33d2ff27e90260a49378a483ac7357').innerHTML += '<a ' + path + '\'' + prefix + ':' + addyfa33d2ff27e90260a49378a483ac7357 + '\'>'+addy_textfa33d2ff27e90260a49378a483ac7357+'<\/a>';
+		</script></td>
+<td style="width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;" valign="top" width="189">password</td>
+</tr>
+<tr>
+<td style="width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; padding: 0cm 5.4pt;" valign="top" width="71"><strong>Linux User</strong></td>
+<td style="width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;" valign="top" width="191">vagrant</td>
+<td style="width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;" valign="top" width="189">vagrant</td>
+</tr>
+<tr>
+<td style="width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;" valign="top" width="71"><strong>Slapd</strong></td>
+<td style="width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;" valign="top" width="191">cn=admin,dc=the-ark,dc=org,dc=au</td>
+<td style="width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;" valign="top" width="189">password</td>
+</tr>
+<tr>
+<td style="width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; padding: 0cm 5.4pt;" valign="top" width="71"><strong>MySQL</strong></td>
+<td style="width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;" valign="top" width="191">root</td>
+<td style="width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;" valign="top" width="189">password</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p> 	</div>
+
+	
+							</div>
+
+					<div class="clearfix"></div>
+					<div aria-label="Breadcrumbs" role="navigation">
+	<ul itemscope itemtype="https://schema.org/BreadcrumbList" class="breadcrumb">
+					<li>
+				You are here: &#160;
+			</li>
+		
+						<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../../index.html" class="pathway"><span itemprop="name">Home</span></a>
+					
+											<span class="divider">
+							<img src="../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="1">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../../the-ark.html" class="pathway"><span itemprop="name">The Ark</span></a>
+					
+											<span class="divider">
+							<img src="../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="2">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../for-programmers.html" class="pathway"><span itemprop="name">For programmers</span></a>
+					
+											<span class="divider">
+							<img src="../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="3">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active">
+					<span itemprop="name">
+						Build a VM image using Vagrant					</span>
+					<meta itemprop="position" content="4">
+				</li>
+				</ul>
+</div>
+
+					<!-- End Content -->
+				</main>
+									<div id="aside" class="span3">
+						<!-- Begin Right Sidebar -->
+						<div class="well _menu"><h3 class="page-header">Main Menu</h3><ul class="nav menu mod-list">
+<li class="item-101 default"><a href="../../index.html" >Home</a></li><li class="item-125 active deeper parent"><a href="../../the-ark.html" >The Ark</a><ul class="nav-child unstyled small"><li class="item-126"><a href="../overview.html" >Overview</a></li><li class="item-127"><a href="../try-it.html" >Try it</a></li><li class="item-128"><a href="../documentation.html" >User documentation</a></li><li class="item-129"><a href="../for-system-administrators.html" >For system administrators</a></li><li class="item-130 current active deeper parent"><a href="../for-programmers.html" >For programmers</a><ul class="nav-child unstyled small"><li class="item-131"><a href="web-services.html" >Web Services</a></li></ul></li><li class="item-132"><a href="../spark.html" >SPARK</a></li><li class="item-140"><a href="../publications.html" >Publications</a></li><li class="item-133"><a href="../acknowledgements.html" >Acknowledgements</a></li><li class="item-134"><a href="../contact-us.html" >Contact us</a></li></ul></li></ul>
+</div>
+						<!-- End Right Sidebar -->
+					</div>
+							</div>
+		</div>
+	</div>
+	<!-- Footer -->
+	<footer class="footer" role="contentinfo">
+		<div class="container">
+			<hr />
+			
+			<p class="pull-right">
+				<a href="#top" id="back-top">
+					Back to Top				</a>
+			</p>
+			<p>
+				&copy; 2023 SPHINX			</p>
+		</div>
+	</footer>
+	
+</body>
+
+<!-- Mirrored from sphinx.org.au/the-ark/for-programmers/17-vagrant by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:40 GMT -->
+</html>

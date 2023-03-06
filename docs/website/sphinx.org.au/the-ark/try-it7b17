@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generator="Joomla! - Open Source Content Management" -->
+<feed xmlns="http://www.w3.org/2005/Atom"  xml:lang="en-gb">
+	<title type="text">Try it</title>
+	<subtitle type="text">The School of Population and Global Health Informatics Website</subtitle>
+	<link rel="alternate" type="text/html" href="https://sphinx.org.au"/>
+	<id>https://sphinx.org.au/the-ark/try-it</id>
+	<updated>2023-03-03T14:19:13+11:00</updated>
+	<author>
+		<name>SPHINX</name>
+	</author>
+	<generator uri="https://www.joomla.org">Joomla! - Open Source Content Management</generator>
+	<link rel="self" type="application/atom+xml" href="https://sphinx.org.au/the-ark/try-it?format=feed&amp;type=atom"/>
+	<entry>
+		<title>Preface</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/try-it/3-preface"/>
+		<published>2017-11-10T04:48:34+11:00</published>
+		<updated>2017-11-10T04:48:34+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/try-it/3-preface</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;There are two easy ways to try The Ark: 1) using a demonstration instance hosted at The University of Melbourne, or 2) using Virtual Machine software to get a local installation of The Ark that is ready to use &quot;out of the box&quot;. These pages provide instruction on how to use these methods to explore The Ark.&lt;/p&gt;
+&lt;p&gt;The pre-configured installations of The Ark referenced below are based on a &lt;em&gt;&lt;strong&gt;development&lt;/strong&gt;&lt;/em&gt; build of the software. As such, the demonstrations represent programming work-in-progress, and will contain bugs that have been resolved in the next major release. New demonstrations based on the latest &lt;em&gt;&lt;strong&gt;stable&lt;/strong&gt;&lt;/em&gt; version of The Ark will be made available with the release of version 1.2b in Q1 2017.&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;There are two easy ways to try The Ark: 1) using a demonstration instance hosted at The University of Melbourne, or 2) using Virtual Machine software to get a local installation of The Ark that is ready to use &quot;out of the box&quot;. These pages provide instruction on how to use these methods to explore The Ark.&lt;/p&gt;
+&lt;p&gt;The pre-configured installations of The Ark referenced below are based on a &lt;em&gt;&lt;strong&gt;development&lt;/strong&gt;&lt;/em&gt; build of the software. As such, the demonstrations represent programming work-in-progress, and will contain bugs that have been resolved in the next major release. New demonstrations based on the latest &lt;em&gt;&lt;strong&gt;stable&lt;/strong&gt;&lt;/em&gt; version of The Ark will be made available with the release of version 1.2b in Q1 2017.&lt;/p&gt;</content>
+		<category term="Try The Ark" />
+	</entry>
+	<entry>
+		<title>Try the public demonstration</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/try-it/6-try-the-public-demonstration"/>
+		<published>2017-11-10T04:32:40+11:00</published>
+		<updated>2017-11-10T04:32:40+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/try-it/6-try-the-public-demonstration</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;{emailcloak=off}&lt;/p&gt;
+&lt;p&gt;In a web browser, navigate to the public demonstration instance of The Ark at &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;https://demo.sphinx.org.au/ark&lt;/a&gt;. This instance is hosted by The University of Melbourne and contains two example studies, &lt;strong&gt;Demo 1&lt;/strong&gt; and &lt;strong&gt;Demo 2&lt;/strong&gt;, each comprising a variety of synthetic data. Two user accounts have been setup with login credentials, and access to the example studies, as follows.&lt;/p&gt;
+&lt;table border=&quot;1&quot; class=&quot;GridTable4Accent1&quot; style=&quot;margin-left: auto; margin-right: auto;&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 230px; border-width: 1pt medium; border-style: solid none; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Username&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: 1pt medium; border-style: solid none; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Password&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: 1pt medium; border-style: solid none; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Access To Study&lt;br /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: 1pt medium; border-style: solid none; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Access Level&lt;br /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 230px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;demo-readonly@ark.org.au&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;ReadOnly@1&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;Demo 1&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;Read only&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 230px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;demo-studyadmin@ark.org.au&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;StudyAdmin@1&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;Demo 2&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;Administrator&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;The ability to upload data files (including file attachments) has been disabled in the demonstration instance. User management has also been disabled.&lt;/p&gt;
+&lt;p&gt;Changes to the configuration of &lt;strong&gt;Demo 2&lt;/strong&gt; and its data are reset daily.&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;{emailcloak=off}&lt;/p&gt;
+&lt;p&gt;In a web browser, navigate to the public demonstration instance of The Ark at &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;https://demo.sphinx.org.au/ark&lt;/a&gt;. This instance is hosted by The University of Melbourne and contains two example studies, &lt;strong&gt;Demo 1&lt;/strong&gt; and &lt;strong&gt;Demo 2&lt;/strong&gt;, each comprising a variety of synthetic data. Two user accounts have been setup with login credentials, and access to the example studies, as follows.&lt;/p&gt;
+&lt;table border=&quot;1&quot; class=&quot;GridTable4Accent1&quot; style=&quot;margin-left: auto; margin-right: auto;&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 230px; border-width: 1pt medium; border-style: solid none; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Username&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: 1pt medium; border-style: solid none; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Password&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: 1pt medium; border-style: solid none; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Access To Study&lt;br /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: 1pt medium; border-style: solid none; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Access Level&lt;br /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 230px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;demo-readonly@ark.org.au&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;ReadOnly@1&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;Demo 1&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;Read only&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 230px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;demo-studyadmin@ark.org.au&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;StudyAdmin@1&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;Demo 2&lt;/td&gt;
+&lt;td style=&quot;width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot;&gt;Administrator&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;The ability to upload data files (including file attachments) has been disabled in the demonstration instance. User management has also been disabled.&lt;/p&gt;
+&lt;p&gt;Changes to the configuration of &lt;strong&gt;Demo 2&lt;/strong&gt; and its data are reset daily.&lt;/p&gt;</content>
+		<category term="Try The Ark" />
+	</entry>
+	<entry>
+		<title>Setup a pre-configured Virtual Machine</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/try-it/18-setup-virtual-machine"/>
+		<published>2016-03-07T05:34:20+11:00</published>
+		<updated>2016-03-07T05:34:20+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/try-it/18-setup-virtual-machine</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;{emailcloak=off}&lt;/p&gt;
+&lt;h3&gt;Preparation&lt;/h3&gt;
+&lt;p&gt;The virtual machine setup requires a host computer with a minimum of 4GB RAM, 10GB free disk space, and a 64-bit Windows, OS X or Linux operating system.&lt;/p&gt;
+&lt;p&gt;We provide an MD5 checksum for the virtual appliance so that users can verify the integrity of their downloads. To calculate the MD5 checksum of a downloaded file, e.g. &lt;strong&gt;The Ark - demo.ova&lt;/strong&gt;, launch a terminal and use commands of this form:&lt;/p&gt;
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 100px;&quot;&gt;Linux&lt;/td&gt;
+&lt;td&gt;&lt;span style=&quot;font-family: 'courier new', courier;&quot;&gt;md5sum 'The Ark - demo.ova'&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;OS X&lt;/td&gt;
+&lt;td&gt;&lt;span style=&quot;font-family: 'courier new', courier;&quot;&gt;md5 &lt;span style=&quot;font-family: 'courier new',courier;&quot;&gt;'The Ark - demo.ova'&lt;/span&gt;&lt;br /&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Windows&lt;/td&gt;
+&lt;td&gt;&lt;span style=&quot;font-family: 'courier new', courier;&quot;&gt;CertUtil -hashfile &quot;&lt;span style=&quot;font-family: 'courier new',courier;&quot;&gt;The Ark - demo.ova&quot;&lt;/span&gt; MD5&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</summary>
+		<content type="html">&lt;p&gt;{emailcloak=off}&lt;/p&gt;
+&lt;h3&gt;Preparation&lt;/h3&gt;
+&lt;p&gt;The virtual machine setup requires a host computer with a minimum of 4GB RAM, 10GB free disk space, and a 64-bit Windows, OS X or Linux operating system.&lt;/p&gt;
+&lt;p&gt;We provide an MD5 checksum for the virtual appliance so that users can verify the integrity of their downloads. To calculate the MD5 checksum of a downloaded file, e.g. &lt;strong&gt;The Ark - demo.ova&lt;/strong&gt;, launch a terminal and use commands of this form:&lt;/p&gt;
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 100px;&quot;&gt;Linux&lt;/td&gt;
+&lt;td&gt;&lt;span style=&quot;font-family: 'courier new', courier;&quot;&gt;md5sum 'The Ark - demo.ova'&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;OS X&lt;/td&gt;
+&lt;td&gt;&lt;span style=&quot;font-family: 'courier new', courier;&quot;&gt;md5 &lt;span style=&quot;font-family: 'courier new',courier;&quot;&gt;'The Ark - demo.ova'&lt;/span&gt;&lt;br /&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Windows&lt;/td&gt;
+&lt;td&gt;&lt;span style=&quot;font-family: 'courier new', courier;&quot;&gt;CertUtil -hashfile &quot;&lt;span style=&quot;font-family: 'courier new',courier;&quot;&gt;The Ark - demo.ova&quot;&lt;/span&gt; MD5&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</content>
+		<category term="Try The Ark" />
+	</entry>
+	<entry>
+		<title>Start using The Ark</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/try-it/2-start-using-the-ark"/>
+		<published>2017-11-12T23:18:01+11:00</published>
+		<updated>2017-11-12T23:18:01+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/try-it/2-start-using-the-ark</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;{emailcloak=off}&lt;/p&gt;
+&lt;p&gt;This example assumes that the user is logged into &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot;&gt;demo.sphinx.org.au&lt;/a&gt; using the &lt;strong&gt;demo-studyadmin@ark.org.au&lt;/strong&gt; account. The guide is general, however, and applies also to the pre-configured VM, which is based upon The Ark at &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot;&gt;demo.sphinx.org.au&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Note:&lt;/em&gt; &lt;/strong&gt;The Ark does not support navigation using the browser’s “back” and “forward” buttons; use The Ark’s own user interface to navigate between screens of the system.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt; From the study list, select a study, e.g. &lt;strong&gt;Demo 2&lt;/strong&gt;, by clicking on the study name.This brings &lt;strong&gt;Demo 2&lt;/strong&gt; into context and enables the Study, Subject, Datasets, LIMS, Reporting, Work Tracking and Global Search top-level tabs:
+&lt;ul&gt;
+&lt;li&gt;Study tab – Study data management, including setup of the study meta-data, ID number schemes, study components (i.e. trackable consent items), and subject custom fields/categories. Study calendars are also configured here.&lt;/li&gt;
+&lt;li&gt;Subject tab – Subject-related data management, including search capabilities, and the ability to create/read/update/delete: standard demographic data; subject custom field data; contact (telephone, address, email) and consent information; correspondences; file attachments (e.g. scanned documents); research datasets (e.g. questionnaire responses); biospecimen data; and pedigree information.&lt;/li&gt;
+&lt;li&gt;Datasets tab – Management of research dataset definitions, including the setup of data dictionaries and data dictionary categories, and definition of research dataset templates using these fields and categories.&lt;/li&gt;
+&lt;li&gt;LIMS tab – Laboratory information management, including the specification of biospecimen inventories (sites, freezers, racks, boxes), in addition to custom fields/categories for biocollection and biospecimen records.&lt;/li&gt;
+&lt;li&gt;Reporting tab – Generation of study reports, and configurable data extractions that are capable of sourcing data from all major data modules of The Ark.&lt;/li&gt;
+&lt;li&gt;Work Tracking tab – Management of a study's researcher meta-data, research-related tasks, and their associated costs. The Work Tracking module allows researchers to define billable item types for their studies, and then record work requests (i.e. items of work) which comprise one or more billable items. The status of work requests, and their billing, can be tracked over time.&lt;/li&gt;
+&lt;li&gt;Global Search tab – A data search facility that operates over subject and biospecimen data across all studies available to the user.&lt;/li&gt;
+&lt;/ul&gt;
+Clicking the top-level tabs will show the sub-tabs assigned to them.&lt;/li&gt;
+&lt;li&gt;Click the top-level &lt;strong&gt;Subject&lt;/strong&gt; tab.&lt;/li&gt;
+&lt;li&gt;Click Subject UID &lt;strong&gt;A0001&lt;/strong&gt; in the study’s subject list. The top of the screen now shows the study (&lt;strong&gt;Demo 1&lt;/strong&gt;) and the subject (&lt;strong&gt;A0001&lt;/strong&gt;) in context.&lt;/li&gt;
+&lt;li&gt;Each of the &lt;strong&gt;Subject&lt;/strong&gt; sub-tabs will now manage and display data with respect to Subject &lt;strong&gt;A0001&lt;/strong&gt; in Study &lt;strong&gt;Demo study&lt;/strong&gt;. Click these tabs to explore the data management functionality with respect to a single subject. To try The Ark's study-level functionality, click the top-level tabs (e.g. Study, Datasets, LIMS, Reporting, etc.) and their sub-tabs.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Refer to The Ark's &lt;a href=&quot;https://sphinx.org.au/the-ark/documentation&quot;&gt;documentation page&lt;/a&gt; for more information.&lt;/p&gt;
+&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;https://sphinx.org.au/images/ark/The-Ark-VirtualBox.png&quot; alt=&quot;The Ark VirtualBox&quot; width=&quot;650&quot; height=&quot;527&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;em&gt;&lt;strong&gt;&lt;span style=&quot;font-size: 8pt;&quot;&gt;The Ark running within Oracle Virtual Box&lt;/span&gt;&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;{emailcloak=off}&lt;/p&gt;
+&lt;p&gt;This example assumes that the user is logged into &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot;&gt;demo.sphinx.org.au&lt;/a&gt; using the &lt;strong&gt;demo-studyadmin@ark.org.au&lt;/strong&gt; account. The guide is general, however, and applies also to the pre-configured VM, which is based upon The Ark at &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot;&gt;demo.sphinx.org.au&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Note:&lt;/em&gt; &lt;/strong&gt;The Ark does not support navigation using the browser’s “back” and “forward” buttons; use The Ark’s own user interface to navigate between screens of the system.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt; From the study list, select a study, e.g. &lt;strong&gt;Demo 2&lt;/strong&gt;, by clicking on the study name.This brings &lt;strong&gt;Demo 2&lt;/strong&gt; into context and enables the Study, Subject, Datasets, LIMS, Reporting, Work Tracking and Global Search top-level tabs:
+&lt;ul&gt;
+&lt;li&gt;Study tab – Study data management, including setup of the study meta-data, ID number schemes, study components (i.e. trackable consent items), and subject custom fields/categories. Study calendars are also configured here.&lt;/li&gt;
+&lt;li&gt;Subject tab – Subject-related data management, including search capabilities, and the ability to create/read/update/delete: standard demographic data; subject custom field data; contact (telephone, address, email) and consent information; correspondences; file attachments (e.g. scanned documents); research datasets (e.g. questionnaire responses); biospecimen data; and pedigree information.&lt;/li&gt;
+&lt;li&gt;Datasets tab – Management of research dataset definitions, including the setup of data dictionaries and data dictionary categories, and definition of research dataset templates using these fields and categories.&lt;/li&gt;
+&lt;li&gt;LIMS tab – Laboratory information management, including the specification of biospecimen inventories (sites, freezers, racks, boxes), in addition to custom fields/categories for biocollection and biospecimen records.&lt;/li&gt;
+&lt;li&gt;Reporting tab – Generation of study reports, and configurable data extractions that are capable of sourcing data from all major data modules of The Ark.&lt;/li&gt;
+&lt;li&gt;Work Tracking tab – Management of a study's researcher meta-data, research-related tasks, and their associated costs. The Work Tracking module allows researchers to define billable item types for their studies, and then record work requests (i.e. items of work) which comprise one or more billable items. The status of work requests, and their billing, can be tracked over time.&lt;/li&gt;
+&lt;li&gt;Global Search tab – A data search facility that operates over subject and biospecimen data across all studies available to the user.&lt;/li&gt;
+&lt;/ul&gt;
+Clicking the top-level tabs will show the sub-tabs assigned to them.&lt;/li&gt;
+&lt;li&gt;Click the top-level &lt;strong&gt;Subject&lt;/strong&gt; tab.&lt;/li&gt;
+&lt;li&gt;Click Subject UID &lt;strong&gt;A0001&lt;/strong&gt; in the study’s subject list. The top of the screen now shows the study (&lt;strong&gt;Demo 1&lt;/strong&gt;) and the subject (&lt;strong&gt;A0001&lt;/strong&gt;) in context.&lt;/li&gt;
+&lt;li&gt;Each of the &lt;strong&gt;Subject&lt;/strong&gt; sub-tabs will now manage and display data with respect to Subject &lt;strong&gt;A0001&lt;/strong&gt; in Study &lt;strong&gt;Demo study&lt;/strong&gt;. Click these tabs to explore the data management functionality with respect to a single subject. To try The Ark's study-level functionality, click the top-level tabs (e.g. Study, Datasets, LIMS, Reporting, etc.) and their sub-tabs.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Refer to The Ark's &lt;a href=&quot;https://sphinx.org.au/the-ark/documentation&quot;&gt;documentation page&lt;/a&gt; for more information.&lt;/p&gt;
+&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;https://sphinx.org.au/images/ark/The-Ark-VirtualBox.png&quot; alt=&quot;The Ark VirtualBox&quot; width=&quot;650&quot; height=&quot;527&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;em&gt;&lt;strong&gt;&lt;span style=&quot;font-size: 8pt;&quot;&gt;The Ark running within Oracle Virtual Box&lt;/span&gt;&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;</content>
+		<category term="Try The Ark" />
+	</entry>
+</feed>

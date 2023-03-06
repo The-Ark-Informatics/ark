@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generator="Joomla! - Open Source Content Management" -->
+<feed xmlns="http://www.w3.org/2005/Atom"  xml:lang="en-gb">
+	<title type="text">For programmers</title>
+	<subtitle type="text">The School of Population and Global Health Informatics Website</subtitle>
+	<link rel="alternate" type="text/html" href="https://sphinx.org.au"/>
+	<id>https://sphinx.org.au/the-ark/for-programmers</id>
+	<updated>2023-03-03T14:25:22+11:00</updated>
+	<author>
+		<name>SPHINX</name>
+	</author>
+	<generator uri="https://www.joomla.org">Joomla! - Open Source Content Management</generator>
+	<link rel="self" type="application/atom+xml" href="https://sphinx.org.au/the-ark/for-programmers?format=feed&amp;type=atom"/>
+	<entry>
+		<title>Get the source code</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/for-programmers/19-get-the-source-code"/>
+		<published>2016-03-07T03:16:58+11:00</published>
+		<updated>2016-03-07T03:16:58+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/for-programmers/19-get-the-source-code</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;The Ark's source code and documentation is hosted by GitHub at &lt;a href=&quot;https://github.com/The-Ark-Informatics/ark&quot; target=&quot;_blank&quot;&gt;this location&lt;/a&gt;. To check out the repository using &lt;a href=&quot;https://git-scm.com/&quot; target=&quot;_blank&quot;&gt;Git&lt;/a&gt;, issue the following command:&lt;/p&gt;
+&lt;table style=&quot;background-color: #ededed;&quot; cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: left;&quot;&gt;git clone &lt;a href=&quot;https://github.com/The-Ark-Informatics/ark.git&quot;&gt;https://github.com/The-Ark-Informatics/ark.git&lt;/a&gt; TheArk&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;The source code can be modified and redistributed under the terms of the &lt;a href=&quot;http://www.gnu.org/licenses/gpl-3.0.en.html&quot; target=&quot;_blank&quot;&gt;GNU GPL v3 license&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The Ark is built upon open source libraries and frameworks including Apache &lt;a href=&quot;http://wicket.apache.org/&quot; target=&quot;_blank&quot;&gt;Wicket&lt;/a&gt; and &lt;a href=&quot;http://shiro.apache.org/&quot; target=&quot;_blank&quot;&gt;Shiro&lt;/a&gt;, &lt;a href=&quot;https://spring.io/&quot; target=&quot;_blank&quot;&gt;Spring&lt;/a&gt; and &lt;a href=&quot;http://hibernate.org/&quot;&gt;Hibernate&lt;/a&gt;. Pedigree visualisation is provided by integration with &lt;a href=&quot;http://madeline.med.umich.edu/madeline/&quot; target=&quot;_blank&quot;&gt;Madeline&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To become a member of the developer team and contribute to the project, please email &lt;a href=&quot;mailto:travis.endersby@uwa.edu.au&quot;&gt;Travis Endersby&lt;/a&gt; or &lt;a href=&quot;mailto:adrianb@unimelb.edu.au&quot;&gt;Adrian Bickerstaffe&lt;/a&gt;.&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;The Ark's source code and documentation is hosted by GitHub at &lt;a href=&quot;https://github.com/The-Ark-Informatics/ark&quot; target=&quot;_blank&quot;&gt;this location&lt;/a&gt;. To check out the repository using &lt;a href=&quot;https://git-scm.com/&quot; target=&quot;_blank&quot;&gt;Git&lt;/a&gt;, issue the following command:&lt;/p&gt;
+&lt;table style=&quot;background-color: #ededed;&quot; cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: left;&quot;&gt;git clone &lt;a href=&quot;https://github.com/The-Ark-Informatics/ark.git&quot;&gt;https://github.com/The-Ark-Informatics/ark.git&lt;/a&gt; TheArk&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;The source code can be modified and redistributed under the terms of the &lt;a href=&quot;http://www.gnu.org/licenses/gpl-3.0.en.html&quot; target=&quot;_blank&quot;&gt;GNU GPL v3 license&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The Ark is built upon open source libraries and frameworks including Apache &lt;a href=&quot;http://wicket.apache.org/&quot; target=&quot;_blank&quot;&gt;Wicket&lt;/a&gt; and &lt;a href=&quot;http://shiro.apache.org/&quot; target=&quot;_blank&quot;&gt;Shiro&lt;/a&gt;, &lt;a href=&quot;https://spring.io/&quot; target=&quot;_blank&quot;&gt;Spring&lt;/a&gt; and &lt;a href=&quot;http://hibernate.org/&quot;&gt;Hibernate&lt;/a&gt;. Pedigree visualisation is provided by integration with &lt;a href=&quot;http://madeline.med.umich.edu/madeline/&quot; target=&quot;_blank&quot;&gt;Madeline&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To become a member of the developer team and contribute to the project, please email &lt;a href=&quot;mailto:travis.endersby@uwa.edu.au&quot;&gt;Travis Endersby&lt;/a&gt; or &lt;a href=&quot;mailto:adrianb@unimelb.edu.au&quot;&gt;Adrian Bickerstaffe&lt;/a&gt;.&lt;/p&gt;</content>
+		<category term="For programmers" />
+	</entry>
+	<entry>
+		<title>Build a VM image using Vagrant</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/for-programmers/17-vagrant"/>
+		<published>2016-03-21T23:56:41+11:00</published>
+		<updated>2016-03-21T23:56:41+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/for-programmers/17-vagrant</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;Vagrant is a tool that allows easily configurable, reproducible and portable development environments. It uses configuration files to manage a Virtual Machine (VM), and integrates with tools such as &lt;a href=&quot;https://puppetlabs.com/&quot; target=&quot;_blank&quot;&gt;Puppet&lt;/a&gt;&amp;nbsp; or &lt;a href=&quot;http://www.ansible.com/&quot; target=&quot;_blank&quot;&gt;Ansible&lt;/a&gt; to provision the VM. We have used Vagrant and Puppet to create a VM on an Ubuntu 14.04 LTS base image, with Tomcat7, SLAPD and MySQL configured to create a ready-to-go Ark server.&lt;/p&gt;
+&lt;p&gt;These instructions have been tested on OSX, and Ubuntu Linux. Windows hosts are untested.&lt;/p&gt;
+&lt;p&gt;Before attempting to using &lt;em&gt;vagrant-ark&lt;/em&gt;, you should be comfortable with the following topics:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Using a command prompt&lt;/li&gt;
+&lt;li&gt;Virtual Machines and Virtualization&lt;/li&gt;
+&lt;li&gt;Version Control Systems, specifically git&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;vagrant-ark&lt;/em&gt; repository contains a submodule of The Ark Github repository (&lt;a href=&quot;https://github.com/The-Ark-Informatics/ark&quot;&gt;https://github.com/The-Ark-Informatics/ark&lt;/a&gt;), and is pulled down with &lt;strong&gt;git clone --recursive&lt;/strong&gt;. If you didn’t clone using the recursive flag, you will need to run &lt;strong&gt;git submodule update --init --recursive&lt;/strong&gt; to pull The Ark repository.&lt;/p&gt;
+&lt;h3&gt;Prerequisite Software&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.virtualbox.org/&quot; target=&quot;_blank&quot;&gt;VirtualBox&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.vagrantup.com/&quot; target=&quot;_blank&quot;&gt;Vagrant&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://git-scm.com/&quot; target=&quot;_blank&quot;&gt;Git&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Setup&lt;/h3&gt;
+&lt;p&gt;Recursively clone the vagrant-ark repository:&lt;/p&gt;
+&lt;table style=&quot;background-color: #ededed; width: 460px; height: 31px;&quot; cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: center;&quot;&gt;&amp;nbsp;git clone --recursive &lt;a&gt;https://github.com/The-Ark-Informatics/vagrant-ark.git&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Navigate into the vagrant-ark directory, then run the Virtual Machine:&lt;/p&gt;
+&lt;table style=&quot;background-color: #ededed; width: 144px; height: 46px;&quot; cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: center;&quot;&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; cd vagrant-ark&lt;/div&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; vagrant up&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;The first time vagrant up is run, Vagrant will automatically provision the VM, installing and configuring all dependencies needed to run The Ark. &amp;nbsp;&lt;/p&gt;
+&lt;h3&gt;Usage&lt;/h3&gt;
+&lt;p&gt;Once the VM is running, you can SSH into it via the vagrant ssh command from within the project directory. To access The Ark, navigate to&amp;nbsp;&lt;a href=&quot;http://192.168.33.10:8080/ark&quot;&gt;http://192.168.33.10:8080/ark&lt;/a&gt; in your browser.&lt;/p&gt;
+&lt;p&gt;For development use, there are two approaches to working with vagrant-ark.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;You can work directly on the code in the submodule, or&lt;/li&gt;
+&lt;li&gt;You can work on a copy of The Ark outside of vagrant-ark and copy the compiled WAR into the shared webapps directory.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For approach 1, the code in src/ark will be recompiled and deployed if the image is provisioned again (i.e with &lt;strong&gt;vagrant up --provision&lt;/strong&gt;), however database changes will persist throughout provisions.&lt;/p&gt;
+&lt;p&gt;With approach 2, Tomcat will automatically detect when the WAR file in the shared webapps directory has been modified, and will automatically redeploy it.&lt;/p&gt;
+&lt;p&gt;You should note that new or modified database patches will &lt;strong&gt;not&lt;/strong&gt; be applied using either of the methods above, and should be managed independently.&lt;/p&gt;
+&lt;h4&gt;Users and Passwords&lt;/h4&gt;
+&lt;p&gt;The username and passwords for the services configured in &lt;em&gt;vagrant-ark&lt;/em&gt; are listed below.&lt;/p&gt;
+&lt;table border=&quot;1&quot; class=&quot;GridTable4Accent1&quot; style=&quot;border-collapse: collapse;&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: 1pt medium 1pt 1pt; border-style: solid none solid solid; border-color: #5b9bd5 -moz-use-text-color #5b9bd5 #5b9bd5; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Service&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: 1pt medium; border-style: solid none; border-color: #5b9bd5 -moz-use-text-color; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Account/Username&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: #5b9bd5 #5b9bd5 #5b9bd5 -moz-use-text-color; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Password&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;The Ark&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;&lt;a href=&quot;mailto:arksuperuser@ark.org.au&quot;&gt;arksuperuser@ark.org.au&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;password&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;Linux User&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;vagrant&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;vagrant&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;Slapd&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;cn=admin,dc=the-ark,dc=org,dc=au&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;password&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;MySQL&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;root&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;password&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;Vagrant is a tool that allows easily configurable, reproducible and portable development environments. It uses configuration files to manage a Virtual Machine (VM), and integrates with tools such as &lt;a href=&quot;https://puppetlabs.com/&quot; target=&quot;_blank&quot;&gt;Puppet&lt;/a&gt;&amp;nbsp; or &lt;a href=&quot;http://www.ansible.com/&quot; target=&quot;_blank&quot;&gt;Ansible&lt;/a&gt; to provision the VM. We have used Vagrant and Puppet to create a VM on an Ubuntu 14.04 LTS base image, with Tomcat7, SLAPD and MySQL configured to create a ready-to-go Ark server.&lt;/p&gt;
+&lt;p&gt;These instructions have been tested on OSX, and Ubuntu Linux. Windows hosts are untested.&lt;/p&gt;
+&lt;p&gt;Before attempting to using &lt;em&gt;vagrant-ark&lt;/em&gt;, you should be comfortable with the following topics:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Using a command prompt&lt;/li&gt;
+&lt;li&gt;Virtual Machines and Virtualization&lt;/li&gt;
+&lt;li&gt;Version Control Systems, specifically git&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;vagrant-ark&lt;/em&gt; repository contains a submodule of The Ark Github repository (&lt;a href=&quot;https://github.com/The-Ark-Informatics/ark&quot;&gt;https://github.com/The-Ark-Informatics/ark&lt;/a&gt;), and is pulled down with &lt;strong&gt;git clone --recursive&lt;/strong&gt;. If you didn’t clone using the recursive flag, you will need to run &lt;strong&gt;git submodule update --init --recursive&lt;/strong&gt; to pull The Ark repository.&lt;/p&gt;
+&lt;h3&gt;Prerequisite Software&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.virtualbox.org/&quot; target=&quot;_blank&quot;&gt;VirtualBox&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.vagrantup.com/&quot; target=&quot;_blank&quot;&gt;Vagrant&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://git-scm.com/&quot; target=&quot;_blank&quot;&gt;Git&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Setup&lt;/h3&gt;
+&lt;p&gt;Recursively clone the vagrant-ark repository:&lt;/p&gt;
+&lt;table style=&quot;background-color: #ededed; width: 460px; height: 31px;&quot; cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: center;&quot;&gt;&amp;nbsp;git clone --recursive &lt;a&gt;https://github.com/The-Ark-Informatics/vagrant-ark.git&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Navigate into the vagrant-ark directory, then run the Virtual Machine:&lt;/p&gt;
+&lt;table style=&quot;background-color: #ededed; width: 144px; height: 46px;&quot; cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: center;&quot;&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; cd vagrant-ark&lt;/div&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;&amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; vagrant up&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;The first time vagrant up is run, Vagrant will automatically provision the VM, installing and configuring all dependencies needed to run The Ark. &amp;nbsp;&lt;/p&gt;
+&lt;h3&gt;Usage&lt;/h3&gt;
+&lt;p&gt;Once the VM is running, you can SSH into it via the vagrant ssh command from within the project directory. To access The Ark, navigate to&amp;nbsp;&lt;a href=&quot;http://192.168.33.10:8080/ark&quot;&gt;http://192.168.33.10:8080/ark&lt;/a&gt; in your browser.&lt;/p&gt;
+&lt;p&gt;For development use, there are two approaches to working with vagrant-ark.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;You can work directly on the code in the submodule, or&lt;/li&gt;
+&lt;li&gt;You can work on a copy of The Ark outside of vagrant-ark and copy the compiled WAR into the shared webapps directory.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For approach 1, the code in src/ark will be recompiled and deployed if the image is provisioned again (i.e with &lt;strong&gt;vagrant up --provision&lt;/strong&gt;), however database changes will persist throughout provisions.&lt;/p&gt;
+&lt;p&gt;With approach 2, Tomcat will automatically detect when the WAR file in the shared webapps directory has been modified, and will automatically redeploy it.&lt;/p&gt;
+&lt;p&gt;You should note that new or modified database patches will &lt;strong&gt;not&lt;/strong&gt; be applied using either of the methods above, and should be managed independently.&lt;/p&gt;
+&lt;h4&gt;Users and Passwords&lt;/h4&gt;
+&lt;p&gt;The username and passwords for the services configured in &lt;em&gt;vagrant-ark&lt;/em&gt; are listed below.&lt;/p&gt;
+&lt;table border=&quot;1&quot; class=&quot;GridTable4Accent1&quot; style=&quot;border-collapse: collapse;&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: 1pt medium 1pt 1pt; border-style: solid none solid solid; border-color: #5b9bd5 -moz-use-text-color #5b9bd5 #5b9bd5; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Service&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: 1pt medium; border-style: solid none; border-color: #5b9bd5 -moz-use-text-color; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Account/Username&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: #5b9bd5 #5b9bd5 #5b9bd5 -moz-use-text-color; background: #5b9bd5 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;&lt;strong&gt;&lt;span style=&quot;color: white;&quot;&gt;Password&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;The Ark&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;&lt;a href=&quot;mailto:arksuperuser@ark.org.au&quot;&gt;arksuperuser@ark.org.au&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;password&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;Linux User&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;vagrant&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;vagrant&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;Slapd&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;cn=admin,dc=the-ark,dc=org,dc=au&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; background: #deeaf6 none repeat scroll 0% 0%; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;password&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;width: 70.65pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color #9cc2e5 #9cc2e5; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;71&quot;&gt;&lt;strong&gt;MySQL&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;width: 191.35pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;191&quot;&gt;root&lt;/td&gt;
+&lt;td style=&quot;width: 188.5pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color #9cc2e5 #9cc2e5 -moz-use-text-color; padding: 0cm 5.4pt;&quot; valign=&quot;top&quot; width=&quot;189&quot;&gt;password&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;</content>
+		<category term="For programmers" />
+	</entry>
+	<entry>
+		<title>Build The Ark using Docker</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/for-programmers/9-build-the-ark-using-docker"/>
+		<published>2016-07-27T00:59:52+10:00</published>
+		<updated>2016-07-27T00:59:52+10:00</updated>
+		<id>https://sphinx.org.au/the-ark/for-programmers/9-build-the-ark-using-docker</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;The &lt;a href=&quot;https://www.docker.com&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Docker&lt;/a&gt; configuration supplied in The Ark repository allows quick and easy building of the system. This configuration has four containers defined; MySQL, LDAP (Slapd), Tomcat and Maven. The containers are integrated using &lt;a href=&quot;https://www.docker.com/products/docker-compose&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Docker Compose&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/em&gt; at present, this process has only been tested and verified to work on Ubuntu 14.04LTS. We are working towards ensuring compatibility with other operating systems such as Microsoft Windows and Apple OSX.&lt;/p&gt;
+&lt;h3&gt;Prerequistite software&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.docker.com/products/docker&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Docker for your operating system (Windows, OSX, Linux)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.docker.com/products/docker-compose&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Docker Compose&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Microsoft Windows and Apple OSX users should download &quot;Docker for Windows&quot; and &quot;Docker for&lt;/p&gt;
+&lt;h3&gt;Usage&lt;/h3&gt;
+&lt;p&gt;Assuming the source code repository has been &lt;a href=&quot;https://sphinx.org.au/index.php?option=com_content&amp;amp;view=article&amp;amp;id=29:get-the-source-code&amp;amp;catid=16:for-programmers&amp;amp;Itemid=134&quot;&gt;checked out using Git&lt;/a&gt; and that the Docker platform is running:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;cd docker/&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose build&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose up&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Extra Commands&lt;/h3&gt;
+&lt;table style=&quot;border: 1px solid #c0c0c0;&quot; cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0; text-align: center; background-color: #f5f5f5;&quot;&gt;&lt;strong&gt;Command&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0; text-align: center; width: 350px; background-color: #f5f5f5;&quot;&gt;&lt;strong&gt;Usage&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose up -d&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;Starts the containers in daemon mode meaning that no logs are printed to &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;STDOUT&lt;/span&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose down -v&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;Tears down all containers, and deletes all of the associated storage volumes.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker exec -it &amp;lt;containername&amp;gt; /bin/bash&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;Starts an interactive bash session within the container named &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;&amp;lt;containername&amp;gt;&lt;/span&gt;&lt;span style=&quot;font-family: andale mono,times;&quot;&gt;.&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;Passwords&lt;/h3&gt;
+&lt;p&gt;The default passwords are contained in &lt;a href=&quot;https://github.com/The-Ark-Informatics/ark/blob/master/docker/env_file&quot;&gt;docker/env_file&lt;/a&gt; and should be modified before the initial &lt;span style=&quot;font-family: andale mono,times;&quot;&gt;docker-compose up&lt;/span&gt; command, as the services are configured in the first run of each container. Passwords can be changed by tearing down all containers and deleting their volumes, however this will also delete any data stored in the MySQL and LDAP containers.&lt;/p&gt;
+&lt;h3&gt;Configuration&lt;/h3&gt;
+&lt;p&gt;Inside &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker/env_file&lt;/span&gt;, the following Environment Variables can be set to configure the software inside each container:&lt;/p&gt;
+&lt;table cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;background-color: #f5f5f5; border: 1px solid #c0c0c0; text-align: center;&quot;&gt;&lt;strong&gt;Environment Variable&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;background-color: #f5f5f5; border: 1px solid #c0c0c0; text-align: center;&quot;&gt;&lt;strong&gt;Usage&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;background-color: #f5f5f5; border: 1px solid #c0c0c0; text-align: center;&quot;&gt;&lt;strong&gt;Default Value&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;MYSQL_ROOT_PASSWORD&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;Changes the MySQL root user password&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;mysql-password&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;SLAPD_PASSWORD&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;The password for the LDAP database&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;slapd-password&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;ARK_USERNAME&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;The Ark Superuser's username&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;arksuperuser@ark.org.au&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;ARK_SUPERUSER_PASSWORD&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;The Ark Superuser's password&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;Password_1&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;Explanation&lt;/h3&gt;
+&lt;p&gt;When &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose up&lt;/span&gt; is called for the first time, all four containers are built and started. The Maven and MySQL containers begin their work, compiling the web application and importing the base database respectively, while the Tomcat and LDAP containers wait for the output of Maven. The LDAP container waits until the&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt; ark-user-account&lt;/span&gt; Jar has been created, as it is needed to populate the LDAP database with The Ark root account, and the Tomcat service waits until &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;ark.war&lt;/span&gt; has been created, before deploying it.&lt;/p&gt;
+&lt;h3&gt;Usage&lt;/h3&gt;
+&lt;p&gt;With &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose build&lt;/span&gt; and &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose up&lt;/span&gt; complete, The Ark will be accessible via &lt;a href=&quot;http://localhost:8080/ark&quot;&gt;http://localhost:8080/ark&lt;/a&gt; in your browser. The SLAPD (LDAP) and MySQL (database) services are also available at localhost:389 and localhost:3306 respectively.&lt;/p&gt;
+&lt;h3&gt;Container-specific Quirks&lt;/h3&gt;
+&lt;p&gt;For the maven container, we mount &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;~/.m2&lt;/span&gt; to &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;/root/.m2&lt;/span&gt; so that all maven repositories are cached and the user's maven &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;settings.xml&lt;/span&gt; file applies.&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;The &lt;a href=&quot;https://www.docker.com&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Docker&lt;/a&gt; configuration supplied in The Ark repository allows quick and easy building of the system. This configuration has four containers defined; MySQL, LDAP (Slapd), Tomcat and Maven. The containers are integrated using &lt;a href=&quot;https://www.docker.com/products/docker-compose&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Docker Compose&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/em&gt; at present, this process has only been tested and verified to work on Ubuntu 14.04LTS. We are working towards ensuring compatibility with other operating systems such as Microsoft Windows and Apple OSX.&lt;/p&gt;
+&lt;h3&gt;Prerequistite software&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.docker.com/products/docker&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Docker for your operating system (Windows, OSX, Linux)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.docker.com/products/docker-compose&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Docker Compose&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Microsoft Windows and Apple OSX users should download &quot;Docker for Windows&quot; and &quot;Docker for&lt;/p&gt;
+&lt;h3&gt;Usage&lt;/h3&gt;
+&lt;p&gt;Assuming the source code repository has been &lt;a href=&quot;https://sphinx.org.au/index.php?option=com_content&amp;amp;view=article&amp;amp;id=29:get-the-source-code&amp;amp;catid=16:for-programmers&amp;amp;Itemid=134&quot;&gt;checked out using Git&lt;/a&gt; and that the Docker platform is running:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;cd docker/&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose build&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose up&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Extra Commands&lt;/h3&gt;
+&lt;table style=&quot;border: 1px solid #c0c0c0;&quot; cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0; text-align: center; background-color: #f5f5f5;&quot;&gt;&lt;strong&gt;Command&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0; text-align: center; width: 350px; background-color: #f5f5f5;&quot;&gt;&lt;strong&gt;Usage&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose up -d&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;Starts the containers in daemon mode meaning that no logs are printed to &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;STDOUT&lt;/span&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose down -v&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;Tears down all containers, and deletes all of the associated storage volumes.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker exec -it &amp;lt;containername&amp;gt; /bin/bash&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;Starts an interactive bash session within the container named &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;&amp;lt;containername&amp;gt;&lt;/span&gt;&lt;span style=&quot;font-family: andale mono,times;&quot;&gt;.&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;Passwords&lt;/h3&gt;
+&lt;p&gt;The default passwords are contained in &lt;a href=&quot;https://github.com/The-Ark-Informatics/ark/blob/master/docker/env_file&quot;&gt;docker/env_file&lt;/a&gt; and should be modified before the initial &lt;span style=&quot;font-family: andale mono,times;&quot;&gt;docker-compose up&lt;/span&gt; command, as the services are configured in the first run of each container. Passwords can be changed by tearing down all containers and deleting their volumes, however this will also delete any data stored in the MySQL and LDAP containers.&lt;/p&gt;
+&lt;h3&gt;Configuration&lt;/h3&gt;
+&lt;p&gt;Inside &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker/env_file&lt;/span&gt;, the following Environment Variables can be set to configure the software inside each container:&lt;/p&gt;
+&lt;table cellpadding=&quot;5&quot; align=&quot;center&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;background-color: #f5f5f5; border: 1px solid #c0c0c0; text-align: center;&quot;&gt;&lt;strong&gt;Environment Variable&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;background-color: #f5f5f5; border: 1px solid #c0c0c0; text-align: center;&quot;&gt;&lt;strong&gt;Usage&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&quot;background-color: #f5f5f5; border: 1px solid #c0c0c0; text-align: center;&quot;&gt;&lt;strong&gt;Default Value&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;MYSQL_ROOT_PASSWORD&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;Changes the MySQL root user password&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;mysql-password&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;SLAPD_PASSWORD&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;The password for the LDAP database&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;slapd-password&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;ARK_USERNAME&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;The Ark Superuser's username&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;arksuperuser@ark.org.au&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;ARK_SUPERUSER_PASSWORD&lt;/span&gt;&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;The Ark Superuser's password&lt;/td&gt;
+&lt;td style=&quot;border: 1px solid #c0c0c0;&quot;&gt;&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;Password_1&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;Explanation&lt;/h3&gt;
+&lt;p&gt;When &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose up&lt;/span&gt; is called for the first time, all four containers are built and started. The Maven and MySQL containers begin their work, compiling the web application and importing the base database respectively, while the Tomcat and LDAP containers wait for the output of Maven. The LDAP container waits until the&lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt; ark-user-account&lt;/span&gt; Jar has been created, as it is needed to populate the LDAP database with The Ark root account, and the Tomcat service waits until &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;ark.war&lt;/span&gt; has been created, before deploying it.&lt;/p&gt;
+&lt;h3&gt;Usage&lt;/h3&gt;
+&lt;p&gt;With &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose build&lt;/span&gt; and &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;docker-compose up&lt;/span&gt; complete, The Ark will be accessible via &lt;a href=&quot;http://localhost:8080/ark&quot;&gt;http://localhost:8080/ark&lt;/a&gt; in your browser. The SLAPD (LDAP) and MySQL (database) services are also available at localhost:389 and localhost:3306 respectively.&lt;/p&gt;
+&lt;h3&gt;Container-specific Quirks&lt;/h3&gt;
+&lt;p&gt;For the maven container, we mount &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;~/.m2&lt;/span&gt; to &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;/root/.m2&lt;/span&gt; so that all maven repositories are cached and the user's maven &lt;span style=&quot;font-family: 'courier new', courier, monospace;&quot;&gt;settings.xml&lt;/span&gt; file applies.&lt;/p&gt;</content>
+		<category term="For programmers" />
+	</entry>
+</feed>

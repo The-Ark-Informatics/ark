@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+
+<!-- Mirrored from sphinx.org.au/the-ark/for-system-administrators by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:27 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="utf-8" />
+	<base  />
+	<meta name="keywords" content="University of Melbourne School of Population and Global Health Informatics" />
+	<meta name="description" content="The School of Population and Global Health Informatics Website" />
+	<meta name="generator" content="Joomla! - Open Source Content Management" />
+	<title>For system administrators</title>
+	<link href="../templates/protostar/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+	<link href="../templates/protostar/css/template8374.css?79454ffff00e04053220fdb82f03fe7b" rel="stylesheet" />
+	<link href="../../fonts.googleapis.com/cssd2d5.css?family=Open+Sans" rel="stylesheet" />
+	<style>
+
+	h1, h2, h3, h4, h5, h6, .site-title {
+		font-family: 'Open Sans', sans-serif;
+	}
+	body.site {
+		border-top: 3px solid #0088cc;
+		background-color: #f4f6f7;
+	}
+	a {
+		color: #0088cc;
+	}
+	.nav-list > .active > a,
+	.nav-list > .active > a:hover,
+	.dropdown-menu li > a:hover,
+	.dropdown-menu .active > a,
+	.dropdown-menu .active > a:hover,
+	.nav-pills > .active > a,
+	.nav-pills > .active > a:hover,
+	.btn-primary {
+		background: #0088cc;
+	}
+	</style>
+	<script src="../media/jui/js/jquery.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../media/jui/js/jquery-noconflict8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../media/jui/js/jquery-migrate.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../media/system/js/caption8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../media/jui/js/bootstrap.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../templates/protostar/js/template8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<!--[if lt IE 9]><script src="/media/jui/js/html5.js?79454ffff00e04053220fdb82f03fe7b"></script><![endif]-->
+	<script>
+jQuery(window).on('load',  function() {
+				new JCaption('img.caption');
+			});
+	</script>
+
+</head>
+<body class="site com_content view-article no-layout no-task itemid-129">
+	<!-- Body -->
+	<div class="body" id="top">
+		<div class="container">
+			<!-- Header -->
+			<header class="header" role="banner">
+				<div class="header-inner clearfix">
+					<a class="brand pull-left" href="../index.html">
+						<img src="../images/logo.png" alt="SPHINX" />											</a>
+					<div class="header-search pull-right">
+						
+					</div>
+				</div>
+			</header>
+						
+			<div class="row-fluid">
+								<main id="content" role="main" class="span9">
+					<!-- Begin Content -->
+					
+					<div id="system-message-container">
+	</div>
+
+					<div class="item-page" itemscope itemtype="https://schema.org/Article">
+	<meta itemprop="inLanguage" content="en-GB" />
+	
+		
+			<div class="page-header">
+		<h2 itemprop="headline">
+			Installation guide		</h2>
+							</div>
+					
+		
+	
+	
+		
+								<div itemprop="articleBody">
+		<p>This guide has been developed and tested on Ubuntu Server 12.04 LTS. Since Linux distrutions manage software packages and file placement in a variety of ways, parts of the guide may need modification to suit other distributions.</p> <p>&nbsp;<em>Skip to</em>:</p>
+<ul>
+<li><a href="#the_server">The server</a></li>
+<li><a href="#server_firewall">Server firewall</a></li>
+<li><a href="#smtp_mail">SMTP mail</a></li>
+<li><a href="#mysql_database">MySQL database</a></li>
+<li><a href="#ldap">LDAP</a></li>
+<li><a href="#building_the_ark">Configure and build The Ark</a></li>
+<li><a href="#apache_tomcat">Apache Tomcat</a></li>
+<li><a href="#installing_libmadeline">Install the libmadeline shared library</a></li>
+<li><a href="#deploying_war">Deploy the Ark WAR file</a></li>
+</ul>
+<h3><a name="the_server"></a>The server</h3>
+<p>Assume the host has a IP address and registered domain as follows:</p>
+<p style="margin-left: 30px;"><em>Domain</em>: <span style="font-family: courier new,courier;">new-ark.org.au</span><br /><em>IP address</em>: <span style="font-family: courier new,courier;">115.146.80.50</span></p>
+<p>Create aliases for <span style="font-family: andale mono,times;"><span style="font-family: courier new,courier;">ark-database</span>,</span> <span style="font-family: courier new,courier;">ark-ldap</span> and <span style="font-family: courier new,courier;">ark-smtp</span> in <span style="font-family: courier new,courier;">/etc/hosts</span>:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">127.0.0.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; localhost</span><br /><span style="font-family: courier new,courier;">115.146.80.50&nbsp;&nbsp; new-ark.org.au&nbsp;&nbsp; new-ark&nbsp;&nbsp; ark-database&nbsp;&nbsp; ark-ldap&nbsp;&nbsp; ark-smtp</span></p>
+<h3><a name="server_firewall"></a>Server firewall</h3>
+<p>Use Ubuntu's "Uncomplicated firewall" tool <span style="font-family: courier new,courier;">ufw</span> to set basic rules:</p>
+<p>&nbsp;Allow ssh, http, and https connections from anywhere:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo ufw allow ssh</span><br /><span style="font-family: courier new,courier;">sudo ufw allow www</span><br /><span style="font-family: courier new,courier;">sudo ufw allow https</span></p>
+<p>Allow external MySQL connections only from a work laptop with IP address <span style="font-family: courier new,courier;">128.250.94.2</span>:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo ufw allow proto tcp from 128.250.94.2 to any port 3306</span></p>
+<p>Set the default rules to deny incoming connections and allow outgoing connections:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo ufw default deny incoming</span><br /><span style="font-family: courier new,courier;">sudo ufw default allow outgoing</span></p>
+<p>Enable the firewall and check its status:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo ufw enable</span><br /><span style="font-family: courier new,courier;">sudo ufw status verbose</span></p>
+<h3><a name="smtp_mail"></a>SMTP Mail</h3>
+<p>Enable "universe" repositories in<span style="font-family: courier new,courier;"> /etc/apt/sources.list</span></p>
+<p>Install the mail software:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo apt-get install exim4-daemon-light mailutils</span></p>
+<p>Configure the mail server:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo dpkg-reconfigure exim4-config</span></p>
+<ol>
+<li>Choose the option for <span style="font-family: andale mono,times;">"<span style="font-family: courier new,courier;">internet site</span>"</span> and select <span style="font-family: andale mono,times;">"<span style="font-family: courier new,courier;">Ok</span>"</span> to continue.</li>
+<li>Enter the fully qualified domain name <span style="font-family: courier new,courier;">new-ark.org.au</span> in the <span style="font-family: andale mono,times;">"<span style="font-family: courier new,courier;">mail name</span>"</span> configuration screen.</li>
+<li>Enter <span style="font-family: andale mono,times;">"<span style="font-family: courier new,courier;">127.0.0.1</span>"</span> when asked which IP address to listen on for SMTP connections.</li>
+<li>Enter <span style="font-family: courier new,courier;">new-ark.org.au</span> when asked which destinations mail should be accepted for.</li>
+<li>Leave the relay domains and relay machines fields blank.</li>
+<li>Select <span style="font-family: andale mono,times;">"<span style="font-family: courier new,courier;">No</span>"</span> when asked whether to keep DNS queries to a minimum.</li>
+<li>Select <span style="font-family: andale mono,times;">"<span style="font-family: courier new,courier;">Maildir</span>"</span> when asked about the delivery method used for incoming mail.</li>
+<li>Accept the default <span style="font-family: andale mono,times;">"<span style="font-family: courier new,courier;">non-split</span>"</span> option for your mail configuration file.&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;</li>
+</ol>
+<p>Test the SMTP server by mailing to a valid external address:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">echo "This is a test." | mail -s Testing <span id="cloak79547d8bfbc2efde39bc1d8a5ea3b16f">This email address is being protected from spambots. You need JavaScript enabled to view it.</span><script type='text/javascript'>
+				document.getElementById('cloak79547d8bfbc2efde39bc1d8a5ea3b16f').innerHTML = '';
+				var prefix = '&#109;a' + 'i&#108;' + '&#116;o';
+				var path = 'hr' + 'ef' + '=';
+				var addy79547d8bfbc2efde39bc1d8a5ea3b16f = 's&#111;m&#101;Us&#101;rn&#97;m&#101;' + '&#64;';
+				addy79547d8bfbc2efde39bc1d8a5ea3b16f = addy79547d8bfbc2efde39bc1d8a5ea3b16f + 'gm&#97;&#105;l' + '&#46;' + 'c&#111;m';
+				var addy_text79547d8bfbc2efde39bc1d8a5ea3b16f = 's&#111;m&#101;Us&#101;rn&#97;m&#101;' + '&#64;' + 'gm&#97;&#105;l' + '&#46;' + 'c&#111;m';document.getElementById('cloak79547d8bfbc2efde39bc1d8a5ea3b16f').innerHTML += '<a ' + path + '\'' + prefix + ':' + addy79547d8bfbc2efde39bc1d8a5ea3b16f + '\'>'+addy_text79547d8bfbc2efde39bc1d8a5ea3b16f+'<\/a>';
+		</script></span></p>
+<h3><a name="mysql_database"></a>MySQL database</h3>
+<p>Install:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo apt-get install mysql-client mysql-server</span></p>
+<p>Root user:</p>
+<div style="margin-left: 30px;"><em>Username</em>: <span style="font-family: courier new,courier;">'root'@'localhost'</span></div>
+<div style="margin-left: 30px;"><em>Password</em>: <span style="font-family: courier new,courier;">myDbRootPass</span></div>
+<p><br />Stop the MySQL server and edit <span style="font-family: courier new,courier;">/etc/mysql/my.cnf</span> so that the service binds to the host's IP address:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">bind-address = 115.146.80.50</span></p>
+<p>Set <span style="font-family: andale mono,times;">"<span style="font-family: courier new,courier;">max_allowed_packet = 256M</span>"</span> and <span style="font-family: andale mono,times;">"<span style="font-family: courier new,courier;">key_buffer = 32M</span>"</span>, and also set these configuration parameters under <span style="font-family: courier new,courier;">[mysqld]</span>:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">lower_case_table_names = 1</span><br /><span style="font-family: courier new,courier;">skip-host-cache</span><br /><span style="font-family: courier new,courier;">skip-name-resolve</span><br /><span style="font-family: courier new,courier;">innodb = FORCE</span><br /><span style="font-family: courier new,courier;">innodb_file_per_table</span><br /><span style="font-family: courier new,courier;">innodb_buffer_pool_size=2G</span><br /><span style="font-family: courier new,courier;">innodb_additional_mem_pool_size=256M</span><br /><span style="font-family: courier new,courier;">innodb_log_file_size=256M</span><br /><span style="font-family: courier new,courier;">innodb_log_buffer_size=64M</span></p>
+<p>Users of MySQL 5.7 (e.g. Ubuntu 16.04LTS) should also include this line for compatibility with The Ark:</p>
+<p style="padding-left: 30px;"><span style="font-family: courier new,courier;">sql-mode=""</span></p>
+<p>See this link for information on resizing log files <a href="http://www.dbasquare.com/2012/04/04/how-to-resize-innodb-logs/">http://www.dbasquare.com/2012/04/04/how-to-resize-innodb-logs/</a></p>
+<p>To setup i8n at the database server level, add the following entries to&nbsp;<span style="font-family: courier new,courier;">/etc/mysql/my.cnf</span> under the appropriate section headings (based on <a href="http://stackoverflow.com/questions/3513773/change-mysql-default-character-set-to-utf-8-in-my-cnf">http://stackoverflow.com/questions/3513773/change-mysql-default-character-set-to-utf-8-in-my-cnf</a>):</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">[client]</span><br /><span style="font-family: courier new,courier;">default-character-set=utf8</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">[mysql]</span><br /><span style="font-family: courier new,courier;">default-character-set=utf8</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">[mysqld]</span><br /><span style="font-family: courier new,courier;">collation-server = utf8_unicode_ci</span><br /><span style="font-family: courier new,courier;">init-connect='SET NAMES utf8'</span><br /><span style="font-family: courier new,courier;">character-set-server = utf8</span></p>
+<p>Create an Ark database user for <span style="font-family: courier new,courier;">localhost</span>:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">CREATE USER 'arkadmin'@'localhost' IDENTIFIED BY '<strong>arkadminPasswordHere</strong>';</span><br /><span style="font-family: courier new,courier;">GRANT ALL PRIVILEGES ON *.* TO 'arkadmin'@'localhost';</span></p>
+<p>Create an Ark database user for the host's IP address</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">CREATE USER 'arkadmin'@'115.146.80.50' IDENTIFIED BY '<strong>arkadminPasswordHere</strong>';</span><br /><span style="font-family: courier new,courier;">GRANT ALL PRIVILEGES ON *.* TO 'arkadmin'@'115.146.80.50';</span></p>
+<p>Create an Ark database user so that the database can be access from a work computer with IP address <span style="font-family: courier new,courier;">128.250.94.2</span>. This is useful for debugging and examining database contents directly (via MySQL Workbench).</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">CREATE USER 'arkadmin'@'128.250.94.2' IDENTIFIED BY '<strong>arkadminPasswordHere</strong>';</span><br /><span style="font-family: courier new,courier;">GRANT ALL PRIVILEGES ON *.* TO 'arkadmin'@'128.250.94.2';</span></p>
+<p>Import the Ark's base schemas and data from the <span style="font-family: courier new,courier;">ark-db</span> repository; databases need not be created manually - they are created by the script.</p>
+<p style="margin-left: 30px;"><span style="font-family: andale mono,times;"><span style="font-family: courier new,courier;">mysql -h localhost -u root -p &lt; runThisSqlToCreateANew111eDatabase.sql</span><br /></span></p>
+<h5>Applying i8n patches</h5>
+<p>The following instructions will allow The Ark to store non-Latin characters in textual data fields. The instructions assume that the following scripts have been checked out of the SVN branch for the Ark version being installed:</p>
+<ul>
+<li><span style="font-family: courier new,courier;">changeEverySchemaSlashDatabaseToUTF8CharSetAndCollation.sql</span></li>
+<li><span style="font-family: courier new,courier;">generate-changeCharsetCollationOfAllTables.sql</span></li>
+<li><span style="font-family: courier new,courier;">generate-changeCharsetCollationOfAllFields.sql</span></li>
+</ul>
+<p>Set charset/collation for Ark databases, then login and check the result:&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">mysql -h localhost -u root -p &lt; changeEverySchemaSlashDatabaseToUTF8CharSetAndCollation.sql</span><br /><span style="font-family: courier new,courier;">SELECT * FROM information_schema.SCHEMATA;</span></p>
+<p>Login to the database via MySQL Workbench, run <span style="font-family: courier new,courier;">generate-changeCharsetCollationOfAllTables.sql</span>, export the results as a tab-delimited file <span style="font-family: courier new,courier;">changeCharsetCollationOfAllTables-new-Ark.sql</span>, then remove the enclosing quotes:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">cat changeCharsetCollationOfAllTables-new-Ark.sql | tr -d '\"' &gt; changeCharsetCollationOfAllTables.sql</span></p>
+<p>Set charset/collation for tables in Ark databases:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">mysql -h localhost -u root -p &lt; changeCharsetCollationOfAllTables.sql</span></p>
+<p>Within MySQL Workbench, run <span style="font-family: courier new,courier;">generate-changeCharsetCollationOfAllFields.sql</span>, export the results as a tab-delimited file <span style="font-family: courier new,courier;">changeCharsetCollationOfAllFields-new-Ark.sql</span>, then remove the enclosing quotes:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">cat changeCharsetCollationOfAllFields-new-ARK.sql | tr -d '\"' &gt; changeCharsetCollationOfAllFields.sql</span></p>
+<p><strong>Note</strong>: in Ark version 1.1.1e, the <span style="font-family: andale mono,times;">VARCHAR</span> field <span style="font-family: courier new,courier;">study.consent_section.NAME</span> is too large to be a key with UTF-8 encoding. Therefore, login to the database and issue:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">ALTER TABLE `study`.`consent_section` MODIFY `NAME` VARCHAR(255);</span></p>
+<p>&nbsp;...then edit line 284 of <span style="font-family: courier new,courier;">changeCharsetCollationOfAllFields.sql</span> to match <span style="font-family: courier new,courier;">VARCHAR(255)</span></p>
+<p>Set charset/collation for fields within Ark tables:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">mysql -h localhost -u root -p &lt; changeCharsetCollationOfAllFields.sql</span></p>
+<p>Ensure that the Ark .war is built with an applicationContext database entry:</p>
+<h3><a name="ldap"></a>LDAP</h3>
+<p>Install:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo apt-get install slapd ldap-utils</span></p>
+<p>Install Apache Directory Studio:</p>
+<p><span style="font-family: andale mono,times;"><a href="http://directory.apache.org/studio/downloads.html">&nbsp;&nbsp; http://directory.apache.org/studio/downloads.html</a></span></p>
+<p>Stop the LDAP service:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service slapd stop</span></p>
+<p>Generate a password for the config file:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">slappasswd</span><br /><span style="font-family: courier new,courier;">myLdapPassword</span></p>
+<p>Copy the generated hash into a temporary file <span style="font-family: courier new,courier;">slapd-password.txt</span></p>
+<p>By default, the slapd service stores its configuration in internal structures; we wish to use a <span style="font-family: courier new,courier;">slapd.conf</span> file instead. As root, edit <span style="font-family: courier new,courier;">/etc/default/slapd</span> and set the variable <span style="font-family: courier new,courier;">SLAPD_CONF=/etc/ldap/slapd.conf</span></p>
+<p>Create the file <span style="font-family: courier new,courier;">/etc/ldap/slapd.conf</span> with the following contents, remembering to set the <span style="font-family: courier new,courier;">rootpw</span> to the hash stored in <span style="font-family: courier new,courier;">slapd-password.txt</span>.</p>
+<p dir="ltr" style="margin-left: 30px;"><span style="font-family: courier new,courier;">#</span><br /><span style="font-family: courier new,courier;"># See slapd.conf(5) for details on configuration options.</span><br /><span style="font-family: courier new,courier;"># This file should NOT be world readable.</span><br /><span style="font-family: courier new,courier;">#</span><br /><span style="font-family: courier new,courier;">include&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;/etc/ldap/schema/core.schema</span><br /><span style="font-family: courier new,courier;">include&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /etc/ldap/schema/cosine.schema</span><br /><span style="font-family: courier new,courier;">include&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /etc/ldap/schema/inetorgperson.schema</span><br /><span style="font-family: courier new,courier;">include&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /etc/ldap/schema/nis.schema</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;"># Define global ACLs to disable default read access.</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;"># Do not enable referrals until AFTER you have a working directory</span><br /><span style="font-family: courier new,courier;"># service AND an understanding of referrals.</span><br /><span style="font-family: courier new,courier;">#referral&nbsp;&nbsp; &nbsp;ldap://root.openldap.org</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">pidfile&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;/var/run/slapd/slapd.pid</span><br /><span style="font-family: courier new,courier;">argsfile&nbsp;&nbsp; &nbsp;/var/run/slapd/slapd.args</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;"># Allow bind</span><br /><span style="font-family: courier new,courier;">allow bind_v2</span></p>
+<p style="margin-left: 30px;"><br /><span style="font-family: courier new,courier;"># Load dynamic backend modules:</span><br /><span style="font-family: courier new,courier;">modulepath&nbsp;&nbsp; &nbsp;/usr/lib/ldap</span><br /><span style="font-family: courier new,courier;">moduleload&nbsp;&nbsp; &nbsp;back_bdb.la</span><br /><span style="font-family: courier new,courier;">moduleload&nbsp;&nbsp; &nbsp;syncprov.la</span><br /><span style="font-family: courier new,courier;"># moduleload&nbsp;&nbsp; &nbsp;back_hdb.la</span><br /><span style="font-family: courier new,courier;"># moduleload&nbsp;&nbsp; &nbsp;back_ldap.la</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;"># Sample security restrictions</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;Require integrity protection (prevent hijacking)</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;Require 112-bit (3DES or better) encryption for updates</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;Require 63-bit encryption for simple bind</span><br /><span style="font-family: courier new,courier;"># security ssf=1 update_ssf=112 simple_bind=64</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;"># Sample access control policy:</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;Root DSE: allow anyone to read it</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;Subschema (sub)entry DSE: allow anyone to read it</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;Other DSEs:</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;Allow self write access</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;Allow authenticated users read access</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;Allow anonymous users to authenticate</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;Directives needed to implement policy:</span><br /><span style="font-family: courier new,courier;"># access to dn.base="" by * read</span><br /><span style="font-family: courier new,courier;"># access to dn.base="cn=Subschema" by * read</span><br /><span style="font-family: courier new,courier;"># access to *</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;by self write</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;by users read</span><br /><span style="font-family: courier new,courier;">#&nbsp;&nbsp; &nbsp;by anonymous auth</span><br /><span style="font-family: courier new,courier;">#</span><br /><span style="font-family: courier new,courier;"># if no access controls are present, the default policy</span><br /><span style="font-family: courier new,courier;"># allows anyone and everyone to read anything but restricts</span><br /><span style="font-family: courier new,courier;"># updates to rootdn.&nbsp; (e.g., "access to * by * read")</span><br /><span style="font-family: courier new,courier;">#</span><br /><span style="font-family: courier new,courier;"># rootdn can always read and write EVERYTHING!</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">#######################################################################</span><br /><span style="font-family: courier new,courier;"># BDB database definitions</span><br /><span style="font-family: courier new,courier;">#######################################################################</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">database&nbsp;&nbsp; &nbsp;bdb</span><br /><span style="font-family: courier new,courier;">suffix&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;"dc=the-ark,dc=org,dc=au"</span><br /><span style="font-family: courier new,courier;">rootdn&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;"cn=admin,dc=the-ark,dc=org,dc=au"</span><br /><span style="font-family: courier new,courier;"># Cleartext passwords, especially for the rootdn, should</span><br /><span style="font-family: courier new,courier;"># be avoid.&nbsp; See slappasswd(8) and slapd.conf(5) for details.</span><br /><span style="font-family: courier new,courier;"># Use of strong authentication encouraged.</span><br /><span style="font-family: courier new,courier;">rootpw&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<strong>{SSHA}1sc2UoHOMrlZFxxvOUBPKQ/UFZAmEI53</strong></span><br /><span style="font-family: courier new,courier;"># The database directory MUST exist prior to running slapd AND </span><br /><span style="font-family: courier new,courier;"># should only be accessible by the slapd and slap tools.</span><br /><span style="font-family: courier new,courier;"># Mode 700 recommended.</span><br /><span style="font-family: courier new,courier;">directory&nbsp;&nbsp; &nbsp;/var/lib/ldap</span><br /><span style="font-family: courier new,courier;"># Indices to maintain</span><br /><span style="font-family: courier new,courier;">index&nbsp;&nbsp; &nbsp;objectClass&nbsp;&nbsp; &nbsp;eq,pres</span><br /><span style="font-family: courier new,courier;">index&nbsp;&nbsp; &nbsp;ou,cn,mail,surname,givenname&nbsp;&nbsp; &nbsp;eq,pres,sub</span><br /><span style="font-family: courier new,courier;">index member,labeledURI&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;pres,eq</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;"># Replicas</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;"># Entrey cache-size</span><br /><span style="font-family: courier new,courier;">cachesize&nbsp;&nbsp; &nbsp;10000</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">checkpoint 128 15</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;"># Server is a sync provider</span><br /><span style="font-family: courier new,courier;">overlay syncprov</span><br /><span style="font-family: courier new,courier;">syncprov-checkpoint 100 10</span><br /><span style="font-family: courier new,courier;">syncprov-sessionlog 100</span></p>
+<p>&nbsp;</p>
+<p>Create a new file bareBase.ldif with contents:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">dn: dc=the-ark,dc=org,dc=au</span><br /><span style="font-family: courier new,courier;">objectClass: dcObject</span><br /><span style="font-family: courier new,courier;">objectClass: organization</span><br /><span style="font-family: courier new,courier;">dc: the-ark</span><br /><span style="font-family: courier new,courier;">o: LDAP Ark</span></p>
+<p>As root, copy the default LDAP database configuration into place:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo cp /usr/share/slapd/DB_CONFIG /var/lib/ldap</span><br /><span style="font-family: courier new,courier;">sudo chown openldap:openldap /var/lib/ldap/DB_CONFIG</span></p>
+<p>Restart the LDAP server:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service slapd restart</span></p>
+<p>Initialise the LDAP database using the <span style="font-family: andale mono,times;">baseBase.ldif</span> created earlier:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">ldapadd -x -D "cn=admin,dc=the-ark,dc=org,dc=au" -W -f bareBase.ldif</span><br /><em>Password</em>: <span style="font-family: courier new,courier;">myLdapPassword</span></p>
+<p>With the new configuration in place, restart the LDAP service:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service slapd restart</span><br /><span style="font-family: courier new,courier;">sudo service slapd status</span></p>
+<p style="margin-left: 30px;">View the LDAP contents using Apache Directory Studio (version 1.5.3, installed on the host):<br />&nbsp;&nbsp; &nbsp;<br /><span style="font-family: courier new,courier;">LDAP -&gt; New connection</span><br /><em>Name</em>: <span style="font-family: courier new,courier;">The Ark</span><br /><em>Host</em>: <span style="font-family: courier new,courier;">localhost</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><em>Bind DN or user</em>: <span style="font-family: courier new,courier;">cn=admin,dc=the-ark,dc=org,dc=au</span><br /><em>Password</em>: <span style="font-family: courier new,courier;">myLdapPassword</span> (i.e., the password used (in slappasswd) to create the hash earlier)</p>
+<p>On the host, create a file <span style="font-family: courier new,courier;">initGroup.ldif</span> with the contents:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">dn: ou=arkUsers,dc=the-ark,dc=org,dc=au</span><br /><span style="font-family: courier new,courier;">objectClass: top</span><br /><span style="font-family: courier new,courier;">objectClass: organizationalUnit</span><br /><span style="font-family: courier new,courier;">ou: arkUsers</span><br /><span style="font-family: courier new,courier;">description: All people in the directory go in this OU.</span></p>
+<p>Import <span style="font-family: courier new,courier;">initGroup.ldif</span> to create the <span style="font-family: courier new,courier;">arkUsers</span> group:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">Select "Root DN"</span><br /><span style="font-family: courier new,courier;">File -&gt; Import -&gt; LDIF into LDAP</span></p>
+<p>In the project <span style="font-family: courier new,courier;">ark-user-account</span>, edit the file <span style="font-family: courier new,courier;">src/main/resources/applicationContext.xml</span>. Set the LDAP source and <span style="font-family: courier new,courier;">arkUserDao</span> to:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">&lt;bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource"&gt;&nbsp;&nbsp; &nbsp;</span><br /><span style="font-family: courier new,courier;">&lt;property name="url"&nbsp; value="ldap://ark-ldap:389"/&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="base" value="dc=the-ark,dc=org,dc=au"/&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="password" value="<strong>myLdapPassword</strong>" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;/bean&gt;</span><br /><span style="font-family: courier new,courier;">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;</span><br /><span style="font-family: courier new,courier;">&lt;bean id="arkUserDao" class="au.org.theark.dao.ArkUserDao"&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="ldapTemplate" ref="ldapTemplate" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="basePeopleDn" value="ou=arkUsers" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="baseDC" value="dc=the-ark,dc=org,dc=au" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;/bean&gt;</span></p>
+<p>Build <span style="font-family: courier new,courier;">ark-user-account</span> by navigating to its root directory and issuing:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">mvn assembly:assembly</span></p>
+<p><span style="font-family: courier new,courier;"></span>Copy the built .jar file over to the Ark host. Rename the jar to <span style="font-family: courier new,courier;">createuser.jar</span>. Run <span style="font-family: courier new,courier;">createuser.jar</span> to create the entry for <span style="font-family: courier new,courier;"><span id="cloakd371f8b24fad654f4f529096186462a4">This email address is being protected from spambots. You need JavaScript enabled to view it.</span><script type='text/javascript'>
+				document.getElementById('cloakd371f8b24fad654f4f529096186462a4').innerHTML = '';
+				var prefix = '&#109;a' + 'i&#108;' + '&#116;o';
+				var path = 'hr' + 'ef' + '=';
+				var addyd371f8b24fad654f4f529096186462a4 = '&#97;rks&#117;p&#101;r&#117;s&#101;r' + '&#64;';
+				addyd371f8b24fad654f4f529096186462a4 = addyd371f8b24fad654f4f529096186462a4 + '&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';
+				var addy_textd371f8b24fad654f4f529096186462a4 = '&#97;rks&#117;p&#101;r&#117;s&#101;r' + '&#64;' + '&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';document.getElementById('cloakd371f8b24fad654f4f529096186462a4').innerHTML += '<a ' + path + '\'' + prefix + ':' + addyd371f8b24fad654f4f529096186462a4 + '\'>'+addy_textd371f8b24fad654f4f529096186462a4+'<\/a>';
+		</script></span> in LDAP:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">java -jar createuser.jar <span id="cloake99c8a4fd3e98884bb7d65131bb4d382">This email address is being protected from spambots. You need JavaScript enabled to view it.</span><script type='text/javascript'>
+				document.getElementById('cloake99c8a4fd3e98884bb7d65131bb4d382').innerHTML = '';
+				var prefix = '&#109;a' + 'i&#108;' + '&#116;o';
+				var path = 'hr' + 'ef' + '=';
+				var addye99c8a4fd3e98884bb7d65131bb4d382 = '&#97;rks&#117;p&#101;r&#117;s&#101;r' + '&#64;';
+				addye99c8a4fd3e98884bb7d65131bb4d382 = addye99c8a4fd3e98884bb7d65131bb4d382 + '&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';
+				var addy_texte99c8a4fd3e98884bb7d65131bb4d382 = '&#97;rks&#117;p&#101;r&#117;s&#101;r' + '&#64;' + '&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';document.getElementById('cloake99c8a4fd3e98884bb7d65131bb4d382').innerHTML += '<a ' + path + '\'' + prefix + ':' + addye99c8a4fd3e98884bb7d65131bb4d382 + '\'>'+addy_texte99c8a4fd3e98884bb7d65131bb4d382+'<\/a>';
+		</script> <strong>superUserPassword MyFirstName MyLastName</strong></span></p>
+<h3><a name="building_the_ark"></a>Configure and build The Ark</h3>
+<p>Visit <a href="https://www.google.com/recaptcha/admin/create">https://www.google.com/recaptcha/admin/create</a> and create a public-private key pair for <span style="font-family: courier new,courier;">new-ark.org.au</span>.&nbsp; Save the resultant web page containing the reCaptcha public and private keys,&nbsp; e.g.</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">reCaptchaPublicKey: 6LcPqswSAAAAABTwe7ikosifme3YpXC1Cy9Sj6Vs</span><br /><span style="font-family: courier new,courier;">reCaptchaPrivateKey: 6LcPqswSAAApe8fNcXciYDgeNEQ2y54Sy1BrRrlX</span></p>
+<p>In <span style="font-family: courier new,courier;">ark-container</span>, edit <span style="font-family: courier new,courier;">src/main/resources/applicationContext.xml</span> to reflect the instance's configuration settings:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">&lt;bean id="reCaptchaContextSource" class="au.org.theark.core.dao.ReCaptchaContextSource"&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="reCaptchaPublicKey" value="<strong>6LcPqswSAAAAABTwe7ikoEUbWB3YpXC1Cy9Sj6Vs</strong>" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="reCaptchaPrivateKey" value="<strong>6LcPqswSAAAAADVTcXciYDgeNEQ2y54Sy1BrRrlX</strong>" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;/bean&gt;</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">&lt;bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="driverClassName" value="com.mysql.jdbc.Driver" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="url" value="jdbc:mysql://ark-database:3306?characterEncoding=utf8" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="username" value="<strong>arkadmin</strong>" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="password" value="<strong>arkadminPasswordHere</strong>" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;/bean&gt;</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">&lt;bean id="ldapDataContextSource" class="au.org.theark.core.dao.ArkLdapContextSource"&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="url" value="ldap://ark-ldap:389" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="basePeopleDn" value="ou=arkUsers" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="base" value="dc=the-ark,dc=org,dc=au" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;property name="password" value="<strong>myLdapPassword</strong>" /&gt;</span><br /><span style="font-family: courier new,courier;">&lt;/bean&gt;</span></p>
+<p>Build The Ark webapp from the command-line:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">cd ~/workspace/ark-1.0.1/the-ark</span><br /><span style="font-family: courier new,courier;">./ark-build-pwd.sh</span></p>
+<h3><a name="apache_tomcat"></a>Apache Tomcat</h3>
+<p>Install:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo apt-get install tomcat6 tomcat6-admin tomcat6-docs tomcat6-examples tomcat6-user authbind</span></p>
+<p>Stop service:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service tomcat6 stop</span></p>
+<p>Enable authbind:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo vi /etc/default/tomcat6</span><br /><span style="font-family: courier new,courier;">AUTHBIND=yes</span></p>
+<p>Configure Tomcat connectors for port <span style="font-family: andale mono,times;">80</span> and <span style="font-family: andale mono,times;">443</span> (for SSL), comment all other connectors:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo vi /etc/tomcat6/server.xml</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">&lt;Connector port="80" protocol="HTTP/1.1" </span><br /><span style="font-family: courier new,courier;">connectionTimeout="20000" </span><br /><span style="font-family: courier new,courier;">URIEncoding="UTF-8"</span><br /><span style="font-family: courier new,courier;">redirectPort="443" /&gt;</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">&lt;Connector port="443" protocol="HTTP/1.1" SSLEnabled="true"</span><br /><span style="font-family: courier new,courier;">maxThreads="150" scheme="https" secure="true"</span><br /><span style="font-family: courier new,courier;">clientAuth="false" sslProtocol="TLS" /&gt;</span></p>
+<div>&nbsp;</div>
+<p>To <em>optionally</em> install a digital certificate for the web server service, check the alias of the keystore (the <span style="font-family: courier new,courier;">.jks</span> created during CSR generation):</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">keytool -list -v -keystore new-ark_org_au.jks</span><br /><em>Password</em>: <span style="font-family: courier new,courier;">keyStorePassword</span><br />Alias should be <span style="font-family: courier new,courier;">"server"</span></p>
+<p><span style="font-family: courier new,courier;"></span>Install the SSL certificate received from the Certificate Authority into the keystore:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">keytool -import -trustcacerts -alias server -file new-ark_org_au.p7b -keystore new-ark_org_au.jks</span><br />Password: <span style="font-family: courier new,courier;">keyStorePassword</span></p>
+<p>Configure Tomcat to use the keystore:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo cp new-ark_org_au.jks /etc/tomcat6</span><br /><span style="font-family: courier new,courier;">sudo chmod 644 /etc/tomcat6/new-ark_org_au.jks</span><br /><span style="font-family: courier new,courier;">sudo chown tomcat6 /etc/tomcat6/new-ark_org_au.jks</span></p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo vi /etc/tomcat6/server.xml</span><br /><span style="font-family: courier new,courier;">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;</span><br /><span style="font-family: courier new,courier;">&lt;Connector port="443" </span><br /><span style="font-family: courier new,courier;">maxHttpHeaderSize="8192" </span><br /><span style="font-family: courier new,courier;">maxThreads="150" </span><br /><span style="font-family: courier new,courier;">minSpareThreads="25" </span><br /><span style="font-family: courier new,courier;">maxSpareThreads="75" </span><br /><span style="font-family: courier new,courier;">enableLookups="false" </span><br /><span style="font-family: courier new,courier;">disableUploadTimeout="true" </span><br /><span style="font-family: courier new,courier;">acceptCount="100" </span><br /><span style="font-family: courier new,courier;">scheme="https" </span><br /><span style="font-family: courier new,courier;">secure="true" </span><br /><span style="font-family: courier new,courier;">SSLEnabled="true" </span><br /><span style="font-family: courier new,courier;">clientAuth="false" </span><br /><span style="font-family: courier new,courier;">sslProtocol="TLS" </span><br /><span style="font-family: courier new,courier;">keyAlias="server" </span><br /><span style="font-family: courier new,courier;">keystoreFile="/etc/tomcat6/new-ark_org_au.jks" </span><br /><span style="font-family: courier new,courier;">keypass="keyStorePassword" /&gt;</span></p>
+<p>See <a href="https://www.digicert.com/ssl-certificate-installation-tomcat.htm">https://www.digicert.com/ssl-certificate-installation-tomcat.htm</a> for more information.<a href="https://www.digicert.com/ssl-certificate-installation-tomcat.htm"> </a></p>
+<p>Start service:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service tomcat6 start</span></p>
+<p>Check service status:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service tomcat6 status</span></p>
+<p><strong>Notes:</strong></p>
+<p style="margin-left: 30px;">&nbsp;"...the tomcat6 package creates a small file in /etc/authbind/byuid named with the UID of the tomcat6 user, and containing the line:<br /><span style="font-family: courier new,courier;">0.0.0.0/32:1,1023</span><br />This allows the tomcat6 user to bind to any IP address with any low-numbered port, TCP or UDP."</p>
+<p>See <a href="http://thelowedown.wordpress.com/2010/08/17/tomcat-6-binding-to-a-privileged-port-on-debianubuntu/">http://thelowedown.wordpress.com/2010/08/17/tomcat-6-binding-to-a-privileged-port-on-debianubuntu/</a></p>
+<h3><a name="installing_libmadeline"></a>Install the libmadeline shared library</h3>
+<p>The following steps are required to compile and install the libmadeline native library for pedigree visualisation within The Ark. The guide assumes that you have checked out the Madeline native code that is bundled with Ark releases 1.1.1e onwards.</p>
+<p>Install compilers and other essential build tools:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo apt-get install build-essential</span></p>
+<p>Install the runtime and development packages for <span style="font-family: courier new,courier;">libxml2</span>, <span style="font-family: courier new,courier;">libcurl</span> and <span style="font-family: courier new,courier;">libbz2</span>.</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo apt-get install libxml2 libxml2-dev</span><br /><span style="font-family: courier new,courier;">sudo apt-get install libcurl3 libcurl4-gnutls-dev</span><br /><span style="font-family: courier new,courier;">sudo apt-get install zlib1g zlib1g-dev</span><br /><span style="font-family: courier new,courier;">sudo apt-get install libbz2-1.0 libbz2-dev</span><br /><span style="font-family: courier new,courier;">sudo apt-get install libssl libssl-dev</span></p>
+<p>Edit the <span style="font-family: courier new,courier;">Makefile</span> as necessary; this usually means changing the paths to your JDK and headers. See comments in the <span style="font-family: courier new,courier;">Makefile</span> for a guide; the default Makefile is configured to run on an Ubuntu 12.04LTS (64-bit) system using OpenJDK 6 (amd64 build).</p>
+<p>Remove any previous compilation output and build a new <span style="font-family: courier new,courier;">libmadeline</span>:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">make distclean</span><br /><span style="font-family: courier new,courier;">make</span></p>
+<p>Copy <span style="font-family: andale mono,times;">libmadeline.so</span> to the Tomcat6 shared library directory:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service tomcat6 stop</span><br /><span style="font-family: courier new,courier;">&nbsp;&nbsp; &nbsp;</span><br /><span style="font-family: courier new,courier;">sudo cp libmadeline.so /usr/share/tomcat6/lib</span><br /><span style="font-family: courier new,courier;">sudo chown root:root /usr/share/tomcat6/lib/libmadeline.so</span><br /><span style="font-family: courier new,courier;">sudo chmod 644 /usr/share/tomcat6/lib/libmadeline.so</span></p>
+<p>Edit <span style="font-family: courier new,courier;">/etc/default/tomcat6</span> to set the library path as part of <span style="font-family: courier new,courier;">JAVA_OPTS</span>:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">JAVA_OPTS="-Djava.awt.headless=true -Djava.library.path=/usr/share/tomcat6/lib -Xms1024m -Xmx2048m -XX:+UseConcMarkSweepGC"</span></p>
+<p>Restart the Tomcat6 service:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service tomcat6 restart</span></p>
+<p><strong>Note</strong>: the <span style="font-family: courier new,courier;">JAVA_OPTS</span> example above sets the starting Java heap size to 1GB (1024m) and the maximum heap size to 2GB (2048m). Adjust these values to suit your server's memory resources.</p>
+<h3><a name="deploying_war"></a>Deploy the Ark WAR file</h3>
+<p>From the development machine, copy the webapp to the host:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">scp ~/ark/workspace/ark-container/target/ark.war <span id="cloak6af6bb322b187754ac2dbd9fc8f6b18c">This email address is being protected from spambots. You need JavaScript enabled to view it.</span><script type='text/javascript'>
+				document.getElementById('cloak6af6bb322b187754ac2dbd9fc8f6b18c').innerHTML = '';
+				var prefix = '&#109;a' + 'i&#108;' + '&#116;o';
+				var path = 'hr' + 'ef' + '=';
+				var addy6af6bb322b187754ac2dbd9fc8f6b18c = '&#039;&#117;s&#101;rn&#97;m&#101;' + '&#64;';
+				addy6af6bb322b187754ac2dbd9fc8f6b18c = addy6af6bb322b187754ac2dbd9fc8f6b18c + 'n&#101;w-&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';
+				var addy_text6af6bb322b187754ac2dbd9fc8f6b18c = '&#039;&#117;s&#101;rn&#97;m&#101;' + '&#64;' + 'n&#101;w-&#97;rk' + '&#46;' + '&#111;rg' + '&#46;' + '&#97;&#117;';document.getElementById('cloak6af6bb322b187754ac2dbd9fc8f6b18c').innerHTML += '<a ' + path + '\'' + prefix + ':' + addy6af6bb322b187754ac2dbd9fc8f6b18c + '\'>'+addy_text6af6bb322b187754ac2dbd9fc8f6b18c+'<\/a>';
+		</script>:~/'</span></p>
+<p>On the host, stop Tomcat:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service tomcat6 stop</span></p>
+<p>On the host, remove the existing deployment and logfiles:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo rm -rf /var/lib/tomcat6/webapps/ark.war /var/lib/tomcat6/webapps/ark /var/log/tomcat6/*.*</span></p>
+<p>On the host, copy the WAR into the deployment directory and set permissions:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo cp ~/ark.war /var/lib/tomcat6/webapps</span><br /><span style="font-family: courier new,courier;">sudo chmod 644 /var/lib/tomcat6/webapps/ark.war</span><br /><span style="font-family: courier new,courier;">sudo chown tomcat6 /var/lib/tomcat6/webapps/ark.war</span></p>
+<p>On the host, start Tomcat:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo service tomcat6 start</span></p>
+<p>On the host, check that The Ark webapp started successfully:</p>
+<p style="margin-left: 30px;"><span style="font-family: courier new,courier;">sudo less /var/log/tomcat6/catalina.out</span></p>
+<p>On any computer, test the new Ark installation further by launching a web browser and going to: <span style="font-family: andale mono,times;"><span style="font-family: courier new,courier;">https://new-ark.org.au/ark/</span> <br /></span></p>	</div>
+
+	
+							</div>
+
+					<div class="clearfix"></div>
+					<div aria-label="Breadcrumbs" role="navigation">
+	<ul itemscope itemtype="https://schema.org/BreadcrumbList" class="breadcrumb">
+					<li>
+				You are here: &#160;
+			</li>
+		
+						<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../index.html" class="pathway"><span itemprop="name">Home</span></a>
+					
+											<span class="divider">
+							<img src="../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="1">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../the-ark.html" class="pathway"><span itemprop="name">The Ark</span></a>
+					
+											<span class="divider">
+							<img src="../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="2">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active">
+					<span itemprop="name">
+						For system administrators					</span>
+					<meta itemprop="position" content="3">
+				</li>
+				</ul>
+</div>
+
+					<!-- End Content -->
+				</main>
+									<div id="aside" class="span3">
+						<!-- Begin Right Sidebar -->
+						<div class="well _menu"><h3 class="page-header">Main Menu</h3><ul class="nav menu mod-list">
+<li class="item-101 default"><a href="../index.html" >Home</a></li><li class="item-125 active deeper parent"><a href="../the-ark.html" >The Ark</a><ul class="nav-child unstyled small"><li class="item-126"><a href="overview.html" >Overview</a></li><li class="item-127"><a href="try-it.html" >Try it</a></li><li class="item-128"><a href="documentation.html" >User documentation</a></li><li class="item-129 current active"><a href="for-system-administrators.html" >For system administrators</a></li><li class="item-130 parent"><a href="for-programmers.html" >For programmers</a></li><li class="item-132"><a href="spark.html" >SPARK</a></li><li class="item-140"><a href="publications.html" >Publications</a></li><li class="item-133"><a href="acknowledgements.html" >Acknowledgements</a></li><li class="item-134"><a href="contact-us.html" >Contact us</a></li></ul></li></ul>
+</div>
+						<!-- End Right Sidebar -->
+					</div>
+							</div>
+		</div>
+	</div>
+	<!-- Footer -->
+	<footer class="footer" role="contentinfo">
+		<div class="container">
+			<hr />
+			
+			<p class="pull-right">
+				<a href="#top" id="back-top">
+					Back to Top				</a>
+			</p>
+			<p>
+				&copy; 2023 SPHINX			</p>
+		</div>
+	</footer>
+	
+</body>
+
+<!-- Mirrored from sphinx.org.au/the-ark/for-system-administrators by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:27 GMT -->
+</html>

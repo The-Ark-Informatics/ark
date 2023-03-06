@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generator="Joomla! - Open Source Content Management" -->
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Acknowledgements</title>
+		<description><![CDATA[The School of Population and Global Health Informatics Website]]></description>
+		<link>https://sphinx.org.au/the-ark/acknowledgements</link>
+		<lastBuildDate>Fri, 03 Mar 2023 14:25:46 +1100</lastBuildDate>
+		<generator>Joomla! - Open Source Content Management</generator>
+		<atom:link rel="self" type="application/rss+xml" href="https://sphinx.org.au/the-ark/acknowledgements?format=feed&amp;type=rss"/>
+		<language>en-gb</language>
+		<item>
+			<title>Acknowledgements</title>
+			<link>https://sphinx.org.au/the-ark/acknowledgements/22-acknowledgements</link>
+			<guid isPermaLink="true">https://sphinx.org.au/the-ark/acknowledgements/22-acknowledgements</guid>
+			<description><![CDATA[<p><span style="font-size: 10pt;">Development of The Ark was facilitated through the <a href="http://twins.org.au/" target="_blank">Australian Twin Registry</a>, a national resource in part supported by a Centre of Research Excellence Grant from the <a href="https://www.nhmrc.gov.au/" target="_blank">National Health and Medical Research Council</a>. The project was also supported by the eResearch Tools Program from National eResearch Collaboration Tools and Resources (<a href="http://nectar.org.au/" target="_blank">NeCTAR</a>).</span></p>]]></description>
+			<category>Acknowledgements</category>
+			<pubDate>Thu, 03 Mar 2016 05:09:21 +1100</pubDate>
+		</item>
+		<item>
+			<title>To acknowledge The Ark</title>
+			<link>https://sphinx.org.au/the-ark/acknowledgements/21-to-acknowledge-the-ark</link>
+			<guid isPermaLink="true">https://sphinx.org.au/the-ark/acknowledgements/21-to-acknowledge-the-ark</guid>
+			<description><![CDATA[<p>Please use the following script to acknowledge The Ark:</p>
+<p>Study data were managed using The Ark open source data management system hosted at [<em>INSTITUTION NAME</em>]. The Ark is a secure, highly-configurable web-based research tool that incorporates the majority of the functionality required to conduct a complex study or clinical trial, or operate a research registry. The Ark allows medical researchers without a technical background to self-manage their data using a customisable, user-friendly interface without the need for database/computer programming.</p>]]></description>
+			<category>Acknowledgements</category>
+			<pubDate>Thu, 03 Mar 2016 05:10:30 +1100</pubDate>
+		</item>
+	</channel>
+</rss>

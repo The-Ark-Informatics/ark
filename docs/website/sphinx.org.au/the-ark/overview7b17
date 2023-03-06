@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generator="Joomla! - Open Source Content Management" -->
+<feed xmlns="http://www.w3.org/2005/Atom"  xml:lang="en-gb">
+	<title type="text">Overview</title>
+	<subtitle type="text">The School of Population and Global Health Informatics Website</subtitle>
+	<link rel="alternate" type="text/html" href="https://sphinx.org.au"/>
+	<id>https://sphinx.org.au/the-ark/overview</id>
+	<updated>2023-03-03T14:18:07+11:00</updated>
+	<author>
+		<name>SPHINX</name>
+	</author>
+	<generator uri="https://www.joomla.org">Joomla! - Open Source Content Management</generator>
+	<link rel="self" type="application/atom+xml" href="https://sphinx.org.au/the-ark/overview?format=feed&amp;type=atom"/>
+	<entry>
+		<title>Overview</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark"/>
+		<published>2016-03-03T04:28:01+11:00</published>
+		<updated>2016-03-03T04:28:01+11:00</updated>
+		<id>https://sphinx.org.au/the-ark</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;The Ark project was established within the &lt;a href=&quot;http://gohad.uwa.edu.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Centre for Genetic Origins of Health and Disease&lt;/a&gt; at &lt;a href=&quot;http://www.uwa.edu.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;The University of Western Australia (UWA)&lt;/a&gt; in late 2009 to develop an open-source platform to support Australian and international biomedical researchers. &lt;a href=&quot;http://epi.unimelb.edu.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;The Centre for Epidemiology and Biostatistics&lt;/a&gt;, &lt;a href=&quot;http://www.unimelb.edu.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;University of Melbourne&lt;/a&gt; and the &lt;a href=&quot;https://www.lei.org.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Lions Eye Institute&lt;/a&gt; joined the project as collaborators in 2010 and 2014 respectively.&lt;/p&gt;
+&lt;p&gt;The project aims to provide a secure, highly-configurable web-based research tool that incorporates the majority of the functionality required to conduct a complex study or clinical trial, or operate a research registry. The Ark allows medical researchers without a technical background to self-manage their data using a customisable, user-friendly interface without the need for database/computer programming. Since The Ark is a web-based application, it is accessible from locations worldwide using a web browser, a standard piece of software bundled with most modern desktop, tablet and smart phone operating systems.&lt;/p&gt;
+&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;https://sphinx.org.au/images/ark/Study-details.png&quot; alt=&quot;The Ark's study details screen&quot; width=&quot;700&quot; height=&quot;546&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 8pt;&quot;&gt;&lt;em&gt;&lt;strong&gt;The Ark's study details screen&lt;/strong&gt;&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;The Ark project was established within the &lt;a href=&quot;http://gohad.uwa.edu.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Centre for Genetic Origins of Health and Disease&lt;/a&gt; at &lt;a href=&quot;http://www.uwa.edu.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;The University of Western Australia (UWA)&lt;/a&gt; in late 2009 to develop an open-source platform to support Australian and international biomedical researchers. &lt;a href=&quot;http://epi.unimelb.edu.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;The Centre for Epidemiology and Biostatistics&lt;/a&gt;, &lt;a href=&quot;http://www.unimelb.edu.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;University of Melbourne&lt;/a&gt; and the &lt;a href=&quot;https://www.lei.org.au/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Lions Eye Institute&lt;/a&gt; joined the project as collaborators in 2010 and 2014 respectively.&lt;/p&gt;
+&lt;p&gt;The project aims to provide a secure, highly-configurable web-based research tool that incorporates the majority of the functionality required to conduct a complex study or clinical trial, or operate a research registry. The Ark allows medical researchers without a technical background to self-manage their data using a customisable, user-friendly interface without the need for database/computer programming. Since The Ark is a web-based application, it is accessible from locations worldwide using a web browser, a standard piece of software bundled with most modern desktop, tablet and smart phone operating systems.&lt;/p&gt;
+&lt;p&gt;&lt;img style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;https://sphinx.org.au/images/ark/Study-details.png&quot; alt=&quot;The Ark's study details screen&quot; width=&quot;700&quot; height=&quot;546&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 8pt;&quot;&gt;&lt;em&gt;&lt;strong&gt;The Ark's study details screen&lt;/strong&gt;&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;</content>
+		<category term="Overview" />
+	</entry>
+	<entry>
+		<title>Capabilities</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/overview/24-capabilities"/>
+		<published>2016-03-03T04:31:50+11:00</published>
+		<updated>2016-03-03T04:31:50+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/overview/24-capabilities</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;To date, the project has delivered a Java-based solution that allows users to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;create and configure studies and sub-studies&lt;/li&gt;
+&lt;li&gt;define users and manage their roles and access permissions&lt;/li&gt;
+&lt;li&gt;define and manage a research participant pool including demographic data&lt;/li&gt;
+&lt;li&gt;define custom fields and arrange them into categories&lt;/li&gt;
+&lt;li&gt;define and manage the collection of phenotype research data&lt;/li&gt;
+&lt;li&gt;dynamically generate Electronic Data Capture (EDC) forms&lt;/li&gt;
+&lt;li&gt;manage biospecimens and the associated data using an integrated Laboratory Information Management System (LIMS)&lt;/li&gt;
+&lt;li&gt;model and visualise pedigree structures, and manage family data&lt;/li&gt;
+&lt;li&gt;manage study work requests, including billing&lt;/li&gt;
+&lt;li&gt;filter and extract data for analysis&lt;/li&gt;
+&lt;li&gt;generate customisable reports.&lt;/li&gt;
+&lt;/ul&gt;</summary>
+		<content type="html">&lt;p&gt;To date, the project has delivered a Java-based solution that allows users to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;create and configure studies and sub-studies&lt;/li&gt;
+&lt;li&gt;define users and manage their roles and access permissions&lt;/li&gt;
+&lt;li&gt;define and manage a research participant pool including demographic data&lt;/li&gt;
+&lt;li&gt;define custom fields and arrange them into categories&lt;/li&gt;
+&lt;li&gt;define and manage the collection of phenotype research data&lt;/li&gt;
+&lt;li&gt;dynamically generate Electronic Data Capture (EDC) forms&lt;/li&gt;
+&lt;li&gt;manage biospecimens and the associated data using an integrated Laboratory Information Management System (LIMS)&lt;/li&gt;
+&lt;li&gt;model and visualise pedigree structures, and manage family data&lt;/li&gt;
+&lt;li&gt;manage study work requests, including billing&lt;/li&gt;
+&lt;li&gt;filter and extract data for analysis&lt;/li&gt;
+&lt;li&gt;generate customisable reports.&lt;/li&gt;
+&lt;/ul&gt;</content>
+		<category term="Overview" />
+	</entry>
+	<entry>
+		<title>Example research users</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/overview/25-example-research-users"/>
+		<published>2016-03-03T04:31:32+11:00</published>
+		<updated>2016-03-03T04:31:32+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/overview/25-example-research-users</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;The Ark is a production ready system that is currently used by very large medical research projects. These include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.lifepool.org.au/&quot; target=&quot;_blank&quot;&gt;&lt;strong&gt;life&lt;/strong&gt;pool&lt;/a&gt;, an NBCF/Cancer Australia funded study of women attending BreastScreen Victoria comprising over 52,000 participants&lt;/li&gt;
+&lt;li&gt;The &lt;a href=&quot;http://www.gohad.uwa.edu.au/enabling-resources/biobanking&quot; target=&quot;_blank&quot;&gt;West Australian DNA Bank&lt;/a&gt;, which hosts over 100,000 samples for studies of various diseases in approximately 30,000 people&lt;/li&gt;
+&lt;li&gt;The&lt;a href=&quot;http://www.scgh.health.wa.gov.au/Research/InheritedRetinal.html&quot;&gt; Australian Inherited Retinal Disease Register and DNA Bank&lt;/a&gt; and the Pan-Australian Ophthalmic Biobank which manages over 42,000 biospecimens and 186,000 questionnaire responses, with 34 research users over six sites across Australia&lt;/li&gt;
+&lt;li&gt;The &lt;a target=&quot;_blank&quot; href=&quot;http://www.medpharm.uwa.edu.au/research/fremantle_diabetes_study&quot;&gt;Fremantle Diabetes Study&lt;/a&gt; comprising approximately 3,400 participants with over 91,000 biospecimen records.&lt;/li&gt;
+&lt;/ul&gt;</summary>
+		<content type="html">&lt;p&gt;The Ark is a production ready system that is currently used by very large medical research projects. These include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.lifepool.org.au/&quot; target=&quot;_blank&quot;&gt;&lt;strong&gt;life&lt;/strong&gt;pool&lt;/a&gt;, an NBCF/Cancer Australia funded study of women attending BreastScreen Victoria comprising over 52,000 participants&lt;/li&gt;
+&lt;li&gt;The &lt;a href=&quot;http://www.gohad.uwa.edu.au/enabling-resources/biobanking&quot; target=&quot;_blank&quot;&gt;West Australian DNA Bank&lt;/a&gt;, which hosts over 100,000 samples for studies of various diseases in approximately 30,000 people&lt;/li&gt;
+&lt;li&gt;The&lt;a href=&quot;http://www.scgh.health.wa.gov.au/Research/InheritedRetinal.html&quot;&gt; Australian Inherited Retinal Disease Register and DNA Bank&lt;/a&gt; and the Pan-Australian Ophthalmic Biobank which manages over 42,000 biospecimens and 186,000 questionnaire responses, with 34 research users over six sites across Australia&lt;/li&gt;
+&lt;li&gt;The &lt;a target=&quot;_blank&quot; href=&quot;http://www.medpharm.uwa.edu.au/research/fremantle_diabetes_study&quot;&gt;Fremantle Diabetes Study&lt;/a&gt; comprising approximately 3,400 participants with over 91,000 biospecimen records.&lt;/li&gt;
+&lt;/ul&gt;</content>
+		<category term="Overview" />
+	</entry>
+	<entry>
+		<title>Publications</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/publications"/>
+		<published>2018-11-07T03:22:10+11:00</published>
+		<updated>2018-11-07T03:22:10+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/publications</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;ol&gt;
+&lt;li style=&quot;margin: 5px 0;&quot;&gt;Bickerstaffe A, Ranaweera T, Endersby T, Ellis C, Maddumarachchi S, Gooden G, White P, Moses EK, Hewitt AW, Hopper JL. (2016). &lt;a href=&quot;https://doi.org/10.1093/bioinformatics/btw675&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;The Ark – a customizable web-based data management tool for health and medical research&lt;/a&gt;. &lt;em&gt;Bioinformatics&lt;/em&gt;, vol. 33, no. 4, pp. 624−626.&lt;/li&gt;
+&lt;li style=&quot;margin: 5px 0;&quot;&gt;Ranaweera T, Makalic E, Hopper JL, Bickerstaffe A. (2018). &lt;a href=&quot;https://www.ncbi.nlm.nih.gov/pubmed/29659834&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;An open-source, integrated pedigree data management and visualization tool for genetic epidemiology&lt;/a&gt;. &lt;em&gt;International Journal of Epidemiology&lt;/em&gt;, vol. 47, no. 4, pp. 1034–1039.&lt;/li&gt;
+&lt;/ol&gt;</summary>
+		<content type="html">&lt;ol&gt;
+&lt;li style=&quot;margin: 5px 0;&quot;&gt;Bickerstaffe A, Ranaweera T, Endersby T, Ellis C, Maddumarachchi S, Gooden G, White P, Moses EK, Hewitt AW, Hopper JL. (2016). &lt;a href=&quot;https://doi.org/10.1093/bioinformatics/btw675&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;The Ark – a customizable web-based data management tool for health and medical research&lt;/a&gt;. &lt;em&gt;Bioinformatics&lt;/em&gt;, vol. 33, no. 4, pp. 624−626.&lt;/li&gt;
+&lt;li style=&quot;margin: 5px 0;&quot;&gt;Ranaweera T, Makalic E, Hopper JL, Bickerstaffe A. (2018). &lt;a href=&quot;https://www.ncbi.nlm.nih.gov/pubmed/29659834&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;An open-source, integrated pedigree data management and visualization tool for genetic epidemiology&lt;/a&gt;. &lt;em&gt;International Journal of Epidemiology&lt;/em&gt;, vol. 47, no. 4, pp. 1034–1039.&lt;/li&gt;
+&lt;/ol&gt;</content>
+		<category term="Overview" />
+	</entry>
+	<entry>
+		<title>Screenshots</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/overview/23-screenshots"/>
+		<published>2016-03-03T04:33:20+11:00</published>
+		<updated>2016-03-03T04:33:20+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/overview/23-screenshots</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;{phocagallery view=category|categoryid=1|limitstart=0|limitcount=0|detail=8|imageordering=1}&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;{phocagallery view=category|categoryid=1|limitstart=0|limitcount=0|detail=8|imageordering=1}&lt;/p&gt;</content>
+		<category term="Overview" />
+	</entry>
+</feed>

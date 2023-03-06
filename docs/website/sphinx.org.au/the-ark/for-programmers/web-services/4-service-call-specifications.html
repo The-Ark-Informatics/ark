@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+
+<!-- Mirrored from sphinx.org.au/the-ark/for-programmers/web-services/4-service-call-specifications by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:46 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="utf-8" />
+	<base  />
+	<meta name="keywords" content="University of Melbourne School of Population and Global Health Informatics" />
+	<meta name="description" content="The School of Population and Global Health Informatics Website" />
+	<meta name="generator" content="Joomla! - Open Source Content Management" />
+	<title>Service call specifications</title>
+	<link href="../../../templates/protostar/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+	<link href="../../../templates/protostar/css/template8374.css?79454ffff00e04053220fdb82f03fe7b" rel="stylesheet" />
+	<link href="../../../../fonts.googleapis.com/cssd2d5.css?family=Open+Sans" rel="stylesheet" />
+	<style>
+
+	h1, h2, h3, h4, h5, h6, .site-title {
+		font-family: 'Open Sans', sans-serif;
+	}
+	body.site {
+		border-top: 3px solid #0088cc;
+		background-color: #f4f6f7;
+	}
+	a {
+		color: #0088cc;
+	}
+	.nav-list > .active > a,
+	.nav-list > .active > a:hover,
+	.dropdown-menu li > a:hover,
+	.dropdown-menu .active > a,
+	.dropdown-menu .active > a:hover,
+	.nav-pills > .active > a,
+	.nav-pills > .active > a:hover,
+	.btn-primary {
+		background: #0088cc;
+	}
+	</style>
+	<script src="../../../media/jui/js/jquery.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../../media/jui/js/jquery-noconflict8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../../media/jui/js/jquery-migrate.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../../media/system/js/caption8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../../media/jui/js/bootstrap.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../../templates/protostar/js/template8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<!--[if lt IE 9]><script src="/media/jui/js/html5.js?79454ffff00e04053220fdb82f03fe7b"></script><![endif]-->
+	<script>
+jQuery(window).on('load',  function() {
+				new JCaption('img.caption');
+			});
+	</script>
+
+</head>
+<body class="site com_content view-article no-layout no-task itemid-131">
+	<!-- Body -->
+	<div class="body" id="top">
+		<div class="container">
+			<!-- Header -->
+			<header class="header" role="banner">
+				<div class="header-inner clearfix">
+					<a class="brand pull-left" href="../../../index.html">
+						<img src="../../../images/logo.png" alt="SPHINX" />											</a>
+					<div class="header-search pull-right">
+						
+					</div>
+				</div>
+			</header>
+						
+			<div class="row-fluid">
+								<main id="content" role="main" class="span9">
+					<!-- Begin Content -->
+					
+					<div id="system-message-container">
+	</div>
+
+					<div class="item-page" itemscope itemtype="https://schema.org/Article">
+	<meta itemprop="inLanguage" content="en-GB" />
+	
+		
+			<div class="page-header">
+		<h2 itemprop="headline">
+			Service call specifications		</h2>
+							</div>
+					
+		
+	
+	
+		
+								<div itemprop="articleBody">
+		<p><a id="service_calls_top"></a>The following web services calls have been implemented in The Ark.</p>
+<ol>
+<li><a href="#getAllSubjects">Get all subjects of a study</a></li>
+<li><a href="#getSingleSubject">Get single subject from a study</a></li>
+<li><a href="#updateSubject">Update subject within a study</a></li>
+<li><a href="#addSubject">Add subject to study</a></li>
+<li><a href="#getAllTwins">Get all twins from a study</a></li>
+<li><a href="#deleteTwinRelationship">Delete twin relationship</a></li>
+<li><a href="#addTwinRelationship">Add twin relationship</a></li>
+<li><a href="#getSubjectsWithSiblings">Get all subjects who have siblings</a></li>
+<li><a href="#getAllSiblings">Get all siblings of a subject</a></li>
+<li><a href="#getAllRelationships">Get all parental relationships</a></li>
+<li><a href="#deleteParentalRelationship">Delete parental relationship</a></li>
+<li><a href="#addParentalRelationship">Add parental relationship</a></li>
+<li><a href="#getBloodLine">Get BloodLine of a subject</a></li>
+<li><a href="#visualiseProband">Visualise pedigree of proband</a></li>
+<li><a href="#getPedigreeConfig">Get pedigree configuration</a></li>
+<li><a href="#updatePedigreeConfig">Update pedigree configuration</a></li>
+<li><a href="#getYesNoCustomFields">Get yes/no subject custom fields</a></li>
+<li><a href="#getVisualisationPedigreeSent">Get visualisation of a pedigree sent</a></li>
+</ol>
+<p>Authentication is performed with respect to The Ark's user accounts and their role-based access permissions. For a web service call to succeed, the authenticated user must have adequate access permissions to perform the task. See The Ark <a href="../../documentation.html">user documentation</a> for more information.</p>
+ 
+<h4><a id="getAllSubjects"></a>Get all subjects of a study</h4>
+<p>Retrieve core data (subject UID, first and last name, etc.) for all members of a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/subject</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Status: 200</p>
+<p>Content:</p>
+<div><span style="font-family: courier new,courier;">subjects: [</span></div>
+<div><span style="font-family: courier new,courier;">    {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">        genderTypeName: "Male",</span></div>
+<div><span style="font-family: courier new,courier;">        firstName: "Mark",</span></div>
+<div><span style="font-family: courier new,courier;">        lastName: "Cruise",</span></div>
+<div><span style="font-family: courier new,courier;">        subjectStatusName: "Subject",</span></div>
+<div><span style="font-family: courier new, courier;">        consentStatusName: "Consented",</span></div>
+<div><span style="font-family: courier new,courier;">        vitalStatusName: "Alive",</span></div>
+<div><span style="font-family: courier new,courier;">        dateOfBirth: "2016-06-05"</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    {...},</span></div>
+<div><span style="font-family: courier new,courier;">    {...}</span></div>
+<div><span style="font-family: courier new,courier;">]</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+Content:{error:"Subject not specified."}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "https://examplehost.com/study/137/subject",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4> <a id="getSingleSubject"></a>Get single subject from a study</h4>
+<p>Retrieve core data (subject UID, first and last name, etc.) for a single member of a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/subject/{subjectUID}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+subjectUID as [String], e.g. subjectUID = "A000231"</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<div><span style="font-family: courier new,courier;">subject: {</span></div>
+<div><span style="font-family: courier new,courier;">    subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">    genderTypeName: "Male",</span></div>
+<div><span style="font-family: courier new,courier;">    firstName: "Mark",</span></div>
+<div><span style="font-family: courier new,courier;">    lastName: "Cruise",</span></div>
+<div><span style="font-family: courier new,courier;">    subjectStatusName: "Subject",</span></div>
+<div>
+<div><span style="font-family: courier new, courier;">    consentStatusName: "Consented",</span></div>
+</div>
+<div><span style="font-family: courier new,courier;">    vitalStatusName: "Alive",</span></div>
+<div><span style="font-family: courier new,courier;">    dateOfBirth: "2016-06-05"</span></div>
+<div><span style="font-family: courier new,courier;">} </span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+Content:{error:”A subject with this UID does not exist."}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;">https://examplehost.com/study/137</span>/subject/A000231",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="updateSubject"></a>Update subject within a study</h4>
+<p>Update core data (subject UID, first and last name, etc.) for a single member of a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/subject/{subjectID}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">POST</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+<p>subjectID as [number], e.g. subjectID = 1056</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong>Data Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    subject: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        genderTypeName: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        firstName: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        lastName: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        subjectStatusName: [string],</span></div>
+<div>
+<div><span style="font-family: courier new, courier;">        consentStatusName: [string],</span></div>
+</div>
+<div><span style="font-family: courier new,courier;">        vitalStatusName: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        dateOfBirth: [string]</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+<p>Valid selections:</p>
+<p><span style="font-family: courier new, courier;">subjectStatusName: ["Subject", "Prospect", "Withdrawn Subject", "Archive", "Inactive"]</span><br /><span style="font-family: courier new, courier;">genderTypeName: ["Male", "Female", "Unknown"]</span><br /><span style="font-family: courier new, courier;">vitalStatusName: ["Alive", "Deceased", "Unknown"]</span><br /><span style="font-family: courier new, courier;">consentStatusName: ["Consented", "Not Consented", "Ineligible Refused", "Withdrawn", "Pending"]</span></p>
+<p>Example:</p>
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    subject: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">        genderTypeName: "Male",</span></div>
+<div><span style="font-family: courier new,courier;">        firstName: "Mark",</span></div>
+<div><span style="font-family: courier new,courier;">        lastName: "Cruise",</span></div>
+<div><span style="font-family: courier new,courier;">        subjectStatusName: "Subject",</span></div>
+<div>
+<div><span style="font-family: courier new, courier;">        consentStatusName: "Consented",</span></div>
+</div>
+<div><span style="font-family: courier new,courier;">        vitalStatusName: "Alive",</span></div>
+<div><span style="font-family: courier new,courier;">        dateOfBirth: "2016-06-05"</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Message: "Subject updated successfully"</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A subject with this UID does not exist."}</p>
+<p>OR</p>
+<p>Code: 409 CONFLICT</p>
+<p>Content:{error:"The given Subject UID and Subject ID do not match."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Gender not specified."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:""Gender must be “male“ or “female“."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Vital Status not specified."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Vital Status must be “Alive”, “Deceased”, or “Unknown”."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Subject Status not specified."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Subject Status must be “Subject”, “Prospect”, “Withdrawn Subject”, “Archive”, or “Inactive”."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">     url: "<span style="font-family: courier new,courier;">https://examplehost.com/study/137</span>/subject/1056",</span></div>
+<div><span style="font-family: courier new,courier;">     dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">     headers: {</span></div>
+<div><span style="font-family: courier new,courier;">         "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    data: {subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">           genderTypeName: "Male",</span></div>
+<div><span style="font-family: courier new,courier;">           firstName: "Mark",</span></div>
+<div><span style="font-family: courier new,courier;">           lastName: "Cruise",</span></div>
+<div><span style="font-family: courier new,courier;">           subjectStatusName: "Subject",</span></div>
+<div><span style="font-family: courier new, courier;">           consentStatusName: "Consented",</span></div>
+<div><span style="font-family: courier new,courier;">           vitalStatusName: "Alive",</span></div>
+<div><span style="font-family: courier new,courier;">           dateOfBirth: "2016-06-05"</span></div>
+<div><span style="font-family: courier new,courier;">     },</span></div>
+<div><span style="font-family: courier new,courier;">     type: "POST",</span></div>
+<div><span style="font-family: courier new,courier;">     success: function (res) {}</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="addSubject"></a>Add subject to study</h4>
+<p>Add a subject to a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/subject</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">PUT</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong>Data Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    subject: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        genderTypeName: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        firstName: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        lastName: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        subjectStatusName: [string],</span></div>
+<div>
+<div><span style="font-family: courier new, courier;">        consentStatusName: [string],</span></div>
+</div>
+<div><span style="font-family: courier new,courier;">        vitalStatusName: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        dateOfBirth: [string]</span></div>
+<div><span style="font-family: courier new,courier;">   }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+<div>
+<p>Valid selections:</p>
+<p><span style="font-family: courier new, courier;">subjectStatusName: ["Subject", "Prospect", "Withdrawn Subject", "Archive", "Inactive"]</span><br /><span style="font-family: courier new, courier;">genderTypeName: ["Male", "Female", "Unknown"]</span><br /><span style="font-family: courier new, courier;">vitalStatusName: ["Alive", "Deceased", "Unknown"]</span><br /><span style="font-family: courier new, courier;">consentStatusName: ["Consented", "Not Consented", "Ineligible Refused", "Withdrawn", "Pending"]</span></p>
+</div>
+<p>Example:</p>
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    subject: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: "A000232",</span></div>
+<div><span style="font-family: courier new,courier;">        genderTypeName: "Male",</span></div>
+<div><span style="font-family: courier new,courier;">        firstName: "John",</span></div>
+<div><span style="font-family: courier new,courier;">        lastName: "Smith",</span></div>
+<div><span style="font-family: courier new,courier;">        subjectStatusName: "Subject",</span></div>
+<div>
+<div><span style="font-family: courier new, courier;">        consentStatusName: "Consented",</span></div>
+</div>
+<div><span style="font-family: courier new,courier;">        vitalStatusName: "Alive",</span></div>
+<div><span style="font-family: courier new,courier;">        dateOfBirth: "2016-06-05"</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Message: "Subject created successfully"</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content: {error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 409 CONFLICT</p>
+<p>Content:{error:"A subject with this UID already exists."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Gender not specified."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Gender must be “male“ or “female“."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Vital Status not specified."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Vital Status must be “Alive”, “Deceased”, or “Unknown”."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Subject Status not specified."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Subject Status must be "Subject", "Prospect", "Withdrawn Subject", "Archive", or "Inactive"."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">     url: "<span style="font-family: courier new,courier;">https://examplehost.com/study/137</span>/subject",</span></div>
+<div><span style="font-family: courier new,courier;">     dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">     headers: {</span></div>
+<div><span style="font-family: courier new,courier;">         "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">     },</span></div>
+<div><span style="font-family: courier new,courier;">     data: {</span></div>
+<div><span style="font-family: courier new,courier;">         subjectUID: "A000232",</span></div>
+<div><span style="font-family: courier new,courier;">         genderTypeName: "Male",</span></div>
+<div><span style="font-family: courier new,courier;">         firstName: "John",</span></div>
+<div><span style="font-family: courier new,courier;">         lastName: "Smith",</span></div>
+<div><span style="font-family: courier new,courier;">         subjectStatusName: "Subject",</span></div>
+<div>
+<div><span style="font-family: courier new, courier;">         consentStatusName: "Consented",</span></div>
+</div>
+<div><span style="font-family: courier new,courier;">         vitalStatusName: "Alive",</span></div>
+<div><span style="font-family: courier new,courier;">         dateOfBirth: "2016-06-05"</span></div>
+<div><span style="font-family: courier new,courier;">     },</span></div>
+<div><span style="font-family: courier new,courier;">     type: "PUT",</span></div>
+<div><span style="font-family: courier new,courier;">     success: function (res) {}</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="getAllTwins"></a>Get all twins from a study</h4>
+<p>Retrieve a list of all twins in a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/twintype </td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137 </p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Content:</p>
+<div><span style="font-family: courier new,courier;">twins: [</span></div>
+<div><span style="font-family: courier new,courier;">    {</span></div>
+<div>
+<div><span style="font-family: courier new, courier;">        id: 123,</span></div>
+</div>
+<div><span style="font-family: courier new,courier;">        subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">        relativeUID: "A000233",</span></div>
+<div><span style="font-family: courier new,courier;">        twinType: "MZ"</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    {...},</span></div>
+<div><span style="font-family: courier new,courier;">    {...}</span></div>
+<div><span style="font-family: courier new,courier;">]</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content: {error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"No twin relationship exists."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span>/twintype",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="deleteTwinRelationship"></a>Delete twin relationship</h4>
+<p>Delete a specific twin relationship within a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/twintype/{relationshipID}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">DELETE</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+<p>relationshipID as [String], e.g. relationshipID = 123</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+Content:{error:"Invalid twin relationship."} </td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span>/twintype/123",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    type: "DELETE",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="addTwinRelationship"></a>Add twin relationship</h4>
+<p>Add a twin relationship between members of a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/twintype</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">PUT</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+studyID as [number], e.g. studyID = 137</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong>Data Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    twin: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        relativeUID: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        twinType: [string]</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+<p>Valid selections:</p>
+<p><span style="font-family: courier new, courier;">twinType: ["MZ", "DZ"]</span></p>
+<p>Example:</p>
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    twin: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">        relativeUID: "A000233",</span></div>
+<div><span style="font-family: courier new,courier;">        twinType: "MZ"</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Message: "Twin relationship created successfully"</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A subject with this UID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A relative with this subject UID does not exist."}</p>
+<p>OR</p>
+<p>Code: 403 FORBIDDEN</p>
+<p>Content:{error:"Cannot create a relationship for a subject with this Subject Status."}</p>
+<p>OR</p>
+<p>Code: 403 FORBIDDEN</p>
+<p>Content:{error:"Cannot create a relationship for a relative with this Subject Status."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Twin Type must be "MZ" or "DZ"."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Twin Type not specified."}</p>
+<p>OR</p>
+<p>Code: 409 CONFLICT</p>
+<p>Content:{error:"Twin relationship indicated for a subject that is not a sibling."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span>/twintype",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    data: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">        relativeUID: "A000233",</span></div>
+<div><span style="font-family: courier new,courier;">        twinType: "MZ"</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    type: "PUT",</span></div>
+<div><span style="font-family: courier new,courier;">    success: function (res) {}</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4> <a id="getSubjectsWithSiblings"></a>Get all subjects who have siblings</h4>
+<p>Retrieve a list of subjects who each have one or more siblings.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/commonparentsubjects</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+studyID as [number], e.g. studyID = 137</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Content:</p>
+<span style="font-family: courier new, courier;">subjectUIDs: ["A00021", "A00042", "A00089"]</span></td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new, courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new, courier;">    url: "<span style="font-family: courier new, courier;"><span style="font-family: courier new, courier;"><span style="font-family: courier new, courier;">https://examplehost.com/study/137</span></span></span>/commonparentsubjects",</span></div>
+<div><span style="font-family: courier new, courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new, courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new, courier;">    headers: {</span></div>
+<div><span style="font-family: courier new, courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new, courier;">    },</span></div>
+<div><span style="font-family: courier new, courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new, courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new, courier;">    }</span></div>
+<div><span style="font-family: courier new, courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="getAllSiblings"></a>Get all siblings of a subject</h4>
+<p>Retrieve a list of siblings for a specific subject.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/siblings/{subjectUID}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+subjectUID as [string], e.g. subjectUID = "A1234"</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p><span style="font-family: courier new, courier;">subjectUIDs: ["A00021", "A00031"]</span></p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span>/siblings/A1234",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">       console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">   }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="getAllRelationships"></a>Get all parental relationships</h4>
+<p>Retrieve a list of all parental relationships within a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/relationship</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+studyID as [number], e.g. studyID = 137</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Content:</p>
+<div><span style="font-family: courier new,courier;">relationships: [</span></div>
+<div><span style="font-family: courier new,courier;">    {</span></div>
+<div>
+<div><span style="font-family: courier new, courier;">        id: 123,</span></div>
+</div>
+<div><span style="font-family: courier new,courier;">        subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">        relativeUID: "A000233",</span></div>
+<div><span style="font-family: courier new,courier;">        parentType: "Mother"</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    {...},</span></div>
+<div><span style="font-family: courier new,courier;">    {...}</span></div>
+<div><span style="font-family: courier new,courier;">]</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"No parent relationship exists."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span>/relationship",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="deleteParentalRelationship"></a>Delete parental relationship</h4>
+<p>Delete a parental relationship between two members of a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/relationship/{relationshipID}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">DELETE</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+relationshipID as [Integer], e.g. relationshipID = 123</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+Content:{error:"Invalid parental relationship."}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span>/relationship/123",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    type: "DELETE",</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="addParentalRelationship"></a>Add parental relationship</h4>
+<p>Add a parental relationship between two members of a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/relationship</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">PUT</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong>Data Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    relationship: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID : [string],</span></div>
+<div><span style="font-family: courier new,courier;">        relativeUID: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        parentType: [string]</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+<p>Valid selections:</p>
+<p><span style="font-family: courier new, courier;">parentType: ["Mother", "Father"]</span></p>
+<p>Example:</p>
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    relationship: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">        relativeUID: "A000233",</span></div>
+<div><span style="font-family: courier new,courier;">        parentType: "Mother"</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Message: "Relationship created successfully"</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content: {error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A subject with this UID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A relative with this subject UID does not exist."}</p>
+<p>OR</p>
+<p>Code: 403 FORBIDDEN</p>
+<p>Content:{error:"Cannot create a relationship for a subject with this Subject Status."}</p>
+<p>OR</p>
+<p>Code: 403 FORBIDDEN</p>
+<p>Content:{error:"Cannot create a relationship for a relative with this Subject Status."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Parent Type must be "Mother" or "Father"."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Parent Type not specified."}</p>
+<p>OR</p>
+<p>Code: 403 FORBIDDEN</p>
+<p>Content:{error:"Consanguineous relationship detected in a study not configured to permit it."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">     url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span>/relationship",</span></div>
+<div><span style="font-family: courier new,courier;">     dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">     headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    data: {</span></div>
+<div><span style="font-family: courier new,courier;">        subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">        relativeUID: "A000233",</span></div>
+<div><span style="font-family: courier new,courier;">        parentType: "Mother"</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    type: "PUT",</span></div>
+<div><span style="font-family: courier new,courier;">    success: function (res) {}</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="getBloodLine"></a>Get BloodLine of a subject</h4>
+<p>Retrieve a list of blood relatives for a specific subject, annotated with relationship type (mother, grandfather, daughter, grandson, etc.).</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/membership/{subjectUID}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+<p>subjectUID as [String], e.g. subjectUID = "A012345"</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Content:</p>
+<div><span style="font-family: courier new,courier;">bloodline: [</span></div>
+<div><span style="font-family: courier new,courier;">       {</span></div>
+<div><span style="font-family: courier new,courier;">           subjectUID: "A000231",</span></div>
+<div><span style="font-family: courier new,courier;">           firstName: "Fred",</span></div>
+<div><span style="font-family: courier new,courier;">           lastName": "Barrymore",</span></div>
+<div><span style="font-family: courier new,courier;">           relation: "Father",</span></div>
+<div><span style="font-family: courier new,courier;">           twin": " ",</span></div>
+<div><span style="font-family: courier new,courier;">           dateOfBirth": "1976-06-05"</span></div>
+<div><span style="font-family: courier new,courier;">       },</span></div>
+<div><span style="font-family: courier new,courier;">       {...},</span></div>
+<div><span style="font-family: courier new,courier;">       {...}</span></div>
+<div><span style="font-family: courier new,courier;">   ]</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A subject with this UID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"No Pedigree members exists."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span>/membership/A012345",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="visualiseProband"></a>Visualise pedigree of proband</h4>
+<p>Retrieve a pedigree visualisation (in Scalable Vector Graphics format) with respect to a specific proband.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/pedigree/{subjectUID}</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+subjectUID as [string], e.g. subjectUID= "A000231"</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Content:</p>
+<p><span style="font-family: courier new,courier;">{ svg : "&lt;svg&gt; ... &lt;/svg&gt;" }</span></p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content: {error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A subject with this UID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:”Pedigree view does not exists."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span>/pedigree/A000231",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="getPedigreeConfig"></a>Get pedigree configuration</h4>
+<p>Retrieve the current pedigree module configuration for a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/configuration</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Content:</p>
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    configuration: {</span></div>
+<div><span style="font-family: courier new,courier;">        statusAllowed: true,</span></div>
+<div><span style="font-family: courier new,courier;">        customFieldName: "BreastCancerAffected",</span></div>
+<div><span style="font-family: courier new,courier;">        dobAllowed: true,</span></div>
+<div><span style="font-family: courier new,courier;">        ageAllowed: true,</span></div>
+<div><span style="font-family: courier new,courier;">        inbreedAllowed: true</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content: {error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Pedigree configuration does not exist."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span>/configuration",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="updatePedigreeConfig"></a>Update pedigree configuration</h4>
+<p>Update the pedigree module configuration for a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/configuration</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">POST</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Data Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    configuration: {</span></div>
+<div><span style="font-family: courier new,courier;">        statusAllowed: [boolean],</span></div>
+<div><span style="font-family: courier new,courier;">        customFieldName: [string],</span></div>
+<div><span style="font-family: courier new,courier;">        dobAllowed: [boolean]</span></div>
+<div><span style="font-family: courier new,courier;">        ageAllowed: [boolean],</span></div>
+<div><span style="font-family: courier new,courier;">        inbreedAllowed: [boolean]</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+<p>Example:</p>
+<div><span style="font-family: courier new,courier;">{</span></div>
+<div><span style="font-family: courier new,courier;">    configuration: {</span></div>
+<div><span style="font-family: courier new,courier;">        statusAllowed: true,</span></div>
+<div><span style="font-family: courier new,courier;">        customFieldName: "<span style="font-family: courier new,courier;">BreastCancerAffected</span>",</span></div>
+<div><span style="font-family: courier new,courier;">        dobAllowed: true,</span></div>
+<div><span style="font-family: courier new,courier;">        ageAllowed: true,</span></div>
+<div><span style="font-family: courier new,courier;">        inbreedAllowed: true</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">}</span></div>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Message: "Configuration updated successfully"</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 409 CONFLICT</p>
+<p>Content:{error:"Cannot update a pedigree configuration when no configuration has been set previously."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span></span>/configuration",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    data: {</span></div>
+<div><span style="font-family: courier new,courier;">        statusAllowed: true,</span></div>
+<div><span style="font-family: courier new,courier;">        customFieldName: "<span style="font-family: courier new,courier;">BreastCancerAffected</span>",</span></div>
+<div><span style="font-family: courier new,courier;">        dobAllowed: true,</span></div>
+<div><span style="font-family: courier new,courier;">        ageAllowed: true,</span></div>
+<div><span style="font-family: courier new,courier;">        inbreedAllowed: true</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    type: "POST",</span></div>
+<div><span style="font-family: courier new,courier;">    success: function (res) {}</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="getYesNoCustomFields"></a>Get yes/no subject custom fields</h4>
+<p>Retrieve a list of subject custom fields which have yes/no encoded values. This is a supporting function that is useful when setting the "Affected status field" of the pedigree module configuration.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/binarycustomfields</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">GET</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>customFieldNames: ["BreastCancerAffected", "ColonCancerAffected"]</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span></span>/binarycustomfields",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    type: "GET",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    success : function(r) {</span></div>
+<div><span style="font-family: courier new,courier;">        console.log(r);</span></div>
+<div><span style="font-family: courier new,courier;">    }</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: right;"> <a href="#service_calls_top">Back to top</a></p>
+<h4><a id="getVisualisationPedigreeSent"></a>Get visualisation of a pedigree sent (but not persisted)</h4>
+<p>Retrieve a visualisation (in Scalable Vector Graphics format) of pedgree data that are sent to The Ark for processing but not persisted (saved) as subjects of a study.</p>
+<table cellpadding="3">
+<tbody>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL</strong></td>
+<td style="border: thin solid #bababa;">/study/{studyID}/visualisation</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Method</strong></td>
+<td style="border: thin solid #bababa;">POST</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>URL Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Required:</p>
+<p>studyID as [number], e.g. studyID = 137</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong>Data Parameters</strong></td>
+<td style="border: thin solid #bababa;">
+<p><span style="font-family: courier new, courier;"><span style="font-family: courier new, courier;">{</span><br /></span></p>
+<div><span style="font-family: courier new, courier;">    subjects: [</span></div>
+<div><span style="font-family: courier new, courier;">        { <span style="font-family: courier new, courier;">individualId: [string],</span><br /><span style="font-family: courier new, courier;">          father: [string],</span><br /><span style="font-family: courier new, courier;">          mother: [string],</span><br /><span style="font-family: courier new, courier;">          gender: [string],</span><br /><span style="font-family: courier new, courier;">          zygosity: [string],</span><br /><span style="font-family: courier new, courier;">          proband: [string],</span><br /><span style="font-family: courier new, courier;">          deceased: [string],</span><br /><span style="font-family: courier new, courier;">          affected: [string],</span><br /><span style="font-family: courier new, courier;">          dOB: [string]</span><br /></span></div>
+<div><span style="font-family: courier new, courier;">        },</span></div>
+<div><span style="font-family: courier new, courier;">        { },</span></div>
+<div><span style="font-family: courier new, courier;">        { }</span></div>
+<div><span style="font-family: courier new, courier;">    ]</span></div>
+<p><span style="font-family: courier new, courier;">}</span><br />Valid Selections :</p>
+<p><span style="font-family: courier new, courier;">zygosity: ["MZ Twin", "DZ Twin", "Unknown"]</span><br /><span style="font-family: courier new, courier;">gender: ["Male", "Female", "Unknown"]</span><br /><span style="font-family: courier new, courier;">deceased: ["Yes", "No"]</span><br /><span style="font-family: courier new, courier;">proband: ["Yes", "No"]</span><br /><span style="font-family: courier new, courier;">affected: ["Affected", "Unaffected", "Missing"]</span></p>
+<p>Example:<br /><span style="font-family: courier new, courier;">{</span></p>
+<div><span style="font-family: courier new, courier;">    subjects: [</span></div>
+<div><span style="font-family: courier new, courier;">        { individualId: "A12345",</span></div>
+<div><span style="font-family: courier new, courier;">          father: "A12346",</span></div>
+<div><span style="font-family: courier new, courier;">          mother: "A12347",</span></div>
+<div><span style="font-family: courier new, courier;">          gender: "Male",</span></div>
+<div><span style="font-family: courier new, courier;">          zygosity: "MZTwin",</span></div>
+<div><span style="font-family: courier new, courier;">          proband: "Yes",</span></div>
+<div><span style="font-family: courier new, courier;">          deceased: "No",</span></div>
+<div><span style="font-family: courier new, courier;">          affected: "Affected",</span></div>
+<div><span style="font-family: courier new, courier;">          dOB: "2010-01-03" </span></div>
+<div><span style="font-family: courier new, courier;">        },</span></div>
+<div><span style="font-family: courier new, courier;">        { individualId: "A12346",</span>
+<div><span style="font-family: courier new, courier;">          father: "A12355",</span></div>
+<div><span style="font-family: courier new, courier;">          mother: "A12356",</span></div>
+<div><span style="font-family: courier new, courier;">          gender: "Male",</span></div>
+<div><span style="font-family: courier new, courier;">          zygosity: "Unknown",</span></div>
+<div><span style="font-family: courier new, courier;">          proband: "No",</span></div>
+<div><span style="font-family: courier new, courier;">          deceased: "No",</span></div>
+<div><span style="font-family: courier new, courier;">          affected: "Affected",</span></div>
+<div><span style="font-family: courier new, courier;">          dOB: "1985-04-02"</span></div>
+<div><span style="font-family: courier new, courier;">        },</span></div>
+</div>
+<div><span style="font-family: courier new, courier;">        { },</span></div>
+<div><span style="font-family: courier new, courier;">        { }</span></div>
+<div><span style="font-family: courier new, courier;">    ]</span></div>
+<p><span style="font-family: courier new, courier;">}</span></p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Authentication</strong></td>
+<td style="border: thin solid #bababa;">Basic Authentication</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Success Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Example:</p>
+<p>Status: 200</p>
+<p>Content:</p>
+<p><span style="font-family: courier new,courier;">{ svg : "&lt;svg&gt; ... &lt;/svg&gt;" }</span></p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"> <strong>Error Response</strong></td>
+<td style="border: thin solid #bababa;">
+<p>Code: 401 UNAUTHORIZED</p>
+<p>Content:{error:"The authenticated user account does not have sufficient privileges to perform this action."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Invalid Study ID."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"A study with this ID does not exist."}</p>
+<p>OR</p>
+<p>Code: 406 NOT ACCEPTABLE</p>
+<p>Content:{error:"The mandatory field "Gender" can only take values "Male", "Female" or "Unknown"."}</p>
+<p>OR</p>
+<p>Code: 406 NOT ACCEPTABLE</p>
+<p>Content:{error:"The field "Affected" can only take values "Affected" or "Unaffected"."}</p>
+<p>OR</p>
+<p>Code: 406 NOT ACCEPTABLE</p>
+<p>Content:{error:"The field "Zygosity" can only take values "MZTwin", "DZTwin" or "Unknown"."}</p>
+<p>OR</p>
+<p>Code: 406 NOT ACCEPTABLE</p>
+<p>Content:{error:"The field “Deceased“ can only take values "Yes", "No" or "Missing"."}</p>
+<p>OR</p>
+<p>Code: 406 NOT ACCEPTABLE</p>
+<p>Content:{error:"The field "Proband" can only take values "Yes", "No" or "Missing"."}</p>
+<p>OR</p>
+<p>Code: 204 NO CONTENT</p>
+<p>Content:{error:"The mandatory field “IndividualId“ can not be empty."}</p>
+<p>OR</p>
+<p>Code: 204 NO CONTENT</p>
+<p>Content:{error:"The mandatory field "FamilyId" can not be empty."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Specified mother ID is not present in the list."}</p>
+<p>OR</p>
+<p>Code: 404 NOT FOUND</p>
+<p>Content:{error:"Specified father ID is not present in the list."}</p>
+</td>
+</tr>
+<tr>
+<td style="border: thin solid #bababa;"><strong> Example Call</strong></td>
+<td style="border: thin solid #bababa;">
+<div><span style="font-family: courier new,courier;">$.ajax({</span></div>
+<div><span style="font-family: courier new,courier;">    url: "<span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;"><span style="font-family: courier new,courier;">https://examplehost.com/study/137</span></span></span></span>/visualisation",</span></div>
+<div><span style="font-family: courier new,courier;">    dataType: "json",</span></div>
+<div><span style="font-family: courier new,courier;">    headers: {</span></div>
+<div><span style="font-family: courier new,courier;">        "Authorization": "Basic " + btoa(username + ":" + password)</span></div>
+<div><span style="font-family: courier new,courier;">    },</span></div>
+<div><span style="font-family: courier new,courier;">    data: [</span></div>
+<div><span style="font-family: courier new,courier;">        { individualId: "A12345",</span></div>
+<div><span style="font-family: courier new,courier;">          father: "A12346",</span></div>
+<div><span style="font-family: courier new,courier;">          mother: "A12347",</span></div>
+<div><span style="font-family: courier new,courier;">          gender: "Male",</span></div>
+<div><span style="font-family: courier new,courier;">          zygosity: "MZTwin",</span></div>
+<div><span style="font-family: courier new,courier;">          proband: "Yes",</span></div>
+<div><span style="font-family: courier new,courier;">          deceased: "No",</span></div>
+<div><span style="font-family: courier new,courier;">          affected: "Affected",</span></div>
+<div><span style="font-family: courier new,courier;">          dOB": "2010-01-03" </span></div>
+<div><span style="font-family: courier new,courier;">        },</span></div>
+<div><span style="font-family: courier new,courier;">        { individualId: "A12346",</span>
+<div><span style="font-family: courier new,courier;">          father: "A12355",</span></div>
+<div><span style="font-family: courier new,courier;">          mother: "A12356",</span></div>
+<div><span style="font-family: courier new,courier;">          gender: "Male",</span></div>
+<div><span style="font-family: courier new,courier;">          zygosity: "Unknown",</span></div>
+<div><span style="font-family: courier new,courier;">          proband: "No",</span></div>
+<div><span style="font-family: courier new,courier;">          deceased: "No",</span></div>
+<div><span style="font-family: courier new,courier;">          affected: "Affected",</span></div>
+<div><span style="font-family: courier new,courier;">          dOB: "1985-04-02"</span></div>
+<div><span style="font-family: courier new,courier;">        },</span></div>
+</div>
+<div><span style="font-family: courier new,courier;">        { },</span></div>
+<div><span style="font-family: courier new,courier;">        { }</span></div>
+<div><span style="font-family: courier new,courier;">    ];</span></div>
+<div><span style="font-family: courier new,courier;">    type: "POST",</span></div>
+<div><span style="font-family: courier new,courier;">    success: function (res) {}</span></div>
+<div><span style="font-family: courier new,courier;">});</span></div>
+</td>
+</tr>
+</tbody>
+</table>	</div>
+
+	
+							</div>
+
+					<div class="clearfix"></div>
+					<div aria-label="Breadcrumbs" role="navigation">
+	<ul itemscope itemtype="https://schema.org/BreadcrumbList" class="breadcrumb">
+					<li>
+				You are here: &#160;
+			</li>
+		
+						<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../../../index.html" class="pathway"><span itemprop="name">Home</span></a>
+					
+											<span class="divider">
+							<img src="../../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="1">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../../../the-ark.html" class="pathway"><span itemprop="name">The Ark</span></a>
+					
+											<span class="divider">
+							<img src="../../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="2">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../../for-programmers.html" class="pathway"><span itemprop="name">For programmers</span></a>
+					
+											<span class="divider">
+							<img src="../../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="3">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../web-services.html" class="pathway"><span itemprop="name">Web Services</span></a>
+					
+											<span class="divider">
+							<img src="../../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="4">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active">
+					<span itemprop="name">
+						Service call specifications					</span>
+					<meta itemprop="position" content="5">
+				</li>
+				</ul>
+</div>
+
+					<!-- End Content -->
+				</main>
+									<div id="aside" class="span3">
+						<!-- Begin Right Sidebar -->
+						<div class="well _menu"><h3 class="page-header">Main Menu</h3><ul class="nav menu mod-list">
+<li class="item-101 default"><a href="../../../index.html" >Home</a></li><li class="item-125 active deeper parent"><a href="../../../the-ark.html" >The Ark</a><ul class="nav-child unstyled small"><li class="item-126"><a href="../../overview.html" >Overview</a></li><li class="item-127"><a href="../../try-it.html" >Try it</a></li><li class="item-128"><a href="../../documentation.html" >User documentation</a></li><li class="item-129"><a href="../../for-system-administrators.html" >For system administrators</a></li><li class="item-130 active deeper parent"><a href="../../for-programmers.html" >For programmers</a><ul class="nav-child unstyled small"><li class="item-131 current active"><a href="../web-services.html" >Web Services</a></li></ul></li><li class="item-132"><a href="../../spark.html" >SPARK</a></li><li class="item-140"><a href="../../publications.html" >Publications</a></li><li class="item-133"><a href="../../acknowledgements.html" >Acknowledgements</a></li><li class="item-134"><a href="../../contact-us.html" >Contact us</a></li></ul></li></ul>
+</div>
+						<!-- End Right Sidebar -->
+					</div>
+							</div>
+		</div>
+	</div>
+	<!-- Footer -->
+	<footer class="footer" role="contentinfo">
+		<div class="container">
+			<hr />
+			
+			<p class="pull-right">
+				<a href="#top" id="back-top">
+					Back to Top				</a>
+			</p>
+			<p>
+				&copy; 2023 SPHINX			</p>
+		</div>
+	</footer>
+	
+</body>
+
+<!-- Mirrored from sphinx.org.au/the-ark/for-programmers/web-services/4-service-call-specifications by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:46 GMT -->
+</html>

@@ -29,3 +29,7 @@ ark-calendar/src/main/resources/ark-calendar.properties
 
 
 tools/casper/src/main/resources/casper.properties
+
+# Removing large zip file from GIT tracking in website
+docs/website/hts-cache/new.zip
+docs/website/sphinx.org.au/images/docs/the-ark-docs.zip

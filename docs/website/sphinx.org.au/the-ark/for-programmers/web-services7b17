@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generator="Joomla! - Open Source Content Management" -->
+<feed xmlns="http://www.w3.org/2005/Atom"  xml:lang="en-gb">
+	<title type="text">Web Services</title>
+	<subtitle type="text">The School of Population and Global Health Informatics Website</subtitle>
+	<link rel="alternate" type="text/html" href="https://sphinx.org.au"/>
+	<id>https://sphinx.org.au/the-ark/for-programmers/web-services</id>
+	<updated>2023-03-03T14:25:22+11:00</updated>
+	<author>
+		<name>SPHINX</name>
+	</author>
+	<generator uri="https://www.joomla.org">Joomla! - Open Source Content Management</generator>
+	<link rel="self" type="application/atom+xml" href="https://sphinx.org.au/the-ark/for-programmers/web-services?format=feed&amp;type=atom"/>
+	<entry>
+		<title>Web services</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/for-programmers/web-services/5-web-services"/>
+		<published>2017-11-10T04:43:06+11:00</published>
+		<updated>2017-11-10T04:43:06+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/for-programmers/web-services/5-web-services</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;External applications can interact with the The Ark via a secure web services interface. The interface was initially developed with a focus on allowing external applications to utilise The Ark's pedigree modelling and visualisation capabilities. To date, the web services layer facilitates the following functions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create and edit study subjects&lt;/li&gt;
+&lt;li&gt;Create and delete pedigree relationships&lt;/li&gt;
+&lt;li&gt;Create and delete twin relationships&lt;/li&gt;
+&lt;li&gt;Configure pedigree modelling and visualisation functionality&lt;/li&gt;
+&lt;li&gt;For a given proband persisted in The Ark, retrieve an inferred pedigree membership, complete with relationship labels&lt;/li&gt;
+&lt;li&gt;Generate and retrieve a pedigree visualisation for a proband persisted in The Ark&lt;/li&gt;
+&lt;li&gt;Irrespective of existing studies and subjects stored in The Ark, send pedigree data and retrieve a corresponding visualisation without saving this data in The Ark.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Work on The Ark web services interface continues, and greater coverage of the system’s functionality will arrive in future releases.&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;External applications can interact with the The Ark via a secure web services interface. The interface was initially developed with a focus on allowing external applications to utilise The Ark's pedigree modelling and visualisation capabilities. To date, the web services layer facilitates the following functions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create and edit study subjects&lt;/li&gt;
+&lt;li&gt;Create and delete pedigree relationships&lt;/li&gt;
+&lt;li&gt;Create and delete twin relationships&lt;/li&gt;
+&lt;li&gt;Configure pedigree modelling and visualisation functionality&lt;/li&gt;
+&lt;li&gt;For a given proband persisted in The Ark, retrieve an inferred pedigree membership, complete with relationship labels&lt;/li&gt;
+&lt;li&gt;Generate and retrieve a pedigree visualisation for a proband persisted in The Ark&lt;/li&gt;
+&lt;li&gt;Irrespective of existing studies and subjects stored in The Ark, send pedigree data and retrieve a corresponding visualisation without saving this data in The Ark.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Work on The Ark web services interface continues, and greater coverage of the system’s functionality will arrive in future releases.&lt;/p&gt;</content>
+		<category term="Web Services" />
+	</entry>
+	<entry>
+		<title>Demonstration client</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/for-programmers/web-services/1-demonstration-client"/>
+		<published>2017-11-13T05:21:03+11:00</published>
+		<updated>2017-11-13T05:21:03+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/for-programmers/web-services/1-demonstration-client</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;{emailcloak=off}&lt;/p&gt;
+&lt;p&gt;To demonstrate The Ark's web services layer, we have implemented an example client that uses &lt;a href=&quot;https://sphinx.org.au/the-ark/for-programmers/web-services/4-service-call-specifications&quot;&gt;web service calls&lt;/a&gt; to manipulate data hosted in an instance of The Ark, and leverage the system's pedigree modelling and visualisation capabilities.&lt;/p&gt;
+&lt;table style=&quot;background-color: #e3e3e3; margin-left: auto; margin-right: auto;&quot; cellpadding=&quot;5&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://demo.sphinx.org.au/services&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Try the web services demonstration &lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;The client is programmed to interface a public demonstration instance of The Ark hosted at &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;https://demo.sphinx.org.au/ark&lt;/a&gt;. Authentication is performed using The Ark user account demo-studyadmin@ark.org.au which has administration privileges on the &lt;strong&gt;Demo 2&lt;/strong&gt; study.&lt;/p&gt;
+&lt;p&gt;The results of data entry/modification actions performed using the web services client will be reflected within the &lt;strong&gt;Demo 2&lt;/strong&gt; study on &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;https://demo.sphinx.org.au/ark&lt;/a&gt;. For more information about The Ark at &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;https://demo.sphinx.org.au/ark&lt;/a&gt;, including login credentials, please refer to &lt;a href=&quot;https://sphinx.org.au/the-ark/try-it&quot;&gt;this page&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Source code for the example web services client can be found at &lt;a href=&quot;https://github.com/The-Ark-Informatics/ark/tree/master/ark-rest-demo-client&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;this location&lt;/a&gt;. Specifications for the web service calls can be found &lt;a href=&quot;https://sphinx.org.au/the-ark/for-programmers/web-services/4-service-call-specifications&quot;&gt;below&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;pull-center&quot; style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;https://sphinx.org.au/images/ark/ark-web-services.png&quot; alt=&quot;The Ark: web services demo&quot; width=&quot;650&quot; height=&quot;546&quot; /&gt;&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;{emailcloak=off}&lt;/p&gt;
+&lt;p&gt;To demonstrate The Ark's web services layer, we have implemented an example client that uses &lt;a href=&quot;https://sphinx.org.au/the-ark/for-programmers/web-services/4-service-call-specifications&quot;&gt;web service calls&lt;/a&gt; to manipulate data hosted in an instance of The Ark, and leverage the system's pedigree modelling and visualisation capabilities.&lt;/p&gt;
+&lt;table style=&quot;background-color: #e3e3e3; margin-left: auto; margin-right: auto;&quot; cellpadding=&quot;5&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://demo.sphinx.org.au/services&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Try the web services demonstration &lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;The client is programmed to interface a public demonstration instance of The Ark hosted at &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;https://demo.sphinx.org.au/ark&lt;/a&gt;. Authentication is performed using The Ark user account demo-studyadmin@ark.org.au which has administration privileges on the &lt;strong&gt;Demo 2&lt;/strong&gt; study.&lt;/p&gt;
+&lt;p&gt;The results of data entry/modification actions performed using the web services client will be reflected within the &lt;strong&gt;Demo 2&lt;/strong&gt; study on &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;https://demo.sphinx.org.au/ark&lt;/a&gt;. For more information about The Ark at &lt;a href=&quot;https://demo.sphinx.org.au/ark&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;https://demo.sphinx.org.au/ark&lt;/a&gt;, including login credentials, please refer to &lt;a href=&quot;https://sphinx.org.au/the-ark/try-it&quot;&gt;this page&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Source code for the example web services client can be found at &lt;a href=&quot;https://github.com/The-Ark-Informatics/ark/tree/master/ark-rest-demo-client&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;this location&lt;/a&gt;. Specifications for the web service calls can be found &lt;a href=&quot;https://sphinx.org.au/the-ark/for-programmers/web-services/4-service-call-specifications&quot;&gt;below&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;pull-center&quot; style=&quot;display: block; margin-left: auto; margin-right: auto;&quot; src=&quot;https://sphinx.org.au/images/ark/ark-web-services.png&quot; alt=&quot;The Ark: web services demo&quot; width=&quot;650&quot; height=&quot;546&quot; /&gt;&lt;/p&gt;</content>
+		<category term="Web Services" />
+	</entry>
+	<entry>
+		<title>Service call specifications</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/for-programmers/web-services/4-service-call-specifications"/>
+		<published>2017-11-10T04:43:30+11:00</published>
+		<updated>2017-11-10T04:43:30+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/for-programmers/web-services/4-service-call-specifications</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;&lt;a id=&quot;service_calls_top&quot;&gt;&lt;/a&gt;The following web services calls have been implemented in The Ark.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getAllSubjects&quot;&gt;Get all subjects of a study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getSingleSubject&quot;&gt;Get single subject from a study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#updateSubject&quot;&gt;Update subject within a study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#addSubject&quot;&gt;Add subject to study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getAllTwins&quot;&gt;Get all twins from a study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#deleteTwinRelationship&quot;&gt;Delete twin relationship&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#addTwinRelationship&quot;&gt;Add twin relationship&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getSubjectsWithSiblings&quot;&gt;Get all subjects who have siblings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getAllSiblings&quot;&gt;Get all siblings of a subject&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getAllRelationships&quot;&gt;Get all parental relationships&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#deleteParentalRelationship&quot;&gt;Delete parental relationship&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#addParentalRelationship&quot;&gt;Add parental relationship&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getBloodLine&quot;&gt;Get BloodLine of a subject&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#visualiseProband&quot;&gt;Visualise pedigree of proband&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getPedigreeConfig&quot;&gt;Get pedigree configuration&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#updatePedigreeConfig&quot;&gt;Update pedigree configuration&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getYesNoCustomFields&quot;&gt;Get yes/no subject custom fields&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getVisualisationPedigreeSent&quot;&gt;Get visualisation of a pedigree sent&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Authentication is performed with respect to The Ark's user accounts and their role-based access permissions. For a web service call to succeed, the authenticated user must have adequate access permissions to perform the task. See The Ark &lt;a href=&quot;https://sphinx.org.au/the-ark/documentation&quot;&gt;user documentation&lt;/a&gt; for more information.&lt;/p&gt;
+</summary>
+		<content type="html">&lt;p&gt;&lt;a id=&quot;service_calls_top&quot;&gt;&lt;/a&gt;The following web services calls have been implemented in The Ark.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getAllSubjects&quot;&gt;Get all subjects of a study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getSingleSubject&quot;&gt;Get single subject from a study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#updateSubject&quot;&gt;Update subject within a study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#addSubject&quot;&gt;Add subject to study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getAllTwins&quot;&gt;Get all twins from a study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#deleteTwinRelationship&quot;&gt;Delete twin relationship&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#addTwinRelationship&quot;&gt;Add twin relationship&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getSubjectsWithSiblings&quot;&gt;Get all subjects who have siblings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getAllSiblings&quot;&gt;Get all siblings of a subject&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getAllRelationships&quot;&gt;Get all parental relationships&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#deleteParentalRelationship&quot;&gt;Delete parental relationship&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#addParentalRelationship&quot;&gt;Add parental relationship&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getBloodLine&quot;&gt;Get BloodLine of a subject&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#visualiseProband&quot;&gt;Visualise pedigree of proband&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getPedigreeConfig&quot;&gt;Get pedigree configuration&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#updatePedigreeConfig&quot;&gt;Update pedigree configuration&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getYesNoCustomFields&quot;&gt;Get yes/no subject custom fields&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sphinx.org.au/#getVisualisationPedigreeSent&quot;&gt;Get visualisation of a pedigree sent&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Authentication is performed with respect to The Ark's user accounts and their role-based access permissions. For a web service call to succeed, the authenticated user must have adequate access permissions to perform the task. See The Ark &lt;a href=&quot;https://sphinx.org.au/the-ark/documentation&quot;&gt;user documentation&lt;/a&gt; for more information.&lt;/p&gt;
+</content>
+		<category term="Web Services" />
+	</entry>
+</feed>

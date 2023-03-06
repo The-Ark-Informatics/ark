@@ -1,0 +1,4 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+sphinx.org.au	TRUE	/	FALSE	1999999999	4fe56cc2d771aab3cadd7457f19d6332	s6otd66q6p4qu8e5rhtrtbgu32
+

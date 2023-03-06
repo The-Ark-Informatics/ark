@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+
+<!-- Mirrored from sphinx.org.au/the-ark/try-it/18-setup-virtual-machine by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:40 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="utf-8" />
+	<base  />
+	<meta name="keywords" content="University of Melbourne School of Population and Global Health Informatics" />
+	<meta name="description" content="The School of Population and Global Health Informatics Website" />
+	<meta name="generator" content="Joomla! - Open Source Content Management" />
+	<title>Setup a pre-configured Virtual Machine</title>
+	<link href="../../templates/protostar/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+	<link href="../../templates/protostar/css/template8374.css?79454ffff00e04053220fdb82f03fe7b" rel="stylesheet" />
+	<link href="../../../fonts.googleapis.com/cssd2d5.css?family=Open+Sans" rel="stylesheet" />
+	<style>
+
+	h1, h2, h3, h4, h5, h6, .site-title {
+		font-family: 'Open Sans', sans-serif;
+	}
+	body.site {
+		border-top: 3px solid #0088cc;
+		background-color: #f4f6f7;
+	}
+	a {
+		color: #0088cc;
+	}
+	.nav-list > .active > a,
+	.nav-list > .active > a:hover,
+	.dropdown-menu li > a:hover,
+	.dropdown-menu .active > a,
+	.dropdown-menu .active > a:hover,
+	.nav-pills > .active > a,
+	.nav-pills > .active > a:hover,
+	.btn-primary {
+		background: #0088cc;
+	}
+	</style>
+	<script src="../../media/jui/js/jquery.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/jui/js/jquery-noconflict8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/jui/js/jquery-migrate.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/system/js/caption8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../media/jui/js/bootstrap.min8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<script src="../../templates/protostar/js/template8374.js?79454ffff00e04053220fdb82f03fe7b"></script>
+	<!--[if lt IE 9]><script src="/media/jui/js/html5.js?79454ffff00e04053220fdb82f03fe7b"></script><![endif]-->
+	<script>
+jQuery(window).on('load',  function() {
+				new JCaption('img.caption');
+			});
+	</script>
+
+</head>
+<body class="site com_content view-article no-layout no-task itemid-127">
+	<!-- Body -->
+	<div class="body" id="top">
+		<div class="container">
+			<!-- Header -->
+			<header class="header" role="banner">
+				<div class="header-inner clearfix">
+					<a class="brand pull-left" href="../../index.html">
+						<img src="../../images/logo.png" alt="SPHINX" />											</a>
+					<div class="header-search pull-right">
+						
+					</div>
+				</div>
+			</header>
+						
+			<div class="row-fluid">
+								<main id="content" role="main" class="span9">
+					<!-- Begin Content -->
+					
+					<div id="system-message-container">
+	</div>
+
+					<div class="item-page" itemscope itemtype="https://schema.org/Article">
+	<meta itemprop="inLanguage" content="en-GB" />
+	
+		
+			<div class="page-header">
+		<h2 itemprop="headline">
+			Setup a pre-configured Virtual Machine		</h2>
+							</div>
+					
+		
+	
+	
+		
+								<div itemprop="articleBody">
+		<p></p>
+<h3>Preparation</h3>
+<p>The virtual machine setup requires a host computer with a minimum of 4GB RAM, 10GB free disk space, and a 64-bit Windows, OS X or Linux operating system.</p>
+<p>We provide an MD5 checksum for the virtual appliance so that users can verify the integrity of their downloads. To calculate the MD5 checksum of a downloaded file, e.g. <strong>The Ark - demo.ova</strong>, launch a terminal and use commands of this form:</p>
+<table>
+<tbody>
+<tr>
+<td style="width: 100px;">Linux</td>
+<td><span style="font-family: 'courier new', courier;">md5sum 'The Ark - demo.ova'</span></td>
+</tr>
+<tr>
+<td>OS X</td>
+<td><span style="font-family: 'courier new', courier;">md5 <span style="font-family: 'courier new',courier;">'The Ark - demo.ova'</span><br /></span></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><span style="font-family: 'courier new', courier;">CertUtil -hashfile "<span style="font-family: 'courier new',courier;">The Ark - demo.ova"</span> MD5</span></td>
+</tr>
+</tbody>
+</table>
+ 
+<h3>Step 1: Install Oracle VM Virtual Box Manager</h3>
+<ol>
+<li><a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" rel="noopener noreferrer">Download Oracle Virtual Box</a> for your host operating system - Windows, OS X, or Linux.<em><br /></em></li>
+<li>Install Oracle Virtual Box by running the downloaded executable file and following the prompts.</li>
+</ol>
+<h3>Step 2: Setup a virtual machine inside the Oracle VM Virtual Box Manager</h3>
+<p><em><strong>Note:</strong> </em>Before proceeding with the steps below, any previous installation of The Ark virtual appliance must be removed from Virtual Box. First, delete the old virtual machine by right-clicking on it's profile, selecting <strong>Remove</strong>, and clicking <strong>Delete all files</strong>. With the virtual machine deleted, select <strong>Virtual Media Manager</strong> from the <strong>File</strong> menu and delete the entry corresponding to the old VM's hard disk. Without this preparation, Virtual Box will report an error that the UUID of the disk image is already in use.</p>
+<ol>
+<li>Download The Ark virtual appliance from <a href="https://cloudstor.aarnet.edu.au/plus/s/UhETVCXbK3dVyGl">this location (2.3GB)</a>. The MD5 checksum of the file <strong>The Ark - demo.ova</strong> is <span style="font-family: 'courier new', courier;">857f44e14a175f7259a5ca7b252cfa33</span>.<span style="font-family: 'courier new', courier;"><br /></span></li>
+<li>Start the Oracle VM Virtual Box Manager.</li>
+<li>From the <strong>File</strong> menu, select <strong>Import appliance</strong>. Click the <strong>Choose</strong> button and select the virtual appliance file <strong>The Ark - demo.ova</strong> that you downloaded in Step 1. Click <strong>Next</strong>, then <strong>Import</strong> to complete the virtual appliance setup.</li>
+</ol>
+<h3>Step 3: Start The Ark</h3>
+<ol>
+<li>Start the Oracle VM Virtual Box Manager.</li>
+<li>If prompted, login to the Ubuntu system with the username <strong>ark</strong> and password <strong>arkvmpassword</strong>.</li>
+<li>On the desktop of the VM, double click The Ark icon; a browser will launch and display The Ark’s login page. If the link does not work, launch the Firefox browser within the VM and navigate to <strong>http://localhost/ark</strong>.</li>
+<li>Using the table below, enter login credentials - username and password. Click <strong>Sign in</strong> to login to The Ark.</li>
+</ol>
+<table class="GridTable4Accent1" style="margin-left: auto; margin-right: auto;" border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="width: 230px; border-width: 1pt medium; border-style: solid none; background: none 0% 0% repeat scroll #5b9bd5; padding: 0cm 5.4pt;"><strong><span style="color: white;">Username</span></strong></td>
+<td style="width: 160px; border-width: 1pt medium; border-style: solid none; background: none 0% 0% repeat scroll #5b9bd5; padding: 0cm 5.4pt;"><strong><span style="color: white;">Password</span></strong></td>
+<td style="width: 160px; border-width: 1pt medium; border-style: solid none; background: none 0% 0% repeat scroll #5b9bd5; padding: 0cm 5.4pt;" valign="top"><strong><span style="color: white;">Access To Study<br /></span></strong></td>
+<td style="width: 160px; border-width: 1pt medium; border-style: solid none; background: none 0% 0% repeat scroll #5b9bd5; padding: 0cm 5.4pt;" valign="top"><strong><span style="color: white;">Access Level<br /></span></strong></td>
+</tr>
+<tr>
+<td style="width: 230px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: none 0% 0% repeat scroll #deeaf6; padding: 0cm 5.4pt;" valign="top">demo-readonly@ark.org.au</td>
+<td style="width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: none 0% 0% repeat scroll #deeaf6; padding: 0cm 5.4pt;" valign="top">ReadOnly@1</td>
+<td style="width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: none 0% 0% repeat scroll #deeaf6; padding: 0cm 5.4pt;" valign="top">Demo 1</td>
+<td style="width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; background: none 0% 0% repeat scroll #deeaf6; padding: 0cm 5.4pt;" valign="top">Read only</td>
+</tr>
+<tr>
+<td style="width: 230px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;" valign="top">demo-studyadmin@ark.org.au</td>
+<td style="width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;" valign="top">StudyAdmin@1</td>
+<td style="width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;" valign="top">Demo 2</td>
+<td style="width: 160px; border-width: medium 1pt 1pt medium; border-style: none solid solid none; padding: 0cm 5.4pt;" valign="top">Administrator</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>To try the example <a href="../for-programmers/web-services.html">web services client</a>, open Firefox within the VM and navigate to <strong>http://localhost:8082/services</strong>. No account credentials are required since these have been programmed into the example client. Changes made using this client will be reflected in The Ark instance running within the VM.</p>
+<p>To see the full administration capabilities of The Ark, use the "super user" username <strong>arksuperuser@ark.org.au</strong> and password <strong>hdYmc$flRExT#6B</strong>. Please note that the "super user" account will allow users to enable features which have been disabled due to bugs or needing further testing. Therefore, some functions might not work correctly.</p>
+<p> </p>	</div>
+
+	
+							</div>
+
+					<div class="clearfix"></div>
+					<div aria-label="Breadcrumbs" role="navigation">
+	<ul itemscope itemtype="https://schema.org/BreadcrumbList" class="breadcrumb">
+					<li>
+				You are here: &#160;
+			</li>
+		
+						<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../../index.html" class="pathway"><span itemprop="name">Home</span></a>
+					
+											<span class="divider">
+							<img src="../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="1">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../../the-ark.html" class="pathway"><span itemprop="name">The Ark</span></a>
+					
+											<span class="divider">
+							<img src="../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="2">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+											<a itemprop="item" href="../try-it.html" class="pathway"><span itemprop="name">Try it</span></a>
+					
+											<span class="divider">
+							<img src="../../media/system/images/arrow.png" alt="" />						</span>
+										<meta itemprop="position" content="3">
+				</li>
+							<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="active">
+					<span itemprop="name">
+						Setup a pre-configured Virtual Machine					</span>
+					<meta itemprop="position" content="4">
+				</li>
+				</ul>
+</div>
+
+					<!-- End Content -->
+				</main>
+									<div id="aside" class="span3">
+						<!-- Begin Right Sidebar -->
+						<div class="well _menu"><h3 class="page-header">Main Menu</h3><ul class="nav menu mod-list">
+<li class="item-101 default"><a href="../../index.html" >Home</a></li><li class="item-125 active deeper parent"><a href="../../the-ark.html" >The Ark</a><ul class="nav-child unstyled small"><li class="item-126"><a href="../overview.html" >Overview</a></li><li class="item-127 current active"><a href="../try-it.html" >Try it</a></li><li class="item-128"><a href="../documentation.html" >User documentation</a></li><li class="item-129"><a href="../for-system-administrators.html" >For system administrators</a></li><li class="item-130 parent"><a href="../for-programmers.html" >For programmers</a></li><li class="item-132"><a href="../spark.html" >SPARK</a></li><li class="item-140"><a href="../publications.html" >Publications</a></li><li class="item-133"><a href="../acknowledgements.html" >Acknowledgements</a></li><li class="item-134"><a href="../contact-us.html" >Contact us</a></li></ul></li></ul>
+</div>
+						<!-- End Right Sidebar -->
+					</div>
+							</div>
+		</div>
+	</div>
+	<!-- Footer -->
+	<footer class="footer" role="contentinfo">
+		<div class="container">
+			<hr />
+			
+			<p class="pull-right">
+				<a href="#top" id="back-top">
+					Back to Top				</a>
+			</p>
+			<p>
+				&copy; 2023 SPHINX			</p>
+		</div>
+	</footer>
+	
+</body>
+
+<!-- Mirrored from sphinx.org.au/the-ark/try-it/18-setup-virtual-machine by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Mar 2023 03:24:40 GMT -->
+</html>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generator="Joomla! - Open Source Content Management" -->
+<feed xmlns="http://www.w3.org/2005/Atom"  xml:lang="en-gb">
+	<title type="text">Acknowledgements</title>
+	<subtitle type="text">The School of Population and Global Health Informatics Website</subtitle>
+	<link rel="alternate" type="text/html" href="https://sphinx.org.au"/>
+	<id>https://sphinx.org.au/the-ark/acknowledgements</id>
+	<updated>2023-03-03T14:24:37+11:00</updated>
+	<author>
+		<name>SPHINX</name>
+	</author>
+	<generator uri="https://www.joomla.org">Joomla! - Open Source Content Management</generator>
+	<link rel="self" type="application/atom+xml" href="https://sphinx.org.au/the-ark/acknowledgements?format=feed&amp;type=atom"/>
+	<entry>
+		<title>Acknowledgements</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/acknowledgements/22-acknowledgements"/>
+		<published>2016-03-03T05:09:21+11:00</published>
+		<updated>2016-03-03T05:09:21+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/acknowledgements/22-acknowledgements</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Development of The Ark was facilitated through the &lt;a href=&quot;http://twins.org.au/&quot; target=&quot;_blank&quot;&gt;Australian Twin Registry&lt;/a&gt;, a national resource in part supported by a Centre of Research Excellence Grant from the &lt;a href=&quot;https://www.nhmrc.gov.au/&quot; target=&quot;_blank&quot;&gt;National Health and Medical Research Council&lt;/a&gt;. The project was also supported by the eResearch Tools Program from National eResearch Collaboration Tools and Resources (&lt;a href=&quot;http://nectar.org.au/&quot; target=&quot;_blank&quot;&gt;NeCTAR&lt;/a&gt;).&lt;/span&gt;&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;&lt;span style=&quot;font-size: 10pt;&quot;&gt;Development of The Ark was facilitated through the &lt;a href=&quot;http://twins.org.au/&quot; target=&quot;_blank&quot;&gt;Australian Twin Registry&lt;/a&gt;, a national resource in part supported by a Centre of Research Excellence Grant from the &lt;a href=&quot;https://www.nhmrc.gov.au/&quot; target=&quot;_blank&quot;&gt;National Health and Medical Research Council&lt;/a&gt;. The project was also supported by the eResearch Tools Program from National eResearch Collaboration Tools and Resources (&lt;a href=&quot;http://nectar.org.au/&quot; target=&quot;_blank&quot;&gt;NeCTAR&lt;/a&gt;).&lt;/span&gt;&lt;/p&gt;</content>
+		<category term="Acknowledgements" />
+	</entry>
+	<entry>
+		<title>To acknowledge The Ark</title>
+		<link rel="alternate" type="text/html" href="https://sphinx.org.au/the-ark/acknowledgements/21-to-acknowledge-the-ark"/>
+		<published>2016-03-03T05:10:30+11:00</published>
+		<updated>2016-03-03T05:10:30+11:00</updated>
+		<id>https://sphinx.org.au/the-ark/acknowledgements/21-to-acknowledge-the-ark</id>
+		<author>
+			<name>Adrian Bickerstaffe</name>
+		</author>
+		<summary type="html">&lt;p&gt;Please use the following script to acknowledge The Ark:&lt;/p&gt;
+&lt;p&gt;Study data were managed using The Ark open source data management system hosted at [&lt;em&gt;INSTITUTION NAME&lt;/em&gt;]. The Ark is a secure, highly-configurable web-based research tool that incorporates the majority of the functionality required to conduct a complex study or clinical trial, or operate a research registry. The Ark allows medical researchers without a technical background to self-manage their data using a customisable, user-friendly interface without the need for database/computer programming.&lt;/p&gt;</summary>
+		<content type="html">&lt;p&gt;Please use the following script to acknowledge The Ark:&lt;/p&gt;
+&lt;p&gt;Study data were managed using The Ark open source data management system hosted at [&lt;em&gt;INSTITUTION NAME&lt;/em&gt;]. The Ark is a secure, highly-configurable web-based research tool that incorporates the majority of the functionality required to conduct a complex study or clinical trial, or operate a research registry. The Ark allows medical researchers without a technical background to self-manage their data using a customisable, user-friendly interface without the need for database/computer programming.&lt;/p&gt;</content>
+		<category term="Acknowledgements" />
+	</entry>
+</feed>
